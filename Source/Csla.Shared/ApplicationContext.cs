@@ -769,16 +769,16 @@ namespace Csla
     {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
       private AsyncLocal<IPrincipal> _user = new AsyncLocal<IPrincipal>() { Value = new Csla.Security.UnauthenticatedPrincipal() };
+      private static ContextDictionary _globalContext;
 #endif
 #if NET40 || NET45 || PCL46
       private const string _localContextName = "Csla.LocalContext";
       private const string _clientContextName = "Csla.ClientContext";
-      private const string _globalContextName = "Csla.GlobalContext";
 #else
       private AsyncLocal<ContextDictionary> _localContext = new AsyncLocal<ContextDictionary>();
       private AsyncLocal<ContextDictionary> _clientContext = new AsyncLocal<ContextDictionary>();
-      private AsyncLocal<ContextDictionary> _globalContext = new AsyncLocal<ContextDictionary>();
 #endif
+      private const string _globalContextName = "Csla.GlobalContext";
 
       /// <summary>
       /// Returns a value indicating whether the context is valid.
@@ -901,13 +901,13 @@ namespace Csla
       /// </summary>
       public ContextDictionary GetGlobalContext()
       {
-#if NET40 || NET45 
+#if PCL46
+        throw new NotSupportedException("PCL.GetGlobalContext");
+#elif NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+        return _globalContext;
+#else
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         return (ContextDictionary)Thread.GetData(slot);
-#elif PCL46
-        throw new NotSupportedException("PCL.GetGlobalContext");
-#else
-        return _globalContext.Value;
 #endif
       }
 
@@ -917,17 +917,17 @@ namespace Csla
       /// <param name="globalContext">Context dictionary</param>
       public void SetGlobalContext(ContextDictionary globalContext)
       {
-#if NET40 || NET45 
+#if PCL46
+        throw new NotSupportedException("PCL.SetGlobalContext");
+#elif NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+        _globalContext = globalContext;
+#else
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         Thread.SetData(slot, globalContext);
-#elif PCL46
-        throw new NotSupportedException("PCL.SetGlobalContext");
-#else
-        _globalContext.Value = globalContext;
 #endif
       }
     }
 
-    #endregion
+#endregion
   }
 }

@@ -52,37 +52,6 @@ namespace Csla.Test.AppContext
       Assert.AreEqual("Client", ApplicationContext.ExecutionLocation.ToString());
     }
 
-    #region NoContext
-    /// <summary>
-    /// Test to see if contexts get cleared out properly
-    /// </summary>
-    /// <remarks>
-    /// This test fails if "CSLA" is all capitol letters. Using "Csla",
-    /// as the namespace implies, is correct.
-    /// </remarks>
-    [TestMethod()]
-    public void NoContext()
-    {
-      //clear the contexts
-      Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.ClientContext.Clear();
-
-      ApplicationContext.ClientContext.Add("Test", "Test");
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-
-      Assert.IsNull(AppDomain.CurrentDomain.GetData("CSLA.ClientContext"), "ClientContext should be null");
-
-      System.LocalDataStoreSlot slot;
-      slot = Thread.GetNamedDataSlot("CSLA.GlobalContext");
-      Assert.IsNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "Csla.ClientContext should not be null");
-
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should not be null");
-    }
-    #endregion
-
     #region TestOnDemandContexts
     [TestMethod]
     public void TestOnDemandContexts()
@@ -188,55 +157,6 @@ namespace Csla.Test.AppContext
     }
     #endregion
 
-    #region ClearContexts
-    [TestMethod]
-    public void ClearContexts()
-    {
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.ClientContext.Clear();
-
-      //put stuff into the application context
-      ApplicationContext.ClientContext.Add("Test", "Test");
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-
-      //it should NOT be null
-      System.LocalDataStoreSlot slot;
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "Csla.ClientContext should not be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should not be null");
-
-      //Do a generic clear
-      ApplicationContext.Clear();
-
-      //cleared, this stuff should be null now
-      Assert.IsNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "Csla.ClientContext should not be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNull(Thread.GetData(slot), "GlobalContext should not be null");
-
-      //put stuff into the Application context
-      ApplicationContext.ClientContext.Add("Test", "Test");
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-
-      //Should NOT be null
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "Csla.ClientContext should not be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should not be null");
-
-      //clearing each individually instead of with ApplicationContext.Clear();
-      ApplicationContext.ClientContext.Clear();
-      ApplicationContext.GlobalContext.Clear();
-
-      //put stuff into ApplicationContext
-      ApplicationContext.ClientContext.Add("Test", "Test");
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-
-      //should NOT be null
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "Csla.ClientContext should not be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should not be null");
-    }
-    #endregion
-
     #region ClientContext
     /// <summary>
     /// Test the Client Context
@@ -263,7 +183,6 @@ namespace Csla.Test.AppContext
       root = root.Save();
 
       Assert.IsNotNull(root, "Root object should not be null");
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "Client context should not be null");
       Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"], "Object not inserted");
       Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
       Assert.AreEqual(false, root.IsNew, "Object should not be new");
@@ -298,7 +217,7 @@ namespace Csla.Test.AppContext
       root = root.Save();
 
       Assert.IsNotNull(root);
-      Assert.IsNotNull(Thread.GetData(Thread.GetNamedDataSlot("Csla.GlobalContext")));
+      //Assert.IsNotNull(Thread.GetData(Thread.GetNamedDataSlot("Csla.GlobalContext")));
       Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
       Assert.AreEqual("saved", root.Data);
       Assert.AreEqual(false, root.IsNew);

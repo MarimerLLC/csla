@@ -52,61 +52,6 @@ namespace Csla.Test.AppContext
       Assert.AreEqual("Client", ApplicationContext.ExecutionLocation.ToString());
     }
 
-    #region TestOnDemandContexts
-    [TestMethod]
-    public void TestOnDemandContexts()
-    {
-      //Make sure its all clear completely
-      Csla.ApplicationContext.Clear();
-      System.LocalDataStoreSlot slot;
-      Assert.IsNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      //Add to the GlobalContext but NOT the ClientContext
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-      Assert.IsNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      //Add to the ClientContext but NOT the GlobalContext
-      Csla.ApplicationContext.Clear();
-      ApplicationContext.ClientContext.Add("Test", "Test");
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      //Add to both contexts
-      Csla.ApplicationContext.Clear();
-      ApplicationContext.ClientContext.Add("Test", "Test");
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      //Now clear ONLY the GlobalContext
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      //The global context should still exist, it is just empty now
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      //Now add an item to the GlobalContext and clear only the ClientContext
-      ApplicationContext.GlobalContext.Add("Test", "Test");
-      ApplicationContext.ClientContext.Clear();
-      //the clientcontext should still exist, its just empty now.
-      Assert.IsNotNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should be null");
-
-      //Now Clear all again and make sure they're gone
-      ApplicationContext.Clear();
-      Assert.IsNull(AppDomain.CurrentDomain.GetData("Csla.ClientContext"), "ClientContext should be null");
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Assert.IsNull(Thread.GetData(slot), "GlobalContext should be null");
-    }
-    #endregion
-
     #region TestAppContext across different Threads
     [TestMethod]
     public void TestAppContextAcrossDifferentThreads()

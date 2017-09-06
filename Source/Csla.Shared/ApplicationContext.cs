@@ -761,7 +761,11 @@ namespace Csla
 
     #region Default context manager
 
-    private class ApplicationContextManager : IContextManager
+    /// <summary>
+    /// Default context manager for the user property
+    /// and local/client/global context dictionaries.
+    /// </summary>
+    public class ApplicationContextManager : IContextManager
     {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
       private AsyncLocal<IPrincipal> _user = new AsyncLocal<IPrincipal>() { Value = new Csla.Security.UnauthenticatedPrincipal() };
@@ -776,12 +780,19 @@ namespace Csla
       private AsyncLocal<ContextDictionary> _globalContext = new AsyncLocal<ContextDictionary>();
 #endif
 
+      /// <summary>
+      /// Returns a value indicating whether the context is valid.
+      /// </summary>
       public bool IsValid
       {
         get { return true; }
       }
 
-      public IPrincipal GetUser()
+      /// <summary>
+      /// Gets the current user principal.
+      /// </summary>
+      /// <returns>The current user principal</returns>
+      public virtual IPrincipal GetUser()
       {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         IPrincipal current = _user.Value;
@@ -794,7 +805,11 @@ namespace Csla
         return current;
       }
 
-      public void SetUser(IPrincipal principal)
+      /// <summary>
+      /// Sets teh current user principal.
+      /// </summary>
+      /// <param name="principal">User principal value</param>
+      public virtual void SetUser(IPrincipal principal)
       {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         IPrincipal current = _user.Value;
@@ -805,6 +820,9 @@ namespace Csla
 #endif
       }
 
+      /// <summary>
+      /// Gets the local context dictionary.
+      /// </summary>
       public ContextDictionary GetLocalContext()
       {
 #if NET40 || NET45
@@ -817,6 +835,10 @@ namespace Csla
 #endif
       }
 
+      /// <summary>
+      /// Sets the local context dictionary.
+      /// </summary>
+      /// <param name="localContext">Context dictionary</param>
       public void SetLocalContext(ContextDictionary localContext)
       {
 #if NET40 || NET45
@@ -829,6 +851,9 @@ namespace Csla
 #endif
       }
 
+      /// <summary>
+      /// Gets the client context dictionary.
+      /// </summary>
       public ContextDictionary GetClientContext()
       {
 #if NET40 || NET45 
@@ -848,6 +873,10 @@ namespace Csla
 #endif
       }
 
+      /// <summary>
+      /// Sets the client context dictionary.
+      /// </summary>
+      /// <param name="clientContext">Context dictionary</param>
       public void SetClientContext(ContextDictionary clientContext)
       {
 #if NET40 || NET45 
@@ -867,6 +896,9 @@ namespace Csla
 #endif
       }
 
+      /// <summary>
+      /// Gets the global context dictionary.
+      /// </summary>
       public ContextDictionary GetGlobalContext()
       {
 #if NET40 || NET45 
@@ -879,6 +911,10 @@ namespace Csla
 #endif
       }
 
+      /// <summary>
+      /// Sets the global context dictionary.
+      /// </summary>
+      /// <param name="globalContext">Context dictionary</param>
       public void SetGlobalContext(ContextDictionary globalContext)
       {
 #if NET40 || NET45 

@@ -761,96 +761,102 @@ namespace Csla
 
     #region Default context manager
 
-#if ((ANDROID || IOS) || NETFX_CORE) && !(ANDROID || IOS)
-    private class ApplicationContextManager : IContextManager
+    /// <summary>
+    /// Default context manager for the user property
+    /// and local/client/global context dictionaries.
+    /// </summary>
+    public class ApplicationContextManager : IContextManager
     {
-      private static ContextDictionary _localContext;
-      private static ContextDictionary _clientContext;
+#if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+      private AsyncLocal<IPrincipal> _user = new AsyncLocal<IPrincipal>() { Value = new Csla.Security.UnauthenticatedPrincipal() };
       private static ContextDictionary _globalContext;
-      private static IPrincipal _principal = new Csla.Security.UnauthenticatedPrincipal();
-
-      public bool IsValid
-      {
-        get { return true; }
-      }
-
-      public IPrincipal GetUser()
-      {
-        return _principal;
-      }
-
-      public void SetUser(IPrincipal principal)
-      {
-        _principal = principal;
-      }
-
-      public ContextDictionary GetLocalContext()
-      {
-        return _localContext;
-      }
-
-      public void SetLocalContext(ContextDictionary localContext)
-      {
-        _localContext = localContext;
-      }
-
-      public ContextDictionary GetClientContext()
-      {
-        return _clientContext;
-      }
-
-      public void SetClientContext(ContextDictionary clientContext)
-      {
-        _clientContext = clientContext;
-      }
-
-      public ContextDictionary GetGlobalContext()
-      {
-        return _globalContext;
-      }
-
-      public void SetGlobalContext(ContextDictionary globalContext)
-      {
-        _globalContext = globalContext;
-      }
-    }
-#else
-    private class ApplicationContextManager : IContextManager
-    {
+#endif
+#if NET40 || NET45 || PCL46
       private const string _localContextName = "Csla.LocalContext";
       private const string _clientContextName = "Csla.ClientContext";
+#else
+      private AsyncLocal<ContextDictionary> _localContext = new AsyncLocal<ContextDictionary>();
+      private AsyncLocal<ContextDictionary> _clientContext = new AsyncLocal<ContextDictionary>();
+#endif
       private const string _globalContextName = "Csla.GlobalContext";
 
+      /// <summary>
+      /// Returns a value indicating whether the context is valid.
+      /// </summary>
       public bool IsValid
       {
         get { return true; }
       }
 
-      public IPrincipal GetUser()
+      /// <summary>
+      /// Gets the current user principal.
+      /// </summary>
+      /// <returns>The current user principal</returns>
+      public virtual IPrincipal GetUser()
       {
+#if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+        IPrincipal current = _user.Value;
+#elif PCL46
+        IPrincipal current = null;
+        throw new NotSupportedException("PCL.GetUser");
+#else
         IPrincipal current = Thread.CurrentPrincipal;
+#endif
         return current;
       }
 
-      public void SetUser(IPrincipal principal)
+      /// <summary>
+      /// Sets teh current user principal.
+      /// </summary>
+      /// <param name="principal">User principal value</param>
+      public virtual void SetUser(IPrincipal principal)
       {
+#if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+        IPrincipal current = _user.Value;
+#elif PCL46
+        throw new NotSupportedException("PCL.SetUser");
+#else
         Thread.CurrentPrincipal = principal;
+#endif
       }
 
+      /// <summary>
+      /// Gets the local context dictionary.
+      /// </summary>
       public ContextDictionary GetLocalContext()
       {
+#if NET40 || NET45
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         return (ContextDictionary)Thread.GetData(slot);
+#elif PCL46
+        throw new NotSupportedException("PCL.GetLocalContext");
+#else
+        return _localContext.Value;
+#endif
       }
 
+      /// <summary>
+      /// Sets the local context dictionary.
+      /// </summary>
+      /// <param name="localContext">Context dictionary</param>
       public void SetLocalContext(ContextDictionary localContext)
       {
+#if NET40 || NET45
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         Thread.SetData(slot, localContext);
+#elif PCL46
+        throw new NotSupportedException("PCL.SetLocalContext");
+#else
+        _localContext.Value = localContext;
+#endif
       }
 
+      /// <summary>
+      /// Gets the client context dictionary.
+      /// </summary>
       public ContextDictionary GetClientContext()
       {
+#if NET40 || NET45 
         if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
         {
           return (ContextDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
@@ -860,10 +866,20 @@ namespace Csla
           LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
           return (ContextDictionary)Thread.GetData(slot);
         }
+#elif PCL46
+        throw new NotSupportedException("PCL.GetClientContext");
+#else
+        return _clientContext.Value;
+#endif
       }
 
+      /// <summary>
+      /// Sets the client context dictionary.
+      /// </summary>
+      /// <param name="clientContext">Context dictionary</param>
       public void SetClientContext(ContextDictionary clientContext)
       {
+#if NET40 || NET45 
         if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
         {
           AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
@@ -873,22 +889,45 @@ namespace Csla
           LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
           Thread.SetData(slot, clientContext);
         }
+#elif PCL46
+        throw new NotSupportedException("PCL.SetClientContext");
+#else
+        _clientContext.Value = clientContext;
+#endif
       }
 
+      /// <summary>
+      /// Gets the global context dictionary.
+      /// </summary>
       public ContextDictionary GetGlobalContext()
       {
+#if PCL46
+        throw new NotSupportedException("PCL.GetGlobalContext");
+#elif NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+        return _globalContext;
+#else
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         return (ContextDictionary)Thread.GetData(slot);
+#endif
       }
 
+      /// <summary>
+      /// Sets the global context dictionary.
+      /// </summary>
+      /// <param name="globalContext">Context dictionary</param>
       public void SetGlobalContext(ContextDictionary globalContext)
       {
+#if PCL46
+        throw new NotSupportedException("PCL.SetGlobalContext");
+#elif NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
+        _globalContext = globalContext;
+#else
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         Thread.SetData(slot, globalContext);
+#endif
       }
     }
-#endif
 
-    #endregion
+#endregion
   }
 }

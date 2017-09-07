@@ -48,6 +48,7 @@ namespace PTWin
       this.ResourceListListBox.Name = "ResourceListListBox";
       this.ResourceListListBox.Size = new System.Drawing.Size(416, 264);
       this.ResourceListListBox.TabIndex = 0;
+      this.ResourceListListBox.DoubleClick += new System.EventHandler(this.ResourceListListBox_DoubleClick);
       // 
       // ResourceListBindingSource
       // 

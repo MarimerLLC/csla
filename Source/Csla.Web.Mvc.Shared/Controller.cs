@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if NETSTANDARD1_6
+#if NETSTANDARD1_6 || NETSTANDARD2_0
 using Microsoft.AspNetCore.Mvc;
 #else
 using System.Web.Mvc;
@@ -17,14 +17,14 @@ using System.Web.Mvc;
 
 namespace Csla.Web.Mvc
 {
-    /// <summary>
-    /// Provides methods that respond to HTTP requests
-    /// in an ASP.NET MVC web site.
-    /// </summary>
-#if NETSTANDARD1_6
-    public class MyController : Microsoft.AspNetCore.Mvc.Controller
+  /// <summary>
+  /// Provides methods that respond to HTTP requests
+  /// in an ASP.NET MVC web site.
+  /// </summary>
+#if NETSTANDARD1_6 || NETSTANDARD2_0
+  public class MyController : Microsoft.AspNetCore.Mvc.Controller
 #else
-    public class Controller : System.Web.Mvc.Controller
+  public class Controller : System.Web.Mvc.Controller
 #endif
   {
     /// <summary>
@@ -59,7 +59,7 @@ namespace Csla.Web.Mvc
       {
         ViewData.Model = item;
         updateModel?.Invoke(item);
-#if NETSTANDARD1_6
+#if NETSTANDARD1_6 || NETSTANDARD2_0
         ViewData.Model = item.SaveAsync(forceUpdate).Result;
 #else
         ViewData.Model = item.Save(forceUpdate);

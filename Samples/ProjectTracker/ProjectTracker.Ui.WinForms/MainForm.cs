@@ -387,19 +387,20 @@ namespace PTWin
       part.Visible = true;
       part.BringToFront();
       this.Text = "Project Tracker - " + part.ToString();
+      PopulateDocuments();
     }
 
     /// <summary>
     /// Populate the Documents dropdown list.
     /// </summary>
-    private void DocumentsToolStripDropDownButton_DropDownOpening(
-      object sender, EventArgs e)
+    private void PopulateDocuments()
     {
       ToolStripItemCollection items = 
         DocumentsToolStripDropDownButton.DropDownItems;
       foreach (ToolStripItem item in items)
         item.Click -= new EventHandler(DocumentClick);
       items.Clear();
+
       foreach (Control ctl in Panel1.Controls)
         if (ctl is WinPart)
         {
@@ -447,6 +448,8 @@ namespace PTWin
       part.Visible = false;
       Panel1.Controls.Remove(part);
       part.Dispose();
+      PopulateDocuments();
+
       if (DocumentCount == 0)
       {
         this.DocumentsToolStripDropDownButton.Enabled = false;

@@ -1,4 +1,4 @@
-#if !NETSTANDARD
+#if !NETSTANDARD && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="CslaModelBinder.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -9,11 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-#if NETSTANDARD
-using Microsoft.AspNetCore.Mvc;
-#else
 using System.Web.Mvc;
-#endif
 using System.ComponentModel;
 using System.Collections;
 

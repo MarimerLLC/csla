@@ -21,8 +21,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\Bin\Release\netstandard\netstandard2.0\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\netstandard2.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

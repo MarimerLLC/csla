@@ -9,6 +9,7 @@
     <Import_RootNamespace>Csla.Web.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinder.cs" />
@@ -19,5 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortalController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebConfiguration.cs" />
   </ItemGroup>
 </Project>

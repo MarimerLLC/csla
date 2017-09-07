@@ -26,8 +26,10 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
     private static IContextManager _webContextManager;
+#endif
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static Type _webManagerType;
 #endif
 
@@ -50,7 +52,7 @@ namespace Csla
         _contextManager = new ApplicationContextManager();
     }
 
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
     /// <summary>
     /// Gets or sets the web context manager.
     /// Will use default WebContextManager. 
@@ -81,7 +83,7 @@ namespace Csla
     {
       get
       {
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
         if (WebContextManager != null && WebContextManager.IsValid)
             return WebContextManager;
 #endif

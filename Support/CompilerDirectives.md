@@ -1,6 +1,6 @@
 Per-Project Compiler Directives
 ===============================
-| Project | NETFX_CORE | NETFX_PHONE | PCL46 | IOS | ANDROID | NET4 | NET45 | WINDOWS_UWP | NETCORE | NETSTANDARD | NETSTANDARD1_5 | NETSTANDARD1_6 | NETSTANDARD2_0
+| Project | NETFX_CORE | NETFX_PHONE | PCL46 | IOS | ANDROID | NET4 | NET45 | WINDOWS_UWP | NETCORE | NETSTANDARD | NETSTANDARD1_5 | NETSTANDARD1_6 | NETSTANDARD2_0 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Csla.Android |  |  |  |  | Y |  |  |  |  |  |  |  |  |
 | Csla.Ios |  |  |  | Y |  |  |  |  |  |  |  |  |  |
@@ -13,6 +13,6 @@ Per-Project Compiler Directives
 | Csla.Uwp | Y |  |  |  |  |  |  | Y |  |  |  |  |  |
 | Csla.WinRT | Y |  |  |  |  |  |  |  |  |  |  |  |  |
 | Csla.WinRT.Phone | Y | Y |  |  |  |  |  |  |  |  |  |  |  |
-| Csla.NetStandard1.5 |  |  |  |  |  |  |  |  |  | Y | Y |  |  |
-| Csla.NetStandard1.6 |  |  |  |  |  |  |  |  |  | Y |  | Y |  |
+| Csla.NetStandard1.5 | Y |  |  |  |  |  |  |  | Y | Y | Y |  |  |
+| Csla.NetStandard1.6 | Y |  |  |  |  |  |  |  | Y | Y |  | Y |  |
 | Csla.NetStandard2.0 |  |  |  |  |  |  |  |  |  |  |  |  | Y |

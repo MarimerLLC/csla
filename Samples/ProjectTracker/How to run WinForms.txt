@@ -1,0 +1,4 @@
+1. Set ProjectTracker.Ui.WinForm as Startup Project and run (CTRL F5)
+
+Note - This project uses a cloud application server at http://ptrackerserver.azurewebsites.net
+(have a look at ProjectTracker.Ui.WinForm App.config)

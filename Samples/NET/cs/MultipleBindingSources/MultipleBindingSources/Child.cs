@@ -11,14 +11,14 @@ namespace MultipleBindingSources
   {
     #region Business Methods
 
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value); }
     }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
@@ -67,7 +67,7 @@ namespace MultipleBindingSources
       return DataPortal.FetchChild<Child>(childData);
     }
 
-    private Child()
+    public Child()
     { /* Require use of factory methods */ }
 
     #endregion

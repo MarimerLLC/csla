@@ -10,49 +10,49 @@ namespace CslaMVC.Library
     {
         #region Business Methods
 
-        private static PropertyInfo<Guid> OrderIdProperty = RegisterProperty<Guid>(o => o.OrderId, "Order Id");
+        public static readonly PropertyInfo<Guid> OrderIdProperty = RegisterProperty<Guid>(o => o.OrderId, "Order Id");
         public Guid OrderId
         {
             get { return GetProperty(OrderIdProperty); }
             set { SetProperty(OrderIdProperty, value); }
         }
 
-        private static PropertyInfo<Guid> OrderDetailIdProperty = RegisterProperty<Guid>(o => o.OrderDetailId, "Order Detail Id");
+        public static readonly PropertyInfo<Guid> OrderDetailIdProperty = RegisterProperty<Guid>(o => o.OrderDetailId, "Order Detail Id");
         public Guid OrderDetailId
         {
             get { return GetProperty(OrderDetailIdProperty); }
             set { SetProperty(OrderDetailIdProperty, value); }
         }
 
-        private static PropertyInfo<int> LineNoProperty = RegisterProperty<int>(o => o.LineNo, "Line No");
+        public static readonly PropertyInfo<int> LineNoProperty = RegisterProperty<int>(o => o.LineNo, "Line No");
         public int LineNo
         {
             get { return GetProperty(LineNoProperty); }
             set { SetProperty(LineNoProperty, value); }
         }
 
-        private static PropertyInfo<string> ItemProperty = RegisterProperty<string>(o => o.Item, "Item");
+        public static readonly PropertyInfo<string> ItemProperty = RegisterProperty<string>(o => o.Item, "Item");
         public string Item
         {
             get { return GetProperty(ItemProperty); }
             set { SetProperty(ItemProperty, value); }
         }
 
-        private static PropertyInfo<decimal> PriceProperty = RegisterProperty<decimal>(o => o.Price, "Price");
+        public static readonly PropertyInfo<decimal> PriceProperty = RegisterProperty<decimal>(o => o.Price, "Price");
         public decimal Price
         {
             get { return GetProperty(PriceProperty); }
             set { SetProperty(PriceProperty, value); }
         }
 
-        private static PropertyInfo<int> QtyProperty = RegisterProperty<int>(o => o.Qty, "Quantity");
+        public static readonly PropertyInfo<int> QtyProperty = RegisterProperty<int>(o => o.Qty, "Quantity");
         public int Qty
         {
             get { return GetProperty(QtyProperty); }
             set { SetProperty(QtyProperty, value); }
         }
 
-        private static PropertyInfo<decimal> DiscountProperty = RegisterProperty<decimal>(o => o.Discount, "Discount");
+        public static readonly PropertyInfo<decimal> DiscountProperty = RegisterProperty<decimal>(o => o.Discount, "Discount");
         public decimal Discount
         {
             get { return GetProperty(DiscountProperty); }
@@ -86,7 +86,7 @@ namespace CslaMVC.Library
             return orderDetail;
         }
 
-        private OrderDetail()
+      public OrderDetail()
         { /* Require use of factory methods */ }
 
         #endregion

@@ -25,7 +25,7 @@ namespace BusinessRuleDemo
       _list = null;
     }
 
-    private CountryNVL()
+    public CountryNVL()
     { /* require use of factory methods */ }
 
     #endregion

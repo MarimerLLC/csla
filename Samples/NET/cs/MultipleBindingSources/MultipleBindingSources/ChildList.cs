@@ -28,7 +28,7 @@ namespace MultipleBindingSources
       return DataPortal.FetchChild<ChildList>(childData);
     }
 
-    private ChildList()
+    public ChildList()
     {
       AllowNew = true;
       MarkAsChild();

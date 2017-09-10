@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using System.Security.Principal;
 using System.Collections.Specialized;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
 using System.Configuration;
 using System.Web;
 #endif
@@ -26,14 +26,16 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
     private static IContextManager _webContextManager;
+#endif
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static Type _webManagerType;
 #endif
 
     static ApplicationContext()
     {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
       Type _contextManagerType = null;
       _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
       if (_contextManagerType == null)
@@ -50,7 +52,7 @@ namespace Csla
         _contextManager = new ApplicationContextManager();
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
     /// <summary>
     /// Gets or sets the web context manager.
     /// Will use default WebContextManager. 
@@ -81,7 +83,7 @@ namespace Csla
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
         if (WebContextManager != null && WebContextManager.IsValid)
             return WebContextManager;
 #endif
@@ -245,7 +247,7 @@ namespace Csla
       {
         if (_dataPortalActivator == null)
         {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
           lock (_dataPortalActivatorSync)
           {
             if (_dataPortalActivator == null)
@@ -285,7 +287,7 @@ namespace Csla
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         if (_dataPortalUrl == null)
         {
           _dataPortalUrl = ConfigurationManager.AppSettings["CslaDataPortalUrl"];
@@ -341,7 +343,7 @@ namespace Csla
       {
         if (string.IsNullOrEmpty(_dataPortalProxyFactory))
         {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
           _dataPortalProxyFactory = ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"];
 #endif
           if (string.IsNullOrEmpty(_dataPortalProxyFactory))
@@ -375,7 +377,7 @@ namespace Csla
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         if (_authenticationType == null)
           _authenticationType = ConfigurationManager.AppSettings["CslaAuthentication"];
 #endif
@@ -412,7 +414,7 @@ namespace Csla
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         if (string.IsNullOrEmpty(_dataPortalProxy))
           _dataPortalProxy = ConfigurationManager.AppSettings["CslaDataPortalProxy"];
 #endif
@@ -445,7 +447,7 @@ namespace Csla
       get
       {
         string result = null;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         result = ConfigurationManager.AppSettings["CslaIsInRoleProvider"];
 #endif
         if (string.IsNullOrEmpty(result))
@@ -464,7 +466,7 @@ namespace Csla
       get
       {
         bool result = true;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
         if (!string.IsNullOrEmpty(setting))
           result = bool.Parse(setting);
@@ -488,7 +490,7 @@ namespace Csla
       {
         if (!_dataPortalReturnObjectOnExceptionSet)
         {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
           string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
           if (!string.IsNullOrEmpty(setting))
             DataPortalReturnObjectOnException = bool.Parse(setting);
@@ -532,7 +534,7 @@ namespace Csla
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
 
         if (string.IsNullOrEmpty(tmp))
@@ -555,7 +557,7 @@ namespace Csla
     /// </summary>
     public enum SerializationFormatters
     {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
       /// <summary>
       /// Use the standard Microsoft .NET
       /// <see cref="BinaryFormatter"/>.
@@ -580,7 +582,7 @@ namespace Csla
     }
 
     private static PropertyChangedModes _propertyChangedMode = PropertyChangedModes.Xaml;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static bool _propertyChangedModeSet;
 #endif
     /// <summary>
@@ -591,7 +593,7 @@ namespace Csla
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         if (!_propertyChangedModeSet)
         {
           string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
@@ -607,7 +609,7 @@ namespace Csla
       set
       {
         _propertyChangedMode = value;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         _propertyChangedModeSet = true;
 #endif
       }
@@ -632,7 +634,7 @@ namespace Csla
     }
 
     private static ExecutionLocations _executionLocation =
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS || NETFX_CORE) && !NETSTANDARD
       ExecutionLocations.MobileClient;
 #else
       ExecutionLocations.Client;
@@ -674,7 +676,7 @@ namespace Csla
       }
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
 
     /// <summary>
     /// Gets the default transaction isolation level.

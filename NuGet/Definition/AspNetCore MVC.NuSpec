@@ -25,10 +25,17 @@ Supports the creation of AspNetCore applications.
         <dependency id="Microsoft.AspNetCore" version="1.1.1" />
         <dependency id="Microsoft.AspNetCore.Mvc" version="1.1.2" />
       </group>
+      <group targetFramework="netstandard2.0">
+        <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.AspNetCore" version="2.0.0" />
+        <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.2" />
+      </group>
     </dependencies>
   </metadata>
   <files>
     <!-- NetStandard Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.AspNetCore.Mvc.*" target="lib\netstandard1.6" />
+    <!-- NetStandard Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.AspNetCore.Mvc.*" target="lib\netstandard2.0" />
   </files>
 </package>

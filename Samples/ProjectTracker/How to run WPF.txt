@@ -1,15 +1,7 @@
-1. Build the solution
-First of all, build the solution (CTRL+SHIT+B) or else the server folder will be missing 
-the implementation assemblies of the Data Access Layer (DAL).
+1. Set ProjectTracker.Ui.WPF as Startup Project and run (CTRL F5)
 
-2. Set ProjectTracker.Ui.WPF as Startup Project
-
-3. Start the Application Server
-Debug with F5 to start the application server (ProjectTracker.AppServerHost).
-After it's started, you can break the debug and run normally with CTRL F5.
-
-Note 1 - This project uses a local application server at http://localhost:11170
+Note 1 - This project uses a cloud application server at http://ptrackerserver.azurewebsites.net
 (have a look at ProjectTracker.Ui.WPF App.config)
 
-Note 2 - The application server ProjectTracker.AppServerHost
-is using ProjectTracker.DalMock assembly to mock a database table.
+Note 2 - The application server ProjectTracker.AppServerHost is the source code for cloud application server
+and uses ProjectTracker.DalMock assembly to mock a database table.

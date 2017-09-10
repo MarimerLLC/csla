@@ -15,14 +15,14 @@ namespace CslaMVC.Library
     {
         #region Business Methods
 
-        public readonly static PropertyInfo<int> CustomerNoProperty = RegisterProperty<int>(o => o.CustomerNo, "Customer No");
+        public static readonly PropertyInfo<int> CustomerNoProperty = RegisterProperty<int>(o => o.CustomerNo, "Customer No");
         public int CustomerNo
         {
             get { return GetProperty(CustomerNoProperty); }
             internal set { SetProperty(CustomerNoProperty, value); }
         }
 
-        public readonly static PropertyInfo<string> NameProperty = RegisterProperty<string>(o => o.Name, "Name");
+        public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(o => o.Name, "Name");
         [Required(ErrorMessage = "'Name' is required")]
         [StringLength(25, ErrorMessage = "Name must be less than 25 characters")]
         public string Name
@@ -31,7 +31,7 @@ namespace CslaMVC.Library
             set { SetProperty(NameProperty, value); }
         }
 
-        public readonly static PropertyInfo<int> GroupNoProperty = RegisterProperty<int>(o => o.GroupNo, "Group No");
+        public static readonly PropertyInfo<int> GroupNoProperty = RegisterProperty<int>(o => o.GroupNo, "Group No");
         [Range(0, 9, ErrorMessage = "'GroupNo' must be between 0 and 9")]
         public int GroupNo
         {
@@ -39,7 +39,7 @@ namespace CslaMVC.Library
             set { SetProperty(GroupNoProperty, value); }
         }
 
-        public readonly static PropertyInfo<string> CityProperty = RegisterProperty<string>(o => o.City, "City");
+        public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(o => o.City, "City");
         public string City
         {
             get { return GetProperty(CityProperty); }
@@ -48,7 +48,7 @@ namespace CslaMVC.Library
 
         //{0} = prop name
         //{1} = rule arg[1]
-        public readonly static PropertyInfo<string> StateProperty = RegisterProperty<string>(o => o.State, "State");
+        public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(o => o.State, "State");
         [RegularExpression(@"[a-zA-Z]{2}", ErrorMessage = "'State' must be standard 2 character state code")]
         public string State
         {
@@ -56,7 +56,7 @@ namespace CslaMVC.Library
             set { SetProperty(StateProperty, value); }
         }
 
-        public readonly static PropertyInfo<string> ZipcodeProperty = RegisterProperty<string>(o => o.Zipcode, "Zipcode");
+        public static readonly PropertyInfo<string> ZipcodeProperty = RegisterProperty<string>(o => o.Zipcode, "Zipcode");
         [RegularExpression(@"\d{5}(-\d{4})?", ErrorMessage = "'Zipcode' is invalid")]
         public string Zipcode
         {
@@ -64,14 +64,14 @@ namespace CslaMVC.Library
             set { SetProperty(ZipcodeProperty, value); }
         }
 
-        public readonly static PropertyInfo<DateTime> StartProperty = RegisterProperty<DateTime>(o => o.Start, "Start");
+        public static readonly PropertyInfo<DateTime> StartProperty = RegisterProperty<DateTime>(o => o.Start, "Start");
         public DateTime Start
         {
             get { return GetProperty(StartProperty); }
             set { SetProperty(StartProperty, value); }
         }
 
-        public readonly static PropertyInfo<DateTime> EndProperty = RegisterProperty<DateTime>(o => o.End, "End");
+        public static readonly PropertyInfo<DateTime> EndProperty = RegisterProperty<DateTime>(o => o.End, "End");
         public DateTime End
         {
             get { return GetProperty(EndProperty); }
@@ -158,14 +158,14 @@ namespace CslaMVC.Library
             DataPortal.Delete<Customer>(new SingleCriteria<Customer, int>(CustomerNo));
         }
 
-        private Customer()
+      public Customer()
         { /* Require use of factory methods */ }
 
         #endregion
 
         #region Data Access
 
-        public override Customer Save()
+        public new Customer Save()
         {
             return base.Save();
         }

@@ -1,0 +1,7 @@
+1. Set ProjectTracker.Ui.WinForm as Startup Project and run (CTRL F5)
+
+Note 1 - This project uses a cloud application server at http://ptrackerserver.azurewebsites.net
+(have a look at ProjectTracker.Ui.WinForm App.config)
+
+Note 2 - The application server ProjectTracker.AppServerHost is the source code for cloud application server
+and uses ProjectTracker.DalMock assembly to mock a database table.

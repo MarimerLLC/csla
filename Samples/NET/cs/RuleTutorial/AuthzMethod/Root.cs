@@ -70,7 +70,7 @@ namespace AuthzMethod
     /// <summary>
     /// Prevents a default instance of the <see cref="Root"/> class from being created.
     /// </summary>
-    private Root()
+    public Root()
     { /* Require use of factory methods */ }
 
     #endregion

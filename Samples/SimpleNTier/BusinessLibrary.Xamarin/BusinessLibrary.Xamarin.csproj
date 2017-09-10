@@ -39,8 +39,8 @@
     <Compile Include="XamarinInit.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.6.500\lib\portable-net45+win8+wpa81\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.603.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.6.603\lib\portable-net45+win8+wpa81\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Forms.2.3.4.224\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.Core.dll</HintPath>
@@ -54,9 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.6.500\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

@@ -121,7 +121,7 @@ namespace BusinessRuleDemo
       return DataPortal.Create<Root>();
     }
 
-    private Root()
+    public Root()
     { /* Require use of factory methods */}
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)

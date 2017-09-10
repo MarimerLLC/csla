@@ -58,5 +58,12 @@ namespace PTWin
     {
       DisplayList(ProjectList.GetProjectList(NameTextBox.Text));
     }
+
+    private void ProjectListListBox_DoubleClick(object sender, EventArgs e)
+    {
+      _projectId = (int)this.ProjectListListBox.SelectedValue;
+      this.DialogResult = DialogResult.OK;
+      this.Close();
+    }
   }
 }

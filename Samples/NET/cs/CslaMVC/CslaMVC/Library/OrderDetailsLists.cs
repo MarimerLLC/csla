@@ -23,7 +23,7 @@ namespace CslaMVC.Library
               new SingleCriteria<OrderDetailsLists, Guid>(OrderId));
         }
 
-        private OrderDetailsLists()
+      public OrderDetailsLists()
         { /* Require use of factory methods */ }
 
         #endregion

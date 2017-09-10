@@ -8,6 +8,11 @@ namespace BackgroundWorkerDemo.Security
   [Serializable]
   public class MyIdentity : Csla.Security.CslaIdentity
   {
+    public MyIdentity()
+    {
+      
+    }
+
     public MyIdentity(string name)
     {
       this.Name = name;

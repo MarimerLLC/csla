@@ -56,11 +56,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\..\..\Dependencies\Net4\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.603.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\packages\CSLA-Core.4.6.603\lib\net45\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Windows">
-      <HintPath>..\..\..\..\Dependencies\Net4\Csla.Windows.dll</HintPath>
+    <Reference Include="Csla.Windows, Version=4.6.603.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\packages\CSLA-WindowsForms.4.6.603\lib\net45\Csla.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -100,6 +100,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\Root.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -138,6 +139,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\..\..\..\packages\CSLA-Core.4.6.603\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -113,7 +113,7 @@ namespace MultipleBindingSources
       DataPortal.Delete<Root>(id);
     }
 
-    private Root()
+    public Root()
     { /* Require use of factory methods */ }
 
     #endregion

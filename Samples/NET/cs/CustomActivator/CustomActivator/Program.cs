@@ -34,6 +34,11 @@ namespace CustomActivator
       set { SetProperty(NameProperty, value); }
     }
 
+    public TestItem()
+    {
+      
+    }
+
     private void DataPortal_Fetch(string id)
     {
       using (BypassPropertyChecks)

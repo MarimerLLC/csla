@@ -58,7 +58,7 @@ namespace AuthzFactoryMethods
       try
       {
         var root = Root2.NewEditableRoot();
-        root.Save(true);
+        root = root.Save(true);
       }
       catch (Exception ex)
       {

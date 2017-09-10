@@ -81,6 +81,7 @@ namespace PTWin
       this.ProjectListListBox.Size = new System.Drawing.Size(419, 238);
       this.ProjectListListBox.TabIndex = 3;
       this.ProjectListListBox.ValueMember = "Id";
+      this.ProjectListListBox.DoubleClick += new System.EventHandler(this.ProjectListListBox_DoubleClick);
       // 
       // projectListBindingSource
       // 

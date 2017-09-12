@@ -194,6 +194,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ValidationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RunLocalAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaIdentity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\CslaIdentityBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaPrincipal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\IAuthorizeReadWrite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\ICheckRoles.cs" />

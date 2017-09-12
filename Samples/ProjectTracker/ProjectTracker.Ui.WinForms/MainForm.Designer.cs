@@ -171,6 +171,7 @@ namespace PTWin
       this.DocumentsToolStripDropDownButton.Name = "DocumentsToolStripDropDownButton";
       this.DocumentsToolStripDropDownButton.Size = new System.Drawing.Size(73, 22);
       this.DocumentsToolStripDropDownButton.Text = "Documents";
+      this.DocumentsToolStripDropDownButton.DropDownOpening += new System.EventHandler(this.DocumentsToolStripDropDownButton_DropDownOpening);
       // 
       // Panel1
       // 

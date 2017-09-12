@@ -393,6 +393,15 @@ namespace PTWin
     /// <summary>
     /// Populate the Documents dropdown list.
     /// </summary>
+    private void DocumentsToolStripDropDownButton_DropDownOpening(
+      object sender, EventArgs e)
+    {
+      PopulateDocuments();
+    }
+
+    /// <summary>
+    /// Populate the Documents dropdown list.
+    /// </summary>
     private void PopulateDocuments()
     {
       ToolStripItemCollection items = 

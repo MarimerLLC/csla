@@ -1,0 +1,106 @@
+﻿#if !NET4
+//-----------------------------------------------------------------------
+// <copyright file="CslaClaimsIdentity.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>ClaimsIdentity subclass that supports serialization by MobileFormatter</summary>
+//-----------------------------------------------------------------------
+using Csla.Core;
+using Csla.Serialization.Mobile;
+using System;
+using System.ComponentModel;
+using System.Security.Claims;
+
+namespace Csla.Security
+{
+  /// <summary>
+  /// ClaimsIdentity subclass that supports serialization by MobileFormatter.
+  /// </summary>
+  [Serializable]
+  public class CslaClaimsIdentity : ClaimsIdentity, IMobileObject
+  {
+    #region IMobileObject serialization code
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      OnGetState(info, StateMode.Serialization);
+    }
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnGetState(SerializationInfo info, StateMode mode)
+    { }
+
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
+    { }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      OnSetState(info, StateMode.Serialization);
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      OnSetChildren(info, formatter);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnSetState(SerializationInfo info, StateMode mode)
+    { }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    { }
+
+    #endregion
+  }
+}
+#endif

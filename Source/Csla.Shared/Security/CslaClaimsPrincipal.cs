@@ -1,4 +1,4 @@
-﻿#if !NET4
+﻿#if !NET40 && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46
 //-----------------------------------------------------------------------
 // <copyright file="CslaClaimsPrincipal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -41,9 +41,9 @@ namespace Csla.Security
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="identity">List of claims identity objects for the user.</param>
-    public CslaClaimsPrincipal(IEnumerable<ClaimsIdentity> identity)
-      : base(identity)
+    /// <param name="identities">List of claims identity objects for the user.</param>
+    public CslaClaimsPrincipal(IEnumerable<ClaimsIdentity> identities)
+      : base(identities)
     { }
 
     /// <summary>
@@ -55,6 +55,16 @@ namespace Csla.Security
       : base(principal)
     { }
 
+#if WINDOWS_UWP
+    /// <summary>
+    /// Creates an instance of the object from
+    /// a binary stream.
+    /// </summary>
+    /// <param name="reader">Binary reader</param>
+    public CslaClaimsPrincipal(System.IO.BinaryReader reader)
+      : base(reader)
+    { }
+#else
     /// <summary>
     /// Creates an instance of the object from
     /// BinaryFormatter or NDCS deserialization.
@@ -64,6 +74,7 @@ namespace Csla.Security
     protected CslaClaimsPrincipal(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     { }
+#endif
 
     #region IMobileObject serialization code
 
@@ -202,7 +213,7 @@ namespace Csla.Security
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     { }
 
-    #endregion
+#endregion
   }
 }
 #endif

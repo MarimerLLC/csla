@@ -55,14 +55,10 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
-      RegisterProperty<ResourceAssignments>(c => c.Assignments, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
+      RegisterProperty<ResourceAssignments>(c => c.Assignments, RelationshipTypes.Child);
     public ResourceAssignments Assignments
     {
-      get
-      {
-        return LazyGetProperty(AssignmentsProperty,
-          () => DataPortal.Fetch<ResourceAssignments>(ReadProperty(IdProperty)));
-      }
+      get { return GetProperty(AssignmentsProperty); }
       private set { LoadProperty(AssignmentsProperty, value); }
     }
 
@@ -170,6 +166,7 @@ namespace ProjectTracker.Library
     [RunLocal]
     protected override void DataPortal_Create()
     {
+      LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
       base.DataPortal_Create();
     }
 

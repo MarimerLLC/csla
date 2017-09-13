@@ -13,7 +13,8 @@ using Csla.Core;
 using System.ComponentModel;
 using System.Security.Claims;
 using System.Collections.Generic;
-  
+using System.Linq;
+
 namespace Csla.Security
 {
   /// <summary>
@@ -25,7 +26,7 @@ namespace Csla.Security
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    protected CslaClaimsPrincipal()
+    public CslaClaimsPrincipal()
       : base(new UnauthenticatedIdentity())
     { }
 
@@ -33,7 +34,7 @@ namespace Csla.Security
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="identity">Identity object for the user.</param>
-    protected CslaClaimsPrincipal(IIdentity identity)
+    public CslaClaimsPrincipal(IIdentity identity)
       : base(identity)
     { }
 
@@ -41,7 +42,7 @@ namespace Csla.Security
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="identity">List of claims identity objects for the user.</param>
-    protected CslaClaimsPrincipal(IEnumerable<CslaClaimsIdentity> identity)
+    public CslaClaimsPrincipal(IEnumerable<CslaClaimsIdentity> identity)
       : base(identity)
     { }
 
@@ -50,7 +51,7 @@ namespace Csla.Security
     /// existing principal object.
     /// </summary>
     /// <param name="principal">Principal object</param>
-    protected CslaClaimsPrincipal(IPrincipal principal)
+    public CslaClaimsPrincipal(IPrincipal principal)
       : base(principal)
     { }
 
@@ -60,7 +61,7 @@ namespace Csla.Security
     /// </summary>
     /// <param name="context">Serialization context</param>
     /// <param name="info">Serialization info</param>
-    public CslaClaimsPrincipal(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+    protected CslaClaimsPrincipal(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     { }
 
@@ -89,7 +90,33 @@ namespace Csla.Security
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnGetState(SerializationInfo info, StateMode mode)
     {
-      info.AddValue("CslaPrincipal.Identity", MobileFormatter.Serialize(_identity));
+      int index = 0;
+      info.AddValue($"i.Count", Identities.Count());
+      foreach (var item in Identities)
+      {
+        // TODO: Actor is a ClaimsIdentity
+        //info.AddValue($"i{index}.Actor", item.Actor);
+        info.AddValue($"i{index}.AuthenticationType", item.AuthenticationType);
+        info.AddValue($"i{index}.IsAuthenticated", item.IsAuthenticated);
+        info.AddValue($"i{index}.Label", item.Label);
+        info.AddValue($"i{index}.Name", item.Name);
+        info.AddValue($"i{index}.RoleClaimType", item.RoleClaimType);
+        info.AddValue($"i{index}.Claims", item.Claims.Count());
+        int claimIndex = 0;
+        foreach (var claim in item.Claims)
+        {
+          info.AddValue($"i{index}.c{claimIndex}.Issuer", claim.Issuer);
+          info.AddValue($"i{index}.c{claimIndex}.OriginalIssuer", claim.OriginalIssuer);
+          // TODO: Subject is a ClaimsIdentity
+          //info.AddValue($"i{index}.c{claimIndex}.Subject", claim.Subject);
+          info.AddValue($"i{index}.c{claimIndex}.Type", claim.Type);
+          info.AddValue($"i{index}.c{claimIndex}.Value", claim.Value);
+          info.AddValue($"i{index}.c{claimIndex}.ValueType", claim.ValueType);
+          // TODO: serialize claim.Properties dictionary
+          claimIndex++;
+        }
+        index++;
+      }
     }
 
     /// <summary>
@@ -130,7 +157,34 @@ namespace Csla.Security
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSetState(SerializationInfo info, StateMode mode)
     {
-      _identity = (IIdentity)MobileFormatter.Deserialize(info.GetValue<byte[]>("CslaPrincipal.Identity"));
+      var count = info.GetValue<int>("i.Count");
+      for (int index = 0; index < count; index++)
+      {
+        var claimCount = info.GetValue<int>($"i{index}.Claims");
+        var claims = new List<Claim>();
+        for (int claimIndex = 0; claimIndex < claimCount; claimIndex++)
+        {
+          var issuer = info.GetValue<string>($"i{index}.c{claimIndex}.Issuer");
+          var originalIssuer = info.GetValue<string>($"i{index}.c{claimIndex}.OriginalIssuer");
+          // TODO: deserialize subject identity object
+          //var subject = info.GetValue<string>($"i{index}.c{claimIndex}.Subject");
+          var type = info.GetValue<string>($"i{index}.c{claimIndex}.Type");
+          var value = info.GetValue<string>($"i{index}.c{claimIndex}.Value");
+          var valueType = info.GetValue<string>($"i{index}.c{claimIndex}.ValueType");
+          var claim = new Claim(type, value, valueType, issuer, originalIssuer);
+          claims.Add(claim);
+        }
+        // TODO: deserialize actor identity object
+        //var actor = info.GetValue<string>($"i{index}.Actor");
+        var authenticationType = info.GetValue<string>($"i{index}.AuthenticationType");
+        var isAuthenticated = info.GetValue<string>($"i{index}.IsAuthenticated");
+        var label = info.GetValue<string>($"i{index}.Label");
+        var name = info.GetValue<string>($"i{index}.Name");
+        var roleClaimType = info.GetValue<string>($"i{index}.RoleClaimType");
+        var identity = new CslaClaimsIdentity(claims, authenticationType, name, roleClaimType);
+        identity.Label = label;
+        // TODO: deserialize Properties dictionary
+      }
     }
 
     /// <summary>

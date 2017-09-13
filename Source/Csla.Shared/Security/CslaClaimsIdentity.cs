@@ -9,8 +9,10 @@
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Csla.Security
 {
@@ -20,6 +22,105 @@ namespace Csla.Security
   [Serializable]
   public class CslaClaimsIdentity : ClaimsIdentity, IMobileObject
   {
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    public CslaClaimsIdentity()
+      :base()
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="authenticationType">Authentication type</param>
+    public CslaClaimsIdentity(string authenticationType)
+      : base(authenticationType)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="info">Serialization info</param>
+    protected CslaClaimsIdentity(System.Runtime.Serialization.SerializationInfo info)
+      : base(info)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="identity">Identity object</param>
+    public CslaClaimsIdentity(IIdentity identity)
+      : base(identity)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="claims">List of claims</param>
+    public CslaClaimsIdentity(IEnumerable<Claim> claims)
+      : base(claims)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="identity">Identity object</param>
+    /// <param name="claims">List of claims</param>
+    public CslaClaimsIdentity(IIdentity identity, IEnumerable<Claim> claims)
+      : base(identity, claims)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="context">Streaming context</param>
+    /// <param name="info">Serialization info</param>
+    protected CslaClaimsIdentity(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+      : base(info, context)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="authenticationType">Authentication type</param>
+    /// <param name="claims">List of claims</param>
+    public CslaClaimsIdentity(IEnumerable<Claim> claims, string authenticationType)
+      : base(claims, authenticationType)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="authenticationType">Authentication type</param>
+    /// <param name="nameType">Name type</param>
+    /// <param name="roleType">Role type</param>
+    public CslaClaimsIdentity(string authenticationType, string nameType, string roleType)
+      : base(authenticationType, nameType, roleType)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="claims">List of claims</param>
+    /// <param name="authenticationType">Authentication type</param>
+    /// <param name="nameType">Name type</param>
+    /// <param name="roleType">Role type</param>
+    public CslaClaimsIdentity(IEnumerable<Claim> claims, string authenticationType, string nameType, string roleType)
+      : base(claims, authenticationType, nameType, roleType)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of an object.
+    /// </summary>
+    /// <param name="identity">Identity object</param>
+    /// <param name="claims">List of claims</param>
+    /// <param name="authenticationType">Authentication type</param>
+    /// <param name="nameType">Name type</param>
+    /// <param name="roleType">Role type</param>
+    public CslaClaimsIdentity(IIdentity identity, IEnumerable<Claim> claims, string authenticationType, string nameType, string roleType)
+      : base(identity, claims, authenticationType, nameType, roleType)
+    { }
+
     #region IMobileObject serialization code
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)

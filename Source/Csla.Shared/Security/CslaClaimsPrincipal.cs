@@ -27,7 +27,7 @@ namespace Csla.Security
     /// Creates an instance of the object.
     /// </summary>
     public CslaClaimsPrincipal()
-      : base(new UnauthenticatedIdentity())
+      : base(new ClaimsIdentity())
     { }
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace Csla.Security
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="identity">List of claims identity objects for the user.</param>
-    public CslaClaimsPrincipal(IEnumerable<CslaClaimsIdentity> identity)
+    public CslaClaimsPrincipal(IEnumerable<ClaimsIdentity> identity)
       : base(identity)
     { }
 
@@ -181,7 +181,7 @@ namespace Csla.Security
         var label = info.GetValue<string>($"i{index}.Label");
         var name = info.GetValue<string>($"i{index}.Name");
         var roleClaimType = info.GetValue<string>($"i{index}.RoleClaimType");
-        var identity = new CslaClaimsIdentity(claims, authenticationType, name, roleClaimType);
+        var identity = new ClaimsIdentity(claims, authenticationType, name, roleClaimType);
         identity.Label = label;
         // TODO: deserialize Properties dictionary
       }

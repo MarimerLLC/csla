@@ -193,7 +193,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleUri.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ValidationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RunLocalAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Security\CslaClaimsIdentity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaClaimsPrincipal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaIdentity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaPrincipal.cs" />

@@ -55,7 +55,7 @@ namespace Csla.Security
       : base(principal)
     { }
 
-#if WINDOWS_UWP
+#if !NET45
     /// <summary>
     /// Creates an instance of the object from
     /// a binary stream.
@@ -64,7 +64,8 @@ namespace Csla.Security
     public CslaClaimsPrincipal(System.IO.BinaryReader reader)
       : base(reader)
     { }
-#else
+#endif
+#if !WINDOWS_UWP
     /// <summary>
     /// Creates an instance of the object from
     /// BinaryFormatter or NDCS deserialization.

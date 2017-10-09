@@ -135,6 +135,6 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\iOS\**\Csla.pdb*" target="lib\Xamarin.iOS10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.xml*" target="lib\Xamarin.iOS10" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\*.cs" target="src" />
+    <!-- <file src="..\..\Source\**\*.cs" target="src" /> -->
   </files>
 </package>

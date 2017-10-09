@@ -137,7 +137,7 @@ try
     
     ## Launch NuGet.exe to build package
     Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -Symbols
+    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" # -Symbols
     
     ## Publish package to Gallery using API Key
     ## JH - TODO

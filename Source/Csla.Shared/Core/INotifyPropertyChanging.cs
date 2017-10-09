@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines an object that raises the PropertyChanging</summary>
 //-----------------------------------------------------------------------
-#if PCL46
+#if PCL46 || PCL259
 using System;
 
 namespace Csla.Core

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines the method signature for the</summary>
 //-----------------------------------------------------------------------
-#if PCL46
+#if PCL46 || PCL259
 using System;
 
 namespace Csla.Core

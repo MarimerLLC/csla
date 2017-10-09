@@ -612,7 +612,7 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if !PCL46 // rely on NuGet bait-and-switch for actual implementation
+#if !PCL46  && !PCL259// rely on NuGet bait-and-switch for actual implementation
 #if NETCORE
       System.Globalization.CultureInfo.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture); 

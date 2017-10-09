@@ -1,4 +1,4 @@
-﻿#if !NET40 && !NET45 && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !WINDOWS_UWP
+﻿#if !NET40 && !NET45 && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !WINDOWS_UWP && !PCL259
 //-----------------------------------------------------------------------
 // <copyright file="CslaClaimsPrincipal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

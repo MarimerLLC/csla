@@ -126,6 +126,11 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+win8+wpa81" />
+    <!-- PCL Profile259 -->
+    <file src="..\..\Bin\Release\PCL259\**\Csla.dll*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <file src="..\..\Bin\Release\PCL259\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <file src="..\..\Bin\Release\PCL259\**\Csla.pri*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <file src="..\..\Bin\Release\PCL259\**\Csla.xml*" target="lib\portable-net45+win8+wpa81+wp8" />
     <!-- Xamarin Android Client -->
     <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid10" />
     <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid10" />

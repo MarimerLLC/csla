@@ -11,7 +11,7 @@ using Csla.Reflection;
 using System.ComponentModel;
 using System.Text;
 using Csla.Properties;
-#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
 using System.Text.RegularExpressions;
 using Csla.WcfPortal;
 #endif
@@ -291,7 +291,7 @@ namespace Csla
 
     #endregion
 
-#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
     #region Error Handling
 
     /// <summary>

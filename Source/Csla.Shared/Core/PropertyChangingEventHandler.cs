@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines the method signature for the</summary>
 //-----------------------------------------------------------------------
-#if (ANDROID || IOS) || NETFX_CORE
+#if PCL46
 using System;
 
 namespace Csla.Core

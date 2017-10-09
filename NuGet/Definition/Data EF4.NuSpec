@@ -44,6 +44,6 @@ Supports the use of ADO.NET Entity Framework 4.
     <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF4.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF4.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Data.EF4*\**\*.cs" target="src" />
+    <!-- <file src="..\..\Source\**\Csla.Data.EF4*\**\*.cs" target="src" /> -->
   </files>
 </package>

@@ -38,6 +38,6 @@ Supports the creation of ASP.NET MVC 5 applications.
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Web.Mvc5*\**\*.cs" target="src" />
+    <!-- <file src="..\..\Source\**\Csla.Web.Mvc5*\**\*.cs" target="src" /> -->
   </files>
 </package>

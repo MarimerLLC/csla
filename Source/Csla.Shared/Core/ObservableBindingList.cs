@@ -386,7 +386,7 @@ namespace Csla.Core
       // could override if needed
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)

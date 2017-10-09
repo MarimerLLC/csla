@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Arguments object containing information about</summary>
 //-----------------------------------------------------------------------
-#if PCL46
+#if PCL46 || PCL259
 using System;
 
 namespace Csla.Core

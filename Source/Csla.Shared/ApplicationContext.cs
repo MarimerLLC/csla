@@ -773,7 +773,7 @@ namespace Csla
       private AsyncLocal<IPrincipal> _user = new AsyncLocal<IPrincipal>() { Value = new Csla.Security.UnauthenticatedPrincipal() };
       private static ContextDictionary _globalContext;
 #endif
-#if NET40 || NET45 || PCL46
+#if NET40 || NET45 || PCL46 || PCL259
       private const string _localContextName = "Csla.LocalContext";
       private const string _clientContextName = "Csla.ClientContext";
 #else
@@ -798,7 +798,7 @@ namespace Csla
       {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         IPrincipal current = _user.Value;
-#elif PCL46
+#elif PCL46 || PCL259
         IPrincipal current = null;
         throw new NotSupportedException("PCL.GetUser");
 #else
@@ -815,7 +815,7 @@ namespace Csla
       {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         IPrincipal current = _user.Value;
-#elif PCL46
+#elif PCL46 || PCL259
         throw new NotSupportedException("PCL.SetUser");
 #else
         Thread.CurrentPrincipal = principal;
@@ -830,7 +830,7 @@ namespace Csla
 #if NET40 || NET45
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         return (ContextDictionary)Thread.GetData(slot);
-#elif PCL46
+#elif PCL46 || PCL259
         throw new NotSupportedException("PCL.GetLocalContext");
 #else
         return _localContext.Value;
@@ -846,7 +846,7 @@ namespace Csla
 #if NET40 || NET45
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         Thread.SetData(slot, localContext);
-#elif PCL46
+#elif PCL46 || PCL259
         throw new NotSupportedException("PCL.SetLocalContext");
 #else
         _localContext.Value = localContext;
@@ -868,7 +868,7 @@ namespace Csla
           LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
           return (ContextDictionary)Thread.GetData(slot);
         }
-#elif PCL46
+#elif PCL46 || PCL259
         throw new NotSupportedException("PCL.GetClientContext");
 #else
         return _clientContext.Value;
@@ -891,7 +891,7 @@ namespace Csla
           LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
           Thread.SetData(slot, clientContext);
         }
-#elif PCL46
+#elif PCL46 || PCL259
         throw new NotSupportedException("PCL.SetClientContext");
 #else
         _clientContext.Value = clientContext;
@@ -903,7 +903,7 @@ namespace Csla
       /// </summary>
       public ContextDictionary GetGlobalContext()
       {
-#if PCL46
+#if PCL46 || PCL259
         throw new NotSupportedException("PCL.GetGlobalContext");
 #elif NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         return _globalContext;
@@ -919,7 +919,7 @@ namespace Csla
       /// <param name="globalContext">Context dictionary</param>
       public void SetGlobalContext(ContextDictionary globalContext)
       {
-#if PCL46
+#if PCL46 || PCL259
         throw new NotSupportedException("PCL.SetGlobalContext");
 #elif NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         _globalContext = globalContext;

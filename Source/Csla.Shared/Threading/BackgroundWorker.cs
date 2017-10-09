@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE && !WINDOWS_UWP && !PCL46 && !NETSTANDARD
+﻿#if !NETFX_PHONE && !WINDOWS_UWP && !PCL46 && !NETSTANDARD && !PCL259
 //-----------------------------------------------------------------------
 // <copyright file="BackgroundWorker.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

@@ -1199,7 +1199,7 @@ namespace Csla.Reflection
       }
       else
       {
-#if PCL46
+#if PCL46 || PCL259
         var emptyTypes = new Type[] { };
         var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, emptyTypes, null);
 #elif NETFX_CORE

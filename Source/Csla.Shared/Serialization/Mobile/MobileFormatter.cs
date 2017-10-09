@@ -151,7 +151,7 @@ namespace Csla.Serialization.Mobile
 
           info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
 
-#if !NET40 && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46
+#if !NET40 && !NET45 && !WINDOWS_UWP && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46
           if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var principal = (Security.CslaClaimsPrincipal)obj;
@@ -258,7 +258,7 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
-#if !NET40 && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46
+#if !NET40 && !NET45 && !WINDOWS_UWP && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46
           if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var state = info.GetValue<byte[]>("s");

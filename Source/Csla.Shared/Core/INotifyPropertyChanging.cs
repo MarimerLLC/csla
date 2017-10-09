@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines an object that raises the PropertyChanging</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE
+#if PCL46
 using System;
 
 namespace Csla.Core

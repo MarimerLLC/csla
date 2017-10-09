@@ -172,3 +172,5 @@ Source/Csla.Validation.Uwp/Csla.Validation.Uwp.nuget.props
 Source/Csla.Validation.Uwp/project.lock.json
 Source/Csla.Xaml.Uwp/Csla.Xaml.Uwp.nuget.props
 Source/Csla.Xaml.Uwp/project.lock.json
+
+*.bak

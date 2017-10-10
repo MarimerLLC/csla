@@ -5,11 +5,10 @@
 // </copyright>
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
-#if !MONO
 using System;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
-namespace Csla.Data.EF7
+namespace Csla.Data.EntityFrameworkCore
 {
   /// <summary>
   /// Provides an automated way to reuse 
@@ -35,7 +34,6 @@ namespace Csla.Data.EF7
     private static object _lock = new object();
     private C _context;
     private string _label;
-    private string ContextLabel { get; set; }
 
     /// <summary>
     /// Gets the ObjectContextManager object for the     /// specified database.
@@ -67,36 +65,36 @@ namespace Csla.Data.EF7
     /// <returns>ContextManager object for the name.</returns>
     public static DbContextManager<C> GetManager(string database, string label)
     {
+      DbContextManager<C> mgr = null;
+      var contextLabel = GetContextName(database, label);
       lock (_lock)
       {
-        var contextLabel = GetContextName(database, label);
-        DbContextManager<C> mgr = null;
         if (ApplicationContext.LocalContext.Contains(contextLabel))
         {
           mgr = (DbContextManager<C>)(ApplicationContext.LocalContext[contextLabel]);
+          mgr.AddRef();
         }
-        else
-        {
-          mgr = new DbContextManager<C>(database, label);
-          mgr.ContextLabel = contextLabel;
-          ApplicationContext.LocalContext[contextLabel] = mgr;
-        }
-        mgr.AddRef();
-        return mgr;
       }
-    }      
+
+      if (mgr == null)
+      {
+        mgr = new DbContextManager<C>(database, label);
+        lock (_lock)
+        {
+          ApplicationContext.LocalContext[contextLabel] = mgr;
+          mgr.AddRef();
+        }
+      }
+      return mgr;
+    }
 
     private DbContextManager(string database, string label)
     {
       _label = label;                
       if (string.IsNullOrEmpty(database))
-      {
-        _context = (C) (Activator.CreateInstance(typeof (C)));
-      }
+        _context = (C)(Activator.CreateInstance(typeof (C)));
       else
-      {
         _context = (C)(Activator.CreateInstance(typeof(C), database));
-      }
     }
 
     private static string GetContextName(string database, string label)
@@ -110,13 +108,8 @@ namespace Csla.Data.EF7
     /// </summary>
     public C DbContext
     {
-      get
-      {
-        return _context;
-      }
+      get { return _context; }
     }
-
-    #region  Reference counting
 
     private int _refCount;
 
@@ -136,22 +129,16 @@ namespace Csla.Data.EF7
 
     private void DeRef()
     {
-
       lock (_lock)
       {
         _refCount -= 1;
         if (_refCount == 0)
         {
           _context.Dispose();
-          ApplicationContext.LocalContext.Remove(ContextLabel);
+          ApplicationContext.LocalContext.Remove(_label);
         }
       }
-
     }
-
-    #endregion
-
-    #region  IDisposable
 
     /// <summary>
     /// Dispose object, dereferencing or
@@ -162,9 +149,5 @@ namespace Csla.Data.EF7
     {
       DeRef();
     }
-
-    #endregion
-
   }
 }
-#endif

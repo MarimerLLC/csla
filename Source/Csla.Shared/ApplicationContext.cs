@@ -797,14 +797,13 @@ namespace Csla
       public virtual IPrincipal GetUser()
       {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
-        IPrincipal current = _user.Value;
+        return _user.Value;
 #elif PCL46 || PCL259
         IPrincipal current = null;
         throw new NotSupportedException("PCL.GetUser");
 #else
-        IPrincipal current = Thread.CurrentPrincipal;
+        return Thread.CurrentPrincipal;
 #endif
-        return current;
       }
 
       /// <summary>

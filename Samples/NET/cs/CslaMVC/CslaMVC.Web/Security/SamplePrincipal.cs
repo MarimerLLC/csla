@@ -7,6 +7,7 @@ using Csla.Security;
 
 namespace CslaMVC.Web.Security
 {
+    [Serializable]
     public class SamplePrincipal : CslaPrincipal
     {
         private IIdentity identity;

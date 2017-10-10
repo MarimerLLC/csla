@@ -40,5 +40,14 @@ namespace PTWin
       this.ResourceListBindingSource.DataSource =
         ResourceList.GetResourceList();
     }
+
+    private void ResourceListListBox_DoubleClick(object sender, EventArgs e)
+    {
+      _resourceId = 
+        ((ResourceInfo)
+         this.ResourceListListBox.SelectedValue).Id;
+      this.DialogResult = DialogResult.OK;
+      this.Close();
+    }
   }
 }

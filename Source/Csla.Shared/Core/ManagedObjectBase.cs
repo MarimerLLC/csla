@@ -483,7 +483,7 @@ namespace Csla.Core
 
     #region OnDeserialized
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
 
     [System.Runtime.Serialization.OnDeserialized()]
 #endif

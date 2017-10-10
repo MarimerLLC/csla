@@ -43,7 +43,7 @@ namespace Csla.Serialization.Mobile
       _readerType = readerType;
     }
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
 
     /// <summary>
     /// Get an instance of the writer that is used to write data to serialization stream

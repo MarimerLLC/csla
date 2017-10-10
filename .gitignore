@@ -162,6 +162,7 @@ project.lock.json
 Source/UpgradeLog.htm
 /Source/Csla.NetStandard1.5/Properties/*.resx
 /Source/Csla.NetStandard1.6/Properties/*.resx
+/Source/Csla.NetStandard2.0/Properties/*.resx
 
 project.lock.json
 *.nuget.props
@@ -171,3 +172,5 @@ Source/Csla.Validation.Uwp/Csla.Validation.Uwp.nuget.props
 Source/Csla.Validation.Uwp/project.lock.json
 Source/Csla.Xaml.Uwp/Csla.Xaml.Uwp.nuget.props
 Source/Csla.Xaml.Uwp/project.lock.json
+
+*.bak

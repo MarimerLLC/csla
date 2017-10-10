@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-#if NETFX_CORE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETCORE && !PCL46 && !PCL259
 using Windows.System.Threading;
 #endif
 
@@ -49,7 +49,7 @@ namespace Csla.Threading
 #if NETFX_CORE && !NETCORE && !NETSTANDARD
     private void NotifyThreadPoolOfPendingWork()
     {
-#if !PCL46 // rely on NuGet bait-and-switch for actual implementation
+#if !PCL46 && !PCL259 // rely on NuGet bait-and-switch for actual implementation
       var asyncAction = ThreadPool.RunAsync(_ =>
       {
         // Note that the current thread is now processing work items.

@@ -44,6 +44,6 @@ Supports the creation of ASP.NET MVC 4 applications.
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.resources.pdb*" target="lib\NET46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.xml*" target="lib\NET46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Web.Mvc4*\**\*.cs" target="src" />
+    <!-- <file src="..\..\Source\**\Csla.Web.Mvc4*\**\*.cs" target="src" /> -->
   </files>
 </package>

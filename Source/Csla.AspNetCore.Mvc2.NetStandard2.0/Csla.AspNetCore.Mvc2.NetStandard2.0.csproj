@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Csla.AspNetCore.Mvc</AssemblyName>
+    <RootNamespace>Csla.Web.Mvc</RootNamespace>
+    <PackageId>Csla.AspNetCore.Mvc</PackageId>
+    <Authors>Marimer LLC</Authors>
+    <Company>Marimer LLC</Company>
+    <Product>CSLA .NET</Product>
+    <Description>CSLA .NET support for AspNetCore</Description>
+    <Copyright>Copyright 2017 Marimer LLC</Copyright>
+    <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</PackageLicenseUrl>
+    <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <AssemblyVersion>4.7.100.0</AssemblyVersion>
+    <FileVersion>4.7.100.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
+
+</Project>

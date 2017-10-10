@@ -62,7 +62,7 @@ namespace Csla.Data
       return GetManager(database, true, label);
     }
 
-        /// <summary>
+    /// <summary>
     /// Gets the ConnectionManager object for the 
     /// specified database.
     /// </summary>
@@ -100,6 +100,9 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
+#if NETSTANDARD2_0
+        throw new NotSupportedException("isDatabaseName==true");
+#else
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
@@ -108,25 +111,31 @@ namespace Csla.Data
         if (string.IsNullOrEmpty(conn))
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
+#endif
       }
 
+      ConnectionManager<C> mgr = null;
+      var ctxName = GetContextName(database, label);
       lock (_lock)
       {
-        var ctxName = GetContextName(database, label);
-        ConnectionManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains(ctxName))
+        var cached = ApplicationContext.LocalContext.GetValueOrNull(ctxName);
+        if (cached != null)
         {
-          mgr = (ConnectionManager<C>)(ApplicationContext.LocalContext[ctxName]);
-
+          mgr = (ConnectionManager<C>)cached;
+          mgr.AddRef();
         }
-        else
-        {
-          mgr = new ConnectionManager<C>(database, label);
-          ApplicationContext.LocalContext[ctxName] = mgr;
-        }
-        mgr.AddRef();
-        return mgr;
       }
+
+      if (mgr == null)
+      {
+        mgr = new ConnectionManager<C>(database, label);
+        lock (_lock)
+        {
+          ApplicationContext.LocalContext[ctxName] = mgr;
+          mgr.AddRef();
+        }
+      }
+      return mgr;
     }
 
     private ConnectionManager(string connectionString, string label)
@@ -135,10 +144,8 @@ namespace Csla.Data
       _connectionString = connectionString;
 
       // open connection
-      _connection = new C();
-      _connection.ConnectionString = connectionString;
+      _connection = new C { ConnectionString = connectionString };
       _connection.Open();
-
     }
 
     private static string GetContextName(string connectionString, string label)
@@ -156,8 +163,6 @@ namespace Csla.Data
         return _connection;
       }
     }
-
-#region  Reference counting
 
     private int _refCount;
 
@@ -183,16 +188,12 @@ namespace Csla.Data
         _refCount -= 1;
         if (_refCount == 0)
         {
+          _connection.Close();
           _connection.Dispose();
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }
-
     }
-
-#endregion
-
-#region  IDisposable
 
     /// <summary>
     /// Dispose object, dereferencing or
@@ -203,9 +204,6 @@ namespace Csla.Data
     {
       DeRef();
     }
-
-#endregion
-
   }
 }
 #endif

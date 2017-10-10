@@ -180,7 +180,7 @@ namespace PTWin
         }
         catch (InvalidOperationException ex)
         {
-          MessageBox.Show(ex.ToString(),
+          MessageBox.Show(ex.Message,
             "Error Assigning", MessageBoxButtons.OK,
             MessageBoxIcon.Information);
         }

@@ -98,6 +98,9 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
+#if NETSTANDARD2_0
+        throw new NotSupportedException("isDatabaseName==true");
+#else
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
@@ -106,6 +109,7 @@ namespace Csla.Data
         if (string.IsNullOrEmpty(conn))
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
+#endif
       }
 
       lock (_lock)
@@ -132,6 +136,10 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
+#if NETSTANDARD2_0
+      _connection = new System.Data.SqlClient.SqlConnection(connectionString);
+      _connection.Open();
+#else
       string provider = ConfigurationManager.AppSettings["dbProvider"];
       if (string.IsNullOrEmpty(provider))
         provider = "System.Data.SqlClient";
@@ -142,7 +150,7 @@ namespace Csla.Data
       _connection = factory.CreateConnection();
       _connection.ConnectionString = connectionString;
       _connection.Open();
-
+#endif
     }
 
     private static string GetContextName(string connectionString, string label)

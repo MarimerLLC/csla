@@ -36,12 +36,16 @@ namespace Csla.Server.Hosts.Mobile
       {
         if (_factoryLoader == null)
         {
+#if NETSTANDARD2_0
+          _factoryLoader = new MobileFactoryLoader();
+#else
           string setting = ConfigurationManager.AppSettings["CslaMobileFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IMobileFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
             _factoryLoader = new MobileFactoryLoader();
+#endif 
         }
         return _factoryLoader;
       }
@@ -51,9 +55,9 @@ namespace Csla.Server.Hosts.Mobile
       }
     }
 
-    #endregion
+#endregion
 
-    #region Operations
+#region Operations
 
     /// <summary>
     /// Create a new business object.
@@ -384,9 +388,9 @@ namespace Csla.Server.Hosts.Mobile
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region Mobile Factory
+#region Mobile Factory
 
     private static MobileFactoryAttribute GetMobileFactoryAttribute(Type objectType)
     {
@@ -397,9 +401,9 @@ namespace Csla.Server.Hosts.Mobile
         return null;
     }
 
-    #endregion
+#endregion
 
-    #region Context and Criteria
+#region Context and Criteria
     private void SetContext(IMobileRequest request)
     {
       ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
@@ -421,7 +425,7 @@ namespace Csla.Server.Hosts.Mobile
         ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
     }
 
-    #region client culture
+#region client culture
     /// <summary>
     /// Sets the client cultures on current tread.
     /// </summary>
@@ -463,9 +467,9 @@ namespace Csla.Server.Hosts.Mobile
       }
     }
 
-    #endregion 
+#endregion
 
-    #endregion
+#endregion
   }
 }
 #endif

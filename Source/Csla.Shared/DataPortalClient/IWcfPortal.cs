@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !NETFX_CORE && !NETSTANDARD2_0
 #pragma warning disable
 using System;
 using System.Collections.Generic;

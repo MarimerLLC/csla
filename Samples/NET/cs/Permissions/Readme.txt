@@ -1,7 +1,3 @@
-Target framework
-----------------
-This sample targets CSLA 4.5 using Framework .NET 4.0
-
 Database engine
 ---------------
 The database file is attached to LocalDb - the new dedicated version of 

@@ -151,8 +151,28 @@ namespace Csla.Serialization.Mobile
 
           info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
 
+#if !NET40 && !NET45 && !WINDOWS_UWP && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !PCL259
+          if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
+          {
+            var principal = (Security.CslaClaimsPrincipal)obj;
+            using (var buffer = new System.IO.MemoryStream())
+            {
+              using (var writer = new System.IO.BinaryWriter(buffer))
+              {
+                principal.WriteTo(writer);
+                info.AddValue("s", buffer.ToArray());
+              }
+            }
+          }
+          else
+          {
+            mobile.GetChildren(info, this);
+            mobile.GetState(info);
+          }
+#else
           mobile.GetChildren(info, this);
           mobile.GetState(info);
+#endif
         }
       }
       return info;
@@ -216,7 +236,7 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Deserialize an object from DTO graph.
     /// </summary>
-    ///<param name="deserialized">DTO grap to deserialize</param>
+    ///<param name="deserialized">DTO group to deserialize</param>
     /// <returns></returns>
     public object DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
@@ -238,6 +258,33 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
+#if !NET40 && !NET45 && !WINDOWS_UWP && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !PCL259
+          if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
+          {
+            var state = info.GetValue<byte[]>("s");
+            using (var buffer = new System.IO.MemoryStream(state))
+            {
+              using (var reader = new System.IO.BinaryReader(buffer))
+              {
+                IMobileObject mobile = (IMobileObject)new Security.CslaClaimsPrincipal(reader);
+                _deserializationReferences.Add(info.ReferenceId, mobile);
+              }
+            }
+          }
+          else
+          {
+#if (ANDROID || IOS) || NETFX_CORE
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
+#else
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+#endif
+
+            _deserializationReferences.Add(info.ReferenceId, mobile);
+
+            ConvertEnumsFromIntegers(info);
+            mobile.SetState(info);
+          }
+#else
 #if (ANDROID || IOS) || NETFX_CORE
           IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
 #else
@@ -248,6 +295,7 @@ namespace Csla.Serialization.Mobile
 
           ConvertEnumsFromIntegers(info);
           mobile.SetState(info);
+#endif
         }
       }
 
@@ -267,7 +315,6 @@ namespace Csla.Serialization.Mobile
         if (notifiable != null)
           notifiable.Deserialized();
       }
-
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);
     }
 

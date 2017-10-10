@@ -47,6 +47,6 @@ Supports the creation of ASP.NET Web Forms applications, and is required for any
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Web*\**\*.cs" target="src" />
+    <!-- <file src="..\..\Source\**\Csla.Web*\**\*.cs" target="src" /> -->
   </files>
 </package>

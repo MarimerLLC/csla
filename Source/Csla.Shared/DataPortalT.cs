@@ -84,7 +84,7 @@ namespace Csla
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       // set culture info for background thread 
-#if !PCL46 // rely on NuGet bait-and-switch for actual implementation
+#if !PCL46 && !PCL259 // rely on NuGet bait-and-switch for actual implementation
 #if NETCORE
       System.Globalization.CultureInfo.CurrentCulture = request.CurrentCulture;
       System.Globalization.CultureInfo.CurrentUICulture = request.CurrentUICulture;

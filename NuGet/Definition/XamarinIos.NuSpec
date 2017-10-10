@@ -32,7 +32,7 @@ Supports the creation of Xamarin iOS applications using the unified API.
     <!-- Xamarin.Forms Csla.Xaml -->
     <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\portable-net45+win8+wpa81" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" />
+    <!-- <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" /> -->
   </files>
 </package>

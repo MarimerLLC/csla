@@ -261,6 +261,7 @@
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
     <Compile Include="Serialization\BinaryReaderWriterTestClass.cs" />
+    <Compile Include="Serialization\CslaClaimsPrincipalSerializationTests.cs" />
     <Compile Include="Serialization\DCRoot.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\NonSerializedClass.cs" />

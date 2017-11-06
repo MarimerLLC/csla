@@ -24,8 +24,6 @@ namespace Csla.Test.ObjectFactory
       _mode = mode;
     }
 
-    #region IObjectFactoryLoader Members
-
     public Type GetFactoryType(string factoryName)
     {
       if (factoryName == "Csla.Test.ObjectFactory.RootFactory, Csla.Test")
@@ -46,6 +44,8 @@ namespace Csla.Test.ObjectFactory
             return typeof(RootFactory6);
           case 7:
             return typeof(RootFactory7);
+          case 8:
+            return typeof(RootFactoryC);
           default:
             return typeof(RootFactory);
         }
@@ -74,6 +74,8 @@ namespace Csla.Test.ObjectFactory
             return new RootFactory6();
           case 7:
             return new RootFactory7();
+          case 8:
+            return new RootFactoryC();
           default:
             return new RootFactory();
         }
@@ -81,7 +83,5 @@ namespace Csla.Test.ObjectFactory
       else
         return null;
     }
-
-    #endregion
   }
 }

@@ -23,11 +23,17 @@ namespace Csla.Test.ObjectFactory
       return obj;
     }
 
+    public object Create(int test)
+    {
+      // add overload to test reflection
+      return null;
+    }
+
     [RunLocal]
-    public object Create(SingleCriteria<Root, string> criteria)
+    public object Create(string criteria)
     {
       var obj = new Root();
-      obj.Data = "Create " + criteria.Value;
+      obj.Data = "Create " + criteria;
       obj.Location = ApplicationContext.ExecutionLocation;
       obj.MarkAsNew();
       return obj;
@@ -78,6 +84,32 @@ namespace Csla.Test.ObjectFactory
     public void Delete(SingleCriteria<Root, string> criteria)
     {
       Csla.ApplicationContext.GlobalContext["ObjectFactory"] = "Delete";
+    }
+
+    private TransactionalTypes _transactionalType;
+
+    public void Invoke(Csla.DataPortalEventArgs args)
+    {
+      _transactionalType = args.DataPortalContext.TransactionalType;
+    }
+  }
+
+  public class RootFactoryC
+  {
+    public object Create(int test)
+    {
+      // add overload to test reflection
+      return null;
+    }
+
+    [RunLocal]
+    public object Create(string criteria)
+    {
+      var obj = new Root();
+      obj.Data = "Create " + criteria;
+      obj.Location = ApplicationContext.ExecutionLocation;
+      obj.MarkAsNew();
+      return obj;
     }
 
     private TransactionalTypes _transactionalType;

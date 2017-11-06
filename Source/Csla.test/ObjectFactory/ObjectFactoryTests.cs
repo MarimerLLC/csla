@@ -61,8 +61,8 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+        new ObjectFactoryLoader(8);
+      var root = Csla.DataPortal.Create<Root>("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -76,7 +76,7 @@ namespace Csla.Test.ObjectFactory
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);
-      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+      var root = Csla.DataPortal.Create<Root>("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");

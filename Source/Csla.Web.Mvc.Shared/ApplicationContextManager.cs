@@ -19,7 +19,7 @@ namespace Csla.Web
   /// Application context manager that uses HttpContextAccessor when 
   /// resolving HttpContext to store context values.
   /// </summary>
-  public class ApplicationContextMananger : IContextManager
+  public class ApplicationContextManager : IContextManager
   {
 
     private const string _localContextName = "Csla.LocalContext";
@@ -33,7 +33,7 @@ namespace Csla.Web
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="serviceProvider">ASP.NET Core IServiceProvider</param>
-    public ApplicationContextMananger(IServiceProvider serviceProvider)
+    public ApplicationContextManager(IServiceProvider serviceProvider)
     {
       _serviceProvider = serviceProvider;
     }

@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !(ANDROID || IOS) && !NETSTANDARD2_0
+#if !NETFX_CORE && !(ANDROID || IOS) 
 //-----------------------------------------------------------------------
 // <copyright file="TransactionalAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -57,8 +57,12 @@ namespace Csla
     public TransactionalAttribute(TransactionalTypes transactionType)
     {
       TransactionType = transactionType;
+#if NETSTANDARD2_0
+      if (transactionType == TransactionalTypes.TransactionScope)
+#else
       if (transactionType == TransactionalTypes.TransactionScope || 
         transactionType == TransactionalTypes.EnterpriseServices)
+#endif
       {
         TransactionIsolationLevel = ApplicationContext.DefaultTransactionIsolationLevel;
         TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
@@ -108,8 +112,12 @@ namespace Csla
     {
       TransactionType = transactionType;
       TransactionIsolationLevel = transactionIsolationLevel;
+#if NETSTANDARD2_0
+      if (transactionType == TransactionalTypes.TransactionScope)
+#else
       if (transactionType == TransactionalTypes.TransactionScope ||
         transactionType == TransactionalTypes.EnterpriseServices)
+#endif
       {
         TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
       }

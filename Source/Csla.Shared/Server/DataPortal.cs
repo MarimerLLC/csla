@@ -151,10 +151,10 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -243,10 +243,10 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -374,16 +374,16 @@ namespace Csla.Server
             methodName = "DataPortal_Update";
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
         }
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE 
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
 #else
         context.TransactionalType = method.TransactionalType;
 #endif
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -479,10 +479,10 @@ namespace Csla.Server
         }
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try

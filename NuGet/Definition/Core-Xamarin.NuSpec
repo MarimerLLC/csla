@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-Core</id>
-    <title>CSLA .NET - Core</title>
-    <tags>CSLA Business Core</tags>
+    <id>CSLA-Core-Xamarin</id>
+    <title>CSLA .NET - Core Xamarin Legacy</title>
+    <tags>CSLA Business Core Xamarin</tags>
     <version>4.6.3-Beta2</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
@@ -82,25 +82,46 @@ Supports the creation of Class Library projects containing business domain class
     </dependencies>
   </metadata>
   <files>
-    <!-- .NET 4.0 Client -->
-    <file src="..\..\Bin\Release\NET4\**\Csla.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.resources.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.resources.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.xml*" target="lib\net40" />
-    <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET45\**\Csla.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.xml*" target="lib\net45" />
     <!-- CSLA Analyzers -->
     <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.dll*" target="analyzers\c#" />
     <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.pdb*" target="analyzers\c#" />
     <file src="..\..\Bin\Release\Analyzers\tools\*.ps1" target="tools\" />
+    <!-- UWP Client -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.dll*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.pri*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.xml*" target="lib\uap10.0" />
+    <!-- NetStandard 1.5 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.dll*" target="lib\netstandard1.5" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.xml*" target="lib\netstandard1.5" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.resources.dll*" target="lib\netstandard1.5" />
+    <!-- NetStandard 1.6 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.dll*" target="lib\netstandard1.6" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.xml*" target="lib\netstandard1.6" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.resources.dll*" target="lib\netstandard1.6" />
     <!-- NetStandard 2.0 Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.dll*" target="lib\netstandard2.0" />
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.xml*" target="lib\netstandard2.0" />
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.resources.dll*" target="lib\netstandard2.0" />
+    <!-- PCL Profile111 -->
+    <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+win8+wpa81" />
+    <!-- PCL Profile259 -->
+    <file src="..\..\Bin\Release\PCL259\**\Csla.dll*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <file src="..\..\Bin\Release\PCL259\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <file src="..\..\Bin\Release\PCL259\**\Csla.pri*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <file src="..\..\Bin\Release\PCL259\**\Csla.xml*" target="lib\portable-net45+win8+wpa81+wp8" />
+    <!-- Xamarin Android Client -->
+    <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.xml*" target="lib\MonoAndroid10" />
+    <!-- Xamarin iOS Client -->
+    <file src="..\..\Bin\Release\iOS\**\Csla.dll*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.pdb*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.xml*" target="lib\Xamarin.iOS10" />
+    <!-- Source Files for Symbol Server -->
+    <!-- <file src="..\..\Source\**\*.cs" target="src" /> -->
   </files>
 </package>

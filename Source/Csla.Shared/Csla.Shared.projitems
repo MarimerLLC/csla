@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusinessListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\BrowsableAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />

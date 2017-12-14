@@ -26,8 +26,16 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
-#if !ANDROID && !IOS && !NETFX_CORE 
-    private static IContextManager _webContextManager;
+
+    internal static void SettingsChanged()
+    {
+      _dataPortalReturnObjectOnExceptionSet = false;
+      _transactionIsolationLevelSet = false;
+      _defaultTransactionTimeoutInSecondsSet = false;
+    }
+
+#if !ANDROID && !IOS && !NETFX_CORE
+  private static IContextManager _webContextManager;
 #endif
 #if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static Type _webManagerType;

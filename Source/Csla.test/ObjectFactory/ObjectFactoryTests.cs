@@ -164,8 +164,8 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(4);
@@ -185,8 +185,8 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(5);
       var root = new Root();
@@ -206,7 +206,7 @@ namespace Csla.Test.ObjectFactory
     [Ignore]
     public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(6);
       var root = new Root();
@@ -224,7 +224,7 @@ namespace Csla.Test.ObjectFactory
     [Ignore]
     public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(7);

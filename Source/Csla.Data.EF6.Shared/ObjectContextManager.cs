@@ -8,7 +8,7 @@
 
 #if !MONO
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Data.Entity.Core.Objects;
 using Csla.Properties;
 

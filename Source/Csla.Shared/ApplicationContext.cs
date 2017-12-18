@@ -10,10 +10,10 @@ using System.Threading;
 using System.Security.Principal;
 using System.Collections.Specialized;
 #if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
-using System.Configuration;
 using System.Web;
 #endif
 using Csla.Core;
+using Csla.Configuration;
 
 namespace Csla
 {

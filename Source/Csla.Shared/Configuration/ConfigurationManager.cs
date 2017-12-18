@@ -1,4 +1,11 @@
-﻿using System.Collections.Specialized;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ConfigurationManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>ConfigurationManager that abstracts underlying configuration</summary>
+//-----------------------------------------------------------------------
+using System.Collections.Specialized;
 
 /// <summary>
 /// Configuration types for CSLA .NET.
@@ -29,6 +36,34 @@ namespace Csla.Configuration
       set
       {
         _settings = value;
+        ApplicationContext.SettingsChanged();
+      }
+    }
+
+#if NETSTANDARD2_0
+    private static ConnectionStringSettingsCollection _connectionStrings = new NameValueCollection();
+#else
+    private static System.Configuration.ConnectionStringSettingsCollection  _connectionStrings = System.Configuration.ConfigurationManager.ConnectionStrings;
+#endif
+
+    /// <summary>
+    /// Gets or sets the connection strings from the 
+    /// application's default settings.
+    /// </summary>
+#if NETSTANDARD2_0
+    public static ConnectionStringSettingsCollection ConnectionStrings
+#else
+    public static System.Configuration.ConnectionStringSettingsCollection ConnectionStrings
+#endif
+    {
+      get
+      {
+        return _connectionStrings;
+      }
+      set
+      {
+        var x = _connectionStrings[0];
+        _connectionStrings = value;
         ApplicationContext.SettingsChanged();
       }
     }

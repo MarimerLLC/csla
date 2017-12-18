@@ -7,7 +7,7 @@
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Data.Linq;
 
 using Csla.Properties;

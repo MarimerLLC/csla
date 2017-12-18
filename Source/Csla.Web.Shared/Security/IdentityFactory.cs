@@ -6,7 +6,7 @@
 // <summary>Verifies user credentials and creates principal/identity based</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Web.Security;
 using Csla.Core;
 using Csla.Server;

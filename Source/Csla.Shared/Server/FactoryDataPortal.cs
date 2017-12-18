@@ -6,9 +6,7 @@
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 using System.Threading.Tasks;
 using Csla.Properties;
 

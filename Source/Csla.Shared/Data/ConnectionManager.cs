@@ -7,7 +7,7 @@
 // <summary>Provides an automated way to reuse open</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Data;
 using System.Data.Common;
 using Csla.Properties;

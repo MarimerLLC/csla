@@ -40,11 +40,11 @@ namespace Csla.Validation
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f020000
-			public static int ApplicationName = 2130837504;
-			
 			// aapt resource value: 0x7f020001
-			public static int Hello = 2130837505;
+			public static int ApplicationName = 2130837505;
+			
+			// aapt resource value: 0x7f020000
+			public static int Hello = 2130837504;
 			
 			static String()
 			{

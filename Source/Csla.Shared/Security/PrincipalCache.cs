@@ -30,7 +30,7 @@ namespace Csla.Security
 #if NETSTANDARD2_0
           _maxCacheSize = 10;
 #else
-          string tmp = System.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
+          string tmp = Csla.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
           if (string.IsNullOrEmpty(tmp))
             _maxCacheSize = 10;
           else

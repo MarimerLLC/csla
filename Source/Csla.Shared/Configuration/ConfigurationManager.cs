@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 using System.Collections.Specialized;
 
-/// <summary>
-/// Configuration types for CSLA .NET.
-/// </summary>
 namespace Csla.Configuration
 {
   /// <summary>
@@ -62,9 +59,7 @@ namespace Csla.Configuration
       }
       set
       {
-        var x = _connectionStrings[0];
         _connectionStrings = value;
-        ApplicationContext.SettingsChanged();
       }
     }
   }

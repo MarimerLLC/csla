@@ -699,17 +699,17 @@ namespace Csla
     {
       get
       {
-#if !NETSTANDARD2_0
         if (!_transactionIsolationLevelSet)
         {
+#if !NETSTANDARD2_0
           string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
           if (!string.IsNullOrEmpty(tmp))
           {
             _transactionIsolationLevel = (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
           }
           _transactionIsolationLevelSet = true;
-        }
 #endif
+        }
         return _transactionIsolationLevel;
       }
       set
@@ -732,14 +732,14 @@ namespace Csla
     {
       get
       {
-#if !NETSTANDARD2_0
         if (!_defaultTransactionTimeoutInSecondsSet)
         {
+#if !NETSTANDARD2_0
           var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
           _defaultTransactionTimeoutInSeconds = string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
           _defaultTransactionTimeoutInSecondsSet = true;
-        }
 #endif
+        }
         return _defaultTransactionTimeoutInSeconds;
       }
       set

@@ -87,9 +87,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj">
-      <Project>{19801b8b-0c86-433f-8d09-da727adf6dcc}</Project>
-      <Name>Csla.NetStandard2.0</Name>
+    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
+      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
+      <Name>Csla.Net4.6</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />

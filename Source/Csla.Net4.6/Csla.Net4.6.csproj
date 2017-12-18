@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9DA591ED-C570-47AC-8E5D-35B039E07973}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla</RootNamespace>
+    <AssemblyName>Csla</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
+    <DocumentationFile>..\..\Bin\Debug\Server\Csla.XML</DocumentationFile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\Debug\NET46\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <DocumentationFile>..\..\Bin\Debug\NET46\Csla.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Release\NET46\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Release\NET46\Csla.XML</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Debug\Client\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;TESTING</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DocumentationFile>..\..\Bin\Debug\Client\Csla.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Bin\Debug\Mono\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONO</DefineConstants>
+    <DocumentationFile>..\..\Bin\Debug\Mono\Csla.XML</DocumentationFile>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\Bin\Debug\Client\Csla.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;d:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;d:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono Release|AnyCPU'">
+    <OutputPath>..\..\Bin\Release\Mono\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Bin\Release\Mono\Csla.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\Bin\Release\Client\Csla.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;d:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;d:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <DefineConstants>MONO</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.Services.Client" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Csla.Shared.Resources\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="..\Csla.Shared.Resources\Settings.Designer.cs">
+      <Link>Properties\Settings.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Csla.Shared.Resources\Settings.settings">
+      <Link>Properties\Settings.settings</Link>
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="CslaKey.snk" />
+    <None Include="packages.config" />
+    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\MobilePortal.wsdl" />
+    <None Include="Service References\WcfPortal\MobilePortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\MobilePortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\MobilePortal2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\CslaPrivate.resx">
+      <Link>Properties\CslaPrivate.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ar.resx">
+      <Link>Properties\Resources.ar.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.bs.resx">
+      <Link>Properties\Resources.bs.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ca-ES.resx">
+      <Link>Properties\Resources.ca-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.da.resx">
+      <Link>Properties\Resources.da.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.de.resx">
+      <Link>Properties\Resources.de.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.el.resx">
+      <Link>Properties\Resources.el.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.es-ES.resx">
+      <Link>Properties\Resources.es-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.es.resx">
+      <Link>Properties\Resources.es.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.fr.resx">
+      <Link>Properties\Resources.fr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.he-IL.resx">
+      <Link>Properties\Resources.he-IL.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.hr.resx">
+      <Link>Properties\Resources.hr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.hu.resx">
+      <Link>Properties\Resources.hu.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.it.resx">
+      <Link>Properties\Resources.it.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.km-KH.resx">
+      <Link>Properties\Resources.km-KH.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.nl.resx">
+      <Link>Properties\Resources.nl.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.no.resx">
+      <Link>Properties\Resources.no.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.pt-br.resx">
+      <Link>Properties\Resources.pt-br.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.pt.resx">
+      <Link>Properties\Resources.pt.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ro.resx">
+      <Link>Properties\Resources.ro.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ru.resx">
+      <Link>Properties\Resources.ru.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.sr.resx">
+      <Link>Properties\Resources.sr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.sv.resx">
+      <Link>Properties\Resources.sv.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.tr.resx">
+      <Link>Properties\Resources.tr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.uk-ua.resx">
+      <Link>Properties\Resources.uk-ua.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.vi.resx">
+      <Link>Properties\Resources.vi.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.zh-Hans.resx">
+      <Link>Properties\Resources.zh-Hans.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.zh-TW.resx">
+      <Link>Properties\Resources.zh-TW.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

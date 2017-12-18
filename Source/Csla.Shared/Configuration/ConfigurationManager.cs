@@ -41,7 +41,7 @@ namespace Csla.Configuration
     }
 
 #if NETSTANDARD2_0
-    private static ConnectionStringSettingsCollection _connectionStrings = new NameValueCollection();
+    private static ConnectionStringSettingsCollection _connectionStrings = new ConnectionStringSettingsCollection();
 #else
     private static System.Configuration.ConnectionStringSettingsCollection  _connectionStrings = System.Configuration.ConfigurationManager.ConnectionStrings;
 #endif

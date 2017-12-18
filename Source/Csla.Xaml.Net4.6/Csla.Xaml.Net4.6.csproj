@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Xaml</RootNamespace>
     <AssemblyName>Csla.Xaml</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,12 +60,6 @@
     <None Include="CslaKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
-      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla.Net4.6</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
       <Link>Themes\Generic.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -81,6 +76,12 @@
     <Resource Include="..\Csla.Xaml.Resources\Resources\Warning.png">
       <Link>Resources\Warning.png</Link>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj">
+      <Project>{19801b8b-0c86-433f-8d09-da727adf6dcc}</Project>
+      <Name>Csla.NetStandard2.0</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

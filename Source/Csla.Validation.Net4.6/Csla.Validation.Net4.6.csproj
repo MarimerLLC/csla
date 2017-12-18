@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Validation</RootNamespace>
     <AssemblyName>Csla.Validation</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,13 +53,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
-      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla.Net4.6</Name>
-    </ProjectReference>
+    <None Include="CslaKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CslaKey.snk" />
+    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj">
+      <Project>{19801b8b-0c86-433f-8d09-da727adf6dcc}</Project>
+      <Name>Csla.NetStandard2.0</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Csla.Validation.Shared\Csla.Validation.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

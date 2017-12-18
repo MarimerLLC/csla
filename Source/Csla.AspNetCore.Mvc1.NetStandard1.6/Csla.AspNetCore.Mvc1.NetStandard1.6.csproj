@@ -38,10 +38,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Csla.NetStandard1.6\Csla.NetStandard1.6.csproj" />
-  </ItemGroup>
-
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
 
 </Project>

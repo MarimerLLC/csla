@@ -27,11 +27,6 @@ Supports the creation of UWP applications.
   </metadata>
   <files>
     <!-- UWP Client -->
-    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.dll*" target="lib\uap10.0" />
-    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.pdb*" target="lib\uap10.0" />
-    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.pri*" target="lib\uap10.0" />
-    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.xml*" target="lib\uap10.0" />
-    <!-- Source Files for Symbol Server -->
-    <!-- <file src="..\..\Source\**\Csla.Xaml*\**\*.cs" target="src" /> -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.*" target="lib\uap10.0" />
   </files>
 </package>

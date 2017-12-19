@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if NETSTANDARD2_0
+//-----------------------------------------------------------------------
 // <copyright file="ConnectionStringSettings.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -6,8 +7,6 @@
 // <summary>Information about a connection string</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Configuration
 {
@@ -23,3 +22,4 @@ namespace Csla.Configuration
     public string ConnectionString { get; set; }
   }
 }
+#endif

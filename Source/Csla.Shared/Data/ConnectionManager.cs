@@ -103,11 +103,11 @@ namespace Csla.Data
 #else
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
 
         var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
         if (string.IsNullOrEmpty(conn))
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
 #endif
       }

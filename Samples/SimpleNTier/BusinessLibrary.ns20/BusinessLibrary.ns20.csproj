@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>BusinessLibrary</AssemblyName>
+    <RootNamespace>BusinessLibrary</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSLA-Core" Version="4.7.100-R17121901" />
+  </ItemGroup>
+
+  <Import Project="..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems" Label="Shared" />
+
+</Project>

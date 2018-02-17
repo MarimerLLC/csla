@@ -104,7 +104,7 @@ namespace Csla.Test.PropertyGetSet
     public void ExplicitFieldProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging); 
+      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
       Assert.AreEqual("", root.FieldBackedString, "String should default to string.Empty");
@@ -262,7 +262,7 @@ namespace Csla.Test.PropertyGetSet
       root.F04 = new DateTime(1998, 12, 21).ToShortDateString();
       Assert.AreEqual(new DateTime(1998, 12, 21).ToShortDateString(), root.F04, "Field SmartDate should have been set");
 
-      root.M04 = new DateTime(1998,12,21).ToShortDateString();
+      root.M04 = new DateTime(1998, 12, 21).ToShortDateString();
       Assert.AreEqual(new DateTime(1998, 12, 21).ToShortDateString(), root.M04, "SmartDate should have been set");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
@@ -276,7 +276,7 @@ namespace Csla.Test.PropertyGetSet
       root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
 
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
-      
+
       EditableGetSet child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
 
@@ -577,9 +577,9 @@ namespace Csla.Test.PropertyGetSet
     }
 
 #if !WINDOWS_PHONE
-// BUG: This method throws an exception during Type Initialization which causes Visual Studio
-// to crash if the debugger is attached to the emulator at the time this is run.
-// https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
+    // BUG: This method throws an exception during Type Initialization which causes Visual Studio
+    // to crash if the debugger is attached to the emulator at the time this is run.
+    // https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
@@ -649,13 +649,23 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Changes_On_ManagedChild_Then_ChildChanged_Should_Fire_On_Root_ButNot_On_ManagedChild()
     {
-      int changed = 0;
+      // Feb 2018 - Keith Voels
+      // What's the reason to not raise ChildChanged?
+      // This is totally different now that only ChildChanged is used to bubble up the graph
+      // Not propertyChanged
+
+      int childChanged = 0;
+      int propertyChanged = 0;
+
       var root = new EditableGetSet();
-      root.ChildChanged += (o, e) => { changed++; };
-      root.ManagedChild.ChildChanged += (o, e) => { throw new InvalidOperationException();};
+      root.PropertyChanged += (o, e) => { propertyChanged++; };
+      root.ChildChanged += (o, e) => { childChanged++; };
+      root.ManagedChild.ChildChanged += (o, e) => { childChanged++; };
+      root.ManagedChild.PropertyChanged += (o, e) => { propertyChanged++; };
       root.ManagedChild.FieldBackedString = "changed";
 
-      Assert.AreEqual(1, changed);
+      Assert.AreEqual(3, childChanged);
+      Assert.AreEqual(2, propertyChanged);
     }
 
     [TestMethod]
@@ -665,7 +675,10 @@ namespace Csla.Test.PropertyGetSet
       int listChanged = 0;
 
       var root = new EditableGetSet();
-      root.ChildChanged += (o, e) => { rootChanged++; };
+      root.ChildChanged += (o, e) =>
+      {
+        rootChanged++;
+      };
 
       var list = root.ManagedChildList;
       list.ChildChanged += (o, e) => { listChanged++; };
@@ -673,7 +686,9 @@ namespace Csla.Test.PropertyGetSet
       list.Add(new EditableGetSet(true));
       list[0].FieldBackedString = "child change";
 
-      Assert.AreEqual(4, rootChanged);//this event fires 4 times: lazy load of the child list, Item[], Count and property change on item in the list
+      //this event fires 4 times: lazy load of the child list, Item[], Count and property change on item in the list
+      // Update Feb 2018 - No longer fires for Count or other propertyChange
+      Assert.AreEqual(2, rootChanged);
       Assert.AreEqual(1, listChanged);
     }
 
@@ -685,6 +700,7 @@ namespace Csla.Test.PropertyGetSet
       int grandChildListChanged = 0;
       int childChanged = 0;
       int grandChildPropertyChanged = 0;
+      int grandChildChildChanged = 0;
 
       var root = new EditableGetSet();
       root.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
@@ -697,18 +713,19 @@ namespace Csla.Test.PropertyGetSet
       child.ManagedChildList.ChildChanged += (o, e) => { grandChildListChanged++; };
 
       var grandChild = new EditableGetSet(true);
-      grandChild.ChildChanged += (o, e) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
+      grandChild.ChildChanged += (o, e) => { grandChildChildChanged++; }; // ChildChange only fires when child of self changes
       grandChild.PropertyChanged += (o, e) => { grandChildPropertyChanged++; };
 
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "child change"; // or c2.FieldBackedString = "child change";
 
-      Assert.AreEqual(7, rootChanged);              //Child, and GrandChild lists lazy loaded + Property changed on GrandChildList Item
-      Assert.AreEqual(4, childChanged);             //GrandChild lists lazy loaded + Property changed on GrandChildList Item
-      Assert.AreEqual(4, childListChanged);         //GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(3, rootChanged);              //Child, and GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(2, childChanged);             //GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(2, childListChanged);         //GrandChild lists lazy loaded + Property changed on GrandChildList Item
       Assert.AreEqual(1, grandChildListChanged);    //Property changed on GrandChildList Item
       Assert.AreEqual(1, grandChildPropertyChanged);//Property changed on GrandChildList Item
+      Assert.AreEqual(1, grandChildChildChanged);//Property changed on GrandChildList Item
     }
 
     [TestMethod]
@@ -724,7 +741,7 @@ namespace Csla.Test.PropertyGetSet
       root.CancelEdit();
 
       int changed = 0;
-      root.ChildChanged += (o, e) => { changed++;};
+      root.ChildChanged += (o, e) => { changed++; };
       child.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);

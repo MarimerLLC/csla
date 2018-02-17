@@ -390,7 +390,7 @@ namespace Csla.Core
     protected virtual void MetaPropertyHasChanged(string name)
     {
       if (ApplicationContext.PropertyChangedMode != ApplicationContext.PropertyChangedModes.Windows)
-        OnPropertyChanged(name);
+        base.OnPropertyChanged(name); // Base so that OnChildChanged is skipped. This is for any Xaml binding to this specific BO only
     }
 
     /// <summary>
@@ -1475,9 +1475,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException += Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
-        pc.PropertyChanged += Child_PropertyChanged;
+      //INotifyPropertyChanged pc = child as INotifyPropertyChanged;
+      //if (pc != null)
+      //  pc.PropertyChanged += Child_PropertyChanged;
 
 #if !(ANDROID || IOS) && !NETFX_CORE
       IBindingList bl = child as IBindingList;
@@ -1519,9 +1519,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException -= Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
-        pc.PropertyChanged -= Child_PropertyChanged;
+      //INotifyPropertyChanged pc = child as INotifyPropertyChanged;
+      //if (pc != null)
+      //  pc.PropertyChanged -= Child_PropertyChanged;
 
 #if !(ANDROID || IOS) && !NETFX_CORE
       IBindingList bl = child as IBindingList;
@@ -3258,6 +3258,16 @@ namespace Csla.Core
       }
     }
 
+#if !NETFX_CORE
+
+    protected override void OnPropertyChanged(string propertyName)
+    {
+      base.OnPropertyChanged(propertyName);
+      OnChildChanged(new ChildChangedEventArgs(this, new PropertyChangedEventArgs(propertyName)));
+    }
+
+#endif
+
     /// <summary>
     /// Raises the ChildChanged event, indicating that a child
     /// object has been changed.
@@ -3320,10 +3330,10 @@ namespace Csla.Core
     /// a child object and echoes it up as
     /// a ChildChanged event.
     /// </summary>
-    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      RaiseChildChanged(sender, e);
-    }
+    //private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    //{
+    //  RaiseChildChanged(sender, e);
+    //}
 
 #if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>

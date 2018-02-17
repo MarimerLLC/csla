@@ -625,25 +625,28 @@ namespace Csla
         OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
     }
 
-#endregion
+    #endregion
 
-#region Cascade child events
+    #region Cascade child events
 
     /// <summary>
     /// Handles any PropertyChanged event from 
     /// a child object and echoes it up as
     /// a ListChanged event.
     /// </summary>
+
+    // Feb 2018 - Keith Voels. No more Child_PropertyChanged. Switched to Child_Changed
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected override void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      if (_deserialized && RaiseListChangedEvents && e != null)
+      if (_deserialized && RaiseListChangedEvents && e?.PropertyChangedArgs != null)
       {
+        var p = e.PropertyChangedArgs;
         for (int index = 0; index < Count; index++)
         {
           if (ReferenceEquals(this[index], sender))
           {
-            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+            PropertyDescriptor descriptor = GetPropertyDescriptor(p.PropertyName);
             if (descriptor != null)
               OnListChanged(new ListChangedEventArgs(
                 ListChangedType.ItemChanged, index, descriptor));
@@ -653,7 +656,7 @@ namespace Csla
           }
         }
       }
-      base.Child_PropertyChanged(sender, e);
+      base.Child_Changed(sender, e);
     }
 
     private static PropertyDescriptorCollection _propertyDescriptors;

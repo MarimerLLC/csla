@@ -329,9 +329,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
-      if (c != null)
-        c.PropertyChanged += Child_PropertyChanged;
+      //INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      //if (c != null)
+      //  c.PropertyChanged += Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if (list != null)
@@ -358,9 +358,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
-      if (c != null)
-        c.PropertyChanged -= Child_PropertyChanged;
+      //INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      //if (c != null)
+      //  c.PropertyChanged -= Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if(list!=null)
@@ -461,11 +461,11 @@ namespace Csla.Core
     /// </summary>
     /// <param name="sender">Object that raised the event.</param>
     /// <param name="e">Property changed args.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      RaiseChildChanged(sender, e, null);
-    }
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    //{
+    //  RaiseChildChanged(sender, e, null);
+    //}
 
     /// <summary>
     /// Handles any ChildChanged event from

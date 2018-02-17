@@ -86,7 +86,7 @@ namespace Csla.Test.BasicModern
       graph.Id = 123;
 
       Assert.IsTrue(changed.Contains("Id"), "Id");
-      Assert.IsFalse(changed.Contains("IsDirty"), "IsDirty");
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty");
       Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty");
       Assert.IsTrue(changed.Contains("IsValid"), "IsValid");
       Assert.IsTrue(changed.Contains("IsSelfValid"), "IsSelfValid");
@@ -109,7 +109,7 @@ namespace Csla.Test.BasicModern
       graph.Name = "abc";
 
       Assert.IsTrue(changed.Contains("Name"), "Name");
-      Assert.IsFalse(changed.Contains("IsDirty"), "IsDirty");
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty");
       Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty");
       Assert.IsTrue(changed.Contains("IsValid"), "IsValid");
       Assert.IsTrue(changed.Contains("IsSelfValid"), "IsSelfValid");

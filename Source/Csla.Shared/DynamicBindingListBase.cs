@@ -377,9 +377,9 @@ namespace Csla
       get { return null; }
     }
 
-#endregion
+    #endregion
 
-#region  Cascade Child events
+    #region  Cascade Child events
 
     /// <summary>
     /// Handles any PropertyChanged event from 
@@ -389,24 +389,27 @@ namespace Csla
     /// <param name="sender">Object that raised the event.</param>
     /// <param name="e">Property changed args.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected override void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      for (int index = 0; index < this.Count; index++)
+      if (e.PropertyChangedArgs != null)
       {
-        if (ReferenceEquals(this[index], sender))
+        var p = e.PropertyChangedArgs;
+        for (int index = 0; index < this.Count; index++)
         {
-          PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
-          if (descriptor != null)
-            OnListChanged(new ListChangedEventArgs(
-              ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
-          else
-            OnListChanged(new ListChangedEventArgs(
-              ListChangedType.ItemChanged, index));
-          return;
+          if (ReferenceEquals(this[index], sender))
+          {
+            PropertyDescriptor descriptor = GetPropertyDescriptor(p.PropertyName);
+            if (descriptor != null)
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index, GetPropertyDescriptor(p.PropertyName)));
+            else
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index));
+            return;
+          }
         }
       }
-      OnChildPropertyChanged(sender, e);
-      base.Child_PropertyChanged(sender, e);
+      OnChildChanged(e);
     }
 
     void Child_BusyChanged(object sender, BusyChangedEventArgs e)
@@ -458,9 +461,9 @@ namespace Csla
       foreach (IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        INotifyPropertyChanged c = child as INotifyPropertyChanged;
+        INotifyChildChanged c = child as INotifyChildChanged;
         if (c != null)
-          c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+          c.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
       }
       base.OnDeserialized();
     }

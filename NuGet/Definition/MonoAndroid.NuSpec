@@ -25,14 +25,6 @@ Supports the creation of Xamarin Android applications.
   </metadata>
   <files>
     <!-- Xamarin Android Client -->
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll.mdb*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.pdb*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.xml*" target="lib\MonoAndroid10" />
-    <!-- Xamarin.Forms Csla.Xaml -->
-    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\portable-net45+win8+wpa81" />
-    <!-- Source Files for Symbol Server -->
-    <!-- <file src="..\..\Source\**\Csla.Axml.Android\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" /> -->
+    <file src="..\..\Bin\Release\Android\**\Csla.Axml." target="lib\MonoAndroid10" />
   </files>
 </package>

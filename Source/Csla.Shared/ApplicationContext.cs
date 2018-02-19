@@ -10,10 +10,10 @@ using System.Threading;
 using System.Security.Principal;
 using System.Collections.Specialized;
 #if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
-using System.Configuration;
 using System.Web;
 #endif
 using Csla.Core;
+using Csla.Configuration;
 
 namespace Csla
 {
@@ -26,8 +26,16 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
-#if !ANDROID && !IOS && !NETFX_CORE 
-    private static IContextManager _webContextManager;
+
+    internal static void SettingsChanged()
+    {
+      _dataPortalReturnObjectOnExceptionSet = false;
+      _transactionIsolationLevelSet = false;
+      _defaultTransactionTimeoutInSecondsSet = false;
+    }
+
+#if !ANDROID && !IOS && !NETFX_CORE
+  private static IContextManager _webContextManager;
 #endif
 #if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static Type _webManagerType;
@@ -691,17 +699,17 @@ namespace Csla
     {
       get
       {
-#if !NETSTANDARD2_0
         if (!_transactionIsolationLevelSet)
         {
+#if !NETSTANDARD2_0
           string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
           if (!string.IsNullOrEmpty(tmp))
           {
             _transactionIsolationLevel = (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
           }
           _transactionIsolationLevelSet = true;
-        }
 #endif
+        }
         return _transactionIsolationLevel;
       }
       set
@@ -724,14 +732,14 @@ namespace Csla
     {
       get
       {
-#if !NETSTANDARD2_0
         if (!_defaultTransactionTimeoutInSecondsSet)
         {
+#if !NETSTANDARD2_0
           var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
           _defaultTransactionTimeoutInSeconds = string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
           _defaultTransactionTimeoutInSecondsSet = true;
-        }
 #endif
+        }
         return _defaultTransactionTimeoutInSeconds;
       }
       set

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Windows</RootNamespace>
     <AssemblyName>Csla.Windows</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -54,13 +54,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CslaKey.snk" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
       <Name>Csla.Net4.6</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CslaKey.snk" />
   </ItemGroup>
   <Import Project="..\Csla.Windows.Shared\Csla.Windows.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

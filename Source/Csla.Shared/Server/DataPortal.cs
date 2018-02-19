@@ -6,9 +6,7 @@
 // <summary>Implements the server-side DataPortal </summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 #if NETFX_CORE
 using System.Reflection;
 using Csla.Reflection;

@@ -7,7 +7,7 @@
 // <summary>Object taht processes all the requests from a Silverlight client</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Globalization;
 using System.Threading;
 using Csla.Properties;
@@ -21,7 +21,7 @@ namespace Csla.Server.Hosts.Mobile
   public class MobileRequestProcessor
   {
 
-    #region Factory Loader
+#region Factory Loader
 
     private static IMobileFactoryLoader _factoryLoader;
     /// <summary>
@@ -45,7 +45,7 @@ namespace Csla.Server.Hosts.Mobile
               (IMobileFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
             _factoryLoader = new MobileFactoryLoader();
-#endif 
+#endif
         }
         return _factoryLoader;
       }

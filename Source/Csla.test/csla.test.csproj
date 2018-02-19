@@ -142,6 +142,7 @@
     <Compile Include="ChildChanged\ContainsList.cs" />
     <Compile Include="ChildChanged\GrandChild.cs" />
     <Compile Include="ChildChanged\ListContainerList.cs" />
+    <Compile Include="ChildChanged\OptimizeChildChangedTests.cs" />
     <Compile Include="ChildChanged\SingleChild.cs" />
     <Compile Include="ChildChanged\SingleList.cs" />
     <Compile Include="ChildChanged\SingleRoot.cs" />

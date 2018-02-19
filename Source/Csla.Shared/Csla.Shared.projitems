@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\BusinessBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BusyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ChildChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\MetaPropertyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ContextDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ErrorEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ExtendedBindingList.cs" />

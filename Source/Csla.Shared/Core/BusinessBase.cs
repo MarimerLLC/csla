@@ -390,7 +390,7 @@ namespace Csla.Core
     protected virtual void MetaPropertyHasChanged(string name)
     {
       if (ApplicationContext.PropertyChangedMode != ApplicationContext.PropertyChangedModes.Windows)
-        OnPropertyChanged(name);
+        OnMetaPropertyChanged(name);
     }
 
     /// <summary>
@@ -3322,7 +3322,13 @@ namespace Csla.Core
     /// </summary>
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      RaiseChildChanged(sender, e);
+      // Issue 813
+      // MetaPropertyHasChanged calls in OnChildChanged we're leading to exponential growth in OnChildChanged calls
+      // Those notifications are for the UI. Ignore them here
+      if (!(e is MetaPropertyChangedEventArgs))
+      {
+        RaiseChildChanged(sender, e);
+      }
     }
 
 #if !(ANDROID || IOS) && !NETFX_CORE

@@ -21,7 +21,7 @@ Supports the creation of UWP applications.
     <language>en-US</language>
     <dependencies>
       <group targetFramework="uap10.0">
-        <dependency id="CSLA-Core-NS" version=".." />
+        <dependency id="CSLA-Core-NS" version="[4.6.3-Beta10]" />
       </group>
     </dependencies>
   </metadata>

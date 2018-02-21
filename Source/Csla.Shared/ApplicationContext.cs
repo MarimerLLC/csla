@@ -30,8 +30,10 @@ namespace Csla
     internal static void SettingsChanged()
     {
       _dataPortalReturnObjectOnExceptionSet = false;
+#if !PCL46 && !PCL259
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
+#endif
     }
 
 #if !ANDROID && !IOS && !NETFX_CORE

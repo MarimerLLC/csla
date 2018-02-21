@@ -476,17 +476,7 @@ namespace Csla.Core
 
     #region Authorization
 
-#if PCL259
-    [NotUndoable]
-    [NonSerialized]
-    private Dictionary<string, bool> _readResultCache;
-    [NotUndoable]
-    [NonSerialized]
-    private Dictionary<string, bool> _writeResultCache;
-    [NotUndoable]
-    [NonSerialized]
-    private Dictionary<string, bool> _executeResultCache;
-#else
+#if !PCL259
     [NotUndoable]
     [NonSerialized]
     private ConcurrentDictionary<string, bool> _readResultCache;
@@ -496,10 +486,10 @@ namespace Csla.Core
     [NotUndoable]
     [NonSerialized]
     private ConcurrentDictionary<string, bool> _executeResultCache;
-#endif
     [NotUndoable]
     [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
+#endif
 
     /// <summary>
     /// Returns true if the user is allowed to read the

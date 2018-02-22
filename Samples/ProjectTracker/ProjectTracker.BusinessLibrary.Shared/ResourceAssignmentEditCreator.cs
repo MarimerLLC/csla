@@ -18,7 +18,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceAssignmentEditCreator>(projectId, callback);
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
     public static ResourceAssignmentEditCreator GetResourceAssignmentEditCreator(int projectId)
     {
       return DataPortal.Fetch<ResourceAssignmentEditCreator>(projectId);

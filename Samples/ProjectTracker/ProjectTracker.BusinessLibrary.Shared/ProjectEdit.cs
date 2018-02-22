@@ -192,7 +192,7 @@ namespace ProjectTracker.Library
       return await DataPortal.FetchAsync<ProjectEdit>(id);
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
     public static ProjectEdit NewProject()
     {
       return DataPortal.Create<ProjectEdit>();

@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProjectTracker.AppServerHost</RootNamespace>
     <AssemblyName>ProjectTracker.AppServerHost</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -22,6 +22,7 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,14 +42,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.6.500\lib\net46\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.7.100-R18022202\lib\net46\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Web, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET.4.6.500\lib\net46\Csla.Web.dll</HintPath>
+    <Reference Include="Csla.Web, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-ASP.NET.4.7.100-R18022202\lib\net46\Csla.Web.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Web.Mvc5, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.6.500\lib\net46\Csla.Web.Mvc5.dll</HintPath>
+    <Reference Include="Csla.Web.Mvc5, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.7.100-R18022202\lib\net46\Csla.Web.Mvc5.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -63,9 +64,9 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -250,7 +251,7 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.6.500\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.7.100-R18022202\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WpfUI</RootNamespace>
     <AssemblyName>WpfUI</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,11 +40,11 @@
       <HintPath>..\packages\BXF.1.2.0.0\lib\net46\Bxf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Csla, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.6.500\lib\net46\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.7.100-R18022202\lib\net46\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Xaml, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-WPF.4.6.500\lib\net46\Csla.Xaml.dll</HintPath>
+    <Reference Include="Csla.Xaml, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-WPF.4.7.100-R18022202\lib\net46\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -240,7 +241,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.6.500\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.7.100-R18022202\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

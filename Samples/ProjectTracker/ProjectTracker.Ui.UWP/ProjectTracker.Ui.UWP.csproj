@@ -11,14 +11,15 @@
     <AssemblyName>UwpUI</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>ProjectTracker.Ui.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>54CB3F84EF7D834A7AE213883C8DD7EAA6978A30</PackageCertificateThumbprint>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -90,10 +91,6 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -164,11 +161,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Uwp\ProjectTracker.BusinessLibrary.Uwp.csproj">
-      <Project>{4027c5ac-6b25-433a-af78-334fdffeab0d}</Project>
-      <Name>ProjectTracker.BusinessLibrary.Uwp</Name>
+    <PackageReference Include="CSLA-UWP">
+      <Version>4.7.100-R18022202</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.0.7</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj">
+      <Project>{e3d685a7-13e0-4b98-8628-cbcc3942908d}</Project>
+      <Name>ProjectTracker.BusinessLibrary.Netstandard</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

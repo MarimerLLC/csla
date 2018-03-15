@@ -12,7 +12,7 @@ namespace UwpUI.ViewModels
       string message = error.Message;
       if (error.InnerException != null)
         message = error.InnerException.Message;
-      await new MessageDialog(message, "Data error").ShowAsync();
+      //await new MessageDialog(message, $"Data error { typeof(T) }").ShowAsync();
     }
   }
 }

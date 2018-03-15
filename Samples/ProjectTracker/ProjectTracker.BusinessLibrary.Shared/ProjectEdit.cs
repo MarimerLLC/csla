@@ -38,6 +38,14 @@ namespace ProjectTracker.Library
       set { SetProperty(NameProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> CoolPropertyProperty = 
+      RegisterProperty<string>(c => c.CoolProperty);
+    public string CoolProperty
+    {
+      get { return GetProperty(CoolPropertyProperty); }
+      set { SetProperty(CoolPropertyProperty, value); }
+    }
+
     public static readonly PropertyInfo<DateTime?> StartedProperty = RegisterProperty<DateTime?>(c => c.Started);
     public DateTime? Started
     {

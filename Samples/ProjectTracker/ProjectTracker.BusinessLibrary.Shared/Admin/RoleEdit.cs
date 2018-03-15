@@ -66,7 +66,7 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-#if !FULL_DOTNET
+#if !FULL_DOTNET 
     public static RoleEdit NewRoleEdit()
     {
       return DataPortal.CreateChild<RoleEdit>();

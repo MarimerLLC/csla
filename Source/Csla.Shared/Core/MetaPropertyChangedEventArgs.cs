@@ -11,6 +11,10 @@ namespace Csla.Core
   /// </summary>
   public class MetaPropertyChangedEventArgs : PropertyChangedEventArgs
   {
+    /// <summary>
+    /// Property changed event args
+    /// </summary>
+    /// <param name="propertyName">Name of changed property.</param>
     public MetaPropertyChangedEventArgs(string propertyName) : base(propertyName)
     {
     }

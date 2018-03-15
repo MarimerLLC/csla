@@ -137,7 +137,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
 
     public static ResourceEdit NewResourceEdit()
     {

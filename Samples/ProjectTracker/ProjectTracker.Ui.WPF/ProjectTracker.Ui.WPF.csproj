@@ -41,10 +41,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Csla, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.7.100-R18022202\lib\net46\Csla.dll</HintPath>
+      <HintPath>..\packages\CSLA-Core.4.7.100\lib\net46\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-WPF.4.7.100-R18022202\lib\net46\Csla.Xaml.dll</HintPath>
+      <HintPath>..\packages\CSLA-WPF.4.7.100\lib\net46\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -241,7 +241,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.7.100-R18022202\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.7.100\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

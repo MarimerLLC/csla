@@ -43,13 +43,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.7.100-R18031402\lib\net46\Csla.dll</HintPath>
+      <HintPath>..\packages\CSLA-Core.4.7.100\lib\net46\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET.4.7.100-R18031402\lib\net46\Csla.Web.dll</HintPath>
+      <HintPath>..\packages\CSLA-ASP.NET.4.7.100\lib\net46\Csla.Web.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web.Mvc5, Version=4.7.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.7.100-R18031402\lib\net46\Csla.Web.Mvc5.dll</HintPath>
+      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.7.100\lib\net46\Csla.Web.Mvc5.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -251,7 +251,7 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.7.100-R18031402\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.7.100\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -267,7 +267,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>11170</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

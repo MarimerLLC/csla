@@ -164,7 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSLA-UWP">
-      <Version>4.7.100-R18031402</Version>
+      <Version>4.7.100</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.8</Version>

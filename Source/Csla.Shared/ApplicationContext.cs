@@ -10,10 +10,10 @@ using System.Threading;
 using System.Security.Principal;
 using System.Collections.Specialized;
 #if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
-using System.Configuration;
 using System.Web;
 #endif
 using Csla.Core;
+using Csla.Configuration;
 
 namespace Csla
 {
@@ -26,8 +26,18 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
-#if !ANDROID && !IOS && !NETFX_CORE 
-    private static IContextManager _webContextManager;
+
+    internal static void SettingsChanged()
+    {
+      _dataPortalReturnObjectOnExceptionSet = false;
+#if !PCL46 && !PCL259
+      _transactionIsolationLevelSet = false;
+      _defaultTransactionTimeoutInSecondsSet = false;
+#endif
+    }
+
+#if !ANDROID && !IOS && !NETFX_CORE
+  private static IContextManager _webContextManager;
 #endif
 #if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static Type _webManagerType;
@@ -676,10 +686,13 @@ namespace Csla
       }
     }
 
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
+#if !ANDROID && !IOS && !NETFX_CORE 
+
+    private static TransactionIsolationLevel _transactionIsolationLevel = TransactionIsolationLevel.Unspecified;
+    private static bool _transactionIsolationLevelSet = false;
 
     /// <summary>
-    /// Gets the default transaction isolation level.
+    /// Gets or sets the default transaction isolation level.
     /// </summary>
     /// <value>
     /// The default transaction isolation level.
@@ -688,17 +701,31 @@ namespace Csla
     {
       get
       {
-        string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
-        if (string.IsNullOrEmpty(tmp))
+        if (!_transactionIsolationLevelSet)
         {
-          return TransactionIsolationLevel.Unspecified;
+#if !NETSTANDARD2_0
+          string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
+          if (!string.IsNullOrEmpty(tmp))
+          {
+            _transactionIsolationLevel = (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
+          }
+          _transactionIsolationLevelSet = true;
+#endif
         }
-        return (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
+        return _transactionIsolationLevel;
+      }
+      set
+      {
+        _transactionIsolationLevel = value;
+        _transactionIsolationLevelSet = true;
       }
     }
 
+    private static int _defaultTransactionTimeoutInSeconds = 30;
+    private static bool _defaultTransactionTimeoutInSecondsSet = false;
+
     /// <summary>
-    /// Gets the default transaction timeout in seconds.
+    /// Gets or sets the default transaction timeout in seconds.
     /// </summary>
     /// <value>
     /// The default transaction timeout in seconds.
@@ -707,21 +734,33 @@ namespace Csla
     {
       get
       {
-        var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
-        return string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
+        if (!_defaultTransactionTimeoutInSecondsSet)
+        {
+#if !NETSTANDARD2_0
+          var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
+          _defaultTransactionTimeoutInSeconds = string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
+          _defaultTransactionTimeoutInSecondsSet = true;
+#endif
+        }
+        return _defaultTransactionTimeoutInSeconds;
+      }
+      set
+      {
+        _defaultTransactionTimeoutInSeconds = value;
+        _defaultTransactionTimeoutInSecondsSet = true;
       }
     }
 
 #endif
 
-    #endregion
+#endregion
 
-    #region Logical Execution Location
-    /// <summary>
-    /// Enum representing the logical execution location
-    /// The setting is set to server when server is execting
-    /// a CRUD opertion, otherwise the setting is always client
-    /// </summary>
+        #region Logical Execution Location
+        /// <summary>
+        /// Enum representing the logical execution location
+        /// The setting is set to server when server is execting
+        /// a CRUD opertion, otherwise the setting is always client
+        /// </summary>
     public enum LogicalExecutionLocations
     {
       /// <summary>
@@ -799,7 +838,6 @@ namespace Csla
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
         return _user.Value;
 #elif PCL46 || PCL259
-        IPrincipal current = null;
         throw new NotSupportedException("PCL.GetUser");
 #else
         return Thread.CurrentPrincipal;
@@ -813,7 +851,7 @@ namespace Csla
       public virtual void SetUser(IPrincipal principal)
       {
 #if NETSTANDARD1_5 || NETSTANDARD1_6 || WINDOWS_UWP
-        IPrincipal current = _user.Value;
+        _user.Value = principal;
 #elif PCL46 || PCL259
         throw new NotSupportedException("PCL.SetUser");
 #else

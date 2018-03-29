@@ -6,9 +6,7 @@
 // <summary>Factory used to create the appropriate</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !((ANDROID || IOS) || NETFX_CORE)
-using System.Configuration;
-#endif
+using Csla.Configuration;
 using Csla.Reflection;
 
 namespace Csla.Serialization

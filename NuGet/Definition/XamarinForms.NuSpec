@@ -20,16 +20,11 @@ Supports the creation of Xamarin.Forms applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+      <dependency id="CSLA-Core-NS" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
     <!-- Xamarin.Forms Csla.Xaml -->
-    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\MonoTouch10" />
-    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\Xamarin.iOS" />
-    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\portable-net45+win8+wpa81" />
-    <!-- Source Files for Symbol Server -->
-    <!-- <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" /> -->
+    <file src="..\..\Bin\Release\Xamarin\netstandard2.0\**\Csla.Xaml.*" target="lib\netstandard2.0"/>
   </files>
 </package>

@@ -45,7 +45,7 @@ namespace ProjectTracker.Library
       });
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)

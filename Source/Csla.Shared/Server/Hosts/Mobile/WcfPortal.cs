@@ -7,7 +7,7 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using Csla.Serialization.Mobile;
 using System.ServiceModel;
 using System.ServiceModel.Activation;

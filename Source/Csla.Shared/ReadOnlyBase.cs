@@ -117,24 +117,17 @@ namespace Csla
 
     #region Authorization
 
-#if PCL259
-    [NotUndoable()]
-    [NonSerialized()]
-    private Dictionary<string, bool> _readResultCache;
-    [NotUndoable()]
-    [NonSerialized()]
-    private Dictionary<string, bool> _executeResultCache;
-#else
+#if !PCL259
     [NotUndoable()]
     [NonSerialized()]
     private ConcurrentDictionary<string, bool> _readResultCache;
     [NotUndoable()]
     [NonSerialized()]
     private ConcurrentDictionary<string, bool> _executeResultCache;
-#endif
     [NotUndoable()]
     [NonSerialized()]
     private System.Security.Principal.IPrincipal _lastPrincipal;
+#endif
 
     private void InitializeBusinessRules()
     {

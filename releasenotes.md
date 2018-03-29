@@ -1,27 +1,50 @@
-This release is focused primarily on supporting .NET Core and NetStandard 1.6. There are also a number of bug fixes, enhancements, and improvements to some samples.
+I am pleased to announce the release of CSLA .NET version 4.7.100 with full support for netstandard 2.0 and .NET Core 2. 
 
-This release is available via NuGet.
+The packages are now in NuGet. Once some final updates to the samples are complete and merged into master I'll create a formal release tag/page on GitHub.
 
-* [#733](https://github.com/marimerllc/csla/issues/733) Remove WinRT packages from NuGet - CSLA no longer supports Win8 development as of version 4.6.600 **BREAKING CHANGE**
-* [#722](https://github.com/marimerllc/csla/issues/722) Add support for ASP.NET Core
-* [#708](https://github.com/marimerllc/csla/issues/708) Csla.AspNetCore.Mvc implementation
-* [#725](https://github.com/marimerllc/csla/issues/725) Update samples
-* [#701](https://github.com/marimerllc/csla/issues/701) Windows Forms now stores `Csla.ApplicationContext.User` in a `static` field instead of per-thread **BREAKING CHANGE**
-* Provide More Information in UndoException [#472](https://github.com/marimerllc/csla/issues/472) (#718)  **BREAKING CHANGE**
-* RegisterProperty overload (propertyLambdaExpression 
-* Fix wrong role name in ProjectTracker Sample MockDb (#715) 
-* Mark SingleCriteria as obsolete [#656](https://github.com/marimerllc/csla/issues/656) (#716) 
-* Update NuGet targets/dependencies (#713) 
-* [#707](https://github.com/marimerllc/csla/issues/707) Add editorconfig file for solution (#714) 
-* [#691](https://github.com/marimerllc/csla/issues/691) Update for VS 2017 (#706)  **BREAKING CHANGE FOR FRAMEWORK DEVS**
-* Samples/ProjectTracker Code fixes (#699) 
-* Fix PropertyConvert of nullable type to nullable enum property. [#692](https://github.com/marimerllc/csla/issues/692) (#695) 
-* Fix DynamicBindingListBase<T> constraint is missing Csla.Serialization.Mobile.IMobileObject [#689](https://github.com/marimerllc/csla/issues/689) (#690) 
-* Delete Silverlight dependencies. (#685) 
-* Fix Sample ExtendableWcfPortalForDotNet (Rolodex) [#678](https://github.com/marimerllc/csla/issues/678) (#683) 
-* CslaFastStart LastName update fix (#682) 
-* [#680](https://github.com/marimerllc/csla/issues/680) Fixes trivia issue (#681) 
-* Allow SerializableAttribute on Enums (#672) 
-* Add fast start sample and readme (#670) 
-* Fixes [#664](https://github.com/marimerllc/csla/issues/664) - Add logic to also ConvertFrom TypeConverter inside CoerceValue (#665) 
-* Throwing exception when sync dataportal tries to call async method on client ([#643](https://github.com/marimerllc/csla/issues/643))
+This release also includes some other very exciting capabilities, including:
+
+* [#760](https://github.com/MarimerLLC/csla/issues/760) Add support for ASP.NET Core 2.0
+* [#759](https://github.com/MarimerLLC/csla/issues/759) Add support for EF Core (EntityFrameworkCore)
+* [#813](https://github.com/MarimerLLC/csla/issues/813) Major performance improvement when data binding to large object graphs thanks to [keithdv](https://github.com/keithdv)
+* [#795](https://github.com/MarimerLLC/csla/issues/795) Add `Transactional` attribute back into netstandard 2.0 code 
+* [#800](https://github.com/MarimerLLC/csla/issues/800) Changes to configuration so it is possible to configure CSLA without any `web.config` or `app.config` files (such as in .NET Core, etc.)
+* [#496](https://github.com/MarimerLLC/csla/issues/496) Support `ClaimsPrincipal` via new `CslaClaimsPrincipal` type
+* [#729](https://github.com/MarimerLLC/csla/issues/729) `ApplicationContext` now defaults to using `AsyncLocal` to maintain values on the current thread/context with help from [j055](https://github.com/j055) **BREAKING CHANGE**
+* [#712](https://github.com/MarimerLLC/csla/issues/712) Support in-place deserialization of an object graph
+* [#748](https://github.com/MarimerLLC/csla/issues/748) Major improvements to serialization via `MobileFormatter` thanks to [jasonbock](https://github.com/JasonBock)
+* [#763](https://github.com/MarimerLLC/csla/issues/763) Update to samples thanks to [tfreitasleal](https://github.com/tfreitasleal)
+* [#688](https://github.com/MarimerLLC/csla/issues/688) Get `ApplicationContext.User` authentication working with ASP.NET Core thanks to [dazinator](https://github.com/dazinator)
+* [#766](https://github.com/MarimerLLC/csla/issues/766) Update to use latest UWP libraries for Windows 10 Fall Creators Update **BREAKING CHANGE**
+* [#790](https://github.com/MarimerLLC/csla/issues/790) BUG: Fix `AmbiguousMatchException` in data portal thanks to [iherwald](https://github.com/iherwald)
+* [#710](https://github.com/MarimerLLC/csla/issues/710) BUG: Fix ambiguous `Save` method issue thanks to [rabidkitten](https://github.com/rabidkitten)
+ 
+There are a couple known issues with this release:
+
+* [#818](https://github.com/MarimerLLC/csla/issues/818) Xamarin projects using `System.Data.SqlClient` show a warning about this assembly's location
+* [#794](https://github.com/MarimerLLC/csla/issues/794) UWP projects show `warning PRI263: 0xdef01051` messages relative to CSLA resource strings
+* [#822](https://github.com/MarimerLLC/csla/issues/822) There are two "sets" of CSLA packages/assemblies: one for full .NET 4.6.1+ and one for netstandard (including Xamarin, UWP, .NET Core, etc.) due to a type error between netstandard and full .NET
+* [#703](https://github.com/MarimerLLC/csla/issues/703) Though netstandard supports BinaryFormatter, that is currently not an option from the CSLA configuration, and this needs to be addressed
+
+Regarding the NuGet/assembly split noted in [#822](https://github.com/MarimerLLC/csla/issues/822):
+
+Right now there are two "families" of CSLA .NET packages in NuGet. One that supports full .NET and one that supports all other runtimes.
+
+The full .NET family must be used for the following types of app:
+* Windows Forms
+* WPF
+* ASP.NET (other than Core)
+* Console apps (other than Core)
+* Azure Functions
+* Any other runtime hosted by full .NET 4.6.1+
+
+The netstandard family must be used for the following types of app:
+* Xamrin
+* UWP
+* .NET Core
+* ASP.NET Core
+* Any other runtime _not_ hosted by full .NET 4.6.1+
+
+What this means for you is that if your n-tier app is 100% full .NET or full netstandard then you can live within one of those families. BUT if your server is full .NET and your client is Xamarin (for example) then your _business library_ assemblies need to be compiled twice: once for full .NET and once for netstandard.
+
+The `Samples\ProjectTracker` app shows how this is done by using a Shared Project to contain the code, and two concrete class library projects that compile the code for full .NET and netstandard respectively.

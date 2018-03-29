@@ -51,7 +51,7 @@ namespace Csla.Web
 
       // configure csla according to options.
       Csla.Server.FactoryDataPortal.FactoryLoader = options.ObjectFactoryLoader;
-      Csla.ApplicationContext.WebContextManager = options.WebContextManager ?? new ApplicationContextMananger(appBuilder.ApplicationServices);
+      Csla.ApplicationContext.WebContextManager = options.WebContextManager ?? new ApplicationContextManager(appBuilder.ApplicationServices);
 
       return appBuilder;
     }

@@ -75,7 +75,7 @@ namespace ProjectTracker.Library
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
     private void Child_Create(int projectId)
     {
       using (BypassPropertyChecks)

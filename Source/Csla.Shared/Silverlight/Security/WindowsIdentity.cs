@@ -53,6 +53,16 @@ namespace Csla.Silverlight.Security
 
     #region Identity and roles population
 
+#if NETSTANDARD2_0
+    /// <summary>
+    /// Retrieves identity and role information from the currently
+    /// logged in Windows user.
+    /// </summary>
+    protected virtual void PopulateWindowsIdentity()
+    {
+      throw new NotImplementedException();
+    }
+#endif
 #if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
     /// <summary>
     /// Retrieves identity and role information from the currently

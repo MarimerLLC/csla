@@ -29,7 +29,7 @@ namespace ProjectTracker.Library
       ProjectId = id;
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

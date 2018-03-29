@@ -40,7 +40,7 @@ namespace ProjectTracker.Library
     }
 #endif
 
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>

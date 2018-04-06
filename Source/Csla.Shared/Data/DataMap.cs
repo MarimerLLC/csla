@@ -1,4 +1,4 @@
-﻿#if !IOS
+﻿#if !IOS && !WASM
 //-----------------------------------------------------------------------
 // <copyright file="DataMap.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

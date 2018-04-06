@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !IOS || NETSTANDARD
+#if !NETFX_CORE && !IOS && !WASM || NETSTANDARD
 //-----------------------------------------------------------------------
 // <copyright file="DataMapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

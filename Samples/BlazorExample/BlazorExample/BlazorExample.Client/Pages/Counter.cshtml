@@ -1,0 +1,37 @@
+﻿@page "/counter"
+@inject HttpClient Http
+  <h1>Counter</h1>
+
+  <p>Current count: @currentCount</p>
+  <p>Name: @person.Name</p>
+
+  <button @onclick(IncrementCount)>Click me</button>
+  <button @onclick(LoadPerson)>Load person</button>
+
+  <p>Error: @errorText</p>
+
+  @functions {
+    int currentCount = 0;
+    BlazorExample.Shared.Person person = new BlazorExample.Shared.Person();
+    string errorText = "";
+
+    void IncrementCount()
+    {
+      currentCount++;
+    }
+
+    async void LoadPerson()
+    {
+      try
+      {
+        // Provide injected HttpClient to data portal proxy
+        Csla.DataPortalClient.HttpProxy.SetHttpClient(Http);
+        // Get person object from server
+        person = await Csla.DataPortal.FetchAsync<BlazorExample.Shared.Person>("Fred");
+      }
+      catch (Exception ex)
+      {
+        errorText = ex.Message + ":: " + ex.ToString();
+      }
+    }
+  }

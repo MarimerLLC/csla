@@ -79,7 +79,19 @@ namespace Csla.DataPortalClient
     /// </summary>
     protected virtual HttpClient GetClient()
     {
-      return new HttpClient();
+      if (_client == null)
+        _client = new HttpClient();
+      return _client;
+    }
+
+    private static HttpClient _client;
+    /// <summary>
+    /// Set HttpClient object for use by data portal.
+    /// </summary>
+    /// <param name="client"></param>
+    public static void SetHttpClient(HttpClient client)
+    {
+      _client = client;
     }
 
 #region Criteria
@@ -165,11 +177,13 @@ namespace Csla.DataPortalClient
         var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=create", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        //httpRequest.Content = new ByteArrayContent(serialized);
+        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
 
         var httpResponse = await client.SendAsync(httpRequest);
         httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
+        var temp = await httpResponse.Content.ReadAsStringAsync();
+        serialized = System.Convert.FromBase64String(temp);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -232,11 +246,13 @@ namespace Csla.DataPortalClient
         var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=fetch", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        //httpRequest.Content = new ByteArrayContent(serialized);
+        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
 
         var httpResponse = await client.SendAsync(httpRequest);
         httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
+        var temp = await httpResponse.Content.ReadAsStringAsync();
+        serialized = System.Convert.FromBase64String(temp);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -293,11 +309,13 @@ namespace Csla.DataPortalClient
         var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=update", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        //httpRequest.Content = new ByteArrayContent(serialized);
+        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
 
         var httpResponse = await client.SendAsync(httpRequest);
         httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
+        var temp = await httpResponse.Content.ReadAsStringAsync();
+        serialized = System.Convert.FromBase64String(temp);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -360,11 +378,13 @@ namespace Csla.DataPortalClient
         var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=delete", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        //httpRequest.Content = new ByteArrayContent(serialized);
+        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
 
         var httpResponse = await client.SendAsync(httpRequest);
         httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
+        var temp = await httpResponse.Content.ReadAsStringAsync();
+        serialized = System.Convert.FromBase64String(temp);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);

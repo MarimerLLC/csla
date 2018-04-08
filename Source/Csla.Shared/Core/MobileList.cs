@@ -86,13 +86,8 @@ namespace Csla.Core
       else
       {
         var source = this.ToList<T>();
-        using (MemoryStream stream = new MemoryStream())
-        {
-          serialization.DataContractSerializer serializer = new serialization.DataContractSerializer(typeof(List<T>));
-          serializer.WriteObject(stream, source);
-          stream.Flush();
-          info.AddValue("$list", stream.ToArray());
-        }
+        string buffer = Newtonsoft.Json.JsonConvert.SerializeObject(source);
+        info.AddValue("$list", buffer);
       }
     }
 
@@ -135,14 +130,9 @@ namespace Csla.Core
         }
         else
         {
-          byte[] buffer = (byte[])info.Values["$list"].Value;
-          List<T> list = null;
-          using (MemoryStream stream = new MemoryStream(buffer))
-          {
-            serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(typeof(List<T>));
-            list = (List<T>)dcs.ReadObject(stream);
-            AddRange(list);
-          }
+          string buffer = (string)info.Values["$list"].Value;
+          List<T> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(buffer);
+          AddRange(list);
         }
       }
     }

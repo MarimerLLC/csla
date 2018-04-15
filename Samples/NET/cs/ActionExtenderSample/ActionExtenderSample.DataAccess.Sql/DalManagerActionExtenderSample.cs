@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -25,8 +26,10 @@ namespace ActionExtenderSample.DataAccess.Sql
   /// </remarks>
   public class DalManagerActionExtenderSample : IDalManagerActionExtenderSample
   {
+    private bool _disposed;
+
     private static readonly string TypeMask =
-      typeof(DalManagerActionExtenderSample).FullName.Replace("DalManagerActionExtenderSample", @"{0}");
+      typeof(DalManagerActionExtenderSample).FullName?.Replace("DalManagerActionExtenderSample", @"{0}");
 
     private const string BaseNamespace = "ActionExtenderSample.DataAccess";
 
@@ -42,7 +45,8 @@ namespace ActionExtenderSample.DataAccess.Sql
       catch (ConfigurationErrorsException ex)
       {
         if (ConnectionManager == null)
-          throw new ArgumentException(string.Format("ConnectionString {0} could not be found", "ActionExtenderSample"));
+          throw new ArgumentException(string.Format("ConnectionString {0} could not be found",
+            "ActionExtenderSample"));
       }
     }
 
@@ -61,17 +65,21 @@ namespace ActionExtenderSample.DataAccess.Sql
     /// <returns>A new ActionExtenderSample DAL instance for the given Type.</returns>
     public T GetProvider<T>() where T : class
     {
-      string typeName;
-      var namespaceDiff = typeof(T).Namespace.Length - BaseNamespace.Length;
-      if (namespaceDiff > 0)
-        typeName = string.Format(TypeMask, typeof(T).Namespace.Substring(BaseNamespace.Length + 1,
-            namespaceDiff - 1)) + "." + typeof(T).Name.Substring(1);
-      else
-        typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));
+      string typeName = string.Empty;
+      var ns = typeof(T).Namespace;
+      if (ns != null)
+      {
+        var namespaceDiff = ns.Length - BaseNamespace.Length;
+        if (namespaceDiff > 0)
+          typeName = string.Format(TypeMask, ns.Substring(BaseNamespace.Length + 1, namespaceDiff - 1)) + "." +
+                     typeof(T).Name.Substring(1);
+        else
+          typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));
 
-      var type = Type.GetType(typeName);
-      if (type != null)
-        return Activator.CreateInstance(type) as T;
+        var type = Type.GetType(typeName);
+        if (type != null)
+          return Activator.CreateInstance(type) as T;
+      }
 
       throw new NotImplementedException(typeName);
     }
@@ -81,11 +89,24 @@ namespace ActionExtenderSample.DataAccess.Sql
     /// </summary>
     public void Dispose()
     {
-      ConnectionManager.Dispose();
-      ConnectionManager = null;
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (_disposed)
+        return;
+
+      if (disposing && ConnectionManager != null)
+      {
+        ConnectionManager.Dispose();
+        ConnectionManager = null;
+      }
+
+      _disposed = true;
     }
 
     #endregion
-
   }
 }

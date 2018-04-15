@@ -42,7 +42,7 @@ namespace ActionExtenderSample.DataAccess.Sql
       {
         ConnectionManager = ConnectionManager<SqlConnection>.GetManager("ActionExtenderSample");
       }
-      catch (ConfigurationErrorsException ex)
+      catch (ConfigurationErrorsException)
       {
         if (ConnectionManager == null)
           throw new ArgumentException(string.Format("ConnectionString {0} could not be found",

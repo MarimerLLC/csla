@@ -37,12 +37,12 @@ Supports the use of ADO.NET Entity Framework 5.
     <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF5.resources.dll*" target="lib\net45" />
     <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF5.resources.pdb*" target="lib\net45" />
     <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF5.xml*" target="lib\net45" />
-    <!-- .NET 4.6 Client -->
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.dll*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.pdb*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.resources.dll*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.resources.pdb*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.xml*" target="lib\net46" />
+    <!-- .NET 4.6.1 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.resources.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.resources.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF5.xml*" target="lib\net461" />
     <!-- Source Files for Symbol Server -->
     <!-- <file src="..\..\Source\**\Csla.Data.EF5*\**\*.cs" target="src" /> -->
   </files>

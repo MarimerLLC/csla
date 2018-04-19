@@ -37,12 +37,12 @@ Supports the use of ADO.NET Entity Framework 6.
     <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.resources.dll*" target="lib\net45" />
     <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.resources.pdb*" target="lib\net45" />
     <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.xml*" target="lib\net45" />
-    <!-- .NET 4.6 Client -->
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.dll*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.pdb*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.resources.dll*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.resources.pdb*" target="lib\net46" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.xml*" target="lib\net46" />
+    <!-- .NET 4.6.1 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.resources.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.resources.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.xml*" target="lib\net461" />
     <!-- Source Files for Symbol Server -->
     <!-- <file src="..\..\Source\**\Csla.Data.EF6*\**\*.cs" target="src" /> -->
   </files>

@@ -112,23 +112,28 @@ namespace Csla.Data
 #endif
       }
 
+      ConnectionManager mgr = null;
+      var ctxName = GetContextName(database, label);
       lock (_lock)
       {
-        var ctxName = GetContextName(database, label);
-        ConnectionManager mgr = null;
-        if (ApplicationContext.LocalContext.Contains(ctxName))
+        var cached = ApplicationContext.LocalContext.GetValueOrNull(ctxName);
+        if (cached != null)
         {
-          mgr = (ConnectionManager)(ApplicationContext.LocalContext[ctxName]);
-
+          mgr = (ConnectionManager)cached;
+          mgr.AddRef();
         }
-        else
-        {
-          mgr = new ConnectionManager(database, label);
-          ApplicationContext.LocalContext[ctxName] = mgr;
-        }
-        mgr.AddRef();
-        return mgr;
       }
+
+      if (mgr == null)
+      {
+        mgr = new ConnectionManager(database, label);
+        lock (_lock)
+        {
+          ApplicationContext.LocalContext[ctxName] = mgr;
+          mgr.AddRef();
+        }
+      }
+      return mgr;
     }
 
     private ConnectionManager(string connectionString, string label)
@@ -171,8 +176,6 @@ namespace Csla.Data
       }
     }
 
-#region  Reference counting
-
     private int _refCount;
 
     /// <summary>
@@ -191,22 +194,15 @@ namespace Csla.Data
 
     private void DeRef()
     {
-
-      lock (_lock)
+      _refCount -= 1;
+      if (_refCount == 0)
       {
-        _refCount -= 1;
-        if (_refCount == 0)
-        {
-          _connection.Dispose();
+        _connection.Close();
+        _connection.Dispose();
+        lock (_lock)
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
-        }
       }
-
     }
-
-#endregion
-
-#region  IDisposable
 
     /// <summary>
     /// Dispose object, dereferencing or
@@ -217,9 +213,6 @@ namespace Csla.Data
     {
       DeRef();
     }
-
-#endregion
-
   }
 }
 #endif

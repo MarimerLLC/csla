@@ -6,7 +6,9 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
-using ActionExtenderSample.Business;
+
+using System;
+using Csla;
 
 namespace ActionExtenderSample.Business
 {
@@ -19,25 +21,24 @@ namespace ActionExtenderSample.Business
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
     /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    protected override void OnDeserialized()
     {
-        base.OnDeserialized(context);
+        base.OnDeserialized();
         // add your custom OnDeserialized actions here.
     }*/
 
     #endregion
 
-    #region Pseudo Event Handlers
+    #region Implementation of DataPortal Hooks
 
     //partial void OnFetchPre(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnFetchPost(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     #endregion

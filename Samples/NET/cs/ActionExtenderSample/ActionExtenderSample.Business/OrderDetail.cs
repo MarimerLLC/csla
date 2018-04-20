@@ -6,7 +6,9 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
-using ActionExtenderSample.Business;
+
+using System;
+using Csla;
 
 namespace ActionExtenderSample.Business
 {
@@ -32,61 +34,61 @@ namespace ActionExtenderSample.Business
 
     //partial void AddBusinessRulesExtend()
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     #endregion
 
-    #region Pseudo Event Handlers
+    #region Implementation of DataPortal Hooks
 
     //partial void OnCreate(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnDeletePre(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnDeletePost(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnFetchPre(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnFetchPost(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnFetchRead(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnUpdatePre(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnUpdatePost(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnInsertPre(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     //partial void OnInsertPost(DataPortalHookArgs args)
     //{
-    //    throw new System.Exception("The method or operation is not implemented.");
+    //    throw new NotImplementedException();
     //}
 
     #endregion

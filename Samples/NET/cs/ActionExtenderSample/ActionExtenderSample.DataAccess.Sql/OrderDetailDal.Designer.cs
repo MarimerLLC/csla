@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,6 +21,9 @@ namespace ActionExtenderSample.DataAccess.Sql
   /// </summary>
   public partial class OrderDetailDal : IOrderDetailDal
   {
+
+    #region DAL methods
+
     /// <summary>
     /// Inserts a new OrderDetail object in the database.
     /// </summary>
@@ -28,7 +32,7 @@ namespace ActionExtenderSample.DataAccess.Sql
     /// <param name="productID">The Product ID.</param>
     /// <param name="purchaseUnitPrice">The Purchase Unit Price.</param>
     /// <param name="quantity">The Quantity.</param>
-    public void Insert(Guid orderID, Guid orderDetailID, Guid productID, Decimal purchaseUnitPrice, int quantity)
+    public void Insert(Guid orderID, Guid orderDetailID, Guid productID, decimal purchaseUnitPrice, int quantity)
     {
       using (var ctx = ConnectionManager<SqlConnection>.GetManager("ActionExtenderSample"))
       {
@@ -52,7 +56,7 @@ namespace ActionExtenderSample.DataAccess.Sql
     /// <param name="productID">The Product ID.</param>
     /// <param name="purchaseUnitPrice">The Purchase Unit Price.</param>
     /// <param name="quantity">The Quantity.</param>
-    public void Update(Guid orderDetailID, Guid productID, Decimal purchaseUnitPrice, int quantity)
+    public void Update(Guid orderDetailID, Guid productID, decimal purchaseUnitPrice, int quantity)
     {
       using (var ctx = ConnectionManager<SqlConnection>.GetManager("ActionExtenderSample"))
       {
@@ -86,5 +90,8 @@ namespace ActionExtenderSample.DataAccess.Sql
         }
       }
     }
+
+    #endregion
+
   }
 }

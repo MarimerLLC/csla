@@ -7,6 +7,9 @@
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
 
+using System;
+using Csla;
+
 namespace ActionExtenderSample.DataAccess.Sql
 {
   public partial class OrderDetailDal

@@ -26,12 +26,20 @@ namespace ActionExtenderSample.DataAccess.Sql
   /// </remarks>
   public class DalManagerActionExtenderSample : IDalManagerActionExtenderSample
   {
-    private bool _disposed;
+    #region Fields and Properties
 
     private static readonly string TypeMask =
       typeof(DalManagerActionExtenderSample).FullName?.Replace("DalManagerActionExtenderSample", @"{0}");
 
-    private const string BaseNamespace = "ActionExtenderSample.DataAccess";
+    /// <summary>
+    /// Gets the ADO ConnectionManager object.
+    /// </summary>
+    /// <value>The ConnectionManager object</value>
+    public ConnectionManager<SqlConnection> ConnectionManager { get; private set; }
+
+    #endregion
+
+    #region Constructor
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DalManagerActionExtenderSample"/> class.
@@ -50,11 +58,7 @@ namespace ActionExtenderSample.DataAccess.Sql
       }
     }
 
-    /// <summary>
-    /// Gets the ADO ConnectionManager object.
-    /// </summary>
-    /// <value>The ConnectionManager object</value>
-    public ConnectionManager<SqlConnection> ConnectionManager { get; private set; }
+    #endregion
 
     #region IDalManagerActionExtenderSample Members
 
@@ -65,24 +69,17 @@ namespace ActionExtenderSample.DataAccess.Sql
     /// <returns>A new ActionExtenderSample DAL instance for the given Type.</returns>
     public T GetProvider<T>() where T : class
     {
-      string typeName = string.Empty;
-      var ns = typeof(T).Namespace;
-      if (ns != null)
-      {
-        var namespaceDiff = ns.Length - BaseNamespace.Length;
-        if (namespaceDiff > 0)
-          typeName = string.Format(TypeMask, ns.Substring(BaseNamespace.Length + 1, namespaceDiff - 1)) + "." +
-                     typeof(T).Name.Substring(1);
-        else
-          typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));
-
-        var type = Type.GetType(typeName);
-        if (type != null)
-          return Activator.CreateInstance(type) as T;
-      }
+      var typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));
+      var type = Type.GetType(typeName);
+      if (type != null)
+        return Activator.CreateInstance(type) as T;
 
       throw new NotImplementedException(typeName);
     }
+
+    #endregion
+
+    #region IDisposable Members
 
     /// <summary>
     /// Disposes the ConnectionManager.
@@ -95,16 +92,11 @@ namespace ActionExtenderSample.DataAccess.Sql
 
     protected virtual void Dispose(bool disposing)
     {
-      if (_disposed)
-        return;
-
       if (disposing && ConnectionManager != null)
       {
         ConnectionManager.Dispose();
         ConnectionManager = null;
       }
-
-      _disposed = true;
     }
 
     #endregion

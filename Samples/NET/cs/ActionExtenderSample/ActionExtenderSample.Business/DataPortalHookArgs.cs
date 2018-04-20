@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System.Data;
 using System.Data.Common;
 using Csla.Data;
@@ -77,6 +78,15 @@ namespace ActionExtenderSample.Business
     /// <summary>
     /// Initializes a new instance of the <see cref="DataPortalHookArgs"/> class.
     /// </summary>
+    /// <param name="crit">The criteria object argument.</param>
+    public DataPortalHookArgs(object crit)
+    {
+      CriteriaArg = crit;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DataPortalHookArgs"/> class.
+    /// </summary>
     /// <param name="cmd">The command argument.</param>
     /// <remarks>The connection and ADO transaction arguments are set automatically, based on the command argument.</remarks>
     public DataPortalHookArgs(DbCommand cmd)
@@ -138,15 +148,6 @@ namespace ActionExtenderSample.Business
     public DataPortalHookArgs(DataRow dr)
     {
       DataRowArg = dr;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataPortalHookArgs"/> class.
-    /// </summary>
-    /// <param name="crit">The criteria object argument.</param>
-    public DataPortalHookArgs(object crit)
-    {
-      CriteriaArg = crit;
     }
 
     #endregion

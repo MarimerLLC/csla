@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using Csla;
@@ -19,7 +20,7 @@ namespace ActionExtenderSample.Business
 
   /// <summary>
   /// OrderDetail (editable child object).<br/>
-  /// This is a generated base class of <see cref="OrderDetail"/> business object.
+  /// This is a generated <see cref="OrderDetail"/> business object.
   /// </summary>
   /// <remarks>
   /// This class is an item of <see cref="OrderDetailCollection"/> collection.
@@ -33,6 +34,7 @@ namespace ActionExtenderSample.Business
     /// <summary>
     /// Maintains metadata about <see cref="OrderDetailID"/> property.
     /// </summary>
+    [NotUndoable]
     public static readonly PropertyInfo<Guid> OrderDetailIDProperty = RegisterProperty<Guid>(p => p.OrderDetailID, "Order Detail ID");
     /// <summary>
     /// Gets or sets the Order Detail ID.
@@ -62,13 +64,13 @@ namespace ActionExtenderSample.Business
     /// <summary>
     /// Maintains metadata about <see cref="PurchaseUnitPrice"/> property.
     /// </summary>
-    public static readonly PropertyInfo<Decimal> PurchaseUnitPriceProperty = RegisterProperty<Decimal>(p => p.PurchaseUnitPrice, "Purchase Unit Price");
+    public static readonly PropertyInfo<decimal> PurchaseUnitPriceProperty = RegisterProperty<decimal>(p => p.PurchaseUnitPrice, "Purchase Unit Price");
     /// <summary>
     /// Gets or sets the Purchase Unit Price.
     /// </summary>
     /// <value>The Purchase Unit Price.</value>
     [Required]
-    public Decimal PurchaseUnitPrice
+    public decimal PurchaseUnitPrice
     {
       get { return GetProperty(PurchaseUnitPriceProperty); }
       set { SetProperty(PurchaseUnitPriceProperty, value); }
@@ -97,9 +99,10 @@ namespace ActionExtenderSample.Business
     /// Initializes a new instance of the <see cref="OrderDetail"/> class.
     /// </summary>
     /// <remarks> Do not use to create a Csla object. Use factory methods instead.</remarks>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public OrderDetail()
     {
-      // Prevent direct creation
+      // Use factory methods and do not use direct creation.
 
       // show the framework that this is a child object
       MarkAsChild();
@@ -140,7 +143,7 @@ namespace ActionExtenderSample.Business
     /// <summary>
     /// Loads default values for the <see cref="OrderDetail"/> object properties.
     /// </summary>
-    [Csla.RunLocal]
+    [RunLocal]
     protected override void Child_Create()
     {
       LoadProperty(OrderDetailIDProperty, Guid.NewGuid());
@@ -186,8 +189,9 @@ namespace ActionExtenderSample.Business
             ProductID,
             PurchaseUnitPrice,
             Quantity
-            );
+          );
         }
+
         OnInsertPost(args);
       }
     }
@@ -198,6 +202,9 @@ namespace ActionExtenderSample.Business
     [Transactional(TransactionalTypes.TransactionScope)]
     private void Child_Update()
     {
+      if (!IsDirty)
+        return;
+
       using (var dalManager = DalFactoryActionExtenderSample.GetManager())
       {
         var args = new DataPortalHookArgs();
@@ -210,8 +217,9 @@ namespace ActionExtenderSample.Business
             ProductID,
             PurchaseUnitPrice,
             Quantity
-            );
+          );
         }
+
         OnUpdatePost(args);
       }
     }
@@ -231,13 +239,14 @@ namespace ActionExtenderSample.Business
         {
           dal.Delete(ReadProperty(OrderDetailIDProperty));
         }
+
         OnDeletePost(args);
       }
     }
 
     #endregion
 
-    #region Pseudo Events
+    #region DataPortal Hooks
 
     /// <summary>
     /// Occurs after setting all defaults for object creation.

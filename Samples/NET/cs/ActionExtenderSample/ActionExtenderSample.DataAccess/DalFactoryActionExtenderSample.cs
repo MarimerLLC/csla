@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Configuration;
 
@@ -40,6 +41,7 @@ namespace ActionExtenderSample.DataAccess
         if (_dalType == null)
           throw new ArgumentException(string.Format("Type {0} could not be found", dalTypeName));
       }
+
       return (IDalManagerActionExtenderSample) Activator.CreateInstance(_dalType);
     }
   }

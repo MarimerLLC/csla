@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using Csla;

@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,6 +21,9 @@ namespace ActionExtenderSample.DataAccess.Sql
   /// </summary>
   public partial class OrderDal : IOrderDal
   {
+
+    #region DAL methods
+
     /// <summary>
     /// Loads a Order object from the database.
     /// </summary>
@@ -120,5 +124,8 @@ namespace ActionExtenderSample.DataAccess.Sql
         }
       }
     }
+
+    #endregion
+
   }
 }

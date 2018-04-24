@@ -14,7 +14,8 @@ namespace BusinessRuleDemo
     #region Business Methods
 
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-    [Required]   // Data Annotations rule for Required field
+
+    [Required] // Data Annotations rule for Required field
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -22,6 +23,7 @@ namespace BusinessRuleDemo
     }
 
     public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
+
     public int Num1
     {
       get { return GetProperty(Num1Property); }
@@ -30,6 +32,7 @@ namespace BusinessRuleDemo
 
 
     public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(c => c.Num2);
+
     [Range(1, 6000)]
     public int Num2
     {
@@ -38,6 +41,7 @@ namespace BusinessRuleDemo
     }
 
     public static readonly PropertyInfo<int> SumProperty = RegisterProperty<int>(c => c.Sum);
+
     public int Sum
     {
       get { return GetProperty(SumProperty); }
@@ -45,6 +49,7 @@ namespace BusinessRuleDemo
     }
 
     public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
+
     public string Country
     {
       get { return GetProperty(CountryProperty); }
@@ -52,6 +57,7 @@ namespace BusinessRuleDemo
     }
 
     public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(c => c.State);
+
     public string State
     {
       get { return GetProperty(StateProperty); }
@@ -59,13 +65,16 @@ namespace BusinessRuleDemo
     }
 
     public static readonly PropertyInfo<string> StateNameProperty = RegisterProperty<string>(c => c.StateName);
+
     public string StateName
     {
       get { return GetProperty(StateNameProperty); }
       set { SetProperty(StateNameProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> AdditionalInfoForUSProperty = RegisterProperty<string>(c => c.AdditionalInfoForUS);
+    public static readonly PropertyInfo<string> AdditionalInfoForUSProperty =
+      RegisterProperty<string>(c => c.AdditionalInfoForUS);
+
     public string AdditionalInfoForUS
     {
       get { return GetProperty(AdditionalInfoForUSProperty); }
@@ -99,7 +108,7 @@ namespace BusinessRuleDemo
       BusinessRules.AddRule(new LessThanProperty(Num1Property, Num2Property));
 
       // calculates sum rule - must alwas run before MinValue with lower priority
-      BusinessRules.AddRule(new CalcSum(SumProperty, Num1Property, Num2Property) { Priority = -1 });
+      BusinessRules.AddRule(new CalcSum(SumProperty, Num1Property, Num2Property) {Priority = -1});
       BusinessRules.AddRule(new MinValue<int>(SumProperty, 1));
 
       BusinessRules.AddRule(new StringRequiredIfUS(AdditionalInfoForUSProperty, CountryProperty));
@@ -109,7 +118,6 @@ namespace BusinessRuleDemo
       BusinessRules.AddRule(new MaxLength(NameProperty, 10));
 
       BusinessRules.AddRule(new SetStateName(StateProperty, StateNameProperty));
-
     }
 
     #endregion
@@ -122,7 +130,9 @@ namespace BusinessRuleDemo
     }
 
     public Root()
-    { /* Require use of factory methods */}
+    {
+      /* Require use of factory methods */
+    }
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
@@ -142,12 +152,12 @@ namespace BusinessRuleDemo
     {
       using (BypassPropertyChecks)
       {
-        Country = "US";
-        State = "AZ";
+        Num1 = 5001;
+        Num2 = 6001;
+        Country = "UZ";
       }
+
       BusinessRules.CheckRules();
     }
-
-
   }
 }

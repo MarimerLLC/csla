@@ -182,16 +182,13 @@ namespace Csla.Data
 
     private void DeRef()
     {
-
-      lock (_lock)
+      _refCount -= 1;
+      if (_refCount == 0)
       {
-        _refCount -= 1;
-        if (_refCount == 0)
-        {
-          _connection.Close();
-          _connection.Dispose();
+        _connection.Close();
+        _connection.Dispose();
+        lock (_lock)
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
-        }
       }
     }
 

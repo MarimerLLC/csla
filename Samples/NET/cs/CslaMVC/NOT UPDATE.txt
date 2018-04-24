@@ -1,0 +1,2 @@
+Check issue Csla.Web.Mvc4.dll for .NET461 reports version 1.0.0.0 #834
+at https://github.com/MarimerLLC/csla/issues/834

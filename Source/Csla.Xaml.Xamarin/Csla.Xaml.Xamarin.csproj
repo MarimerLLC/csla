@@ -6,7 +6,7 @@
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>Csla.Xaml</AssemblyName>
     <RootNamespace>Csla.Xaml</RootNamespace>
-    <Version>4.7.100</Version>
+    <Version>4.7.101</Version>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET for Xamarin</Product>
@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="2.5.0.121934" />
+    <PackageReference Include="Xamarin.Forms" Version="2.5.1.444934" />
   </ItemGroup>
 
   <ItemGroup>

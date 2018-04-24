@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using Csla;
@@ -19,7 +20,7 @@ namespace ActionExtenderSample.Business
 
   /// <summary>
   /// Order (editable root object).<br/>
-  /// This is a generated base class of <see cref="Order"/> business object.
+  /// This is a generated <see cref="Order"/> business object.
   /// </summary>
   /// <remarks>
   /// This class contains one child collection:<br/>
@@ -34,6 +35,7 @@ namespace ActionExtenderSample.Business
     /// <summary>
     /// Maintains metadata about <see cref="OrderID"/> property.
     /// </summary>
+    [NotUndoable]
     public static readonly PropertyInfo<Guid> OrderIDProperty = RegisterProperty<Guid>(p => p.OrderID, "Order ID");
     /// <summary>
     /// Gets or sets the Order ID.
@@ -86,8 +88,8 @@ namespace ActionExtenderSample.Business
     [Required]
     public string OrderDate
     {
-      get { return GetPropertyConvert<SmartDate, String>(OrderDateProperty); }
-      set { SetPropertyConvert<SmartDate, String>(OrderDateProperty, value); }
+      get { return GetPropertyConvert<SmartDate, string>(OrderDateProperty); }
+      set { SetPropertyConvert<SmartDate, string>(OrderDateProperty, value); }
     }
 
     /// <summary>
@@ -204,9 +206,10 @@ namespace ActionExtenderSample.Business
     /// Initializes a new instance of the <see cref="Order"/> class.
     /// </summary>
     /// <remarks> Do not use to create a Csla object. Use factory methods instead.</remarks>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public Order()
     {
-      // Prevent direct creation
+      // Use factory methods and do not use direct creation.
     }
 
     #endregion
@@ -247,7 +250,7 @@ namespace ActionExtenderSample.Business
     /// <summary>
     /// Loads default values for the <see cref="Order"/> object properties.
     /// </summary>
-    [Csla.RunLocal]
+    [RunLocal]
     protected override void DataPortal_Create()
     {
       LoadProperty(OrderIDProperty, Guid.NewGuid());
@@ -272,6 +275,7 @@ namespace ActionExtenderSample.Business
         var data = dal.Fetch(orderID);
         Fetch(data);
       }
+
       OnFetchPost(args);
       // check all object rules and property rules
       BusinessRules.CheckRules();
@@ -340,8 +344,9 @@ namespace ActionExtenderSample.Business
             CardHolder,
             CreditCard,
             ExpDate
-            );
+          );
         }
+
         OnInsertPost(args);
         // flushes all pending data operations
         FieldManager.UpdateChildren(this);
@@ -370,8 +375,9 @@ namespace ActionExtenderSample.Business
             CardHolder,
             CreditCard,
             ExpDate
-            );
+          );
         }
+
         OnUpdatePost(args);
         // flushes all pending data operations
         FieldManager.UpdateChildren(this);
@@ -405,13 +411,14 @@ namespace ActionExtenderSample.Business
         {
           dal.Delete(orderID);
         }
+
         OnDeletePost(args);
       }
     }
 
     #endregion
 
-    #region Pseudo Events
+    #region DataPortal Hooks
 
     /// <summary>
     /// Occurs after setting all defaults for object creation.

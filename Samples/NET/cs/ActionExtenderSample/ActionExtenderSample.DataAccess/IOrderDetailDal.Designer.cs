@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using Csla;
@@ -25,7 +26,7 @@ namespace ActionExtenderSample.DataAccess
     /// <param name="productID">The Product ID.</param>
     /// <param name="purchaseUnitPrice">The Purchase Unit Price.</param>
     /// <param name="quantity">The Quantity.</param>
-    void Insert(Guid orderID, Guid orderDetailID, Guid productID, Decimal purchaseUnitPrice, int quantity);
+    void Insert(Guid orderID, Guid orderDetailID, Guid productID, decimal purchaseUnitPrice, int quantity);
 
     /// <summary>
     /// Updates in the database all changes made to the OrderDetail object.
@@ -34,7 +35,7 @@ namespace ActionExtenderSample.DataAccess
     /// <param name="productID">The Product ID.</param>
     /// <param name="purchaseUnitPrice">The Purchase Unit Price.</param>
     /// <param name="quantity">The Quantity.</param>
-    void Update(Guid orderDetailID, Guid productID, Decimal purchaseUnitPrice, int quantity);
+    void Update(Guid orderDetailID, Guid productID, decimal purchaseUnitPrice, int quantity);
 
     /// <summary>
     /// Deletes the OrderDetail object from database.

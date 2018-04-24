@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -25,10 +26,20 @@ namespace ActionExtenderSample.DataAccess.Sql
   /// </remarks>
   public class DalManagerActionExtenderSample : IDalManagerActionExtenderSample
   {
-    private static readonly string TypeMask =
-      typeof(DalManagerActionExtenderSample).FullName.Replace("DalManagerActionExtenderSample", @"{0}");
+    #region Fields and Properties
 
-    private const string BaseNamespace = "ActionExtenderSample.DataAccess";
+    private static readonly string TypeMask =
+      typeof(DalManagerActionExtenderSample).FullName?.Replace("DalManagerActionExtenderSample", @"{0}");
+
+    /// <summary>
+    /// Gets the ADO ConnectionManager object.
+    /// </summary>
+    /// <value>The ConnectionManager object</value>
+    public ConnectionManager<SqlConnection> ConnectionManager { get; private set; }
+
+    #endregion
+
+    #region Constructor
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DalManagerActionExtenderSample"/> class.
@@ -39,18 +50,15 @@ namespace ActionExtenderSample.DataAccess.Sql
       {
         ConnectionManager = ConnectionManager<SqlConnection>.GetManager("ActionExtenderSample");
       }
-      catch (ConfigurationErrorsException ex)
+      catch (ConfigurationErrorsException)
       {
         if (ConnectionManager == null)
-          throw new ArgumentException(string.Format("ConnectionString {0} could not be found", "ActionExtenderSample"));
+          throw new ArgumentException(string.Format("ConnectionString {0} could not be found",
+            "ActionExtenderSample"));
       }
     }
 
-    /// <summary>
-    /// Gets the ADO ConnectionManager object.
-    /// </summary>
-    /// <value>The ConnectionManager object</value>
-    public ConnectionManager<SqlConnection> ConnectionManager { get; private set; }
+    #endregion
 
     #region IDalManagerActionExtenderSample Members
 
@@ -61,14 +69,7 @@ namespace ActionExtenderSample.DataAccess.Sql
     /// <returns>A new ActionExtenderSample DAL instance for the given Type.</returns>
     public T GetProvider<T>() where T : class
     {
-      string typeName;
-      var namespaceDiff = typeof(T).Namespace.Length - BaseNamespace.Length;
-      if (namespaceDiff > 0)
-        typeName = string.Format(TypeMask, typeof(T).Namespace.Substring(BaseNamespace.Length + 1,
-            namespaceDiff - 1)) + "." + typeof(T).Name.Substring(1);
-      else
-        typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));
-
+      var typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));
       var type = Type.GetType(typeName);
       if (type != null)
         return Activator.CreateInstance(type) as T;
@@ -76,16 +77,28 @@ namespace ActionExtenderSample.DataAccess.Sql
       throw new NotImplementedException(typeName);
     }
 
+    #endregion
+
+    #region IDisposable Members
+
     /// <summary>
     /// Disposes the ConnectionManager.
     /// </summary>
     public void Dispose()
     {
-      ConnectionManager.Dispose();
-      ConnectionManager = null;
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing && ConnectionManager != null)
+      {
+        ConnectionManager.Dispose();
+        ConnectionManager = null;
+      }
     }
 
     #endregion
-
   }
 }

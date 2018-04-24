@@ -6,6 +6,7 @@
 // <summary></summary>
 // <remarks>Generated file.</remarks>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Data;
 using Csla;
@@ -17,7 +18,7 @@ namespace ActionExtenderSample.Business
 
   /// <summary>
   /// OrderDetailCollection (editable child list).<br/>
-  /// This is a generated base class of <see cref="OrderDetailCollection"/> business object.
+  /// This is a generated <see cref="OrderDetailCollection"/> business object.
   /// </summary>
   /// <remarks>
   /// This class is child of <see cref="Order"/> editable root object.<br/>
@@ -59,6 +60,7 @@ namespace ActionExtenderSample.Business
           return true;
         }
       }
+
       return false;
     }
 
@@ -69,13 +71,14 @@ namespace ActionExtenderSample.Business
     /// <returns><c>true</c> if the OrderDetail is a deleted collection item; otherwise, <c>false</c>.</returns>
     public bool ContainsDeleted(Guid orderDetailID)
     {
-      foreach (var orderDetail in this.DeletedList)
+      foreach (var orderDetail in DeletedList)
       {
         if (orderDetail.OrderDetailID == orderDetailID)
         {
           return true;
         }
       }
+
       return false;
     }
 
@@ -87,9 +90,10 @@ namespace ActionExtenderSample.Business
     /// Initializes a new instance of the <see cref="OrderDetailCollection"/> class.
     /// </summary>
     /// <remarks> Do not use to create a Csla object. Use factory methods instead.</remarks>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public OrderDetailCollection()
     {
-      // Prevent direct creation
+      // Use factory methods and do not use direct creation.
 
       // show the framework that this is a child object
       MarkAsChild();
@@ -120,13 +124,14 @@ namespace ActionExtenderSample.Business
       {
         Add(DataPortal.FetchChild<OrderDetail>(dr));
       }
+
       OnFetchPost(args);
       RaiseListChangedEvents = rlce;
     }
 
     #endregion
 
-    #region Pseudo Events
+    #region DataPortal Hooks
 
     /// <summary>
     /// Occurs after setting query parameters and before the fetch operation.

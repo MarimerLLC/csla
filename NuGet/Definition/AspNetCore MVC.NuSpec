@@ -22,8 +22,8 @@ Supports the creation of AspNetCore applications.
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="CSLA-Core-NS" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore" version="2.0.0" />
-        <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.2" />
+        <dependency id="Microsoft.AspNetCore" version="2.0.2" />
+        <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.3" />
       </group>
     </dependencies>
   </metadata>

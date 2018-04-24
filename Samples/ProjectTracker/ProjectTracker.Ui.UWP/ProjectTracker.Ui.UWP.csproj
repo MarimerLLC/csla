@@ -164,10 +164,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSLA-Core-NS">
-      <Version>4.7.100</Version>
+      <Version>4.7.101-R18042301</Version>
     </PackageReference>
     <PackageReference Include="CSLA-UWP">
-      <Version>4.7.100</Version>
+      <Version>4.7.101-R18042301</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.8</Version>

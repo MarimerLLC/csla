@@ -63,6 +63,8 @@ namespace Csla.Core
     {
     }
 
+    private const string _valuePrefix = "v";
+
     /// <summary>
     /// Override this method to manually serialize child objects
     /// contained within the current object.
@@ -72,23 +74,21 @@ namespace Csla.Core
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
-      if (mobileChildren)
+      int count = 0;
+      foreach (T child in this)
       {
-        List<int> references = new List<int>();
-        foreach (IMobileObject child in this)
+        if (mobileChildren)
         {
-          SerializationInfo childInfo = formatter.SerializeObject(child);
-          references.Add(childInfo.ReferenceId);
+          SerializationInfo si = formatter.SerializeObject(child);
+          info.AddChild(_valuePrefix + count, si.ReferenceId);
         }
-        if (references.Count > 0)
-          info.AddValue("$list", references);
+        else
+        {
+          info.AddValue(_valuePrefix + count, child);
+        }
+        count++;
       }
-      else
-      {
-        var source = this.ToList<T>();
-        string buffer = Newtonsoft.Json.JsonConvert.SerializeObject(source);
-        info.AddValue("$list", buffer);
-      }
+      info.AddValue("count", count);
     }
 
     void IMobileObject.SetState(SerializationInfo info)
@@ -116,24 +116,18 @@ namespace Csla.Core
     /// <param name="formatter">Reference to the current MobileFormatter.</param>
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (info.Values.ContainsKey("$list"))
+      bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
+      int count = info.GetValue<int>("count");
+
+      for (int index = 0; index < count; index++)
       {
-        bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
+        T value;
         if (mobileChildren)
-        {
-          List<int> references = (List<int>)info.Values["$list"].Value;
-          foreach (int reference in references)
-          {
-            T child = (T)formatter.GetObject(reference);
-            this.Add(child);
-          }
-        }
+          value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
         else
-        {
-          string buffer = (string)info.Values["$list"].Value;
-          List<T> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(buffer);
-          AddRange(list);
-        }
+          value = info.GetValue<T>(_valuePrefix + index);
+
+        Add(value);
       }
     }
 

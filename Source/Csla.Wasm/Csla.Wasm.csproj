@@ -43,7 +43,6 @@
   <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />

@@ -8,16 +8,19 @@ namespace Csla.Analyzers.Extensions
     {
       return @this != null &&
         ((@this.ContainingType.Name == CslaMemberConstants.Types.BusinessBase &&
-          (@this.Name == CslaMemberConstants.Properties.GetProperty ||
-          @this.Name == CslaMemberConstants.Properties.GetPropertyConvert ||
-          @this.Name == CslaMemberConstants.Properties.LazyGetProperty ||
-          @this.Name == CslaMemberConstants.Properties.LazyGetPropertyAsync ||
-          @this.Name == CslaMemberConstants.Properties.LazyReadProperty ||
-          @this.Name == CslaMemberConstants.Properties.LazyReadPropertyAsync ||
-          @this.Name == CslaMemberConstants.Properties.LoadPropertyAsync ||
-          @this.Name == CslaMemberConstants.Properties.SetProperty ||
+          (@this.Name == CslaMemberConstants.Properties.SetProperty ||
           @this.Name == CslaMemberConstants.Properties.SetPropertyConvert)) ||
         ((@this.ContainingType.Name == CslaMemberConstants.Types.BusinessBase ||
+          @this.ContainingType.Name == CslaMemberConstants.Types.ReadOnlyBase) &&
+            (@this.Name == CslaMemberConstants.Properties.GetProperty ||
+            @this.Name == CslaMemberConstants.Properties.GetPropertyConvert ||
+            @this.Name == CslaMemberConstants.Properties.LazyGetProperty ||
+            @this.Name == CslaMemberConstants.Properties.LazyGetPropertyAsync ||
+            @this.Name == CslaMemberConstants.Properties.LazyReadProperty ||
+            @this.Name == CslaMemberConstants.Properties.LazyReadPropertyAsync ||
+            @this.Name == CslaMemberConstants.Properties.LoadPropertyAsync)) ||
+        ((@this.ContainingType.Name == CslaMemberConstants.Types.BusinessBase ||
+          @this.ContainingType.Name == CslaMemberConstants.Types.ReadOnlyBase ||
           @this.ContainingType.Name == CslaMemberConstants.Types.ManagedObjectBase) &&
             (@this.Name == CslaMemberConstants.Properties.ReadProperty ||
             @this.Name == CslaMemberConstants.Properties.ReadPropertyConvert ||

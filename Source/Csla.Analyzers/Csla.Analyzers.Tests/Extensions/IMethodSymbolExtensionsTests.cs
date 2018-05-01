@@ -125,6 +125,16 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLoadPropertyMarkDirty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyMarkDirty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyMarkDirty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
     public async Task IsPropertyInfoManagementMethodForReadProperty()
     {
       Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(

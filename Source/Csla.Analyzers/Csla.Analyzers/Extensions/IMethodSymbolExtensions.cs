@@ -20,6 +20,9 @@ namespace Csla.Analyzers.Extensions
             @this.Name == CslaMemberConstants.Properties.LazyReadPropertyAsync ||
             @this.Name == CslaMemberConstants.Properties.LoadPropertyAsync)) ||
         ((@this.ContainingType.Name == CslaMemberConstants.Types.BusinessBase ||
+          @this.ContainingType.Name == CslaMemberConstants.Types.ManagedObjectBase) &&
+            @this.Name == CslaMemberConstants.Properties.LoadPropertyMarkDirty) ||
+        ((@this.ContainingType.Name == CslaMemberConstants.Types.BusinessBase ||
           @this.ContainingType.Name == CslaMemberConstants.Types.ReadOnlyBase ||
           @this.ContainingType.Name == CslaMemberConstants.Types.ManagedObjectBase) &&
             (@this.Name == CslaMemberConstants.Properties.ReadProperty ||

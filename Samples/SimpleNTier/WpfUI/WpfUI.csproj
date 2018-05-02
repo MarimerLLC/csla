@@ -44,10 +44,10 @@
       <HintPath>..\packages\BXF.1.2.0.0\lib\net40\Bxf.dll</HintPath>
     </Reference>
     <Reference Include="Csla, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.7.101-R18042301\lib\net461\Csla.dll</HintPath>
+      <HintPath>..\packages\CSLA-Core.4.7.101\lib\net461\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-WPF.4.7.101-R18042301\lib\net461\Csla.Xaml.dll</HintPath>
+      <HintPath>..\packages\CSLA-WPF.4.7.101\lib\net461\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -136,7 +136,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.7.101-R18042301\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.7.101\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

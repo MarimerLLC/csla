@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLBTest", "BLBTest\BLBTest.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DE08D99-5097-4C5E-9664-41293DA3AFD0}"
 	ProjectSection(SolutionItems) = preProject
-		ErrorLog.txt = ErrorLog.txt
+		RuntimeErrorLog.txt = RuntimeErrorLog.txt
 	EndProjectSection
 EndProject
 Global

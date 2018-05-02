@@ -52,16 +52,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\packages\CSLA-Core.4.7.101-R18042301\lib\net461\Csla.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\packages\CSLA-Core.4.7.101\lib\net461\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\packages\CSLA-ASP.NET.4.7.101-R18042301\lib\net461\Csla.Web.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\packages\CSLA-ASP.NET.4.7.101\lib\net461\Csla.Web.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web.Mvc4, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\packages\CSLA-ASP.NET-MVC4.4.7.101-R18042301\lib\net461\Csla.Web.Mvc4.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\packages\CSLA-ASP.NET-MVC4.4.7.101\lib\net461\Csla.Web.Mvc4.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -166,10 +163,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\..\..\..\packages\CSLA-Core.4.7.101-R18042301\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\..\..\..\..\packages\CSLA-Core.4.7.101\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

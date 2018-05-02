@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cc="clr-namespace:PropertyStatus"
         xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
-        Title="Window1" Height="250" Width="298.643"
+        Title="Window1" Height="250" Width="300"
         Loaded="Window_Loaded" FontSize="16">
     <StackPanel>
     <TextBlock Text="To get an invalid state enter the values 'Error', 'Warning' or 'Information' and click Save"

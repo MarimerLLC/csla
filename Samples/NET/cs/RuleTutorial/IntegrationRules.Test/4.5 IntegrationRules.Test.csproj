@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\packages\CSLA-Core.4.7.101-R18042301\lib\net461\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\..\packages\CSLA-Core.4.7.101\lib\net461\Csla.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -76,7 +76,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\..\..\..\packages\CSLA-Core.4.7.101-R18042301\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\..\..\..\..\packages\CSLA-Core.4.7.101\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

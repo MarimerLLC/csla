@@ -1,1 +1,0 @@
-WcfPortal configuration is broken.

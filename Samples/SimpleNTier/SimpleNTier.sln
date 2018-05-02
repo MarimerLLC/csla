@@ -15,7 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUI", "WpfUI\WpfUI.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "- How to run", "- How to run", "{E444DD4F-8AF1-4005-A751-E69AA50F8533}"
 	ProjectSection(SolutionItems) = preProject
-		ErrorLog.txt = ErrorLog.txt
 		How to run WinForms.txt = How to run WinForms.txt
 		How to run WPF.txt = How to run WPF.txt
 	EndProjectSection

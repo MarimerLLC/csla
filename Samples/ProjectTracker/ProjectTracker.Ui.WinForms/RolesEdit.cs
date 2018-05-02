@@ -1,17 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
+using ProjectTracker.Library;
 using ProjectTracker.Library.Admin;
 
 namespace PTWin
 {
   public partial class RolesEdit : WinPart
   {
-
     private RoleEditList _roles;
 
     public RolesEdit()
@@ -27,16 +22,15 @@ namespace PTWin
       }
       catch (Csla.DataPortalException ex)
       {
-        MessageBox.Show(ex.BusinessException.ToString(), 
-          "Data load error", MessageBoxButtons.OK, 
-          MessageBoxIcon.Exclamation);
+        MessageBox.Show(ex.BusinessException.ToString(),
+          "Data load error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
       catch (Exception ex)
       {
         MessageBox.Show(ex.ToString(),
-          "Data load error", MessageBoxButtons.OK,
-          MessageBoxIcon.Exclamation);
+          "Data load error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
+
       if (_roles != null)
         this.rolesBindingSource.DataSource = _roles;
     }
@@ -50,25 +44,26 @@ namespace PTWin
     {
       // stop the flow of events
       this.rolesBindingSource.RaiseListChangedEvents = false;
-      
+
       // commit edits in memory and unbind
       UnbindBindingSource(this.rolesBindingSource, true, true);
 
       try
       {
         _roles = _roles.Save();
+        RoleList.InvalidateCache();
+        RoleList.CacheList();
         this.Close();
       }
       catch (Csla.DataPortalException ex)
       {
         MessageBox.Show(ex.BusinessException.ToString(),
-          "Error saving", MessageBoxButtons.OK,
-          MessageBoxIcon.Exclamation);
+          "Error saving", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
       catch (Exception ex)
       {
-        MessageBox.Show(ex.ToString(), "Error saving",
-          MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        MessageBox.Show(ex.ToString(),
+          "Error saving", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
       finally
       {

@@ -1,56 +1,72 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using ProjectTracker.Library;
 
 namespace PTWin
 {
   public partial class ResourceEdit : WinPart
   {
-    private ProjectTracker.Library.ResourceEdit _resource;
+    #region Properties
 
-    public ProjectTracker.Library.ResourceEdit Resource
-    {
-      get { return _resource; }
-    }
-
-    public ResourceEdit(ProjectTracker.Library.ResourceEdit resource)
-    {
-      InitializeComponent();
-
-      // store object reference
-      _resource = resource;
-    }
-
-    private void ResourceEdit_Load(object sender, EventArgs e)
-    {
-      this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
-      _resource.PropertyChanged += new PropertyChangedEventHandler(mResource_PropertyChanged);
-
-      this.RoleListBindingSource.DataSource = ProjectTracker.Library.RoleList.GetCachedList();
-
-      BindUI();
-
-      ApplyAuthorizationRules();
-    }
-
-    #region WinPart Code
+    public ProjectTracker.Library.ResourceEdit Resource { get; private set; }
 
     protected internal override object GetIdValue()
     {
-      return _resource;
+      return Resource;
     }
 
     public override string ToString()
     {
-      return _resource.FullName;
+      return Resource.FullName;
     }
+
+    #endregion
+
+    #region Change event handlers
 
     private void ResourceEdit_CurrentPrincipalChanged(object sender, EventArgs e)
     {
       ApplyAuthorizationRules();
     }
 
+    private void Resource_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == "IsDirty")
+      {
+        this.ResourceBindingSource.ResetBindings(true);
+        this.AssignmentsBindingSource.ResetBindings(true);
+      }
+    }
+
     #endregion
+
+    public ResourceEdit(ProjectTracker.Library.ResourceEdit resource)
+    {
+      InitializeComponent();
+
+      // store object reference
+      Resource = resource;
+    }
+
+    private void ResourceEdit_Load(object sender, EventArgs e)
+    {
+      this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
+      Resource.PropertyChanged += new PropertyChangedEventHandler(Resource_PropertyChanged);
+
+      Setup();
+    }
+
+    private void Setup()
+    {
+      // set up binding
+      this.RoleListBindingSource.DataSource = ProjectTracker.Library.RoleList.GetCachedList();
+
+      BindUI();
+
+      // check authorization
+      ApplyAuthorizationRules();
+    }
 
     private void ApplyAuthorizationRules()
     {
@@ -72,6 +88,71 @@ namespace PTWin
       // enable/disable role column in grid
       this.AssignmentsDataGridView.Columns[3].ReadOnly = !canEdit;
     }
+
+    private void BindUI()
+    {
+      Resource.BeginEdit();
+      this.ResourceBindingSource.DataSource = Resource;
+    }
+
+    private bool RebindUI(bool saveObject, bool rebind)
+    {
+      // disable events
+      this.ResourceBindingSource.RaiseListChangedEvents = false;
+      this.AssignmentsBindingSource.RaiseListChangedEvents = false;
+      try
+      {
+        // unbind the UI
+        UnbindBindingSource(this.AssignmentsBindingSource, saveObject, false);
+        UnbindBindingSource(this.ResourceBindingSource, saveObject, true);
+        this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
+
+        // save or cancel changes
+        if (saveObject)
+        {
+          Resource.ApplyEdit();
+          try
+          {
+            Resource = Resource.Save();
+          }
+          catch (Csla.DataPortalException ex)
+          {
+            MessageBox.Show(ex.BusinessException.ToString(),
+              "Error saving", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
+          }
+          catch (Exception ex)
+          {
+            MessageBox.Show(ex.ToString(),
+              "Error Saving", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
+          }
+        }
+        else
+          Resource.CancelEdit();
+
+        return true;
+      }
+      finally
+      {
+        // rebind UI if requested
+        if (rebind)
+          BindUI();
+
+        // restore events
+        this.ResourceBindingSource.RaiseListChangedEvents = true;
+        this.AssignmentsBindingSource.RaiseListChangedEvents = true;
+
+        if (rebind)
+        {
+          // refresh the UI if rebinding
+          this.ResourceBindingSource.ResetBindings(false);
+          this.AssignmentsBindingSource.ResetBindings(false);
+        }
+      }
+    }
+
+    #region Button event handlers
 
     private void OKButton_Click(object sender, EventArgs e)
     {
@@ -103,87 +184,42 @@ namespace PTWin
       this.Close();
     }
 
-    private void BindUI()
+    private void RefreshButton_Click(object sender, EventArgs e)
     {
-      _resource.BeginEdit();
-      this.ResourceBindingSource.DataSource = _resource;
-    }
-
-    private bool RebindUI(bool saveObject, bool rebind)
-    {
-      // disable events
-      this.ResourceBindingSource.RaiseListChangedEvents = false;
-      this.AssignmentsBindingSource.RaiseListChangedEvents = false;
-      try
+      using (StatusBusy busy = new StatusBusy("Refreshing..."))
       {
-        // unbind the UI
-        UnbindBindingSource(this.AssignmentsBindingSource, saveObject, false);
-        UnbindBindingSource(this.ResourceBindingSource, saveObject, true);
-        this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
-
-        // save or cancel changes
-        if (saveObject)
+        if (RebindUI(false, false))
         {
-          _resource.ApplyEdit();
-          try
-          {
-            _resource = _resource.Save();
-          }
-          catch (Csla.DataPortalException ex)
-          {
-            MessageBox.Show(ex.BusinessException.ToString(),
-              "Error saving", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            return false;
-          }
-          catch (Exception ex)
-          {
-            MessageBox.Show(ex.ToString(),
-              "Error Saving", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            return false;
-          }
-        }
-        else
-          _resource.CancelEdit();
-
-        return true;
-      }
-      finally
-      {
-        // rebind UI if requested
-        if (rebind)
-          BindUI();
-
-        // restore events
-        this.ResourceBindingSource.RaiseListChangedEvents = true;
-        this.AssignmentsBindingSource.RaiseListChangedEvents = true;
-
-        if (rebind)
-        {
-          // refresh the UI if rebinding
-          this.ResourceBindingSource.ResetBindings(false);
-          this.AssignmentsBindingSource.ResetBindings(false);
+          Resource = ProjectTracker.Library.ResourceEdit.GetResourceEdit(Resource.Id);
+          RoleList.InvalidateCache();
+          RoleList.CacheList();
+          Setup();
         }
       }
     }
 
     private void AssignButton_Click(object sender, EventArgs e)
     {
-      ProjectSelect dlg = new ProjectSelect();
-      if (dlg.ShowDialog() == DialogResult.OK)
-        try
+      using (ProjectSelect dlg = new ProjectSelect())
+      {
+        if (dlg.ShowDialog() == DialogResult.OK)
         {
-          _resource.Assignments.AssignTo(dlg.ProjectId);
+          try
+          {
+            Resource.Assignments.AssignTo(dlg.ProjectId);
+          }
+          catch (InvalidOperationException ex)
+          {
+            MessageBox.Show(ex.Message,
+              "Error Assigning", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          }
+          catch (Exception ex)
+          {
+            MessageBox.Show(ex.ToString(),
+              "Error Assigning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+          }
         }
-        catch (InvalidOperationException ex)
-        {
-          MessageBox.Show(ex.Message,
-            "Error Assigning", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.ToString(),
-            "Error Assigning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
+      }
     }
 
     private void UnassignButton_Click(object sender, EventArgs e)
@@ -191,16 +227,7 @@ namespace PTWin
       if (this.AssignmentsDataGridView.SelectedRows.Count > 0)
       {
         var projectId = (int) this.AssignmentsDataGridView.SelectedRows[0].Cells[0].Value;
-        _resource.Assignments.Remove(projectId);
-      }
-    }
-
-    private void mResource_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == "IsDirty")
-      {
-        this.ResourceBindingSource.ResetBindings(true);
-        this.AssignmentsBindingSource.ResetBindings(true);
+        Resource.Assignments.Remove(projectId);
       }
     }
 
@@ -213,16 +240,6 @@ namespace PTWin
       }
     }
 
-    private void RefreshButton_Click(object sender, EventArgs e)
-    {
-      using (StatusBusy busy = new StatusBusy("Refreshing..."))
-      {
-        if (RebindUI(false, false))
-        {
-          _resource = ProjectTracker.Library.ResourceEdit.GetResourceEdit(_resource.Id);
-          ResourceEdit_Load(sender, e);
-        }
-      }
-    }
+    #endregion
   }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Csla.Analyzers.Extensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -15,15 +16,9 @@ namespace Csla.Analyzers
 
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
-      var invocationSymbol = this.Model.GetSymbolInfo(node).Symbol;
+      var invocationSymbol = this.Model.GetSymbolInfo(node).Symbol as IMethodSymbol;
 
-      if (invocationSymbol != null && invocationSymbol.ContainingType.Name == CslaMemberConstants.Types.BusinessBase &&
-        (invocationSymbol.Name == CslaMemberConstants.Properties.SetProperty ||
-        invocationSymbol.Name == CslaMemberConstants.Properties.SetPropertyConvert ||
-        invocationSymbol.Name == CslaMemberConstants.Properties.LoadProperty ||
-        invocationSymbol.Name == CslaMemberConstants.Properties.LoadPropertyAsync ||
-        invocationSymbol.Name == CslaMemberConstants.Properties.LoadPropertyConvert ||
-        invocationSymbol.Name == CslaMemberConstants.Properties.LoadPropertyMarkDirty))
+      if (invocationSymbol.IsPropertyInfoManagementMethod())
       {
         this.Invocation = node;
       }

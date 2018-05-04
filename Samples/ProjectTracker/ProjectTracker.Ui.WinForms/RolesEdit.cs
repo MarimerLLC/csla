@@ -40,7 +40,7 @@ namespace PTWin
       return "Edit Roles";
     }
 
-    private async void SaveButton_Click(object sender, EventArgs e)
+    private void SaveButton_Click(object sender, EventArgs e)
     {
       // stop the flow of events
       this.rolesBindingSource.RaiseListChangedEvents = false;
@@ -52,7 +52,7 @@ namespace PTWin
       {
         _roles = _roles.Save();
         RoleList.InvalidateCache();
-        await RoleList.CacheListAsync();
+        RoleList.CacheList();
         this.Close();
       }
       catch (Csla.DataPortalException ex)

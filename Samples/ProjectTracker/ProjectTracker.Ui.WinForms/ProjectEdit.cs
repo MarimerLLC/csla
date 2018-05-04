@@ -192,7 +192,7 @@ namespace PTWin
         {
           Project = ProjectTracker.Library.ProjectEdit.GetProject(Project.Id);
           RoleList.InvalidateCache();
-          await RoleList.CacheListAsync();
+          RoleList.CacheList();
           Setup();
         }
       }

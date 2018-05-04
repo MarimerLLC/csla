@@ -67,9 +67,9 @@ namespace PTWin
       // 
       // RolesDataGridView
       // 
-      this.RolesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.RolesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.RolesDataGridView.AutoGenerateColumns = false;
       this.RolesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.DataGridViewTextBoxColumn1,
@@ -86,12 +86,15 @@ namespace PTWin
       this.DataGridViewTextBoxColumn1.DataPropertyName = "Id";
       this.DataGridViewTextBoxColumn1.HeaderText = "Id";
       this.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1";
+      this.DataGridViewTextBoxColumn1.ReadOnly = true;
       // 
       // DataGridViewTextBoxColumn2
       // 
       this.DataGridViewTextBoxColumn2.DataPropertyName = "Name";
+      this.DataGridViewTextBoxColumn2.FillWeight = 200F;
       this.DataGridViewTextBoxColumn2.HeaderText = "Name";
       this.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2";
+      this.DataGridViewTextBoxColumn2.Width = 200;
       // 
       // RolesEdit
       // 
@@ -102,8 +105,8 @@ namespace PTWin
       this.Controls.Add(this.SaveButton);
       this.Name = "RolesEdit";
       this.Size = new System.Drawing.Size(541, 348);
-      this.Load += new System.EventHandler(this.RolesEdit_Load);
       this.CurrentPrincipalChanged += new System.EventHandler(this.RolesEdit_CurrentPrincipalChanged);
+      this.Load += new System.EventHandler(this.RolesEdit_Load);
       ((System.ComponentModel.ISupportInitialize)(this.rolesBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.RolesDataGridView)).EndInit();
       this.ResumeLayout(false);
@@ -116,7 +119,7 @@ namespace PTWin
     internal System.Windows.Forms.Button SaveButton;
     internal System.Windows.Forms.BindingSource rolesBindingSource;
     internal System.Windows.Forms.DataGridView RolesDataGridView;
-    internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn1;
-    internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn2;
+    private System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn1;
+    private System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn2;
   }
 }

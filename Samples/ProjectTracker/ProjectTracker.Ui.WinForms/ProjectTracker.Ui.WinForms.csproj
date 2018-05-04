@@ -56,6 +56,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.7.101.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <HintPath>..\packages\CSLA-Core.4.7.101\lib\net461\Csla.dll</HintPath>
@@ -205,6 +208,9 @@
       <Project>{677efbd4-1565-4d5d-a022-c2a85078db64}</Project>
       <Name>ProjectTracker.Dal</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\CSLA-Core.4.7.101\analyzers\c#\Csla.Analyzers.dll" />

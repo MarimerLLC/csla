@@ -7,7 +7,7 @@ namespace PTWin
 {
   public partial class RolesEdit : WinPart
   {
-    private RoleEditList _roles;
+    private RoleEditBindingList _roles;
 
     public RolesEdit()
     {
@@ -18,7 +18,7 @@ namespace PTWin
     {
       try
       {
-        _roles = RoleEditList.GetRoles();
+        _roles = RoleEditBindingList.GetRoles();
       }
       catch (Csla.DataPortalException ex)
       {
@@ -82,7 +82,7 @@ namespace PTWin
     private void RolesEdit_CurrentPrincipalChanged(
       object sender, EventArgs e)
     {
-      if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(RoleEditList)))
+      if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(RoleEditBindingList)))
         this.Close();
     }
   }

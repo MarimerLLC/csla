@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Csla.Rules;
 using ProjectTracker.Library;
 
 namespace PTWin
@@ -11,14 +12,14 @@ namespace PTWin
 
     public ProjectTracker.Library.ProjectEdit Project { get; private set; }
 
-    public override string ToString()
-    {
-      return Project.Name;
-    }
-
     protected internal override object GetIdValue()
     {
       return Project;
+    }
+
+    public override string ToString()
+    {
+      return Project.Name;
     }
 
     #endregion
@@ -41,6 +42,13 @@ namespace PTWin
 
     #endregion
 
+    #region Constructors
+
+    private ProjectEdit()
+    {
+      // force to use parametrized constructor
+    }
+
     public ProjectEdit(ProjectTracker.Library.ProjectEdit project)
     {
       InitializeComponent();
@@ -48,6 +56,10 @@ namespace PTWin
       // store object reference
       Project = project;
     }
+
+    #endregion
+
+    #region Plumbing...
 
     private void ProjectEdit_Load(object sender, EventArgs e)
     {
@@ -152,25 +164,58 @@ namespace PTWin
       }
     }
 
+    #endregion
+
     #region Button event handlers
 
     private void OKButton_Click(object sender, EventArgs e)
     {
-      using (StatusBusy busy = new StatusBusy("Saving..."))
+      if (IsSavable())
       {
-        if (RebindUI(true, false))
+        using (StatusBusy busy = new StatusBusy("Saving..."))
         {
-          this.Close();
+          if (RebindUI(true, false))
+          {
+            this.Close();
+          }
         }
       }
     }
 
     private void ApplyButton_Click(object sender, EventArgs e)
     {
-      using (StatusBusy busy = new StatusBusy("Saving..."))
+      if (IsSavable())
       {
-        RebindUI(true, true);
+        using (StatusBusy busy = new StatusBusy("Saving..."))
+        {
+          RebindUI(true, true);
+        }
       }
+    }
+
+    private bool IsSavable()
+    {
+      if (Project.IsSavable)
+        return true;
+
+      if (!Project.IsValid)
+      {
+        MessageBox.Show(GetErrorMessage(), "Saving Project", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+
+      return false;
+    }
+
+    private string GetErrorMessage()
+    {
+      var message = "Project is invalid and cannot be saved." + Environment.NewLine + Environment.NewLine;
+      foreach (var rule in Project.BrokenRulesCollection)
+      {
+        if (rule.Severity == RuleSeverity.Error)
+          message += "- " + rule.Description + Environment.NewLine;
+      }
+
+      return message;
     }
 
     private void Cancel_Button_Click(object sender, EventArgs e)
@@ -184,18 +229,33 @@ namespace PTWin
       this.Close();
     }
 
-    private async void RefreshButton_Click(object sender, EventArgs e)
+    private void RefreshButton_Click(object sender, EventArgs e)
     {
-      using (StatusBusy busy = new StatusBusy("Refreshing..."))
+      if (CanRefresh())
       {
-        if (RebindUI(false, false))
+        using (StatusBusy busy = new StatusBusy("Refreshing..."))
         {
-          Project = ProjectTracker.Library.ProjectEdit.GetProject(Project.Id);
-          RoleList.InvalidateCache();
-          RoleList.CacheList();
-          Setup();
+          if (RebindUI(false, false))
+          {
+            Project = ProjectTracker.Library.ProjectEdit.GetProject(Project.Id);
+            RoleList.InvalidateCache();
+            RoleList.CacheList();
+            Setup();
+          }
         }
       }
+    }
+
+    private bool CanRefresh()
+    {
+      if (!Project.IsDirty)
+        return true;
+
+      var dlg = MessageBox.Show("Project is not saved and all changes will be lost.\r\n\r\nDo you want to refresh?.",
+        "Refreshing Project",
+        MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+
+      return dlg == DialogResult.OK;
     }
 
     private void AssignButton_Click(object sender, EventArgs e)

@@ -54,7 +54,7 @@ namespace Csla.Reflection
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
-#if !IOS
+#if !IOS && !WASM
 
     #region Dynamic Method Cache
 
@@ -225,7 +225,7 @@ namespace Csla.Reflection
     /// <param name="objectType">Type of object to create.</param>
     public static object CreateInstance(Type objectType)
     {
-#if IOS
+#if IOS || WASM
       return Activator.CreateInstance(objectType);
 #else
       var ctor = GetCachedConstructor(objectType);
@@ -254,7 +254,7 @@ namespace Csla.Reflection
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-#if !IOS
+#if !IOS && !WASM
 
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
 
@@ -313,7 +313,7 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static object CallPropertyGetter(object obj, string property)
     {
-#if IOS
+#if IOS || WASM
       var propertyInfo = obj.GetType().GetProperty(property);
       return propertyInfo.GetValue(obj);
 #else
@@ -350,7 +350,7 @@ namespace Csla.Reflection
       if (string.IsNullOrEmpty(property))
         throw new ArgumentException("Argument is null or empty.", "property");
 
-#if IOS
+#if IOS || WASM
       var propertyInfo = obj.GetType().GetProperty(property);
       propertyInfo.SetValue(obj, value);
 #else
@@ -406,7 +406,7 @@ namespace Csla.Reflection
 
     private static object CallMethodIfImplemented(object obj, string method, bool hasParameters, params object[] parameters)
     {
-#if IOS
+#if IOS || WASM
       var found = (FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters)) != null);
       if (found)
         return CallMethod(obj, method, parameters);
@@ -420,7 +420,7 @@ namespace Csla.Reflection
 #endif
     }
 
-#if !IOS
+#if !IOS && !WASM
     /// <summary>
     /// Detects if a method matching the name and parameters is implemented on the provided object.
     /// </summary>
@@ -472,7 +472,7 @@ namespace Csla.Reflection
 
     private static object CallMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
-#if IOS
+#if IOS || WASM
       System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, hasParameters, parameters);
       if (info == null)
         throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
@@ -507,7 +507,7 @@ namespace Csla.Reflection
 
     private static object CallMethod(object obj, System.Reflection.MethodInfo info, bool hasParameters, params object[] parameters)
     {
-#if IOS
+#if IOS || WASM
       var infoParams = info.GetParameters();
       var infoParamsCount = infoParams.Length;
       bool hasParamArray = infoParamsCount > 0 && infoParams[infoParamsCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0;
@@ -556,7 +556,7 @@ namespace Csla.Reflection
 #endif
     }
 
-#if !IOS
+#if !IOS && !WASM
 
     private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object[] parameters)
     {
@@ -1034,7 +1034,7 @@ namespace Csla.Reflection
     {
       try
       {
-#if IOS
+#if IOS || WASM
         var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
         if (info  == null)
           throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
@@ -1105,7 +1105,7 @@ namespace Csla.Reflection
 
     private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
-#if IOS
+#if IOS || WASM
         var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
         if (info  == null)
           throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);

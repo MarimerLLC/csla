@@ -101,7 +101,7 @@ namespace Csla.DataPortalClient
     /// text/string serialization instead of the default
     /// binary serialization.
     /// </summary>
-    public bool UseTextSerialization { get; set; } = false;
+    public static bool UseTextSerialization { get; set; } = false;
 
     #region Criteria
 

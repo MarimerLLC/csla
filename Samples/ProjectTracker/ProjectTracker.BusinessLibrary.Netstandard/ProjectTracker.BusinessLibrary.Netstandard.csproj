@@ -16,4 +16,8 @@
     <PackageReference Include="CSLA-Core-NS" Version="4.7.101" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -72,11 +72,6 @@ namespace ProjectTracker.Library.Admin
       return DataPortal.CreateChild<RoleEdit>();
     }
 #else
-    public static RoleEdit GetRole(int id)
-    {
-      return DataPortal.Fetch<RoleEdit>();
-    }
-    
     internal static RoleEdit GetRole(object data)
     {
       return DataPortal.FetchChild<RoleEdit>(data);

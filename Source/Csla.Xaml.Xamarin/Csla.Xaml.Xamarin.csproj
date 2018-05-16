@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,11 +6,11 @@
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>Csla.Xaml</AssemblyName>
     <RootNamespace>Csla.Xaml</RootNamespace>
-    <Version>4.7.101</Version>
+    <Version>4.7.200</Version>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET for Xamarin</Product>
-    <Copyright>Copyright 2017 Marimer LLC</Copyright>
+    <Copyright>Copyright © 2010-18 Marimer LLC</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -306,26 +306,6 @@ namespace cslalighttest.Serialization
     }
 
     [TestMethod]
-    public void MobileListOfNonMobileObjectsSerializationSuccess()
-    {
-      UnitTestContext context = GetContext();
-      MobileList<MockNonBusinessObject> expected = new MobileList<MockNonBusinessObject>();
-      expected.Add(new MockNonBusinessObject { Member = "one", Child = new MockNonBusinessObject2 { Id = 1 } });
-      expected.Add(new MockNonBusinessObject { Member = "two", Child = new MockNonBusinessObject2 { Id = 2 } });
-
-      byte[] buffer = MobileFormatter.Serialize(expected);
-      MobileList<MockNonBusinessObject> actual = (MobileList<MockNonBusinessObject>)MobileFormatter.Deserialize(buffer);
-
-      context.Assert.AreEqual(expected.Count, actual.Count);
-      context.Assert.AreEqual(expected[0].Member, actual[0].Member);
-      context.Assert.AreEqual(expected[0].Child.Id, actual[0].Child.Id);
-      context.Assert.AreEqual(expected[1].Member, actual[1].Member);
-      context.Assert.AreEqual(expected[1].Child.Id, actual[1].Child.Id);
-      context.Assert.Success();
-      context.Complete();
-    }
-
-    [TestMethod]
     public void MobileDictionary_PrimitiveKey_PrimitiveValue()
     {
       UnitTestContext context = GetContext();

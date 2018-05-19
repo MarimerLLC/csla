@@ -7,7 +7,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectInfo : ReadOnlyBase<ProjectInfo>
   {
-    public static PropertyInfo<int> IdProperty = 
+    public static readonly PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
     [Display(Name = "Project id")]
     public int Id
@@ -16,7 +16,7 @@ namespace ProjectTracker.Library
       private set { LoadProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     [Display(Name = "Project name")]
     public string Name
     {

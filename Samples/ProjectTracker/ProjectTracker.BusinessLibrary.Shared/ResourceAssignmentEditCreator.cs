@@ -6,7 +6,7 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ResourceAssignmentEditCreator : ReadOnlyBase<ResourceAssignmentEditCreator>
   {
-    public static PropertyInfo<ResourceAssignmentEdit> ResultProperty = RegisterProperty<ResourceAssignmentEdit>(c => c.Result);
+    public static readonly PropertyInfo<ResourceAssignmentEdit> ResultProperty = RegisterProperty<ResourceAssignmentEdit>(c => c.Result);
     public ResourceAssignmentEdit Result
     {
       get { return GetProperty(ResultProperty); }

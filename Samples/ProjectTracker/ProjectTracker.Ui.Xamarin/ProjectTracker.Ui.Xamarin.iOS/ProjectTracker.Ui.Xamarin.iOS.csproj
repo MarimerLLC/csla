@@ -120,7 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSLA-XamarinForms">
-      <Version>4.7.101</Version>
+      <Version>4.7.200-R18051402</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="2.5.0.280555" />
   </ItemGroup>

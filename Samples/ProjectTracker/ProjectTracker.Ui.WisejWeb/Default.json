@@ -1,0 +1,39 @@
+﻿//
+// Application Configuration:
+//
+// All settings are optional.
+//
+// startup:                   Full name of the startup method. i.e. "MyApp.Program.Main, MyApp".
+// mainWindow:                Full name of a window created automatically at startup. i.e. "MyApp.MainForm, MyApp".
+// theme:                     Name of the theme, without the extension, to load at startup.
+// url:                       Destination URL. If null, the request must match a web page.
+// culture:                   The default culture of the application. Default: "auto" (detects the culture from the browser.)
+// rightToLeft                Enables or disables Right to Left mode: true, false or auto. Default: "auto".
+// sessionTimeout:            Timeout of the session in seconds. Default: 120. Minimum: 60.
+// responseTimeout:           Timeout of the Wisej requests in seconds. Default: 300. Minimum: 300.
+//                            Increase this value if you expect your application to process long running requests.
+// pollInterval               Interval for the automatic polling of the server in milliseconds. Default: 0 (disabled). Minimum: 1000.
+//                            This option is ignored for WebSocket connections.
+// cookieless:                Enables support for cookieless sessions. Default: false.
+// secure:                    Forces the client to use SSL. Default: false.
+// showLoader:                Loads the wisej ajax loader. Default: true.
+// loaderTimeout:             Timeout before the appearance of the Ajax loader in milliseconds. Default: 2000. Minimum: 100.
+// browserCheck:              Custom expression to validate the browser, i.e. "navigator.platform == 'Win32'".
+// notSupportedUrl:           URL of the not-supported page. Wisej will redirect here when the browser is not supported. Default: 'resource.wx/Wisej.Core/NotSupported.html'
+// notAvailableUrl:           URL of the not-available page. Wisej will redirect here when the server cannot accept any more sessions. Default: 'resource.wx/Wisej.Core/NotAvailable.html'
+// debug:                     Enables logging on the client browser console. Default: false.
+// enableWebSocket:           Enables the user of WebSocket if available. Default: true.
+// enableWebSocketCompression Enables compression of incoming WebSocket data. Default: true.
+// maxSessions:               Maximum number of active sessions (users) before redirecting to notAvailableUrl. Default: -1 (unlimited).
+// maxModalStack:             Maximum number of nested modal dialogs. Default: 10.
+// dropDuplicateClicks        Drops all "execute" (clicks) events while there is a pending request. Touch and mouse clicks are still queued and will be executed. Default: false.
+// disableClientObjectModel   Disables the creation of the JavaScript object model on the client.
+// refreshActiveTab           Enables the automatic refresh of the active browser tab when sharing a session with another tab. Default: false.
+// options:                   Map of platform options. i.e. {debug: true}
+// settings:                  Map of custom application settings. i.e. {jquery: "http://cdn...", rootPath: "c:\\users\\...", ...}.
+//                            Custom settings are available using Application.Configuration.Settings.
+{
+    "sessionTimeout": 1200,
+    "url": "Default.html",
+    "startup": "PTWisej.Program.Main, PTWisej"
+}

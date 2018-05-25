@@ -704,6 +704,28 @@ namespace Csla.Xaml
       }
     }
 
+    private object _tag;
+    /// <summary>
+    /// Gets or sets an arbitrary value associated with this
+    /// PropertyInfo instance.
+    /// </summary>
+    [Category("Property Status")]
+    public object Tag
+    {
+      get
+      {
+        return _tag;
+      }
+      set
+      {
+        if (!ReferenceEquals(_tag, value))
+        {
+          _tag = value;
+          OnPropertyChanged("Tag");
+        }
+      }
+    }
+
     #endregion
 
     #region State management

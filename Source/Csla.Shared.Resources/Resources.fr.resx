@@ -305,8 +305,19 @@
     <value>le factory méthode:{0} n'existe pas</value>
     <comment>No such factory method:{0}</comment>
   </data>
-  <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Edit level mismatch in {0}</value>
-    <comment>Edit level mismatch in {0}</comment>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Impossible d'appeler de manière synchrone {0}, qui est une méthode asynchrone</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="ActionExtenderErrorCaption" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="NoSuchMethod" xml:space="preserve">
+    <value>La méthode {0} n'existe pas</value>
+  </data>
+  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
+    <value>Objet non sérialisable ({0})</value>
   </data>
 </root>

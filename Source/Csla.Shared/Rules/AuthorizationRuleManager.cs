@@ -24,8 +24,6 @@ namespace Csla.Rules
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
 
-    private bool InitializingPerType { get; set; }
-
     internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
       if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;
@@ -67,6 +65,8 @@ namespace Csla.Rules
       return result;
     }
 #endif
+
+    private bool InitializingPerType { get; set; }
 
     internal static AuthorizationRuleManager GetRulesForType(Type type)
     {

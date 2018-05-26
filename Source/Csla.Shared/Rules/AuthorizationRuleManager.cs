@@ -66,6 +66,8 @@ namespace Csla.Rules
     }
 #endif
 
+    private bool InitializingPerType { get; set; }
+
     internal static AuthorizationRuleManager GetRulesForType(Type type)
     {
       return GetRulesForType(type, null);
@@ -75,29 +77,35 @@ namespace Csla.Rules
     {
       if (!mgr.InitializedPerType)
         lock (mgr)
-          if (!mgr.InitializedPerType)
+          if (!mgr.InitializedPerType && !mgr.InitializingPerType)
           {
-            mgr.InitializedPerType = true;
             // Only call AddObjectAuthorizationRules when there are no rules for this type
             if (RulesExistForType(type))
             {
+              mgr.InitializedPerType = true;
               return;
             }
 
             try
             {
+              mgr.InitializingPerType = true;
+
               // invoke method to add auth roles
               const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
               System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
               if (method != null)
                 method.Invoke(null, null);
-
+              mgr.InitializedPerType = true;
             }
             catch (Exception)
             {
               // remove all loaded rules for this type
               CleanupRulesForType(type);
               throw;  // and rethrow the exception
+            }
+            finally
+            {
+              mgr.InitializingPerType = false;
             }
           }
     }

@@ -652,6 +652,7 @@ namespace Csla.Xaml
     {
       if (typeof(T) != null)
       {
+        OnRefreshing(Model);
         Error = null;
         try
         {
@@ -675,6 +676,7 @@ namespace Csla.Xaml
     {
       if (typeof(T) != null)
       {
+        OnRefreshing(Model);
         Error = null;
         try
         {
@@ -762,7 +764,7 @@ namespace Csla.Xaml
 
     private Delegate CreateHandler(Type objectType)
     {
-      System.Reflection.MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
+      System.Reflection.MethodInfo method = MethodCaller.GetMethod(GetType(), "QueryCompleted");
       var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
       var args = typeof(EventHandler<>).MakeGenericType(innerType);
 
@@ -802,8 +804,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Method called after a refresh operation 
-    /// has completed and before the model is updated 
-    /// (when successful).
+    /// has completed and before the model is updated.
     /// </summary>
     /// <param name="model">The model.</param>
     protected virtual void OnRefreshing(T model)
@@ -811,8 +812,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Method called after a refresh operation 
-    /// has completed (whether successful or
-    /// not).
+    /// has completed.
     /// </summary>
     protected virtual void OnRefreshed()
     { }

@@ -652,6 +652,7 @@ namespace Csla.Xaml
     {
       if (typeof(T) != null)
       {
+        OnRefreshing(Model);
         Error = null;
         try
         {
@@ -675,6 +676,7 @@ namespace Csla.Xaml
     {
       if (typeof(T) != null)
       {
+        OnRefreshing(Model);
         Error = null;
         try
         {
@@ -802,8 +804,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Method called after a refresh operation 
-    /// has completed and before the model is updated 
-    /// (when successful).
+    /// has completed and before the model is updated.
     /// </summary>
     /// <param name="model">The model.</param>
     protected virtual void OnRefreshing(T model)
@@ -811,8 +812,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Method called after a refresh operation 
-    /// has completed (whether successful or
-    /// not).
+    /// has completed.
     /// </summary>
     protected virtual void OnRefreshed()
     { }

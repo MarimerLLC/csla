@@ -509,7 +509,7 @@ namespace Csla.Xaml
         DetachSource(old);
         AttachSource(source);
         BusinessBase bb = Source as BusinessBase;
-        if (bb != null)
+        if (bb != null && !string.IsNullOrWhiteSpace(BindingPath))
         {
           IsBusy = bb.IsPropertyBusy(BindingPath);
         }
@@ -704,24 +704,24 @@ namespace Csla.Xaml
       }
     }
 
-    private object _tag;
+    private object _customTag;
     /// <summary>
     /// Gets or sets an arbitrary value associated with this
     /// PropertyInfo instance.
     /// </summary>
     [Category("Property Status")]
-    public object Tag
+    public object CustomTag
     {
       get
       {
-        return _tag;
+        return _customTag;
       }
       set
       {
-        if (!ReferenceEquals(_tag, value))
+        if (!ReferenceEquals(_customTag, value))
         {
-          _tag = value;
-          OnPropertyChanged("Tag");
+          _customTag = value;
+          OnPropertyChanged("CustomTag");
         }
       }
     }
@@ -731,9 +731,11 @@ namespace Csla.Xaml
     #region State management
 
     /// <summary>
-    /// Updates the state on control Property.
+    /// Updates the metastate values on control
+    /// based on the current state of the business
+    /// object and property.
     /// </summary>
-    protected virtual void UpdateState()
+    public virtual void UpdateState()
     {
       if (_loading) return;
 

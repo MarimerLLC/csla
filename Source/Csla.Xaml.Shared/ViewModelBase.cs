@@ -762,7 +762,7 @@ namespace Csla.Xaml
 
     private Delegate CreateHandler(Type objectType)
     {
-      System.Reflection.MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
+      System.Reflection.MethodInfo method = MethodCaller.GetMethod(GetType(), "QueryCompleted");
       var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
       var args = typeof(EventHandler<>).MakeGenericType(innerType);
 

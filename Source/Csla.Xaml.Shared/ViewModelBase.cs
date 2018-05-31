@@ -828,6 +828,7 @@ namespace Csla.Xaml
       Error = null;
       try
       {
+        UnhookChangedEvents(Model);
         var savable = Model as Csla.Core.ISavable;
         if (ManageObjectLifetime)
         {
@@ -849,6 +850,7 @@ namespace Csla.Xaml
       }
       catch (Exception ex)
       {
+        HookChangedEvents(Model);
         Error = ex;
         OnSaved();
       }
@@ -864,6 +866,7 @@ namespace Csla.Xaml
     {
       try
       {
+        UnhookChangedEvents(Model);
         var savable = Model as Csla.Core.ISavable;
         if (ManageObjectLifetime)
         {
@@ -887,6 +890,7 @@ namespace Csla.Xaml
       }
       catch (Exception ex)
       {
+        HookChangedEvents(Model);
         IsBusy = false;
         Error = ex;
         OnSaved();
@@ -1112,7 +1116,11 @@ namespace Csla.Xaml
       OnSetProperties();
     }
 
-    private void UnhookChangedEvents(T model)
+    /// <summary>
+    /// Unhooks changed event handlers from the model.
+    /// </summary>
+    /// <param name="model"></param>
+    protected void UnhookChangedEvents(T model)
     {
       var npc = model as INotifyPropertyChanged;
       if (npc != null)
@@ -1127,6 +1135,10 @@ namespace Csla.Xaml
         cc.CollectionChanged -= Model_CollectionChanged;
     }
 
+    /// <summary>
+    /// Hooks changed events on the model.
+    /// </summary>
+    /// <param name="model"></param>
     private void HookChangedEvents(T model)
     {
       var npc = model as INotifyPropertyChanged;

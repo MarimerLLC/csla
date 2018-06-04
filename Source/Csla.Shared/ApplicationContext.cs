@@ -245,6 +245,13 @@ namespace Csla
 
     #region Settings
 
+    /// <summary>
+    /// Gets or sets a value indicating whether CSLA
+    /// should fallback to using reflection instead of
+    /// System.Linq.Expressions (true, default).
+    /// </summary>
+    public static bool UseReflectionFallback { get; set; } = false;
+
     private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
     private static object _dataPortalActivatorSync = new object();
 

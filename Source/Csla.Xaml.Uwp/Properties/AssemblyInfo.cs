@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-17 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-18 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,6 +24,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.7.101.0")]
-[assembly: AssemblyFileVersion("4.7.101.0")]
+[assembly: AssemblyVersion("4.7.200.0")]
+[assembly: AssemblyFileVersion("4.7.200.0")]
 [assembly: ComVisible(false)]

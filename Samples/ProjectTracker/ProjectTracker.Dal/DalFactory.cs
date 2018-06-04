@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Configuration;
+using Csla.Configuration;
 
 namespace ProjectTracker.Dal
 {

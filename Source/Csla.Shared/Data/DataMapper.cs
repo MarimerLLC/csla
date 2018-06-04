@@ -385,7 +385,7 @@ namespace Csla.Data
 
       Type pType = handle.MemberType;
 
-#if NETSTANDARD
+#if NETSTANDARD && !NETSTANDARD2_0
       var isGeneric = pType.IsGenericType();
       var isPrimitive = pType.IsPrimitive();
       var isValueType = pType.IsValueType();

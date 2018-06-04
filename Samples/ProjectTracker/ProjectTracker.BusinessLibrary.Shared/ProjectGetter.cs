@@ -6,14 +6,14 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectGetter : ReadOnlyBase<ProjectGetter>
   {
-    public static PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(c => c.Project);
+    public static readonly PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(c => c.Project);
     public ProjectEdit Project
     {
       get { return GetProperty(ProjectProperty); }
       private set { LoadProperty(ProjectProperty, value); }
     }
 
-    public static PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
+    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
     public RoleList RoleList
     {
       get { return GetProperty(RoleListProperty); }

@@ -230,7 +230,7 @@
     <comment>tom</comment>
   </data>
   <data name="SmartDateTomorrow" xml:space="preserve">
-    <value>amanha</value>
+    <value>amanhã</value>
     <comment>tomorrow</comment>
   </data>
   <data name="Failed" xml:space="preserve">
@@ -508,5 +508,8 @@
   </data>
   <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
     <value>O objecto é válido</value>
+  </data>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Não é possível chamar de forma síncrona {0}, que é um método assíncrono</value>
   </data>
 </root>

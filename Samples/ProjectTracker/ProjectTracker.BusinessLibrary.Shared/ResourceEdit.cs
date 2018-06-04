@@ -20,6 +20,7 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    [Display(Name = "Resource id")]
     public int Id
     {
       get { return GetProperty(IdProperty); }

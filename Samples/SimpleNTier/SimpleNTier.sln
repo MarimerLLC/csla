@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppServer", "AppServer", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{8AD2BCF1-6C86-4E79-98E6-7950EEB7F208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLibrary.ns20", "BusinessLibrary.ns20\BusinessLibrary.ns20.csproj", "{D92DE816-95EB-49D9-A530-D647EE6CD32E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLibrary.ns20", "BusinessLibrary.ns20\BusinessLibrary.ns20.csproj", "{D92DE816-95EB-49D9-A530-D647EE6CD32E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLibrary.Net", "BusinessLibrary\BusinessLibrary.Net.csproj", "{2D2E0AC6-863C-4C52-88D4-B9CC79D5845C}"
 EndProject

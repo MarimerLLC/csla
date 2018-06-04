@@ -4,6 +4,7 @@ CSLA .NET is developed and maintained by a [global development team](http://www.
 
 ## Getting started
 
+* Download, print, sign, scan, and return the [contributor agreement document](https://github.com/MarimerLLC/csla/blob/master/Support/Contributions/CSLA%20Contributor%20Agreement.pdf).
 * Make sure you have a [GitHub account](https://github.com/signup/free)
 * For beginners we suggest
   * This online course on [contributing to OSS projects on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)

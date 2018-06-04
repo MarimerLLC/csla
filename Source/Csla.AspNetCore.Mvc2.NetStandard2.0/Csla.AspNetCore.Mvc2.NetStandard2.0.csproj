@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,13 +9,13 @@
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET</Product>
     <Description>CSLA .NET support for AspNetCore</Description>
-    <Copyright>Copyright 2017 Marimer LLC</Copyright>
+    <Copyright>Copyright © 2010-18 Marimer LLC</Copyright>
     <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</PackageLicenseUrl>
     <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <AssemblyVersion>4.7.101.0</AssemblyVersion>
-    <FileVersion>4.7.101.0</FileVersion>
+    <AssemblyVersion>4.7.200.0</AssemblyVersion>
+    <FileVersion>4.7.200.0</FileVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

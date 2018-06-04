@@ -307,7 +307,7 @@ namespace PTWin
 
       // Admin menu
       this.EditRolesToolStripMenuItem.Enabled =
-        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditList));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditBindingList));
     }
 
     #endregion

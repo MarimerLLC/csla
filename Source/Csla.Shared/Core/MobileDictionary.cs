@@ -72,6 +72,17 @@ namespace Csla.Core
       DetermineTypes();
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the
+    /// dictionary contains the specified key
+    /// value.
+    /// </summary>
+    /// <param name="key">Key value</param>
+    public bool Contains(K key)
+    {
+      return base.ContainsKey(key);
+    }
+
 #if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.

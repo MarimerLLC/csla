@@ -23,7 +23,7 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
 , IUndoableObject
 #endif
   {
@@ -853,7 +853,7 @@ namespace Csla.Rules
 
     #endregion
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IUndoableObject Members
 
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();

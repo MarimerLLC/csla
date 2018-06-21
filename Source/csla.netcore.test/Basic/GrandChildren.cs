@@ -13,7 +13,7 @@ using System.Data;
 namespace Csla.Test.Basic
 {
     [Serializable()]
-    public class GrandChildren : BusinessBindingListBase<GrandChildren, GrandChild>
+    public class GrandChildren : BusinessListBase<GrandChildren, GrandChild>
     {
         public void Add(string data)
         {

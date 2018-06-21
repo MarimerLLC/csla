@@ -13,7 +13,7 @@ using System.Data;
 namespace Csla.Test.Basic
 {
     [Serializable()]
-    public class Children : BusinessBindingListBase<Children, Child>
+    public class Children : BusinessListBase<Children, Child>
     {
         public void Add(string data)
         {
@@ -49,6 +49,11 @@ namespace Csla.Test.Basic
         public int DeletedCount
         {
           get { return this.DeletedList.Count; }
+        }
+
+        public List<Child> GetDeletedList()
+        {
+          return this.DeletedList;
         }
     }
 }

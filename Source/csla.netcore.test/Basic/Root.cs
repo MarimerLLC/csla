@@ -14,8 +14,6 @@ namespace Csla.Test.Basic
   [Serializable()]
   public class Root : BusinessBase<Root>
   {
-    private Children _children = Csla.Test.Basic.Children.NewChildren();
-
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
@@ -30,19 +28,11 @@ namespace Csla.Test.Basic
       private set { LoadProperty(CreatedDomainProperty, value); }
     }
 
+    public static readonly PropertyInfo<Children> ChildrenProperty = RegisterProperty<Children>(c => c.Children);
     public Children Children
     {
-      get { return _children; }
-    }
-
-    ///start editing
-    ///
-    public override bool IsDirty
-    {
-      get
-      {
-        return base.IsDirty || _children.IsDirty;
-      }
+      get { return GetProperty(ChildrenProperty); }
+      private set { LoadProperty(ChildrenProperty, value); }
     }
 
     [Serializable()]
@@ -85,7 +75,10 @@ namespace Csla.Test.Basic
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
+      {
         Data = crit._data;
+        Children = Csla.Test.Basic.Children.NewChildren();
+      }
       CreatedDomain = AppDomain.CurrentDomain.Id;
       Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
     }
@@ -94,7 +87,10 @@ namespace Csla.Test.Basic
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
+      {
         Data = crit._data;
+        Children = Csla.Test.Basic.Children.NewChildren();
+      }
       MarkOld();
       Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
     }

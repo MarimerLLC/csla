@@ -326,7 +326,7 @@ namespace Csla.Test.Basic
 
           Root copy = root.Clone();
 
-          var deleted = (List<Child>)(root.Children.GetType().GetProperty("DeletedList", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.IgnoreCase).GetValue(copy.Children, null));
+          var deleted = copy.Children.GetDeletedList();
 
           Assert.AreEqual(2, deleted.Count);
           Assert.AreEqual("1", deleted[0].Data);
@@ -348,7 +348,7 @@ namespace Csla.Test.Basic
 
           Root copy = root.Clone();
 
-          List<Child> deleted = (List<Child>)(root.Children.GetType().GetProperty("DeletedList", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.IgnoreCase).GetValue(copy.Children, null));
+          var deleted = copy.Children.GetDeletedList();
 
           Assert.AreEqual(2, deleted.Count);
           Assert.AreEqual("1", deleted[0].Data);
@@ -357,7 +357,7 @@ namespace Csla.Test.Basic
 
           root.CancelEdit();
 
-          deleted = (List<Child>)(root.Children.GetType().GetProperty("DeletedList", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.IgnoreCase).GetValue(root.Children, null));
+          deleted = root.Children.GetDeletedList();
 
           Assert.AreEqual(0, deleted.Count);
           Assert.AreEqual(3, root.Children.Count);

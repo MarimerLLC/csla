@@ -1952,6 +1952,8 @@ namespace Csla.Core
       return GetProperty<P>(property);
     }
 
+    [NotUndoable]
+    [NonSerialized]
     private List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
 
     /// <summary>

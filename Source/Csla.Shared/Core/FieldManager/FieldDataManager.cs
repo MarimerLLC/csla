@@ -26,7 +26,7 @@ namespace Csla.Core.FieldManager
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
   public class FieldDataManager : MobileObject, IUndoableObject
 #else
   public class FieldDataManager : IUndoableObject, IMobileObject
@@ -39,7 +39,7 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -454,7 +454,7 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
 #else
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
@@ -473,7 +473,7 @@ namespace Csla.Core.FieldManager
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
       SerializationInfo state = new SerializationInfo(0);
       OnGetState(state, StateMode.Undo);
 
@@ -535,7 +535,7 @@ namespace Csla.Core.FieldManager
         if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
         SerializationInfo state = _stateStack.Pop();
         OnSetState(state, StateMode.Undo);
 
@@ -652,7 +652,7 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IMobileObject Members
 
     /// <summary>

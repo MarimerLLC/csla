@@ -1,36 +1,87 @@
-I am pleased to announce the release of CSLA .NET version 4.7.100 with full support for netstandard 2.0 and .NET Core 2. 
+I am pleased to announce the release of CSLA .NET version 4.7.200 with support for Blazor, and enhanced support for ASP.NET Core and Xamarin.
 
-The packages are now in NuGet. Once some final updates to the samples are complete and merged into master I'll create a formal release tag/page on GitHub.
+The packages are now in NuGet.
 
-This release also includes some other very exciting capabilities, including:
+This is a pretty big release, focused on four key areas:
 
-* [#760](https://github.com/MarimerLLC/csla/issues/760) Add support for ASP.NET Core 2.0
-* [#759](https://github.com/MarimerLLC/csla/issues/759) Add support for EF Core (EntityFrameworkCore)
-* [#813](https://github.com/MarimerLLC/csla/issues/813) Major performance improvement when data binding to large object graphs thanks to [keithdv](https://github.com/keithdv)
-* [#795](https://github.com/MarimerLLC/csla/issues/795) Add `Transactional` attribute back into netstandard 2.0 code 
-* [#800](https://github.com/MarimerLLC/csla/issues/800) Changes to configuration so it is possible to configure CSLA without any `web.config` or `app.config` files (such as in .NET Core, etc.)
-* [#496](https://github.com/MarimerLLC/csla/issues/496) Support `ClaimsPrincipal` via new `CslaClaimsPrincipal` type
-* [#729](https://github.com/MarimerLLC/csla/issues/729) `ApplicationContext` now defaults to using `AsyncLocal` to maintain values on the current thread/context with help from [j055](https://github.com/j055) **BREAKING CHANGE**
-* [#712](https://github.com/MarimerLLC/csla/issues/712) Support in-place deserialization of an object graph
-* [#748](https://github.com/MarimerLLC/csla/issues/748) Major improvements to serialization via `MobileFormatter` thanks to [jasonbock](https://github.com/JasonBock)
-* [#763](https://github.com/MarimerLLC/csla/issues/763) Update to samples thanks to [tfreitasleal](https://github.com/tfreitasleal)
-* [#688](https://github.com/MarimerLLC/csla/issues/688) Get `ApplicationContext.User` authentication working with ASP.NET Core thanks to [dazinator](https://github.com/dazinator)
-* [#766](https://github.com/MarimerLLC/csla/issues/766) Update to use latest UWP libraries for Windows 10 Fall Creators Update **BREAKING CHANGE**
-* [#790](https://github.com/MarimerLLC/csla/issues/790) BUG: Fix `AmbiguousMatchException` in data portal thanks to [iherwald](https://github.com/iherwald)
-* [#710](https://github.com/MarimerLLC/csla/issues/710) BUG: Fix ambiguous `Save` method issue thanks to [rabidkitten](https://github.com/rabidkitten)
- 
-There are a couple known issues with this release:
+* Improved sample code
+* Enhanced support for ASP.NET Core
+  * The new `CslaModelBinderProvider` and `CslaModelBinder` types support data binding in Razor Pages scenarios
+* Enhanced support for Xamarin
+  * Updated for Xamarin Forms 3.0; Enhanced the `PropertyInfo` type, Fixed critical bug in `GraphMerger` on iOS
+* Support for Blazor (and mono/wasm)
+  * Add support for Blazor so it is possible to use CSLA objects in client-side mono/wasm code in a Blazor app, reference the `CSLA-Core-NS` package from your Blazor client app to use CSLA
 
-* [#818](https://github.com/MarimerLLC/csla/issues/818) Xamarin projects using `System.Data.SqlClient` show a warning about this assembly's location
-* [#794](https://github.com/MarimerLLC/csla/issues/794) UWP projects show `warning PRI263: 0xdef01051` messages relative to CSLA resource strings
-* [#822](https://github.com/MarimerLLC/csla/issues/822) There are two "sets" of CSLA packages/assemblies: one for full .NET 4.6.1+ and one for netstandard (including Xamarin, UWP, .NET Core, etc.) due to a type error between netstandard and full .NET
-* [#703](https://github.com/MarimerLLC/csla/issues/703) Though netstandard supports BinaryFormatter, that is currently not an option from the CSLA configuration, and this needs to be addressed
+More details are listed here:
 
-Regarding the NuGet/assembly split noted in [#822](https://github.com/MarimerLLC/csla/issues/822):
+### ASP.NET Core
+* [#900](https://github.com/marimerllc/csla/issues/900) Update model binder to support editable list root objects 
+* [#900](https://github.com/marimerllc/csla/issues/900) Add CslaModelBinder for IBusinessBase types 
 
-Right now there are two "families" of CSLA .NET packages in NuGet. One that supports full .NET and one that supports all other runtimes.
+### Xamarin
+* [#903](https://github.com/marimerllc/csla/issues/903) Fix the GraphMerger so it works on iOS devices - Find child type on iOS when indexer is not found 
+* [#886](https://github.com/marimerllc/csla/issues/886) Upgrade to Xamarin Forms 3.0 
+* [#886](https://github.com/marimerllc/csla/issues/886) Upgrade to Xamarin Forms 3.0 (also consolidate all json.net references to the same version) 
+* [#697](https://github.com/marimerllc/csla/issues/697) Add Tag property to PropertyInfo class. 
 
-The full .NET family must be used for the following types of app:
+### Blazor
+* [#829](https://github.com/marimerllc/csla/issues/829) Make UseTextSerialization property static 
+* [#829](https://github.com/marimerllc/csla/issues/829) Remove MobileList test with complex types (breaking change - scenario no longer supported) 
+* [#829](https://github.com/marimerllc/csla/issues/829) Add UseReflectionFallback setting to prevent use of System.Linq.Expressions 
+* [#829](https://github.com/marimerllc/csla/issues/829) Make HttpProxy and HttpPortalController support optional text serialization 
+* [#829](https://github.com/marimerllc/csla/issues/829) Expose GetValueOrNull method as public 
+* [#829](https://github.com/marimerllc/csla/issues/829) Remove DCS dependency in MobileList 
+
+### Bug fixes
+* [#897](https://github.com/marimerllc/csla/issues/897) Get BeginEdit working in netstandard 2.0 implementation 
+* Closes [#545](https://github.com/marimerllc/csla/issues/545) Unhook event handlers before save operations. 
+* Closes [#205](https://github.com/marimerllc/csla/issues/205) Call OnRefreshing before each OnRefreshed call. 
+* Fixes [#761](https://github.com/marimerllc/csla/issues/761) Resolve exception when calling BeginRefresh 
+* Fix threading issue in InitializePerTypeRules (#614) 
+* Fix threading issue in InitializePerTypeRules (#614) 
+
+### Misc
+
+* [#879](https://github.com/marimerllc/csla/issues/879) Update tests to work in .NET Core. 
+* [#879](https://github.com/marimerllc/csla/issues/879) Add basic .NET Core undoable tests 
+* Closes [#633](https://github.com/marimerllc/csla/issues/633) Closes [#657](https://github.com/marimerllc/csla/issues/657) Closes [#697](https://github.com/marimerllc/csla/issues/697) Add CustomTag property and fix null ref exception during control init. Make UpdateState public. 
+* Complete pt resources.Add some fr resources. (#884) 
+* Add ReadOnlyBase support for property setter anlyzer 
+* Mention contributor agreement in the getting started list 
+* [#836](https://github.com/marimerllc/csla/issues/836) Make ConnectionManager types match; Optimize locking in DeRef method 
+
+### Samples
+
+* Add Wisej Web UI to ProjectTracker sample (#881) 
+* Update Project Tracker to 4.7.200-R18051402 ( [#879)](https://github.com/marimerllc/csla/issues/879)) 
+* [#829](https://github.com/marimerllc/csla/issues/829) Add BlazorExample sample code 
+* Remove useless overload RoleEdit GetRole(int id) (#687) 
+* ProjectTracker.BusinessLibrary.Netstandard is missing a reference to ProjectTracker.Dal (#870) 
+* ProjectTracker WinForms - show validation errors on Save (#868) 
+* Fix for ProjectTracker WinForms RolesEdit is broken (#863) UI 
+* Missing Display attribute (#863) 
+* Fix for ProjectTracker WinForms RolesEdit is broken (#863) 
+* ProjectTracker BO: add missing RoleList.CacheList (#865) 
+* Revert to RoleList cache refresh (#861) 
+* Async RoleList cache refresh (#861) 
+* Consistent codig of ResourceEdit and ProjectEdit (#861 (#861) 
+* Improve Project Tracker WinForms (#861) 
+* Updating samples to 4.7.101 (#859) 
+* Update sample to CSLA .NET 4.7.101 (#844) Cosmetic changes on some forms. 
+* Update SimpleNTier (broken Wcf configuration) sample to CSLA .NET 4.7.101 [#844](https://github.com/marimerllc/csla/issues/844) 
+* Update Project Tracker sample to CSLA .NET 4.7.101 [#844](https://github.com/marimerllc/csla/issues/844) 
+* Update CslaMVC sample to CSLA .NET 4.7.101 [#844](https://github.com/marimerllc/csla/issues/844) 
+* Refresh generated code (#847) 
+* Add sample to verify NuGet versions (#841) 
+* [#832](https://github.com/marimerllc/csla/issues/832) Change NuGet targets to lib/net461 
+
+## Important notes
+
+There continue to be two "families" of CSLA .NET packages in NuGet. One that supports full .NET and one that supports all other runtimes. The following work item is tracking when this is resolved (after Microsoft fixes a bug in full .NET):
+
+* [#822](https://github.com/marimerllc/csla/issues/822)OnDeserialized attribute from NS2 causes runtime error in full .NET
+
+In the meantime, the full .NET family (based on the `CSLA-Core` package) must be used for the following types of app:
 * Windows Forms
 * WPF
 * ASP.NET (other than Core)
@@ -38,11 +89,12 @@ The full .NET family must be used for the following types of app:
 * Azure Functions
 * Any other runtime hosted by full .NET 4.6.1+
 
-The netstandard family must be used for the following types of app:
+The netstandard family (based on the `CSLA-Core-NS` package) must be used for the following types of app:
 * Xamrin
 * UWP
 * .NET Core
 * ASP.NET Core
+* Blazor
 * Any other runtime _not_ hosted by full .NET 4.6.1+
 
 What this means for you is that if your n-tier app is 100% full .NET or full netstandard then you can live within one of those families. BUT if your server is full .NET and your client is Xamarin (for example) then your _business library_ assemblies need to be compiled twice: once for full .NET and once for netstandard.

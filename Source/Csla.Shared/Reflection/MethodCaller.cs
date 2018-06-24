@@ -1230,6 +1230,8 @@ namespace Csla.Reflection
 #else
         var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
 #endif
+        if (methodReference == null)
+          throw new InvalidOperationException(objectType.Name + "." + method);
         var gr = methodReference.MakeGenericMethod(typeParams);
         result = gr.Invoke(target, null);
       }

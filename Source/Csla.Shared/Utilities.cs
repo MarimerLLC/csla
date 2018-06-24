@@ -104,14 +104,15 @@ namespace Csla
       else
       {
 #if NETFX_CORE
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
 #else
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
 #endif
         if (indexer != null)
+        {
           foreach (PropertyInfo prop in listType.GetProperties(
             BindingFlags.Public |
             BindingFlags.Instance |
@@ -120,6 +121,11 @@ namespace Csla
             if (prop.Name == indexer.MemberName)
               result = Utilities.GetPropertyType(prop.PropertyType);
           }
+        }
+        if (result == null)
+        {
+          result = listType.GetMethod("get_Item")?.ReturnType;
+        }
       }
       return result;
     }

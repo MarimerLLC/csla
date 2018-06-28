@@ -1435,6 +1435,9 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -1447,6 +1450,9 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsSelfBusy
     {
       get { return _isBusy || LoadManager.IsLoading; }

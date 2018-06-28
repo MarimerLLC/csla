@@ -182,6 +182,7 @@ namespace Csla.Xaml
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public bool ManageObjectLifetime
     {
 #if ANDROID || IOS || XAMARIN
@@ -201,6 +202,7 @@ namespace Csla.Xaml
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public Exception Error
     {
       get { return _error; }

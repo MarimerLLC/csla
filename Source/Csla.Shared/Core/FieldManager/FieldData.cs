@@ -210,6 +210,9 @@ namespace Csla.Core.FieldManager
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public bool IsBusy
     {
       get

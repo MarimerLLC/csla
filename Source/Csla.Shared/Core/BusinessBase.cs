@@ -1284,6 +1284,9 @@ namespace Csla.Core
     [Display(AutoGenerateField = false)]
 #if !PCL46 && !PCL259 
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#if !NET40
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+#endif
 #endif
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual Rules.BrokenRulesCollection BrokenRulesCollection

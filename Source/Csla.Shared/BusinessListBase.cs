@@ -1254,6 +1254,9 @@ namespace Csla
     /// </remarks>
     [Browsable(false)]
     [Display(AutoGenerateField=false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {

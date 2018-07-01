@@ -6,3 +6,5 @@ Set WindowsUI as Startup Project.
 
 3. Debug with F5 to start server side.
 You can break the debug and run normally with CTRL F5.
+
+4. The purpose of this sample is to raises and handle exceptions. You must try it by running with CTRL F5.

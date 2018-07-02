@@ -1,4 +1,4 @@
-1. Set ActionExtenderSample.WinForms as Startup Project.
+1. Set ProjectsVendors.WinForms as Startup Project.
 
 2. On the same project open App.config.
 Under <connectionStrings> select the appropriate connection string for:

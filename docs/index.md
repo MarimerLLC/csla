@@ -2,7 +2,7 @@
 
 Basic information
 -----------------
-* [What is CSLA .NET?](what-is-csla-.net.md)
+* [What is CSLA .NET?](What-is-CSLA-.NET.md)
 * [CSLA .NET overview whitepaper](https://github.com/MarimerLLC/csla/raw/master/Support/magenic-white-paper-overview-of-csla.pdf)
 * [CSLA .NET home page](http://www.cslanet.com)
 * [[Testimonials and Usage]]

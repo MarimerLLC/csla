@@ -6,7 +6,7 @@
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>Csla.Xaml</AssemblyName>
     <RootNamespace>Csla.Xaml</RootNamespace>
-    <Version>4.7.200</Version>
+    <Version>4.7.200.0</Version>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET for Xamarin</Product>

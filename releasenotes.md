@@ -17,6 +17,7 @@ More details are listed here:
 ### ASP.NET Core
 * [#900](https://github.com/marimerllc/csla/issues/900) Update model binder to support editable list root objects 
 * [#900](https://github.com/marimerllc/csla/issues/900) Add CslaModelBinder for IBusinessBase types 
+* [#908](https://github.com/marimerllc/csla/issues/908) Add ScaffoldColumn and NotMapped attributes so scaffolding works with BusinessBase and BusinessListBase types
 
 ### Xamarin
 * [#903](https://github.com/marimerllc/csla/issues/903) Fix the GraphMerger so it works on iOS devices - Find child type on iOS when indexer is not found 

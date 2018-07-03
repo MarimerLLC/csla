@@ -30,4 +30,4 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 
 ## Analyzer Error/Warning Messages
 
-This is an [index of analyzer error/warning messages](CSLA-Analyzer-error-index)
+This is an [index of analyzer error/warning messages](CSLA-Analyzer-error-index.md)

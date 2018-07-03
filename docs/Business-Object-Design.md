@@ -4,8 +4,8 @@ This is a list of frequently asked questions about designing business objects fo
 This is a list of links to useful articles/threads on the topic:
 
 * [Forum thread](https://cslanet.com/old-forum/3465.html)
-* [Forum thread on reuse and coupling](http://forums.lhotka.net/forums/p/9146/43446.aspx#43446)
-* [Domain, entity, DTO objects and design](http://forums.lhotka.net/forums/t/10243.aspx)
+* [Forum thread on reuse and coupling](https://cslanet.com/old-forum/9146.html)
+* [Domain, entity, DTO objects and design](https://cslanet.com/old-forum/10243.html)
 
 ##Moving items from one read-only list or treeview to another
 It is often the case that a tree is best represented as a set of read-only objects, not editable objects. In other words, ROLB instead of BLB.
@@ -15,7 +15,7 @@ You can then have a set of Command objects that are used to perform operations o
 [read more...](MovingItemsBetweenLists)
 
 ##Moving items from one editable list to another
-[This thread](http://forums.lhotka.net/forums/t/9214.aspx) has information on how to move a child object from one editable list (BLB) to another editable list.
+[This thread](https://cslanet.com/old-forum/9214.html) has information on how to move a child object from one editable list (BLB) to another editable list.
 
 ##Creating a Name/Value list object from an enum
 You can load an NVLB object from an enum.
@@ -48,7 +48,7 @@ So empty is not a specific date, but it isn't a null date either.
 ##Can I use code obfuscation with CSLA .NET?
 To some degree, yes. You can't necessarily obfuscate CSLA .NET itself, but you can obfuscate some of your code.
 
-[This thread](http://forums.lhotka.net/forums/thread/34512.aspx) has some information.
+[This thread](https://cslanet.com/old-forum/3257.html) has some information.
 
 ##Can I use external rules engines with CSLA .NET business objects?
 [This thread](http://forums.lhotka.net/forums/thread/35887.aspx) has some information.

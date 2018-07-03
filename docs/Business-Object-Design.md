@@ -3,7 +3,7 @@ This is a list of frequently asked questions about designing business objects fo
 ##Object-oriented design and CSLA .NET
 This is a list of links to useful articles/threads on the topic:
 
-* [Forum thread](http://forums.lhotka.net/forums/thread/17230.aspx)
+* [Forum thread](http://cslanet.com/old-forum/17230.html)
 * [Forum thread on reuse and coupling](http://forums.lhotka.net/forums/p/9146/43446.aspx#43446)
 * [Domain, entity, DTO objects and design](http://forums.lhotka.net/forums/t/10243.aspx)
 

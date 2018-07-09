@@ -31,13 +31,13 @@ CSLA .NET 3.5 introduced types in Csla.Data, such as ConnectionManager, that hel
 ##How do I save multiple root objects in one transaction?
 When you save an editable root object the data portal may save that object, and all its child objects, in a transaction (if you apply the Transactional attribute). Sometimes the need exists to save more than one root object as part of a single transaction (a single data portal Save() call).
 
-[read more...](SaveMultipleRootObjects)
+<!---[read more...](SaveMultipleRootObjects)--->
 
 ##What is the recommended concurrency model?
-This [http://forums.lhotka.net/forums/thread/33580.aspx|forum thread] has good info, and links to good info.
+This [forum thread](https://cslanet.com/old-forum/5290.html) has good info, and links to good info.
 
 ##Can I use the repository pattern with CSLA?
-Yes, [read about it here](http://forums.lhotka.net/forums/t/9085.aspx).
+Yes, [read about it here](https://cslanet.com/old-forum/9085.html).
 
 ##Can I use EF to directly load data into CSLA objects?
-Maybe, see [this thread](http://forums.lhotka.net/forums/t/9586.aspx) for information.
+Maybe, see [this thread](https://cslanet.com/old-forum/9586.html) for information.

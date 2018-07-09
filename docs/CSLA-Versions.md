@@ -20,17 +20,17 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
 ## Upgrading
 Some posts with information about upgrading:
 
-* [From 4 to 4.5](http://forums.lhotka.net/forums/t/11624.aspx)
-* [From 3.8 to 4](http://forums.lhotka.net/forums/p/10688/49917.aspx#49917)
-* [from version 3.8 to 4](http://forums.lhotka.net/forums/t/9225.aspx|Moving)
-* [Using multiple versions of CSLA in one app](http://forums.lhotka.net/forums/p/9893/46391.aspx#46391)
+* [From 4 to 4.5](https://cslanet.com/old-forum/11624.html)
+* [From 3.8 to 4](https://cslanet.com/old-forum/10688.html)
+* [from version 3.8 to 4](https://cslanet.com/old-forum/9225.html)
+* [Using multiple versions of CSLA in one app](https://cslanet.com/old-forum/9893.html)
 
 And some more:
 
-* http://forums.lhotka.net/forums/p/10810/50414.aspx#50414|http://forums.lhotka.net/forums/p/10810/50414.aspx#50414
-* http://forums.lhotka.net/forums/p/11408/52956.aspx#52956|http://forums.lhotka.net/forums/p/11408/52956.aspx#52956
+* https://cslanet.com/old-forum/10810.html
+* https://cslanet.com/old-forum/11408.html
 
-* http://forums.lhotka.net/forums/p/4083/19986.aspx#19986|http://forums.lhotka.net/forums/p/4083/19986.aspx#19986
+* https://cslanet.com/old-forum/4083.html
 
 
 ## Non-Microsoft Platforms

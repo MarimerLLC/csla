@@ -69,7 +69,7 @@ NOTE: It appears that the _forceInit trick just doesn't work in .NET 4 and SL4, 
 [This thread](https://cslanet.com/old-forum/9005.html) has an explanation.
 
 ##How do I get DynamicRootList(DRL) or EditableRootListBase (ERLB) to do X, Y or Z?
-ERLB exists to address one very specific set of requirements: a list of root objects, bound to a datagrid, where changes to a row (object) are committed as soon as the user leaves that row. [This forum post](http://forums.lhotka.net/forums/p/9150/43465.aspx#43465) provides more information.
+ERLB exists to address one very specific set of requirements: a list of root objects, bound to a datagrid, where changes to a row (object) are committed as soon as the user leaves that row. [This forum post](https://cslanet.com/old-forum/9150.html) provides more information.
 
 ##How do I deal with lookup lists?
 [This post](https://cslanet.com/old-forum/9337.html) has good information.

@@ -8,6 +8,6 @@ A service is a type of interface - no different from a web or Windows interface.
 
 The exact same thing applies to a service interface. You should never expose your objects directly through a service interface either. You should always have some UI code (or data binding equivalent) between the interface (contract) and the object model.
 
-Useful/related threads/posts:
+<!---Useful/related threads/posts:
 
-[37548](http://forums.lhotka.net/forums/permalink/37549/37548/ShowThread.aspx#37548)
+[37548](http://forums.lhotka.net/forums/permalink/37549/37548/ShowThread.aspx#37548)--->

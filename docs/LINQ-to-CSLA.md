@@ -3,4 +3,10 @@ The indexing feature of LINQ to CSLA allows for amazingly fast queries against a
 
 If you are going to do numerous queries over the same instance of a collection, then it is worth using indexing. If you are going to do just a few queries over an instance of a collection, the cost of building the index might be higher than the performance savings on the queries.
 
-Here's a [forum post](http://forums.lhotka.net/forums/thread/32512.aspx) with some thoughts about indexing in a web setting.
+Here are some forum posts with some thoughts about indexing in a web setting.
+
+https://cslanet.com/old-forum/11353.html
+
+https://cslanet.com/old-forum/7425.html
+
+https://cslanet.com/old-forum/6507.html

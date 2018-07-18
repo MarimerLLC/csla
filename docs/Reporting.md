@@ -12,4 +12,4 @@ Reports can only be generated directly from the database by using a report gener
 
 Most people, in my observation, treat everything like a report. If they have lists, they'll often generate the output using Word or Excel exports.
 
-[This thread](http://forums.lhotka.net/forums/t/9933.aspx) has more information.
+[This thread](https://cslanet.com/old-forum/9933.html) has more information.

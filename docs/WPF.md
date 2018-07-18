@@ -1,15 +1,16 @@
 ##Does CSLA .NET support WPF?
 Yes. CSLA .NET has extensive support for WPF, both through its support for data binding, and with productivity controls and components in the Csla.Wpf namespace.
 
-The [Expert C# 2008 Business Objects](http://www.apress.com/book/view/9781430210191) and [Expert VB 2008 Business Objects](http://www.apress.com/9781430216384) books have a lot of information about WPF and how CSLA .NET supports this technology.
+The [Expert C# 2008 Business Objects](https://www.apress.com/us/book/9781430210191#otherversion=9781430210207) and [Expert VB 2008 Business Objects](http://www.apress.com/9781430216384) books have a lot of information about WPF and how CSLA .NET supports this technology.
 
-Starting with CSLA .NET 4.0, the base collection types will fully support WPF binding. [See this page](WpfCollectionBinding) for more information.
+<!---Starting with CSLA .NET 4.0, the base collection types will fully support WPF binding. [See this page](WpfCollectionBinding) for more information.--->
 
 ##Should I use Silverlight or WPF?
-This is a [good forum thread](http://forums.lhotka.net/forums/thread/33275.aspx) on the topic, and you can read [Rocky's thoughts](SilverlightOrWpf).
+This is a [good forum thread](https://cslanet.com/old-forum/10245.html) on the topic.
+<!---and you can read [Rocky's thoughts](SilverlightOrWpf).--->
 
-##Does CSLA .NET work with the MVVM pattern?
-Yes. [Click here](Mvvm) for more information.
+<!---##Does CSLA .NET work with the MVVM pattern?
+Yes. [Click here](Mvvm) for more information.--->
 
 ##Why doesn't sorting work automatically in a DataGrid?
 Prior to CSLA 4 all the CSLA collection/list classes inherit from BindingList<T>, which means they work with all UI technologies. They work great with Windows Forms and Web Forms, and work for the most part with WPF.
@@ -27,4 +28,4 @@ Unfortunately, the WPF datagrid doesn't implement events or methods that could b
 
 I (and others) have made Microsoft aware of this issue numerous times. You can go [vote on a connect issue](https://connect.microsoft.com/WPF/feedback/details/675473/wpf-datagrid-add-new-behaviour-and-ieditableobject-invocation) to encourage Microsoft to fix the control.
 
-[This thread](http://forums.lhotka.net/forums/t/10233.aspx) has more information about the issue.
+[This thread](https://cslanet.com/old-forum/10233.html) has more information about the issue.

@@ -23,7 +23,7 @@ There are third party WCF bindings that implement compression. I recommend using
 [This thread](https://cslanet.com/old-forum/10805.html) discusses one option.
 
 ##.NET: How do I use compression for the Remoting data portal channel?
-[This thread](http://forums.lhotka.net/forums/thread/38627.aspx) has information about one solution.
+[This thread](https://cslanet.com/old-forum/8067.html) has information about one solution.
 
 ##SL: Can I (should I) use binary XML with the Silverlight data portal?
 CSLA .NET 3.8 uses binary XML on your behalf. You should probably still use compression on the data (the previous topic in this FAQ), and you should probably configure your WCF endpoint and client to use binary XML as well.

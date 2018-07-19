@@ -1,6 +1,6 @@
 _Please remember that ASP.NET MVC does run in ASP.NET. So nearly all the FAQ items under the [Web Forms](Web-forms.md) topic apply to ASP.NET MVC as well._
 
-##Does CSLA .NET work with ASP.NET MVC?
+## Does CSLA .NET work with ASP.NET MVC?
 Yes, in your web project add the NuGet package specific to the version of MVC that you are targeting. That will automatically bring in the CSLA assemblies bound to that version of MVC.
 
 CSLA .NET works great with any of the "M" patterns (MVVM, MVC, MVP, etc), since it is all about helping you create a great Model.

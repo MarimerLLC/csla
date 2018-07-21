@@ -182,6 +182,7 @@ namespace Csla.Xaml
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public bool ManageObjectLifetime
     {
 #if ANDROID || IOS || XAMARIN
@@ -201,6 +202,7 @@ namespace Csla.Xaml
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public Exception Error
     {
       get { return _error; }
@@ -652,6 +654,7 @@ namespace Csla.Xaml
     {
       if (typeof(T) != null)
       {
+        OnRefreshing(Model);
         Error = null;
         try
         {
@@ -675,6 +678,7 @@ namespace Csla.Xaml
     {
       if (typeof(T) != null)
       {
+        OnRefreshing(Model);
         Error = null;
         try
         {
@@ -762,7 +766,7 @@ namespace Csla.Xaml
 
     private Delegate CreateHandler(Type objectType)
     {
-      System.Reflection.MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
+      System.Reflection.MethodInfo method = MethodCaller.GetMethod(GetType(), "QueryCompleted");
       var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
       var args = typeof(EventHandler<>).MakeGenericType(innerType);
 
@@ -802,8 +806,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Method called after a refresh operation 
-    /// has completed and before the model is updated 
-    /// (when successful).
+    /// has completed and before the model is updated.
     /// </summary>
     /// <param name="model">The model.</param>
     protected virtual void OnRefreshing(T model)
@@ -811,8 +814,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Method called after a refresh operation 
-    /// has completed (whether successful or
-    /// not).
+    /// has completed.
     /// </summary>
     protected virtual void OnRefreshed()
     { }
@@ -828,6 +830,7 @@ namespace Csla.Xaml
       Error = null;
       try
       {
+        UnhookChangedEvents(Model);
         var savable = Model as Csla.Core.ISavable;
         if (ManageObjectLifetime)
         {
@@ -849,6 +852,7 @@ namespace Csla.Xaml
       }
       catch (Exception ex)
       {
+        HookChangedEvents(Model);
         Error = ex;
         OnSaved();
       }
@@ -864,6 +868,7 @@ namespace Csla.Xaml
     {
       try
       {
+        UnhookChangedEvents(Model);
         var savable = Model as Csla.Core.ISavable;
         if (ManageObjectLifetime)
         {
@@ -887,6 +892,7 @@ namespace Csla.Xaml
       }
       catch (Exception ex)
       {
+        HookChangedEvents(Model);
         IsBusy = false;
         Error = ex;
         OnSaved();
@@ -1112,7 +1118,11 @@ namespace Csla.Xaml
       OnSetProperties();
     }
 
-    private void UnhookChangedEvents(T model)
+    /// <summary>
+    /// Unhooks changed event handlers from the model.
+    /// </summary>
+    /// <param name="model"></param>
+    protected void UnhookChangedEvents(T model)
     {
       var npc = model as INotifyPropertyChanged;
       if (npc != null)
@@ -1127,6 +1137,10 @@ namespace Csla.Xaml
         cc.CollectionChanged -= Model_CollectionChanged;
     }
 
+    /// <summary>
+    /// Hooks changed events on the model.
+    /// </summary>
+    /// <param name="model"></param>
     private void HookChangedEvents(T model)
     {
       var npc = model as INotifyPropertyChanged;

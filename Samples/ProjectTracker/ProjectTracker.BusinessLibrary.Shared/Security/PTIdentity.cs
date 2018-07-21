@@ -18,7 +18,7 @@ namespace ProjectTracker.Library.Security
       return await DataPortal.FetchAsync<PTIdentity>(new UsernameCriteria(username, password));
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
 
     public static PTIdentity GetPTIdentity(string username, string password)
     {

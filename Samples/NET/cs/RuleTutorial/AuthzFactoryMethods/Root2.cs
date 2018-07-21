@@ -49,7 +49,7 @@ namespace AuthzFactoryMethods
     /// <summary>
     /// Prevents a default instance of the <see cref="Root2"/> class from being created.
     /// </summary>
-    private Root2()
+    public Root2()
     { /* Require use of factory methods */ }
 
     #endregion

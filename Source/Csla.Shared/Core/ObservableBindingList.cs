@@ -234,6 +234,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsBusy
     {
       get { return false; }
@@ -244,6 +247,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
@@ -386,7 +392,7 @@ namespace Csla.Core
       // could override if needed
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
@@ -464,7 +470,13 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      RaiseChildChanged(sender, e, null);
+      // Issue 813
+      // MetaPropertyHasChanged calls in OnChildChanged we're leading to exponential growth in OnChildChanged calls
+      // Those notifications are for the UI. Ignore them in the parent
+      if (!(e is MetaPropertyChangedEventArgs))
+      {
+        RaiseChildChanged(sender, e, null);
+      }
     }
 
     /// <summary>

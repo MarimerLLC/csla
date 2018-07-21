@@ -6,7 +6,7 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectResourceEditCreator : ReadOnlyBase<ProjectResourceEditCreator>
   {
-    public static PropertyInfo<ProjectResourceEdit> ResultProperty = RegisterProperty<ProjectResourceEdit>(c => c.Result);
+    public static readonly PropertyInfo<ProjectResourceEdit> ResultProperty = RegisterProperty<ProjectResourceEdit>(c => c.Result);
     public ProjectResourceEdit Result
     {
       get { return GetProperty(ResultProperty); }
@@ -40,7 +40,7 @@ namespace ProjectTracker.Library
     }
 #endif
 
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>

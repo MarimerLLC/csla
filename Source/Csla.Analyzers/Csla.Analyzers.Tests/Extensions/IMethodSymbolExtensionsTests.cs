@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+using Csla.Core;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,98 +37,153 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsPropertyInfoManagementMethodForMethodThatIsNotAPropertyInfoManagementMethod()
     {
       Assert.IsFalse((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, "Something")).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForGetProperty()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.GetProperty)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForGetPropertyConvert()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.GetPropertyConvert)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLazyGetProperty()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyGetProperty)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLazyGetPropertyAsync()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyGetPropertyAsync)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLazyReadProperty()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyReadProperty)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLazyReadPropertyAsync()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyReadPropertyAsync)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLoadProperty()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadProperty)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLoadPropertyAsync()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyAsync)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForLoadPropertyConvert()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyConvert)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForReadProperty()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadProperty)).IsPropertyInfoManagementMethod());
-    }
-
-    [TestMethod]
-    public async Task IsPropertyInfoManagementMethodForReadPropertyConvert()
-    {
-      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadPropertyConvert)).IsPropertyInfoManagementMethod());
+        this._propertyInfoManagementPath, "Something", typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForSetProperty()
     {
       Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.SetProperty)).IsPropertyInfoManagementMethod());
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.SetProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForSetPropertyConvert()
     {
       Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
-        this._propertyInfoManagementPath, CslaMemberConstants.Properties.SetPropertyConvert)).IsPropertyInfoManagementMethod());
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.SetPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForGetProperty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.GetProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.GetProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForGetPropertyConvert()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.GetPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.GetPropertyConvert, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLazyGetProperty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyGetProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyGetProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLazyGetPropertyAsync()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyGetPropertyAsync, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyGetPropertyAsync, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLazyReadProperty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyReadProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyReadProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLazyReadPropertyAsync()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyReadPropertyAsync, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LazyReadPropertyAsync, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLoadPropertyAsync()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyAsync, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyAsync, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLoadPropertyMarkDirty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyMarkDirty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyMarkDirty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForReadProperty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadProperty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForReadPropertyConvert()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadPropertyConvert, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.ReadPropertyConvert, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLoadProperty()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadProperty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+    }
+
+    [TestMethod]
+    public async Task IsPropertyInfoManagementMethodForLoadPropertyConvert()
+    {
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyConvert, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+
+      Assert.IsTrue((await this.GetMethodReferenceSymbolAsync(
+        this._propertyInfoManagementPath, CslaMemberConstants.Properties.LoadPropertyConvert, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
@@ -456,10 +512,10 @@ namespace Csla.Analyzers.Tests.Extensions
       return null;
     }
 
-    private async Task<IMethodSymbol> GetMethodReferenceSymbolAsync(string file, string name)
+    private async Task<IMethodSymbol> GetMethodReferenceSymbolAsync(string file, string name, Type type)
     {
       var results = await IMethodSymbolExtensionsTests.ParseFileAsync(
-        file, MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location));
+        file, MetadataReference.CreateFromFile(type.Assembly.Location));
 
       foreach (var invocation in results.Item2.DescendantNodes().OfType<InvocationExpressionSyntax>())
       {

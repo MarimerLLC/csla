@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using ProjectTracker.Library;
 
@@ -12,6 +7,7 @@ namespace PTWin
   public partial class ResourceSelect : Form
   {
     private int _resourceId;
+
     public int ResourceId
     {
       get { return _resourceId; }
@@ -24,9 +20,9 @@ namespace PTWin
 
     private void OK_Button_Click(object sender, EventArgs e)
     {
-      _resourceId = 
+      _resourceId =
         ((ResourceInfo)
-         this.ResourceListListBox.SelectedValue).Id;
+          this.ResourceListListBox.SelectedValue).Id;
       this.Close();
     }
 
@@ -39,6 +35,15 @@ namespace PTWin
     {
       this.ResourceListBindingSource.DataSource =
         ResourceList.GetResourceList();
+    }
+
+    private void ResourceListListBox_DoubleClick(object sender, EventArgs e)
+    {
+      _resourceId =
+        ((ResourceInfo)
+          this.ResourceListListBox.SelectedValue).Id;
+      this.DialogResult = DialogResult.OK;
+      this.Close();
     }
   }
 }

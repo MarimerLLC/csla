@@ -26,6 +26,15 @@ namespace Csla.Core
   public abstract class ReadOnlyBindingList<C> :
     Core.ExtendedBindingList<C>, Core.IBusinessObject, Core.IReadOnlyBindingList
   {
+    #region Identity
+
+    int IBusinessObject.Identity
+    {
+      get { return 0; }
+    }
+
+    #endregion
+
     private bool _isReadOnly = true;
 
     /// <summary>

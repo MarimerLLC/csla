@@ -87,6 +87,8 @@ namespace UwpUI
         Window.Current.Content = rootFrame;
       }
 
+      ProjectTracker.Library.Security.PTPrincipal.Logout();
+
       await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
       await ProjectTracker.Library.RoleList.CacheListAsync();

@@ -38,6 +38,14 @@ namespace ProjectTracker.Library
       set { SetProperty(NameProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> CoolPropertyProperty = 
+      RegisterProperty<string>(c => c.CoolProperty);
+    public string CoolProperty
+    {
+      get { return GetProperty(CoolPropertyProperty); }
+      set { SetProperty(CoolPropertyProperty, value); }
+    }
+
     public static readonly PropertyInfo<DateTime?> StartedProperty = RegisterProperty<DateTime?>(c => c.Started);
     public DateTime? Started
     {
@@ -61,14 +69,10 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
-      RegisterProperty<ProjectResources>(p => p.Resources, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
+      RegisterProperty<ProjectResources>(p => p.Resources, RelationshipTypes.Child);
     public ProjectResources Resources
     {
-      get
-      {
-        return LazyGetProperty(ResourcesProperty,
-          () => DataPortal.Fetch<ProjectResources>(ReadProperty(IdProperty)));
-      }
+      get { return GetProperty(ResourcesProperty); }
       private set { LoadProperty(ResourcesProperty, value); }
     }
 
@@ -196,7 +200,7 @@ namespace ProjectTracker.Library
       return await DataPortal.FetchAsync<ProjectEdit>(id);
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
     public static ProjectEdit NewProject()
     {
       return DataPortal.Create<ProjectEdit>();
@@ -222,6 +226,7 @@ namespace ProjectTracker.Library
     [RunLocal]
     protected override void DataPortal_Create()
     {
+      LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
       base.DataPortal_Create();
     }
 

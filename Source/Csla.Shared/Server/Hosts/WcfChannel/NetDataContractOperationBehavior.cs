@@ -1,4 +1,4 @@
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="NetDataContractOperationBehavior.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -21,7 +21,7 @@ namespace Csla.Server.Hosts.WcfChannel
   /// </summary>
   public class NetDataContractOperationBehavior : DataContractSerializerOperationBehavior
   {
-    #region Constructors
+#region Constructors
 
     /// <summary>
     /// Create new instance of object.
@@ -42,9 +42,9 @@ namespace Csla.Server.Hosts.WcfChannel
     {
     }
 
-    #endregion
+#endregion
 
-    #region Overrides
+#region Overrides
 
     /// <summary>
     /// Overrided CreateSerializer to return an XmlObjectSerializer which is capable of 
@@ -66,7 +66,7 @@ namespace Csla.Server.Hosts.WcfChannel
       return new NetDataContractSerializer(name, ns);
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

@@ -21,7 +21,7 @@
       <ListBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE18B;" Name="DisplayButton" Margin="3"/>
+            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE18B;" Name="DisplayButton" Margin="3" Click="DisplayItem"/>
             <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE104;" Name="EditButton" IsEnabled="{Binding Path=CanEdit}" Margin="3" Click="EditItem"/>
             <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE107;" Name="RemoveButton" IsEnabled="{Binding Path=CanRemove}" Margin="3"/>
             <TextBlock Text="{Binding Path=Model.Name}" Margin="3"/>

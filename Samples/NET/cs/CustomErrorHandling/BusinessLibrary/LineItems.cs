@@ -9,7 +9,7 @@ namespace BusinessLibrary
   [Serializable]
   public class LineItems : BusinessBindingListBase<LineItems, LineItem>
   {
-    private LineItems()
+    public LineItems()
     {
       AllowNew = true;
     }

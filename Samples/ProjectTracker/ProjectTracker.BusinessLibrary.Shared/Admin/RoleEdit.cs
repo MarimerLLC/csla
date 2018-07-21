@@ -66,17 +66,12 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-#if !FULL_DOTNET
+#if !FULL_DOTNET 
     public static RoleEdit NewRoleEdit()
     {
       return DataPortal.CreateChild<RoleEdit>();
     }
 #else
-    public static RoleEdit GetRole(int id)
-    {
-      return DataPortal.Fetch<RoleEdit>();
-    }
-    
     internal static RoleEdit GetRole(object data)
     {
       return DataPortal.FetchChild<RoleEdit>(data);

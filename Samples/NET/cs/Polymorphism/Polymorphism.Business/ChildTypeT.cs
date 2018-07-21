@@ -11,7 +11,7 @@ namespace Polymorphism.Business
   // Common base class with common properties 
   public class ChildType<T> : BusinessBase<T>, IChild where T : ChildType<T>, IChild
   {
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -19,7 +19,7 @@ namespace Polymorphism.Business
     }
 
     // example with managed backing field
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }

@@ -25,7 +25,7 @@ namespace Csla
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if ((ANDROID || IOS) || NETFX_CORE) && !ANDROID && !IOS
+#if NETFX_CORE && !ANDROID && !IOS
     ,INotifyDataErrorInfo
 #else
     , IDataErrorInfo

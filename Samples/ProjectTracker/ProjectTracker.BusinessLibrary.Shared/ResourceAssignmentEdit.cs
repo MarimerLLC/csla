@@ -81,6 +81,7 @@ namespace ProjectTracker.Library
       using (BypassPropertyChecks)
       {
         ProjectId = projectId;
+        RoleList.CacheList();
         Role = RoleList.DefaultRole();
         LoadProperty(AssignedProperty, DateTime.Today);
         using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

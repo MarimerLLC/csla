@@ -10,6 +10,7 @@ using System.Threading;
 
 namespace PropertyStatus
 {
+  [Serializable]
   public class Blah : BusinessBase
   {
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty(

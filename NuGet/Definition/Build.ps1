@@ -45,6 +45,10 @@ function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
             {
                 $dependency.SetAttributeValue( "version", "[$version]" )
             }
+            if ( $idAttribute.Value -eq "CSLA-Core-NS" )
+            {
+                $dependency.SetAttributeValue( "version", "[$version]" )
+            }
             if ( $idAttribute.Value -eq "CSLA-ASP.NET" )
             {
                 $dependency.SetAttributeValue( "version", "[$version]" )
@@ -127,7 +131,7 @@ try
     ##       Refer: http://docs.nuget.org/docs/Reference/Versioning 
     if ( [System.String]::IsNullOrEmpty( $preRelease ) -ne $true )
     {
-        $productVersion = [System.String]::Format( "{0}.{1}.{2}-{3}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart, $preRelease )
+        $productVersion = [System.String]::Format( "{0}.{1}.{2}-R{3}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart, $preRelease )
     }
     else
     {
@@ -137,7 +141,7 @@ try
     
     ## Launch NuGet.exe to build package
     Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -Symbols
+    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" # -Symbols
     
     ## Publish package to Gallery using API Key
     ## JH - TODO

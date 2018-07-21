@@ -61,8 +61,8 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+        new ObjectFactoryLoader(8);
+      var root = Csla.DataPortal.Create<Root>("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -76,7 +76,7 @@ namespace Csla.Test.ObjectFactory
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);
-      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+      var root = Csla.DataPortal.Create<Root>("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -164,8 +164,8 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(4);
@@ -185,8 +185,8 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(5);
       var root = new Root();
@@ -206,7 +206,7 @@ namespace Csla.Test.ObjectFactory
     [Ignore]
     public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(6);
       var root = new Root();
@@ -224,7 +224,7 @@ namespace Csla.Test.ObjectFactory
     [Ignore]
     public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(7);

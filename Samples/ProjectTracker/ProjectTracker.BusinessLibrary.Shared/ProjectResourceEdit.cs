@@ -110,12 +110,13 @@ namespace ProjectTracker.Library
     }
 
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
     private void Child_Create(int resourceId)
     {
       using (BypassPropertyChecks)
       {
         ResourceId = resourceId;
+        RoleList.CacheList();
         Role = RoleList.DefaultRole();
         LoadProperty(AssignedProperty, DateTime.Today);
         using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

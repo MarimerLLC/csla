@@ -28,7 +28,7 @@ namespace Csla.Properties
 
     private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
-#if PCL46 // rely on NuGet bait-and-switch for actual implementation
+#if PCL46 || PCL259 // rely on NuGet bait-and-switch for actual implementation
       return null;
 #else
 #pragma warning disable

@@ -6,9 +6,7 @@
 // <summary>Implements the server-side DataPortal </summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 #if NETFX_CORE
 using System.Reflection;
 using Csla.Reflection;
@@ -89,7 +87,7 @@ namespace Csla.Server
 
       if (null == _authorizer)//not yet instantiated
       {
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
         string authProvider = string.Empty;
 #else
         var authProvider = ConfigurationManager.AppSettings[cslaAuthorizationProviderAppSettingName];
@@ -108,7 +106,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !MONO
+#if !(ANDROID || IOS) && !NETFX_CORE && !MONO && !NETSTANDARD2_0
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -151,10 +149,10 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -243,10 +241,10 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -374,7 +372,7 @@ namespace Csla.Server
             methodName = "DataPortal_Update";
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
         }
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE 
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
 #else
         context.TransactionalType = method.TransactionalType;
@@ -383,7 +381,7 @@ namespace Csla.Server
 #if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -479,10 +477,10 @@ namespace Csla.Server
         }
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO
+#if !MONO && !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -560,7 +558,7 @@ namespace Csla.Server
       {
         if (!_InterceptorTypeSet)
         {
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
           var typeName = ConfigurationManager.AppSettings["CslaDataPortalInterceptor"];
           if (!string.IsNullOrWhiteSpace(typeName))
             InterceptorType = Type.GetType(typeName);
@@ -612,7 +610,7 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if !PCL46 // rely on NuGet bait-and-switch for actual implementation
+#if !PCL46  && !PCL259// rely on NuGet bait-and-switch for actual implementation
 #if NETCORE
       System.Globalization.CultureInfo.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture); 

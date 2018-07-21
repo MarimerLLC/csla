@@ -27,14 +27,24 @@ namespace Csla.Security
       {
         if (_maxCacheSize == 0)
         {
-          string tmp = System.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
+#if NETSTANDARD2_0
+          _maxCacheSize = 10;
+#else
+          string tmp = Csla.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
           if (string.IsNullOrEmpty(tmp))
             _maxCacheSize = 10;
           else
             _maxCacheSize = Convert.ToInt32(tmp);
+#endif
         }
         return _maxCacheSize;
       }
+#if NETSTANDARD2_0
+      set
+      {
+        _maxCacheSize = value;
+      }
+#endif
     }
 
     /// <summary>

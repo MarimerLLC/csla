@@ -1,4 +1,5 @@
-﻿#if NETFX_CORE
+﻿#if !NETSTANDARD1_6 && !WINDOWS_UWP
+#if NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -21,4 +22,5 @@ namespace System
 }
 #else
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.NonSerializedAttribute))]
+#endif
 #endif

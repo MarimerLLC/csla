@@ -15,7 +15,7 @@ using Csla.Server.Hosts.HttpChannel;
 using System.Web.Mvc;
 #endif
 using System.Net.Http;
-#if NETSTANDARD
+#if NETSTANDARD || NETSTANDARD2_0
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 #else
@@ -28,9 +28,16 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD1_6
+#if NETSTANDARD1_6 || NETSTANDARD2_0
   public class HttpPortalController : Controller
   {
+    /// <summary>
+    /// Gets or sets a value indicating whether to use
+    /// text/string serialization instead of the default
+    /// binary serialization.
+    /// </summary>
+    public bool UseTextSerialization { get; set; } = false;
+
     /// <summary>
     /// Entry point for all data portal operations.
     /// </summary>
@@ -39,7 +46,10 @@ namespace Csla.Server.Hosts
     [HttpPost]
     public async Task PostAsync([FromQuery]string operation)
     {
-      await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+      if (UseTextSerialization)
+        await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+      else
+        await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
     }
 #elif MVC4
   public class HttpPortalController : Controller
@@ -92,7 +102,7 @@ namespace Csla.Server.Hosts
       set { _portal = value; }
     }
 
-#if NETSTANDARD1_6
+#if NETSTANDARD1_6 || NETSTANDARD2_0
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
       var serializer = new MobileFormatter();
@@ -109,6 +119,37 @@ namespace Csla.Server.Hosts
       }
       var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       serializer.Serialize(responseStream, portalResult);
+    }
+
+    private async Task InvokeTextPortal(string operation, Stream requestStream, Stream responseStream)
+    {
+      string requestString;
+      using (var reader = new StreamReader(requestStream))
+        requestString = await reader.ReadToEndAsync();
+      var requestArray = System.Convert.FromBase64String(requestString);
+      var requestBuffer = new MemoryStream(requestArray);
+
+      var serializer = new MobileFormatter();
+      var result = new HttpResponse();
+      HttpErrorInfo errorData = null;
+      try
+      {
+        var request = serializer.Deserialize(requestBuffer);
+        result = await CallPortal(operation, request);
+      }
+      catch (Exception ex)
+      {
+        errorData = new HttpErrorInfo(ex);
+      }
+      var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+
+      var responseBuffer = new MemoryStream();
+      serializer.Serialize(responseBuffer, portalResult);
+      responseBuffer.Position = 0;
+      using (var writer = new StreamWriter(responseStream))
+      {
+        await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
+      }
     }
 #else
     private async Task<byte[]> InvokePortal(string operation, byte[] data)

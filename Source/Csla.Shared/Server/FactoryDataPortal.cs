@@ -6,9 +6,7 @@
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 using System.Threading.Tasks;
 using Csla.Properties;
 
@@ -37,14 +35,14 @@ namespace Csla.Server
       {
         if (_factoryLoader == null)
         {
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
 #endif
-            _factoryLoader = new ObjectFactoryLoader();
+          _factoryLoader = new ObjectFactoryLoader();
         }
         return _factoryLoader;
       }
@@ -98,7 +96,7 @@ namespace Csla.Server
       object result = null;
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName, e);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
         var error = result as Exception;

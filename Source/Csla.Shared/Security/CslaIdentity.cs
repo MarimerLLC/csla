@@ -59,7 +59,7 @@ namespace Csla.Security
     /// Object containing the user's credentials.
     /// </param>
     /// <returns></returns>
-    public static T GetCslaIdentity<T>(object criteria) 
+    public static T GetCslaIdentity<T>(object criteria)
       where T : CslaIdentity
     {
       return DataPortal.Fetch<T>(criteria);

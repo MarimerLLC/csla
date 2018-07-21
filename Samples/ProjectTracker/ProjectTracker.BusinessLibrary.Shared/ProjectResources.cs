@@ -7,7 +7,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResourceEdit>
   {
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
     public ProjectResourceEdit Assign(int resourceId)
     {
       var resource = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;

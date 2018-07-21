@@ -9,14 +9,14 @@ namespace BLBTest
   public class DataEdit : BusinessBase<DataEdit>
   {
     
-    private static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
+    public static readonly PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
     public int Data
     {
       get { return GetProperty(DataProperty); }
       set { SetProperty(DataProperty, value); }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }

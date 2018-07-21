@@ -7,7 +7,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignmentEdit>
   {
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
     public ResourceAssignmentEdit AssignTo(int projectId)
     {
       if (!(Contains(projectId)))

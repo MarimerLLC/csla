@@ -30,6 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)UpdateObjectArgs.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.fr.resx" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.pt-BR.resx" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.pt.resx" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.resx">
       <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
     </EmbeddedResource>

@@ -20,6 +20,7 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    [Display(Name = "Resource id")]
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -55,14 +56,10 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
-      RegisterProperty<ResourceAssignments>(c => c.Assignments, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
+      RegisterProperty<ResourceAssignments>(c => c.Assignments, RelationshipTypes.Child);
     public ResourceAssignments Assignments
     {
-      get
-      {
-        return LazyGetProperty(AssignmentsProperty,
-          () => DataPortal.Fetch<ResourceAssignments>(ReadProperty(IdProperty)));
-      }
+      get { return GetProperty(AssignmentsProperty); }
       private set { LoadProperty(AssignmentsProperty, value); }
     }
 
@@ -141,7 +138,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET || NETSTANDARD2_0
 
     public static ResourceEdit NewResourceEdit()
     {
@@ -170,6 +167,7 @@ namespace ProjectTracker.Library
     [RunLocal]
     protected override void DataPortal_Create()
     {
+      LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
       base.DataPortal_Create();
     }
 

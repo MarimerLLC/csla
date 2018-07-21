@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinFormsUi.Views.ProjectEdit"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+             xmlns:this="clr-namespace:ProjectTracker.Ui.Xamarin.Xaml"
+             Title="Project Details">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <this:BoolColorConverter x:Key="BoolColorConverter" FalseColor="Red" TrueColor="Black"/>
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  <ContentPage.ToolbarItems>
+    <ToolbarItem Name="Save" Command="{Binding SaveItemCommand}"/>
+    <ToolbarItem Name="Assign" Command="{Binding AssignResourceCommand}"/>
+  </ContentPage.ToolbarItems>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="20"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <csla:PropertyInfo x:Name="NameInfo" Path="Model.Name" Grid.Row="0"/>
+    <TableView Intent="Form" Grid.Row="1">
+      <TableView.Root>
+        <TableSection Title="Project">
+          <EntryCell Label="Name" BindingContext="{Reference NameInfo}" Text="{Binding Value}" LabelColor="{Binding Converter={StaticResource BoolColorConverter},Path=IsValid}"/>
+          <EntryCell Label="Description" Text="{Binding Model.Description}"/>
+        </TableSection>
+      </TableView.Root>
+    </TableView>
+  </Grid>
+</ContentPage>

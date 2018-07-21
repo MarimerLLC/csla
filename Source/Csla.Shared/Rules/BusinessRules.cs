@@ -23,7 +23,7 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
 , IUndoableObject
 #endif
   {
@@ -812,7 +812,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0) 
@@ -853,7 +853,7 @@ namespace Csla.Rules
 
     #endregion
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IUndoableObject Members
 
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
@@ -1037,7 +1037,7 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
@@ -1050,7 +1050,7 @@ namespace Csla.Rules
     #region Get All Broken Rules (tree)
 
     /// <summary>
-    /// Gets all nodes in tree thar have IsValid = false (and all parents) 
+    /// Gets all nodes in tree that have IsValid = false (and all parents) 
     /// </summary>
     /// <param name="root">The root.</param>
     /// <returns>BrukenRulesTree list</returns>

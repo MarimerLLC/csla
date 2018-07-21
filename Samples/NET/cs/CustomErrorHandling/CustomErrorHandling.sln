@@ -1,12 +1,7 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15B328E2-A257-417A-93C4-12DC0658F22A}"
-	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
-		Readme.txt = Readme.txt
-	EndProjectSection
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsUI", "WindowsUI\WindowsUI.csproj", "{FC859308-83C8-4DEF-A7BC-D497413C4F91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLibrary", "BusinessLibrary\BusinessLibrary.csproj", "{2D2E0AC6-863C-4C52-88D4-B9CC79D5845C}"
@@ -14,6 +9,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfHost", "WcfHost\WcfHost.csproj", "{73DA7B36-26F0-4269-A363-C0615244CA75}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{018E510E-B943-447B-A60C-79165B438FA0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "How to run", "How to run", "{D3E64213-13F7-4A87-9C2B-B86B542722C2}"
+	ProjectSection(SolutionItems) = preProject
+		How to run.txt = How to run.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,5 +40,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5048824-08F5-4075-A164-2FEC3FABFBCD}
 	EndGlobalSection
 EndGlobal

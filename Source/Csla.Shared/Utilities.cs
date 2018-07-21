@@ -11,7 +11,7 @@ using Csla.Reflection;
 using System.ComponentModel;
 using System.Text;
 using Csla.Properties;
-#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
 using System.Text.RegularExpressions;
 using Csla.WcfPortal;
 #endif
@@ -104,14 +104,15 @@ namespace Csla
       else
       {
 #if NETFX_CORE
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
 #else
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
 #endif
         if (indexer != null)
+        {
           foreach (PropertyInfo prop in listType.GetProperties(
             BindingFlags.Public |
             BindingFlags.Instance |
@@ -120,6 +121,11 @@ namespace Csla
             if (prop.Name == indexer.MemberName)
               result = Utilities.GetPropertyType(prop.PropertyType);
           }
+        }
+        if (result == null)
+        {
+          result = listType.GetMethod("get_Item")?.ReturnType;
+        }
       }
       return result;
     }
@@ -291,7 +297,7 @@ namespace Csla
 
     #endregion
 
-#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
     #region Error Handling
 
     /// <summary>

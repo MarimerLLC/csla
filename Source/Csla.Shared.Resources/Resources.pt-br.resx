@@ -598,4 +598,7 @@
   <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
     <value>O objeto é válido</value>
   </data>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Não é possível chamar de forma síncrona {0}, que é um método assíncrono</value>
+  </data>
 </root>

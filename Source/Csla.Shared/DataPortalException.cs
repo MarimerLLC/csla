@@ -63,8 +63,8 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETFX_PHONE || PCL46
-#if !NETCORE && !PCL46 && !ANDROID
+#if !NETFX_PHONE || PCL46 || PCL259
+#if !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -76,11 +76,11 @@ namespace Csla
     }
 #endif
 
-        /// <summary>
-        /// Creates an instance of the object.
-        /// </summary>
-        /// <param name="info">Info about the exception.</param>
-        public DataPortalException(Csla.Server.Hosts.HttpChannel.HttpErrorInfo info)
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="info">Info about the exception.</param>
+    public DataPortalException(Csla.Server.Hosts.HttpChannel.HttpErrorInfo info)
       : base(info.Message)
     {
       this.ErrorInfo = info;
@@ -178,7 +178,7 @@ namespace Csla
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

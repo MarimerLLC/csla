@@ -7,7 +7,7 @@
     <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
-    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
@@ -20,19 +20,11 @@ Supports the creation of Xamarin iOS applications using the unified API.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+      <dependency id="CSLA-Core-NS" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
     <!-- Xamarin iOS Client -->
-    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll*" target="lib\Xamarin.iOS" />
-    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll.mdb*" target="lib\Xamarin.iOS" />
-    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.pdb*" target="lib\Xamarin.iOS" />
-    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.xml*" target="lib\Xamarin.iOS" />
-    <!-- Xamarin.Forms Csla.Xaml -->
-    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\portable-net45+win8+wpa81" />
-    <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.*" target="lib\Xamarin.iOS" />
   </files>
 </package>

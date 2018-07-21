@@ -52,21 +52,21 @@ namespace ConsoleApplication1
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList);
+    public static readonly PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList);
     public ChildList ChildList
     {
       get { return GetProperty(ChildListProperty); }
@@ -153,14 +153,14 @@ namespace ConsoleApplication1
   [Serializable]
   public class Child : BusinessBase<Child>
   {
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }

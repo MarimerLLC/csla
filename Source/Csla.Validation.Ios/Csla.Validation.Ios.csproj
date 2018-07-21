@@ -49,10 +49,9 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Ios\Csla.Ios.csproj">
-      <Project>{0735c0c7-0571-407f-9f62-fd59a0a15dfc}</Project>
-      <Name>Csla.Ios</Name>
-      <IsAppExtension>false</IsAppExtension>
+    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj">
+      <Project>{19801b8b-0c86-433f-8d09-da727adf6dcc}</Project>
+      <Name>Csla.NetStandard2.0</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Csla.Validation.Shared\Csla.Validation.Shared.projitems" Label="Shared" />

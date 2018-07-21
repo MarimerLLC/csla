@@ -1,9 +1,9 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{95B3011E-3F26-4E28-ADB3-5F7A624CAC80}"
 	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
 		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject
@@ -22,5 +22,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A7B2A5E-8777-401F-ABCC-2BDD81BCB202}
 	EndGlobalSection
 EndGlobal

@@ -56,6 +56,15 @@ namespace Csla
 
     #endregion
 
+    #region Identity
+
+    int Core.IBusinessObject.Identity
+    {
+      get { return 0; }
+    }
+
+    #endregion
+
     #region ICloneable
 
     object ICloneable.Clone()

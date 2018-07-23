@@ -161,10 +161,10 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Wisej.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=17bef35e11b84171, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wisej.1.4.95\lib\net45\Wisej.Core.dll</HintPath>
+      <HintPath>..\packages\Wisej.1.5.4\lib\net45\Wisej.Core.dll</HintPath>
     </Reference>
     <Reference Include="Wisej.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=17bef35e11b84171, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wisej.1.4.95\lib\net45\Wisej.Web.dll</HintPath>
+      <HintPath>..\packages\Wisej.1.5.4\lib\net45\Wisej.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

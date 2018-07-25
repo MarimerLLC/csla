@@ -178,3 +178,4 @@ Source/Csla.Xaml.Uwp/project.lock.json
 /Source/Csla.Axml.Android/Csla.Axml.Android.csproj.bak
 /Source/Csla.Validation.Android/Csla.Validation.Android.csproj.bak
 /Samples/ProjectTracker/ProjectTracker.Ui.UWP/ProjectTracker.Ui.UWP.nuget.targets
+/Source/Csla.NetStandard1.x/Properties

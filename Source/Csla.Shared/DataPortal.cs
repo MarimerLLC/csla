@@ -733,7 +733,10 @@ namespace Csla
         }
         else
         {
-          var proxyFactoryType = Type.GetType(ApplicationContext.DataPortalProxyFactory);
+          var proxyFactoryType = 
+            Type.GetType(ApplicationContext.DataPortalProxyFactory) ?? 
+            throw new InvalidOperationException($"Unable to load DataPortalProxyFactory {ApplicationContext.DataPortalProxyFactory}");
+
           _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory)MethodCaller.CreateInstance(proxyFactoryType);
         }
       }

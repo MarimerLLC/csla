@@ -75,15 +75,20 @@ namespace Csla.DataPortalClient
     public string DataPortalUrl { get; protected set; }
 
     private static HttpClient _client;
-
+    
     /// <summary>
     /// Gets an HttpClient object for use in
     /// communication with the server.
     /// </summary>
     protected virtual HttpClient GetClient()
     {
-      if (_client == null)
+      if (_client == null) {
         _client = new HttpClient();
+        if (this.Timeout > 0) {
+          _client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
+        }
+      }
+
       return _client;
     }
 
@@ -172,8 +177,6 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
@@ -235,8 +238,6 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
@@ -297,8 +298,6 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout); 
         var request = GetBaseUpdateCriteriaRequest();
         request.ObjectData = MobileFormatter.Serialize(obj);
         request = ConvertRequest(request);
@@ -355,8 +354,6 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))

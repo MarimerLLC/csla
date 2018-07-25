@@ -118,7 +118,8 @@ namespace Csla.Reflection
 
     private static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
 
-    private static DynamicCtorDelegate GetCachedConstructor(Type objectType) {
+    private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
+    {
       if (objectType == null)
         throw new ArgumentNullException(nameof(objectType));
 

@@ -19,7 +19,7 @@ namespace Csla.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -28,11 +28,8 @@ namespace Csla.Properties {
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
-        /// <summary>
-        /// 
-        /// </summary>
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public Resources() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -1014,6 +1011,15 @@ namespace Csla.Properties {
         public static string TypeLoadException {
             get {
                 return ResourceManager.GetString("TypeLoadException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load DataPortalProxyFactory {0}.
+        /// </summary>
+        public static string UnableToLoadDataPortalProxyFactory {
+            get {
+                return ResourceManager.GetString("UnableToLoadDataPortalProxyFactory", resourceCulture);
             }
         }
         

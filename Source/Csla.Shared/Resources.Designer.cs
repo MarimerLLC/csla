@@ -1120,6 +1120,17 @@ namespace Csla.Properties
     /// <summary>
     ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
     /// </summary>
+    public static string UnableToLoadDataPortalProxyFactory
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
+    /// </summary>
     public static string UpdateMethodNameNotSpecified
     {
       get

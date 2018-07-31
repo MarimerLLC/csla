@@ -37,24 +37,10 @@ And some more:
 CSLA 4 version 4.3 provides support for mono (Linux, OS X, etc.) and Mono for Android (Android).
 
 ## Future Roadmap
-The roadmap is [available here](http://www.lhotka.net/cslanet/roadmap.aspx).
+The roadmap is [available here](https://github.com/MarimerLLC/csla/issues?q=is%3Aopen+is%3Aissue+label%3Aroadmap).
 
 <!---## Alternate Versions
 CSLA .NET is also available in two other versions.
-
-**CSLA .NET N2**
-
-[CSLA .NET N2](http://www.lhotka.net/cslanet/n2.aspx) is a version of CSLA .NET 3.7+ that has been made to build on NET 2.0. This is a contribution by Jonny Bekkum. 
-
-CSLA .NET N2 is almost completely feature-compatible with CSLA .NET for Windows, and is a good way for people still using .NET 2.0 to leverage many of the new features in recent versions of CSLA .NET for Windows.
-
-**CSLA .NET VB**
-
-[CSLA .NET VB](http://www.lhotka.net/cslanet/vb.aspx) is a version of CSLA .NET for Windows maintained in the VB language. This is a community effort led by Sean Rhone.
-
-CSLA .NET VB is almost completely feature-compatible with CSLA .NET for Windows, and is a great reference implementation VB developers can use to get a deeper understanding of the framework implementation details. 
-
-It is not recommended that CSLA .NET VB be used in production environments.--->
 
 ## Version Background
 CSLA .NET 3.0.5 is the recommended version for .NET 2.0 and 3.0. It introduced support for .NET 3.0 features: WPF, WCF, WF. It includes a wide array of bug fixes and features around Windows Forms, and other .NET 2.0 scenarios.

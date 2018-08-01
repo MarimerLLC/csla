@@ -1,4 +1,4 @@
-Here is a [list of contributors](http://www.lhotka.net/Article.aspx?area=4&id=bbe426f7-cd06-482f-bfa7-ec5640296562) from before the project moved to GitHub.
+Here is a [list of contributors](https://github.com/MarimerLLC/csla/graphs/contributors) from before the project moved to GitHub.
 
 Here are the [coding standards](Coding-standards.md).
 

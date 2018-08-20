@@ -460,4 +460,7 @@
   <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
     <value>Cannot synchronously call {0} which is an asynchronous method</value>
   </data>
+  <data name="UnableToLoadDataPortalProxyFactory" xml:space="preserve">
+    <value>Unable to load DataPortalProxyFactory {0}</value>
+  </data>
 </root>

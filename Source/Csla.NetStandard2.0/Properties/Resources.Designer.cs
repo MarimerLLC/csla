@@ -1014,7 +1014,16 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("TypeLoadException", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load DataPortalProxyFactory {0}.
+        /// </summary>
+        public static string UnableToLoadDataPortalProxyFactory {
+            get {
+                return ResourceManager.GetString("UnableToLoadDataPortalProxyFactory", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Unhandled CSLA Known type was found.
         /// </summary>

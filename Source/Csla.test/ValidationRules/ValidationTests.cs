@@ -648,7 +648,7 @@ namespace Csla.Test.ValidationRules
 
     private class BadRule : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         throw new InvalidOperationException();
       }
@@ -776,7 +776,7 @@ namespace Csla.Test.ValidationRules
       InputProperties = new List<Core.IPropertyInfo> { PrimaryProperty, SecondaryProperty };
     }
 
-    protected override void Execute(Rules.RuleContext context)
+    protected override void Execute(Rules.IRuleContext context)
     {
       var v1 = (string)context.InputPropertyValues[PrimaryProperty];
       var v2 = (string)context.InputPropertyValues[SecondaryProperty];
@@ -849,7 +849,7 @@ namespace Csla.Test.ValidationRules
         InputProperties = new List<IPropertyInfo>(){primaryProperty};
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         var value = (string) context.InputPropertyValues[PrimaryProperty];
         context.AddOutValue(PrimaryProperty, value.ToUpperInvariant());
@@ -872,7 +872,7 @@ namespace Csla.Test.ValidationRules
       InputProperties = new List<Core.IPropertyInfo> {primaryProperty};
     }
 
-    protected override void Execute(Rules.RuleContext context)
+    protected override void Execute(Rules.IRuleContext context)
     {
       if (context.InputPropertyValues.ContainsKey(PrimaryProperty))
       {

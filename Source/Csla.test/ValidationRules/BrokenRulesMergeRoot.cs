@@ -47,7 +47,7 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       { }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         context.AddErrorResult("Broken: " + PrimaryProperty.FriendlyName);
       }

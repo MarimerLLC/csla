@@ -427,7 +427,8 @@ namespace Csla.Rules
     {
       if (Results.Count == 0)
         Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty));
-      _completeHandler(this);
+      if (_completeHandler != null)
+        _completeHandler(this);
     }
 
     /// <summary>

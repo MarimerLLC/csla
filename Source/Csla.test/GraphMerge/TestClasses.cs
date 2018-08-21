@@ -77,7 +77,7 @@ namespace Csla.Test.GraphMerge
 
     private class NoTwo : Csla.Rules.BusinessRule
     {
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         var target = (Foo)context.Target;
         if (target.Name == "2")

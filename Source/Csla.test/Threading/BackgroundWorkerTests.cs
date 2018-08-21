@@ -235,8 +235,6 @@ namespace Csla.Test.Threading
     {
       UnitTestContext context = GetContext();
 
-      int numTimesProgressCalled = 0;
-
       BackgroundWorker target = new BackgroundWorker();
       target.DoWork += (o, e) =>
       {

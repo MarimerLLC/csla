@@ -55,7 +55,7 @@ namespace Csla.Test.DataPortalChild
       base.MarkDeleted();
     }
 
-    protected void Child_Create()
+    protected override void Child_Create()
     {
       _status = "Created";
     }

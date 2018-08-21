@@ -42,7 +42,7 @@ namespace Csla.Test.LazyLoad
       //return _children;
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }

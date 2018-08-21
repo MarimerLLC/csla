@@ -198,7 +198,7 @@ namespace Csla.Test.Serialization
         b.Serialize(new MemoryStream(), root);
         Assert.Fail("Serialization should have thrown an exception");
       }
-      catch (System.Runtime.Serialization.SerializationException ex)
+      catch (System.Runtime.Serialization.SerializationException)
       {
         // serialization failed as expected
       }
@@ -391,7 +391,7 @@ namespace Csla.Test.Serialization
       {
         root.FirstName = "something";
       }
-      catch (Csla.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException)
       {
         Assert.Fail("exception occurred");
       }
@@ -416,7 +416,7 @@ namespace Csla.Test.Serialization
       {
         rootClone.FirstName = "something new";
       }
-      catch (Csla.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException)
       {
         Assert.Fail("exception occurred");
       }

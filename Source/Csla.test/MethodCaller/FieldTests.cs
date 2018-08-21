@@ -31,7 +31,6 @@ namespace Csla.Test.MethodCaller
   {
 
     private class Test1 { 
-      private string _f1 = "private";
       public string _f2 = "public";
     }
 

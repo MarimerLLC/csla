@@ -56,7 +56,7 @@ namespace Csla.Test.LogicalExecutionLocation
 
     public class CheckRule : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         ((LocationBusinessBase)context.Target).Rule = Csla.ApplicationContext.LogicalExecutionLocation.ToString();
       }

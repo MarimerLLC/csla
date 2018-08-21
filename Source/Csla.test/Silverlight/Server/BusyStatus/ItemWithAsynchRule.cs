@@ -106,7 +106,7 @@ namespace Csla.Testing.Business.BusyStatus
         InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         if (Csla.ApplicationContext.LogicalExecutionLocation == Csla.ApplicationContext.LogicalExecutionLocations.Client)
         {

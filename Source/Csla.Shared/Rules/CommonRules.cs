@@ -71,7 +71,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
 #if NETFX_CORE
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target);
@@ -154,7 +154,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
@@ -225,7 +225,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length > Max)
@@ -296,7 +296,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length < Min)
@@ -373,7 +373,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty] != null
                       ? (T)context.InputPropertyValues[PrimaryProperty]
@@ -461,7 +461,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty] != null
                       ? (T)context.InputPropertyValues[PrimaryProperty]
@@ -583,7 +583,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       bool ruleSatisfied;
@@ -683,7 +683,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       context.AddInformationResult(MessageText);
     }
@@ -698,7 +698,7 @@ namespace Csla.Rules.CommonRules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="rule">Rule implementation.</param>
-    public Lambda(Action<RuleContext> rule)
+    public Lambda(Action<IRuleContext> rule)
     {
       Initialize(rule);
     }
@@ -708,13 +708,13 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="primaryProperty">Primary property for the rule.</param>
     /// <param name="rule">Rule implementation.</param>
-    public Lambda(Csla.Core.IPropertyInfo primaryProperty, Action<RuleContext> rule)
+    public Lambda(Csla.Core.IPropertyInfo primaryProperty, Action<IRuleContext> rule)
       : base(primaryProperty)
     {
       Initialize(rule);
     }
 
-    private void Initialize(Action<RuleContext> rule)
+    private void Initialize(Action<IRuleContext> rule)
     {
       Rule = rule;
 #if NETFX_CORE
@@ -735,13 +735,13 @@ namespace Csla.Rules.CommonRules
       base.RuleUri.AddQueryParameter(key, value);
     }
 
-    private Action<RuleContext> Rule { get; set; }
+    private Action<IRuleContext> Rule { get; set; }
 
     /// <summary>
     /// Executes the rule.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       Rule(context);
     }

@@ -112,7 +112,7 @@ namespace Csla.Test.ValidationRules
 
   public class MyRule : Rules.BusinessRule
   {
-    protected override void Execute(Rules.RuleContext context)
+    protected override void Execute(Rules.IRuleContext context)
     {
       base.Execute(context);
     }

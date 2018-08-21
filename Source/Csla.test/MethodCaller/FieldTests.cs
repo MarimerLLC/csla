@@ -30,8 +30,8 @@ namespace Csla.Test.MethodCaller
   public class FieldTests
   {
 
-    private class Test1 { 
-      private string _f1 = "private";
+    private class Test1 {
+      private string _f1 = "private"; // accessed by tests via reflection
       public string _f2 = "public";
     }
 

@@ -245,9 +245,6 @@ namespace Csla.Test.GraphMerge
       cloned.AddNew().Name = "new in clone";
       cloned.MockUpdated();
 
-      var changed = false;
-      obj.CollectionChanged += (o, e) => { changed = true; };
-
       var merger = new GraphMerger();
       merger.MergeBusinessListGraph<FooList, Foo>(obj, cloned);
       Assert.AreEqual(cloned.Count, obj.Count, "count");

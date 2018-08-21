@@ -20,7 +20,7 @@ namespace Csla.Test.LazyLoad
       this.Add(new AChild());
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }

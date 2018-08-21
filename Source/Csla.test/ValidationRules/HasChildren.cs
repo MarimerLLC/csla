@@ -45,7 +45,7 @@ namespace Csla.Test.ValidationRules
     public class OneItem<T> : Rules.BusinessRule
       where T : HasChildren
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         var target = (T)context.Target;
         if (target.ChildList.Count < 1)

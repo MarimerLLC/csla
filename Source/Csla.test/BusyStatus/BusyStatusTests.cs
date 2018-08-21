@@ -299,7 +299,7 @@ namespace cslalighttest.BusyStatus
         {
           item.Save();
         }
-        catch (InvalidOperationException EX)
+        catch (InvalidOperationException)
         {
           gotError = true;
         }
@@ -330,7 +330,7 @@ namespace cslalighttest.BusyStatus
       {
         items.Save();
       }
-      catch (InvalidOperationException EX)
+      catch (InvalidOperationException)
       {
         gotError = true;
       }

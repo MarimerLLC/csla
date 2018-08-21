@@ -212,7 +212,7 @@ namespace cslalighttest.Stereotypes
           e.Object[0].Save();
           context.Assert.Fail();
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
           context.Assert.Success();
         }
@@ -243,7 +243,7 @@ namespace cslalighttest.Stereotypes
           e.Object[0].GrandChildren.Save();
           context.Assert.Fail();
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
           context.Assert.Success();
         }
@@ -274,7 +274,7 @@ namespace cslalighttest.Stereotypes
           e.Object[0].GrandChildren[0].Save();
           context.Assert.Fail();
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
           context.Assert.Success();
         }

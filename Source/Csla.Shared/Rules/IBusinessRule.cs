@@ -44,7 +44,7 @@ namespace Csla.Rules
     /// Business or validation rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    void Execute(RuleContext context);
+    void Execute(IRuleContext context);
     /// <summary>
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.

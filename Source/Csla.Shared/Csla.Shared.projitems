@@ -190,6 +190,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IHostRules.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\IRuleContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ObjectRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\PropertyRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleContext.cs" />

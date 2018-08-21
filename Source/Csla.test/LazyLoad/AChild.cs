@@ -21,7 +21,7 @@ namespace Csla.Test.LazyLoad
       set { SetProperty(IdProperty, value); }
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }

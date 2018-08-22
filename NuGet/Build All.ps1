@@ -153,7 +153,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "Core NS", "XamarinForms", "AspNetCore MVC", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Windows Forms", "UWP", "WPF", "MonoAndroid", "XamarinIos", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation", "UpdateValidation NS","Data EntityFrameworkCore")  
+    $packages = @("Core", "XamarinForms", "AspNetCore MVC", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Windows Forms", "UWP", "WPF", "MonoAndroid", "XamarinIos", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation", "Data EntityFrameworkCore")  
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

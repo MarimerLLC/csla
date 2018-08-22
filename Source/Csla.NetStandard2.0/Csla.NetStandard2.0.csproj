@@ -5,7 +5,7 @@
     <AssemblyName>Csla</AssemblyName>
     <RootNamespace>Csla</RootNamespace>
     <PackageId>Csla.NetStandard20</PackageId>
-    <Version>4.7.200.0</Version>
+    <Version>4.8.100.0</Version>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>

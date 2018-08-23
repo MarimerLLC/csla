@@ -364,11 +364,6 @@
     <comment>Argument must not be null
 </comment>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Valor do objeto pai só pode ser atribuido para objetos filhos</value>
-    <comment>Parent value can only be set for child objects
-</comment>
-  </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Cópia da propriedade falhou</value>
     <comment>Property copy failed

@@ -129,9 +129,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>改变一个元素属非法操作</value>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>只允许给子对象赋值</value>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>不能直接将子对象标记为删除对象 – 请通过其 Parent 集合</value>
   </data>

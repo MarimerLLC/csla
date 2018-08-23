@@ -20,58 +20,23 @@ namespace Csla.Rules
   /// </summary>
   public class AuthorizationRuleManager
   {
-#if !(ANDROID || IOS) && !NETFX_CORE
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
 
     internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
-      if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;
+      type = ApplicationContext.DataPortalActivator.ResolveType(type);
+
+      if (ruleSet == ApplicationContext.DefaultRuleSet)
+        ruleSet = null;
 
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
       var result = _perTypeRules.Value.GetOrAdd(key, (t) => { return new AuthorizationRuleManager(); });
       InitializePerTypeRules(result, type);
       return result;
     }
-#else
-    private static Dictionary<RuleSetKey, AuthorizationRuleManager> _perTypeRules = new Dictionary<RuleSetKey, AuthorizationRuleManager>();
-
-    internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
-    {
-      // use null if RuleSet is "default" 
-      if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;
-
-      AuthorizationRuleManager result = null;
-      var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
-      var found = false;
-      try
-      {
-        found = _perTypeRules.TryGetValue(key, out result);
-      }
-      catch
-      { /* failure will drop into !found block */ }
-      if (!found)
-      {
-        lock (_perTypeRules)
-        {
-          if (!_perTypeRules.TryGetValue(key, out result))
-          {
-            result = new AuthorizationRuleManager();
-            _perTypeRules.Add(key, result);
-          }
-        }
-      }
-      InitializePerTypeRules(result, type);
-      return result;
-    }
-#endif
 
     private bool InitializingPerType { get; set; }
-
-    internal static AuthorizationRuleManager GetRulesForType(Type type)
-    {
-      return GetRulesForType(type, null);
-    }
 
     private static void InitializePerTypeRules(AuthorizationRuleManager mgr, Type type)
     {

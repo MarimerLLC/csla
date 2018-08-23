@@ -290,6 +290,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(AuthorizationActions action, Type objectType)
     {
+      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, objectType, ApplicationContext.RuleSet);
     }

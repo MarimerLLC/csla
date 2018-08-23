@@ -429,6 +429,73 @@ namespace Csla.Test.Authorization
       var root = new RootList();
       root.RemoveAt(0);
     }
+
+    [TestMethod]
+    public void PerTypeAuthEditObject()
+    {
+      ApplicationContext.DataPortalActivator = new PerTypeAuthDPActivator();
+      try
+      {
+        Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
+      }
+      finally
+      {
+        Csla.ApplicationContext.DataPortalActivator = null;
+      }
+    }
+
+    [TestMethod]
+    public void PerTypeAuthEditObjectViaInterface()
+    {
+      ApplicationContext.DataPortalActivator = new PerTypeAuthDPActivator();
+      try
+      {
+        Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));
+      }
+      finally
+      {
+        Csla.ApplicationContext.DataPortalActivator = null;
+      }
+    }
+  }
+
+  public class PerTypeAuthDPActivator : Server.IDataPortalActivator
+  {
+    public object CreateInstance(Type requestedType)
+    {
+      return Activator.CreateInstance(ResolveType(requestedType));
+    }
+
+    public void FinalizeInstance(object obj)
+    {
+    }
+
+    public void InitializeInstance(object obj)
+    {
+    }
+
+    public Type ResolveType(Type requestedType)
+    {
+      if (requestedType.Equals(typeof(IPerTypeAuthRoot)))
+        return typeof(PerTypeAuthRoot);
+      else
+        return requestedType;
+    }
+  }
+
+  public interface IPerTypeAuthRoot
+  { }
+
+  [Serializable]
+  public class PerTypeAuthRoot : BusinessBase<PerTypeAuthRoot>, IPerTypeAuthRoot
+  {
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      Csla.Rules.BusinessRules.AddRule(
+        typeof(PerTypeAuthRoot), 
+        new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "Test"));
+    }
   }
 
   [Serializable]

@@ -46,28 +46,27 @@ namespace cslalighttest.Serialization
       context.Complete();      
     }
 
+    [Serializable]
+    public class StringCriteria : CriteriaBase<StringCriteria>
+    {
+      public static readonly PropertyInfo<string> ValueProperty = RegisterProperty<string>(c => c.Value);
+      public string Value
+      {
+        get { return ReadProperty(ValueProperty); }
+        set { LoadProperty(ValueProperty, value); }
+      }
+    }
+
     [TestMethod]
     public void SerializeCriteriaSuccess()
     {
       UnitTestContext context = GetContext();
-      var criteria = "success";
-      var actual = MobileFormatter.Serialize(criteria);
+      var criteria = new StringCriteria { Value = "success" };
+      var buffer = MobileFormatter.Serialize(criteria);
 
-      context.Assert.IsNotNull(actual);
-      context.Assert.Success();
-      context.Complete();
-    }
+      var actual = (StringCriteria)MobileFormatter.Deserialize(buffer);
 
-    [TestMethod]
-    public void DeserializeCriteriaSuccess()
-    {
-      UnitTestContext context = GetContext();
-      var expected = "success";
-      var buffer = MobileFormatter.Serialize(expected);
-
-      var actual = (string)MobileFormatter.Deserialize(buffer);
-
-      context.Assert.AreEqual(expected, actual);
+      context.Assert.AreEqual(criteria.Value, actual.Value);
       context.Assert.Success();
       context.Complete();
     }

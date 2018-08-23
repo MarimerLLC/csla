@@ -24,7 +24,7 @@ namespace Csla.Core.FieldManager
     /// <param name="name">Name of the property.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name)
     {
-      return new Csla.PropertyInfo<T>(name, string.Empty, containingType);
+      return new Csla.PropertyInfo<T>(name, null, containingType, default(T), RelationshipTypes.None);
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName)
     {
-      return new Csla.PropertyInfo<T>(name, friendlyName, containingType);
+      return new Csla.PropertyInfo<T>(name, friendlyName, containingType, default(T), RelationshipTypes.None);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
     {
-      return new Csla.PropertyInfo<T>(name, friendlyName, containingType, relationship);
+      return new Csla.PropertyInfo<T>(name, friendlyName, containingType, default(T), relationship);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue)
     {
-      return new Csla.PropertyInfo<T>(name, friendlyName, containingType, defaultValue);
+      return new Csla.PropertyInfo<T>(name, friendlyName, containingType, defaultValue, RelationshipTypes.None);
     }
 
     /// <summary>

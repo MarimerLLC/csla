@@ -55,6 +55,17 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
+    public PropertyInfo(string name, string friendlyName)
+        : this(name, friendlyName, null, default(T), RelationshipTypes.None)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of this class.
+    /// </summary>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
     /// <param name="containingType">
     /// Factory to provide display name from attributes.
     /// </param>
@@ -91,7 +102,7 @@ namespace Csla
     /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
     public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship) 
-      : this(name, friendlyName, null, default(T), RelationshipTypes.None)
+      : this(name, friendlyName, null, default(T), relationship)
     { }
 
     /// <summary>
@@ -113,16 +124,19 @@ namespace Csla
     {
       Name = name;
       _friendlyName = friendlyName;
-      _propertyInfo = containingType.GetProperty(Name);
-      if (_propertyInfo == null)
-        throw new NullReferenceException($"GetProperty({Name})");
       _relationshipType = relationship;
+      if (containingType != null)
+        _propertyInfo = containingType.GetProperty(Name);
 
       // if T is string we need an empty string, not null, for data binding
-      if (typeof(T).Equals(typeof(string)) && defaultValue.Equals(default(T)))
+      if (typeof(T).Equals(typeof(string)) && defaultValue == null)
+      {
         _defaultValue = (T)((object)string.Empty);
+      }
       else
+      {
         _defaultValue = defaultValue;
+      }
     }
 
     /// <summary>
@@ -154,12 +168,12 @@ namespace Csla
     {
       get
       {
-        string result;
+        string result = Name;
         if (!string.IsNullOrWhiteSpace(_friendlyName))
         {
           result = _friendlyName;
         }
-        else
+        else if (_propertyInfo != null)
         {
           var display = _propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
           if (display != null)
@@ -174,7 +188,6 @@ namespace Csla
             if (displayName != null)
               result = displayName.DisplayName;
           }
-          result = Name;
         }
         return result;
       }

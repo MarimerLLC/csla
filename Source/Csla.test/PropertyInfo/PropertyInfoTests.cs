@@ -78,8 +78,8 @@ namespace Csla.Test.PropertyInfo
     [TestMethod]
     public void TestNameDefaultValue()
     {
-      Assert.IsNull(PropertyInfoRoot._nameDefaultValueProperty.DefaultValue);
-      Assert.IsTrue(PropertyInfoRoot._nameDefaultValueProperty.Name == PropertyInfoRoot._nameDefaultValueProperty.FriendlyName);
+      Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
+      Assert.IsTrue(PropertyInfoRoot.NameDefaultValueProperty.Name == PropertyInfoRoot.NameDefaultValueProperty.FriendlyName);
 
       _watch.Stop();
       Console.WriteLine("Test took {0}ms to complete.", _watch.ElapsedMilliseconds);

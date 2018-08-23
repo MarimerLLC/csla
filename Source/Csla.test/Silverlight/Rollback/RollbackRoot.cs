@@ -14,35 +14,16 @@ namespace Csla.Test.Silverlight.Rollback
   [Serializable]
   public class RollbackRoot : BusinessBase<RollbackRoot>
   {
-    #if SILVERLIGHT
-    public RollbackRoot() { }
-
-    public static void BeginCreateLocal(EventHandler<DataPortalResult<RollbackRoot>> callback)
-    {
-      var dp = new DataPortal<RollbackRoot>();   //Csla.DataPortal.ProxyModes.LocalOnly 
-      dp.CreateCompleted += callback;
-      dp.BeginCreate();
-    }
-
-
-    [RunLocal]
-    protected override void DataPortal_Create()
-    {
-      base.DataPortal_Create();
-    }
-    #else
     private RollbackRoot() { }
-    #endif
 
-
-    private static PropertyInfo<int> UnInitedProperty = RegisterProperty(new PropertyInfo<int>("UnInitedP", "UnInitedP"));
+    private static PropertyInfo<int> UnInitedProperty = RegisterProperty<int>(c => c.UnInitedP, "UnInitedP");
     public int UnInitedP
     {
       get { return GetProperty(UnInitedProperty); }
       set { SetProperty(UnInitedProperty, value); }
     }
 
-    private static PropertyInfo<string> AnotherProperty = RegisterProperty(new PropertyInfo<string>("Another", "Another"));
+    private static PropertyInfo<string> AnotherProperty = RegisterProperty<string>(c => c.Another, "Another");
     public string Another
     {
       get { return GetProperty(AnotherProperty); }

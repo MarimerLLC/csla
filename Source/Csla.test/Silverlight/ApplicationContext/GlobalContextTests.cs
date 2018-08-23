@@ -42,9 +42,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     {
       Csla.ApplicationContext.User = _currentPrincipal;
       Csla.ApplicationContext.GlobalContext.Clear();
-#if !SILVERLIGHT
       ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
-#endif
     }
 
     #endregion

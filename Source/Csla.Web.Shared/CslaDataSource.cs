@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.Web.UI;
 using System.ComponentModel;
@@ -215,4 +214,3 @@ namespace Csla.Web
     }
   }
 }
-#endif

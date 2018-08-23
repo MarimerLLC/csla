@@ -49,7 +49,7 @@ namespace cslalighttest.Serialization
       set { SetProperty(Property_Name, value); }
     }
 
-    private static PropertyInfo<CustomerQuality> Property_Quality = RegisterProperty(new PropertyInfo<CustomerQuality>("Quality", "Quality"));
+    private static PropertyInfo<CustomerQuality> Property_Quality = RegisterProperty<CustomerQuality>(c => c.Quality, "Quality");
 
     /// <summary>
     /// Gets or sets the quality of the customer.

@@ -26,15 +26,6 @@ namespace Csla.Test.Silverlight.Security
 {
   public partial class SecurityTests
   {
-#if SILVERLIGHT
-    //NUnit tests do not
-    [TestSetup]
-    public void Setup()
-    {
-      InitMockMembershipProvider();
-      InitMockRoleProvider();
-    }
-#endif
 
     private void InitMockRoleProvider()
     {
@@ -74,43 +65,5 @@ namespace Csla.Test.Silverlight.Security
       Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole(AdminRoleName));
       Assert.AreEqual("Csla", Csla.ApplicationContext.User.Identity.AuthenticationType);
     }
-
-    #region Login Using Membership Principal
-#if !CLIENTONLY && SILVERLIGHT
-    [TestMethod]
-    public void SetMembershipPrincipalWebServer()
-    {
-      SilverlightPrincipal.Logout();
-      SilverlightPrincipal.LoginUsingMembershipProviderWebServer(SilverlightPrincipal.VALID_TEST_UID, SilverlightPrincipal.VALID_TEST_PWD);
-      Assert.IsNotNull(Csla.ApplicationContext.User);
-      Assert.AreEqual(true, Csla.ApplicationContext.User.Identity.IsAuthenticated);
-      Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("User Role"));
-    }
-
-    [TestMethod]
-    public void SetMembershipPrincipalDataPortal()
-    {
-      SilverlightPrincipal.Logout();
-      SilverlightPrincipal.LoginUsingMembershipProviderDataPortal(SilverlightPrincipal.VALID_TEST_UID, SilverlightPrincipal.VALID_TEST_PWD);
-      Assert.IsNotNull(Csla.ApplicationContext.User);
-      Assert.AreEqual(true, Csla.ApplicationContext.User.Identity.IsAuthenticated);
-      Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("User Role"));
-    }
-
-    [TestMethod]
-    public void SetInvalidMembershipPrincipal()
-    {
-      SilverlightPrincipal.Logout();
-      SilverlightPrincipal.LoginUsingMembershipProviderDataPortal("invalidusername", SilverlightPrincipal.VALID_TEST_PWD);
-      Assert.IsNotNull(Csla.ApplicationContext.User);
-      Assert.AreEqual(false, Csla.ApplicationContext.User.Identity.IsAuthenticated);
-      Assert.AreEqual("", Csla.ApplicationContext.User.Identity.Name);
-      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole(AdminRoleName));
-    }
-#endif
-    #endregion
-
   }
 }

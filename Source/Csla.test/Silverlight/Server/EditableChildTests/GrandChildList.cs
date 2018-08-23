@@ -8,12 +8,6 @@
 using System;
 using System.Linq;
 
-#if SILVERLIGHT
-using Csla.DataPortalClient;
-using Csla.Serialization;
-#endif
-
-
 namespace Csla.Testing.Business.EditableChildTests
 {
   [Serializable]
@@ -25,11 +19,7 @@ namespace Csla.Testing.Business.EditableChildTests
     public static int GrandChildId2 = 2;
     public static int GrandChildId3 = 3;
 
-#if SILVERLIGHT
-    public void Child_Fetch(Guid parentId)
-#else
     private void Child_Fetch(Guid parentId)
-#endif
     {
       RaiseListChangedEvents = false;
 

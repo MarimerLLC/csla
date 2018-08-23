@@ -29,17 +29,11 @@ namespace Csla.Testing.Business.ReadOnlyTest
       dp.BeginFetch();
     }
 
-#if SILVERLIGHT
-    public void DataPortal_Fetch()
-    {
-      Fetch();
-    }
-#else
     private void DataPortal_Fetch()
     {
       Fetch();
     }
-#endif
+
     private void Fetch()
     {
       RaiseListChangedEvents = false;

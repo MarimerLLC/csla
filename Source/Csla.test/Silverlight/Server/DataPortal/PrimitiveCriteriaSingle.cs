@@ -7,11 +7,6 @@
 //-----------------------------------------------------------------------
 using System.Collections.Generic;
 using System.Text;
-#if SILVERLIGHT
-using Csla.Serialization;
-#else
-
-#endif
 
 using Csla;
 using System;
@@ -27,14 +22,14 @@ namespace Csla.Test.DataPortalTest
   {
     #region Business Methods
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty(new PropertyInfo<string>("MethodCalled", "MethodCalled"));
+    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty(c => c.MethodCalled, "MethodCalled");
     public string MethodCalled
     {
       get { return GetProperty(MethodCalledProperty); }
@@ -74,9 +69,6 @@ namespace Csla.Test.DataPortalTest
     #endregion
 
     #region Data Access
-
-
-#if !SILVERLIGHT
 
     #region DataPortal_Create
 
@@ -154,10 +146,6 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Add("PrimitiveCriteriaSingle", "Deleted");
       MethodCalled = "Deleted+" + id.ToString();
     }
-#endif
-
-
-
 
     #endregion
   }

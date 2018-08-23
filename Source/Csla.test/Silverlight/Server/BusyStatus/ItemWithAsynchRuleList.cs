@@ -28,15 +28,6 @@ namespace Csla.Testing.Business.BusyStatus
       returnValue.Add(ItemWithAsynchRule.GetOneItemForList("2"));
       return returnValue;
     }
-#if SILVERLIGHT
-    protected override void DataPortal_Update()
-    {
-      foreach (var oneItem in this)
-      {
-        oneItem.DoDataPortal_Update();
-      }
-    }
-#else
     protected override void DataPortal_Update()
     {
       foreach (var oneItem in this)
@@ -44,6 +35,5 @@ namespace Csla.Testing.Business.BusyStatus
         oneItem.Update();
       }
     }
-#endif
   }
 }

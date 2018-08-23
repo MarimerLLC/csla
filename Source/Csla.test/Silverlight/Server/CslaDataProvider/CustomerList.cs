@@ -19,21 +19,7 @@ namespace cslalighttest.CslaDataProvider
   [Serializable]
   public class CustomerList : BusinessListBase<CustomerList, Customer>
   {
-#if SILVERLIGHT
-    public CustomerList() { }
-
-    protected override void AddNewCore()
-    {
-      Customer newItem = Customer.NewCustomer();
-      this.Add(newItem);
-    }
-
-#else
     private CustomerList() { }
-#endif
-
-
-#if !SILVERLIGHT
 
     protected void DataPortal_Fetch()
     {
@@ -55,15 +41,5 @@ namespace cslalighttest.CslaDataProvider
         throw new Exception();
       Csla.ApplicationContext.GlobalContext["CustomerUpdate"] = "Updating Customer List";
     }
-
-#else
-    public static void GetCustomerList(EventHandler<DataPortalResult<CustomerList>> handler)
-    {
-      DataPortal<CustomerList> dp = new DataPortal<CustomerList>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch();
-    }
-
-#endif
   }
 }

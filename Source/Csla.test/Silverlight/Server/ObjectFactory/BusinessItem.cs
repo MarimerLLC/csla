@@ -50,7 +50,7 @@ namespace Csla.Testing.Business.ObjectFactory
     {
       DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
       dp.FetchCompleted += completed;
-      dp.BeginFetch(new SingleCriteria<BusinessItem,string>(id));
+      dp.BeginFetch(id);
     }
 
     public static void GetBusinessItem(EventHandler<DataPortalResult<BusinessItem>> completed)
@@ -64,7 +64,7 @@ namespace Csla.Testing.Business.ObjectFactory
     {
       DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
       dp.CreateCompleted += completed;
-      dp.BeginCreate(new SingleCriteria<BusinessItem, string>(id));
+      dp.BeginCreate(id);
     }
 
     public static void NewBusinessItem(EventHandler<DataPortalResult<BusinessItem>> completed)
@@ -78,60 +78,7 @@ namespace Csla.Testing.Business.ObjectFactory
     {
       DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
       dp.DeleteCompleted += completed;
-      dp.BeginDelete(new SingleCriteria<BusinessItem, string>(id));
+      dp.BeginDelete(id);
     }
-
-#if SILVERLIGHT
-
-    public void DataPortal_Fetch()
-    {
-      this.Id = "random_fetch";
-      this.OperationResult = "DataPortal_Fetch/no parameters";
-      this.MarkOld();
-    }
-
-    public void DataPortal_Fetch(SingleCriteria<BusinessItem, string> criteria)
-    {
-      this.Id = "fetch_" + criteria.Value;
-      this.OperationResult = "DataPortal_Fetch/with parameters";
-      this.MarkOld();
-    }
-
-    protected override void DataPortal_Create()
-    {
-      this.Id = "random_create";
-      this.OperationResult = "DataPortal_Create/no parameters";
-      this.MarkNew();
-    }
-
-    public void DataPortal_Create(SingleCriteria<BusinessItem, string> criteria)
-    {
-      this.Id = "create_" + criteria.Value;
-      this.OperationResult = "DataPortal_Create/with parameters";
-      this.MarkNew();
-    }
-
-    public void DataPortal_Delete(SingleCriteria<BusinessItem, string> criteria)
-    {
-      this.Id = "delete_" + criteria.Value;
-      this.OperationResult = "DeleteObjectFactoryBusinessItem/with parameters";
-      this.MarkDeleted();
-    }
-
-    protected override void DataPortal_Insert()
-    {
-      this.Id = "random_insert";
-      this.OperationResult = "DataPortal_Insert";
-      this.MarkOld();
-    }
-
-    protected override void DataPortal_Update()
-    {
-      this.Id = "random_update";
-      this.OperationResult = "DataPortal_Update";
-      this.MarkOld();
-    }
-
-#endif
   }
 }

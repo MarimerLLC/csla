@@ -8,7 +8,7 @@
 
 4.  CriteriaBase is now a generic base class and must have generic constraint.
 
-5.  SingleCriteria may be removed – is considered obsolete but still included in 4.x.
+5.  SingleCriteria should be removed – is considered obsolete but still included in 4.x.
 
 6.	Recommended: All BO/CommandObjects/CriteriaBase objects should have managed properties only.
 

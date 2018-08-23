@@ -49,7 +49,6 @@ namespace Csla.Test.BasicModern
       Csla.DataPortal.BeginFetch<Root>(id, callback);
     }
 
-#if !SILVERLIGHT
     public static async Task<Root> NewRootAsync()
     {
       return await Csla.DataPortal.CreateAsync<Root>();
@@ -109,7 +108,5 @@ namespace Csla.Test.BasicModern
       // TODO: delete object's data
       FieldManager.UpdateChildren();
     }
-
-#endif
   }
 }

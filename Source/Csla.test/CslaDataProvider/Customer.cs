@@ -30,7 +30,7 @@ namespace Csla.Test.CslaDataProvider
       return returnValue;
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Customer Id", 0));
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Customer Id", 0);
     public int Id
     {
       get
@@ -43,7 +43,7 @@ namespace Csla.Test.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name", "Customer Name", ""));
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, "Customer Name", "");
     public string Name
     {
       get
@@ -56,7 +56,7 @@ namespace Csla.Test.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(new PropertyInfo<string>("Method", "Method", ""));
+    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c => c.Method, "Method", "");
     public string Method
     {
       get
@@ -70,7 +70,7 @@ namespace Csla.Test.CslaDataProvider
     }
 
 
-    private static PropertyInfo<Csla.SmartDate> DateCreatedProperty = RegisterProperty<Csla.SmartDate>(new PropertyInfo<Csla.SmartDate>("DateCreated", "Date Created On"));
+    private static PropertyInfo<Csla.SmartDate> DateCreatedProperty = RegisterProperty<Csla.SmartDate>(c => c.DateCreated, "Date Created On");
     public string DateCreated
     {
       get
@@ -88,7 +88,7 @@ namespace Csla.Test.CslaDataProvider
     }
 
 
-    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(new PropertyInfo<bool>("ThrowException", "ThrowException", false));
+    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c => c.ThrowException, "ThrowException", false);
     public bool ThrowException
     {
       get
@@ -143,31 +143,31 @@ namespace Csla.Test.CslaDataProvider
     {
       var dp = new DataPortal<Customer>();
       dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<Customer, int>(customerID));
+      dp.BeginFetch(customerID);
     }
 
     internal static Customer GetCustomer(int customerID)
     {
       Customer newCustomer = new Customer();
-      newCustomer.DataPortal_Fetch(new SingleCriteria<Customer, int>(customerID));
+      newCustomer.DataPortal_Fetch(customerID);
       newCustomer.MarkOld();
       return newCustomer;
     }
 
-    protected void DataPortal_Fetch(SingleCriteria<Customer, int> criteria)
+    protected void DataPortal_Fetch(int criteria)
     {
-      LoadProperty(IdProperty, criteria.Value);
-      LoadProperty(NameProperty, "Customer Name for Id: " + criteria.Value.ToString());
-      LoadProperty(DateCreatedProperty, new Csla.SmartDate(new DateTime(2000 + criteria.Value, 1, 1)));
+      LoadProperty(IdProperty, criteria);
+      LoadProperty(NameProperty, "Customer Name for Id: " + criteria.ToString());
+      LoadProperty(DateCreatedProperty, new Csla.SmartDate(new DateTime(2000 + criteria, 1, 1)));
 
-      if (criteria.Value == customerIDThrowsException)
+      if (criteria == customerIDThrowsException)
         throw new ApplicationException("Test Error!");
     }
 
-    protected void DataPortal_Create(SingleCriteria<Customer, int> criteria)
+    protected void DataPortal_Create(int criteria)
     {
-      LoadProperty(IdProperty, criteria.Value);
-      LoadProperty(NameProperty, "New Customer for Id: " + criteria.Value.ToString());
+      LoadProperty(IdProperty, criteria);
+      LoadProperty(NameProperty, "New Customer for Id: " + criteria.ToString());
       LoadProperty(DateCreatedProperty, new Csla.SmartDate(DateTime.Today));
     }
 
@@ -176,9 +176,9 @@ namespace Csla.Test.CslaDataProvider
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(SingleCriteria<Customer, int> criteria)
+    protected void DataPortal_Delete(int criteria)
     {
-      Method = "Deleted Customer ID " + criteria.Value.ToString();
+      Method = "Deleted Customer ID " + criteria.ToString();
     }
 
     protected override void DataPortal_Insert()

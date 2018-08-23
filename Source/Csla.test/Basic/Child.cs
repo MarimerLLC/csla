@@ -38,7 +38,6 @@ namespace Csla.Test.Basic
             }
         }
 
-#if !SILVERLIGHT
         public override bool Equals(object obj)
         {
             if (obj == null || !(obj is Child))
@@ -48,7 +47,6 @@ namespace Csla.Test.Basic
 
             return _data == ((Child)(obj))._data;
         }
-#endif
 
         public Guid Guid
         {

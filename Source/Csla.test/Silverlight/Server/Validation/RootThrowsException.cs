@@ -16,12 +16,10 @@ namespace Csla.Test.ValidationRules
       set { _counter = value; }
     }
 
-#if !SILVERLIGHT
     public static RootThrowsException NewRoot()
     {
       return Csla.DataPortal.Create<RootThrowsException>();
     }
-#endif
 
 
     public static void NewRoot(EventHandler<DataPortalResult<RootThrowsException>> callback)

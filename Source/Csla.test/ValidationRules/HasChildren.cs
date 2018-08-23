@@ -19,14 +19,14 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasChildren : BusinessBase<HasChildren>
   {
-    private static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty(new PropertyInfo<ChildList>("ChildList", "Child list"));
+    private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList, "Child list");
     public ChildList ChildList
     {
       get 
@@ -56,27 +56,21 @@ namespace Csla.Test.ValidationRules
     protected override void Initialize()
     {
       base.Initialize();
-#if (!SILVERLIGHT)
       ChildList.ListChanged += new System.ComponentModel.ListChangedEventHandler(ChildList_ListChanged);
-#endif
       this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
     }
 
     protected override void OnDeserialized(StreamingContext context)
     {
       base.OnDeserialized(context);
-#if !SILVERLIGHT
       ChildList.ListChanged += new System.ComponentModel.ListChangedEventHandler(ChildList_ListChanged);
-#endif
       this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
     }
 
-#if (!SILVERLIGHT)
     void ChildList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
     {
       //ValidationRules.CheckRules(ChildListProperty);
     }
-#endif
 
     void HasChildren_ChildChanged(object sender, ChildChangedEventArgs e)
     {

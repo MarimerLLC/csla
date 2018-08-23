@@ -22,67 +22,34 @@ namespace Csla.Test.PropertyInfo
   [TestClass]
   public class PropertyInfoTests
   {
-    private System.Diagnostics.Stopwatch _watch;
-
-    [TestInitialize]
-    public void Setup()
-    {
-      _watch = new Stopwatch();
-      _watch.Start();
-    }
-
-    [TestCleanup]
-    public void Cleanup()
-    {
-      _watch = null;
-    }
-
     [TestMethod]
     public void TestName()
     {
-      Assert.IsNotNull(PropertyInfoRoot._nameProperty.DefaultValue);
-      Assert.IsTrue(PropertyInfoRoot._nameProperty.Name == PropertyInfoRoot._nameProperty.FriendlyName);
-
-      _watch.Stop();
-      Console.WriteLine("Test took {0}ms to complete.", _watch.ElapsedMilliseconds);
+      Assert.AreEqual(PropertyInfoRoot._nameProperty.Name, PropertyInfoRoot._nameProperty.FriendlyName);
     }
     
     [TestMethod]
     public void TestNameDataAnnotations()
     {
-      _watch.Stop();
-      Console.WriteLine("Test took {0}ms to complete.", _watch.ElapsedMilliseconds);
+      Assert.AreEqual("Name: DataAnnotations", PropertyInfoRoot._nameDataAnnotationsProperty.FriendlyName);
     }
 
     [TestMethod]
     public void TestNameComponentModel()
     {
-      Assert.IsNotNull(PropertyInfoRoot._nameComponentModelProperty.DefaultValue);
-      Assert.IsTrue(PropertyInfoRoot._nameComponentModelProperty.FriendlyName == "Name: ComponentModel");
-
-      _watch.Stop();
-      Console.WriteLine("Test took {0}ms to complete.", _watch.ElapsedMilliseconds);
-
+      Assert.AreEqual("Name: ComponentModel", PropertyInfoRoot._nameComponentModelProperty.FriendlyName);
     }
 
     [TestMethod]
     public void TestNameFriendlyName()
     {
-      Assert.IsNotNull(PropertyInfoRoot._nameFriendlyNameProperty.DefaultValue);
-      Assert.IsTrue(PropertyInfoRoot._nameFriendlyNameProperty.FriendlyName == "Name: Friendly Name");
-
-      _watch.Stop();
-      Console.WriteLine("Test took {0}ms to complete.", _watch.ElapsedMilliseconds);
+      Assert.AreEqual("Name: Friendly Name", PropertyInfoRoot._nameFriendlyNameProperty.FriendlyName);
     }
 
     [TestMethod]
-    public void TestNameDefaultValue()
+    public void TestDefaultValue()
     {
       Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
-      Assert.IsTrue(PropertyInfoRoot.NameDefaultValueProperty.Name == PropertyInfoRoot.NameDefaultValueProperty.FriendlyName);
-
-      _watch.Stop();
-      Console.WriteLine("Test took {0}ms to complete.", _watch.ElapsedMilliseconds);
     }
   }
 }

@@ -27,11 +27,7 @@ namespace cslalighttest.CslaDataProvider
   {
     const int customerIDThrowsException = 99;
 
-#if SILVERLIGHT
-    public Customer() { }
-#else
     private Customer() { }
-#endif
 
     internal static Customer NewCustomer()
     {
@@ -41,7 +37,7 @@ namespace cslalighttest.CslaDataProvider
       return returnValue;
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Customer Id", 0));
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "Customer Id", 0);
     public int Id
     {
       get
@@ -54,7 +50,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name", "Customer Name", ""));
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name, "Customer Name", "");
     public string Name
     {
       get
@@ -67,7 +63,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(new PropertyInfo<string>("Method", "Method", ""));
+    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c=>c.Method, "Method", "");
     public string Method
     {
       get
@@ -81,7 +77,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(new PropertyInfo<SmartDate>("DateCreated", "Date Created On"));
+    private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(c=>c.DateCreated, "Date Created On");
     public string DateCreated
     {
       get
@@ -99,7 +95,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(new PropertyInfo<bool>("ThrowException", "ThrowException", false));
+    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c=>c.ThrowException, "ThrowException", false);
     public bool ThrowException
     {
       get
@@ -112,7 +108,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNullProperty = RegisterProperty<DateTimeOffset>(new PropertyInfo<DateTimeOffset>("DateTimeOffsetNull", "DateTimeOffsetNull"));
+    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNullProperty = RegisterProperty<DateTimeOffset>(c=>c.DateTimeOffsetNull, "DateTimeOffsetNull");
     public DateTimeOffset DateTimeOffsetNull
     {
       get
@@ -125,7 +121,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNotNullProperty = RegisterProperty<DateTimeOffset>(new PropertyInfo<DateTimeOffset>("DateTimeOffsetNotNull", "DateTimeOffsetNotNull", DateTimeOffset.Now));
+    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNotNullProperty = RegisterProperty<DateTimeOffset>(c=>c.DateTimeOffsetNotNull, "DateTimeOffsetNotNull", DateTimeOffset.Now);
     public DateTimeOffset DateTimeOffsetNotNull
     {
       get
@@ -138,7 +134,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<DateTimeOffset?> DateTimeOffsetNullableProperty = RegisterProperty<DateTimeOffset?>(new PropertyInfo<DateTimeOffset?>("DateTimeOffsetNullable", "DateTimeOffsetNullable"));
+    private static PropertyInfo<DateTimeOffset?> DateTimeOffsetNullableProperty = RegisterProperty<DateTimeOffset?>(c=>c.DateTimeOffsetNullable, "DateTimeOffsetNullable");
     public DateTimeOffset? DateTimeOffsetNullable
     {
       get
@@ -151,7 +147,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(new PropertyInfo<CustomeType>("Type", "Customer Type", CustomeType.Active));
+    private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(c=>c.Type, "Customer Type", CustomeType.Active);
     public CustomeType Type
     {
       get
@@ -165,7 +161,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(new PropertyInfo<CustomerContactList>("Contacts", "Contacts List"));
+    private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(c=>c.Contacts, "Contacts List");
     public CustomerContactList Contacts
     {
       get
@@ -217,60 +213,35 @@ namespace cslalighttest.CslaDataProvider
     {
       var dp = new DataPortal<Customer>();
       dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<Customer, int>(customerID));
+      dp.BeginFetch(customerID);
     }
-#if SILVERLIGHT
-
-    public static void GetCustomer(EventHandler<DataPortalResult<Customer>> handler)
-    {
-      int customerID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<Customer>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<Customer, int>(customerID));
-    }
-
-    public static void GetCustomerWithException(EventHandler<DataPortalResult<Customer>> handler)
-    {
-      var dp = new DataPortal<Customer>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<Customer, int>(customerIDThrowsException));
-    }
-    public static void CreateCustomer(EventHandler<DataPortalResult<Customer>> handler)
-    {
-      int customerID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<Customer>();
-      dp.CreateCompleted += handler;
-      dp.BeginCreate(new SingleCriteria<Customer, int>(customerID));
-    }
-#endif
-#if !SILVERLIGHT
 
     internal static Customer GetCustomer(int customerID)
     {
       Customer newCustomer = new Customer();
-      newCustomer.DataPortal_Fetch(new SingleCriteria<Customer, int>(customerID));
+      newCustomer.DataPortal_Fetch(customerID);
       newCustomer.MarkAsChild();
       newCustomer.MarkOld();
       return newCustomer;
     }
 
-    protected void DataPortal_Fetch(SingleCriteria<Customer, int> criteria)
+    protected void DataPortal_Fetch(int criteria)
     {
-      LoadProperty(IdProperty, criteria.Value);
-      LoadProperty(NameProperty, "Customer Name for Id: " + criteria.Value.ToString());
-      LoadProperty(DateCreatedProperty, new SmartDate(new DateTime(2000 + criteria.Value, 1, 1)));
-      LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(criteria.Value));
+      LoadProperty(IdProperty, criteria);
+      LoadProperty(NameProperty, "Customer Name for Id: " + criteria.ToString());
+      LoadProperty(DateCreatedProperty, new SmartDate(new DateTime(2000 + criteria, 1, 1)));
+      LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(criteria));
       LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
       LoadProperty(TypeProperty, CustomeType.Inactive);
 
-      if (criteria.Value == customerIDThrowsException)
+      if (criteria == customerIDThrowsException)
         throw new ApplicationException("Test for Silverlight DataSource Error!");
     }
 
-    protected void DataPortal_Create(SingleCriteria<Customer, int> criteria)
+    protected void DataPortal_Create(int criteria)
     {
-      LoadProperty(IdProperty, criteria.Value);
-      LoadProperty(NameProperty, "New Customer for Id: " + criteria.Value.ToString());
+      LoadProperty(IdProperty, criteria);
+      LoadProperty(NameProperty, "New Customer for Id: " + criteria.ToString());
       LoadProperty(DateCreatedProperty, new SmartDate(DateTime.Today));
       LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
@@ -281,9 +252,9 @@ namespace cslalighttest.CslaDataProvider
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(SingleCriteria<Customer, int> criteria)
+    protected void DataPortal_Delete(int criteria)
     {
-      Method = "Deleted Customer ID " + criteria.Value.ToString();
+      Method = "Deleted Customer ID " + criteria.ToString();
     }
 
     protected override void DataPortal_Insert()
@@ -296,22 +267,18 @@ namespace cslalighttest.CslaDataProvider
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));
     }
-#endif
-
   }
 
 
   [Serializable]
   public class CustomerWO_DP_XYZ : BusinessBase<CustomerWO_DP_XYZ>
   {
-    //#if SILVERLIGHT
-
     public static void GetCustomer(EventHandler<DataPortalResult<CustomerWO_DP_XYZ>> handler)
     {
       int customerID = (new Random()).Next(1, 10);
       var dp = new DataPortal<CustomerWO_DP_XYZ>();
       dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<CustomerWO_DP_XYZ, int>(customerID));
+      dp.BeginFetch(customerID);
     }
 
     public static void CreateCustomer(EventHandler<DataPortalResult<CustomerWO_DP_XYZ>> handler)
@@ -319,10 +286,8 @@ namespace cslalighttest.CslaDataProvider
       int customerID = (new Random()).Next(1, 10);
       var dp = new DataPortal<CustomerWO_DP_XYZ>();
       dp.CreateCompleted += handler;
-      dp.BeginCreate(new SingleCriteria<CustomerWO_DP_XYZ, int>(customerID));
+      dp.BeginCreate(customerID);
     }
-    //#endif
-
   }
 
 }

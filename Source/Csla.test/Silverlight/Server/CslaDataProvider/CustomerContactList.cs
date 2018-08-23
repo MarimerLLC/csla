@@ -25,13 +25,8 @@ namespace cslalighttest.CslaDataProvider
       get { return (Customer)this.Parent; }
     }
 
-#if SILVERLIGHT
-    public CustomerContactList() { }
-#else
     private CustomerContactList() { }
-#endif
 
-#if !SILVERLIGHT
     internal static CustomerContactList GetCustomerContactList(int customerID)
     {
       return DataPortal.FetchChild<CustomerContactList>(customerID);
@@ -46,8 +41,5 @@ namespace cslalighttest.CslaDataProvider
       }
       this.RaiseListChangedEvents = true;
     }
-
-#endif
-
   }
 }

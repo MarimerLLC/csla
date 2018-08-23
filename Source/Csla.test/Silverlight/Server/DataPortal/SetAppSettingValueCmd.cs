@@ -6,14 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-#if SILVERLIGHT
-using Csla.DataPortalClient;
-using Csla.Serialization;
-#else
 using System.Configuration;
 using System.Reflection;
-
-#endif
 
 
 namespace  Csla.Testing.Business.DataPortal
@@ -47,11 +41,7 @@ namespace  Csla.Testing.Business.DataPortal
       AppSettingValue = appSettingValue;
     }
 
-#if SILVERLIGHT
-    public SetAppSettingValueCmd(){}
-#else
     protected SetAppSettingValueCmd() { }
-#endif
 
     public static void ExecuteCommand(string appSettingKey, string appSettingValue, EventHandler<DataPortalResult<SetAppSettingValueCmd>> handler)
     {
@@ -59,7 +49,6 @@ namespace  Csla.Testing.Business.DataPortal
       Csla.DataPortal.BeginExecute<SetAppSettingValueCmd>(command, handler);
     }
 
-#if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {
       //As the value of the _authorizer is loaded from App.Config we consider it as variable that is
@@ -71,10 +60,5 @@ namespace  Csla.Testing.Business.DataPortal
         .SetValue(null, null);
       ConfigurationManager.AppSettings[AppSettingKey] = AppSettingValue;
     }
-#else
-    protected override void DataPortal_Execute()
-    {
-    }
-#endif
   }
 }

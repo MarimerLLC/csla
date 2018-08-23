@@ -5,28 +5,20 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-#if SILVERLIGHT && !__ANDROID__
-using Csla.Serialization;
-#else
 using System;
 using System.Configuration;
-
-#endif
-
 
 namespace Csla.Testing.Business.DataPortal
 {
   [Serializable]
   public class TestBO : BusinessBase<TestBO>
   {
-#if !SILVERLIGHT
-    
     protected override void DataPortal_Create()
     {
       //base.DataPortal_Create();
       string x = ConfigurationManager.AppSettings["CslaAuthorizationProvider"];
     }
-    protected void DataPortal_Fetch(SingleCriteria<TestBO,int> criteria)
+    protected void DataPortal_Fetch(int criteria)
     {
 
     }
@@ -49,16 +41,9 @@ namespace Csla.Testing.Business.DataPortal
     {
 
     }
-    protected void DataPortal_Delete(SingleCriteria<TestBO,int> criteria)
+    protected void DataPortal_Delete(int criteria)
     {
 
     }
-#else
-    public TestBO()
-    {
-      MarkNew();
-    }
-#endif
-
   }
 }

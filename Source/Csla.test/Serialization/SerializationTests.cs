@@ -510,7 +510,6 @@ namespace Csla.Test.Serialization
       cmd.Name = "test data";
 
       var buffer = new System.IO.MemoryStream();
-#if !SILVERLIGHT
       var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
       Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
 
@@ -519,7 +518,6 @@ namespace Csla.Test.Serialization
       buffer.Position = 0;
       var n = (TestCommand)ndcs.Deserialize(buffer);
       Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
-#endif
 
       buffer = new System.IO.MemoryStream();
       var mf = new Csla.Serialization.Mobile.MobileFormatter();
@@ -529,7 +527,6 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
     }
 
-#if !SILVERLIGHT
     [TestMethod]
     public void CommandOverDataPortal()
     {
@@ -549,9 +546,8 @@ namespace Csla.Test.Serialization
         System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
       }
     }
-#endif
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     [TestMethod]
     public void UseCustomSerializationFormatter()
     {

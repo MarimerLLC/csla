@@ -24,8 +24,6 @@ namespace cslalighttest.NameValueList
 
 
 
-#if !SILVERLIGHT
-
     public static BasicNameValueList GetBasicNameValueList()
     {
       return DataPortal.Fetch<BasicNameValueList>();
@@ -40,9 +38,5 @@ namespace cslalighttest.NameValueList
       }
       this.IsReadOnly = true;
     }
-
-#else
-    public BasicNameValueList() { }
-#endif
   }
 }

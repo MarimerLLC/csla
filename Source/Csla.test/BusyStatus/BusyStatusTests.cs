@@ -33,11 +33,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void TestBusy()
     {
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRule item;
       ItemWithAsynchRule.GetItemWithAsynchRule("an id", (o, e) =>
@@ -64,11 +60,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestBusy()
     {
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
       items[0].RuleField = "some value";
@@ -81,9 +73,6 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void TestSaveWhileBusy()
     {
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#endif      
       UnitTestContext context = GetContext();
       ItemWithAsynchRule item;
       ItemWithAsynchRule.GetItemWithAsynchRule("an id", (o, e) =>
@@ -116,11 +105,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileBusy()
     {
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
       items[0].RuleField = "some value";
@@ -143,9 +128,6 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void TestNotBusy()
     {
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRule item;
       ItemWithAsynchRule.GetItemWithAsynchRule("an id", (o, e) =>
@@ -173,12 +155,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestNotBusy()
     {
-
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
       items[0].ValidationComplete += (o2, e2) =>
@@ -193,66 +170,11 @@ namespace cslalighttest.BusyStatus
       context.Assert.IsFalse(items.IsSavable);
     }
 
-//    [TestMethod]
-//#if !SILVERLIGHT
-//    [Ignore]
-//#endif
-//    public void TestSaveWhileNotBusy()
-//    {
-//#if SILVERLIGHT
-//      DataPortal.ProxyTypeName = "Local";
-//#endif
-//      UnitTestContext context = GetContext();
-//      context.Assert.Try(() =>
-//      {
-//        ItemWithAsynchRule item;
-//        bool saving = false;
-//        ItemWithAsynchRule.GetItemWithAsynchRule("an id", (o, e) =>
-//        {
-//          item = e.Object;
-//          context.Assert.IsNull(e.Error);
-//          context.Assert.IsNotNull(item);
-//          context.Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Client, Csla.ApplicationContext.LogicalExecutionLocation);
-
-//          item.RuleField = "some value";
-//          context.Assert.IsTrue(item.IsBusy, "IsBusy should be true");
-//          context.Assert.IsFalse(item.IsSavable, "IsSavable");
-//          item.ValidationComplete += (o2, e2) =>
-//          {
-//            context.Assert.IsFalse(item.IsRunningRules, "IsRunningRules");
-//            lock (item)
-//            {
-//              if (!saving)
-//              {
-//                saving = true;
-//                context.Assert.IsTrue(item.IsSavable, "IsSavable should be true");
-//                item.BeginSave((o4, e4) =>
-//                  {
-//                    context.Assert.IsNull(e4.Error);
-//                    context.Assert.IsNotNull(e4.NewObject);
-//                    var newItem = (ItemWithAsynchRule)e4.NewObject;
-//                    if (newItem != null)
-//                      context.Assert.AreEqual("DataPortal_Update", newItem.OperationResult);
-//                    context.Assert.Success();
-//                  });
-//              }
-//            }
-//          };
-//        });
-//      });
-//      context.Complete();
-//    }
-
-
     [TestMethod]
     public void ListTestSaveWhileNotBusy()
     {
 
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
       items[0].ValidationComplete += (o2, e2) =>
@@ -275,7 +197,6 @@ namespace cslalighttest.BusyStatus
       context.Complete();
     }
 
-#if !SILVERLIGHT
     [TestMethod]
     public void TestSaveWhileBusyNetOnly()
     {
@@ -312,13 +233,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileBusyNetOnly()
     {
-
-
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
 
@@ -374,13 +289,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileNotBusyNetOnly()
     {
-
-
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
 
@@ -431,14 +340,7 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileNotBusyNoActiveRuleNetOnly()
     {
-
-
-
-#if SILVERLIGHT
-          DataPortal.ProxyTypeName = "Local";
-#else
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-#endif
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
 
@@ -449,8 +351,6 @@ namespace cslalighttest.BusyStatus
       context.Assert.AreEqual("DataPortal_Update", items[0].OperationResult);
       context.Assert.Success();
       context.Complete();
-
     }
-#endif
   }
 }

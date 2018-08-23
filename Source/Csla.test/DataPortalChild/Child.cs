@@ -37,7 +37,7 @@ namespace Csla.Test.DataPortalChild
       set { SetProperty<string>(DataProperty, value); }
     }
 
-    private static PropertyInfo<string> RootDataProperty = RegisterProperty<string>(typeof(Child), new PropertyInfo<string>("RootData","RootData",string.Empty));
+    private static PropertyInfo<string> RootDataProperty = RegisterProperty<string>(typeof(Child), new PropertyInfo<string>("RootData", string.Empty));
     public string RootData
     {
       get { return GetProperty<string>(RootDataProperty); }

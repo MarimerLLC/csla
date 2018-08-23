@@ -46,58 +46,30 @@ namespace cslalighttest.Serialization
       context.Complete();      
     }
 
+    [Serializable]
+    public class StringCriteria : CriteriaBase<StringCriteria>
+    {
+      public static readonly PropertyInfo<string> ValueProperty = RegisterProperty<string>(c => c.Value);
+      public string Value
+      {
+        get { return ReadProperty(ValueProperty); }
+        set { LoadProperty(ValueProperty, value); }
+      }
+    }
+
     [TestMethod]
     public void SerializeCriteriaSuccess()
     {
       UnitTestContext context = GetContext();
-      var criteria = new SingleCriteria<SerializationTests, string>("success");
-      var actual = MobileFormatter.Serialize(criteria);
+      var criteria = new StringCriteria { Value = "success" };
+      var buffer = MobileFormatter.Serialize(criteria);
 
-      context.Assert.IsNotNull(actual);
+      var actual = (StringCriteria)MobileFormatter.Deserialize(buffer);
+
+      context.Assert.AreEqual(criteria.Value, actual.Value);
       context.Assert.Success();
       context.Complete();
     }
-
-    [TestMethod]
-    public void DeserializeCriteriaSuccess()
-    {
-      UnitTestContext context = GetContext();
-      var expected = new SingleCriteria<SerializationTests, string>("success");
-      var buffer = MobileFormatter.Serialize(expected);
-
-      var actual = (SingleCriteria<SerializationTests, string>)MobileFormatter.Deserialize(buffer);
-
-      context.Assert.AreEqual(expected.Value, actual.Value);
-      context.Assert.Success();
-      context.Complete();
-    }
-
-    /// <summary>
-    /// Same test as above only uses one of the mobile formatter overloads to verify that
-    /// using a TextReader/Writer works as well.
-    /// </summary>
-		//[TestMethod]
-		//public void SerializeWithTextWriter()
-		//{
-		//  UnitTestContext context = GetContext();
-
-		//  MobileFormatter formatter = new MobileFormatter();
-		//  StringBuilder sb = new StringBuilder();
-		//  SingleCriteria<SerializationTests, string> expected = new SingleCriteria<SerializationTests, string>("success");
-		//  SingleCriteria<SerializationTests, string> actual = null;
-
-		//  using (TextWriter tw = new StringWriter(sb))
-		//    formatter.Serialize(tw, expected);
-      
-		//  string buffer = sb.ToString();
-
-		//  using(TextReader tr = new StringReader(buffer))
-		//    actual = (SingleCriteria<SerializationTests, string>)formatter.Deserialize(tr);
-
-		//  context.Assert.AreEqual(expected.Value, actual.Value);
-		//  context.Assert.Success();
-		//  context.Complete();
-		//}
 
     [TestMethod]
     public void BusinessObjectWithoutChildList()
@@ -334,7 +306,6 @@ namespace cslalighttest.Serialization
       context.Complete();
     }
 
-#if !SILVERLIGHT
     [TestMethod]
     public void MobileDictionary_PrimitiveKey_PrimitiveValue_BF()
     {
@@ -366,7 +337,6 @@ namespace cslalighttest.Serialization
       context.Assert.Success();
       context.Complete();
     }
-#endif
 
     [TestMethod]
     public void MobileDictionary_PrimitiveKey_MobileValue()

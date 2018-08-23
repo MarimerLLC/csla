@@ -37,18 +37,12 @@ namespace Csla.Test.LogicalExecutionLocation
       get { return GetProperty(RuleProperty); }
       set { SetProperty(RuleProperty, value); }
     }
-#if !SILVERLIGHT
 
     public static LocationBusinessBase GetLocationBusinessBase()
     {
       return Csla.DataPortal.Fetch<LocationBusinessBase>();
     }
-#else
-    public static void GetLocationBusinessBase(EventHandler<DataPortalResult<LocationBusinessBase>> handler)
-    {
-      Csla.DataPortal.BeginFetch<LocationBusinessBase>(handler);
-    }
-#endif
+
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new CheckRule { PrimaryProperty = DataProperty });
@@ -62,8 +56,6 @@ namespace Csla.Test.LogicalExecutionLocation
       }
     }
 
-#if !SILVERLIGHT
-
     protected override void DataPortal_Update()
     {
       
@@ -72,14 +64,13 @@ namespace Csla.Test.LogicalExecutionLocation
     protected void DataPortal_Fetch()
     {
       SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
-      var nested = Csla.DataPortal.Fetch<LocationBusinessBase>(new SingleCriteria<LocationBusinessBase, int>(123));
+      var nested = Csla.DataPortal.Fetch<LocationBusinessBase>(123);
       NestedData = nested.Data;
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(int criteria)
     {
       SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
     }
-#endif
   }
 }

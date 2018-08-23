@@ -19,18 +19,14 @@ namespace Csla.Testing.Business.EditableRootListTests
   [Serializable]
   public class SingleItem : BusinessBase<SingleItem>
   {
-#if SILVERLIGHT
-    public SingleItem() { }
-#else
     private SingleItem() { }
-#endif
 
     public static SingleItem GetSingleItem()
     {
       return new SingleItem();
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Internal Id", 0));
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Internal Id", 0);
     public int Id
     {
       get
@@ -43,7 +39,7 @@ namespace Csla.Testing.Business.EditableRootListTests
       }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name", "Item Name", ""));
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, "Item Name", "");
     public string Name
     {
       get
@@ -56,7 +52,7 @@ namespace Csla.Testing.Business.EditableRootListTests
       }
     }
 
-    private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(new PropertyInfo<SmartDate>("DateCreated", "Date Created On"));
+    private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(c => c.DateCreated, "Date Created On");
     public string DateCreated
     {
       get
@@ -73,7 +69,7 @@ namespace Csla.Testing.Business.EditableRootListTests
       }
     }
 
-    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty<string>(new PropertyInfo<string>("MethodCalled", "MethodCalled", ""));
+    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty<string>(c => c.MethodCalled, "MethodCalled", "");
     public string MethodCalled
     {
       get
@@ -86,7 +82,6 @@ namespace Csla.Testing.Business.EditableRootListTests
       }
     }
 
-#if !SILVERLIGHT
     internal static SingleItem GetSingleItem(int id, string name, DateTime createdOn)
     {
       SingleItem newItem = new SingleItem();
@@ -117,6 +112,5 @@ namespace Csla.Testing.Business.EditableRootListTests
       if (!IsNew)
         MethodCalled = "DataPortal_Delete";
     }
-#endif
   }
 }

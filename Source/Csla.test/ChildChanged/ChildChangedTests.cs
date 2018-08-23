@@ -125,30 +125,21 @@ namespace Csla.Test.ChildChanged
 
       var root = new SingleList();
       root.Add(new SingleRoot(true));
-#if !SILVERLIGHT
       System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
       {
         lc++;
         lcp = e.PropertyDescriptor;
       };
-#else
-      root.CollectionChanged += (o, e) =>
-      {
-        lc++;
-      };
-#endif
       root.ChildChanged += (o, e) =>
       {
         cc++;
         cca = e;
       };
       root[0].Name = "abc";
-#if !SILVERLIGHT
       Assert.AreEqual(1, lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
-#endif
       Assert.AreEqual(1, cc, "ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root[0], cca.ChildObject), "Ref should be equal");
     }
@@ -164,30 +155,21 @@ namespace Csla.Test.ChildChanged
       root.Add(new SingleRoot(true));
       root = root.Clone();
 
-#if !SILVERLIGHT
       System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
       {
         lc++;
         lcp = e.PropertyDescriptor;
       };
-#else
-      root.CollectionChanged += (o, e) =>
-      {
-        lc++;
-      };
-#endif
       root.ChildChanged += (o, e) =>
       {
         cc++;
         cca = e;
       };
       root[0].Name = "abc";
-#if !SILVERLIGHT
       Assert.AreEqual(1, lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
-#endif
       Assert.AreEqual(1, cc, "ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root[0], cca.ChildObject), "Ref should be equal");
     }
@@ -210,30 +192,21 @@ namespace Csla.Test.ChildChanged
       {
         rcc++;
       };
-#if !SILVERLIGHT
       System.ComponentModel.PropertyDescriptor lcp = null;
       root.List.ListChanged += (o, e) =>
       {
         lc++;
         lcp = e.PropertyDescriptor;
       };
-#else
-      root.List.CollectionChanged += (o, e) =>
-      {
-        lc++;
-      };
-#endif
       root.List.ChildChanged += (o, e) =>
       {
         cc++;
         cca = e;
       };
       root.List[0].Name = "abc";
-#if !SILVERLIGHT
       Assert.AreEqual(1, lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
-#endif
       Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
       Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root.List[0], cca.ChildObject), "Ref should be equal");
@@ -259,30 +232,21 @@ namespace Csla.Test.ChildChanged
       {
         rcc++;
       };
-#if !SILVERLIGHT
       System.ComponentModel.PropertyDescriptor lcp = null;
       root.List.ListChanged += (o, e) =>
       {
         lc++;
         lcp = e.PropertyDescriptor;
       };
-#else
-      root.List.CollectionChanged += (o, e) =>
-      {
-        lc++;
-      };
-#endif
       root.List.ChildChanged += (o, e) =>
       {
         cc++;
         cca = e;
       };
       root.List[0].Name = "abc";
-#if !SILVERLIGHT
       Assert.AreEqual(1, lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
-#endif
       Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
       Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root.List[0], cca.ChildObject), "Ref should be equal");
@@ -304,18 +268,11 @@ namespace Csla.Test.ChildChanged
       {
         rcc = true;
       };
-#if !SILVERLIGHT
       System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
         {
           Assert.Fail("root.ListChanged should not fire");
         };
-#else
-      root.CollectionChanged += (o, e) =>
-      {
-        Assert.IsTrue(false, "root.ListChanged should not fire");
-      };
-#endif
       child.ChildChanged += (o, e) =>
       {
         ccc = true;
@@ -324,25 +281,21 @@ namespace Csla.Test.ChildChanged
       {
         Assert.IsTrue(false, "child.PropertyChanged should not fire");
       };
-#if !SILVERLIGHT
       bool lc = false;
       child.List.ListChanged += (o, e) =>
       {
         lc = true;
         lcp = e.PropertyDescriptor;
       };
-#endif
       child.List.ChildChanged += (o, e) =>
       {
         cc = true;
         cca = e;
       };
       child.List[0].Name = "abc";
-#if !SILVERLIGHT
       Assert.IsTrue(lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
-#endif
 			Assert.IsTrue(rcc, "root.ChildChanged should have fired");
       Assert.IsTrue(ccc, "child.ChildChanged should have fired");
       Assert.IsTrue(cc, "list.ChildChanged should have fired");

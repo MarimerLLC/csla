@@ -7,12 +7,6 @@
 //-----------------------------------------------------------------------
 using System.Collections.Generic;
 using System.Text;
-#if SILVERLIGHT
-using Csla.Serialization;
-#else
-
-#endif
-
 using Csla;
 using System;
 using System.Threading.Tasks;
@@ -28,21 +22,20 @@ namespace Csla.Test.DataPortalTest
   [Serializable]
   public class Single : BusinessBase<Single>
   {
-    public readonly static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
+    public readonly static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty(new PropertyInfo<string>("MethodCalled", "MethodCalled"));
+    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty(c => c.MethodCalled, "MethodCalled");
     public string MethodCalled
     {
       get { return GetProperty(MethodCalledProperty); }
       set { SetProperty(MethodCalledProperty, value); }
     }
 
-#if !SILVERLIGHT
     public static Single NewObject()
     {
       return Csla.DataPortal.Create<Single>();
@@ -57,7 +50,6 @@ namespace Csla.Test.DataPortalTest
     {
       Csla.DataPortal.Delete<Single>(id);
     }
-#endif
 
     public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler)
     {
@@ -71,8 +63,6 @@ namespace Csla.Test.DataPortalTest
 
     public Single()
     { }
-
-#if !SILVERLIGHT
 
     protected override void DataPortal_Create()
     {
@@ -145,7 +135,6 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Add("Single", "Deleted");
       MethodCalled = "Deleted";
     }
-#endif
   }
 
   [Serializable]
@@ -177,7 +166,6 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(IdProperty, value); }
     }
 
-#if !SILVERLIGHT
     private void DataPortal_Create(int id)
     {
       if (id == 9999)
@@ -223,7 +211,6 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("bad value");
       Id = id;
     }
-#endif
   }
 
   [Serializable]
@@ -236,13 +223,11 @@ namespace Csla.Test.DataPortalTest
       set { LoadProperty(ValueProperty, value); }
     }
 
-#if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {
       if (Value == 555)
         throw new Exception("bad value");
       Value += 1;
     }
-#endif
   }
 }

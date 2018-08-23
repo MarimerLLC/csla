@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
 using System;
 using System.Linq;
 using System.Data;
@@ -44,7 +44,7 @@ namespace Csla.Test.Data
       {
       }
     }
-#if !CLIENTONLY
+
     [TestMethod]
     [ExpectedException(typeof(ConfigurationErrorsException))]
     public void InvalidConnectionSetting_Throws_ConfigurationErrorsException_for_LinqToSqlContextDataContext()
@@ -63,8 +63,6 @@ namespace Csla.Test.Data
       }
     }
 
-#endif
-
 #if DEBUG
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
@@ -77,7 +75,7 @@ namespace Csla.Test.Data
     }
 #endif
 
-#if !CLIENTONLY && DEBUG
+#if DEBUG
 
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
@@ -127,7 +125,6 @@ namespace Csla.Test.Data
     }
 #endif
 
-#if !CLIENTONLY
 #if DEBUG
     [TestMethod]
     public void Table1_retreived_through_LingToSqlDataContext_has_records()
@@ -152,7 +149,6 @@ namespace Csla.Test.Data
         Assert.IsTrue(query.ToList().Count > 0, "Data in table is missing");
       }
     }
-#endif
 #endif
     #endregion
 

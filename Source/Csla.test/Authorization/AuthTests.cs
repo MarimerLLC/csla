@@ -132,11 +132,7 @@ namespace Csla.Test.Authorization
 
       Security.TestPrincipal.SimulateLogin();
 
-#if SILVERLIGHT
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
 
       root.Data = "Something new";
 
@@ -298,19 +294,11 @@ namespace Csla.Test.Authorization
       pr.FirstName = "something";
       string something = pr.FirstName;
 
-#if SILVERLIGHT
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
       //set to null so the other testmethods continue to throw exceptions
       Csla.Test.Security.TestPrincipal.SimulateLogout();
 
-#if SILVERLIGHT
-      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
             Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
     }
 
     [TestMethod]
@@ -323,19 +311,11 @@ namespace Csla.Test.Authorization
       //should work, because we are now logged in as an admin
       pr.DoWork();
 
-#if SILVERLIGHT
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
           Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
       //set to null so the other testmethods continue to throw exceptions
       Csla.Test.Security.TestPrincipal.SimulateLogout();
 
-#if SILVERLIGHT
-      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
           Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
     }
 
     [TestMethod]
@@ -352,41 +332,14 @@ namespace Csla.Test.Authorization
 
     }
 
-    //[TestMethod()]
-    //public void TestAuthorizationAfterClone()
-    //{
-    //    Csla.ApplicationContext.GlobalContext.Clear();
-    //    Csla.Test.Security.TestPrincipal.SimulateLogin();
-
-    //    PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
-
-    //    //should work because we are now logged in as an admin
-    //    pr.FirstName = "something";
-    //    string something = pr.FirstName;
-
-    //    //The permissions should persist across a cloning
-    //    PermissionsRoot prClone = pr.Clone();
-    //    pr.FirstName = "something";
-    //    something = pr.FirstName;
-    //}
-
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
       var root = PermissionsRoot.NewPermissionsRoot();
       Csla.Test.Security.TestPrincipal.SimulateLogin();
 
-#if SILVERLIGHT
-      Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.IsFalse(Csla.ApplicationContext.User.IsInRole("User"));
-#else
-          Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-          Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
-#endif
-
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
+      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
 
       // implicit usage of ApplicationContext.RuleSet
       ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
@@ -412,13 +365,8 @@ namespace Csla.Test.Authorization
       var root = PermissionsRoot2.NewPermissionsRoot();
       Csla.Test.Security.TestPrincipal.SimulateLogin();
 
-#if SILVERLIGHT
-      Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.IsFalse(Csla.ApplicationContext.User.IsInRole("User"));
-#else
-          Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-          Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
-#endif
+      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
 
       //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
       //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
@@ -456,21 +404,8 @@ namespace Csla.Test.Authorization
       }
       catch (Exception ex)
       {
-#if !SILVERLIGHT
         Assert.IsInstanceOfType(ex, typeof(TargetInvocationException));
         Assert.IsInstanceOfType(ex.InnerException, typeof(ArgumentException));
-#else
-        using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
-        {
-          using (IsolatedStorageFileStream isfs = new IsolatedStorageFileStream("sl_testauth.txt", FileMode.OpenOrCreate, isf)) 
-          { using (StreamWriter sw = new StreamWriter(isfs)) 
-          { 
-            sw.Write(ex.ToString()); 
-            sw.Close(); } }
-        }
-        Assert.IsInstanceOfType(typeof(TargetInvocationException), ex);
-        Assert.IsInstanceOfType(typeof(ArgumentException), ex.InnerException);
-#endif
       }
 
       // AddObjectAuthorizations should be called again and
@@ -481,13 +416,8 @@ namespace Csla.Test.Authorization
       }
       catch (Exception ex)
       {
-#if !SILVERLIGHT
         Assert.IsInstanceOfType(ex, typeof(TargetInvocationException));
         Assert.IsInstanceOfType(ex.InnerException, typeof(ArgumentException));
-#else
-        Assert.IsInstanceOfType(typeof(TargetInvocationException), ex);
-        Assert.IsInstanceOfType(typeof(ArgumentException), ex.InnerException);
-#endif
       }
 
       Assert.IsTrue(RootException.Counter == 2);

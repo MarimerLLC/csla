@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>The object responsible for managing data binding</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
-
 using System;
 using System.Collections;
 using System.Web.UI;
@@ -297,4 +295,3 @@ namespace Csla.Web
 
   }
 }
-#endif

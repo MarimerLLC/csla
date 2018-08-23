@@ -37,25 +37,6 @@ namespace Csla.Test.SmartDate
     System.Globalization.CultureInfo CurrentCulture { get; set; }
     System.Globalization.CultureInfo CurrentUICulture { get; set; }
 
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup() 
-    {
-      CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
-      CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
-
-      Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-      Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
-    }
-
-   [TestCleanup]
-    public void Cleanup()
-    {
-      // restore original cultures
-      Thread.CurrentThread.CurrentCulture = CurrentCulture;
-      Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
-    }
-#else
     [TestInitialize]
     public void Setup()
     {
@@ -76,7 +57,6 @@ namespace Csla.Test.SmartDate
       System.Threading.Thread.CurrentThread.CurrentCulture = CurrentCulture;
       System.Threading.Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
     }
-#endif
 
     #region Test Constructors
     [TestMethod()]

@@ -30,13 +30,6 @@ namespace Csla.Test.ValidationRules
   [TestClass()]
   public class ValidationTests : TestBase
   {
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.DataPortal.ProxyTypeName = "Local";
-    }
-#endif
 
     [TestMethod()]
     public void TestValidationRulesWithPrivateMember()
@@ -415,7 +408,6 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-#if !SILVERLIGHT
     [TestMethod]
     public void MinMaxValue()
     {
@@ -488,7 +480,6 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
-#endif
 
     [TestMethod]
     public void TwoRules()
@@ -530,23 +521,14 @@ namespace Csla.Test.ValidationRules
 
           string broken;
 
-#if SILVERLIGHT
-          var rootEI = (INotifyDataErrorInfo)root;
-          broken = rootEI.GetErrors(HasLazyField.Value1Property.Name).OfType<Csla.Rules.BrokenRule>().First().Description;
-#else
           var rootEI = (IDataErrorInfo)root;
           broken = rootEI[HasLazyField.Value1Property.Name];
-#endif
 
           context.Assert.AreEqual("PrimaryProperty does not exist.", broken);
           var value = root.Value1;  // intializes field
           
           root.CheckRules();
-#if SILVERLIGHT
-          broken = rootEI.GetErrors(HasLazyField.Value1Property.Name).OfType<Csla.Rules.BrokenRule>().First().Description;
-#else
           broken = rootEI[HasLazyField.Value1Property.Name];
-#endif
           context.Assert.AreEqual("PrimaryProperty has value.", broken);
 
           context.Assert.Success();
@@ -585,39 +567,6 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
-
-
-#if SILVERLIGHT && !WINDOWS_PHONE
-    [TestMethod]
-    public void NotifyDataErrorInfo()
-    {
-      var context = GetContext();
-
-      var root = new TwoPropertyRules();
-
-      int errorsChanged = 0;
-      root.ErrorsChanged += (o, e) =>
-        {
-          errorsChanged++;
-        };
-
-      root.Value2 = "b";
-      context.Assert.AreEqual(2, errorsChanged);
-      var indei = root as System.ComponentModel.INotifyDataErrorInfo;
-      context.Assert.IsTrue(indei.HasErrors);
-      int count = 0;
-      foreach (var item in indei.GetErrors("Value2"))
-        count++;
-      context.Assert.IsTrue(count > 0);
-
-      root.Value1 = "a";
-
-      context.Assert.AreEqual(4, errorsChanged);
-
-      context.Assert.Success();
-      context.Complete();
-    }
-#endif
   }
 
   [Serializable]
@@ -793,9 +742,10 @@ namespace Csla.Test.ValidationRules
     {
       get
       {
-        if (!FieldManager.FieldExists(Value1Property))
-          SetProperty(Value1Property, string.Empty);
-        return GetProperty(Value1Property);
+        return LazyGetProperty(Value1Property, () => string.Empty);
+        //if (!FieldManager.FieldExists(Value1Property))
+        //  SetProperty(Value1Property, string.Empty);
+        //return GetProperty(Value1Property);
       }
       set { SetProperty(Value1Property, value); }
     }
@@ -869,7 +819,7 @@ namespace Csla.Test.ValidationRules
     public CheckLazyInputFieldExists(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<Core.IPropertyInfo> {primaryProperty};
+      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
     }
 
     protected override void Execute(Rules.IRuleContext context)

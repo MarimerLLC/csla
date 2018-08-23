@@ -12,7 +12,6 @@ using Csla.Reflection;
 using UnitDriven;
 using System.Collections.Generic;
 
-#if !SILVERLIGHT
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -21,7 +20,6 @@ using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif
 #endif
 
 namespace Csla.Test.MethodCaller
@@ -44,12 +42,7 @@ namespace Csla.Test.MethodCaller
       }
       catch (Exception ex)
       {
-#if !SILVERLIGHT
         Assert.IsInstanceOfType(ex, typeof(Csla.Reflection.CallMethodException), "Should be a CallMethodException");
-#else
-        Assert.IsInstanceOfType(typeof(Csla.Reflection.CallMethodException), ex, "Should be a CallMethodException");
-        Assert.IsInstanceOfType(typeof(NotSupportedException), ex.InnerException, "Inner should be a NotSupportedException");
-#endif
       }
     }
 
@@ -127,9 +120,7 @@ namespace Csla.Test.MethodCaller
 #if DEBUG
 #if !WINDOWS_PHONE
     [TestMethod]
-#if !SILVERLIGHT
     [Ignore]
-#endif
     public void CallDynamicIsFasterThanReflectionSuccess()
     {
       int times = 100000;

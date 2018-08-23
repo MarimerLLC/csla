@@ -27,8 +27,6 @@ namespace Csla.Test.BusinessListBase
   [TestClass]
   public class BusinessListBaseTests
   {
-#if !SILVERLIGHT
-
     [TestMethod]
     public void CreateList()
     {
@@ -130,8 +128,6 @@ namespace Csla.Test.BusinessListBase
       Assert.IsFalse(obj.Children.IsDirty);
       Assert.AreEqual(0, obj.Children.Count);
     }
-
-#endif
 
     [TestMethod]
     public void InsertChild()

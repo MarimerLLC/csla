@@ -22,7 +22,7 @@ namespace Csla.Test.LazyLoad
     }
 
     private static PropertyInfo<AChildList> ChildListProperty = 
-      RegisterProperty<AChildList>(typeof(AParent), new PropertyInfo<AChildList>("ChildList", "Child list"));
+      RegisterProperty<AChildList>(c => c.ChildList, "Child list");
     public AChildList ChildList
     {
       get 

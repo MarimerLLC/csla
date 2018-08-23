@@ -6,6 +6,9 @@
 // <summary>Maintains metadata about a property.</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Csla
 {
@@ -18,29 +21,21 @@ namespace Csla
   public class PropertyInfo<T> : Core.IPropertyInfo, IComparable
   {
     /// <summary>
-    /// Private default constructor.
-    /// </summary>
-    private PropertyInfo()
-    {
-    }
-
-    /// <summary>
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
-    public PropertyInfo(string name) : this(name, string.Empty)
-    {
-    }
+    public PropertyInfo(string name)
+      : this(name, null, null, default(T), RelationshipTypes.None)
+    { }
 
     /// <summary>
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
     /// <param name="relationship">Relationship with referenced object.</param>
-    public PropertyInfo(string name, RelationshipTypes relationship) : this(name, string.Empty)
-    {
-      _relationshipType = relationship;
-    }
+    public PropertyInfo(string name, RelationshipTypes relationship)
+      : this(name, null, null, default(T), relationship)
+    { }
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -49,9 +44,9 @@ namespace Csla
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    public PropertyInfo(string name, T defaultValue) : this(name, string.Empty, defaultValue)
-    {
-    }
+    public PropertyInfo(string name, T defaultValue)
+      : this(name, null, null, defaultValue, RelationshipTypes.None)
+    { }
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -60,17 +55,12 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    public PropertyInfo(string name, string friendlyName)
-    {
-      _name = name;
-      _friendlyName = friendlyName;
-
-      // We treat the default behavior of a string as string.empty for databinding purposes.
-      if (typeof(T).Equals(typeof(string)))
-        _defaultValue = (T)((object)string.Empty);
-      else
-        _defaultValue = default(T);
-    }
+    /// <param name="containingType">
+    /// Factory to provide display name from attributes.
+    /// </param>
+    public PropertyInfo(string name, string friendlyName, Type containingType)
+        : this(name, friendlyName, containingType, default(T), RelationshipTypes.None)
+    { }
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -78,16 +68,16 @@ namespace Csla
     /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
+    /// </param>
+    /// <param name="containingType">
+    /// Factory to provide display name from attributes.
     /// </param>
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    public PropertyInfo(string name, string friendlyName, T defaultValue)
-    {
-      _name = name;
-      _defaultValue = defaultValue;
-      _friendlyName = friendlyName;
-    }
+    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue)
+        : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None)
+    { }
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -96,11 +86,13 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
+    /// <param name="containingType">
+    /// Factory to provide display name from attributes.
+    /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, RelationshipTypes relationship) : this(name, friendlyName)
-    {
-      _relationshipType = relationship;
-    }
+    public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship) 
+      : this(name, friendlyName, null, default(T), RelationshipTypes.None)
+    { }
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -108,41 +100,47 @@ namespace Csla
     /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
+    /// </param>
+    /// <param name="containingType">
+    /// Factory to provide display name from attributes.
     /// </param>
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, T defaultValue, RelationshipTypes relationship) : this(name, friendlyName, defaultValue)
+    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, RelationshipTypes relationship)
     {
+      Name = name;
+      _friendlyName = friendlyName;
+      _propertyInfo = containingType.GetProperty(Name);
+      if (_propertyInfo == null)
+        throw new NullReferenceException($"GetProperty({Name})");
       _relationshipType = relationship;
+
+      // if T is string we need an empty string, not null, for data binding
+      if (typeof(T).Equals(typeof(string)) && defaultValue.Equals(default(T)))
+        _defaultValue = (T)((object)string.Empty);
+      else
+        _defaultValue = defaultValue;
     }
 
-    private string _name;
     /// <summary>
     /// Gets the property name value.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return _name;
-      }
-    }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets the type of the property.
     /// </summary>
     public Type Type
     {
-      get
-      {
-        return typeof(T);
-      }
+      get { return typeof(T); }
     }
 
-    private string _friendlyName;
+    private readonly System.Reflection.PropertyInfo _propertyInfo;
+
+    private readonly string _friendlyName;
     /// <summary>
     /// Gets the friendly display name
     /// for the property.
@@ -156,11 +154,33 @@ namespace Csla
     {
       get
       {
-        return !string.IsNullOrWhiteSpace(_friendlyName) ? _friendlyName : _name;
+        string result;
+        if (!string.IsNullOrWhiteSpace(_friendlyName))
+        {
+          result = _friendlyName;
+        }
+        else
+        {
+          var display = _propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
+          if (display != null)
+          {
+            // DataAnnotations attribute.
+            result = display.GetName();
+          }
+          else
+          {
+            // ComponentModel attribute.
+            var displayName = _propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
+            if (displayName != null)
+              result = displayName.DisplayName;
+          }
+          result = Name;
+        }
+        return result;
       }
     }
 
-    private T _defaultValue;
+    private readonly T _defaultValue;
     /// <summary>
     /// Gets the default initial value for the property.
     /// </summary>
@@ -172,18 +192,12 @@ namespace Csla
     /// </remarks>
     public virtual T DefaultValue
     {
-      get
-      {
-        return _defaultValue;
-      }
+      get { return _defaultValue; }
     }
 
     object Core.IPropertyInfo.DefaultValue
     {
-      get
-      {
-        return DefaultValue;
-      }
+      get { return DefaultValue; }
     }
 
     Core.FieldManager.IFieldData Core.IPropertyInfo.NewFieldData(string name)
@@ -226,21 +240,15 @@ namespace Csla
     /// </summary>
     int Core.IPropertyInfo.Index
     {
-      get
-      {
-        return _index;
-      }
-      set
-      {
-        _index = value;
-      }
+      get { return _index; }
+      set { _index = value; }
     }
 
     #region IComparable Members
 
     int IComparable.CompareTo(object obj)
     {
-      return _name.CompareTo(((Core.IPropertyInfo)obj).Name);
+      return Name.CompareTo(((Core.IPropertyInfo)obj).Name);
     }
 
     #endregion

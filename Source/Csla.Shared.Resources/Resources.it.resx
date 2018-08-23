@@ -129,9 +129,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Cambiare un elemento è una operazione non valida</value>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Il Parent può essere impostato solo per gli oggetti child</value>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Non è possibile marcare direttamente un elemento Child per la cancellazione - usare la sua collezione Parent</value>
   </data>

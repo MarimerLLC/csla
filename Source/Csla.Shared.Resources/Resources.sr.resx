@@ -171,9 +171,6 @@
   <data name="NoSuchValueExistsException" xml:space="preserve">
     <value>Ne postoji vrednost:</value>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Parent vrednost može biti podešena samo za objekte "decu"</value>
-  </data>
   <data name="RemoveInvalidException" xml:space="preserve">
     <value>Uklanjanje nije dozvoljeno</value>
   </data>

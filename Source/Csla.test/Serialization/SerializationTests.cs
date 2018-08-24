@@ -60,6 +60,13 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(obj.Message, obj2.Message);
     }
 
+    [TestMethod]
+    public void CorrectDefaultSerializer()
+    {
+      var serializer = ApplicationContext.SerializationFormatter;
+      Assert.AreEqual(ApplicationContext.SerializationFormatters.BinaryFormatter, serializer);
+    }
+
     [TestMethod()]
     public void TestWithoutSerializableHandler()
     {

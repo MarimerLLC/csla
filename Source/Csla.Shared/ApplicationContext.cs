@@ -551,20 +551,19 @@ namespace Csla
     {
       get
       {
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
+        var result = SerializationFormatters.CustomFormatter;
+
         string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-
-        if (string.IsNullOrEmpty(tmp))
-          tmp = "BinaryFormatter";
-
-        SerializationFormatters serializationFormatter;
-        if (Enum.TryParse(tmp, true, out serializationFormatter))
-            return serializationFormatter;
-
-        return SerializationFormatters.CustomFormatter;
+        if (string.IsNullOrWhiteSpace(tmp))
+#if NETSTANDARD2_0
+          tmp = "MobileFormatter";
 #else
-        return SerializationFormatters.MobileFormatter;
+          tmp = "BinaryFormatter";
 #endif
+        if (Enum.TryParse(tmp, true, out SerializationFormatters serializationFormatter))
+          result = serializationFormatter;
+
+        return result;
       }
     }
 
@@ -574,24 +573,24 @@ namespace Csla
     /// </summary>
     public enum SerializationFormatters
     {
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
-      /// <summary>
-      /// Use the standard Microsoft .NET
-      /// <see cref="BinaryFormatter"/>.
-      /// </summary>
-      BinaryFormatter,
+#if !NETSTANDARD2_0
       /// <summary>
       /// Use the Microsoft .NET 3.0
       /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
       /// NetDataContractSerializer</see> provided as part of WCF.
       /// </summary>
       NetDataContractSerializer,
+#endif
+      /// <summary>
+      /// Use the standard Microsoft .NET
+      /// <see cref="BinaryFormatter"/>.
+      /// </summary>
+      BinaryFormatter,
       /// <summary>
       /// Use a custom formatter provided by type found
       /// at <appSetting key="CslaSerializationFormatter"></appSetting>
       /// </summary>
       CustomFormatter,
-#endif
       /// <summary>
       /// Use the CSLA .NET MobileFormatter
       /// </summary>
@@ -599,9 +598,7 @@ namespace Csla
     }
 
     private static PropertyChangedModes _propertyChangedMode = PropertyChangedModes.Xaml;
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
     private static bool _propertyChangedModeSet;
-#endif
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
@@ -610,7 +607,6 @@ namespace Csla
     {
       get
       {
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         if (!_propertyChangedModeSet)
         {
           string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
@@ -620,15 +616,12 @@ namespace Csla
             Enum.Parse(typeof(PropertyChangedModes), tmp);
           _propertyChangedModeSet = true;
         }
-#endif
         return _propertyChangedMode;
       }
       set
       {
         _propertyChangedMode = value;
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
         _propertyChangedModeSet = true;
-#endif
       }
     }
 

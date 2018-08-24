@@ -1418,25 +1418,22 @@ namespace Csla.Validation
     /// <returns>True if the rule is satisfied, false if the rule fails.</returns>
     public static bool DataAnnotation(object target, RuleArgs e)
     {
-      var args = (DataAnnotationRuleArgs)e;
-      object pValue = Utilities.CallByName(
-        target, e.PropertyName, CallType.Get);
-#if SILVERLIGHT
-      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null, null);
-      var result = args.Attribute.GetValidationResult(pValue, ctx);
-      if (result != null)
-      {
-        e.Description = result.ErrorMessage;
-        return false;
-      }
-#else
-      if (!args.Attribute.IsValid(pValue))
-      {
-        e.Description = args.Attribute.FormatErrorMessage(RuleArgs.GetPropertyName(e));
-        return false;
-      }
-#endif
-      return true;
+			var args = (DataAnnotationRuleArgs)e;
+			object pValue = Utilities.CallByName(target, e.PropertyName, CallType.Get);
+
+			var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null, null)
+			{
+				MemberName = RuleArgs.GetPropertyName(e)
+			};
+
+			var result = args.Attribute.GetValidationResult(pValue, ctx);
+			if (result != null)
+			{
+				e.Description = result.ErrorMessage;
+				return false;
+			}
+
+			return true;
     }
 
     #endregion

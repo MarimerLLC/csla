@@ -4,9 +4,9 @@ I have pushed the first 4.8.0 prerelease into NuGet. You can see the [closed wor
 
 There are a number of other changes and bug fixes including:
 
-* [#927](https://github.com/MarimerLLC/csla/issues/927) Eliminate `CSLA-Core-NS` package
+* [#927](https://github.com/MarimerLLC/csla/issues/927) Eliminate `CSLA-Core-NS` package 🛑
 * [#703](https://github.com/MarimerLLC/csla/issues/703) Allow use of `BinaryFormatter` in .NET Standard 2.0 and .NET Core
-* [#344](https://github.com/MarimerLLC/csla/issues/344) Stop caching `DisplayName` value so localization works as expected
+* [#344](https://github.com/MarimerLLC/csla/issues/344) Stop caching `DisplayName` value so localization works as expected ⚠
 * [#827](https://github.com/MarimerLLC/csla/issues/827) Eliminate `NullReferenceException` in `Rule.Complete`
 * [#340](https://github.com/MarimerLLC/csla/issues/340) Enable per-type authz rules when passing interface types to the data portal
 * [#917](https://github.com/MarimerLLC/csla/issues/917) Fix issue with non-default timeout in `HttpProxy`

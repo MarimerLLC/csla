@@ -12,24 +12,24 @@ NuGet release
 -------------
 1. Pull the latest code from MarimerLLC/csla
 1. Open the csla.build.sln
-  1. Update version numbers
-    1. `cd /Source`
-    1. `grep -rl --include=*.cs --include=*.csproj '4.7.200' | xargs sed -i 's/4.7.200/4.8.100/g'`
-  1. Build the solution in Release mode; Any CPU
+ 1. Update version numbers
+  1. `cd /Source`
+  1. `grep -rl --include=*.cs --include=*.csproj '4.7.200' | xargs sed -i 's/4.7.200/4.8.100/g'`
+ 1. Build the solution in Release mode; Any CPU
 1. Do NuGet release
-  1. Open a powershell window
-  1. Run the `nuget\Build All.ps1` script (add /prerelease:yymmddxx for test release)
-  1. Make sure you have Rocky's NuGet key installed (see Nuget.org)
-  1. Run the `nuget\Push All.ps1` script
+ 1. Open a powershell window
+ 1. Run the `nuget\Build All.ps1` script (add /prerelease:yymmddxx for test release)
+ 1. Make sure you have Rocky's NuGet key installed (see Nuget.org)
+ 1. Run the `nuget\Push All.ps1` script
 
 Finalize Release
 ----------------
 1. Update GitHub
-  1. Update /releasenotes.md
-  1. Commit all changes to git
-  1. Create PR 
-  1. Accept PR
+ 1. Update /releasenotes.md
+ 1. Commit all changes to git
+ 1. Create PR 
+ 1. Accept PR
 1. In the GitHub releases web page create the release
-  1. Create a new tag using the version number (such as v4.6.400)
-  1. Attach the release to the tag
-  1. Mark the release as pre-release or release
+ 1. Create a new tag using the version number (such as v4.6.400)
+ 1. Attach the release to the tag
+ 1. Mark the release as pre-release or release

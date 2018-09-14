@@ -1,5 +1,0 @@
----
-applications:
-- name: ProjectTracker.AppServerCore
-  memory: 512M
-  instances: 1

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSLA-ASPNETCORE-MVC" Version="4.8.0-R18091401" />
+    <PackageReference Include="CSLA-Core" Version="4.8.0-R18091401" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj" />
+    <ProjectReference Include="..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj" />
+    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
+  </ItemGroup>
+
+</Project>

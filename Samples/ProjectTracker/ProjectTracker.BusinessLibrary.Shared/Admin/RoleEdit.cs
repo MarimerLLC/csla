@@ -5,6 +5,7 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla.Serialization;
 using System.ComponentModel;
+using Csla.Rules;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -52,7 +53,7 @@ namespace ProjectTracker.Library.Admin
 
     private class NoDuplicates : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (RoleEdit)context.Target;
         RoleEditList parent = (RoleEditList)target.Parent;

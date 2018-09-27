@@ -163,9 +163,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CSLA-Core-NS">
-      <Version>4.7.200</Version>
-    </PackageReference>
     <PackageReference Include="CSLA-UWP">
       <Version>4.8.0</Version>
     </PackageReference>

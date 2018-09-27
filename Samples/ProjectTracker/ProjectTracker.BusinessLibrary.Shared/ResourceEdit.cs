@@ -96,7 +96,7 @@ namespace ProjectTracker.Library
 
     private class NoDuplicateProject : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ResourceEdit)context.Target;
         foreach (var item in target.Assignments)

@@ -103,7 +103,7 @@ namespace ProjectTracker.Library
         : base(primaryProperty)
       { }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         ((ProjectResourceEdit)context.Target).OnPropertyChanged("RoleName");
       }

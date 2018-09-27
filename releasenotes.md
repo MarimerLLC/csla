@@ -1,4 +1,4 @@
-I have pushed the first 4.8.0 prerelease into NuGet. 
+I am pleased to announce the release of CSLA .NET version 4.8.0.
 
 🛑 **This is a big change, because I was able to eliminate the `CSLA-Core-NS` package. If you are using the `CSLA-Core-NS` package you will need to remove that reference and add a reference to the `CSLA-Core` package.**
 

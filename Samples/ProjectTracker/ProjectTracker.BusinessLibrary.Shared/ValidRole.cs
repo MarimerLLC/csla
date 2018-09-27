@@ -19,7 +19,7 @@ namespace ProjectTracker.Library
       InputProperties = new System.Collections.Generic.List<Csla.Core.IPropertyInfo> { primaryProperty };
     }
 
-    protected override async void Execute(RuleContext context)
+    protected override async void Execute(IRuleContext context)
     {
         int role = (int)context.InputPropertyValues[PrimaryProperty];
         var roles = await RoleList.CacheListAsync();

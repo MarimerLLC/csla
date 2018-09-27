@@ -129,7 +129,7 @@ namespace ProjectTracker.Library
 
     private class NoDuplicateResource : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
         foreach (var item in target.Resources)
@@ -146,7 +146,7 @@ namespace ProjectTracker.Library
 
     private class StartDateGTEndDate : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
 

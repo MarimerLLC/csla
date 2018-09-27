@@ -18,6 +18,45 @@
 
   <ItemGroup>
     <PackageReference Include="CSLA-Core" Version="4.8.0-R18091401" />
+    <Reference Include="Csla, Version=4.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.8.0\lib\net461\Csla.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssignmentDto.cs" />
+    <Compile Include="ConcurrencyException.cs" />
+    <Compile Include="DalFactory.cs" />
+    <Compile Include="DashboardDto.cs" />
+    <Compile Include="DataNotFoundException.cs" />
+    <Compile Include="IAssignmentDal.cs" />
+    <Compile Include="IDalManager.cs" />
+    <Compile Include="IDashboardDal.cs" />
+    <Compile Include="IProjectDal.cs" />
+    <Compile Include="IResourceDal.cs" />
+    <Compile Include="IRoleDal.cs" />
+    <Compile Include="IUserDal.cs" />
+    <Compile Include="ProjectDto.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceDto.cs" />
+    <Compile Include="RoleDto.cs" />
+    <Compile Include="TimeStampExtensions.cs" />
+    <Compile Include="UpdateFailureException.cs" />
+    <Compile Include="UserDto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\CSLA-Core.4.8.0\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
 
 </Project>

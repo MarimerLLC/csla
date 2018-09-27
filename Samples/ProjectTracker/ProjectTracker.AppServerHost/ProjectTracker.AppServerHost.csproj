@@ -43,13 +43,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.8.0-R18091401\lib\net461\Csla.dll</HintPath>
-    </Reference>
-    <Reference Include="Csla.Web, Version=4.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET.4.8.0-R18091401\lib\net461\Csla.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="Csla.Web.Mvc5, Version=4.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.8.0-R18091401\lib\net461\Csla.Web.Mvc5.dll</HintPath>
       <HintPath>..\packages\CSLA-Core.4.8.0\lib\net461\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web, Version=4.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
@@ -233,24 +226,6 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Net\ProjectTracker.BusinessLibrary.Net.csproj">
-      <Project>{4eb86750-17f4-4ad6-a63a-c56cb7836b6b}</Project>
-      <Name>ProjectTracker.BusinessLibrary.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTracker.DalEf\ProjectTracker.DalEf.csproj">
-      <Project>{90ea85e8-b0f9-453e-a4c8-837939211c44}</Project>
-      <Name>ProjectTracker.DalEf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj">
-      <Project>{a0d34f5f-80ca-40dd-bb01-1d2764c22610}</Project>
-      <Name>ProjectTracker.DalMock</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
-      <Project>{677efbd4-1565-4d5d-a022-c2a85078db64}</Project>
-      <Name>ProjectTracker.Dal</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
@@ -258,8 +233,17 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.8.0-R18091401\analyzers\c#\Csla.Analyzers.dll" />
     <Analyzer Include="..\packages\CSLA-Core.4.8.0\analyzers\c#\Csla.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Net\ProjectTracker.BusinessLibrary.Net.csproj">
+      <Project>{4eb86750-17f4-4ad6-a63a-c56cb7836b6b}</Project>
+      <Name>ProjectTracker.BusinessLibrary.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
+      <Project>{677efbd4-1565-4d5d-a022-c2a85078db64}</Project>
+      <Name>ProjectTracker.Dal</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -18,47 +18,10 @@
 
   <ItemGroup>
     <PackageReference Include="CSLA-Core" Version="4.8.0-R18091401" />
-    <Reference Include="Csla, Version=4.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.8.0\lib\net461\Csla.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssignmentDal.cs" />
-    <Compile Include="DalManager.cs" />
-    <Compile Include="DashboardDal.cs" />
-    <Compile Include="MockDb.cs" />
-    <Compile Include="MockDbTypes\AssignmentData.cs" />
-    <Compile Include="MockDbTypes\ProjectData.cs" />
-    <Compile Include="MockDbTypes\ResourceData.cs" />
-    <Compile Include="MockDbTypes\RoleData.cs" />
-    <Compile Include="MockDbTypes\UserData.cs" />
-    <Compile Include="ProjectDal.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceDal.cs" />
-    <Compile Include="RoleDal.cs" />
-    <Compile Include="UserDal.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
-      <Project>{677EFBD4-1565-4D5D-A022-C2A85078DB64}</Project>
-      <Name>ProjectTracker.Dal</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
-    <Analyzer Include="..\packages\CSLA-Core.4.8.0\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
 
 </Project>

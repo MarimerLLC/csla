@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD2_0
-using System;
+﻿using System;
 using Csla;
 
 namespace ProjectTracker.Library.Admin
@@ -7,6 +6,7 @@ namespace ProjectTracker.Library.Admin
   [Serializable]
   public class RoleEditManager : CommandBase<RoleEditManager>
   {
+#if FULL_DOTNET
     public static RoleEdit GetRoleEdit(int id)
     {
       var cmd = new RoleEditManager { Id = id };
@@ -20,6 +20,7 @@ namespace ProjectTracker.Library.Admin
       cmd = DataPortal.Execute<RoleEditManager>(cmd);
       return cmd.RoleEdit;
     }
+#endif
 
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     private int Id
@@ -65,4 +66,3 @@ namespace ProjectTracker.Library.Admin
     }
   }
 }
-#endif

@@ -237,6 +237,14 @@
       <Project>{4eb86750-17f4-4ad6-a63a-c56cb7836b6b}</Project>
       <Name>ProjectTracker.BusinessLibrary.Net</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectTracker.DalEf\ProjectTracker.DalEf.csproj">
+      <Project>{90ea85e8-b0f9-453e-a4c8-837939211c44}</Project>
+      <Name>ProjectTracker.DalEf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj">
+      <Project>{a0d34f5f-80ca-40dd-bb01-1d2764c22610}</Project>
+      <Name>ProjectTracker.DalMock</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
       <Project>{677efbd4-1565-4d5d-a022-c2a85078db64}</Project>
       <Name>ProjectTracker.Dal</Name>

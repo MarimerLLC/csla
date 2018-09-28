@@ -21,12 +21,12 @@ namespace ProjectTracker.AppServerHost.Controllers
     {
       try
       {
-        var obj = await Csla.DataPortal.FetchAsync<ProjectTracker.Library.Dashboard>();
-        return obj.ProjectCount.ToString();
+        var obj = await Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectList>();
+        return obj.Count.ToString();
       }
       catch (Exception ex)
       {
-        return ex.Message;
+        return ex.ToString();
       }
     }
   }

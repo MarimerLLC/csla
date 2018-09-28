@@ -56,7 +56,6 @@ namespace ProjectTracker.Library
       return CachedList;
     }
 
-#if FULL_DOTNET
     public static RoleList CacheList()
     {
       if (!IsCached)
@@ -78,6 +77,5 @@ namespace ProjectTracker.Library
       IsReadOnly = true;
       RaiseListChangedEvents = rlce;
     }
-#endif
   }
 }

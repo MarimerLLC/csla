@@ -5,6 +5,7 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla.Serialization;
 using System.ComponentModel;
+using Csla.Rules;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -66,17 +67,6 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-#if !FULL_DOTNET 
-    public static RoleEdit NewRoleEdit()
-    {
-      return DataPortal.CreateChild<RoleEdit>();
-    }
-#else
-    internal static RoleEdit GetRole(object data)
-    {
-      return DataPortal.FetchChild<RoleEdit>(data);
-    }
-
     private void Child_Fetch(ProjectTracker.Dal.RoleDto data)
     {
       using (BypassPropertyChecks)
@@ -103,7 +93,7 @@ namespace ProjectTracker.Library.Admin
           TimeStamp = item.LastChanged;
         }
       }
-   }
+    }
 
     private void Child_Update()
     {
@@ -136,6 +126,5 @@ namespace ProjectTracker.Library.Admin
         }
       }
     }
-#endif
   }
 }

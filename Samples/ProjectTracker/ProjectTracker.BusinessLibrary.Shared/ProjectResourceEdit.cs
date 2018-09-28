@@ -110,7 +110,6 @@ namespace ProjectTracker.Library
     }
 
 
-#if FULL_DOTNET 
     private void Child_Create(int resourceId)
     {
       using (BypassPropertyChecks)
@@ -215,6 +214,5 @@ namespace ProjectTracker.Library
         }
       }
     }
-#endif
   }
 }

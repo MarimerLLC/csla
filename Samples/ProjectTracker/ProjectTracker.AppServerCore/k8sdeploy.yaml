@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projecttracker
+spec:
+  selector:
+    matchLabels:
+      app: projecttracker
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: projecttracker
+    spec:
+      containers:
+      - name: projecttracker
+        image: rdlk8s.azurecr.io/projecttrackerappservercore:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: projecttracker
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: projecttracker

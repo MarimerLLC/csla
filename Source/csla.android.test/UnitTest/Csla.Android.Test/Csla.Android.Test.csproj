@@ -345,7 +345,7 @@
       <Name>Csla.Android</Name>
     </ProjectReference>
     <ProjectReference Include="..\csla.android.client.test\Csla.Android.client.test.csproj">
-      <Project>{1717F5D7-E583-4634-8B08-6ED7E270344B}</Project>
+      <Project>{1717F5D7-E583-4634.8.18-6ED7E270344B}</Project>
       <Name>Csla.Android.client.test</Name>
     </ProjectReference>
   </ItemGroup>

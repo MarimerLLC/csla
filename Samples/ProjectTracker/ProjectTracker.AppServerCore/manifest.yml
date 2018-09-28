@@ -1,0 +1,7 @@
+---
+applications:
+- name: projecttracker
+  memory: 128M
+  stack: cflinuxfs2
+  buildpack: https://github.com/cloudfoundry/dotnet-core-buildpack.git
+  path: bin\Release\netcoreapp2.1\linux-x64\

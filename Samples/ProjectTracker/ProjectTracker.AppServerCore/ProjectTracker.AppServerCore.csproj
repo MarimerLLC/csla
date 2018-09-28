@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSLA-ASPNETCORE-MVC" Version="4.8.1-R18092801" />
+    <PackageReference Include="CSLA-ASPNETCORE-MVC" Version="4.8.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.1916590" />
   </ItemGroup>

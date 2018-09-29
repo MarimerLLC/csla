@@ -160,7 +160,7 @@ namespace Csla.Test.ValidationRules
       CanRunOnServer = false;
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       // Use linq Sum to calculate the sum value 
       var sum = context.InputPropertyValues.Sum(property => (dynamic)property.Value);
@@ -181,7 +181,7 @@ namespace Csla.Test.ValidationRules
       AffectedProperties.Add(RuleBaseClassesRoot.StateProperty);
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var customerId = (int)ReadProperty(context.Target, RuleBaseClassesRoot.CustomerIdProperty);
 
@@ -231,7 +231,7 @@ namespace Csla.Test.ValidationRules
     /// Does the check for primary propert less than compareTo property
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value1 = (IComparable)context.InputPropertyValues[PrimaryProperty];
       var value2 = (IComparable)context.InputPropertyValues[CompareTo];
@@ -260,7 +260,7 @@ namespace Csla.Test.ValidationRules
       IsAsync = true; 
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var customerId = (int)context.InputPropertyValues[PrimaryProperty];
       var bw = new BackgroundWorker();

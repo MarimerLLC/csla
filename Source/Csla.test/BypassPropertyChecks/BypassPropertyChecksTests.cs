@@ -78,18 +78,9 @@ namespace Csla.Test.BypassPropertyChecks
       context.Assert.AreEqual(1, testObj.ReadId2ByPass());
       context.Assert.AreEqual(false, propertyChangedFired);
       context.Assert.AreEqual(false, testObj.IsDirty);
-#if !SILVERLIGHT
       testObj.LoadId2(2);
       context.Assert.AreEqual(1, testObj.ReadId2ByPass()); // still one becuase set failed
       context.Assert.AreEqual(true, testObj.IsDirty);
-#else
-      context.Assert.Try(() =>
-        {
-          testObj.LoadId2(2);
-        });
-      
-#endif
-
       context.Assert.Success();
       Csla.Test.Security.TestPrincipal.SimulateLogout();
       context.Complete();
@@ -144,7 +135,6 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       Csla.Test.Security.TestPrincipal.SimulateLogin();
       BypassBusinessBase testObj = new BypassBusinessBase();
-#if !SILVERLIGHT
       bool propertyChangedFired = false;
       testObj.PropertyChanged += (o, e) =>
       {
@@ -154,12 +144,6 @@ namespace Csla.Test.BypassPropertyChecks
       context.Assert.AreEqual(1, testObj.ReadId2ByPass());
       context.Assert.AreEqual(true, propertyChangedFired);
       context.Assert.AreEqual(true, testObj.IsDirty);
-#else
-      context.Assert.Try(() =>
-        {
-          testObj.LoadId2(1);
-        });
-#endif
       context.Assert.Success();
       Csla.Test.Security.TestPrincipal.SimulateLogout();
       context.Complete();
@@ -236,7 +220,6 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       Csla.Test.Security.TestPrincipal.SimulateLogin();
       BypassBusinessBase testObj = new BypassBusinessBase();
-#if !SILVERLIGHT
       bool propertyChangedFired = false;
       testObj.PropertyChanged += (o, e) =>
       {
@@ -246,13 +229,6 @@ namespace Csla.Test.BypassPropertyChecks
        context.Assert.AreEqual(true, testObj.IsDirty);
       context.Assert.AreEqual(1, testObj.ReadId4ByPass());
       context.Assert.AreEqual(true, propertyChangedFired);
-#else
-      context.Assert.Try(() =>
-        {
-          testObj.LoadId2(1);
-        });
-#endif
-     
       context.Assert.Success();
       Csla.Test.Security.TestPrincipal.SimulateLogout();
       context.Complete();
@@ -279,8 +255,6 @@ namespace Csla.Test.BypassPropertyChecks
       context.Complete();
     }
 
-#if !SILVERLIGHT
-
     [TestMethod]
     public void TestBypassFactory()
     {
@@ -294,27 +268,5 @@ namespace Csla.Test.BypassPropertyChecks
       Csla.Test.Security.TestPrincipal.SimulateLogout();
       context.Complete();
     }
-
-#else
-    [TestMethod]
-    public void TestBypassFactory()
-    {
-
-      UnitTestContext context = GetContext();
-      Csla.DataPortal.ProxyTypeName = "Local";
-      Csla.Test.Security.TestPrincipal.SimulateLogin();
-
-      BypassBusinessBaseUsingFactory.GetBypassBusinessBaseUsingFactory((o, e) =>
-        {
-          BypassBusinessBaseUsingFactory obj = e.Object;
-          context.Assert.AreEqual(false, obj.IsDirty);
-          context.Assert.AreEqual(7, obj.ReadId2ByPass());
-          context.Assert.Success();
-        });
-      Csla.Test.Security.TestPrincipal.SimulateLogout();
-      context.Complete();
-    }
-    
-#endif
   }
 }

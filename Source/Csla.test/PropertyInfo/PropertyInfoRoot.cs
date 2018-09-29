@@ -74,11 +74,11 @@ namespace Csla.Test.PropertyInfo
       set { SetProperty(_nameFriendlyNameProperty, value); }
     }
 
-    public static readonly PropertyInfo<System.String> _nameDefaultValueProperty = RegisterProperty<System.String>(p => p.NameDefaultValue, "", null);
-    public System.String NameDefaultValue
+    public static readonly PropertyInfo<string> NameDefaultValueProperty = RegisterProperty<string>(c => c.NameDefaultValue, string.Empty, "x");
+    public string NameDefaultValue
     {
-      get { return GetProperty(_nameDefaultValueProperty); }
-      set { SetProperty(_nameDefaultValueProperty, value); }
+      get { return GetProperty(NameDefaultValueProperty); }
+      set { SetProperty(NameDefaultValueProperty, value); }
     }
 
     #endregion

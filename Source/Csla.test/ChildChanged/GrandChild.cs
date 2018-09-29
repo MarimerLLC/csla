@@ -17,14 +17,14 @@ namespace Csla.Test.ChildChanged
   [Serializable]
   public class Grandchild : BusinessBase<Grandchild>
   {
-    private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name", "Name"));
+    private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<SingleChild> ChildProperty = RegisterProperty(new PropertyInfo<SingleChild>("Child", "Child"));
+    private static PropertyInfo<SingleChild> ChildProperty = RegisterProperty(new PropertyInfo<SingleChild>("Child"));
     public SingleChild Child
     {
       get

@@ -11,15 +11,12 @@ using System.Text;
 
 namespace Csla.Test.Basic
 {
-    [Serializable()]
-    public class GenRoot : GenRootBase
+  [Serializable()]
+  public class GenRoot : GenRootBase
+  {
+    private GenRoot()
     {
-      private string _data;
-
-        private GenRoot()
-        {
-            //prevent direct creation
-        }
-
+      //prevent direct creation
     }
+  }
 }

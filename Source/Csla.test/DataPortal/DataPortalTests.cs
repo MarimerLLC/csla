@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortal
                 cn.Open();
                 cm.ExecuteNonQuery();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //do nothing
             }
@@ -77,7 +77,7 @@ namespace Csla.Test.DataPortal
                 Assert.AreEqual(true, dr.HasRows);
                 dr.Close();
             }
-            catch (Exception ex)
+            catch
             {
                 //do nothing
             }
@@ -116,7 +116,7 @@ namespace Csla.Test.DataPortal
                 Assert.AreEqual(false, dr.HasRows);
                 dr.Close();
             }
-            catch (Exception ex)
+            catch
             {
                 //do nothing
             }

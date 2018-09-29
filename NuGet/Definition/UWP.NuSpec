@@ -20,7 +20,7 @@ Supports the creation of UWP applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core-NS" version="[4.6.3-Beta10]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>

@@ -30,10 +30,6 @@ namespace cslalighttest.Stereotypes
     [TestMethod]
     public void ReadOnlyListFetchLocal()
     {
-
-#if SILVERLIGHT
-      Csla.DataPortal.ProxyTypeName = "Local";
-#endif
       var context = GetContext();
       ReadOnlyPersonList.Fetch((o, e) =>
       {
@@ -50,10 +46,6 @@ namespace cslalighttest.Stereotypes
     [TestMethod]
     public void ReadOnlyListFetchRemote()
     {
-#if SILVERLIGHT
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-#endif
       var context = GetContext();
       ReadOnlyPersonList.Fetch((o, e) =>
       {

@@ -7,21 +7,12 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResourceEdit>
   {
-#if FULL_DOTNET || NETSTANDARD2_0
     public ProjectResourceEdit Assign(int resourceId)
     {
       var resource = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;
       this.Add(resource);
       return resource;
     }
-#elif ANDROID
-      public async System.Threading.Tasks.Task<ProjectResourceEdit> AssignAsync(int resourceId)
-      {
-          var resource = (await ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId)).Result;
-          this.Add(resource);
-          return resource;
-      }
-#endif
 
     public void Remove(int resourceId)
     {
@@ -48,7 +39,6 @@ namespace ProjectTracker.Library
       return item > 0;
     }
 
-#if FULL_DOTNET
     private void Child_Fetch(int projectId)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -62,6 +52,5 @@ namespace ProjectTracker.Library
         RaiseListChangedEvents = rlce;
       }
     }
-#endif
   }
 }

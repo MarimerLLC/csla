@@ -47,12 +47,7 @@ namespace Csla.Testing.Business.DataPortal
       RegisterProperty<string>(new PropertyInfo<string>("CurrentCulture"));
 
 
-#if SILVERLIGHT
-    public AsyncPortalWithCulture() { }
-#else
     protected AsyncPortalWithCulture() { }
-#endif
-
     public static void BeginExecuteCommand(EventHandler<DataPortalResult<AsyncPortalWithCulture>> handler)
     {
       var command = new AsyncPortalWithCulture();
@@ -61,17 +56,10 @@ namespace Csla.Testing.Business.DataPortal
       dp.BeginExecute(command);
     }
 
-#if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {    
       CurrentCulture = Thread.CurrentThread.CurrentCulture.Name;
       CurrentUICulture = Thread.CurrentThread.CurrentUICulture.Name;
     }
-
-#else
-    protected override void DataPortal_Execute()
-    {
-    }
-#endif
   }
 }

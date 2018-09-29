@@ -146,7 +146,7 @@ namespace Csla.Test.EditableRootList
       {
         list.SaveItem(10);
       }
-      catch (Exception ex)
+      catch
       {
         errorOccurred = true;
       }

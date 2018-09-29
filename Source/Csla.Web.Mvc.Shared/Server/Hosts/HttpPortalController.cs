@@ -44,7 +44,7 @@ namespace Csla.Server.Hosts
     /// <param name="operation">Name of the data portal operation to perform.</param>
     /// <returns>Results from the server-side data portal.</returns>
     [HttpPost]
-    public async Task PostAsync([FromQuery]string operation)
+    public virtual async Task PostAsync([FromQuery]string operation)
     {
       if (UseTextSerialization)
         await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);

@@ -22,7 +22,6 @@ namespace cslalighttest.ViewModelTests
 
     #endregion
 
-#if !SILVERLIGHT
     public static TestBindingList NewEditableList()
     {
       return DataPortal.Create<TestBindingList>();
@@ -38,6 +37,5 @@ namespace cslalighttest.ViewModelTests
     }
 
     #endregion
-#endif
   }
 }

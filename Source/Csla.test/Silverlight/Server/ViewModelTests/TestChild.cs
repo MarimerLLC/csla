@@ -47,7 +47,6 @@ namespace cslalighttest.ViewModelTests
 
     #endregion
 
-#if !SILVERLIGHT
     #region Data Access
 
     [RunLocal]
@@ -83,6 +82,5 @@ namespace cslalighttest.ViewModelTests
     }
 
     #endregion
-#endif
   }
 }

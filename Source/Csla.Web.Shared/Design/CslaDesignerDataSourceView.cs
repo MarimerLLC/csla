@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Object responsible for providing details about</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.Collections;
 using System.Web.UI.Design;
@@ -235,4 +234,3 @@ namespace Csla.Web.Design
     }
   }
 }
-#endif

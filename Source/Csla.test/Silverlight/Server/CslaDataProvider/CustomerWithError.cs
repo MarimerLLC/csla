@@ -21,11 +21,7 @@ namespace cslalighttest.CslaDataProvider
   {
     const int CustomerWithErrorIDThrowsException = 99;
 
-#if SILVERLIGHT
-    public CustomerWithError() { }
-#else
     private CustomerWithError() { }
-#endif
 
     internal static CustomerWithError NewCustomerWithError()
     {
@@ -34,7 +30,7 @@ namespace cslalighttest.CslaDataProvider
       return returnValue;
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "CustomerWithError Id", 0));
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "CustomerWithError Id", 0);
     public int Id
     {
       get
@@ -47,7 +43,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name", "CustomerWithError Name", ""));
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name, "CustomerWithError Name", "");
     public string Name
     {
       get
@@ -60,7 +56,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(new PropertyInfo<string>("Method", "Method", ""));
+    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c=>c.Method, "Method", "");
     public string Method
     {
       get
@@ -74,7 +70,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(new PropertyInfo<bool>("ThrowException", "ThrowException", true));
+    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c => c.ThrowException, "ThrowException", true);
     public bool ThrowException
     {
       get
@@ -129,56 +125,31 @@ namespace cslalighttest.CslaDataProvider
     {
       var dp = new DataPortal<CustomerWithError>();
       dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<CustomerWithError, int>(CustomerWithErrorID));
+      dp.BeginFetch(CustomerWithErrorID);
     }
-#if SILVERLIGHT
-
-    public static void GetCustomerWithError(EventHandler<DataPortalResult<CustomerWithError>> handler)
-    {
-      int CustomerWithErrorID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<CustomerWithError>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<CustomerWithError, int>(CustomerWithErrorID));
-    }
-
-    public static void GetCustomerWithErrorWithException(EventHandler<DataPortalResult<CustomerWithError>> handler)
-    {
-      var dp = new DataPortal<CustomerWithError>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<CustomerWithError, int>(CustomerWithErrorIDThrowsException));
-    }
-    public static void CreateCustomerWithError(EventHandler<DataPortalResult<CustomerWithError>> handler)
-    {
-      int CustomerWithErrorID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<CustomerWithError>();
-      dp.CreateCompleted += handler;
-      dp.BeginCreate(new SingleCriteria<CustomerWithError, int>(CustomerWithErrorID));
-    }
-#endif
-#if !SILVERLIGHT
 
     internal static CustomerWithError GetCustomerWithError(int CustomerWithErrorID)
     {
       CustomerWithError newCustomerWithError = new CustomerWithError();
-      newCustomerWithError.DataPortal_Fetch(new SingleCriteria<CustomerWithError, int>(CustomerWithErrorID));
+      newCustomerWithError.DataPortal_Fetch(CustomerWithErrorID);
       newCustomerWithError.MarkAsChild();
       newCustomerWithError.MarkOld();
       return newCustomerWithError;
     }
 
-    protected void DataPortal_Fetch(SingleCriteria<CustomerWithError, int> criteria)
+    protected void DataPortal_Fetch(int criteria)
     {
-      LoadProperty(IdProperty, criteria.Value);
-      LoadProperty(NameProperty, "CustomerWithError Name for Id: " + criteria.Value.ToString());
+      LoadProperty(IdProperty, criteria);
+      LoadProperty(NameProperty, "CustomerWithError Name for Id: " + criteria.ToString());
 
-      if (criteria.Value == CustomerWithErrorIDThrowsException)
+      if (criteria == CustomerWithErrorIDThrowsException)
         throw new ApplicationException("Test for Silverlight DataSource Error!");
     }
 
-    protected void DataPortal_Create(SingleCriteria<CustomerWithError, int> criteria)
+    protected void DataPortal_Create(int criteria)
     {
-      LoadProperty(IdProperty, criteria.Value);
-      LoadProperty(NameProperty, "New CustomerWithError for Id: " + criteria.Value.ToString());
+      LoadProperty(IdProperty, criteria);
+      LoadProperty(NameProperty, "New CustomerWithError for Id: " + criteria.ToString());
     }
 
     protected override void DataPortal_DeleteSelf()
@@ -186,9 +157,9 @@ namespace cslalighttest.CslaDataProvider
       Method = "Deleted CustomerWithError " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(SingleCriteria<CustomerWithError, int> criteria)
+    protected void DataPortal_Delete(int criteria)
     {
-      Method = "Deleted CustomerWithError ID " + criteria.Value.ToString();
+      Method = "Deleted CustomerWithError ID " + criteria.ToString();
     }
 
     protected override void DataPortal_Insert()
@@ -199,22 +170,18 @@ namespace cslalighttest.CslaDataProvider
     {
       Method = "Updating CustomerWithError " + GetProperty<string>(NameProperty);
     }
-#endif
-
   }
 
 
   [Serializable]
   public class CustomerWithErrorWO_DP_XYZ : BusinessBase<CustomerWithErrorWO_DP_XYZ>
   {
-    //#if SILVERLIGHT
-
     public static void GetCustomerWithError(EventHandler<DataPortalResult<CustomerWithErrorWO_DP_XYZ>> handler)
     {
       int CustomerWithErrorID = (new Random()).Next(1, 10);
       var dp = new DataPortal<CustomerWithErrorWO_DP_XYZ>();
       dp.FetchCompleted += handler;
-      dp.BeginFetch(new SingleCriteria<CustomerWithErrorWO_DP_XYZ, int>(CustomerWithErrorID));
+      dp.BeginFetch(CustomerWithErrorID);
     }
 
     public static void CreateCustomerWithError(EventHandler<DataPortalResult<CustomerWithErrorWO_DP_XYZ>> handler)
@@ -222,10 +189,8 @@ namespace cslalighttest.CslaDataProvider
       int CustomerWithErrorID = (new Random()).Next(1, 10);
       var dp = new DataPortal<CustomerWithErrorWO_DP_XYZ>();
       dp.CreateCompleted += handler;
-      dp.BeginCreate(new SingleCriteria<CustomerWithErrorWO_DP_XYZ, int>(CustomerWithErrorID));
+      dp.BeginCreate(CustomerWithErrorID);
     }
-    //#endif
-
   }
 
 }

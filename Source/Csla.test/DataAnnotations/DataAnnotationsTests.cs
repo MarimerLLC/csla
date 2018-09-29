@@ -35,14 +35,6 @@ namespace Csla.Test.DataAnnotations
   [TestClass]
   public class DataAnnotationsTests : TestBase
   {
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.DataPortal.ProxyTypeName = "Local";
-    }
-#endif
-
     [TestMethod]
     public void SingleAttribute()
     {
@@ -116,7 +108,6 @@ namespace Csla.Test.DataAnnotations
 
       context.Complete();
     }
-#if !SILVERLIGHT
 
     [TestMethod]
     public void MultipleMetaRules()
@@ -129,7 +120,6 @@ namespace Csla.Test.DataAnnotations
       Assert.AreEqual(3, typeRules.Rules.Where(p => p.PrimaryProperty == MultipleMeta.AmountProperty).Count());
       Assert.AreEqual(2, typeRules.Rules.Where(p => p.PrimaryProperty == MultipleMeta.QuantityProperty).Count());
     }
-#endif
 	}
 
 
@@ -233,7 +223,6 @@ namespace Csla.Test.DataAnnotations
       public System.Int32 Quantity { get; set; }
 
   }
-#if !SILVERLIGHT
 	  /// <summary>
   /// Non-Generate code that can be modified
   /// </summary>
@@ -245,6 +234,4 @@ namespace Csla.Test.DataAnnotations
       return base.GetRegisteredRules();
     }
   }
-#endif
-
 }

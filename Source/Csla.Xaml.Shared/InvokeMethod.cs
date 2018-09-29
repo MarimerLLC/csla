@@ -152,18 +152,6 @@ namespace Csla.Xaml
     /// <param name="ctrl">Attached control</param>
     public static object GetMethodParameter(UIElement ctrl)
     {
-#if SILVERLIGHT
-      var fe = ctrl as FrameworkElement;
-      if (fe != null)
-      {
-        var be = fe.GetBindingExpression(MethodParameterProperty);
-        if (be != null && be.ParentBinding != null)
-        {
-          var newBinding = CopyBinding(be.ParentBinding);
-          fe.SetBinding(MethodParameterProperty, newBinding);
-        }
-      }
-#endif
       return ctrl.GetValue(MethodParameterProperty);
     }
 

@@ -45,16 +45,21 @@ namespace Csla
 
     static ApplicationContext()
     {
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
+#if !NETFX_CORE
       Type _contextManagerType = null;
+
+#if !ANDROID && !IOS && !NETSTANDARD2_0
       _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
       if (_contextManagerType == null)
         _contextManagerType = Type.GetType("Csla.Windows.ApplicationContextManager, Csla.Windows");
+#endif
       if (_contextManagerType == null)
         _contextManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
 
+#if !ANDROID && !IOS && !NETSTANDARD2_0
       if (_webManagerType != null)
         WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
+#endif
       if (_contextManagerType != null)
         _contextManager = (IContextManager)Activator.CreateInstance(_contextManagerType);
 #endif

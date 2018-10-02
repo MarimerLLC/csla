@@ -25,7 +25,7 @@ namespace CslaMVC.Rules
             InputProperties = new List<IPropertyInfo> { OptionalProperty, RequiredProperty };
         }
 
-        protected override void Execute(RuleContext context)
+        protected override void Execute(IRuleContext context)
         {
             var optionalVal = (string)context.InputPropertyValues[OptionalProperty];
             var requiredVal = (string)context.InputPropertyValues[RequiredProperty];

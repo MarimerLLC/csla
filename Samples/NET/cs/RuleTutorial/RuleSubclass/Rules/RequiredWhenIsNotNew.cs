@@ -24,7 +24,7 @@ namespace RuleSubclass.Rules
       : base(primaryProperty, messageDelegate)
     { }
 
-    protected override void Execute(Csla.Rules.RuleContext context)
+    protected override void Execute(Csla.Rules.IRuleContext context)
     {
       var bb = (BusinessBase)context.Target;
       if (!bb.IsNew)

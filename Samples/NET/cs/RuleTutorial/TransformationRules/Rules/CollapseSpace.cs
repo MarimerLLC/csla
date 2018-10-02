@@ -42,7 +42,7 @@ namespace TransformationRules.Rules
     /// <param name="context">
     /// Rule context object.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = (string)context.InputPropertyValues[PrimaryProperty];
       if (string.IsNullOrEmpty(value)) return;

@@ -102,14 +102,14 @@ namespace CslaMVC.Library
             Csla.Rules.BusinessRules.AddRule(typeof(Customer), new AuthRule(AuthorizationActions.DeleteObject));
         }
 
-        private void TestRuleAction(RuleContext context)
+        private void TestRuleAction(IRuleContext context)
         {
             context.AddErrorResult("lambda rule broken");
         }
 
         class PrivateRule : BusinessRule
         {
-            protected override void Execute(RuleContext context)
+            protected override void Execute(IRuleContext context)
             {
                 var cust = (Customer)context.Target;
                 if (cust.Zipcode == "12345")

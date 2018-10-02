@@ -34,7 +34,7 @@ namespace Rolodex.Business.Rules
     /// Does the check for primary propert less than compareTo property
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = (SmartDate) context.InputPropertyValues[PrimaryProperty];
 

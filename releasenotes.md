@@ -6,6 +6,10 @@ I am pleased to announce the release of CSLA .NET version 4.8.0.
 
 There are a number of other changes and bug fixes including:
 
+From 4.8.1:
+* [#946](https://github.com/MarimerLLC/csla/issues/946) Fix NullReferenceException in DataPortalException.BusinessException
+
+From 4.8.0:
 * [#927](https://github.com/MarimerLLC/csla/issues/927) Eliminate `CSLA-Core-NS` package 🛑
 * [#703](https://github.com/MarimerLLC/csla/issues/703) Allow use of `BinaryFormatter` in .NET Standard 2.0 and .NET Core
 * [#344](https://github.com/MarimerLLC/csla/issues/344) Stop caching `DisplayName` value so localization works as expected

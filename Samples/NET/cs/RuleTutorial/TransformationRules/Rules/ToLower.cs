@@ -42,7 +42,7 @@ namespace TransformationRules.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = (string)context.InputPropertyValues[PrimaryProperty];
       context.AddOutValue(PrimaryProperty, value.ToLower());

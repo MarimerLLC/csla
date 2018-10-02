@@ -46,7 +46,7 @@ namespace Csla.Ios.Test
         AffectedProperties.Add(_clearProperty);
       }
 
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var input = (string)context.InputPropertyValues[PrimaryProperty];
         if (string.IsNullOrEmpty(input))

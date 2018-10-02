@@ -6,7 +6,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3EE6245B-7758-467F-ABDA-184.8.1D96F0}</ProjectGuid>
+    <ProjectGuid>{3EE6245B-7758-467F-ABDA-1841870D96F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Web.Mvc.Test</RootNamespace>

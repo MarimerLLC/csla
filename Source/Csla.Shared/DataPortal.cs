@@ -693,7 +693,7 @@ namespace Csla
       {
         if (String.IsNullOrEmpty(ApplicationContext.DataPortalProxyFactory) || ApplicationContext.DataPortalProxyFactory == "Default")
         {
-          _dataProxyFactory = new DataPortalClient.DefaultPortalProxyFactory();
+          _dataProxyFactory = new DataPortalClient.DataPortalProxyFactory();
         }
         else
         {

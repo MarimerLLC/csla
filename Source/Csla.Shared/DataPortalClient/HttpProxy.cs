@@ -60,6 +60,16 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the supplied URL.
+    /// </summary>
+    /// <param name="dataPortalUrl">Server endpoint URL</param>
+    public HttpProxy(string dataPortalUrl)
+    {
+      this.DataPortalUrl = dataPortalUrl;
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
     /// </summary>

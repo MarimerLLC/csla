@@ -100,6 +100,19 @@ namespace Csla.DataPortalClient
       this.Binding = WcfProxy.DefaultBinding;
       this.EndPoint = WcfProxy.DefaultEndPoint;
     }
+
+    /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the supplied URL and DefaultBinding
+    /// values.
+    /// </summary>
+    /// <param name="dataPortalUrl">Server endpoint URL</param>
+    public WcfProxy(string dataPortalUrl)
+    {
+      this.DataPortalUrl = dataPortalUrl;
+      this.Binding = WcfProxy.DefaultBinding;
+      this.EndPoint = WcfProxy.DefaultEndPoint;
+    }
     
     /// <summary>
     /// Gets a value indicating whether the data portal

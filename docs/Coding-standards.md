@@ -31,9 +31,8 @@ Once you have that all installed, and you have your GitHub credentials, you’ll
 
 ## Coding standards
 
-As far as coding standards – follow the code style you see in CSLA .NET. Here are some basic guidelines/rules:
+As far as coding standards – follow the code style you see in CSLA .NET. Some of the basics are covered by the `editorconfig` file in the repo. Here are some other basic guidelines/rules:
 
-* Please make sure to set your Tab stops to 2 and to USE SPACES in VS
 * Casing and stuff
   * Use _fieldName for all instance fields
   * Use ClassName
@@ -41,9 +40,9 @@ As far as coding standards – follow the code style you see in CSLA .NET. Here 
   * Use parameterName for parameters
 * When you do a Commit make sure to follow the proper format for the commit description (see below)
 * When you create a Pull Request it will trigger a continuous integration build via Appveyor. If that build fails, correct any issues and Push changes to your branch - that will automatically trigger a new CI build
- * Make sure to include the issue number in your PR description
+ * ⚠ Make sure to include the issue number in your PR description so GitHub links the PR and issue
  * If your PR closes one or more issues, use the "Closes #123" or "Fixes #123" phrase in your PR description, as when the PR is accepted this will auto-close your issue(s)
 
 ````
-#99999 Detailed description of your change here
+#999 Detailed description of your change here
 ````

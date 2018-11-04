@@ -25,11 +25,10 @@ NuGet release
 Finalize Release
 ----------------
 1. Update GitHub
-   1. Update /releasenotes.md
+   1. Update [releasenotes.md](https://github.com/MarimerLLC/csla/blob/master/releasenotes.md)
    1. Commit all changes to git
    1. Create PR 
    1. Accept PR
 1. In the GitHub releases web page create the release
-   1. Create a new tag using the version number (such as v4.6.400)
-   1. Attach the release to the tag
+   1. Create a new release at HEAD using the version number (such as v4.6.400)
    1. Mark the release as pre-release or release

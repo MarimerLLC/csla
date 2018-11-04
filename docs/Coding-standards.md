@@ -10,16 +10,18 @@ The following are instructions for setting up an environment for CSLA .NET devel
 ## Dev environment setup
 
 You will need to set up your development workstation with the following
-* Visual Studio 2015
-  * Important: You need to set your global tab size to 2, and choose the option to replace tabs with spaces (no tabs allowed!)
+* Visual Studio 2017
   * Make sure Visual Studio is running the latest updates from Microsoft, CSLA .NET is almost always at or ahead of any current release of Visual Studio tooling
-  * WP8 SDK and tools
-  * Windows 10 UWP SDK and tools
-  * Xamarin (to work with the iOS and Android projects)
+  * Workloads
+    * Windows client development (for Windows Forms, WPF, UWP)
+    * Mobile development (for Xamarin)
+    * Web development (for ASP.NET)
+    * .NET Core and ASP.NET Core
 * Git client tooling of your choice
   * Git for Windows
   * TortoiseGit
-  * Git tool from GitHub
+  * GitHub for Windows
+  * etc.
 
 ## Getting the project
 
@@ -27,7 +29,7 @@ Once you have that all installed, and you have your GitHub credentials, you’ll
 
 * Fork the Marimer LLC csla project
 * Clone your fork to your dev workstation
-* Create a branch in which to do your work
+* Create a feature branch in which to do your work
 
 ## Coding standards
 

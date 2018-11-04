@@ -113,7 +113,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IWcfPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\LocalProxy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\MobileProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\PrimitiveCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\WcfProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalEventArgs.cs" />

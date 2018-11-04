@@ -59,4 +59,3 @@ or
 
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
-* [CSLA .NET forum](http://forums.lhotka.net/forums/5.aspx/)

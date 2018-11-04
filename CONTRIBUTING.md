@@ -9,7 +9,7 @@ CSLA .NET is developed and maintained by a [global development team](http://www.
 * For beginners we suggest
   * This online course on [contributing to OSS projects on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
   * This excellent blog post on [Being a good open source citizen](https://hackernoon.com/being-a-good-open-source-citizen-9060d0ab9732#.4owk5884d)
-  * This [GitHub workflow blog post](http://www.lhotka.net/weblog/ASimpleFlowForUsingGitAndPullRequests.aspx)
+  * [A simple flow for using git and pull requests](http://www.lhotka.net/weblog/ASimpleFlowForUsingGitAndPullRequests.aspx)
 * Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/master/code_of_conduct.md)
 * Review and follow the [Coding standards](https://github.com/MarimerLLC/csla/wiki/Coding-standards) we use to maintain consistent code in the framework
 * Submit a ticket for your issue, assuming one does not already exist

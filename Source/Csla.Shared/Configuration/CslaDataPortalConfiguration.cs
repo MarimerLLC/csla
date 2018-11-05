@@ -114,7 +114,7 @@ namespace Csla.Configuration
     /// <param name="typeName">Assembly qualified type name</param>
     public CslaConfiguration InterceptorType(string typeName)
     {
-      Csla.Server.DataPortal.InterceptorType = Type.GetType(typeName);
+      ConfigurationManager.AppSettings["CslaDataPortalInterceptor"] = typeName;
       return RootConfiguration;
     }
 

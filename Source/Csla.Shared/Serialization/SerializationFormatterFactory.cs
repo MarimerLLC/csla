@@ -31,7 +31,7 @@ namespace Csla.Serialization
 #endif
       else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
       {
-        string customFormatterTypeName = ConfigurationManager.AppSettings["CslaCustomSerializationFormatter"];
+        string customFormatterTypeName = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
         return (ISerializationFormatter)MethodCaller.CreateInstance(Type.GetType(customFormatterTypeName, true, true));
       }
       else

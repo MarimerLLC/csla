@@ -558,8 +558,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void UseCustomSerializationFormatter()
     {
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "CustomFormatter";
-      System.Configuration.ConfigurationManager.AppSettings["CslaCustomSerializationFormatter"] = "Csla.Serialization.NetDataContractSerializerWrapper, Csla";
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "Csla.Serialization.NetDataContractSerializerWrapper, Csla";
       try
       {
         var formatter = SerializationFormatterFactory.GetFormatter();
@@ -569,7 +568,7 @@ namespace Csla.Test.Serialization
       }
       finally
       {
-        System.Configuration.ConfigurationManager.AppSettings["CslaCustomSerializationFormatter"] = null;
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
       }
     }
 

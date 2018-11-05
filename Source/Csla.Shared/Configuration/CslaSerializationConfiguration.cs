@@ -22,22 +22,10 @@ namespace Csla.Configuration
     /// n-level undo, etc).
     /// </summary>
     /// <param name="formatterName">Formatter name (one of MobileFormatter, 
-    /// BinaryFormatter, CustomFormatter, NetDataContractSerializer)</param>
+    /// BinaryFormatter, NetDataContractSerializer, or type name)</param>
     public CslaConfiguration SerializationFormatter(string formatterName)
     {
       ConfigurationManager.AppSettings["CslaSerializationFormatter"] = formatterName;
-      return RootConfiguration;
-    }
-
-    /// <summary>
-    /// Sets the type name of a custom formatter for use when the
-    /// SerializationFormatter is set to CustomFormatter.
-    /// </summary>
-    /// <param name="typeName">Assembly qualified type name</param>
-    /// <returns></returns>
-    public CslaConfiguration CustomSerializationFormatter(string typeName)
-    {
-      ConfigurationManager.AppSettings["CslaCustomSerializationFormatter"] = typeName;
       return RootConfiguration;
     }
 

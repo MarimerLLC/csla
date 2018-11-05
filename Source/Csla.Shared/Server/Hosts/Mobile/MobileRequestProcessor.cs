@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS)
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="MobileRequestProcessor.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -16,7 +15,7 @@ using System.Threading.Tasks;
 namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
-  /// Object taht processes all the requests from a Silverlight client
+  /// Object that processes all the requests from a Silverlight client
   /// </summary>
   public class MobileRequestProcessor
   {
@@ -36,16 +35,12 @@ namespace Csla.Server.Hosts.Mobile
       {
         if (_factoryLoader == null)
         {
-#if NETSTANDARD2_0
-          _factoryLoader = new MobileFactoryLoader();
-#else
           string setting = ConfigurationManager.AppSettings["CslaMobileFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IMobileFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
             _factoryLoader = new MobileFactoryLoader();
-#endif
         }
         return _factoryLoader;
       }
@@ -472,4 +467,3 @@ namespace Csla.Server.Hosts.Mobile
 #endregion
   }
 }
-#endif

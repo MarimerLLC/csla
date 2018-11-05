@@ -22,6 +22,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettingsCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataPortalConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSecurityConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSerializationConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />

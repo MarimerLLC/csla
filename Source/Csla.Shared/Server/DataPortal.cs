@@ -87,11 +87,7 @@ namespace Csla.Server
 
       if (null == _authorizer)//not yet instantiated
       {
-#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
-        string authProvider = string.Empty;
-#else
         var authProvider = ConfigurationManager.AppSettings[cslaAuthorizationProviderAppSettingName];
-#endif
         return string.IsNullOrEmpty(authProvider) ?
           typeof(NullAuthorizer) :
           Type.GetType(authProvider, true);
@@ -558,11 +554,9 @@ namespace Csla.Server
       {
         if (!_InterceptorTypeSet)
         {
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
           var typeName = ConfigurationManager.AppSettings["CslaDataPortalInterceptor"];
           if (!string.IsNullOrWhiteSpace(typeName))
             InterceptorType = Type.GetType(typeName);
-#endif
           _InterceptorTypeSet = true;
         }
         return _interceptorType;

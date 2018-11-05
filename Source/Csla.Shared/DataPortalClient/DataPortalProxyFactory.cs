@@ -60,7 +60,7 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
-    /// Gets or sets the list of proxy-type mapping descriptors used to
+    /// Gets the list of proxy-type mapping descriptors used to
     /// create specific proxy objects for specific business classes.
     /// </summary>
     /// <remarks>
@@ -75,7 +75,46 @@ namespace Csla.DataPortalClient
     /// (e.g. 'Resource: 123').
     /// </remarks>
     public static Dictionary<string, DataPortalProxyDescriptor> DataPortalTypeProxyDescriptors
-    { get; set; }
+    { get; private set; }
+
+    private static void InitializeDictionary()
+    {
+      if (DataPortalTypeProxyDescriptors == null)
+        DataPortalTypeProxyDescriptors = new Dictionary<string, DataPortalProxyDescriptor>();
+    }
+
+    /// <summary>
+    /// Add a proxy descriptor for the specified root business type.
+    /// </summary>
+    /// <param name="objectType">Root business type</param>
+    /// <param name="descriptor">Data Portal proxy descriptor</param>
+    public static void AddDescriptor(Type objectType, DataPortalProxyDescriptor descriptor)
+    {
+      InitializeDictionary();
+      DataPortalTypeProxyDescriptors.Add(GetTypeName(objectType), descriptor);
+    }
+
+    /// <summary>
+    /// Add a proxy descriptor for the specified root business type.
+    /// </summary>
+    /// <param name="typeName">Type of the root business type</param>
+    /// <param name="descriptor">Data Portal proxy descriptor</param>
+    public static void AddDescriptor(string typeName, DataPortalProxyDescriptor descriptor)
+    {
+      InitializeDictionary();
+      DataPortalTypeProxyDescriptors.Add(typeName, descriptor);
+    }
+
+    /// <summary>
+    /// Add a proxy descriptor for the specified root business type.
+    /// </summary>
+    /// <param name="resourceId">Server resource id</param>
+    /// <param name="descriptor">Data Portal proxy descriptor</param>
+    public static void AddDescriptor(int resourceId, DataPortalProxyDescriptor descriptor)
+    {
+      InitializeDictionary();
+      DataPortalTypeProxyDescriptors.Add(resourceId.ToString(), descriptor);
+    }
 
     /// <summary>
     /// Returns a type name formatted to act as a key
@@ -84,7 +123,7 @@ namespace Csla.DataPortalClient
     /// <param name="objectType">Object type</param>
     public static string GetTypeName(Type objectType)
     {
-      return $"{objectType.Name}, {objectType.Assembly.FullName.Substring(0, objectType.Assembly.FullName.IndexOf(","))}";
+      return $"{objectType.FullName}, {objectType.Assembly.FullName.Substring(0, objectType.Assembly.FullName.IndexOf(","))}";
     }
 
     /// <summary>
@@ -98,7 +137,7 @@ namespace Csla.DataPortalClient
     {
       var attributes = objectType.GetCustomAttributes(typeof(DataPortalServerResourceAttribute), true);
       if (attributes != null && attributes.Count() > 0)
-        return $"Resource: {((DataPortalServerResourceAttribute)attributes[0]).ResourceId}";
+        return ((DataPortalServerResourceAttribute)attributes[0]).ResourceId.ToString();
       else
         return GetTypeName(objectType);
     }

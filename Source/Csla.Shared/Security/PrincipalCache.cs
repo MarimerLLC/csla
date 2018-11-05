@@ -20,7 +20,7 @@ namespace Csla.Security
     private static List<IPrincipal> _cache = new List<IPrincipal>();
 
     private static int _maxCacheSize;
-    internal static int MaxCacheSize
+    public static int MaxCacheSize
     {
       get
       {
@@ -34,7 +34,7 @@ namespace Csla.Security
         }
         return _maxCacheSize;
       }
-      set
+      internal set
       {
         _maxCacheSize = value;
       }

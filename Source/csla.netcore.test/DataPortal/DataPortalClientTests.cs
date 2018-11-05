@@ -24,6 +24,14 @@ namespace csla.netcore.test.DataPortal
   [TestClass]
   public class DataPortalClientTests
   {
+    [TestCleanup]
+    public void Cleanup()
+    {
+      ApplicationContext.DataPortalProxy = null;
+      ApplicationContext.DataPortalUrlString = null;
+      Csla.DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors?.Clear();
+    }
+
     [TestMethod]
     public void ProxyFactoryGetTypeName()
     {
@@ -54,14 +62,10 @@ namespace csla.netcore.test.DataPortal
       Csla.DataPortalClient.DataPortalProxyFactory.AddDescriptor("123", fake);
       Csla.DataPortalClient.DataPortalProxyFactory.AddDescriptor("abc", fake);
 
-      ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      ApplicationContext.DataPortalUrlString = "https://example.com/test";
-
       var factory = new Csla.DataPortalClient.DataPortalProxyFactory();
       var proxy = factory.Create(typeof(DefaultType));
       Assert.IsNotNull(proxy, "proxy can't be null");
-      Assert.IsInstanceOfType(proxy, typeof(Csla.DataPortalClient.HttpProxy), "should be httpproxy");
-      Assert.AreEqual("https://example.com/test", ((Csla.DataPortalClient.HttpProxy)proxy).DataPortalUrl);
+      Assert.IsInstanceOfType(proxy, typeof(Csla.DataPortalClient.LocalProxy), "should be httpproxy");
     }
 
     [TestMethod]

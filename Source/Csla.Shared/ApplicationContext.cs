@@ -249,7 +249,7 @@ namespace Csla
     public static bool UseReflectionFallback { get; set; } = false;
 
     private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
-    private static object _dataPortalActivatorSync = new object();
+    private static readonly object _dataPortalActivatorSync = new object();
 
     /// <summary>
     /// Gets or sets an instance of the IDataPortalActivator provider.

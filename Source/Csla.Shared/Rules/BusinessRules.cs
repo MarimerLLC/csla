@@ -23,7 +23,7 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
 , IUndoableObject
 #endif
   {
@@ -290,6 +290,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(AuthorizationActions action, Type objectType)
     {
+      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, objectType, ApplicationContext.RuleSet);
     }
@@ -853,7 +854,7 @@ namespace Csla.Rules
 
     #endregion
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IUndoableObject Members
 
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();

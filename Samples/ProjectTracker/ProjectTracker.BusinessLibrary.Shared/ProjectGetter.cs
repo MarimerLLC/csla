@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -6,20 +7,21 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectGetter : ReadOnlyBase<ProjectGetter>
   {
-    public static PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(c => c.Project);
+    public static readonly PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(c => c.Project);
     public ProjectEdit Project
     {
       get { return GetProperty(ProjectProperty); }
       private set { LoadProperty(ProjectProperty, value); }
     }
 
-    public static PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
+    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
     public RoleList RoleList
     {
       get { return GetProperty(RoleListProperty); }
       private set { LoadProperty(RoleListProperty, value); }
     }
 
+#if FULL_DOTNET
     public static void CreateNewProject(EventHandler<DataPortalResult<ProjectGetter>> callback)
     {
       DataPortal.BeginFetch<ProjectGetter>(new Criteria { ProjectId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
@@ -43,18 +45,17 @@ namespace ProjectTracker.Library
         callback(o, e);
       });
     }
+#endif
 
-#if FULL_DOTNET
-    private void DataPortal_Fetch(Criteria criteria)
+    private async Task DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ProjectId == -1)
-        Project = ProjectEdit.NewProject();
+        Project = await ProjectEdit.NewProjectAsync();
       else
-        Project = ProjectEdit.GetProject(criteria.ProjectId);
+        Project = await ProjectEdit.GetProjectAsync(criteria.ProjectId);
       if (criteria.GetRoles)
         RoleList = RoleList.GetCachedList();
     }
-#endif
 
     [Serializable]
     public class Criteria : CriteriaBase<Criteria>

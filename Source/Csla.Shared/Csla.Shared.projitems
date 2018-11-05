@@ -22,6 +22,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettingsCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataPortalConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSecurityConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSerializationConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />
@@ -107,13 +113,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortal.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DefaultPortalProxyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\HttpProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IWcfPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\LocalProxy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\MobileProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\PrimitiveCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\WcfProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalEventArgs.cs" />
@@ -121,6 +127,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerResourceAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManagerT.cs" />
@@ -190,6 +197,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IHostRules.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\IRuleContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ObjectRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\PropertyRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleContext.cs" />

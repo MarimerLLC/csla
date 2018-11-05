@@ -133,10 +133,6 @@
     <value>Alterar um elemento é uma operação inválida</value>
     <comment>Changing an element is an invalid operation</comment>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Valor do objecto pai só pode ser atribuído aos objectos filho</value>
-    <comment>Parent value can only be set for child objects</comment>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Não pode marcar directamente um objecto filho para apagar - use a colecção pai</value>
     <comment>Can not directly mark a child object for deletion - use its parent collection</comment>
@@ -230,7 +226,7 @@
     <comment>tom</comment>
   </data>
   <data name="SmartDateTomorrow" xml:space="preserve">
-    <value>amanha</value>
+    <value>amanhã</value>
     <comment>tomorrow</comment>
   </data>
   <data name="Failed" xml:space="preserve">
@@ -508,5 +504,8 @@
   </data>
   <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
     <value>O objecto é válido</value>
+  </data>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Não é possível chamar de forma síncrona {0}, que é um método assíncrono</value>
   </data>
 </root>

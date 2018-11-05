@@ -6,7 +6,7 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ResourceAssignmentEditCreator : ReadOnlyBase<ResourceAssignmentEditCreator>
   {
-    public static PropertyInfo<ResourceAssignmentEdit> ResultProperty = RegisterProperty<ResourceAssignmentEdit>(c => c.Result);
+    public static readonly PropertyInfo<ResourceAssignmentEdit> ResultProperty = RegisterProperty<ResourceAssignmentEdit>(c => c.Result);
     public ResourceAssignmentEdit Result
     {
       get { return GetProperty(ResultProperty); }
@@ -18,7 +18,6 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceAssignmentEditCreator>(projectId, callback);
     }
 
-#if FULL_DOTNET || NETSTANDARD2_0
     public static ResourceAssignmentEditCreator GetResourceAssignmentEditCreator(int projectId)
     {
       return DataPortal.Fetch<ResourceAssignmentEditCreator>(projectId);
@@ -28,6 +27,5 @@ namespace ProjectTracker.Library
     {
       Result = DataPortal.CreateChild<ResourceAssignmentEdit>(projectId);
     }
-#endif
   }
 }

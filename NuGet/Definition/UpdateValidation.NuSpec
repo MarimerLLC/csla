@@ -7,7 +7,7 @@
     <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
-    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
@@ -42,5 +42,18 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\NET46\**\Csla.Validation.resources.dll*" target="lib\net461" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Validation.resources.pdb*" target="lib\net461" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Validation.xml*" target="lib\net461" />
+    <!-- UWP Client -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.dll*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.pdb*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.pri*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.xml*" target="lib\uap10.0" />
+    <!-- Xamarin Android Client -->
+    <file src="..\..\Bin\Release\Android\**\Csla.Validation.dll*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Validation.pdb*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Validation.xml*" target="lib\MonoAndroid10" />
+    <!-- Xamarin iOS Client -->
+    <file src="..\..\Bin\Release\iOS\**\Csla.Validation.dll*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Validation.pdb*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Validation.xml*" target="lib\Xamarin.iOS10" />
   </files>
 </package>

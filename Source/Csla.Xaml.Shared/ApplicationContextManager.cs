@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-#if !NETFX_CORE && !PCL36 && !XAMARIN
+#if !NETFX_CORE && !PCL36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +30,10 @@ namespace Csla.Xaml
     public override IPrincipal GetUser()
     {
       IPrincipal current;
+#if !XAMARIN
       if (System.Windows.Application.Current != null)
       {
+#endif
         if (_principal == null)
         {
           if (ApplicationContext.AuthenticationType != "Windows")
@@ -40,9 +42,11 @@ namespace Csla.Xaml
             _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
         }
         current = _principal;
+#if !XAMARIN
       }
       else
         current = Thread.CurrentPrincipal;
+#endif
       return current;
     }
 
@@ -52,7 +56,9 @@ namespace Csla.Xaml
     /// <param name="principal">Principal object.</param>
     public override void SetUser(IPrincipal principal)
     {
+#if !XAMARIN
       if (System.Windows.Application.Current != null)
+#endif
         _principal = principal;
       Thread.CurrentPrincipal = principal;
     }

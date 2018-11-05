@@ -54,7 +54,7 @@ namespace Csla.Testing.Business.ObjectFactory
     {
       DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
       dp.FetchCompleted += completed;
-      dp.BeginFetch(new SingleCriteria<ObjectFactoryBusinessItem,string>(id));
+      dp.BeginFetch(id);
     }
 
     public static void GetObjectFactoryBusinessItem(EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
@@ -68,7 +68,7 @@ namespace Csla.Testing.Business.ObjectFactory
     {
       DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
       dp.CreateCompleted += completed;
-      dp.BeginCreate(new SingleCriteria<ObjectFactoryBusinessItem, string>(id));
+      dp.BeginCreate(id);
     }
 
     public static void NewObjectFactoryBusinessItem(EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
@@ -82,7 +82,7 @@ namespace Csla.Testing.Business.ObjectFactory
     {
       DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
       dp.DeleteCompleted += completed;
-      dp.BeginDelete(new SingleCriteria<ObjectFactoryBusinessItem, string>(id));
+      dp.BeginDelete(id);
     }
 
   }

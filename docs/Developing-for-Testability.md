@@ -1,0 +1,1 @@
+@jasonbock has written a nice blog post on how to use some of the features of CSLA .NET that support unit testing and mocking: http://magenic.com/Blog/Post/43/Abstractions-in-CSLA

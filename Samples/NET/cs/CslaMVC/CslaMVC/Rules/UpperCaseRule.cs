@@ -18,7 +18,7 @@ namespace CslaMVC.Rules
             InputProperties = new List<IPropertyInfo> { primaryProperty };
         }
 
-        protected override void Execute(RuleContext context)
+        protected override void Execute(IRuleContext context)
         {
             //modify property value, to upper
             var val1 = (string)context.InputPropertyValues[PrimaryProperty];

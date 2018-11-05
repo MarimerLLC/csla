@@ -1,0 +1,6 @@
+1. Set ProjectsVendors.WinForms as Startup Project.
+
+2. On the same project open App.config.
+Under <connectionStrings> select the appropriate connection string for:
+- SQL Server 2012 - Data Source=(LocalDB)\v11.0
+- SQL Server 2014 - Data Source=(LocalDB)\MSSQLLocalDB

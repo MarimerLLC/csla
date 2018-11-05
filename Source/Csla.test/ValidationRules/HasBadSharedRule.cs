@@ -33,7 +33,7 @@ namespace Csla.Test.ValidationRules
 
     public class BadRule : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         context.AddErrorResult("Bad rule");
       }

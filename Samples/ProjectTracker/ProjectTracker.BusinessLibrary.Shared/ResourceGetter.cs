@@ -6,14 +6,14 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ResourceGetter : ReadOnlyBase<ResourceGetter>
   {
-    public static PropertyInfo<ResourceEdit> ResourceProperty = RegisterProperty<ResourceEdit>(c => c.Resource);
+    public static readonly PropertyInfo<ResourceEdit> ResourceProperty = RegisterProperty<ResourceEdit>(c => c.Resource);
     public ResourceEdit Resource
     {
       get { return GetProperty(ResourceProperty); }
       private set { LoadProperty(ResourceProperty, value); }
     }
 
-    public static PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
+    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
     public RoleList RoleList
     {
       get { return GetProperty(RoleListProperty); }
@@ -45,7 +45,6 @@ namespace ProjectTracker.Library
       });
     }
 
-#if FULL_DOTNET || NETSTANDARD2_0
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)
@@ -55,7 +54,6 @@ namespace ProjectTracker.Library
       if (criteria.GetRoles)
         RoleList = RoleList.GetCachedList();
     }
-#endif
 
     [Serializable]
     public class Criteria : CriteriaBase<Criteria>

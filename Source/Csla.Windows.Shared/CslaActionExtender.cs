@@ -746,7 +746,6 @@ namespace Csla.Windows
                     BusinessBase businessObject = savableObject as BusinessBase;
                     if (!businessObject.IsValid)
                     {
-                      // todo: add child broken rules
                       string brokenRules = string.Empty;
                       foreach (var brokenRule in businessObject.GetBrokenRules())
                       {
@@ -847,7 +846,6 @@ namespace Csla.Windows
         {
           if (_autoShowBrokenRules && !businessObject.IsValid)
           {
-            // todo: add child broken rules
             string brokenRules = string.Empty;
             foreach (var brokenRule in businessObject.GetBrokenRules())
             {

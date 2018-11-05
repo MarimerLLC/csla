@@ -23,9 +23,9 @@
 	<key>MinimumOSVersion</key>
 	<string>11.2</string>
 	<key>CFBundleDisplayName</key>
-	<string>ProjectTracker.Ui.Xamarin</string>
+	<string>Project Tracker</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.ProjectTracker.Ui.Xamarin</string>
+	<string>com.marimerllc.ProjectTracker</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>CFBundleIconFiles</key>

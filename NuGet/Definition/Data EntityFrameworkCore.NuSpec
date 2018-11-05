@@ -7,7 +7,7 @@
     <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
-    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
@@ -20,7 +20,7 @@ Supports the use of Entity Framework Core.
     </summary>
     <language>en-US</language>
     <dependencies>     
-      <dependency id="CSLA-Core-NS" version="[4.6.3-Beta10]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
       <dependency id="Microsoft.EntityFrameworkCore" version="2.0.2" />    
     </dependencies>
   </metadata>

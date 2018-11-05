@@ -19,13 +19,9 @@ namespace cslalighttest.CslaDataProvider
   [Serializable]
   public class CustomerContact : BusinessBase<CustomerContact>
   {
-#if SILVERLIGHT
-    public CustomerContact() { }
-#else
     private CustomerContact() { }
-#endif
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Contact Id", 0));
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "Contact Id", 0);
     public int Id
     {
       get
@@ -38,7 +34,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<int> CustomerIdProperty = RegisterProperty<int>(new PropertyInfo<int>("CustomerId", "Customer Id", 0));
+    private static PropertyInfo<int> CustomerIdProperty = RegisterProperty<int>(c=>c.CustomerId, "Customer Id", 0);
     public int CustomerId
     {
       get
@@ -51,7 +47,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string>FirstNameProperty = RegisterProperty<string>(new PropertyInfo<string>("FirstName", "Contact's First Name", ""));
+    private static PropertyInfo<string>FirstNameProperty = RegisterProperty<string>(c=>c.FirstName, "Contact's First Name", "");
     public string FirstName
     {
       get
@@ -64,7 +60,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(new PropertyInfo<string>("LastName", "Contact's Last Name", ""));
+    private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c=>c.LastName, "Contact's Last Name", "");
     public string LastName
     {
       get
@@ -77,7 +73,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<SmartDate> BirthdayProperty = RegisterProperty<SmartDate>(new PropertyInfo<SmartDate>("Birthday", "Contact's Birthday"));
+    private static PropertyInfo<SmartDate> BirthdayProperty = RegisterProperty<SmartDate>(c=>c.Birthday, "Contact's Birthday");
     public string Birthday
     {
       get
@@ -94,7 +90,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> ParentNameProperty = RegisterProperty<string>(new PropertyInfo<string>("ParentName", "Parent Name", ""));
+    private static PropertyInfo<string> ParentNameProperty = RegisterProperty<string>(c=>c.ParentName, "Parent Name", "");
     public string ParentName
     {
       get
@@ -116,7 +112,6 @@ namespace cslalighttest.CslaDataProvider
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
     }
 
-#if !SILVERLIGHT
     internal static CustomerContact GetCustomerContact(int customerId, int id, string firstName, string lastName, DateTime birthday) 
     {
       return DataPortal.FetchChild<CustomerContact>(customerId, id, firstName, lastName, birthday);
@@ -150,8 +145,5 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(LastNameProperty, lastName);
       LoadProperty(BirthdayProperty, new SmartDate(birthday));
     }
-
-    
-#endif
   }
 }

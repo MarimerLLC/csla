@@ -171,10 +171,10 @@ namespace Csla.Rules
     /// Business or validation rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected virtual void Execute(RuleContext context)
+    protected virtual void Execute(IRuleContext context)
     { }
 
-    void IBusinessRule.Execute(RuleContext context)
+    void IBusinessRule.Execute(IRuleContext context)
     {
       if (!_locked)
         _locked = true;

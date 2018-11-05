@@ -329,7 +329,6 @@ namespace Csla.Core
 }
 #else
 using System;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
@@ -441,7 +440,7 @@ namespace Csla.Core
       CopyingState();
 
       Type currentType = this.GetType();
-      HybridDictionary state = new HybridDictionary();
+      var state = new MobileDictionary<string, object>();
 
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
@@ -531,13 +530,13 @@ namespace Csla.Core
         if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
-        HybridDictionary state;
+        MobileDictionary<string, object> state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           ISerializationFormatter formatter =
             SerializationFormatterFactory.GetFormatter();
-          state = (HybridDictionary)formatter.Deserialize(buffer);
+          state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
         }
 
         Type currentType = this.GetType();

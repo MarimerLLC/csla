@@ -8,18 +8,11 @@
 using System;
 using System.Linq;
 
-#if SILVERLIGHT
-using Csla.DataPortalClient;
-using Csla.Serialization;
-#endif
-
 namespace Csla.Testing.Business.EditableChildTests
 {
   [Serializable]
   public partial class MockList : BusinessListBase<MockList, MockEditableChild>
   {
-    #region  Factory Methods
-
     public static void FetchAll(EventHandler<DataPortalResult<MockList>> completed)
     {
       var dp = new DataPortal<MockList>();
@@ -31,12 +24,8 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       var dp = new DataPortal<MockList>();
       dp.FetchCompleted += completed;
-      dp.BeginFetch(new SingleCriteria<MockList, string>(name));
+      dp.BeginFetch(name);
     }
-
-    #endregion
-
-    #region  Data Access
 
     public static Guid MockEditableChildId1 = new Guid("{4AF07634-1D10-4d09-BBCB-42396324C103}");
     public static Guid MockEditableChildId2 = new Guid("{402DB94B-0D93-4be2-AFD0-7D1587CDDBC2}");
@@ -61,7 +50,5 @@ namespace Csla.Testing.Business.EditableChildTests
 
       RaiseListChangedEvents = true;
     }
-
-    #endregion
   }
 }

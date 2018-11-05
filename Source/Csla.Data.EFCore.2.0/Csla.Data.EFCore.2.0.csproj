@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Csla.Data.EntityFrameworkCore</AssemblyName>
     <RootNamespace>Csla.Data.EntityFrameworkCore</RootNamespace>
     <PackageId>Csla.Data.EntityFrameworkCore</PackageId>
-    <Version>4.7.101</Version>
+    <Version>4.8.1.0</Version>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>

@@ -24,7 +24,7 @@ namespace CslaMVC.Rules
             InputProperties = new List<IPropertyInfo> { primaryProperty };
         }
 
-        protected override void Execute(RuleContext context)
+        protected override void Execute(IRuleContext context)
         {
             if (context.InputPropertyValues[PrimaryProperty] != null)
             {

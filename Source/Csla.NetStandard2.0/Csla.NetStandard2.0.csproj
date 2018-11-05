@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Csla</AssemblyName>
     <RootNamespace>Csla</RootNamespace>
     <PackageId>Csla.NetStandard20</PackageId>
-    <Version>4.7.101</Version>
+    <Version>4.8.1.0</Version>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>

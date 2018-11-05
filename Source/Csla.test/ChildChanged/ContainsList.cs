@@ -26,7 +26,7 @@ namespace Csla.Test.ChildChanged
         MarkAsChild();
     }
 
-    private static PropertyInfo<SingleList> ListProperty = RegisterProperty(new PropertyInfo<SingleList>("List", "List"));
+    private static PropertyInfo<SingleList> ListProperty = RegisterProperty(new PropertyInfo<SingleList>("List"));
     public SingleList List
     {
       get 

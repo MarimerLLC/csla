@@ -29,12 +29,11 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(CustomerNameProperty, value); }
     }
 
-#if !SILVERLIGHT
     public static AsyncRuleRoot NewRoot()
     {
       return Csla.DataPortal.Create<AsyncRuleRoot>();
     }
-#endif
+
     public AsyncRuleRoot()
     {
       BusinessRules.CheckRules();
@@ -74,7 +73,7 @@ namespace Csla.Test.ValidationRules
         IsAsync = true;
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         var cn = (string)context.InputPropertyValues[PrimaryProperty];
 

@@ -16,7 +16,6 @@ namespace Csla.Test.BypassPropertyChecks
   {
     public TestObjectFactory() { }
 
-#if !SILVERLIGHT
     public BypassBusinessBaseUsingFactory Fetch()
     {
       BypassBusinessBaseUsingFactory returnValue = new BypassBusinessBaseUsingFactory();
@@ -26,16 +25,5 @@ namespace Csla.Test.BypassPropertyChecks
       }
       return returnValue;
     }
-#else
-    public void Fetch()
-    {
-      BypassBusinessBaseUsingFactory returnValue = new BypassBusinessBaseUsingFactory();
-      using (this.BypassPropertyChecks(returnValue))
-      {
-        returnValue.Id2 = 7; // bypass user rights
-      }
-    }
-
-#endif
   }
 }

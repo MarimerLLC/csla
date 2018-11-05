@@ -99,7 +99,7 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Fetch<Root>(new SingleCriteria<Root, string>("abc"));
+      var root = Csla.DataPortal.Fetch<Root>("abc");
       Assert.AreEqual("abc", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
@@ -118,31 +118,6 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
-
-    // commented out because almost nobody has COM+ enabled anymore
-    //[TestMethod]
-    //public void UpdateEnterpriseServices()
-    //{
-    //  try
-    //  {
-    //    Csla.Server.FactoryDataPortal.FactoryLoader =
-    //      new ObjectFactoryLoader(2);
-    //    var root = new Root();
-    //    root.Data = "abc";
-    //    root = Csla.DataPortal.Update<Root>(root);
-    //    Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-    //    Assert.AreEqual("Update", root.Data, "Data should match");
-    //    Assert.IsFalse(root.IsNew, "Should not be new");
-    //    Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    //  }
-    //  catch (Csla.DataPortalException ex)
-    //  {
-    //    if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
-    //      Assert.Inconclusive("COM+ not accessible");
-    //    else
-    //      throw;
-    //  }
-    //}
 
     [TestMethod]
     public void UpdateTransactionScope()
@@ -249,7 +224,7 @@ namespace Csla.Test.ObjectFactory
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
 
-      Csla.DataPortal.Delete<Root>(new SingleCriteria<Root, string>("abc"));
+      Csla.DataPortal.Delete<Root>("abc");
 
       Assert.AreEqual("Delete", Csla.ApplicationContext.GlobalContext["ObjectFactory"].ToString(), "Data should match");
     }

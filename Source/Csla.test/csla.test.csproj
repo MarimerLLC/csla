@@ -277,7 +277,6 @@
     <Compile Include="Silverlight\CommandBase\CommandBaseTests.cs" />
     <Compile Include="DataPortal\AuthorizeDataPortalTests.cs" />
     <Compile Include="Silverlight\DataPortal\AuthorizeDataPortalTests.cs" />
-    <Compile Include="Silverlight\DataPortal\ClientCultureDataPortalTests.cs" />
     <Compile Include="Silverlight\NameValueList\NameValueListTests.cs" />
     <Compile Include="Silverlight\PropertyGetSet\AbstractGetSet.cs" />
     <Compile Include="Silverlight\PropertyGetSet\InheritedLoadPropertySet.cs" />
@@ -286,7 +285,6 @@
     <Compile Include="Silverlight\ReadOnly\MockReadOnlyList.cs" />
     <Compile Include="Silverlight\ReadOnly\ReadOnlyTests.cs" />
     <Compile Include="Silverlight\Rollback\RollbackRoot.cs" />
-    <Compile Include="Silverlight\Rollback\RollbackTests.cs" />
     <Compile Include="Silverlight\Security\SecurityTests.server.cs" />
     <Compile Include="Silverlight\Security\SecurityTests.cs" />
     <Compile Include="Silverlight\Serialization\Address.cs" />

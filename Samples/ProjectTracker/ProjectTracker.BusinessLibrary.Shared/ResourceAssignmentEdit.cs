@@ -75,12 +75,12 @@ namespace ProjectTracker.Library
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
 
-#if FULL_DOTNET 
     private void Child_Create(int projectId)
     {
       using (BypassPropertyChecks)
       {
         ProjectId = projectId;
+        RoleList.CacheList();
         Role = RoleList.DefaultRole();
         LoadProperty(AssignedProperty, DateTime.Today);
         using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -158,6 +158,5 @@ namespace ProjectTracker.Library
         }
       }
     }
-#endif
   }
 }

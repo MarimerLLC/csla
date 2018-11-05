@@ -55,7 +55,7 @@ namespace TransformationRules.Rules
     /// <param name="context">
     /// Rule context object.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       // Use linq Sum to calculate the sum value
       var sum = context.InputPropertyValues.Sum(property => (dynamic)property.Value);

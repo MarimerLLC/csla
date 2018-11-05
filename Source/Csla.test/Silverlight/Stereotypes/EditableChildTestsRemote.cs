@@ -30,15 +30,6 @@ namespace cslalighttest.Stereotypes
   [TestClass]
   public class EditableChildTestsRemote : TestBase
   {
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-    }
-#endif
-
     #region List With Children - FetchAll
 
     [TestMethod]
@@ -205,24 +196,15 @@ namespace cslalighttest.Stereotypes
        {
          context.Assert.IsNull(e.Error);
          context.Assert.IsNotNull(e.Object);
-#if SILVERLIGHT
-        e.Object[0].BeginSave((o1, e1) =>
-          {
-            context.Assert.IsNotNull(e1.Error);
-            context.Assert.Success();
-          }
-        );
-#else
         try
         {
           e.Object[0].Save();
           context.Assert.Fail();
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
           context.Assert.Success();
         }
-#endif
       });
 
       context.Complete();
@@ -236,24 +218,15 @@ namespace cslalighttest.Stereotypes
                                    {
                                      context.Assert.IsNull(e.Error);
                                      context.Assert.IsNotNull(e.Object);
-#if SILVERLIGHT
-        e.Object[0].GrandChildren.BeginSave((o1, e1) =>
-         {
-           context.Assert.IsNotNull(e1.Error);
-           context.Assert.Success();
-         }
-       );
-#else
        try
        {
          e.Object[0].GrandChildren.Save();
          context.Assert.Fail();
        }
-       catch (InvalidOperationException ex)
+       catch (InvalidOperationException)
        {
          context.Assert.Success();
        }
-#endif
       });
 
       context.Complete();
@@ -267,24 +240,15 @@ namespace cslalighttest.Stereotypes
       {
         context.Assert.IsNull(e.Error);
         context.Assert.IsNotNull(e.Object);
-#if SILVERLIGHT
-        e.Object[0].GrandChildren[0].BeginSave((o1, e1) =>
-         {
-           context.Assert.IsNotNull(e1.Error);
-           context.Assert.Success();
-         }
-       );
-#else
          try
          {
            e.Object[0].GrandChildren[0].Save();
            context.Assert.Fail();
          }
-         catch (InvalidOperationException ex)
+         catch (InvalidOperationException)
          {
            context.Assert.Success();
          }
-#endif
       });
 
       context.Complete();

@@ -82,19 +82,16 @@ namespace Csla.Test.BasicModern
     
     private void DataPortal_Fetch(int id)
     {
-      // TODO: load values into object
       Children = Csla.DataPortal.CreateChild<ChildList>();
     }
 
     protected override void DataPortal_Insert()
     {
-      // TODO: insert object's data
       FieldManager.UpdateChildren();
     }
 
     protected override void DataPortal_Update()
     {
-      // TODO: update object's data
       FieldManager.UpdateChildren();
     }
 
@@ -105,7 +102,6 @@ namespace Csla.Test.BasicModern
 
     private void DataPortal_Delete(int id)
     {
-      // TODO: delete object's data
       FieldManager.UpdateChildren();
     }
   }

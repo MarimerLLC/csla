@@ -22,8 +22,6 @@ namespace Csla
   {
     private static readonly EmptyCriteria EmptyCriteria = new EmptyCriteria();
 
-    #region DataPortal events
-
     /// <summary>
     /// Raised by DataPortal before it starts
     /// setting up to call a server-side
@@ -45,28 +43,18 @@ namespace Csla
 
     internal static void OnDataPortalInitInvoke(object e)
     {
-      Action<System.Object> action = DataPortalInitInvoke;
-      if (action != null)
-        action(e);
+      DataPortalInitInvoke?.Invoke(e);
     }
 
     internal static void OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      Action<DataPortalEventArgs> action = DataPortalInvoke;
-      if (action != null)
-        action(e);
+      DataPortalInvoke?.Invoke(e);
     }
 
     internal static void OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      Action<DataPortalEventArgs> action = DataPortalInvokeComplete;
-      if (action != null)
-        action(e);
+      DataPortalInvokeComplete?.Invoke(e);
     }
-
-    #endregion
-
-    #region Create
 
     /// <summary>
     /// Called by a factory method in a business class to create 
@@ -218,10 +206,6 @@ namespace Csla
       return await dp.CreateAsync(criteria);
     }
 
-    #endregion
-
-    #region Fetch
-
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
@@ -364,10 +348,6 @@ namespace Csla
       return await dp.FetchAsync(criteria);
     }
 
-    #endregion
-
-    #region Update
-
     /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
@@ -449,10 +429,6 @@ namespace Csla
       return await dp.UpdateAsync(obj);
     }
 
-    #endregion
-
-    #region Delete
-
     /// <summary>
     /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.
@@ -530,10 +506,6 @@ namespace Csla
       var dp = new DataPortal<T>();
       await dp.DeleteAsync(criteria);
     }
-
-    #endregion
-
-    #region Execute
 
     /// <summary>
     /// Called to execute a Command object on the server.
@@ -623,10 +595,6 @@ namespace Csla
       return await dp.ExecuteAsync(command);
     }
 
-    #endregion
-
-    #region  Child Data Access methods
-
     /// <summary>
     /// Creates and initializes a new
     /// child business object.
@@ -714,10 +682,6 @@ namespace Csla
       portal.Update(child, parameters);
     }
 
-    #endregion
-
-    #region DataPortal Proxy
-
     private static DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;
 
     /// <summary>
@@ -729,7 +693,7 @@ namespace Csla
       {
         if (String.IsNullOrEmpty(ApplicationContext.DataPortalProxyFactory) || ApplicationContext.DataPortalProxyFactory == "Default")
         {
-          _dataProxyFactory = new DataPortalClient.DefaultPortalProxyFactory();
+          _dataProxyFactory = new DataPortalClient.DataPortalProxyFactory();
         }
         else
         {
@@ -810,8 +774,5 @@ namespace Csla
     [Obsolete("Proxies no longer cached")]
     public static void ReleaseProxy()
     { }
-
-    #endregion
-
   }
 }

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla;
 using Csla.Configuration;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -86,9 +87,52 @@ namespace csla.netcore.test.Configuration
     }
 
     [TestMethod]
-    public void FluentConfigDataPortalDescriptors()
+    [ExpectedException(typeof(ArgumentException))]
+    public void FluentConfigDataPortalDescriptorsInvalidType()
     {
-      //TODO: test resource/type mappings
+      new CslaConfiguration()
+        .DataPortal.DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
+        {
+          Tuple.Create("invalid type", typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName, "https://example.com/test")
+        });
+    }
+
+    [TestMethod]
+    public void FluentConfigDataPortalDescriptorsValidType()
+    {
+      new CslaConfiguration()
+        .DataPortal.DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
+        {
+          Tuple.Create(typeof(TestType).AssemblyQualifiedName, 
+                       typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName, 
+                       "https://example.com/test")
+        });
+
+      var realKey = Csla.DataPortalClient.DataPortalProxyFactory.GetTypeKey(typeof(TestType));
+      var descriptor = Csla.DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors[realKey];
+
+      Assert.IsNotNull(descriptor);
+      Assert.AreEqual(typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName, descriptor.ProxyTypeName, "Proxy name");
+      Assert.AreEqual("https://example.com/test", descriptor.DataPortalUrl, "URL");
+    }
+
+    [TestMethod]
+    public void FluentConfigDataPortalDescriptorsValidResource()
+    {
+      new CslaConfiguration()
+        .DataPortal.DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
+        {
+          Tuple.Create(((int)ServerResources.SpecializedAlgorithm).ToString(),
+                       typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName,
+                       "https://example.com/test")
+        });
+      
+      var realKey = ((int)ServerResources.SpecializedAlgorithm).ToString();
+      var descriptor = Csla.DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors[realKey];
+
+      Assert.IsNotNull(descriptor);
+      Assert.AreEqual(typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName, descriptor.ProxyTypeName, "Proxy name");
+      Assert.AreEqual("https://example.com/test", descriptor.DataPortalUrl, "URL");
     }
 
     [TestMethod]
@@ -140,5 +184,31 @@ namespace csla.netcore.test.Configuration
     {
       throw new NotImplementedException();
     }
+  }
+
+  [Serializable]
+  public class DefaultType : BusinessBase<DefaultType>
+  {
+
+  }
+
+  [Serializable]
+  public class TestType : BusinessBase<TestType>
+  {
+
+  }
+
+  public enum ServerResources
+  {
+    LotsOfMemory,
+    AccessToLegacyDatabase,
+    SpecializedAlgorithm
+  }
+
+  [Serializable]
+  [DataPortalServerResource((int)ServerResources.SpecializedAlgorithm)]
+  public class ResourceType : BusinessBase<ResourceType>
+  {
+
   }
 }

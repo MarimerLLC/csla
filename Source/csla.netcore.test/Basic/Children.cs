@@ -28,7 +28,6 @@ namespace Csla.Test.Basic
 
         internal static Children GetChildren(IDataReader dr)
         {
-            //todo: load child data
             return null;
         }
 

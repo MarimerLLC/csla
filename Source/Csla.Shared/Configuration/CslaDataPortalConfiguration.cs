@@ -31,33 +31,38 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Data portal type/resource to proxy mapping
-    /// </summary>
-    public class ProxyDescriptor
-    {
-      /// <summary>
-      /// Resource id or root business class name
-      /// </summary>
-      public string Key { get; set; }
-      /// <summary>
-      /// Assembly qualified data portal proxy type name
-      /// </summary>
-      public string ProxyTypeName { get; set; }
-      /// <summary>
-      /// URL for the data portal server endpoint
-      /// </summary>
-      public string ServerUrl { get; set; }
-    }
-
-    /// <summary>
     /// Adds resource/type to data portal proxy mappings
     /// for use by the data portal.
     /// </summary>
     /// <param name="descriptors">Data portal type/resource to proxy mapping</param>
     /// <returns></returns>
-    public CslaConfiguration DataPortalProxyDescriptors(List<ProxyDescriptor> descriptors)
+    public CslaConfiguration DataPortalProxyDescriptors(List<Tuple<string, string, string>> descriptors)
     {
-      //TODO: add implementation after merge with #959
+      DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors?.Clear();
+
+      foreach (var item in descriptors)
+      {
+        if (int.TryParse(item.Item1, out int result))
+        {
+          Csla.DataPortalClient.DataPortalProxyFactory.AddDescriptor(
+            result,
+            new DataPortalClient.DataPortalProxyDescriptor { ProxyTypeName = item.Item2, DataPortalUrl = item.Item3 });
+        }
+        else
+        {
+          try
+          {
+            var type = Type.GetType(item.Item1);
+            Csla.DataPortalClient.DataPortalProxyFactory.AddDescriptor(
+              type,
+              new DataPortalClient.DataPortalProxyDescriptor { ProxyTypeName = item.Item2, DataPortalUrl = item.Item3 });
+          }
+          catch (NullReferenceException ex)
+          {
+            throw new ArgumentException(item.Item1, ex);
+          }
+        }
+      }
       return RootConfiguration;
     }
 

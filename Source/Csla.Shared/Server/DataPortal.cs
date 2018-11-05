@@ -7,14 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Configuration;
-#if NETFX_CORE
-using System.Reflection;
-using Csla.Reflection;
-#endif
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
-using System.Collections.Generic;
 
 namespace Csla.Server
 {
@@ -25,6 +20,16 @@ namespace Csla.Server
   /// </summary>
   public class DataPortal : IDataPortalServer
   {
+    /// <summary>
+    /// Gets the data portal dashboard instance.
+    /// </summary>
+    public static Dashboard.IDashboard Dashboard { get; private set; }
+
+    static DataPortal()
+    {
+      Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
+    }
+
     #region Constructors
     /// <summary>
     /// Default constructor
@@ -32,7 +37,6 @@ namespace Csla.Server
     public DataPortal()
       : this("CslaAuthorizationProvider")
     {
-
     }
 
     /// <summary>
@@ -102,7 +106,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !MONO && !NETSTANDARD2_0
+#if !NETSTANDARD2_0
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -145,10 +149,9 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -173,10 +176,6 @@ namespace Csla.Server
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Create, IsSync = isSync });
         return result;
       }
@@ -237,10 +236,9 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -262,10 +260,6 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Fetch, IsSync = isSync });
         return result;
       }
@@ -368,16 +362,11 @@ namespace Csla.Server
             methodName = "DataPortal_Update";
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
         }
-#if !(ANDROID || IOS) && !NETFX_CORE 
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
-#else
-        context.TransactionalType = method.TransactionalType;
-#endif
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -399,10 +388,6 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Result = result, Operation = operation, IsSync = isSync });
         return result;
       }
@@ -473,10 +458,9 @@ namespace Csla.Server
         }
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !NETSTANDARD2_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -498,10 +482,6 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Delete, IsSync = isSync });
         return result;
       }
@@ -570,12 +550,16 @@ namespace Csla.Server
 
     internal void Complete(InterceptArgs e)
     {
+      Dashboard.CompleteCall(e);
+
       if (_interceptor != null)
         _interceptor.Complete(e);
     }
 
     internal void Initialize(InterceptArgs e)
     {
+      Dashboard.InitializeCall(e);
+
       if (_interceptor != null)
         _interceptor.Initialize(e);
     }
@@ -604,24 +588,10 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if !PCL46  && !PCL259// rely on NuGet bait-and-switch for actual implementation
-#if NETCORE
-      System.Globalization.CultureInfo.CurrentCulture =
-        new System.Globalization.CultureInfo(context.ClientCulture); 
-      System.Globalization.CultureInfo.CurrentUICulture = 
-        new System.Globalization.CultureInfo(context.ClientUICulture);
-#elif NETFX_CORE
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientUICulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientCulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-#else
       System.Threading.Thread.CurrentThread.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture);
       System.Threading.Thread.CurrentThread.CurrentUICulture =
         new System.Globalization.CultureInfo(context.ClientUICulture);
-#endif
-#endif
 
       if (ApplicationContext.AuthenticationType == "Windows")
       {
@@ -633,10 +603,8 @@ namespace Csla.Server
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
-#if !(ANDROID || IOS) && !NETFX_CORE
         // Set .NET to use integrated security
         AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
-#endif
       }
       else
       {

@@ -32,6 +32,7 @@ namespace Csla.Test.Silverlight.PropertyGetSet
     /// This is due to property being registered only with Base type
     /// </remarks>
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ProperyInfoDeclaredInBaseClassShouldLoadInAnotherDomain()
     {
       var context = GetContext();

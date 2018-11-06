@@ -450,6 +450,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DCClone()
     {
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
@@ -535,6 +536,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CommandOverDataPortal()
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";

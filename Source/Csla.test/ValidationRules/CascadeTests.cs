@@ -56,6 +56,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BusinessRules_MustCascadeAsSpreadsheet_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // complex ruleset 

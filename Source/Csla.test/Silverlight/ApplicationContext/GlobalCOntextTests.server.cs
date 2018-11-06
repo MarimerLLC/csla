@@ -26,6 +26,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
   public partial class GlobalContextTests : TestBase
   {
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ServerShouldReceiveGlobalContextValue()
     {
       var context = GetContext();
@@ -51,6 +52,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void GlobalContextOnClientShouldBeAffectedByChangeOnServer()
     {
       var context = GetContext();

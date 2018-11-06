@@ -50,16 +50,16 @@ namespace csla.netcore.test.Configuration
     public void FluentConfigDataPortal()
     {
       new Csla.Configuration.CslaConfiguration()
-        .DataPortal.AuthenticationType("custom")
-        .DataPortal.AutoCloneOnUpdate(false)
-        .DataPortal.DataPortalActivator(new TestActivator())
-        .DataPortal.DataPortalProxyFactory("abc")
-        .DataPortal.DataPortalReturnObjectOnException(true)
-        .DataPortal.DefaultDataPortalProxy("abc", "def")
-        .DataPortal.ExceptionInspectorType("abc")
-        .DataPortal.FactoryLoaderType("abc")
-        .DataPortal.InterceptorType("abc")
-        .DataPortal.ServerAuthorizationProvider("abc");
+        .DataPortal().AuthenticationType("custom")
+        .DataPortal().AutoCloneOnUpdate(false)
+        .DataPortal().DataPortalActivator(new TestActivator())
+        .DataPortal().DataPortalProxyFactory("abc")
+        .DataPortal().DataPortalReturnObjectOnException(true)
+        .DataPortal().DefaultDataPortalProxy("abc", "def")
+        .DataPortal().ExceptionInspectorType("abc")
+        .DataPortal().FactoryLoaderType("abc")
+        .DataPortal().InterceptorType("abc")
+        .DataPortal().ServerAuthorizationProvider("abc");
 
       Assert.AreEqual("custom", Csla.ApplicationContext.AuthenticationType, "AuthenticationType");
       Assert.AreEqual(false, Csla.ApplicationContext.AutoCloneOnUpdate, "AutoCloneOnUpdate");
@@ -74,16 +74,16 @@ namespace csla.netcore.test.Configuration
       Assert.AreEqual("abc", ConfigurationManager.AppSettings["CslaAuthorizationProvider"], "CslaAuthorizationProvider");
 
       new Csla.Configuration.CslaConfiguration()
-        .DataPortal.AuthenticationType(null)
-        .DataPortal.AutoCloneOnUpdate(true)
-        .DataPortal.DataPortalActivator(null)
-        .DataPortal.DataPortalProxyFactory(null)
-        .DataPortal.DataPortalReturnObjectOnException(false)
-        .DataPortal.DefaultDataPortalProxy(typeof(Csla.DataPortalClient.LocalProxy).AssemblyQualifiedName, null)
-        .DataPortal.ExceptionInspectorType(null)
-        .DataPortal.FactoryLoaderType(null)
-        .DataPortal.InterceptorType(null)
-        .DataPortal.ServerAuthorizationProvider(null);
+        .DataPortal().AuthenticationType(null)
+        .DataPortal().AutoCloneOnUpdate(true)
+        .DataPortal().DataPortalActivator(null)
+        .DataPortal().DataPortalProxyFactory(null)
+        .DataPortal().DataPortalReturnObjectOnException(false)
+        .DataPortal().DefaultDataPortalProxy(typeof(Csla.DataPortalClient.LocalProxy).AssemblyQualifiedName, null)
+        .DataPortal().ExceptionInspectorType(null)
+        .DataPortal().FactoryLoaderType(null)
+        .DataPortal().InterceptorType(null)
+        .DataPortal().ServerAuthorizationProvider(null);
     }
 
     [TestMethod]
@@ -91,7 +91,7 @@ namespace csla.netcore.test.Configuration
     public void FluentConfigDataPortalDescriptorsInvalidType()
     {
       new CslaConfiguration()
-        .DataPortal.DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
+        .DataPortal().DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
         {
           Tuple.Create("invalid type", typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName, "https://example.com/test")
         });
@@ -101,7 +101,7 @@ namespace csla.netcore.test.Configuration
     public void FluentConfigDataPortalDescriptorsValidType()
     {
       new CslaConfiguration()
-        .DataPortal.DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
+        .DataPortal().DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
         {
           Tuple.Create(typeof(TestType).AssemblyQualifiedName, 
                        typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName, 
@@ -120,7 +120,7 @@ namespace csla.netcore.test.Configuration
     public void FluentConfigDataPortalDescriptorsValidResource()
     {
       new CslaConfiguration()
-        .DataPortal.DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
+        .DataPortal().DataPortalProxyDescriptors(new List<Tuple<string, string, string>>
         {
           Tuple.Create(((int)ServerResources.SpecializedAlgorithm).ToString(),
                        typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName,
@@ -139,27 +139,27 @@ namespace csla.netcore.test.Configuration
     public void FluentConfigData()
     {
       new CslaConfiguration()
-        .Data.DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.RepeatableRead)
-        .Data.DefaultTransactionTimeoutInSeconds(123);
+        .Data().DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.RepeatableRead)
+        .Data().DefaultTransactionTimeoutInSeconds(123);
 
       Assert.AreEqual(Csla.TransactionIsolationLevel.RepeatableRead, Csla.ApplicationContext.DefaultTransactionIsolationLevel, "DefaultTransactionIsolationLevel");
       Assert.AreEqual(123, Csla.ApplicationContext.DefaultTransactionTimeoutInSeconds, "DefaultTransactionTimeoutInSeconds");
 
       new CslaConfiguration()
-        .Data.DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.ReadCommitted)
-        .Data.DefaultTransactionTimeoutInSeconds(90);
+        .Data().DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.ReadCommitted)
+        .Data().DefaultTransactionTimeoutInSeconds(90);
     }
 
     [TestMethod]
     public void FluentConfigSecurity()
     {
       new CslaConfiguration()
-        .Security.PrincipalCacheMaxCacheSize(123);
+        .Security().PrincipalCacheMaxCacheSize(123);
 
       Assert.AreEqual(123, Csla.Security.PrincipalCache.MaxCacheSize, "MaxCacheSize");
 
       new CslaConfiguration()
-        .Security.PrincipalCacheMaxCacheSize(10);
+        .Security().PrincipalCacheMaxCacheSize(10);
     }
   }
 

@@ -38,14 +38,14 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Configure the default data portal proxy and URL.
+    /// Configure the default data portal proxy type and URL.
     /// </summary>
-    /// <param name="proxyTypeName">Default proxy type name</param>
+    /// <param name="typeName">Assembly qualified type name</param>
     /// <param name="defaultUrl">Default server URL</param>
     /// <returns></returns>
-    public ICslaConfiguration DefaultDataPortalProxy(string proxyTypeName, string defaultUrl)
+    public ICslaConfiguration DefaultProxy(string typeName, string defaultUrl)
     {
-      ApplicationContext.DataPortalProxy = proxyTypeName;
+      ApplicationContext.DataPortalProxy = typeName;
       ApplicationContext.DataPortalUrlString = defaultUrl;
       return RootConfiguration;
     }
@@ -56,7 +56,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="descriptors">Data portal type/resource to proxy mapping</param>
     /// <returns></returns>
-    public ICslaConfiguration DataPortalProxyDescriptors(List<Tuple<string, string, string>> descriptors)
+    public ICslaConfiguration ProxyDescriptors(List<Tuple<string, string, string>> descriptors)
     {
       DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors?.Clear();
 
@@ -92,9 +92,10 @@ namespace Csla.Configuration
     /// the DataPortalProxy instance to use when
     /// communicating with the data portal server.
     /// </summary>
-    public ICslaConfiguration DataPortalProxyFactory(string factoryTypeName)
+    /// <param name="typeName">Assembly qualified type name</param>
+    public ICslaConfiguration ProxyFactoryType(string typeName)
     {
-      ApplicationContext.DataPortalProxyFactory = factoryTypeName;
+      ApplicationContext.DataPortalProxyFactory = typeName;
       return RootConfiguration;
     }
 
@@ -102,7 +103,7 @@ namespace Csla.Configuration
     /// Sets an instance of the IDataPortalActivator provider.
     /// </summary>
     /// <param name="activator">Instance of activator</param>
-    public ICslaConfiguration DataPortalActivator(Csla.Server.IDataPortalActivator activator)
+    public ICslaConfiguration Activator(Csla.Server.IDataPortalActivator activator)
     {
       ApplicationContext.DataPortalActivator = activator;
       return RootConfiguration;
@@ -112,10 +113,10 @@ namespace Csla.Configuration
     /// Sets the authentication type being used by the
     /// CSLA .NET framework.
     /// </summary>
-    /// <param name="type">Authentication type value (defaults to 'Csla')</param>
-    public ICslaConfiguration AuthenticationType(string type)
+    /// <param name="typeName">Authentication type value (defaults to 'Csla')</param>
+    public ICslaConfiguration AuthenticationType(string typeName)
     {
-      ApplicationContext.AuthenticationType = type;
+      ApplicationContext.AuthenticationType = typeName;
       return RootConfiguration;
     }
 
@@ -124,7 +125,7 @@ namespace Csla.Configuration
     /// authorization. Type must implement IAuthorizeDataPortal.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration ServerAuthorizationProvider(string typeName)
+    public ICslaConfiguration ServerAuthorizationProviderType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaAuthorizationProvider"] = typeName;
       return RootConfiguration;

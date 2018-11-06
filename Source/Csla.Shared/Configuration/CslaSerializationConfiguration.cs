@@ -1,17 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaSerializationConfiguration.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Use this type to configure the settings</summary>
+//-----------------------------------------------------------------------
 namespace Csla.Configuration
 {
+  /// <summary>
+  /// Extension method for CslaSerializationConfiguration
+  /// </summary>
+  public static class CslaSerializationConfigurationExtension
+  {
+    /// <summary>
+    /// Extension method for CslaSerializationConfiguration
+    /// </summary>
+    public static CslaSerializationConfiguration Serialization(this ICslaConfiguration config)
+    {
+      return new CslaSerializationConfiguration(config);
+    }
+  }
+
   /// <summary>
   /// Use this type to configure the settings for serialization.
   /// </summary>
   public class CslaSerializationConfiguration
   {
-    private CslaConfiguration RootConfiguration { get; set; }
+    private ICslaConfiguration RootConfiguration { get; set; }
 
-    internal CslaSerializationConfiguration(CslaConfiguration root)
+    internal CslaSerializationConfiguration(ICslaConfiguration root)
     {
       RootConfiguration = root;
     }
@@ -23,7 +40,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="formatterName">Formatter name (one of MobileFormatter, 
     /// BinaryFormatter, NetDataContractSerializer, or type name)</param>
-    public CslaConfiguration SerializationFormatter(string formatterName)
+    public ICslaConfiguration SerializationFormatter(string formatterName)
     {
       ConfigurationManager.AppSettings["CslaSerializationFormatter"] = formatterName;
       return RootConfiguration;
@@ -34,7 +51,7 @@ namespace Csla.Configuration
     /// serialization stream in MobileFormatter.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public CslaConfiguration MobileWriter(string typeName)
+    public ICslaConfiguration MobileWriter(string typeName)
     {
       ConfigurationManager.AppSettings["CslaWriter"] = typeName;
       return RootConfiguration;
@@ -45,7 +62,7 @@ namespace Csla.Configuration
     /// serialization stream in MobileFormatter.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public CslaConfiguration MobileReader(string typeName)
+    public ICslaConfiguration MobileReader(string typeName)
     {
       ConfigurationManager.AppSettings["CslaReader"] = typeName;
       return RootConfiguration;

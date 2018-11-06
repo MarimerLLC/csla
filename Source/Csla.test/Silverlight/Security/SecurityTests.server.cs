@@ -47,6 +47,7 @@ namespace Csla.Test.Silverlight.Security
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void SetCSLAPrincipalLocal()
     {
       SilverlightPrincipal.Logout();

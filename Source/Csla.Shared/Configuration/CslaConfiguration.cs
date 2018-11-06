@@ -1,4 +1,11 @@
-﻿using Csla.Core;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaConfiguration.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Use this type to configure the settings for CSLA .NET</summary>
+//-----------------------------------------------------------------------
+using Csla.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,17 +17,6 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaConfiguration : ICslaConfiguration
   {
-    /// <summary>
-    /// Creates a new instance of the type.
-    /// </summary>
-    public CslaConfiguration()
-    {
-      DataPortal = new CslaDataPortalConfiguration(this);
-      Data = new CslaDataConfiguration(this);
-      Security = new CslaSecurityConfiguration(this);
-      Serialization = new CslaSerializationConfiguration(this);
-    }
-
 #if !NETSTANDARD2_0
     /// <summary>
     /// Sets the web context manager.
@@ -37,26 +33,6 @@ namespace Csla.Configuration
       return this;
     }
 #endif
-
-    /// <summary>
-    /// Gets a reference to the data portal configuration object.
-    /// </summary>
-    public CslaDataPortalConfiguration DataPortal { get; private set; }
-
-    /// <summary>
-    /// Gets a reference to the data configuration object.
-    /// </summary>
-    public CslaDataConfiguration Data { get; private set; }
-
-    /// <summary>
-    /// Gets a reference to the data configuration object.
-    /// </summary>
-    public CslaSecurityConfiguration Security { get; private set; }
-
-    /// <summary>
-    /// Gets a reference to the data configuration object.
-    /// </summary>
-    public CslaSerializationConfiguration Serialization { get; private set; }
 
     /// <summary>
     /// Sets a value indicating whether CSLA

@@ -25,6 +25,7 @@ namespace Csla.Test.RollBack
   public class RollBackTests
   {
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void NoFail()
     {
       Csla.ApplicationContext.GlobalContext.Clear();

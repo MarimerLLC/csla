@@ -41,6 +41,7 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Create()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
@@ -70,6 +71,7 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateMissing()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();

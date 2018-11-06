@@ -40,6 +40,7 @@ namespace cslalighttest.CommandBase
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Asynch_Remote_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()
     {
       var context = GetContext();

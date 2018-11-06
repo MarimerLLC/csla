@@ -23,6 +23,7 @@ namespace Csla.Validation.Test
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DateComparisonIsCorrect()
     {
       var project = DataPortal.Create<Project>();

@@ -224,6 +224,7 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void MergeList()
     {
       var obj = Csla.DataPortal.Create<FooList>();

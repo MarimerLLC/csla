@@ -130,6 +130,7 @@ namespace Csla.Test.DataPortal
 
 #if DEBUG
         [TestMethod()]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestTransactionScopeUpdate()
         {
             Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
@@ -206,6 +207,7 @@ namespace Csla.Test.DataPortal
 #endif
 
         [TestMethod()]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void StronglyTypedDataPortalMethods()
         {
             //test strongly-typed DataPortal_Fetch method
@@ -230,6 +232,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void EncapsulatedIsBusyFails()
         {
           try
@@ -245,6 +248,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void FactoryIsBusyFails()
         {
           try
@@ -260,6 +264,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod()]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void DataPortalEvents()
         {
             Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
@@ -287,6 +292,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void DataPortalBrokerTests()
         {
           ApplicationContext.GlobalContext.Clear();
@@ -335,6 +341,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void CallDataPortalOverrides()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

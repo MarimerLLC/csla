@@ -56,6 +56,7 @@ namespace Csla.Test.DataPortal
     #region Create
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginCreate_overload_without_parameters_Results_in_UserState_defaulted_to_Null_and_Id_to_0()
     {
       var context = GetContext();
@@ -74,6 +75,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginCreate_overload_with_UserState_passed_Results_in_UserState_set_and_Id_defaulted_to_0()
     {
       var context = GetContext();
@@ -93,6 +95,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginCreate_overload_with_UserState_and_Criteria_passed_Results_in_UserState_and_Id_set()
     {
       var context = GetContext();
@@ -119,6 +122,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginCreate_with_exception()
     {
       var context = GetContext();
@@ -134,6 +138,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task CreateAsync_NoCriteria()
     {
       var result = await Csla.DataPortal.CreateAsync<Single>();
@@ -142,6 +147,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task CreateAsync_WithCriteria()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>(123);
@@ -151,6 +157,7 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateAsync_WithException()
     {
       var lck = new AutoResetEvent(false);
@@ -175,6 +182,7 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [Timeout(1000)]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task CreateAsync_Parrallel()
     {
       var list = new List<int>(500);
@@ -191,6 +199,7 @@ namespace Csla.Test.DataPortal
 
     #region Fetch
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_overload_without_Parameters_Results_in_UserState_defaulted_to_Null_and_Id_to_0()
     {
       var context = GetContext();
@@ -209,6 +218,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_overload_with_Crieria_only_passed_Results_in_UserState_defaulted_to_Null_and_Id_set()
     {
       var context = GetContext();
@@ -227,6 +237,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_with_exception()
     {
       var context = GetContext();
@@ -242,6 +253,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_with_Criteria_and_UserState_passed_Results_in_UserState_and_Id_set()
     {
       var context = GetContext();
@@ -262,6 +274,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task FetchAsync_NoCriteria()
     {
       var result = await Csla.DataPortal.FetchAsync<Single2>();
@@ -270,6 +283,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task FetchAsync_WithCriteria()
     {
       var result = await Csla.DataPortal.FetchAsync<Single2>(123);
@@ -279,6 +293,7 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchAsync_WithException()
     {
       var lck = new AutoResetEvent(false);
@@ -303,6 +318,7 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [Timeout(1000)]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task FetchAsync_Parrallel()
     {
       var list = new List<int>(500);
@@ -322,6 +338,7 @@ namespace Csla.Test.DataPortal
     #region BeginSave
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginSave_must_call_OnSaved_when_exception_in_dal()
     {
       var context = GetContext();
@@ -346,6 +363,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginSave_must_call_OnSaved_when_object_is_child_and_throws_error()
     {
       var context = GetContext();
@@ -627,6 +645,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginSave_called_on_DeletedObject_without_UserState_results_in_UserState_defaulted_to_Null_server()
     {
       var context = GetContext();
@@ -657,6 +676,7 @@ namespace Csla.Test.DataPortal
 
 #if DEBUG
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task SaveAsync()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>();
@@ -671,6 +691,7 @@ namespace Csla.Test.DataPortal
 #endif
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void SaveAsyncWithException()
     {
       var context = GetContext();
@@ -711,6 +732,7 @@ namespace Csla.Test.DataPortal
     #region Delete
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Delete_called_with_UserState_results_in_UserState_set_on_server()
     {
       var context = GetContext();
@@ -728,6 +750,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Delete_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
     {
       var context = GetContext();
@@ -771,6 +794,7 @@ namespace Csla.Test.DataPortal
     #region ExecuteCommand
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ExecuteCommand_called_with_UserState_results_in_UserState_set_on_server()
     {
       var context = GetContext();
@@ -787,6 +811,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ExecuteCommand_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
     {
       var context = GetContext();
@@ -802,6 +827,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task ExecuteAsync()
     {
       var result = await Csla.DataPortal.ExecuteAsync<SingleCommand>(
@@ -811,6 +837,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ExecuteAsyncWithException()
     {
       var lck = new AutoResetEvent(false);
@@ -840,6 +867,7 @@ namespace Csla.Test.DataPortal
     /// with that signature, ends up calling parameterless DP_Create() - this is by design
     /// </summary>
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginCreate_Calling_BO_Without_DP_CREATE_Returns_no_Error_info()
     {
       var context = GetContext();
@@ -852,6 +880,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_PrimitiveCriteria()
     {
       var context = GetContext();
@@ -871,6 +900,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_StringCriteria()
     {
       var context = GetContext();
@@ -890,6 +920,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_GuidCriteria()
     {
       var context = GetContext();
@@ -909,6 +940,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginCreate_PrimitiveCriteria()
     {
       var context = GetContext();
@@ -928,6 +960,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Delete_PrimitiveCriteria()
     {
       var context = GetContext();
@@ -946,6 +979,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BeginFetch_sends_cultureinfo_to_dataportal()
     {
       string expectedCulture = Thread.CurrentThread.CurrentCulture.Name;

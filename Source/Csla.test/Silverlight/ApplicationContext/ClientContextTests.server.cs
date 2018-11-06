@@ -28,6 +28,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
   {
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ServerShouldReceiveClientContextValue()
     {
       var context = GetContext();

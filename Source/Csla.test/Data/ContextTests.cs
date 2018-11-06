@@ -66,6 +66,7 @@ namespace Csla.Test.Data
 #if DEBUG
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_SqlConnection()
     {
       //throws SqlException
@@ -79,6 +80,7 @@ namespace Csla.Test.Data
 
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_LinqToSqlContextDataContext()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(ConnectionWithMissingDB, true))
@@ -91,6 +93,7 @@ namespace Csla.Test.Data
 
     [TestMethod]
     [ExpectedException(typeof(EntityException))]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_EntitiesContextDataContext()
     {
       using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(EntityConnectionWithMissingDB, true))
@@ -110,6 +113,7 @@ namespace Csla.Test.Data
 
 #if DEBUG
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ExecuteReader_on_Table2_returns_reader_with_3_fields()
     {
       using (var objectContextManager = ConnectionManager<SqlConnection>.GetManager(TestDBConnection, true))
@@ -127,6 +131,7 @@ namespace Csla.Test.Data
 
 #if DEBUG
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Table1_retreived_through_LingToSqlDataContext_has_records()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(TestDBConnection, true))
@@ -137,6 +142,7 @@ namespace Csla.Test.Data
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
     {
       using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager("DataPortalTestDatabaseEntities", true))
@@ -156,6 +162,7 @@ namespace Csla.Test.Data
 
 #if DEBUG
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Using_TransactionManager_Insert_of_2records_rolls_back_if_second_record_fails_insert()
     {
       ApplicationContext.LocalContext.Clear();
@@ -200,6 +207,7 @@ namespace Csla.Test.Data
 
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Using_TransactionManager_Insert_2records_increases_count_by2_then_removing_them_decreases_count_by2()
     {
       ApplicationContext.LocalContext.Clear();
@@ -249,6 +257,7 @@ namespace Csla.Test.Data
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestTransactionsManaagerConnectionProperty()
     {
       using (var manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(TestDBConnection, true))

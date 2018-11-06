@@ -102,7 +102,8 @@ namespace Csla.Test.SafeDataReader
             }
         }
 
-    [TestMethod()]
+        [TestMethod()]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void GetSchemaTable()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);

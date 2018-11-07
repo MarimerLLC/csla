@@ -1,4 +1,4 @@
-![](https://github.com/MarimerLLC/csla/wiki/images/csla%20win8_mid.png)
+![](https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_mid.png)
 
 Basics
 ------

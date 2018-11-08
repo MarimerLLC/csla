@@ -80,6 +80,7 @@ namespace Csla.Test.ValidationRules
     ///A test for NewEditableRoot
     ///</summary>
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void LessThanSetsErrorOnBothFields()
     {
       // StartDate less than 
@@ -118,6 +119,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void AsyncLookupCustomerSetsCustomerName()
     {
       string ruleSet = "Lookup";

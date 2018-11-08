@@ -40,7 +40,7 @@ namespace Csla.Configuration
     /// <param name="level">The default transaction isolation level</param>
     public ICslaConfiguration DefaultTransactionIsolationLevel(TransactionIsolationLevel level)
     {
-      ApplicationContext.DefaultTransactionIsolationLevel = level;
+      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = level.ToString();
       return RootConfiguration;
     }
 
@@ -50,7 +50,7 @@ namespace Csla.Configuration
     /// <param name="seconds">The default transaction timeout in seconds</param>
     public ICslaConfiguration DefaultTransactionTimeoutInSeconds(int seconds)
     {
-      ApplicationContext.DefaultTransactionTimeoutInSeconds = seconds;
+      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = seconds.ToString();
       return RootConfiguration;
     }
   }

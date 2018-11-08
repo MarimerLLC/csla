@@ -100,7 +100,7 @@ namespace Csla.Test.Basic
       MarkAsChild();
     }
 
-    private void Child_Create()
+    protected override void Child_Create()
     { }
 
     private void Child_Fetch(int id)

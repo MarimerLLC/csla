@@ -39,6 +39,7 @@ namespace Csla.Data.EF5.Test
 #if DEBUG
         [TestMethod]
         [ExpectedException(typeof(EntityException))]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_DbContextDataContext()
         {
             var conn = ConfigurationManager.ConnectionStrings[EntityConnectionWithMissingDB].ConnectionString;

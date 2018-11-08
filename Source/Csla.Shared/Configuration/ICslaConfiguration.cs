@@ -9,5 +9,12 @@ namespace Csla.Configuration
   /// </summary>
   public interface ICslaConfiguration
   {
+    /// <summary>
+    /// Resets any ApplicationContext settings so they 
+    /// re-read their configuration from AppSettings
+    /// on next use.
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    ICslaConfiguration SettingsChanged();
   }
 }

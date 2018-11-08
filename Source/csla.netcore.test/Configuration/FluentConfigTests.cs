@@ -44,6 +44,7 @@ namespace csla.netcore.test.Configuration
         .PropertyInfoFactory(null)
         .RuleSet(null)
         .UseReflectionFallback(true);
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
     }
 
     [TestMethod]

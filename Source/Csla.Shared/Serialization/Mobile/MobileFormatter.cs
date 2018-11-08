@@ -145,7 +145,7 @@ namespace Csla.Serialization.Mobile
           _serializationReferences.Add(mobile, info);
 
           info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
-
+#if !NET40 && !NET45
           if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var principal = (Security.CslaClaimsPrincipal)obj;
@@ -163,6 +163,10 @@ namespace Csla.Serialization.Mobile
             mobile.GetChildren(info, this);
             mobile.GetState(info);
           }
+#else
+          mobile.GetChildren(info, this);
+          mobile.GetState(info);
+#endif
         }
       }
       return info;
@@ -243,6 +247,7 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
+#if !NET40 && !NET45
           if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var state = info.GetValue<byte[]>("s");
@@ -264,6 +269,14 @@ namespace Csla.Serialization.Mobile
             ConvertEnumsFromIntegers(info);
             mobile.SetState(info);
           }
+#else
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+
+            _deserializationReferences.Add(info.ReferenceId, mobile);
+
+            ConvertEnumsFromIntegers(info);
+            mobile.SetState(info);
+#endif
         }
       }
 

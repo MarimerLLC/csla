@@ -48,5 +48,14 @@ namespace Csla.Server.Dashboard
       }
       return result;
     }
+
+    /// <summary>
+    /// Resets the dashboard.
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static void Reset()
+    {
+      _dashboard = null;
+    }
   }
 }

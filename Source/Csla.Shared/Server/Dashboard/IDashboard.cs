@@ -6,6 +6,7 @@
 // <summary>Data portal dashboard</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 
 namespace Csla.Server.Dashboard
 {
@@ -29,13 +30,17 @@ namespace Csla.Server.Dashboard
     /// </summary>
     long TotalCalls { get; }
     /// <summary>
-    /// Gets the failed number of times the data portal
-    /// has been invoked
+    /// Gets the number of times data portal
+    /// calls have failed
     /// </summary>
     long FailedCalls { get; }
     /// <summary>
-    /// Gets the completed number of times the data portal
-    /// has been invoked
+    /// Gets the items in the recent activity queue.
+    /// </summary>
+    List<Activity> GetRecentActivity();
+    /// <summary>
+    /// Gets the number of times data portal
+    /// calls have successfully completed
     /// </summary>
     long CompletedCalls { get; }
     /// <summary>

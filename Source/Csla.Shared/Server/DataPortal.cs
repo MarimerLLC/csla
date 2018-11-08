@@ -548,8 +548,11 @@ namespace Csla.Server
       }
     }
 
+    private DateTimeOffset _startTime;
+
     internal void Complete(InterceptArgs e)
     {
+      e.Runtime = DateTimeOffset.Now - _startTime;
       Dashboard.CompleteCall(e);
 
       if (_interceptor != null)
@@ -558,6 +561,7 @@ namespace Csla.Server
 
     internal void Initialize(InterceptArgs e)
     {
+      _startTime = DateTimeOffset.Now;
       Dashboard.InitializeCall(e);
 
       if (_interceptor != null)

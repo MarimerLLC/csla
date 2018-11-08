@@ -7,8 +7,10 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Csla;
+using Csla.Configuration;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -24,10 +26,18 @@ namespace csla.netcore.test.DataPortal
   [TestClass]
   public class DashboardTests
   {
+    [TestCleanup]
+    public void TestCleanup()
+    {
+      new Csla.Configuration.CslaConfiguration().DataPortal().DashboardType(null);
+      Csla.Server.Dashboard.DashboardFactory.Reset();
+    }
+
     [TestMethod]
     public void DashboardDefaultIsNullDashboard()
     {
-      new Csla.Configuration.CslaConfiguration().DataPortal.DashboardType(null);
+      Csla.Server.Dashboard.DashboardFactory.Reset();
+      new Csla.Configuration.CslaConfiguration().DataPortal().DashboardType(null);
       var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
       Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
     }
@@ -35,7 +45,8 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void DashboardUseRealDashboard()
     {
-      new Csla.Configuration.CslaConfiguration().DataPortal.DashboardType("Dashboard");
+      Csla.Server.Dashboard.DashboardFactory.Reset();
+      new Csla.Configuration.CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
       Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.Dashboard));
     }
@@ -43,21 +54,77 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void DashboardSuccessCounter()
     {
-      new Csla.Configuration.CslaConfiguration().DataPortal.DashboardType("Dashboard");
-      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      Csla.Server.Dashboard.DashboardFactory.Reset();
+      new Csla.Configuration.CslaConfiguration().DataPortal().DashboardType("Dashboard");
+      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
 
       var obj = Csla.DataPortal.Create<SimpleType>();
 
       var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
       {
-        System.Threading.Thread.Sleep(100);
+        System.Threading.Thread.Sleep(50);
         wait.SpinOnce();
       }
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
-      Assert.AreEqual(1, dashboard.TotalCalls);
-      Assert.AreEqual(0, dashboard.FailedCalls);
+      Assert.AreEqual(1, dashboard.TotalCalls, "total");
+      Assert.AreEqual(0, dashboard.FailedCalls, "failed");
+      Assert.AreEqual(1, dashboard.CompletedCalls, "completed");
+    }
+
+    [TestMethod]
+    public void DashboardFailureCounter()
+    {
+      Csla.Server.Dashboard.DashboardFactory.Reset();
+      new Csla.Configuration.CslaConfiguration().DataPortal().DashboardType("Dashboard");
+      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+
+      try
+      {
+        var obj = Csla.DataPortal.Fetch<SimpleType>("123");
+      }
+      catch { /*expected failure*/ }
+
+      var wait = new System.Threading.SpinWait();
+      for (int i = 0; i < 15; i++)
+      {
+        System.Threading.Thread.Sleep(50);
+        wait.SpinOnce();
+      }
+
+      Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
+      Assert.AreEqual(1, dashboard.TotalCalls, "total");
+      Assert.AreEqual(1, dashboard.FailedCalls, "failed");
+      Assert.AreEqual(0, dashboard.CompletedCalls, "completed");
+    }
+
+    [TestMethod]
+    public void DashboardRecentActivity()
+    {
+      Csla.Server.Dashboard.DashboardFactory.Reset();
+      new Csla.Configuration.CslaConfiguration().DataPortal().DashboardType("Dashboard");
+      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+
+      var obj = Csla.DataPortal.Fetch<SimpleType>(123);
+      try
+      {
+        obj = Csla.DataPortal.Fetch<SimpleType>("123");
+      }
+      catch { /*expected failure*/ }
+
+      var wait = new System.Threading.SpinWait();
+      for (int i = 0; i < 15; i++)
+      {
+        System.Threading.Thread.Sleep(50);
+        wait.SpinOnce();
+      }
+
+      var activity = dashboard.GetRecentActivity();
+      Assert.AreEqual(2, activity.Count, "count");
+      Assert.IsTrue(activity.Average(r => r.Runtime.TotalMilliseconds) > 0, "runtime");
+      Assert.AreEqual(typeof(SimpleType).AssemblyQualifiedName, activity.Select(r => r.ObjectType).First().AssemblyQualifiedName);
+      Assert.AreEqual(DataPortalOperations.Fetch, activity.Select(r => r.Operation).First());
     }
   }
 
@@ -74,7 +141,7 @@ namespace csla.netcore.test.DataPortal
     private void DataPortal_Fetch(int id)
     {
       // TODO: load values into object
-
+      System.Threading.Thread.Sleep(10);
     }
 
     protected override void DataPortal_Insert()

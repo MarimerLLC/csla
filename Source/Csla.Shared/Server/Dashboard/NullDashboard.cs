@@ -6,6 +6,7 @@
 // <summary>Data portal dashboard that does nothing</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 
 namespace Csla.Server.Dashboard
 {
@@ -31,6 +32,11 @@ namespace Csla.Server.Dashboard
 
     void IDashboard.CompleteCall(InterceptArgs e)
     {
+    }
+
+    List<Activity> IDashboard.GetRecentActivity()
+    {
+      throw new NotImplementedException();
     }
   }
 }

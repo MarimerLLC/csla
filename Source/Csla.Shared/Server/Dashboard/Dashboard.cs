@@ -8,6 +8,8 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Csla.Server.Dashboard
@@ -20,41 +22,70 @@ namespace Csla.Server.Dashboard
     private readonly object _syncLock = new object();
     private ConcurrentQueue<InterceptArgs> _initializeQueue = new ConcurrentQueue<InterceptArgs>();
     private ConcurrentQueue<InterceptArgs> _completeQueue = new ConcurrentQueue<InterceptArgs>();
-    private readonly Timer _timer;
+    private readonly Timer _timerInitialize;
+    private readonly Timer _timerComplete;
+    private ConcurrentQueue<Activity> _recentActivity = new ConcurrentQueue<Activity>();
+    private const int _timerDueTime = 100;
+    private const int _timerPeriod = 500;
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     public Dashboard()
     {
-      _timer = new Timer(ProcessQueues, null, 100, 1000);
+      _timerInitialize = new Timer(ProcessInitializeQueue, null, _timerDueTime, _timerPeriod);
+      _timerComplete = new Timer(ProcessCompleteQueue, null, _timerDueTime, _timerPeriod);
       FirstCall = DateTimeOffset.Now;
     }
 
-    private void ProcessQueues(object state)
+    /// <summary>
+    /// Gets or sets a value indicating the number of items
+    /// to maintain in the recent activity list. Default is 100.
+    /// </summary>
+    public int RecentActivityCount { get; set; } = 100;
+
+    private void ProcessCompleteQueue(object state)
     {
-      if (_initializeQueue.IsEmpty && _completeQueue.IsEmpty)
+      if (_completeQueue.IsEmpty)
         return;
 
-      _timer.Change(Timeout.Infinite, Timeout.Infinite);
+      _timerComplete.Change(Timeout.Infinite, Timeout.Infinite);
       try
       {
-        while (_initializeQueue.TryDequeue(out InterceptArgs result))
-        {
-          Interlocked.Add(ref _totalCalls, 1);
-        }
-
         while (_completeQueue.TryDequeue(out InterceptArgs result))
         {
           if (result.Exception != null)
             Interlocked.Add(ref _failedCalls, 1);
           else
             Interlocked.Add(ref _completedCalls, 1);
+          _recentActivity.Enqueue(new Activity(result));
+        }
+        // trim list to most recent items
+        while (_recentActivity.Count > RecentActivityCount)
+          _recentActivity.TryDequeue(out Activity discard);
+      }
+      finally
+      {
+        _timerComplete.Change(_timerDueTime, _timerPeriod);
+      }
+    }
+
+    private void ProcessInitializeQueue(object state)
+    {
+      if (_initializeQueue.IsEmpty)
+        return;
+
+      _timerInitialize.Change(Timeout.Infinite, Timeout.Infinite);
+      try
+      {
+        while (_initializeQueue.TryDequeue(out InterceptArgs result))
+        {
+          Interlocked.Add(ref _totalCalls, 1);
         }
       }
       finally
       {
-        _timer.Change(100, 1000);
+        _timerInitialize.Change(_timerDueTime, _timerPeriod);
       }
     }
 
@@ -79,8 +110,8 @@ namespace Csla.Server.Dashboard
 
     private long _completedCalls;
     /// <summary>
-    /// Gets the completed number of times the data portal
-    /// has been invoked
+    /// Gets the number of times data portal
+    /// calls have successfully completed
     /// </summary>
     public long CompletedCalls
     {
@@ -89,12 +120,20 @@ namespace Csla.Server.Dashboard
 
     private long _failedCalls;
     /// <summary>
-    /// Gets the failed number of times the data portal
-    /// has been invoked
+    /// Gets the number of times data portal
+    /// calls have failed
     /// </summary>
     public long FailedCalls
     {
       get { return Interlocked.Read(ref _failedCalls); }
+    }
+
+    /// <summary>
+    /// Gets the items in the recent activity queue.
+    /// </summary>
+    public List<Activity> GetRecentActivity()
+    {
+      return _recentActivity.ToList();
     }
 
     void IDashboard.InitializeCall(InterceptArgs e)

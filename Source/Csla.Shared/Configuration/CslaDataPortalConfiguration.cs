@@ -208,7 +208,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
     /// <returns></returns>
-    public CslaConfiguration DashboardType(string typeName)
+    public ICslaConfiguration DashboardType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDashboardType"] = typeName;
       return RootConfiguration;

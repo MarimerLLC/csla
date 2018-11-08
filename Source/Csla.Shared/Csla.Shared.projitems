@@ -249,6 +249,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\AuthorizeRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\ChildDataPortal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\Activity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\DashboardFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\Dashboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\IDashboard.cs" />

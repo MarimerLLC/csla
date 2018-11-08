@@ -14,7 +14,7 @@ NuGet release
 1. Open the csla.build.sln
    1. Update version numbers
       1. `cd /Source`
-      1. `grep -rl --include=*.cs --include=*.csproj '4.7.200' | xargs sed -i 's/4.7.200/4.8.100/g'`
+      1. `grep -rl --include=*.cs --include=*.csproj '4.7.200' | tee | xargs sed -i 's/4.7.200/4.8.100/g'`
    1. Build the solution in Release mode; Any CPU
 1. Do NuGet release
    1. Open a powershell window

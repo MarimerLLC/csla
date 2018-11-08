@@ -76,5 +76,17 @@ namespace Csla.Configuration
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
       return this;
     }
+
+    /// <summary>
+    /// Resets any ApplicationContext settings so they 
+    /// re-read their configuration from AppSettings
+    /// on next use.
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public ICslaConfiguration SettingsChanged()
+    {
+      ApplicationContext.SettingsChanged();
+      return this;
+    }
   }
 }

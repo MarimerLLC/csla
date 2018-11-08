@@ -201,5 +201,17 @@ namespace Csla.Configuration
       ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
       return RootConfiguration;
     }
+
+    /// <summary>
+    /// Sets the assembly qualified type name of the dashboard, or
+    /// 'Dashboard' for default, or 'NullDashboard' for the null dashboard.
+    /// </summary>
+    /// <param name="typeName">Assembly qualified type name</param>
+    /// <returns></returns>
+    public ICslaConfiguration DashboardType(string typeName)
+    {
+      ConfigurationManager.AppSettings["CslaDashboardType"] = typeName;
+      return RootConfiguration;
+    }
   }
 }

@@ -250,6 +250,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\AuthorizeRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\ChildDataPortal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\Activity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\Dashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\DashboardFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\IDashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\NullDashboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalContext.cs" />

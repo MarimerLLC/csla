@@ -30,6 +30,7 @@ namespace Csla
     internal static void SettingsChanged()
     {
       _dataPortalReturnObjectOnExceptionSet = false;
+      _propertyChangedModeSet = false;
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
     }
@@ -363,7 +364,7 @@ namespace Csla
       }
     }
 
-    private static string _authenticationType;
+    private static string _authenticationTypeName;
 
     /// <summary>
     /// Returns the authentication type being used by the
@@ -382,13 +383,13 @@ namespace Csla
     {
       get
       {
-        if (_authenticationType == null)
-          _authenticationType = ConfigurationManager.AppSettings["CslaAuthentication"];
-        if (_authenticationType == null)
-          _authenticationType = "Csla";
-        return _authenticationType; 
+        if (string.IsNullOrWhiteSpace(_authenticationTypeName))
+          _authenticationTypeName = ConfigurationManager.AppSettings["CslaAuthentication"];
+        if (string.IsNullOrWhiteSpace(_authenticationTypeName))
+          _authenticationTypeName = "Csla";
+        return _authenticationTypeName; 
       }
-      set { _authenticationType = value; }
+      set { _authenticationTypeName = value; }
     }
 
     private static string _dataPortalProxy;

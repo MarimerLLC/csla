@@ -487,11 +487,9 @@ namespace Csla
       {
         if (!_dataPortalReturnObjectOnExceptionSet)
         {
-#if !ANDROID && !IOS && !NETFX_CORE && !NETSTANDARD2_0
           string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
           if (!string.IsNullOrEmpty(setting))
             DataPortalReturnObjectOnException = bool.Parse(setting);
-#endif
           _dataPortalReturnObjectOnExceptionSet = true;
         }
         return _dataPortalReturnObjectOnException;

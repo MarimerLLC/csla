@@ -52,7 +52,7 @@ namespace csla.netcore.test.Configuration
       new Csla.Configuration.CslaConfiguration()
         .DataPortal().AuthenticationType("custom")
         .DataPortal().AutoCloneOnUpdate(false)
-        .DataPortal().Activator(new TestActivator())
+        .DataPortal().ActivatorType(typeof(TestActivator).AssemblyQualifiedName)
         .DataPortal().ProxyFactoryType("abc")
         .DataPortal().DataPortalReturnObjectOnException(true)
         .DataPortal().DefaultProxy("abc", "def")
@@ -76,6 +76,7 @@ namespace csla.netcore.test.Configuration
       new Csla.Configuration.CslaConfiguration()
         .DataPortal().AuthenticationType(null)
         .DataPortal().AutoCloneOnUpdate(true)
+        .DataPortal().ActivatorType(null)
         .DataPortal().Activator(null)
         .DataPortal().ProxyFactoryType(null)
         .DataPortal().DataPortalReturnObjectOnException(false)
@@ -84,6 +85,7 @@ namespace csla.netcore.test.Configuration
         .DataPortal().FactoryLoaderType(null)
         .DataPortal().InterceptorType(null)
         .DataPortal().ServerAuthorizationProviderType(null);
+      ApplicationContext.DataPortalProxyFactory = string.Empty;
     }
 
     [TestMethod]

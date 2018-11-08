@@ -39,7 +39,7 @@ namespace Csla.Configuration
     /// <param name="size">Max cache size</param>
     public ICslaConfiguration PrincipalCacheMaxCacheSize(int size)
     {
-      Security.PrincipalCache.MaxCacheSize = size;
+      ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] = size.ToString();
       return RootConfiguration;
     }
   }

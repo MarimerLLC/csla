@@ -45,8 +45,8 @@ namespace Csla.Configuration
     /// <returns></returns>
     public ICslaConfiguration DefaultProxy(string typeName, string defaultUrl)
     {
-      ApplicationContext.DataPortalProxy = typeName;
-      ApplicationContext.DataPortalUrlString = defaultUrl;
+      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = typeName;
+      ConfigurationManager.AppSettings["CslaDataPortalUrl"] = defaultUrl;
       return RootConfiguration;
     }
 
@@ -95,15 +95,25 @@ namespace Csla.Configuration
     /// <param name="typeName">Assembly qualified type name</param>
     public ICslaConfiguration ProxyFactoryType(string typeName)
     {
-      ApplicationContext.DataPortalProxyFactory = typeName;
+      ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = typeName;
+      return RootConfiguration;
+    }
+
+    /// <summary>
+    /// Sets the type of the IDataPortalActivator provider.
+    /// </summary>
+    /// <param name="typeName">Assembly qualified type name</param>
+    public ICslaConfiguration ActivatorType(string typeName)
+    {
+      ConfigurationManager.AppSettings["CslaDataPortalActivator"] = typeName;
       return RootConfiguration;
     }
 
     /// <summary>
     /// Sets an instance of the IDataPortalActivator provider.
     /// </summary>
-    /// <param name="activator">Instance of activator</param>
-    public ICslaConfiguration Activator(Csla.Server.IDataPortalActivator activator)
+    /// <param name="activator">Activator instance</param>
+    public ICslaConfiguration Activator(Server.IDataPortalActivator activator)
     {
       ApplicationContext.DataPortalActivator = activator;
       return RootConfiguration;
@@ -116,7 +126,7 @@ namespace Csla.Configuration
     /// <param name="typeName">Authentication type value (defaults to 'Csla')</param>
     public ICslaConfiguration AuthenticationType(string typeName)
     {
-      ApplicationContext.AuthenticationType = typeName;
+      ConfigurationManager.AppSettings["CslaAuthentication"] = typeName;
       return RootConfiguration;
     }
 
@@ -151,7 +161,7 @@ namespace Csla.Configuration
     /// <param name="typeName">Assembly qualified type name</param>
     public ICslaConfiguration ExceptionInspectorType(string typeName)
     {
-      Csla.Server.DataPortalExceptionHandler.ExceptionInspector = typeName;
+      ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"] = typeName;
       return RootConfiguration;
     }
 
@@ -188,7 +198,7 @@ namespace Csla.Configuration
     /// <param name="value">Value (default is false)</param>
     public ICslaConfiguration DataPortalReturnObjectOnException(bool value)
     {
-      ApplicationContext.DataPortalReturnObjectOnException = value;
+      ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
       return RootConfiguration;
     }
   }

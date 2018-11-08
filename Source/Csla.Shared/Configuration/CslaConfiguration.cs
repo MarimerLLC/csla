@@ -53,7 +53,7 @@ namespace Csla.Configuration
     /// <param name="mode">Property changed mode</param>
     public CslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
     {
-      ApplicationContext.PropertyChangedMode = mode;
+      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = mode.ToString();
       return this;
     }
 

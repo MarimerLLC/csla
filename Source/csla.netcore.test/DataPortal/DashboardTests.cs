@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Csla;
 using Csla.Configuration;
 #if !NUNIT
@@ -50,15 +51,14 @@ namespace csla.netcore.test.DataPortal
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    public void DashboardSuccessCounter()
+    public async Task DashboardSuccessCounter()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
 
       var obj = Csla.DataPortal.Create<SimpleType>();
 
-      for (int i = 0; i < 15; i++)
-        System.Threading.Thread.Sleep(50);
+      await Task.Delay(500);
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
       Assert.AreEqual(1, dashboard.TotalCalls, "total");
@@ -68,19 +68,18 @@ namespace csla.netcore.test.DataPortal
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    public void DashboardFailureCounter()
+    public async Task DashboardFailureCounter()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
-
+      
       try
       {
         var obj = Csla.DataPortal.Fetch<SimpleType>("123");
       }
       catch { /*expected failure*/ }
 
-      for (int i = 0; i < 15; i++)
-        System.Threading.Thread.Sleep(50);
+      await Task.Delay(500);
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
       Assert.AreEqual(1, dashboard.TotalCalls, "total");
@@ -90,7 +89,7 @@ namespace csla.netcore.test.DataPortal
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    public void DashboardRecentActivity()
+    public async Task DashboardRecentActivity()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
@@ -102,8 +101,7 @@ namespace csla.netcore.test.DataPortal
       }
       catch { /*expected failure*/ }
 
-      for (int i = 0; i < 15; i++)
-        System.Threading.Thread.Sleep(50);
+      await Task.Delay(500);
 
       var activity = dashboard.GetRecentActivity();
       Assert.AreEqual(2, activity.Count, "count");

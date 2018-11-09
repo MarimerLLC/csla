@@ -578,11 +578,10 @@ namespace Csla.Server
       }
     }
 
-    private DateTimeOffset _startTime;
-
     internal void Complete(InterceptArgs e)
     {
-      e.Runtime = DateTimeOffset.Now - _startTime;
+      var startTime = (DateTimeOffset)ApplicationContext.ClientContext["__dataportaltimer"];
+      e.Runtime = DateTimeOffset.Now - startTime;
       Dashboard.CompleteCall(e);
 
       if (_interceptor != null)
@@ -591,7 +590,7 @@ namespace Csla.Server
 
     internal void Initialize(InterceptArgs e)
     {
-      _startTime = DateTimeOffset.Now;
+      ApplicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
       Dashboard.InitializeCall(e);
 
       if (_interceptor != null)

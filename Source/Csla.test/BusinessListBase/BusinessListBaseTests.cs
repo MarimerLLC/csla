@@ -28,7 +28,7 @@ namespace Csla.Test.BusinessListBase
   public class BusinessListBaseTests
   {
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    
     public void CreateList()
     {
       var obj = Csla.DataPortal.Create<RootList>();
@@ -53,7 +53,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    
     public void ChildAddNewCore()
     {
       bool childChanged = false;

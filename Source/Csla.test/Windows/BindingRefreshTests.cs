@@ -33,6 +33,7 @@ namespace Csla.Test.Windows
   {
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestDoNotRefreshOnException()
     {
       ApplicationContext.GlobalContext.Clear();
@@ -61,6 +62,7 @@ namespace Csla.Test.Windows
 
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestRefreshOnException()
     {
       ApplicationContext.GlobalContext.Clear();

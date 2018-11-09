@@ -366,6 +366,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootUndoApply()
     {
       EditableGetSet root = new EditableGetSet();
@@ -514,6 +515,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootChildListUndoApply()
     {
       var root = new EditableGetSet();

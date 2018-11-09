@@ -30,7 +30,7 @@ namespace Csla.Test.DPException
     {
 #if DEBUG
         [TestMethod()]
-        [TestCategory("SkipWhenLiveUnitTesting")]
+        
         public void CheckInnerExceptionsOnSave()
         {
             Csla.ApplicationContext.Clear();

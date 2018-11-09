@@ -55,6 +55,7 @@ namespace Csla.Server.Dashboard
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static void Reset()
     {
+      _dashboard?.Dispose();
       _dashboard = null;
       DataPortal.Dashboard = GetDashboard();
     }

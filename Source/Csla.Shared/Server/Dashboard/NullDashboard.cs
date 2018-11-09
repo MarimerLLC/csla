@@ -38,5 +38,12 @@ namespace Csla.Server.Dashboard
     {
       throw new NotImplementedException();
     }
+
+    /// <summary>
+    /// Dispose resources used by this object.
+    /// </summary>
+    public void Dispose()
+    {
+    }
   }
 }

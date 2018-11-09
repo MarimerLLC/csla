@@ -146,5 +146,14 @@ namespace Csla.Server.Dashboard
     {
       _completeQueue.Enqueue(e);
     }
+
+    /// <summary>
+    /// Dispose resources used by this object.
+    /// </summary>
+    public void Dispose()
+    {
+      _timerComplete.Dispose();
+      _timerInitialize.Dispose();
+    }
   }
 }

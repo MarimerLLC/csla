@@ -13,7 +13,7 @@ namespace Csla.Server.Dashboard
   /// <summary>
   /// Data portal server dashboard.
   /// </summary>
-  public interface IDashboard
+  public interface IDashboard : IDisposable
   {
     /// <summary>
     /// Gets the time the data portal was first invoked

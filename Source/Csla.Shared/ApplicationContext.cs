@@ -33,6 +33,11 @@ namespace Csla
       _propertyChangedModeSet = false;
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
+      _authenticationTypeName = null;
+      _dataPortalActivator = null;
+      _dataPortalUrl = null;
+      _dataPortalProxyFactory = null;
+      _dataPortalProxy = null;
     }
 
   private static IContextManager _webContextManager;

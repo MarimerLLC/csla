@@ -33,6 +33,7 @@ namespace Csla.Test.Windows
   {
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestReadWrite()
     {
       ApplicationContext.GlobalContext.Clear();

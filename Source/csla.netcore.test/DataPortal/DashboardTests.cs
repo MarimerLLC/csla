@@ -49,6 +49,7 @@ namespace csla.netcore.test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DashboardSuccessCounter()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
@@ -56,12 +57,8 @@ namespace csla.netcore.test.DataPortal
 
       var obj = Csla.DataPortal.Create<SimpleType>();
 
-      //var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
-      {
         System.Threading.Thread.Sleep(50);
-        //wait.SpinOnce();
-      }
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
       Assert.AreEqual(1, dashboard.TotalCalls, "total");
@@ -70,6 +67,7 @@ namespace csla.netcore.test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DashboardFailureCounter()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
@@ -81,12 +79,8 @@ namespace csla.netcore.test.DataPortal
       }
       catch { /*expected failure*/ }
 
-      //var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
-      {
         System.Threading.Thread.Sleep(50);
-        //wait.SpinOnce();
-      }
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
       Assert.AreEqual(1, dashboard.TotalCalls, "total");
@@ -95,6 +89,7 @@ namespace csla.netcore.test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DashboardRecentActivity()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
@@ -107,12 +102,8 @@ namespace csla.netcore.test.DataPortal
       }
       catch { /*expected failure*/ }
 
-      //var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
-      {
         System.Threading.Thread.Sleep(50);
-        //wait.SpinOnce();
-      }
 
       var activity = dashboard.GetRecentActivity();
       Assert.AreEqual(2, activity.Count, "count");

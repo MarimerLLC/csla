@@ -232,6 +232,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestValidationRulesAfterSerialization()
     {
       UnitTestContext context = GetContext();
@@ -471,7 +472,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    
     public void DCEditLevels()
     {
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
@@ -513,7 +514,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    
     public void SerializeCommand()
     {
       var cmd = new TestCommand();

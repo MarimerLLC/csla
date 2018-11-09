@@ -211,6 +211,7 @@ namespace Csla.Configuration
     public ICslaConfiguration DashboardType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDashboardType"] = typeName;
+      Csla.Server.Dashboard.DashboardFactory.Reset();
       return RootConfiguration;
     }
   }

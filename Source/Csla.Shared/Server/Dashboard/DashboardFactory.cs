@@ -56,6 +56,7 @@ namespace Csla.Server.Dashboard
     public static void Reset()
     {
       _dashboard = null;
+      DataPortal.Dashboard = GetDashboard();
     }
   }
 }

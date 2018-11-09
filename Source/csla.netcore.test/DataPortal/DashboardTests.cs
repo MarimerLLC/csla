@@ -30,13 +30,11 @@ namespace csla.netcore.test.DataPortal
     public void TestCleanup()
     {
       new CslaConfiguration().DataPortal().DashboardType(null);
-      Csla.Server.Dashboard.DashboardFactory.Reset();
     }
 
     [TestMethod]
     public void DashboardDefaultIsNullDashboard()
     {
-      Csla.Server.Dashboard.DashboardFactory.Reset();
       new CslaConfiguration().DataPortal().DashboardType(null);
       var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
       Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
@@ -45,7 +43,6 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void DashboardUseRealDashboard()
     {
-      Csla.Server.Dashboard.DashboardFactory.Reset();
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
       Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.Dashboard));
@@ -54,17 +51,16 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void DashboardSuccessCounter()
     {
-      Csla.Server.Dashboard.DashboardFactory.Reset();
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
 
       var obj = Csla.DataPortal.Create<SimpleType>();
 
-      var wait = new System.Threading.SpinWait();
+      //var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
       {
         System.Threading.Thread.Sleep(50);
-        wait.SpinOnce();
+        //wait.SpinOnce();
       }
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
@@ -76,7 +72,6 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void DashboardFailureCounter()
     {
-      Csla.Server.Dashboard.DashboardFactory.Reset();
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
 
@@ -86,11 +81,11 @@ namespace csla.netcore.test.DataPortal
       }
       catch { /*expected failure*/ }
 
-      var wait = new System.Threading.SpinWait();
+      //var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
       {
         System.Threading.Thread.Sleep(50);
-        wait.SpinOnce();
+        //wait.SpinOnce();
       }
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
@@ -102,7 +97,6 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void DashboardRecentActivity()
     {
-      Csla.Server.Dashboard.DashboardFactory.Reset();
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
       var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
 
@@ -113,11 +107,11 @@ namespace csla.netcore.test.DataPortal
       }
       catch { /*expected failure*/ }
 
-      var wait = new System.Threading.SpinWait();
+      //var wait = new System.Threading.SpinWait();
       for (int i = 0; i < 15; i++)
       {
         System.Threading.Thread.Sleep(50);
-        wait.SpinOnce();
+        //wait.SpinOnce();
       }
 
       var activity = dashboard.GetRecentActivity();

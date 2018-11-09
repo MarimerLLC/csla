@@ -25,7 +25,7 @@ namespace Csla.Server.Dashboard
     private readonly Timer _timerInitialize;
     private readonly Timer _timerComplete;
     private ConcurrentQueue<Activity> _recentActivity = new ConcurrentQueue<Activity>();
-    private const int _timerDueTime = 100;
+    private const int _timerDueTime = 50;
     private const int _timerPeriod = 500;
 
     /// <summary>

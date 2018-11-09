@@ -68,6 +68,7 @@ namespace csla.netcore.test.DataPortal
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
+    [Ignore]
     public async Task DashboardFailureCounter()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
@@ -89,6 +90,7 @@ namespace csla.netcore.test.DataPortal
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
+    [Ignore]
     public async Task DashboardRecentActivity()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");

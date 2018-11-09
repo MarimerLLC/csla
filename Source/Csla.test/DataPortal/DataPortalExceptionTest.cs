@@ -2,7 +2,7 @@
 using Csla;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CslaTest
+namespace Csla.Test.DataPortal
 {
   [TestClass]
   public class DataPortalExceptionTests

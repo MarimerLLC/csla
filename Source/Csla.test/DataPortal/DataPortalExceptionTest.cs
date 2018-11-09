@@ -43,7 +43,7 @@ namespace Csla.Test.DataPortal
 
     public static EditableRoot1 New()
     {
-      return DataPortal.Create<EditableRoot1>();
+      return Csla.DataPortal.Create<EditableRoot1>();
     }
 
     [RunLocal]
@@ -73,7 +73,7 @@ namespace Csla.Test.DataPortal
 
     internal static EditableChild1 New()
     {
-      return DataPortal.CreateChild<EditableChild1>();
+      return Csla.DataPortal.CreateChild<EditableChild1>();
     }
 
     private EditableChild1()

@@ -28,7 +28,7 @@ namespace Csla.Server
     /// <summary>
     /// Gets the data portal dashboard instance.
     /// </summary>
-    public static Dashboard.IDashboard Dashboard { get; private set; }
+    public static Dashboard.IDashboard Dashboard { get; internal set; }
 
     static DataPortal()
     {

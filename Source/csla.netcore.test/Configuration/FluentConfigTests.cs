@@ -52,6 +52,7 @@ namespace csla.netcore.test.Configuration
         .Data().DefaultTransactionTimeoutInSeconds(90);
       new CslaConfiguration()
         .Security().PrincipalCacheMaxCacheSize(10);
+      ConfigurationManager.AppSettings.Clear();
       new CslaConfiguration()
         .SettingsChanged();
     }

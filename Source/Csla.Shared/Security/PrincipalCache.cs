@@ -20,6 +20,7 @@ namespace Csla.Security
     private static List<IPrincipal> _cache = new List<IPrincipal>();
 
     private static int _maxCacheSize;
+
     /// <summary>
     /// Gets the maximum cache size
     /// </summary>

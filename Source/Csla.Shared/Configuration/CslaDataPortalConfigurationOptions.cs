@@ -23,8 +23,8 @@ namespace Csla.Configuration
     /// </remarks>
     public string AuthenticationType
     {
-      get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
-      set { ConfigurationManager.AppSettings["CslaAuthentication"] = value;}
+      get { return ApplicationContext.AuthenticationType; }
+      set { ApplicationContext.AuthenticationType = value;}
     }
 
     /// <summary>
@@ -52,8 +52,8 @@ namespace Csla.Configuration
     /// </summary>
     public string ExceptionInspector
     {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"] = value; }
+      get { return Csla.Server.DataPortalExceptionHandler.ExceptionInspector; }
+      set { Csla.Server.DataPortalExceptionHandler.ExceptionInspector = value; }
     }
 
     /// <summary>
@@ -83,8 +83,8 @@ namespace Csla.Configuration
     /// </summary>
     public string Proxy
     {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalProxy"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalProxy"] = value; }
+      get { return ApplicationContext.DataPortalProxy; }
+      set { ApplicationContext.DataPortalProxy = value; }
     }
 
     ///<summary>
@@ -117,8 +117,8 @@ namespace Csla.Configuration
     /// <value>The data portal URL string.</value>
     public string PortalUrl
     {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalUrl"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalUrl"] = value; }
+      get { return ApplicationContext.DataPortalUrlString; }
+      set { ApplicationContext.DataPortalUrlString = value; }
     }
 
     /// <summary>

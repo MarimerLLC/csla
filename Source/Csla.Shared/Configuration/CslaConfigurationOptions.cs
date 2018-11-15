@@ -8,6 +8,8 @@
 
 using Csla.Security;
 using Csla.Serialization.Mobile;
+using System;
+using static Csla.ApplicationContext;
 
 namespace Csla.Configuration
 {
@@ -23,7 +25,7 @@ namespace Csla.Configuration
     public string PropertyChangedMode
     {
       get { return ConfigurationManager.AppSettings["CslaPropertyChangedMode"]; }
-      set { ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = value; }
+      set { ApplicationContext.PropertyChangedMode = (PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), value); }
     }
 
     /// <summary>
@@ -32,7 +34,11 @@ namespace Csla.Configuration
     public string PropertyInfoFactory
     {
       get { return ConfigurationManager.AppSettings["CslaPropertyInfoFactory"]; }
-      set { ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = value; }
+      set
+      {
+        Csla.Core.FieldManager.PropertyInfoFactory.Factory = null;
+        ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = value;
+      }
     }
 
     /// <summary>
@@ -117,7 +123,7 @@ namespace Csla.Configuration
     public int DefaultTransactionTimeoutInSeconds
     {
       get { return int.Parse(ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] ?? "0"); }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = value.ToString(); }
+      set { ApplicationContext.DefaultTransactionTimeoutInSeconds = value; }
     }
 
     /// <summary>

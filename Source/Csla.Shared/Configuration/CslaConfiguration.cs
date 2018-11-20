@@ -27,7 +27,7 @@ namespace Csla.Configuration
     /// Only need to set for non-default WebContextManager.
     /// </remarks>
     /// <returns></returns>
-    public CslaConfiguration WebContextManager(IContextManager contextManager)
+    public ICslaConfiguration WebContextManager(IContextManager contextManager)
     {
       ApplicationContext.WebContextManager = contextManager;
       return this;
@@ -40,7 +40,7 @@ namespace Csla.Configuration
     /// System.Linq.Expressions (true, default).
     /// </summary>
     /// <param name="value">Value</param>
-    public CslaConfiguration UseReflectionFallback(bool value)
+    public ICslaConfiguration UseReflectionFallback(bool value)
     {
       ApplicationContext.UseReflectionFallback = value;
       return this;
@@ -51,7 +51,7 @@ namespace Csla.Configuration
     /// raise PropertyChanged events.
     /// </summary>
     /// <param name="mode">Property changed mode</param>
-    public CslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
+    public ICslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
     {
       ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = mode.ToString();
       return this;
@@ -61,7 +61,7 @@ namespace Csla.Configuration
     /// Sets the RuleSet name to use for static HasPermission calls.
     /// </summary>
     /// <param name="ruleSet">The rule set.</param>
-    public CslaConfiguration RuleSet(string ruleSet)
+    public ICslaConfiguration RuleSet(string ruleSet)
     {
       ApplicationContext.RuleSet = ruleSet;
       return this;
@@ -71,9 +71,21 @@ namespace Csla.Configuration
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
     /// <param name="typeName">Factory type name</param>
-    public CslaConfiguration PropertyInfoFactory(string typeName)
+    public ICslaConfiguration PropertyInfoFactory(string typeName)
     {
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
+      return this;
+    }
+
+    /// <summary>
+    /// Resets any ApplicationContext settings so they 
+    /// re-read their configuration from AppSettings
+    /// on next use.
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public ICslaConfiguration SettingsChanged()
+    {
+      ApplicationContext.SettingsChanged();
       return this;
     }
   }

@@ -20,7 +20,7 @@ namespace Csla.Test.BasicModern
   public class BasicModernTests
   {
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    
     public void CreateGraph()
     {
       var graph = Root.NewRoot();

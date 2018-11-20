@@ -87,7 +87,7 @@ namespace Csla.Test.Threading
     ///A test for BackgroundWorker normal run 
     ///</summary>
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    
     public void BackgroundWorker_RunWorkerAsync_CallsDoWorkAndWorkerCompleted()
     {
 

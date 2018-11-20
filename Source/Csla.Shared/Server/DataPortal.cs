@@ -25,6 +25,16 @@ namespace Csla.Server
   /// </summary>
   public class DataPortal : IDataPortalServer
   {
+    /// <summary>
+    /// Gets the data portal dashboard instance.
+    /// </summary>
+    public static Dashboard.IDashboard Dashboard { get; internal set; }
+
+    static DataPortal()
+    {
+      Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
+    }
+
     #region Constructors
     /// <summary>
     /// Default constructor
@@ -570,12 +580,19 @@ namespace Csla.Server
 
     internal void Complete(InterceptArgs e)
     {
+      var startTime = (DateTimeOffset)ApplicationContext.ClientContext["__dataportaltimer"];
+      e.Runtime = DateTimeOffset.Now - startTime;
+      Dashboard.CompleteCall(e);
+
       if (_interceptor != null)
         _interceptor.Complete(e);
     }
 
     internal void Initialize(InterceptArgs e)
     {
+      ApplicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
+      Dashboard.InitializeCall(e);
+
       if (_interceptor != null)
         _interceptor.Initialize(e);
     }

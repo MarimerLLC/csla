@@ -1018,6 +1018,16 @@ namespace Csla
     }
 
     /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public async Task SaveAndMergeAsync()
+    {
+      new GraphMerger().MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
+    }
+
+    /// <summary>
     /// Starts an async operation to save the object to the database.
     /// </summary>
     public void BeginSave()

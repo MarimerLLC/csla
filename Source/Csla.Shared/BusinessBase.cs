@@ -236,6 +236,30 @@ namespace Csla
     }
 
     /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public async Task SaveAndMergeAsync()
+    {
+      await SaveAndMergeAsync(false);
+    }
+
+    /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling SaveAndMergeAsync().
+    /// </param>
+    public async Task SaveAndMergeAsync(bool forceUpdate)
+    {
+      new GraphMerger().MergeGraph(this, await SaveAsync(forceUpdate));
+    }
+
+    /// <summary>
     /// Starts an async operation to save the object to the database.
     /// </summary>
     public void BeginSave()

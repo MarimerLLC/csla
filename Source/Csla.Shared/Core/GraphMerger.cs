@@ -87,8 +87,8 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     public void MergeBusinessListGraph<T,C>(T target, T source)
-      where T : BusinessListBase<T,C> 
-      where C : BusinessBase<C>, IBusinessObject
+      where T : BusinessListBase<T,C>
+      where C : Core.IEditableBusinessObject
     {
       var deleted = new List<C>();
       foreach (var item in target)

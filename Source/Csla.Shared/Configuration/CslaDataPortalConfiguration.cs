@@ -40,6 +40,18 @@ namespace Csla.Configuration
     /// <summary>
     /// Configure the default data portal proxy type and URL.
     /// </summary>
+    /// <param name="type">Type of data portal proxy</param>
+    /// <param name="defaultUrl">Default server URL</param>
+    /// <returns></returns>
+    public ICslaConfiguration DefaultProxy(Type type, string defaultUrl)
+    {
+      DefaultProxy(type.AssemblyQualifiedName, defaultUrl);
+      return RootConfiguration;
+    }
+
+    /// <summary>
+    /// Configure the default data portal proxy type and URL.
+    /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
     /// <param name="defaultUrl">Default server URL</param>
     /// <returns></returns>

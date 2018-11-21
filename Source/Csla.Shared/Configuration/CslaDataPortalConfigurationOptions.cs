@@ -23,8 +23,8 @@ namespace Csla.Configuration
     /// </remarks>
     public string AuthenticationType
     {
-      get { return ApplicationContext.AuthenticationType; }
-      set { ApplicationContext.AuthenticationType = value;}
+      get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
+      set { ConfigurationManager.AppSettings["CslaAuthentication"] = value;}
     }
 
     /// <summary>
@@ -34,8 +34,19 @@ namespace Csla.Configuration
     /// </summary>
     public bool AutoCloneOnUpdate
     {
-      get { return Csla.ApplicationContext.AutoCloneOnUpdate; }
-      set { ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString(); }
+      get {
+        if (ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] != null)
+        {
+          return bool.Parse(ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"]);
+        }
+
+        return false;
+      }
+
+      set
+      {
+        ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString();
+      }
     }
 
     /// <summary>
@@ -52,8 +63,8 @@ namespace Csla.Configuration
     /// </summary>
     public string ExceptionInspector
     {
-      get { return Csla.Server.DataPortalExceptionHandler.ExceptionInspector; }
-      set { Csla.Server.DataPortalExceptionHandler.ExceptionInspector = value; }
+      get { return ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"]; }
+      set { ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"] = value; }
     }
 
     /// <summary>
@@ -83,8 +94,8 @@ namespace Csla.Configuration
     /// </summary>
     public string Proxy
     {
-      get { return ApplicationContext.DataPortalProxy; }
-      set { ApplicationContext.DataPortalProxy = value; }
+      get { return ConfigurationManager.AppSettings["CslaDataPortalProxy"]; }
+      set { ConfigurationManager.AppSettings["CslaDataPortalProxy"] = value; }
     }
 
     ///<summary>
@@ -107,7 +118,15 @@ namespace Csla.Configuration
     /// </summary>
     public bool ReturnObjectOnException
     {
-      get { return Csla.ApplicationContext.DataPortalReturnObjectOnException; }
+      get
+      {
+        if (ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] != null)
+        {
+          return bool.Parse(ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"]);
+        }
+
+        return false;
+      }
       set { Csla.ApplicationContext.DataPortalReturnObjectOnException = value; }
     }
 
@@ -117,8 +136,8 @@ namespace Csla.Configuration
     /// <value>The data portal URL string.</value>
     public string PortalUrl
     {
-      get { return ApplicationContext.DataPortalUrlString; }
-      set { ApplicationContext.DataPortalUrlString = value; }
+      get { return ConfigurationManager.AppSettings["CslaDataPortalUrl"]; }
+      set { ConfigurationManager.AppSettings["CslaDataPortalUrl"] = value; }
     }
 
     /// <summary>

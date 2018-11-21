@@ -25,7 +25,7 @@ namespace Csla.Configuration
     public string PropertyChangedMode
     {
       get { return ConfigurationManager.AppSettings["CslaPropertyChangedMode"]; }
-      set { ApplicationContext.PropertyChangedMode = (PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), value); }
+      set { ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = value; }
     }
 
     /// <summary>
@@ -35,8 +35,7 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaPropertyInfoFactory"]; }
       set
-      {
-        Csla.Core.FieldManager.PropertyInfoFactory.Factory = null;
+      {        
         ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = value;
       }
     }
@@ -123,7 +122,7 @@ namespace Csla.Configuration
     public int DefaultTransactionTimeoutInSeconds
     {
       get { return int.Parse(ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] ?? "0"); }
-      set { ApplicationContext.DefaultTransactionTimeoutInSeconds = value; }
+      set { ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = value.ToString(); }
     }
 
     /// <summary>
@@ -131,7 +130,16 @@ namespace Csla.Configuration
     /// </summary>
     public int PrincipalCacheSize
     {
-      get { return PrincipalCache.MaxCacheSize; }
+      get
+      {
+        if (ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] != null)
+        {
+          return int.Parse(ConfigurationManager.AppSettings["CslaPrincipalCacheSize"]);
+        }
+
+        return PrincipalCache.MaxCacheSize;
+      }
+
       set { ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] = value.ToString(); }
     }
 

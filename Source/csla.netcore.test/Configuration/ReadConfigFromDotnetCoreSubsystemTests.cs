@@ -43,22 +43,42 @@ namespace csla.netcore.test.Configuration
       CslaConfigurationOptions cslaOptions = new CslaConfigurationOptions();
       config.Bind("csla", cslaOptions);
 
-      Assert.AreEqual(PropertyChangedModes.Windows, Csla.ApplicationContext.PropertyChangedMode);
+      Assert.AreEqual(PropertyChangedModes.Windows,(PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), ConfigurationManager.AppSettings["CslaPropertyChangedMode"]));
       Assert.AreEqual("test1,test2", ConfigurationManager.AppSettings["CslaPropertyInfoFactory"], "CslaPropertyInfoFactory");
       Assert.AreEqual("testReader", ConfigurationManager.AppSettings["CslaReader"], "CslaReader");
       Assert.AreEqual("testSerializationFormatter", ConfigurationManager.AppSettings["CslaSerializationFormatter"], "CslaSerializationFormatter");
       Assert.AreEqual("testIsInRoleProvider", ConfigurationManager.AppSettings["CslaIsInRoleProvider"], "CslaIsInRoleProvider");
       Assert.IsInstanceOfType(MobileRequestProcessor.FactoryLoader, typeof(TestMobileFactoryLoader), "CslaMobileFactoryLoader");
-      Assert.AreEqual(PrincipalCache.MaxCacheSize, cslaOptions.PrincipalCacheSize, "CslaPrincipalCacheSize");
-      //Assert.IsInstanceOfType(CslaReaderWriterFactory.GetCslaWriter(), typeof(TestCslaWriter), "CslaWriter");
+      Assert.AreEqual("10", ConfigurationManager.AppSettings["CslaPrincipalCacheSize"], "CslaPrincipalCacheSize");
+      Assert.IsInstanceOfType(CslaReaderWriterFactory.GetCslaWriter(), typeof(TestCslaWriter), "CslaWriter");
       Assert.AreEqual("testDbProvider", ConfigurationManager.AppSettings["dbProvider"], "dbProvider");
+      Assert.AreEqual("RepeatableRead", ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"], "DefaultTransactionIsolationLevel");
+      Assert.AreEqual("60", ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"], "DefaultTransactionTimeoutInSeconds");                
+    }
 
-      Assert.AreEqual(Csla.TransactionIsolationLevel.RepeatableRead, Csla.ApplicationContext.DefaultTransactionIsolationLevel, "DefaultTransactionIsolationLevel");
-      Assert.AreEqual(60, Csla.ApplicationContext.DefaultTransactionTimeoutInSeconds, "DefaultTransactionTimeoutInSeconds");
+    [TestCleanup]
+    public void ClearContextsAfterEachTest()
+    {
+      CleanupContextAndConfigurations();
+    }
 
-      cslaOptions.PropertyInfoFactory = null;
-
-      //ApplicationContext.Clear();
+    private static void CleanupContextAndConfigurations()
+    {
+      ApplicationContext.AuthenticationType = null;
+      ApplicationContext.DataPortalActivator = null;
+      ConfigurationManager.AppSettings["CslaDataPortalActivator"] = null;
+      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
+      ConfigurationManager.AppSettings["CslaMobileFactoryLoader"] = null;
+      ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = null;
+      ConfigurationManager.AppSettings["CslaReader"] = null; FactoryDataPortal.FactoryLoader = null;
+      ApplicationContext.DataPortalReturnObjectOnException = true;
+      DataPortalExceptionHandler.ExceptionInspector = null;
+      Csla.Server.DataPortal.InterceptorType = null;
+      ApplicationContext.DataPortalProxyFactory = string.Empty;
+      ApplicationContext.DataPortalProxy = null;
+      CslaReaderWriterFactory.SetCslaWriterType(null);
+      CslaReaderWriterFactory.SetCslaReaderType(null);
+      ConfigurationManager.AppSettings["CslaReader"] = null;
       ApplicationContext.RuleSet = null;
       Csla.Configuration.ConfigurationManager.AppSettings["CslaWriter"] = null;
       ApplicationContext.UseReflectionFallback = true;
@@ -72,6 +92,14 @@ namespace csla.netcore.test.Configuration
          .RuleSet(null)
          .UseReflectionFallback(true);
       ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = null;
+      ApplicationContext.Clear();
+    }
+
+    [TestInitialize]
+    public void CleanupConfigurationBeforeEachTest()
+    {
+      CleanupContextAndConfigurations();
     }
 
     [TestMethod]
@@ -91,25 +119,9 @@ namespace csla.netcore.test.Configuration
       Assert.AreEqual("testProxy", DataPortalProxy, nameof(DataPortalProxy));
       Assert.AreEqual("testProxyUrl", DataPortalUrlString, nameof(DataPortalUrlString));
       Assert.AreEqual("testExceptionInspector", Csla.Server.DataPortalExceptionHandler.ExceptionInspector, nameof(Csla.Server.DataPortalExceptionHandler.ExceptionInspector));
-
       Assert.IsInstanceOfType(FactoryDataPortal.FactoryLoader, typeof(TestObjectFactoryLoader), "CslaObjectFactoryLoader");
       Assert.AreEqual("testInterceptor", ConfigurationManager.AppSettings["CslaDataPortalInterceptor"], "InterceptorType");
       Assert.AreEqual("testAuthorizationProvider", ConfigurationManager.AppSettings["CslaAuthorizationProvider"], "CslaAuthorizationProvider");
-
-      ApplicationContext.Clear();
-      ApplicationContext.AuthenticationType = null;
-      ApplicationContext.DataPortalActivator = null;
-      ConfigurationManager.AppSettings["CslaDataPortalActivator"] = null;
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
-      ConfigurationManager.AppSettings["CslaMobileFactoryLoader"] = null;
-      FactoryDataPortal.FactoryLoader = null;
-      ApplicationContext.DataPortalReturnObjectOnException = true;      
-      DataPortalExceptionHandler.ExceptionInspector = null;
-      Csla.Server.DataPortal.InterceptorType = null;            
-      ApplicationContext.DataPortalProxyFactory = string.Empty;
-      ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = null;
-      ConfigurationManager.AppSettings["CslaReader"] = null;
-      ApplicationContext.DataPortalProxy = null;
     }
   }
 

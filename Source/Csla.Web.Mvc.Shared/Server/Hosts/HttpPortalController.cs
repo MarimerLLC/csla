@@ -18,6 +18,7 @@ using System.Net.Http;
 #if NETSTANDARD || NETSTANDARD2_0
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 #else
 using System.Web.Http;
 #endif
@@ -28,7 +29,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD2_0
   public class HttpPortalController : Controller
   {
     /// <summary>
@@ -50,6 +51,61 @@ namespace Csla.Server.Hosts
         await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
       else
         await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Gets a dictionary containing the URLs for each
+    /// data portal route, where each key is the version
+    /// number identifying the route URL.
+    /// </summary>
+    protected static Dictionary<string, string> VersionRoutes = new Dictionary<string, string>();
+    private static HttpClient _client;
+
+    /// <summary>
+    /// Gets or sets the HttpClient timeout
+    /// in milliseconds (0 uses default HttpClient timeout).
+    /// </summary>
+    protected int HttpClientTimeout { get; set; }
+
+    /// <summary>
+    /// Gets an HttpClient object for use in
+    /// communication with the server.
+    /// </summary>
+    protected virtual HttpClient GetHttpClient()
+    {
+      if (_client == null)
+      {
+        _client = new HttpClient();
+        if (this.HttpClientTimeout > 0)
+        {
+          _client.Timeout = TimeSpan.FromMilliseconds(this.HttpClientTimeout);
+        }
+      }
+
+      return _client;
+    }
+
+    /// <summary>
+    /// Entry point for version routed data portal operations.
+    /// </summary>
+    /// <param name="operation">Name of the data portal operation to perform.</param>
+    /// <param name="version">Version of the business layer required.</param>
+    /// <returns>Results from the server-side data portal.</returns>
+    [HttpPost]
+    public virtual async Task PostAsync([FromQuery]string operation, [FromQuery]string version)
+    {
+      if (VersionRoutes.TryGetValue(version, out string route))
+      {
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{route}?operation={operation}")
+        {
+          Content = new StreamContent(Request.Body)
+        };
+        var httpResponse = await GetHttpClient().SendAsync(httpRequest);
+      }
+      else
+      {
+        await PostAsync(operation).ConfigureAwait(false);
+      }
     }
 #elif MVC4
   public class HttpPortalController : Controller

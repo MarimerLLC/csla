@@ -36,6 +36,7 @@ namespace Csla.DataPortalClient
       get { return _timeoutInMilliseconds; }
       set { _timeoutInMilliseconds = value; }
     }
+
     /// <summary>
     /// Gets or sets the default URL address
     /// for the data portal server.
@@ -44,6 +45,16 @@ namespace Csla.DataPortalClient
     /// Deprecated: use ApplicationContext.DataPortalUrlString
     /// </remarks>
     public static string DefaultUrl
+    {
+      get { return ApplicationContext.DataPortalUrlString; }
+      set { ApplicationContext.DataPortalUrlString = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the version number used for
+    /// data portal routing.
+    /// </summary>
+    public static string ApplicationVersion
     {
       get { return ApplicationContext.DataPortalUrlString; }
       set { ApplicationContext.DataPortalUrlString = value; }
@@ -198,8 +209,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=create", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "create");
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -259,8 +269,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=fetch", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "fetch");
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -314,8 +323,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=update", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "update");
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -375,8 +383,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=delete", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "delete");
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -404,8 +411,13 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, HttpRequestMessage httpRequest)
+    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation)
     {
+      HttpRequestMessage httpRequest = null;
+      if (string.IsNullOrWhiteSpace(ApplicationVersion))
+        httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}");
+      else
+        httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}&version={ApplicationVersion}");
       if (UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else

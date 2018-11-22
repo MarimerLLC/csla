@@ -1,0 +1,29 @@
+﻿<Window x:Class="ClientApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClientApp"
+        mc:Ignorable="d" FontSize="14"
+        Title="MainWindow" Height="450" Width="800">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" HorizontalAlignment="Stretch">
+      <TextBlock Text="URL "/>
+      <TextBox Name="ServerUrl" HorizontalAlignment="Stretch" MinWidth="300"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch">
+      <TextBlock Text="Version "/>
+      <TextBox Name="AppVersion" HorizontalAlignment="Stretch" MinWidth="300"/>
+    </StackPanel>
+    <Button Content="Call server" Grid.Row="2" Margin="5" Click="Button_Click"/>
+    <ScrollViewer Grid.Row="3" Margin="5">
+      <TextBlock Name="OutputText"/>
+    </ScrollViewer>
+  </Grid>
+</Window>

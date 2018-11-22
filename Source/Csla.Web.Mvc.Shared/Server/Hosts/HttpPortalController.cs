@@ -47,10 +47,18 @@ namespace Csla.Server.Hosts
     [HttpPost]
     public virtual async Task PostAsync([FromQuery]string operation)
     {
-      if (UseTextSerialization)
-        await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+      if (operation.Contains("/"))
+      {
+        var temp = operation.Split('/');
+        await PostAsync(temp[0], temp[1]);
+      }
       else
-        await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+      {
+        if (UseTextSerialization)
+          await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+        else
+          await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
+      }
     }
 
     /// <summary>
@@ -89,18 +97,19 @@ namespace Csla.Server.Hosts
     /// Entry point for version routed data portal operations.
     /// </summary>
     /// <param name="operation">Name of the data portal operation to perform.</param>
-    /// <param name="version">Version of the business layer required.</param>
-    /// <returns>Results from the server-side data portal.</returns>
-    [HttpPost]
-    public virtual async Task PostAsync([FromQuery]string operation, [FromQuery]string version)
+    /// <param name="version">Application version</param>
+    protected virtual async Task PostAsync(string operation, string version)
     {
       if (VersionRoutes.TryGetValue(version, out string route))
       {
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{route}?operation={operation}")
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{route}?operation={operation}");
+        using (var buffer = new MemoryStream())
         {
-          Content = new StreamContent(Request.Body)
-        };
-        var httpResponse = await GetHttpClient().SendAsync(httpRequest);
+          await Request.Body.CopyToAsync(buffer);
+          httpRequest.Content = new ByteArrayContent(buffer.ToArray());
+        }
+        var response = await GetHttpClient().SendAsync(httpRequest);
+        await response.Content.CopyToAsync(Response.Body);
       }
       else
       {

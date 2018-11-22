@@ -417,7 +417,7 @@ namespace Csla.DataPortalClient
       if (string.IsNullOrWhiteSpace(ApplicationVersion))
         httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}");
       else
-        httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}&version={ApplicationVersion}");
+        httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}/{ApplicationVersion}");
       if (UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else

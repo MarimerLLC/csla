@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ConfigurationErrorsException.cs" company="Marimer LLC">
+// <copyright file="CslaConfigurationOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
-// <summary>Exception class indicating that there was a validation</summary>
+// <summary>Contains configuration options which can be loaded </summary>
 //-----------------------------------------------------------------------
 
 using Csla.Security;
@@ -14,7 +14,8 @@ using static Csla.ApplicationContext;
 namespace Csla.Configuration
 {
   /// <summary>
-  /// Contains configuration options which can be loaded using dot net core configuration subsystem
+  /// Contains configuration options which can be loaded 
+  /// using dot net core configuration subsystem
   /// </summary>
   public class CslaConfigurationOptions
   {
@@ -26,6 +27,23 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaPropertyChangedMode"]; }
       set { ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets a value representing the application version
+    /// for use in server-side data portal routing.
+    /// </summary>
+    /// <remarks>
+    /// If this value is set then you must use the
+    /// .NET Core server-side Http data portal endpoint
+    /// as a router so the request can be routed to
+    /// another app server that is running the correct
+    /// version of the application's assemblies.
+    /// </remarks>
+    public string ApplicationVersion
+    {
+      get { return ConfigurationManager.AppSettings["CslaApplicationVersion"]; }
+      set { ConfigurationManager.AppSettings["CslaApplicationVersion"] = value; }
     }
 
     /// <summary>

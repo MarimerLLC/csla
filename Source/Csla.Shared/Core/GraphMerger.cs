@@ -25,26 +25,22 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     public void MergeGraph(IEditableBusinessObject target, IEditableBusinessObject source)
     {
-      var imp = target as IManageProperties;
-      if (imp != null)
+      if (target is IManageProperties imp)
       {
         var targetProperties = imp.GetManagedProperties();
         foreach (var item in targetProperties)
         {
           var sourceValue = ReadProperty(source, item);
-          var sourceChild = sourceValue as IEditableBusinessObject;
-          if (sourceChild != null)
+          if (sourceValue is IEditableBusinessObject sourceChild)
           {
-            var targetChild = ReadProperty(target, item) as IEditableBusinessObject;
-            if (targetChild != null)
+            if (ReadProperty(target, item) is IEditableBusinessObject targetChild)
               MergeGraph(targetChild, sourceChild);
             else
               LoadProperty(target, item, sourceChild);
           }
           else
           {
-            var sourceList = sourceValue as IEditableCollection;
-            if (sourceList != null)
+            if (sourceValue is IEditableCollection sourceList)
             {
               var targetList = ReadProperty(target, item) as IEditableCollection;
               MergeGraph(targetList, sourceList);

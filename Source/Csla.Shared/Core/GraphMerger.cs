@@ -56,10 +56,35 @@ namespace Csla.Core
           }
         }
         if (source.IsNew)
+        {
           MarkNew(target);
+        }
         else if (!source.IsDirty)
+        {
           MarkOld(target);
+        }
+        else
+        {
+          CopyField(source, target, "_isDirty");
+          CopyField(source, target, "_isNew");
+          CopyField(source, target, "_isDeleted");
+        }
         CheckRules(target);
+      }
+    }
+
+    private static void CopyField(object source, object target, string fieldName)
+    {
+      if (source == null) return;
+      if (target == null) return;
+      var sourceField = source.GetType().GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+      if (sourceField != null)
+      {
+        var targetField = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+        if (targetField!= null)
+        {
+          targetField.SetValue(target, sourceField.GetValue(source));
+        }
       }
     }
 

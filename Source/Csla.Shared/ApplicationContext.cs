@@ -249,6 +249,18 @@ namespace Csla
     #region Settings
 
     /// <summary>
+    /// Gets or sets a value indicating whether the app
+    /// should be considered "offline".
+    /// </summary>
+    /// <remarks>
+    /// If this value is true then the client-side data 
+    /// portal will direct all calls to the local
+    /// data portal. No calls will flow to remote
+    /// data portal endpoints.
+    /// </remarks>
+    public static bool IsOffline { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
     /// System.Linq.Expressions (true, default).

@@ -1077,7 +1077,7 @@ namespace Csla
 
     private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
     {
-      if (forceLocal)
+      if (forceLocal || ApplicationContext.IsOffline)
       {
         return new DataPortalClient.LocalProxy();
       }

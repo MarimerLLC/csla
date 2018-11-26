@@ -51,16 +51,6 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
-    /// Gets or sets the version number used for
-    /// data portal routing.
-    /// </summary>
-    public static string ApplicationVersion
-    {
-      get { return ApplicationContext.DataPortalUrlString; }
-      set { ApplicationContext.DataPortalUrlString = value; }
-    }
-
-    /// <summary>
     /// Creates an instance of the object, initializing
     /// it to use the DefaultUrl 
     /// values.
@@ -209,7 +199,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "create");
+        serialized = await CallDataPortalServer(client, serialized, "create", GetRoutingToken(objectType));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -269,7 +259,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "fetch");
+        serialized = await CallDataPortalServer(client, serialized, "fetch", GetRoutingToken(objectType));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -323,7 +313,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "update");
+        serialized = await CallDataPortalServer(client, serialized, "update", GetRoutingToken(obj.GetType()));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -383,7 +373,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "delete");
+        serialized = await CallDataPortalServer(client, serialized, "delete", GetRoutingToken(objectType));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -411,13 +401,12 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation)
+    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken)
     {
       HttpRequestMessage httpRequest = null;
-      if (string.IsNullOrWhiteSpace(ApplicationVersion))
-        httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}");
-      else
-        httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{DataPortalUrl}?operation={operation}/{ApplicationVersion}");
+      httpRequest = new HttpRequestMessage(
+        HttpMethod.Post, 
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingToken, routingToken)}");
       if (UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else
@@ -431,7 +420,24 @@ namespace Csla.DataPortalClient
       return serialized;
     }
 
-    #region Extension Method for Requests
+    private string CreateOperationTag(string operatation, string versionToken, string routingToken)
+    {
+      if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
+        return $"{operatation}/{routingToken}-{versionToken}";
+      else
+        return operatation;
+    }
+
+    private string GetRoutingToken(Type objectType)
+    {
+      string result = null;
+      var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
+      if (list.Count() > 0)
+        result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
+      return result;
+    }
+
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message

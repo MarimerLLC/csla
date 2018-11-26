@@ -266,12 +266,12 @@ namespace Csla.Test.GraphMerge
       newChild.Name = "new";
 
       var bo = (IBusinessObject)newChild;
-      Assert.IsTrue(bo.Identity >= 0);
+      Assert.IsTrue(bo.Identity >= 0, "bo needs identity");
 
       var saved = obj.Save();
-      Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)saved[0]).Identity);
+      Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)saved[0]).Identity, "identity should survive save");
 
-      Assert.AreNotEqual(obj[0].IsNew, saved[0].IsNew);
+      Assert.AreNotEqual(obj[0].IsNew, saved[0].IsNew, "saved object is not original");
 
       new GraphMerger().MergeBusinessListGraph<FooList, Foo>(obj, saved);
 

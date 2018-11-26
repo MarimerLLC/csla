@@ -63,7 +63,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="version">
     /// Application version used to create data portal
-    /// routing tag.
+    /// routing tag (can not contain '-').
     /// </param>
     /// <remarks>
     /// If this value is set then you must use the
@@ -72,9 +72,12 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public ICslaConfiguration ApplicationVersion(string version)
+    public ICslaConfiguration VersionRoutingToken(string version)
     {
-      ConfigurationManager.AppSettings["CslaApplicationVersion"] = version;
+      if (!string.IsNullOrWhiteSpace(version))
+        if (version.Contains("-") || version.Contains("/"))
+          throw new ArgumentException("VersionRoutingToken");
+      ConfigurationManager.AppSettings["CslaVersionRoutingToken"] = version;
       return this;
     }
 

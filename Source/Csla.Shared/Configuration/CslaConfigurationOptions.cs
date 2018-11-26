@@ -34,16 +34,25 @@ namespace Csla.Configuration
     /// for use in server-side data portal routing.
     /// </summary>
     /// <remarks>
+    /// Application version used to create data portal
+    /// routing tag (can not contain '-').
     /// If this value is set then you must use the
     /// .NET Core server-side Http data portal endpoint
     /// as a router so the request can be routed to
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public string ApplicationVersion
+    public string VersionRoutingToken
     {
-      get { return ConfigurationManager.AppSettings["CslaApplicationVersion"]; }
-      set { ConfigurationManager.AppSettings["CslaApplicationVersion"] = value; }
+      get { return ConfigurationManager.AppSettings["CslaVersionRoutingToken"]; }
+      set
+      {
+        if (!string.IsNullOrWhiteSpace(value))
+          if (value.Contains("-") || value.Contains("/"))
+            throw new ArgumentException("valueRoutingToken");
+        ConfigurationManager.AppSettings["CslaVersionRoutingToken"] = value;
+        ApplicationContext.VersionRoutingToken = null;
+      }
     }
 
     /// <summary>

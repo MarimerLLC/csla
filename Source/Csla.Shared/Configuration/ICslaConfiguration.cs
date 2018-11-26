@@ -43,6 +43,22 @@ namespace Csla.Configuration
     /// <param name="mode">Property changed mode</param>
     ICslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode);
     /// <summary>
+    /// Sets a value representing the application version
+    /// for use in server-side data portal routing.
+    /// </summary>
+    /// <param name="version">
+    /// Application version used to create data portal
+    /// routing tag (can not contain '-').
+    /// </param>
+    /// <remarks>
+    /// If this value is set then you must use the
+    /// .NET Core server-side Http data portal endpoint
+    /// as a router so the request can be routed to
+    /// another app server that is running the correct
+    /// version of the application's assemblies.
+    /// </remarks>
+    ICslaConfiguration VersionRoutingToken(string version);
+    /// <summary>
     /// Sets the RuleSet name to use for static HasPermission calls.
     /// </summary>
     /// <param name="ruleSet">The rule set.</param>

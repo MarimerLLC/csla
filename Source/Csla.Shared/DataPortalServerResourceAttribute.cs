@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalServerResourceAttribute.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Specifies a server resource required by a business type</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla
 {

@@ -38,6 +38,7 @@ namespace Csla
       _dataPortalUrl = null;
       _dataPortalProxyFactory = null;
       _dataPortalProxy = null;
+      _VersionRoutingTag = null;
     }
 
   private static IContextManager _webContextManager;
@@ -248,6 +249,18 @@ namespace Csla
     #region Settings
 
     /// <summary>
+    /// Gets or sets a value indicating whether the app
+    /// should be considered "offline".
+    /// </summary>
+    /// <remarks>
+    /// If this value is true then the client-side data 
+    /// portal will direct all calls to the local
+    /// data portal. No calls will flow to remote
+    /// data portal endpoints.
+    /// </remarks>
+    public static bool IsOffline { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
     /// System.Linq.Expressions (true, default).
@@ -311,6 +324,29 @@ namespace Csla
       set
       {
         _dataPortalUrl = value;
+      }
+    }
+
+    private static string _VersionRoutingTag = null;
+
+    /// <summary>
+    /// Gets or sets a value representing the application version
+    /// for use in server-side data portal routing.
+    /// </summary>
+    public static string VersionRoutingTag
+    {
+      get
+      {
+        if (string.IsNullOrWhiteSpace(_VersionRoutingTag))
+          _VersionRoutingTag = ConfigurationManager.AppSettings["CslaVersionRoutingTag"];
+        return _VersionRoutingTag;
+      }
+      internal set
+      {
+        if (!string.IsNullOrWhiteSpace(value))
+          if (value.Contains("-") || value.Contains("/"))
+            throw new ArgumentException("valueRoutingToken");
+        _VersionRoutingTag = value;
       }
     }
 

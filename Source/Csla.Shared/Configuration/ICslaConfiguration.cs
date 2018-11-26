@@ -1,4 +1,11 @@
-﻿using Csla.Core;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ICslaConfiguration.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Use this type to configure the settings for CSLA .NET</summary>
+//-----------------------------------------------------------------------
+using Csla.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,6 +42,22 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="mode">Property changed mode</param>
     ICslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode);
+    /// <summary>
+    /// Sets a value representing the application version
+    /// for use in server-side data portal routing.
+    /// </summary>
+    /// <param name="version">
+    /// Application version used to create data portal
+    /// routing tag (can not contain '-').
+    /// </param>
+    /// <remarks>
+    /// If this value is set then you must use the
+    /// .NET Core server-side Http data portal endpoint
+    /// as a router so the request can be routed to
+    /// another app server that is running the correct
+    /// version of the application's assemblies.
+    /// </remarks>
+    ICslaConfiguration VersionRoutingTag(string version);
     /// <summary>
     /// Sets the RuleSet name to use for static HasPermission calls.
     /// </summary>

@@ -36,6 +36,7 @@ namespace Csla.DataPortalClient
       get { return _timeoutInMilliseconds; }
       set { _timeoutInMilliseconds = value; }
     }
+
     /// <summary>
     /// Gets or sets the default URL address
     /// for the data portal server.
@@ -198,8 +199,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=create", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "create", GetRoutingToken(objectType));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -259,8 +259,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=fetch", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "fetch", GetRoutingToken(objectType));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -314,8 +313,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=update", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "update", GetRoutingToken(obj.GetType()));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -375,8 +373,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=delete", DataPortalUrl));
-        serialized = await CallDataPortalServer(client, serialized, httpRequest);
+        serialized = await CallDataPortalServer(client, serialized, "delete", GetRoutingToken(objectType));
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -404,8 +401,12 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, HttpRequestMessage httpRequest)
+    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken)
     {
+      HttpRequestMessage httpRequest = null;
+      httpRequest = new HttpRequestMessage(
+        HttpMethod.Post, 
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
       if (UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else
@@ -419,7 +420,24 @@ namespace Csla.DataPortalClient
       return serialized;
     }
 
-    #region Extension Method for Requests
+    private string CreateOperationTag(string operatation, string versionToken, string routingToken)
+    {
+      if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
+        return $"{operatation}/{routingToken}-{versionToken}";
+      else
+        return operatation;
+    }
+
+    private string GetRoutingToken(Type objectType)
+    {
+      string result = null;
+      var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
+      if (list.Count() > 0)
+        result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
+      return result;
+    }
+
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message

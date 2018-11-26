@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  routeddataportal:
+    image: ${DOCKER_REGISTRY-}routeddataportal
+    build:
+      context: .
+      dockerfile: RoutedDataPortal/Dockerfile
+    depends_on:
+      - appserver1
+      - appserver2
+
+  appserver2:
+    image: ${DOCKER_REGISTRY-}appserver2
+    build:
+      context: .
+      dockerfile: AppServer2/Dockerfile
+
+
+  appserver1:
+    image: ${DOCKER_REGISTRY-}appserver1
+    build:
+      context: .
+      dockerfile: AppServer1/Dockerfile
+

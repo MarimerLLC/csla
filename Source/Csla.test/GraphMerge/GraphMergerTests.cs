@@ -188,10 +188,10 @@ namespace Csla.Test.GraphMerge
       cloned.Child.Name = "42";
       cloned.MockUpdated();
 
-      var merger = new GraphMerger();
-      merger.MergeGraph(obj, cloned);
+      new GraphMerger().MergeGraph(obj, cloned);
+
       Assert.IsTrue(ReferenceEquals(obj.Child, cloned.Child), "ref");
-      Assert.ReferenceEquals(obj, obj.Child.Parent);
+      Assert.IsTrue(ReferenceEquals(obj, obj.Child.Parent));
     }
 
     [TestMethod]
@@ -255,6 +255,40 @@ namespace Csla.Test.GraphMerge
       Assert.AreEqual(cloned[2].Name, obj[2].Name, "[2]");
       Assert.AreEqual(cloned.IsDirty, obj.IsDirty);
       Assert.IsFalse(obj.IsDirty);
+    }
+
+    [TestMethod]
+    public void MergeListNewChild()
+    {
+      var obj = Csla.DataPortal.Create<FooList>();
+      var original = obj;
+      var newChild = obj.AddNew();
+      newChild.Name = "new";
+
+      var bo = (IBusinessObject)newChild;
+      Assert.IsTrue(bo.Identity >= 0, "bo needs identity");
+
+      var saved = obj.Save();
+      Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)saved[0]).Identity, "identity should survive save");
+
+      Assert.AreNotEqual(obj[0].IsNew, saved[0].IsNew, "saved object is not original");
+
+      new GraphMerger().MergeBusinessListGraph<FooList, Foo>(obj, saved);
+
+      Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)obj[0]).Identity);
+      Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)saved[0]).Identity);
+      Assert.AreEqual(((IBusinessObject)obj[0]).Identity, ((IBusinessObject)saved[0]).Identity);
+
+      Assert.AreEqual(obj[0].IsNew, saved[0].IsNew);
+
+      Assert.IsFalse(ReferenceEquals(original, saved));
+      Assert.IsTrue(ReferenceEquals(original, obj));
+
+      Assert.IsTrue(ReferenceEquals(original[0], obj[0]));
+      Assert.IsTrue(ReferenceEquals(newChild, obj[0]));
+
+      obj[0].Name = "changed";
+      Assert.AreEqual(original[0].Name, obj[0].Name);
     }
 
     [TestMethod]

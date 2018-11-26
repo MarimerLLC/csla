@@ -63,10 +63,10 @@ namespace Csla.Server.Hosts
 
     /// <summary>
     /// Gets a dictionary containing the URLs for each
-    /// data portal route, where each key is the version
-    /// number identifying the route URL.
+    /// data portal route, where each key is the 
+    /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> VersionRoutes = new Dictionary<string, string>();
+    protected static Dictionary<string, string> RoutingTagUrls = new Dictionary<string, string>();
     private static HttpClient _client;
 
     /// <summary>
@@ -94,13 +94,13 @@ namespace Csla.Server.Hosts
     }
 
     /// <summary>
-    /// Entry point for version routed data portal operations.
+    /// Entry point for routing tag based data portal operations.
     /// </summary>
     /// <param name="operation">Name of the data portal operation to perform.</param>
-    /// <param name="version">Application version</param>
-    protected virtual async Task PostAsync(string operation, string version)
+    /// <param name="routingTag">Routing tag from caller</param>
+    protected virtual async Task PostAsync(string operation, string routingTag)
     {
-      if (VersionRoutes.TryGetValue(version, out string route))
+      if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
       {
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{route}?operation={operation}");
         using (var buffer = new MemoryStream())

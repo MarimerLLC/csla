@@ -57,7 +57,7 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    ICslaConfiguration VersionRoutingToken(string version);
+    ICslaConfiguration VersionRoutingTag(string version);
     /// <summary>
     /// Sets the RuleSet name to use for static HasPermission calls.
     /// </summary>

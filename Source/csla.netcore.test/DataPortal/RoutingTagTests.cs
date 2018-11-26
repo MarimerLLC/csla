@@ -29,7 +29,7 @@ namespace csla.netcore.test.DataPortal
     public void Cleanup()
     {
       new Csla.Configuration.CslaConfiguration()
-        .VersionRoutingToken(null)
+        .VersionRoutingTag(null)
         .SettingsChanged();
     }
 

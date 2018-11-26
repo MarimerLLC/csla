@@ -72,12 +72,12 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public ICslaConfiguration VersionRoutingToken(string version)
+    public ICslaConfiguration VersionRoutingTag(string version)
     {
       if (!string.IsNullOrWhiteSpace(version))
         if (version.Contains("-") || version.Contains("/"))
-          throw new ArgumentException("VersionRoutingToken");
-      ConfigurationManager.AppSettings["CslaVersionRoutingToken"] = version;
+          throw new ArgumentException("VersionRoutingTag");
+      ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = version;
       return this;
     }
 

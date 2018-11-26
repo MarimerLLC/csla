@@ -38,7 +38,7 @@ namespace Csla
       _dataPortalUrl = null;
       _dataPortalProxyFactory = null;
       _dataPortalProxy = null;
-      _versionRoutingToken = null;
+      _VersionRoutingTag = null;
     }
 
   private static IContextManager _webContextManager;
@@ -327,26 +327,26 @@ namespace Csla
       }
     }
 
-    private static string _versionRoutingToken = null;
+    private static string _VersionRoutingTag = null;
 
     /// <summary>
     /// Gets or sets a value representing the application version
     /// for use in server-side data portal routing.
     /// </summary>
-    public static string VersionRoutingToken
+    public static string VersionRoutingTag
     {
       get
       {
-        if (string.IsNullOrWhiteSpace(_versionRoutingToken))
-          _versionRoutingToken = ConfigurationManager.AppSettings["CslaVersionRoutingToken"];
-        return _versionRoutingToken;
+        if (string.IsNullOrWhiteSpace(_VersionRoutingTag))
+          _VersionRoutingTag = ConfigurationManager.AppSettings["CslaVersionRoutingTag"];
+        return _VersionRoutingTag;
       }
       internal set
       {
         if (!string.IsNullOrWhiteSpace(value))
           if (value.Contains("-") || value.Contains("/"))
             throw new ArgumentException("valueRoutingToken");
-        _versionRoutingToken = value;
+        _VersionRoutingTag = value;
       }
     }
 

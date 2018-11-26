@@ -406,7 +406,7 @@ namespace Csla.DataPortalClient
       HttpRequestMessage httpRequest = null;
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post, 
-        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingToken, routingToken)}");
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
       if (UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else

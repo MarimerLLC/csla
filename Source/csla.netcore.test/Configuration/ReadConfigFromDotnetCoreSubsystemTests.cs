@@ -39,9 +39,8 @@ namespace csla.netcore.test.Configuration
     {
       var config = new ConfigurationBuilder()
              .AddJsonFile("appsettings.coresettings.test.json")
-             .Build();
-      CslaConfigurationOptions cslaOptions = new CslaConfigurationOptions();
-      config.Bind("csla", cslaOptions);
+             .Build()
+             .ConfigureCsla();
 
       Assert.AreEqual(PropertyChangedModes.Windows,(PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), ConfigurationManager.AppSettings["CslaPropertyChangedMode"]));
       Assert.AreEqual("test1,test2", ConfigurationManager.AppSettings["CslaPropertyInfoFactory"], "CslaPropertyInfoFactory");
@@ -107,9 +106,8 @@ namespace csla.netcore.test.Configuration
     {
       var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.dataportal.test.json")
-            .Build();
-      CslaConfigurationOptions cslaOptions = new CslaConfigurationOptions();
-      config.Bind("csla", cslaOptions);
+            .Build()
+            .ConfigureCsla();
 
       Assert.AreEqual("testAuthentication", AuthenticationType, nameof(AuthenticationType));
       Assert.AreEqual(true, AutoCloneOnUpdate, nameof(AutoCloneOnUpdate));

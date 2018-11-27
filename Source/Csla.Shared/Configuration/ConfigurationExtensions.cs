@@ -31,8 +31,8 @@ namespace Csla.Configuration
     /// Configure CSLA .NET settings from .NET Core configuration
     /// subsystem.
     /// </summary>
-    /// <param name="config">Configuration root object</param>
-    public static IConfigurationRoot ConfigureCsla(this IConfigurationRoot config)
+    /// <param name="config">Configuration object</param>
+    public static IConfiguration ConfigureCsla(this IConfiguration config)
     {
       config.Bind("csla", new CslaConfigurationOptions());
       return config;

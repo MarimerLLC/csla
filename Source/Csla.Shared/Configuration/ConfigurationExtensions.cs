@@ -23,7 +23,7 @@ namespace Csla.Configuration
     /// <param name="services">IServiceCollection object</param>
     public static ICslaBuilder AddCsla(this IServiceCollection services)
     {
-      services.AddScoped<IDataPortalService, DataPortalService>();
+      services.AddSingleton<IDataPortalService, DataPortalService>();
       return null;
     }
 

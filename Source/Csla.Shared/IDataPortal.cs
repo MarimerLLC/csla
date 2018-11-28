@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IDataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface defining the members of the data portal type</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Csla
 {
-  /// <summary>
-  /// Interface defining the members of the data portal type.
-  /// </summary>
-  /// <typeparam name="T"></typeparam>
-  public interface IDataPortal<T>
+    /// <summary>
+    /// Interface defining the members of the data portal type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IDataPortal<T>
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to

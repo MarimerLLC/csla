@@ -22,12 +22,14 @@ We've also updated some of the docs and officially removed the wiki. All the wik
 * [#959](https://github.com/marimerllc/csla/issues/959) Enhance data portal to use different endpoint per business type
 * [#961](https://github.com/marimerllc/csla/issues/961) Create data portal health/instrumentation endpoint
 * [#1011](https://github.com/marimerllc/csla/issues/1011) Implement `IsOffline` property for data portal
+* [#982](https://github.com/marimerllc/csla/issues/982) Add new `IDataPortalFactory` singleton for page injection in ASP.NET Core
 
 ### Configuration enhancements
 
 * [#966](https://github.com/marimerllc/csla/issues/966) Add fluent config types to CSLA: `Csla.Configuration.CslaConfiguration`
-* [#967](https://github.com/marimerllc/csla/issues/967) Read CSLA config values from .NET Core config subsystem: `CslaConfigurationOptions`; also `ConfigureCsla` extension method to `IConfiguration` for use in ASP.NET Core configuration
-* [#1012](https://github.com/marimerllc/csla/issues/1012)/[#982](https://github.com/marimerllc/csla/issues/982) Implement `AddCsla` method for use in ASP.NET Core `ConfigureServices` (including new `IDataPortalFactory` singleton for page injection)
+* [#967](https://github.com/marimerllc/csla/issues/967) Read CSLA config values from .NET Core config subsystem: `CslaConfigurationOptions`
+* [#1012](https://github.com/marimerllc/csla/issues/1012) Implement `ConfigureCsla` extension method to `IConfiguration` for use in ASP.NET Core configuration
+* [#982](https://github.com/marimerllc/csla/issues/982) Implement `AddCsla` method for use in ASP.NET Core `ConfigureServices` 
 
 ### Bug fixes
 

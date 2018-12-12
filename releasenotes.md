@@ -28,7 +28,7 @@ We've also updated some of the docs and officially removed the wiki. All the wik
 
 * [#966](https://github.com/marimerllc/csla/issues/966) Add fluent config types to CSLA: `Csla.Configuration.CslaConfiguration`
 * [#967](https://github.com/marimerllc/csla/issues/967) Read CSLA config values from .NET Core config subsystem: `CslaConfigurationOptions`
-* [#1012](https://github.com/marimerllc/csla/issues/1012) Implement `ConfigureCsla` extension method to `IConfiguration` for use in ASP.NET Core configuration
+* [#1012](https://github.com/marimerllc/csla/issues/1012) Implement `ConfigureCsla` extension method to `IConfiguration` for use in .NET Core configuration
 * [#982](https://github.com/marimerllc/csla/issues/982) Implement `AddCsla` method for use in ASP.NET Core `ConfigureServices` 
 
 ### Bug fixes

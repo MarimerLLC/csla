@@ -16,12 +16,12 @@ namespace Csla
   /// used to get an access to a client-side data portal
   /// instance.
   /// </summary>
-  public interface IDataPortalService
+  public interface IDataPortalFactory
   {
     /// <summary>
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    IDataPortal<T> GetDataPortal<T>();
+    IDataPortal<T> GetPortal<T>();
   }
 }

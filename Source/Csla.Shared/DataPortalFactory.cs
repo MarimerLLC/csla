@@ -16,14 +16,26 @@ namespace Csla
   /// used to get an access to a client-side data portal
   /// instance.
   /// </summary>
-  public class DataPortalService : IDataPortalService
+  public class DataPortalFactory : IDataPortalFactory
   {
     /// <summary>
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    public IDataPortal<T> GetDataPortal<T>()
+    public IDataPortal<T> GetPortal<T>()
     {
+      return new DataPortal<T>();
+    }
+
+    /// <summary>
+    /// Get a client-side data portal instance.
+    /// </summary>
+    /// <typeparam name="T">Root business object type</typeparam>
+    /// <param name="httpClient">Instance of HttpClient to be used
+    /// by all instances of the CSLA HttpProxy type.</param>
+    public IDataPortal<T> GetPortal<T>(System.Net.Http.HttpClient httpClient)
+    {
+      DataPortalClient.HttpProxy.SetHttpClient(httpClient);
       return new DataPortal<T>();
     }
   }

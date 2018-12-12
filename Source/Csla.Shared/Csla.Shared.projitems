@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettingsCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfigurationOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataConfiguration.cs" />

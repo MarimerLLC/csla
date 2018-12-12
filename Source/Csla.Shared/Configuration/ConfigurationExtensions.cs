@@ -24,7 +24,7 @@ namespace Csla.Configuration
     public static ICslaBuilder AddCsla(this IServiceCollection services)
     {
       services.AddSingleton<IDataPortalFactory, DataPortalFactory>();
-      return null;
+      return new CslaBuilder();
     }
 
     /// <summary>

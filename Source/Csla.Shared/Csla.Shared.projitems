@@ -19,9 +19,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)CommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\BrowsableAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationErrorsException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettingsCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfigurationOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataConfiguration.cs" />
@@ -29,6 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSecurityConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSerializationConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataPortalConfigurationOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
@@ -131,6 +134,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerResourceAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerRoutingTagAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManagerT.cs" />
@@ -159,6 +163,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortalResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IdentityManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDataPortalFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LazySingleton.cs" />

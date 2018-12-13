@@ -1,5 +1,7 @@
 I am pleased to announce the release of CSLA .NET version 4.9.0.
 
+The major enhancements are described in some detail in a [CSLA .NET 4.9.0 blog post](http://www.lhotka.net/weblog/CSLANETVersion49NewFeatures.aspx).
+
 ### Dependabot and NuGet dependencies
 We've started using Dependabot to help keep NuGet dependencies current. As a result, the following updates are included in this release:
 

@@ -3,6 +3,13 @@ I am pleased to announce the release of CSLA .NET version 4.9.0.
 ### Dependabot and NuGet dependencies
 We've started using Dependabot to help keep NuGet dependencies current. As a result, the following updates are included in this release:
 
+* Bump Microsoft.AspNet.Razor from 2.0.20710 to 2.0.30506 in /Source
+* Bump Microsoft.AspNetCore.Mvc from 2.0.3 to 2.2.0 in /Source
+* Bump Microsoft.EntityFrameworkCore from 2.1.4 to 2.2.0 in /Source
+* Bump Microsoft.Extensions.Configuration from 2.1.1 to 2.2.0 in /Source
+* Bump Microsoft.Extensions.Configuration.Binder from 2.1.1 to 2.2.0 in /Source
+* Bump System.Data.SqlClient from 4.5.1 to 4.6.0 in /Source
+* Bump Xamarin.Forms from 3.0.0.482510 to 3.4.0.1008975 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.0.2 to 2.1.4 in /Source 
 * Bump System.Security.Principal.Windows from 4.5.0 to 4.5.1 in /Source 
 * Bump System.Data.SqlClient from 4.4.3 to 4.5.1 in /Source 

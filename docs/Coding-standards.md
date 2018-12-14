@@ -42,7 +42,7 @@ As far as coding standards – follow the code style you see in CSLA .NET. Some 
   * Use parameterName for parameters
 * When you do a Commit make sure to follow the proper format for the commit description (see below)
 * When you create a Pull Request it will trigger a continuous integration build via Appveyor. If that build fails, correct any issues and Push changes to your branch - that will automatically trigger a new CI build
- * ⚠ Make sure to include the issue number in your PR description so GitHub links the PR and issue
+ * ⚠ Make sure to include the issue number in your PR description (not just the title) so GitHub links the PR and issue
  * If your PR closes one or more issues, use the "Closes #123" or "Fixes #123" phrase in your PR description, as when the PR is accepted this will auto-close your issue(s)
 
 ````

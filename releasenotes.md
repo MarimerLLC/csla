@@ -6,7 +6,7 @@ The major enhancements are described in some detail in a [CSLA .NET 4.9.0 blog p
 We've started using Dependabot to help keep NuGet dependencies current. As a result, the following updates are included in this release:
 
 * Bump Microsoft.AspNet.Razor from 2.0.20710 to 2.0.30506 in /Source
-* Bump Microsoft.AspNetCore.Mvc from 2.0.3 to 2.2.0 in /Source
+* ~~Bump Microsoft.AspNetCore.Mvc from 2.0.3 to 2.2.0 in /Source~~
 * Bump Microsoft.EntityFrameworkCore from 2.1.4 to 2.2.0 in /Source
 * Bump Microsoft.Extensions.Configuration from 2.1.1 to 2.2.0 in /Source
 * Bump Microsoft.Extensions.Configuration.Binder from 2.1.1 to 2.2.0 in /Source

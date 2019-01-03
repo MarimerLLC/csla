@@ -40,6 +40,11 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.Runtime.Serialization.Formatters" version="4.3.0" />
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="System.Data.SqlClient" version="4.4.3" />
+        <dependency id="System.Buffers" version="4.5.0" />
+        <dependency id="Microsoft.Extensions.Configuration" version="2.1.1" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.1.1" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="2.1.1" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="2.1.1" />
       </group>
     </dependencies>
   </metadata>

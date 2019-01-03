@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DataPortalInstrumentation.Pages
 {
-    public class CallServerModel : PageModel
+  public class CallServerModel : PageModel
+  {
+    public async Task OnGetAsync()
     {
-        public void OnGet()
-        {
-        }
+      await Csla.DataPortal.FetchAsync<Worker>(123);
     }
+  }
 }

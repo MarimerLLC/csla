@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataPortalInstrumentation.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DataPortalController : Csla.Server.Hosts.HttpPortalController
+  [Route("api/[controller]")]
+  [ApiController]
+  public class DataPortalController : Csla.Server.Hosts.HttpPortalController
+  {
+    public Csla.Server.Dashboard.IDashboard Get()
     {
+      return Csla.Server.Dashboard.DashboardFactory.GetDashboard();
     }
+  }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Csla.Configuration;
+using Csla.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +34,9 @@ namespace DataPortalInstrumentation
 
 
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+      services.ConfigureCsla();
+      services.AddCsla();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +55,9 @@ namespace DataPortalInstrumentation
       app.UseCookiePolicy();
 
       app.UseMvc();
+
+      app.UseCsla();
+      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
     }
   }
 }

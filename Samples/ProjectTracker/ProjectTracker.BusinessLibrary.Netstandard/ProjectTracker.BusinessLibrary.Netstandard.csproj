@@ -13,7 +13,7 @@
   <Import Project="..\ProjectTracker.BusinessLibrary.Shared\ProjectTracker.BusinessLibrary.projitems" Label="Shared" />
 
   <ItemGroup>
-    <PackageReference Include="CSLA-Core" Version="4.8.1" />
+    <PackageReference Include="CSLA-Core" Version="4.9.0" />
   </ItemGroup>
 
   <ItemGroup>

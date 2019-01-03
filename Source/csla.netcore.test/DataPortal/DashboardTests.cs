@@ -54,7 +54,7 @@ namespace csla.netcore.test.DataPortal
     public async Task DashboardSuccessCounter()
     {
       new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
 
       var obj = Csla.DataPortal.Create<SimpleType>();
 

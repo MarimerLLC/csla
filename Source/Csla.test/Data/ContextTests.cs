@@ -29,11 +29,11 @@ namespace Csla.Test.Data
   [TestClass]
   public class ContextTests
   {
-    private const string TestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString";
-    private const string InvalidTestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionStringXXXXXXX";
+    private const string TestDBConnection = nameof(WellKnownValues.DataPortalTestDatabase);
+    private const string InvalidTestDBConnection = "DataPortalTestDatabaseConnectionStringXXXXXXX";
 
-    private const string ConnectionWithMissingDB = "DataPortalTestDatabaseConnectionString_with_invalid_DB_value";
-    private const string EntityConnectionWithMissingDB = "DataPortalTestDatabaseEntities_with_invalid_DB_value";
+    private const string ConnectionWithMissingDB = nameof(WellKnownValues.DataPortalTestDatabaseWithInvalidDBValue);
+    
 
     #region Invalid connection strings
     [TestMethod]
@@ -96,7 +96,7 @@ namespace Csla.Test.Data
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_EntitiesContextDataContext()
     {
-      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(EntityConnectionWithMissingDB, true))
+      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(WellKnownValues.EntityConnectionWithMissingDBConnectionStringName, true))
       {
         Assert.IsNotNull(objectContextManager);
         //Throws EntityException
@@ -145,7 +145,7 @@ namespace Csla.Test.Data
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
     {
-      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager("DataPortalTestDatabaseEntities", true))
+      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(nameof(WellKnownValues.DataPortalTestDatabaseEntities), true))
       {
         Assert.IsNotNull(objectContextManager);
 

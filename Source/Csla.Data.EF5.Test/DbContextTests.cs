@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using Csla.Test;
 using Csla.Test.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,7 +12,7 @@ namespace Csla.Data.EF5.Test
     [TestClass]
     public class DbContextTests
     {
-        private const string TestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString";
+        private const string TestDBConnection = nameof(WellKnownValues.DataPortalTestDatabase);
         private const string InvalidTestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionStringXXXXXXX";
 
         private const string ConnectionWithMissingDB = "DataPortalTestDatabaseConnectionString_with_invalid_DB_value";
@@ -42,7 +43,7 @@ namespace Csla.Data.EF5.Test
         
         public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_DbContextDataContext()
         {
-            var conn = ConfigurationManager.ConnectionStrings[EntityConnectionWithMissingDB].ConnectionString;
+            var conn = WellKnownValues.EntityConnectionWithMissingDB;
             using (var context = new DataPortalTestDatabaseEntities(conn))
             {
                 using (

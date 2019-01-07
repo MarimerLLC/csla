@@ -20,7 +20,7 @@ namespace Csla.Test.DataPortal
     #region "Business methods"
 
     //get the configurationmanager to work right
-    public static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
+    public static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
 
     public static PropertyInfo<int> IDProperty = RegisterProperty<int>(c => c.ID);
     public int ID

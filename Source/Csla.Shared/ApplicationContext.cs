@@ -473,31 +473,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Gets a qualified name for a method that implements
-    /// the IsInRole() behavior used for authorization.
-    /// </summary>
-    /// <returns>
-    /// Returns a value in the form
-    /// "Namespace.Class, Assembly, MethodName".
-    /// </returns>
-    /// <remarks>
-    /// The default is to use a simple IsInRole() call against
-    /// the current principal. If another method is supplied
-    /// it must conform to the IsInRoleProvider delegate.
-    /// </remarks>
-    public static string IsInRoleProvider
-    {
-      get
-      {
-        string result = null;
-        result = ConfigurationManager.AppSettings["CslaIsInRoleProvider"];
-        if (string.IsNullOrEmpty(result))
-          result = string.Empty;
-        return result;
-      }
-    }
-
-    /// <summary>
     /// Gets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.

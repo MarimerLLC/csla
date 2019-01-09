@@ -181,13 +181,13 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// DBProvider
+    /// CslaDbProvider
     /// Instance has to implement <see cref="ICslaWriter"/>.
     /// </summary>
-    public string DbProvider
+    public string CslaDbProvider
     {
-      get { return ConfigurationManager.AppSettings["dbProvider"]; }
-      set { ConfigurationManager.AppSettings["dbProvider"] = value; }
+      get { return ConfigurationManager.AppSettings["CslaDbProvider"]; }
+      set { ConfigurationManager.AppSettings["CslaDbProvider"] = value; }
     }
 
     /// <summary>

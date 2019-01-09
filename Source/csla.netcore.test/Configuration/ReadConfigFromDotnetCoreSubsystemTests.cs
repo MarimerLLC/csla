@@ -49,7 +49,7 @@ namespace csla.netcore.test.Configuration
       Assert.IsInstanceOfType(MobileRequestProcessor.FactoryLoader, typeof(TestMobileFactoryLoader), "CslaMobileFactoryLoader");
       Assert.AreEqual("10", ConfigurationManager.AppSettings["CslaPrincipalCacheSize"], "CslaPrincipalCacheSize");
       Assert.IsInstanceOfType(CslaReaderWriterFactory.GetCslaWriter(), typeof(TestCslaWriter), "CslaWriter");
-      Assert.AreEqual("testDbProvider", ConfigurationManager.AppSettings["dbProvider"], "dbProvider");
+      Assert.AreEqual("testDbProvider", ConfigurationManager.AppSettings["CslaDbProvider"], "CslaDbProvider");
       Assert.AreEqual("RepeatableRead", ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"], "DefaultTransactionIsolationLevel");
       Assert.AreEqual("60", ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"], "DefaultTransactionTimeoutInSeconds");                
     }

@@ -140,7 +140,7 @@ namespace Csla.Data
       _connection = new System.Data.SqlClient.SqlConnection(connectionString);
       _connection.Open();
 #else
-      string provider = ConfigurationManager.AppSettings["dbProvider"];
+      string provider = ConfigurationManager.AppSettings["CslaDbProvider"];
       if (string.IsNullOrEmpty(provider))
         provider = "System.Data.SqlClient";
 

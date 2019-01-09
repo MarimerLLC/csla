@@ -68,25 +68,6 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Gets a qualified name for a method that implements
-    /// the IsInRole() behavior used for authorization.
-    /// </summary>
-    /// <returns>
-    /// Returns a value in the form
-    /// "Namespace.Class, Assembly, MethodName".
-    /// </returns>
-    /// <remarks>
-    /// The default is to use a simple IsInRole() call against
-    /// the current principal. If another method is supplied
-    /// it must conform to the IsInRoleProvider delegate.
-    /// </remarks>
-    public static string IsInRoleProvider
-    {
-      get { return ConfigurationManager.AppSettings["CslaIsInRoleProvider"]; }
-      set { ConfigurationManager.AppSettings["CslaIsInRoleProvider"] = value; }
-    }
-
-    /// <summary>
     /// Gets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).

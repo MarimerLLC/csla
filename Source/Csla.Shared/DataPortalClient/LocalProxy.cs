@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Csla.Server;
 using Csla.Threading;
@@ -41,7 +42,13 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        return await await _taskFactory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync));
+        if (SynchronizationContext.Current == null)
+          return await await this._taskFactory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync));
+
+        return await await this._taskFactory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
+          CancellationToken.None,
+          TaskCreationOptions.None,
+          TaskScheduler.FromCurrentSynchronizationContext());
       }
     }
 
@@ -63,7 +70,13 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        return await await _taskFactory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync));
+        if (SynchronizationContext.Current == null)
+          return await await this._taskFactory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync));
+
+        return await await this._taskFactory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
+          CancellationToken.None,
+          TaskCreationOptions.None,
+          TaskScheduler.FromCurrentSynchronizationContext());
       }
     }
 
@@ -84,7 +97,13 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        return await await _taskFactory.StartNew(() => this._portal.Update(obj, context, isSync));
+        if (SynchronizationContext.Current == null)
+          return await await this._taskFactory.StartNew(() => this._portal.Update(obj, context, isSync));
+
+        return await await this._taskFactory.StartNew(() => this._portal.Update(obj, context, isSync),
+          CancellationToken.None,
+          TaskCreationOptions.None,
+          TaskScheduler.FromCurrentSynchronizationContext());
       }
     }
 
@@ -106,7 +125,13 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        return await await _taskFactory.StartNew(() => _portal.Delete(objectType, criteria, context, isSync));
+        if (SynchronizationContext.Current == null)
+          return await await this._taskFactory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync));
+
+        return await await this._taskFactory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
+          CancellationToken.None,
+          TaskCreationOptions.None,
+          TaskScheduler.FromCurrentSynchronizationContext());
       }
     }
 

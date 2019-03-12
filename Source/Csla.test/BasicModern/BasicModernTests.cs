@@ -20,7 +20,26 @@ namespace Csla.Test.BasicModern
   public class BasicModernTests
   {
     [TestMethod]
-    
+    public void BeginEditWorksWithMobileSerializer()
+    {
+      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      try
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+
+        var graph = Root.NewRoot();
+        graph.BeginEdit();
+
+        //Use a simple assert here to show that this code is reachable without throwing an exception.
+        Assert.IsTrue(true);
+      }
+      finally
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+      }
+    }
+
+    [TestMethod]
     public void CreateGraph()
     {
       var graph = Root.NewRoot();

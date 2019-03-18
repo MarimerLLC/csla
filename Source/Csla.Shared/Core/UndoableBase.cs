@@ -482,7 +482,7 @@ namespace Csla.Core
       using (MemoryStream buffer = new MemoryStream())
       {
         ISerializationFormatter formatter =
-          SerializationFormatterFactory.GetFormatter();
+          SerializationFormatterFactory.GetNativeFormatter();
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -535,7 +535,7 @@ namespace Csla.Core
         {
           buffer.Position = 0;
           ISerializationFormatter formatter =
-            SerializationFormatterFactory.GetFormatter();
+            SerializationFormatterFactory.GetNativeFormatter();
           state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
         }
 

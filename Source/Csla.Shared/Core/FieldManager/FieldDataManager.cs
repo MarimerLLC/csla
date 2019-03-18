@@ -521,7 +521,7 @@ namespace Csla.Core.FieldManager
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        var formatter = SerializationFormatterFactory.GetFormatter();
+        var formatter = SerializationFormatterFactory.GetNativeFormatter();
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -557,7 +557,7 @@ namespace Csla.Core.FieldManager
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter();
+          var formatter = SerializationFormatterFactory.GetNativeFormatter();
           state = (IFieldData[])(formatter.Deserialize(buffer));
         }
 

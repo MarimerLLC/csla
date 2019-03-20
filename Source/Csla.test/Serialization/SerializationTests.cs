@@ -475,13 +475,6 @@ namespace Csla.Test.Serialization
     
     public void DCEditLevels()
     {
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
-        "NetDataContractSerializer";
-      Assert.AreEqual(
-        Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
-        Csla.ApplicationContext.SerializationFormatter,
-        "Formatter should be NetDataContractSerializer");
-
       DCRoot root = new DCRoot();
       root.BeginEdit();
       root.Data = 123;

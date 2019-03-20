@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,11 +35,10 @@ namespace Csla.Analyzers.Tests
       }
     }
 
-    internal static async Task RunAnalysisAsync<T>(string path, string[] diagnosticIds,
+    internal static async Task RunAnalysisAsync<T>(string code, string[] diagnosticIds,
       Action<List<Diagnostic>> diagnosticInspector = null)
       where T : DiagnosticAnalyzer, new()
     {
-      var code = File.ReadAllText(path);
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new T());
       Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
 
@@ -74,6 +72,7 @@ namespace Csla.Analyzers.Tests
          .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location))
          .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location))
          .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location))
+         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Task<>).Assembly.Location))
          .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location));
 
       var documentId = DocumentId.CreateNewId(projectId);

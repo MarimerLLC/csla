@@ -16,9 +16,16 @@ namespace Csla.Analyzers
 
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
-      var invocationSymbol = this.Model.GetSymbolInfo(node).Symbol as IMethodSymbol;
+      var symbol = this.Model.GetSymbolInfo(node);
+      var methodSymbol = symbol.Symbol as IMethodSymbol;
 
-      if (invocationSymbol.IsPropertyInfoManagementMethod())
+      if (methodSymbol == null && symbol.CandidateReason == CandidateReason.OverloadResolutionFailure && 
+        symbol.CandidateSymbols.Length > 0)
+      {
+        methodSymbol = (IMethodSymbol)symbol.CandidateSymbols[0];
+      }
+
+      if (methodSymbol.IsPropertyInfoManagementMethod())
       {
         this.Invocation = node;
       }

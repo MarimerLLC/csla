@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[14.0,16.0]" />
+  </Prerequisites>
   <Metadata>
     <Identity Id="Csla.Analyzers.Vsix..44074259-a8fb-465f-93cd-746bf7376dc9" Version="1.0" Language="en-US" Publisher="jason"/>
     <DisplayName>Csla.Analyzers.Vsix</DisplayName>

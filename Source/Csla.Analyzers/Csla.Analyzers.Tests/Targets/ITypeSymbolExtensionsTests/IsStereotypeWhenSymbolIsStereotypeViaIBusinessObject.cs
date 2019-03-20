@@ -3,5 +3,8 @@
 namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
 {
   public class IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject
-    : IBusinessObject { }
+    : IBusinessObject
+  {
+    public int Identity => default(int);
+  }
 }

@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !(ANDROID || IOS)
+#if !NETFX_CORE && !(ANDROID || IOS) 
 //-----------------------------------------------------------------------
 // <copyright file="TransactionalDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

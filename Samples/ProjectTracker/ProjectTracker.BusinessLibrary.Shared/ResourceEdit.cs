@@ -20,6 +20,7 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    [Display(Name = "Resource id")]
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -55,10 +56,10 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
-      RegisterProperty<ResourceAssignments>(c => c.Assignments);
+      RegisterProperty<ResourceAssignments>(c => c.Assignments, RelationshipTypes.Child);
     public ResourceAssignments Assignments
     {
-      get { return LazyGetProperty(AssignmentsProperty, DataPortal.Create<ResourceAssignments>); }
+      get { return GetProperty(AssignmentsProperty); }
       private set { LoadProperty(AssignmentsProperty, value); }
     }
 
@@ -95,7 +96,7 @@ namespace ProjectTracker.Library
 
     private class NoDuplicateProject : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ResourceEdit)context.Target;
         foreach (var item in target.Assignments)
@@ -137,8 +138,6 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-#if FULL_DOTNET
-
     public static ResourceEdit NewResourceEdit()
     {
       return DataPortal.Create<ResourceEdit>();
@@ -161,15 +160,13 @@ namespace ProjectTracker.Library
       return cmd.ResourceExists;
     }
 
-#endif
-
     [RunLocal]
     protected override void DataPortal_Create()
     {
+      LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
       base.DataPortal_Create();
     }
 
-#if FULL_DOTNET
     private void DataPortal_Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -244,6 +241,5 @@ namespace ProjectTracker.Library
         dal.Delete(id);
       }
     }
-#endif
   }
 }

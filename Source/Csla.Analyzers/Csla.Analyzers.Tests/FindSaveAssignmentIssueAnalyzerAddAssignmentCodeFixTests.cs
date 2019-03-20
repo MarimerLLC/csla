@@ -31,8 +31,20 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixes()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests)}\{(nameof(this.VerifyGetFixes))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests
+{
+  public class User : BusinessBase<User> { }
+
+  public class VerifyGetFixes
+  {
+    public void UseUser()
+    {
+      var x = DataPortal.Fetch<User>();
+      x.Save();
+    }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new FindSaveAssignmentIssueAnalyzer());

@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS)
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="MobileRequestProcessor.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -7,7 +6,7 @@
 // <summary>Object taht processes all the requests from a Silverlight client</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Globalization;
 using System.Threading;
 using Csla.Properties;
@@ -16,12 +15,12 @@ using System.Threading.Tasks;
 namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
-  /// Object taht processes all the requests from a Silverlight client
+  /// Object that processes all the requests from a Silverlight client
   /// </summary>
   public class MobileRequestProcessor
   {
 
-    #region Factory Loader
+#region Factory Loader
 
     private static IMobileFactoryLoader _factoryLoader;
     /// <summary>
@@ -51,9 +50,9 @@ namespace Csla.Server.Hosts.Mobile
       }
     }
 
-    #endregion
+#endregion
 
-    #region Operations
+#region Operations
 
     /// <summary>
     /// Create a new business object.
@@ -384,9 +383,9 @@ namespace Csla.Server.Hosts.Mobile
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region Mobile Factory
+#region Mobile Factory
 
     private static MobileFactoryAttribute GetMobileFactoryAttribute(Type objectType)
     {
@@ -397,9 +396,9 @@ namespace Csla.Server.Hosts.Mobile
         return null;
     }
 
-    #endregion
+#endregion
 
-    #region Context and Criteria
+#region Context and Criteria
     private void SetContext(IMobileRequest request)
     {
       ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
@@ -421,7 +420,7 @@ namespace Csla.Server.Hosts.Mobile
         ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
     }
 
-    #region client culture
+#region client culture
     /// <summary>
     /// Sets the client cultures on current tread.
     /// </summary>
@@ -463,9 +462,8 @@ namespace Csla.Server.Hosts.Mobile
       }
     }
 
-    #endregion 
+#endregion
 
-    #endregion
+#endregion
   }
 }
-#endif

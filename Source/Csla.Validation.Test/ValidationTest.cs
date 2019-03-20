@@ -23,6 +23,7 @@ namespace Csla.Validation.Test
     }
 
     [TestMethod]
+    
     public void DateComparisonIsCorrect()
     {
       var project = DataPortal.Create<Project>();
@@ -37,6 +38,7 @@ namespace Csla.Validation.Test
 
 
     [TestMethod]
+    
     public void StringRequiredIsCorrect()
     {
       var project = DataPortal.Create<Project>();

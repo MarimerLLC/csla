@@ -12,20 +12,20 @@ namespace TestApp
   {
     #region Properties
 
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
     }
 
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    public static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
+    public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
     public string City
     {
       get { return GetProperty(CityProperty); }
@@ -57,7 +57,7 @@ namespace TestApp
 
     private class StopProcessing : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var obj = (CustomerEdit)context.Target;
         if (obj.BrokenRulesCollection.Where(c => c.Property == PrimaryProperty.Name).Count() > 0)
@@ -67,7 +67,7 @@ namespace TestApp
 
     private class CanWrite : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (Csla.Core.BusinessBase)context.Target;
         if (!target.CanWriteProperty(PrimaryProperty))
@@ -77,7 +77,7 @@ namespace TestApp
 
     private class CanRead : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (Csla.Core.BusinessBase)context.Target;
         if (!target.CanReadProperty(PrimaryProperty))
@@ -101,7 +101,7 @@ namespace TestApp
 
     #region Constructors
 
-    private CustomerEdit()
+    public CustomerEdit()
     { }
 
     public static CustomerEdit NewCustomer()

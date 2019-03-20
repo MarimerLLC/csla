@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
-#if SILVERLIGHT
-using Csla.Serialization;
-#endif
 
 namespace Csla.Testing.Business.Security
 {

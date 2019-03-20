@@ -45,7 +45,14 @@ namespace Csla.Analyzers
 
       if (!invocationNode.ContainsDiagnostics)
       {
-        var invocationSymbol = context.SemanticModel.GetSymbolInfo(invocationNode.Expression).Symbol;
+        var symbol = context.SemanticModel.GetSymbolInfo(invocationNode.Expression);
+        var invocationSymbol = symbol.Symbol;
+
+        if (invocationSymbol == null && symbol.CandidateReason == CandidateReason.OverloadResolutionFailure &&
+          symbol.CandidateSymbols.Length > 0)
+        {
+          invocationSymbol = symbol.CandidateSymbols[0];
+        }
 
         if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
         {

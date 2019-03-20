@@ -83,7 +83,6 @@ namespace Csla.Xaml
         _loading = false;
         UpdateState();
       };
-#if !SILVERLIGHT
       // IsVisibleChanged fires when control first gets visible in WPF 
       // Does not exisit in Silverlight -  see Loaded event.
       IsVisibleChanged += (o, e) =>
@@ -95,13 +94,10 @@ namespace Csla.Xaml
                                   UpdateState();
                                 }
                               };
-#endif
-#if !SILVERLIGHT4
       DataContextChanged += (o, e) =>
       {
         if (!_loading) SetSource(e.NewValue);
       };
-#endif
     }
 
     /// <summary>
@@ -333,27 +329,6 @@ namespace Csla.Xaml
 
 #endregion
 
-#if SILVERLIGHT4
-#region MyDataContext Property
-    /// <summary>   
-    /// Workaround for DataContextChanged event that is intenal in SL4 to catch when the DataContext is changed   
-    /// http://msmvps.com/blogs/theproblemsolver/archive/2008/12/29/how-to-know-when-the-datacontext-changed-in-your-control.aspx   
-    /// </summary>   
-    public static readonly DependencyProperty MyDataContextProperty =
-    DependencyProperty.Register("MyDataContext",
-                                typeof(Object),
-                                typeof(PropertyStatus),
-                                new PropertyMetadata(MyDataContextPropertyChanged));
-
-    private static void MyDataContextPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      ((PropertyStatus)sender).SetSource(e.NewValue);
-    }
-
-
-#endregion
-#endif
-
 #region BrokenRules property
 
     /// <summary>
@@ -522,27 +497,6 @@ namespace Csla.Xaml
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
-#if SILVERLIGHT
-      if (popup != null && sender is UIElement && Application.Current.RootVisual != null)
-      {
-        _lastPosition = e.GetPosition(Application.Current.RootVisual);
-        _lastAppSize = Application.Current.RootVisual.RenderSize;
-        Point p = e.GetPosition((UIElement)sender);
-        Size size = ((UIElement)sender).DesiredSize;
-        // ensure events are attached only once.
-        popup.Child.MouseLeave -= new MouseEventHandler(popup_MouseLeave);
-        popup.Child.MouseLeave += new MouseEventHandler(popup_MouseLeave);
-        ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
- 
-        popup.VerticalOffset = p.Y + size.Height;
-        popup.HorizontalOffset = p.X + size.Width;
-        _popupLastPosition = new Point();
-        _popupLastPosition.X = popup.HorizontalOffset;
-        _popupLastPosition.Y = popup.VerticalOffset;
-        popup.Loaded += popup_Loaded;
-        popup.IsOpen = true;
-      }
-#else
       if (popup != null && sender is UIElement)
       {
         popup.Placement = PlacementMode.Mouse;
@@ -550,7 +504,6 @@ namespace Csla.Xaml
         ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
         popup.IsOpen = true;
       }
-#endif
     }
 
     void popup_Loaded(object sender, RoutedEventArgs e)

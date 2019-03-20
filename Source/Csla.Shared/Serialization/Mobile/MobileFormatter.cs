@@ -131,18 +131,13 @@ namespace Csla.Serialization.Mobile
       else
       {
         var thisType = obj.GetType();
-        if (!IsSerializable(thisType))
+        if (!thisType.IsSerializable)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName));
-        var mobile = obj as IMobileObject;
-        if (mobile == null)
+        if (!(obj is IMobileObject mobile))
           throw new InvalidOperationException(
             string.Format(Resources.MustImplementIMobileObject,
-#if NETFX_CORE
-            thisType.Name()));
-#else
             thisType.Name));
-#endif
 
         if (!_serializationReferences.TryGetValue(mobile, out info))
         {
@@ -150,9 +145,28 @@ namespace Csla.Serialization.Mobile
           _serializationReferences.Add(mobile, info);
 
           info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
-
+#if !NET40 && !NET45
+          if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
+          {
+            var principal = (Security.CslaClaimsPrincipal)obj;
+            using (var buffer = new System.IO.MemoryStream())
+            {
+              using (var writer = new System.IO.BinaryWriter(buffer))
+              {
+                principal.WriteTo(writer);
+                info.AddValue("s", buffer.ToArray());
+              }
+            }
+          }
+          else
+          {
+            mobile.GetChildren(info, this);
+            mobile.GetState(info);
+          }
+#else
           mobile.GetChildren(info, this);
           mobile.GetState(info);
+#endif
         }
       }
       return info;
@@ -160,11 +174,6 @@ namespace Csla.Serialization.Mobile
 
     private Dictionary<IMobileObject, SerializationInfo> _serializationReferences =
       new Dictionary<IMobileObject, SerializationInfo>(new ReferenceComparer<IMobileObject>());
-
-    private static bool IsSerializable(Type objectType)
-    {
-      return objectType.IsSerializable();
-    }
 
 #endregion
 
@@ -216,7 +225,7 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Deserialize an object from DTO graph.
     /// </summary>
-    ///<param name="deserialized">DTO grap to deserialize</param>
+    ///<param name="deserialized">DTO group to deserialize</param>
     /// <returns></returns>
     public object DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
@@ -238,16 +247,36 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
-#if (ANDROID || IOS) || NETFX_CORE
-          IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
+#if !NET40 && !NET45
+          if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
+          {
+            var state = info.GetValue<byte[]>("s");
+            using (var buffer = new System.IO.MemoryStream(state))
+            {
+              using (var reader = new System.IO.BinaryReader(buffer))
+              {
+                IMobileObject mobile = (IMobileObject)new Security.CslaClaimsPrincipal(reader);
+                _deserializationReferences.Add(info.ReferenceId, mobile);
+              }
+            }
+          }
+          else
+          {
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+
+            _deserializationReferences.Add(info.ReferenceId, mobile);
+
+            ConvertEnumsFromIntegers(info);
+            mobile.SetState(info);
+          }
 #else
-          IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+
+            _deserializationReferences.Add(info.ReferenceId, mobile);
+
+            ConvertEnumsFromIntegers(info);
+            mobile.SetState(info);
 #endif
-
-          _deserializationReferences.Add(info.ReferenceId, mobile);
-
-          ConvertEnumsFromIntegers(info);
-          mobile.SetState(info);
         }
       }
 
@@ -267,7 +296,6 @@ namespace Csla.Serialization.Mobile
         if (notifiable != null)
           notifiable.Deserialized();
       }
-
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);
     }
 

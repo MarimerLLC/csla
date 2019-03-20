@@ -2,13 +2,14 @@
 using Csla;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CslaTest
+namespace Csla.Test.DataPortal
 {
   [TestClass]
-  public class UnitTest1
+  public class DataPortalExceptionTests
   {
     [TestMethod]
-    public void TestMethod1()
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public void ChildInnerExceptionFlowsFromDataPortal()
     {
       try
       {
@@ -42,7 +43,7 @@ namespace CslaTest
 
     public static EditableRoot1 New()
     {
-      return DataPortal.Create<EditableRoot1>();
+      return Csla.DataPortal.Create<EditableRoot1>();
     }
 
     [RunLocal]
@@ -72,7 +73,7 @@ namespace CslaTest
 
     internal static EditableChild1 New()
     {
-      return DataPortal.CreateChild<EditableChild1>();
+      return Csla.DataPortal.CreateChild<EditableChild1>();
     }
 
     private EditableChild1()

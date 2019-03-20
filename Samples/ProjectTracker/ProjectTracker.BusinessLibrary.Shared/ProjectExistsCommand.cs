@@ -6,14 +6,14 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectExistsCommand : CommandBase<ProjectExistsCommand>
   {
-    public static PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
+    public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
     private int ProjectId
     {
       get { return ReadProperty(ProjectIdProperty); }
       set { LoadProperty(ProjectIdProperty, value); }
     }
 
-    public static PropertyInfo<bool> ProjectExistsProperty = RegisterProperty<bool>(c => c.ProjectExists);
+    public static readonly PropertyInfo<bool> ProjectExistsProperty = RegisterProperty<bool>(c => c.ProjectExists);
     public bool ProjectExists
     {
       get { return ReadProperty(ProjectExistsProperty); }
@@ -23,13 +23,11 @@ namespace ProjectTracker.Library
     public ProjectExistsCommand()
     { }
 
-#pragma warning disable CSLA0004
     public ProjectExistsCommand(int id)
     {
       ProjectId = id;
     }
 
-#if FULL_DOTNET
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -38,6 +36,5 @@ namespace ProjectTracker.Library
         ProjectExists = dal.Exists(ProjectId);
       }
     }
-#endif
   }
 }

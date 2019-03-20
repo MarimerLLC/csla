@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Object providing schema information for a</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -108,4 +107,3 @@ namespace Csla.Web.Design
     }
   }
 }
-#endif

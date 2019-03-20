@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml">
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml">
 
     <DataTemplate x:Key="BrokenRuleTemplate">
         <Grid>
@@ -86,10 +86,10 @@
                                 <VisualState x:Name="Error">
                                     <Storyboard>
                                         <DoubleAnimation
-        	                                            Storyboard.TargetName="errorImage"
-        	                                            Storyboard.TargetProperty="Opacity"
-        	                                            BeginTime="00:00:00" Duration="0:0:1"
-        	                                            To="1"/>
+                                                      Storyboard.TargetName="errorImage"
+                                                      Storyboard.TargetProperty="Opacity"
+                                                      BeginTime="00:00:00" Duration="0:0:1"
+                                                      To="1"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="errorImage" 
                                                                        Storyboard.TargetProperty="Visibility"
                                                                        Duration="0">
@@ -123,10 +123,10 @@
                                 <VisualState x:Name="Information">
                                     <Storyboard>
                                         <DoubleAnimation
-	                                            Storyboard.TargetName="informationImage"
-	                                            Storyboard.TargetProperty="Opacity"
-	                                            BeginTime="00:00:00" Duration="0:0:0.75"
-	                                            To="1"/>
+                                              Storyboard.TargetName="informationImage"
+                                              Storyboard.TargetProperty="Opacity"
+                                              BeginTime="00:00:00" Duration="0:0:0.75"
+                                              To="1"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="informationImage" 
                                                                        Storyboard.TargetProperty="Visibility"
                                                                        Duration="0">
@@ -154,26 +154,26 @@
                                    Text="Error" 
                                    Opacity="0"
                                    Visibility="Collapsed">                            
-        	                <TextBlock.BitmapEffect>
-        		                <OuterGlowBitmapEffect GlowColor="Red" GlowSize="10" Opacity="0.75"/>
-        	                </TextBlock.BitmapEffect>
+                          <TextBlock.BitmapEffect>
+                            <OuterGlowBitmapEffect GlowColor="Red" GlowSize="10" Opacity="0.75"/>
+                          </TextBlock.BitmapEffect>
                         </TextBlock>
 
                         <TextBlock x:Name="warningImage"
                                    Text="Warning" 
                                    Opacity="0"
                                    Visibility="Collapsed" >
-        	                <TextBlock.BitmapEffect>
-        		                <OuterGlowBitmapEffect GlowColor="Yellow" GlowSize="10" Opacity="0.75"/>
-        	                </TextBlock.BitmapEffect>
+                          <TextBlock.BitmapEffect>
+                            <OuterGlowBitmapEffect GlowColor="Yellow" GlowSize="10" Opacity="0.75"/>
+                          </TextBlock.BitmapEffect>
                         </TextBlock>
                         <TextBlock x:Name="informationImage"
                                    Text="Information" 
                                    Opacity="0"
                                    Visibility="Collapsed" >                            
-        	                <TextBlock.BitmapEffect>
-        		                <OuterGlowBitmapEffect GlowColor="Gray" GlowSize="10" Opacity="0.75"/>
-        	                </TextBlock.BitmapEffect>
+                          <TextBlock.BitmapEffect>
+                            <OuterGlowBitmapEffect GlowColor="Gray" GlowSize="10" Opacity="0.75"/>
+                          </TextBlock.BitmapEffect>
                         </TextBlock>
 
                         <!--<Popup x:Name="popup">

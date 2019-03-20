@@ -6,9 +6,7 @@
 // <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -34,14 +32,12 @@ namespace Csla.Server
     {
       get
       {
-#if !(ANDROID || IOS) && !NETFX_CORE
         if (_datePortalInspecorName == null)
         {
           string setting = ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"];
           if (!string.IsNullOrEmpty(setting))
             _datePortalInspecorName = setting;
         }
-#endif
         return _datePortalInspecorName;
       }
       set

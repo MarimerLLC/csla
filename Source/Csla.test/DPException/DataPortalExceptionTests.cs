@@ -30,6 +30,7 @@ namespace Csla.Test.DPException
     {
 #if DEBUG
         [TestMethod()]
+        
         public void CheckInnerExceptionsOnSave()
         {
             Csla.ApplicationContext.Clear();

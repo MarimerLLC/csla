@@ -41,6 +41,7 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Create()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
@@ -61,8 +62,8 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+        new ObjectFactoryLoader(8);
+      var root = Csla.DataPortal.Create<Root>("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -70,13 +71,14 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateMissing()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);
-      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+      var root = Csla.DataPortal.Create<Root>("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -99,7 +101,7 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Fetch<Root>(new SingleCriteria<Root, string>("abc"));
+      var root = Csla.DataPortal.Fetch<Root>("abc");
       Assert.AreEqual("abc", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
@@ -118,31 +120,6 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
-
-    // commented out because almost nobody has COM+ enabled anymore
-    //[TestMethod]
-    //public void UpdateEnterpriseServices()
-    //{
-    //  try
-    //  {
-    //    Csla.Server.FactoryDataPortal.FactoryLoader =
-    //      new ObjectFactoryLoader(2);
-    //    var root = new Root();
-    //    root.Data = "abc";
-    //    root = Csla.DataPortal.Update<Root>(root);
-    //    Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-    //    Assert.AreEqual("Update", root.Data, "Data should match");
-    //    Assert.IsFalse(root.IsNew, "Should not be new");
-    //    Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    //  }
-    //  catch (Csla.DataPortalException ex)
-    //  {
-    //    if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
-    //      Assert.Inconclusive("COM+ not accessible");
-    //    else
-    //      throw;
-    //  }
-    //}
 
     [TestMethod]
     public void UpdateTransactionScope()
@@ -164,8 +141,8 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(4);
@@ -185,8 +162,8 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(5);
       var root = new Root();
@@ -206,7 +183,7 @@ namespace Csla.Test.ObjectFactory
     [Ignore]
     public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(6);
       var root = new Root();
@@ -224,7 +201,7 @@ namespace Csla.Test.ObjectFactory
     [Ignore]
     public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader(7);
@@ -249,7 +226,7 @@ namespace Csla.Test.ObjectFactory
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
 
-      Csla.DataPortal.Delete<Root>(new SingleCriteria<Root, string>("abc"));
+      Csla.DataPortal.Delete<Root>("abc");
 
       Assert.AreEqual("Delete", Csla.ApplicationContext.GlobalContext["ObjectFactory"].ToString(), "Data should match");
     }

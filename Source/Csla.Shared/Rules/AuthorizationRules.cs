@@ -71,18 +71,21 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(AuthorizationContext context)
     {
-      if (_roles.Count > 0)
+      if (Csla.ApplicationContext.User != null)
       {
-        foreach (var item in _roles)
-          if (Csla.ApplicationContext.User.IsInRole(item))
-          {
-            context.HasPermission = true;
-            break;
-          }
-      }
-      else
-      {
-        context.HasPermission = true;
+        if (_roles.Count > 0)
+        {
+          foreach (var item in _roles)
+            if (Csla.ApplicationContext.User.IsInRole(item))
+            {
+              context.HasPermission = true;
+              break;
+            }
+        }
+        else
+        {
+          context.HasPermission = true;
+        }
       }
     }
   }
@@ -147,12 +150,15 @@ namespace Csla.Rules.CommonRules
     protected override void Execute(AuthorizationContext context)
     {
       context.HasPermission = true;
-      foreach (var item in _roles)
-        if (Csla.ApplicationContext.User.IsInRole(item))
-        {
-          context.HasPermission = false;
-          break;
-        }
+      if (Csla.ApplicationContext.User != null)
+      {
+        foreach (var item in _roles)
+          if (Csla.ApplicationContext.User.IsInRole(item))
+          {
+            context.HasPermission = false;
+            break;
+          }
+      }
     }
   }
 }

@@ -20,14 +20,14 @@ namespace Csla.Test.BypassPropertyChecks
       MarkOld();
     }
 
-    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Id"));
+    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value, Csla.Security.NoAccessBehavior.ThrowException); }
     }
 
-    protected static PropertyInfo<int> Id2Property = RegisterProperty<int>(new PropertyInfo<int>("Id2", "Id2"));
+    protected static PropertyInfo<int> Id2Property = RegisterProperty<int>(c => c.Id2, "Id2");
     public int Id2
     {
       get { return GetProperty<int>(Id2Property); }
@@ -35,7 +35,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     private int _id3;
-    protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(new PropertyInfo<int>("Id3", "Id3", RelationshipTypes.PrivateField));
+    protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(c => c.Id3, "Id3", RelationshipTypes.PrivateField);
     public int Id3
     {
       get { return GetProperty<int>(Id3Property, _id3); }
@@ -43,7 +43,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     private int _id4;
-    protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(new PropertyInfo<int>("Id4", "Id4", RelationshipTypes.PrivateField));
+    protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(c => c.Id4, "Id4", RelationshipTypes.PrivateField);
     public int Id4
     {
       get { return GetProperty<int>(Id4Property, _id4); }

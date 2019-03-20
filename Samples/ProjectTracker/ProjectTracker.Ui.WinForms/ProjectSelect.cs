@@ -1,26 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Linq;
 using System.Windows.Forms;
 using ProjectTracker.Library;
-using System.Linq;
 
 namespace PTWin
 {
   public partial class ProjectSelect : Form
   {
-
     private int _projectId;
 
     public int ProjectId
     {
       get { return _projectId; }
     }
-
-
 
     public ProjectSelect()
     {
@@ -29,7 +21,7 @@ namespace PTWin
 
     private void OK_Button_Click(object sender, EventArgs e)
     {
-      _projectId = (int)this.ProjectListListBox.SelectedValue;
+      _projectId = (int) this.ProjectListListBox.SelectedValue;
       this.Close();
     }
 
@@ -57,6 +49,13 @@ namespace PTWin
       object sender, EventArgs e)
     {
       DisplayList(ProjectList.GetProjectList(NameTextBox.Text));
+    }
+
+    private void ProjectListListBox_DoubleClick(object sender, EventArgs e)
+    {
+      _projectId = (int) this.ProjectListListBox.SelectedValue;
+      this.DialogResult = DialogResult.OK;
+      this.Close();
     }
   }
 }

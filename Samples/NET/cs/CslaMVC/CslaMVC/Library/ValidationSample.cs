@@ -21,7 +21,7 @@ namespace CslaMVC.Library
 
         #region Business Methods
 
-        private static PropertyInfo<int> IdProperty = RegisterProperty<int>(o => o.Id, "Id");
+        public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(o => o.Id, "Id");
         [Range(1, int.MaxValue)]
         public int Id
         {
@@ -29,7 +29,7 @@ namespace CslaMVC.Library
             set { SetProperty(IdProperty, value); }
         }
 
-        private static PropertyInfo<int?> NumProperty = RegisterProperty<int?>(o => o.Num, "Required Int");
+        public static readonly PropertyInfo<int?> NumProperty = RegisterProperty<int?>(o => o.Num, "Required Int");
         [Required]
         public int? Num
         {
@@ -37,7 +37,7 @@ namespace CslaMVC.Library
             set { SetProperty(NumProperty, value); }
         }
 
-        private static PropertyInfo<string> SLengthProperty = RegisterProperty<string>(o => o.SLength, "String Max Length");
+        public static readonly PropertyInfo<string> SLengthProperty = RegisterProperty<string>(o => o.SLength, "String Max Length");
         [StringLength(10, MinimumLength = 2)]
         public string SLength
         {
@@ -45,7 +45,7 @@ namespace CslaMVC.Library
             set { SetProperty(SLengthProperty, value); }
         }
 
-        private static PropertyInfo<string> SMinLengthProperty = RegisterProperty<string>(o => o.SMinLength, "String Min Length");
+        public static readonly PropertyInfo<string> SMinLengthProperty = RegisterProperty<string>(o => o.SMinLength, "String Min Length");
         [StringLength(10, MinimumLength = 2)]
         public string SMinLength
         {
@@ -53,7 +53,7 @@ namespace CslaMVC.Library
             set { SetProperty(SMinLengthProperty, value); }
         }
 
-        private static PropertyInfo<byte> CodeProperty = RegisterProperty<byte>(o => o.Code, "ByteCode");
+        public static readonly PropertyInfo<byte> CodeProperty = RegisterProperty<byte>(o => o.Code, "ByteCode");
         [Range(typeof(byte), "1", "4")]
         public byte Code
         {
@@ -61,7 +61,7 @@ namespace CslaMVC.Library
             set { SetProperty(CodeProperty, value); }
         }
 
-        private static PropertyInfo<string> UidProperty = RegisterProperty<string>(o => o.Uid, "Guid");
+        public static readonly PropertyInfo<string> UidProperty = RegisterProperty<string>(o => o.Uid, "Guid");
         [RegularExpression(ValidateNonEmptyGuid)]
         public string Uid
         {
@@ -69,7 +69,7 @@ namespace CslaMVC.Library
             set { SetProperty(UidProperty, value); }
         }
 
-        private static PropertyInfo<string> SSNProperty = RegisterProperty<string>(o => o.SSN, "SSN");
+        public static readonly PropertyInfo<string> SSNProperty = RegisterProperty<string>(o => o.SSN, "SSN");
         [RegularExpression(ValidateSSN)]
         public string SSN
         {
@@ -77,7 +77,7 @@ namespace CslaMVC.Library
             set { SetProperty(SSNProperty, value); }
         }
 
-        private static PropertyInfo<string> ZipProperty = RegisterProperty<string>(o => o.Zip, "Zip");
+        public static readonly PropertyInfo<string> ZipProperty = RegisterProperty<string>(o => o.Zip, "Zip");
         [RegularExpression(ValidateZipCode)]
         public string Zip
         {
@@ -85,7 +85,7 @@ namespace CslaMVC.Library
             set { SetProperty(ZipProperty, value); }
         }
 
-        private static PropertyInfo<string> UrlProperty = RegisterProperty<string>(o => o.Url, "Url");
+        public static readonly PropertyInfo<string> UrlProperty = RegisterProperty<string>(o => o.Url, "Url");
         [RegularExpression(ValidateUrl)]
         public string Url
         {
@@ -93,7 +93,7 @@ namespace CslaMVC.Library
             set { SetProperty(UrlProperty, value); }
         }
 
-        private static PropertyInfo<string> EmailProperty = RegisterProperty<string>(o => o.Email, "E-Mail");
+        public static readonly PropertyInfo<string> EmailProperty = RegisterProperty<string>(o => o.Email, "E-Mail");
         [RegularExpression(ValidateEMail)]
         public string Email
         {
@@ -101,7 +101,7 @@ namespace CslaMVC.Library
             set { SetProperty(EmailProperty, value); }
         }
 
-        private static PropertyInfo<string> YearProperty = RegisterProperty<string>(o => o.Year, "Year");
+        public static readonly PropertyInfo<string> YearProperty = RegisterProperty<string>(o => o.Year, "Year");
         [RegularExpression(ValidateYear)]
         public string Year
         {
@@ -109,7 +109,7 @@ namespace CslaMVC.Library
             set { SetProperty(YearProperty, value); }
         }
 
-        private static PropertyInfo<string> AreaCodeProperty = RegisterProperty<string>(o => o.AreaCode, "AreaCode");
+        public static readonly PropertyInfo<string> AreaCodeProperty = RegisterProperty<string>(o => o.AreaCode, "AreaCode");
         [RegularExpression(ValidateAreaCode)]
         public string AreaCode
         {
@@ -117,7 +117,7 @@ namespace CslaMVC.Library
             set { SetProperty(AreaCodeProperty, value); }
         }
 
-        private static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(o => o.Phone, "Phone");
+        public static readonly PropertyInfo<string> PhoneProperty = RegisterProperty<string>(o => o.Phone, "Phone");
         [RegularExpression(ValidatePhoneNumber)]
         public string Phone
         {
@@ -125,7 +125,7 @@ namespace CslaMVC.Library
             set { SetProperty(PhoneProperty, value); }
         }
 
-        private static PropertyInfo<string> ExtensionProperty = RegisterProperty<string>(o => o.Extension, "Extension");
+        public static readonly PropertyInfo<string> ExtensionProperty = RegisterProperty<string>(o => o.Extension, "Extension");
         [RegularExpression(ValidatePhoneExtension)]
         public string Extension
         {
@@ -165,7 +165,7 @@ namespace CslaMVC.Library
             DataPortal.Delete<Customer>(new SingleCriteria<ValidationSample, int>(id));
         }
 
-        private ValidationSample()
+      public ValidationSample()
         { /* Require use of factory methods */ }
 
         #endregion

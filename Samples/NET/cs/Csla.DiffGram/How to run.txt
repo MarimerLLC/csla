@@ -1,0 +1,3 @@
+First, build all.
+Then debug with F5 to start server side.
+You can break the debug and run normally with CTRL F5.

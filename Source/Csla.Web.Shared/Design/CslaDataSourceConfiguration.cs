@@ -18,7 +18,6 @@ namespace Csla.Web.Design
   /// </summary>
   public partial class CslaDataSourceConfiguration : Form
   {
-#if !CLIENTONLY
     private DataSourceControl _control;
 
     /// <summary>
@@ -88,6 +87,5 @@ namespace Csla.Web.Design
         }
       }
     }
-#endif
   }
 }

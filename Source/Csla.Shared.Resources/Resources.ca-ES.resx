@@ -129,9 +129,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Canviar un element és una operació invàlida</value>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>El valor Parent només pot ser establert per objectes fill</value>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>No es pot marcar directament un objecte fill per a esborrar-lo - utilitzeu la col·lecció pare</value>
   </data>

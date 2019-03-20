@@ -40,8 +40,8 @@ namespace Csla.Test.SafeDataReader
         Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
       }
 
-        //pull from ConfigurationManager
-      private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
+    private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
+
 
         public void ClearDataBase()
         {
@@ -64,6 +64,7 @@ namespace Csla.Test.SafeDataReader
         }
 
         [TestMethod()]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void CloseSafeDataReader()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
@@ -102,69 +103,8 @@ namespace Csla.Test.SafeDataReader
             }
         }
 
-    //[TestMethod()]
-    //public void InsertBinaryObject()
-    //{
-    //    Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
-    //    root.FirstName = "Bill";
-    //    root.LastName = "Johnson";
-    //    root = root.Save();
-
-    //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-    //    SqlCommand cm = cn.CreateCommand();
-    //    cm.CommandText = "UPDATE MultiDataTypes SET BINARYFIELD=@obj WHERE CHARFIELD='z'";
-    //    cm.Parameters.Add("@obj", SqlDbType.Binary);
-
-    //    //create an object that will be serialized for the binaryfield
-    //    System.IO.MemoryStream buffer = new System.IO.MemoryStream();
-
-    //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = 
-    //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
-    //    formatter.Serialize(buffer, root);
-    //    buffer.Position = 0;
-
-    //    cm.Parameters["@obj"].Value = buffer.ToArray(); //serialized object
-
-    //    cn.Open();
-    //    cm.ExecuteNonQuery();
-    //    cn.Close();
-    //}
-
-    //[TestMethod()]
-    //public void RetrieveBinaryObjectFromDB()
-    //{
-    //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-    //    SqlCommand cm = cn.CreateCommand();
-    //    cm.CommandText = "SELECT BINARYFIELD FROM MultiDataTypes WHERE CHARFIELD='z'";
-
-    //    byte[] byteArray = new Byte[7000];
-    //    long longValue;
-
-    //    cn.Open();
-    //    using (cm)
-    //    {
-    //        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-    //        {
-    //            dr.Read();
-    //            longValue = dr.GetBytes("BINARYFIELD", 0, byteArray, 0, 7000);
-    //            dr.Close();
-    //        }
-    //    }
-    //    cn.Close();
-
-    //    System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
-    //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter =
-    //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
-    //    object obj = formatter.Deserialize(stream);
-    //    Csla.Test.DataPortal.TransactionalRoot root = (Csla.Test.DataPortal.TransactionalRoot)(obj);
-
-    //    Assert.AreEqual("Bill", root.FirstName);
-    //    Assert.AreEqual("Johnson", root.LastName);
-    //}
-
-    [TestMethod()]
+        [TestMethod()]
+        
         public void GetSchemaTable()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
@@ -186,23 +126,6 @@ namespace Csla.Test.SafeDataReader
             Assert.AreEqual("BIGINTFIELD", dtSchema.Rows[0][0]);
             Assert.AreEqual(typeof(System.Int64), dtSchema.Rows[0][12]);
             Assert.AreEqual(typeof(System.Byte[]), dtSchema.Rows[1][12]);
-
-            //Console.WriteLine();
-            //foreach (DataColumn c in dtSchema.Columns)
-            //{
-            //    Console.WriteLine(c.ColumnName);
-            //}
-            //Console.WriteLine();
-            //for (int i = 0; i < dtSchema.Rows.Count; i++)
-            //{
-            //    Console.WriteLine(dtSchema.Rows[i][0]);
-            //}
-
-            //Console.WriteLine();
-            //for (int i = 0; i < dtSchema.Rows.Count; i++)
-            //{
-            //    Console.WriteLine(dtSchema.Rows[i][12]);
-            //}
         }
 
         [TestMethod()]

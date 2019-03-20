@@ -1,13 +1,10 @@
-﻿using Csla.Analyzers;
-using Csla.Analyzers.Tests;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +28,18 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenUsingSystemExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenUsingSystemExists))}.cs");
+      var code =
+@"using Csla;
+using System;
+
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
+{
+  public class VerifyGetFixesWhenUsingSystemExists
+    : BusinessBase<VerifyGetFixesWhenUsingSystemExists>
+  {
+    public void DataPortal_Fetch() { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());
@@ -57,8 +64,17 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenUsingSystemDoesNotExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenUsingSystemDoesNotExists))}.cs");
+      var code =
+@"using Csla;
+
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
+{
+  public class VerifyGetFixesWhenUsingSystemDoesNotExists
+    : BusinessBase<VerifyGetFixesWhenUsingSystemDoesNotExists>
+  {
+    public void DataPortal_Fetch() { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());

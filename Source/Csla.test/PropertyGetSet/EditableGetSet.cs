@@ -37,7 +37,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<int>(F02Property, ref _f02, value); }
     }
 
-    private static Csla.PropertyInfo<string> F03Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("F03", "field 3", "n/a", RelationshipTypes.PrivateField));
+    private static Csla.PropertyInfo<string> F03Property = RegisterProperty<string>(c => c.F03, "field 3", "n/a", RelationshipTypes.PrivateField);
     private string _f03 = F03Property.DefaultValue;
     public string F03
     {
@@ -53,7 +53,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert(F04Property, ref _F04, value); }
     }
 
-    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("F05", "field 5", RelationshipTypes.PrivateField));
+    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(c => c.F05, "field 5", RelationshipTypes.PrivateField);
     private bool _f05 = F05Property.DefaultValue;
     public bool F05
     {
@@ -61,7 +61,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<bool>(F05Property, ref _f05, value); }
     }
 
-    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(typeof(EditableGetSet), new Csla.PropertyInfo<object>("F06", "field 6", RelationshipTypes.PrivateField));
+    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(c => c.F06, "field 6", RelationshipTypes.PrivateField);
     private object _F06 = string.Empty;
     public string F06
     {
@@ -94,7 +94,7 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(p, value);
     }
 
-    private static Csla.PropertyInfo<string> M03Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<string>("M03", "field 3", "n/a"));
+    private static Csla.PropertyInfo<string> M03Property = RegisterProperty(c => c.M03, "field 3", "n/a");
     public string M03
     {
       get { return GetProperty<string>(M03Property); }
@@ -108,21 +108,21 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert(M04Property, value); }
     }
 
-    private static Csla.PropertyInfo<bool> M05Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("M05", "field 5"));
+    private static Csla.PropertyInfo<bool> M05Property = RegisterProperty<bool>(c => c.M05, "field 5");
     public bool M05
     {
       get { return GetProperty(M05Property); }
       set { SetProperty(M05Property, value); }
     }
 
-    private static Csla.PropertyInfo<Guid> M06Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<Guid>("M06", "field 6"));
+    private static Csla.PropertyInfo<Guid> M06Property = RegisterProperty<Guid>(c => c.M06, "field 6");
     public Guid M06
     {
       get { return GetProperty(M06Property); }
       set { SetProperty(M06Property, value); }
     }
 
-    private static Csla.PropertyInfo<object> M07Property = RegisterProperty<object>(typeof(EditableGetSet), new Csla.PropertyInfo<object>("M07", "field 7"));
+    private static Csla.PropertyInfo<object> M07Property = RegisterProperty<object>(c => c.M07, "field 7");
     public string M07
     {
       get { return GetPropertyConvert<object, string>(M07Property); }
@@ -209,19 +209,10 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-#if SILVERLIGHT
-    public static void GetObject(EventHandler<DataPortalResult<EditableGetSet>> completed)
-    {
-      DataPortal<EditableGetSet> dp = new DataPortal<EditableGetSet>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
-#else
     public static EditableGetSet GetObject()
     {
       return Csla.DataPortal.Fetch<EditableGetSet>();
     }
-#endif
     #endregion
 
     #region Data Access
@@ -231,23 +222,6 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(M06Property, null);
     }
 
-#if SILVERLIGHT
-    protected override void DataPortal_Insert()
-    {
-      if (FieldManager.FieldExists(ManagedChildProperty))
-        ManagedChild.Insert();
-      if (FieldManager.FieldExists(ManagedChildListProperty))
-        ManagedChildList.Update();
-    }
-
-    protected override void DataPortal_Update()
-    {
-      if (FieldManager.FieldExists(ManagedChildProperty))
-        ManagedChild.Update();
-      if (FieldManager.FieldExists(ManagedChildListProperty))
-        ManagedChildList.Update();
-    }
-#else
     protected override void DataPortal_Insert()
     {
       //FieldManager.UpdateChildren();
@@ -261,8 +235,6 @@ namespace Csla.Test.PropertyGetSet
     {
       //FieldManager.UpdateChildren();
     }
-#endif
-
 
     internal void Insert()
     {
@@ -350,19 +322,10 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-#if SILVERLIGHT
-    public static void GetObject(EventHandler<DataPortalResult<EditableGetSet>> completed)
-    {
-      DataPortal<EditableGetSet> dp = new DataPortal<EditableGetSet>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
-#else
     public static EditableGetSet GetObject()
     {
       return Csla.DataPortal.Fetch<EditableGetSet>();
     }
-#endif
     #endregion
 
     #region Data Access
@@ -372,15 +335,6 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(DataProperty, "Hi");
     }
 
-#if SILVERLIGHT
-    protected override void DataPortal_Insert()
-    {
-    }
-
-    protected override void DataPortal_Update()
-    {
-    }
-#else
     protected override void DataPortal_Insert()
     {
     }
@@ -389,7 +343,6 @@ namespace Csla.Test.PropertyGetSet
     {
       //FieldManager.UpdateChildren();
     }
-#endif
 
 
     internal void Insert()

@@ -9,7 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NETSTANDARD1_6 || NETSTANDARD2_0
+using Microsoft.AspNetCore.Mvc;
+#else
 using System.Web.Mvc;
+#endif
 
 namespace Csla.Web.Mvc
 {
@@ -17,7 +21,11 @@ namespace Csla.Web.Mvc
   /// Provides methods that respond to HTTP requests
   /// in an ASP.NET MVC web site.
   /// </summary>
+#if NETSTANDARD1_6 || NETSTANDARD2_0
+  public class MyController : Microsoft.AspNetCore.Mvc.Controller
+#else
   public class Controller : System.Web.Mvc.Controller
+#endif
   {
     /// <summary>
     /// Performs a Save() operation on an
@@ -28,9 +36,9 @@ namespace Csla.Web.Mvc
     /// <param name="item">The business object to insert.</param>
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
-    protected virtual bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
+    protected bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
     {
-      return SaveObject(item, 
+      return SaveObject(item,
         null,
         forceUpdate);
     }
@@ -50,9 +58,12 @@ namespace Csla.Web.Mvc
       try
       {
         ViewData.Model = item;
-        if (updateModel != null)
-          updateModel(item);
+        updateModel?.Invoke(item);
+#if NETSTANDARD1_6 || NETSTANDARD2_0
+        ViewData.Model = item.SaveAsync(forceUpdate).Result;
+#else
         ViewData.Model = item.Save(forceUpdate);
+#endif
         return true;
       }
       catch (Csla.DataPortalException ex)

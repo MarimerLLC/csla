@@ -15,21 +15,20 @@ namespace ProjectTracker.Library
       ResourceId = id;
     }
 
-    public static PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+    public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
     public int ResourceId
     {
       get { return ReadProperty(ResourceIdProperty); }
       private set { LoadProperty(ResourceIdProperty, value); }
     }
 
-    public static PropertyInfo<bool> ResourceExistsProperty = RegisterProperty<bool>(c => c.ResourceExists);
+    public static readonly PropertyInfo<bool> ResourceExistsProperty = RegisterProperty<bool>(c => c.ResourceExists);
     public bool ResourceExists
     {
       get { return ReadProperty(ResourceExistsProperty); }
       private set { LoadProperty(ResourceExistsProperty, value); }
     }
 
-#if FULL_DOTNET
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -38,6 +37,5 @@ namespace ProjectTracker.Library
         ResourceExists = dal.Exists(ResourceId);
       }
     }
-#endif
   }
 }

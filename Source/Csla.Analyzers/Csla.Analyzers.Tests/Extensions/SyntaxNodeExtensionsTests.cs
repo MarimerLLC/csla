@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
@@ -21,24 +20,44 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task HasUsingWhenNodeHasUsingStatememt()
     {
-      Assert.IsTrue((await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.HasUsingWhenNodeHasUsingStatememt))}.cs"))
-          .HasUsing("System.Collections.Generic"));
+      var code =
+@"using System.Collections.Generic;
+
+namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class HasUsingWhenNodeHasUsingStatememt { }
+}";
+      Assert.IsTrue((await this.GetRootAsync(code)).HasUsing("System.Collections.Generic"));
     }
 
     [TestMethod]
     public async Task HasUsingWhenNodeDoesNotHaveUsingStatememt()
     {
-      Assert.IsFalse((await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.HasUsingWhenNodeDoesNotHaveUsingStatememt))}.cs"))
-          .HasUsing("System.Collections.Generic"));
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class HasUsingWhenNodeDoesNotHaveUsingStatememt { }
+}";
+      Assert.IsFalse((await this.GetRootAsync(code)).HasUsing("System.Collections.Generic"));
     }
 
     [TestMethod]
     public async Task FindParentWhenParentTypeExists()
     {
-      var rootNode = await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.FindParentWhenParentTypeExists))}.cs");
+      var code =
+@"using System;
+
+namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class FindParentWhenParentTypeExists
+  {
+    public Guid NewGuid()
+    {
+      return Guid.NewGuid();
+    }
+  }
+}";
+      var rootNode = await this.GetRootAsync(code);
       var invocationNode = rootNode.DescendantNodes(_ => true)
         .Where(_ => _.Kind() == SyntaxKind.InvocationExpression).First();
 
@@ -48,8 +67,20 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task FindParentWhenParentTypeDoesNotExists()
     {
-      var rootNode = await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.FindParentWhenParentTypeDoesNotExists))}.cs");
+      var code =
+@"using System;
+
+namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class FindParentWhenParentTypeDoesNotExists
+  {
+    public Guid NewGuid()
+    {
+      return Guid.NewGuid();
+    }
+  }
+}";
+      var rootNode = await this.GetRootAsync(code);
       var invocationNode = rootNode.DescendantNodes(_ => true)
         .Where(_ => _.Kind() == SyntaxKind.InvocationExpression).First();
 
@@ -59,15 +90,19 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task FindParentWhenParentIsNull()
     {
-      var rootNode = await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.FindParentWhenParentIsNull))}.cs");
+      var code =
+@"using System;
 
+namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class FindParentWhenParentIsNull { }
+}";
+      var rootNode = await this.GetRootAsync(code);
       Assert.IsNull(rootNode.FindParent<AwaitExpressionSyntax>());
     }
 
-    private async Task<SyntaxNode> GetRootAsync(string file)
+    private async Task<SyntaxNode> GetRootAsync(string code)
     {
-      var code = File.ReadAllText(file);
       return await CSharpSyntaxTree.ParseText(code).GetRootAsync();
     }
   }

@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-#if SILVERLIGHT
-using Csla.Serialization;
-#endif
-
 using System;
 using System.Runtime.Serialization;
 
@@ -31,13 +27,12 @@ namespace Csla.Testing.Business.ApplicationContext
       _dummy = _dummy + 0;
     }
 
-    #if !SILVERLIGHT
     protected override void OnDeserialized(StreamingContext context)
     {
       _dummy = _dummy + 0;
       base.OnDeserialized(context);
     }
-    #endif
+
     private static PropertyInfo<string> NameProperty =
       RegisterProperty(new PropertyInfo<string>("Name", "Name"));
     public string Name

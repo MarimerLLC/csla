@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Csla.Core;
+using Csla.Serialization.Mobile;
 
 namespace Csla
 {
@@ -78,14 +79,16 @@ namespace Csla
   public abstract class DynamicBindingListBase<T> :
     Core.ExtendedBindingList<T>,
     Core.IParent,
-    Server.IDataPortalTarget
-    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IBusinessObject
-  {
+    Server.IDataPortalTarget,
+    IBusinessObject
+    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
+    {
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public DynamicBindingListBase()
     {
+      InitializeIdentity();
       Initialize();
       AllowNew = true;
     }
@@ -100,9 +103,44 @@ namespace Csla
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-#endregion
+    #endregion
 
-#region  SaveItem Methods
+    #region Identity
+
+    private int _identity = -1;
+
+    int IBusinessObject.Identity
+    {
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity(_identity);
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity(int current)
+    {
+      var me = (IParent)this;
+      if (me.Parent != null)
+      {
+        return me.Parent.GetNextIdentity(current);
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity(current);
+      }
+    }
+
+    #endregion
+
+    #region  SaveItem Methods
 
     private bool _activelySaving;
 
@@ -571,7 +609,37 @@ namespace Csla
       }
     }
 
-#endregion
+    #endregion
+
+    #region Mobile object overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
+      base.OnGetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
+      base.OnSetState(info);
+    }
+
+    #endregion
   }
 }
 #endif

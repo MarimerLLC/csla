@@ -41,7 +41,7 @@ namespace Csla.Test.ValidationRules
         InputProperties = new List<IPropertyInfo> { primaryProperty };
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         if (context.Target != null)
           throw new ArgumentOutOfRangeException("context.Target must be null");
@@ -84,7 +84,7 @@ namespace Csla.Test.ValidationRules
         InputProperties = _innerRule.InputProperties;
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         if (context.Target != null)
           throw new ArgumentOutOfRangeException("context.Target must be null");
@@ -106,7 +106,7 @@ namespace Csla.Test.ValidationRules
         ProvideTargetWhenAsync = true;
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         if (context.Target == null)
           throw new ArgumentOutOfRangeException("context.Target must not be null");

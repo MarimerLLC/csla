@@ -11,7 +11,7 @@ using Csla.Reflection;
 using System.ComponentModel;
 using System.Text;
 using Csla.Properties;
-#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
 using System.Text.RegularExpressions;
 using Csla.WcfPortal;
 #endif
@@ -104,14 +104,15 @@ namespace Csla
       else
       {
 #if NETFX_CORE
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
 #else
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
 #endif
         if (indexer != null)
+        {
           foreach (PropertyInfo prop in listType.GetProperties(
             BindingFlags.Public |
             BindingFlags.Instance |
@@ -120,6 +121,11 @@ namespace Csla
             if (prop.Name == indexer.MemberName)
               result = Utilities.GetPropertyType(prop.PropertyType);
           }
+        }
+        if (result == null)
+        {
+          result = listType.GetMethod("get_Item")?.ReturnType;
+        }
       }
       return result;
     }
@@ -180,6 +186,22 @@ namespace Csla
               return null;
         }
         desiredType = Utilities.GetPropertyType(desiredType);
+      }
+
+#if NETFX_CORE
+      if (desiredType.IsEnum())
+#else
+      if (desiredType.IsEnum)
+#endif
+      {
+        if (value is byte? && ((byte?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((byte?) value).Value.ToString());
+        if (value is short? && ((short?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((short?) value).Value.ToString());
+        if (value is int? && ((int?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((int?) value).Value.ToString());
+        if (value is long? && ((long?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((long?) value).Value.ToString());
       }
 
 #if NETFX_CORE
@@ -275,7 +297,7 @@ namespace Csla
 
     #endregion
 
-#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
     #region Error Handling
 
     /// <summary>

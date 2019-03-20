@@ -32,5 +32,11 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Reference to the business object.</param>
     void FinalizeInstance(object obj);
+    /// <summary>
+    /// Gets the actual business domain class type based on the
+    /// requested type (which might be an interface).
+    /// </summary>
+    /// <param name="requestedType">Type requested from the data portal.</param>
+    Type ResolveType(Type requestedType);
   }
 }

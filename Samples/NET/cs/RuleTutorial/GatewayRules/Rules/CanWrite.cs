@@ -61,7 +61,7 @@ namespace GatewayRules.Rules
     /// <param name="context">
     /// The rule context.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var target = (Csla.Core.BusinessBase)context.Target;
       

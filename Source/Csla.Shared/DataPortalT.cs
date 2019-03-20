@@ -6,14 +6,10 @@
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Properties;
-using Csla.Reflection;
 
 namespace Csla
 {
@@ -33,8 +29,6 @@ namespace Csla
     /// the background thread and/or server.
     /// </summary>
     public Csla.Core.ContextDictionary GlobalContext { get; set; }
-
-    #region Data Portal Async Request
 
     private class DataPortalAsyncRequest
     {
@@ -75,34 +69,13 @@ namespace Csla
       }
     }
 
-    #endregion
-
-    #region Set Background Thread Context
-
     private void SetThreadContext(DataPortalAsyncRequest request)
     {
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
-      // set culture info for background thread 
-#if !PCL46 // rely on NuGet bait-and-switch for actual implementation
-#if NETCORE
-      System.Globalization.CultureInfo.CurrentCulture = request.CurrentCulture;
-      System.Globalization.CultureInfo.CurrentUICulture = request.CurrentUICulture;
-#elif NETFX_CORE
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture.Name });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture.Name });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-#else
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
       Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
-#endif
-#endif
     }
-
-#endregion
-
-#region Create
 
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
@@ -269,8 +242,7 @@ namespace Csla
     /// </remarks>
     protected virtual void OnCreateCompleted(DataPortalResult<T> e)
     {
-      if (CreateCompleted != null)
-        CreateCompleted(this, e);
+      CreateCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -320,10 +292,6 @@ namespace Csla
         OnCreateCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
     }
-
-#endregion
-
-#region Fetch
 
     private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync)
     {
@@ -430,8 +398,7 @@ namespace Csla
     /// </remarks>
     protected virtual void OnFetchCompleted(DataPortalResult<T> e)
     {
-      if (FetchCompleted != null)
-        FetchCompleted(this, e);
+      FetchCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -541,10 +508,6 @@ namespace Csla
         OnFetchCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
     }
-
-#endregion
-
-#region Update
 
     internal async Task<T> DoUpdateAsync(T obj, bool isSync)
     {
@@ -790,8 +753,7 @@ namespace Csla
     /// </remarks>
     protected virtual void OnUpdateCompleted(DataPortalResult<T> e)
     {
-      if (UpdateCompleted != null)
-        UpdateCompleted(this, e);
+      UpdateCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -859,10 +821,6 @@ namespace Csla
     {
       return await DoUpdateAsync(obj, false);
     }
-
-#endregion
-
-#region Delete
 
     internal async Task DoDeleteAsync(Type objectType, object criteria, bool isSync)
     {
@@ -968,8 +926,7 @@ namespace Csla
     /// </remarks>
     protected virtual void OnDeleteCompleted(DataPortalResult<T> e)
     {
-      if (DeleteCompleted != null)
-        DeleteCompleted(this, e);
+      DeleteCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -1048,10 +1005,6 @@ namespace Csla
       await DoDeleteAsync(typeof(T), criteria, false);
     }
 
-#endregion
-
-#region Execute
-
     /// <summary>
     /// Event indicating an execute operation is complete.
     /// </summary>
@@ -1063,8 +1016,7 @@ namespace Csla
     /// <param name="e">Event arguments.</param>
     protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
     {
-      if (ExecuteCompleted != null)
-        ExecuteCompleted(this, e);
+      ExecuteCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -1123,13 +1075,9 @@ namespace Csla
       return await DoUpdateAsync(command, false);
     }
 
-#endregion
-
-#region Proxy Factory
-
     private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
     {
-      if (forceLocal)
+      if (forceLocal || ApplicationContext.IsOffline)
       {
         return new DataPortalClient.LocalProxy();
       }
@@ -1142,10 +1090,6 @@ namespace Csla
         return DataPortal.ProxyFactory.Create(objectType);
       }
     }
-
-#endregion
-
-#region Security
 
     private static System.Security.Principal.IPrincipal GetPrincipal()
     {
@@ -1160,7 +1104,5 @@ namespace Csla
         return ApplicationContext.User;
       }
     }
-
-#endregion
   }
 }

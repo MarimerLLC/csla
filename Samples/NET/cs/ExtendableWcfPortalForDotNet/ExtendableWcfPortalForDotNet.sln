@@ -1,13 +1,19 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rolodex.WPF", "Rolodex.WPF\Rolodex.WPF.csproj", "{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendableWcfPortalForDotNet", "ExtendableWcfPortalForDotNet\ExtendableWcfPortalForDotNet.csproj", "{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolodexEF", "RolodexEF\RolodexEF.csproj", "{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rolodex.Server", "Rolodex.Server\Rolodex.Server.csproj", "{CB0F48B0-0350-44F7-A743-DA5D7838DB44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rolodex.WPF", "Rolodex.WPF\Rolodex.WPF.csproj", "{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5823893D-11DC-44CC-8959-305A32C1CBE7}"
+	ProjectSection(SolutionItems) = preProject
+		ErrorLog.txt = ErrorLog.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,12 +37,11 @@ Global
 		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D7719165-6B32-4BC9-B631-B68E85A564AD}
 	EndGlobalSection
 EndGlobal

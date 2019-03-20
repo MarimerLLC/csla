@@ -25,6 +25,7 @@ namespace Csla
     /// Property is a reference to a child
     /// object contained by the parent.
     /// </summary>
+    [Obsolete]
     Child=0x1,
     /// <summary>
     /// Property is a reference to a lazy

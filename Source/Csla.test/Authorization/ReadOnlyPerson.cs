@@ -20,11 +20,7 @@ namespace Csla.Test.Authorization
   [Serializable()]
   public class ReadOnlyPerson : ReadOnlyBase<ReadOnlyPerson>
   {
-#if SILVERLIGHT
-    public ReadOnlyPerson()
-#else
     private ReadOnlyPerson() 
-#endif
     {
       LoadProperty(FirstNameProperty, "John");
       LoadProperty(LastNameProperty, "Doe");

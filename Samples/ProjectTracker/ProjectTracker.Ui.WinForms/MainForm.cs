@@ -307,7 +307,7 @@ namespace PTWin
 
       // Admin menu
       this.EditRolesToolStripMenuItem.Enabled =
-        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditList));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditBindingList));
     }
 
     #endregion
@@ -387,6 +387,7 @@ namespace PTWin
       part.Visible = true;
       part.BringToFront();
       this.Text = "Project Tracker - " + part.ToString();
+      PopulateDocuments();
     }
 
     /// <summary>
@@ -395,11 +396,20 @@ namespace PTWin
     private void DocumentsToolStripDropDownButton_DropDownOpening(
       object sender, EventArgs e)
     {
+      PopulateDocuments();
+    }
+
+    /// <summary>
+    /// Populate the Documents dropdown list.
+    /// </summary>
+    private void PopulateDocuments()
+    {
       ToolStripItemCollection items = 
         DocumentsToolStripDropDownButton.DropDownItems;
       foreach (ToolStripItem item in items)
         item.Click -= new EventHandler(DocumentClick);
       items.Clear();
+
       foreach (Control ctl in Panel1.Controls)
         if (ctl is WinPart)
         {
@@ -447,6 +457,8 @@ namespace PTWin
       part.Visible = false;
       Panel1.Controls.Remove(part);
       part.Dispose();
+      PopulateDocuments();
+
       if (DocumentCount == 0)
       {
         this.DocumentsToolStripDropDownButton.Enabled = false;

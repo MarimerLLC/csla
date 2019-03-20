@@ -15,9 +15,6 @@ namespace Csla.Test.CommandBase
   {
     public CommandBaseTest()
     {
-      //
-      // TODO: Add constructor logic here
-      //
     }
 
     private TestContext testContextInstance;

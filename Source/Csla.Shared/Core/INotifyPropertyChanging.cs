@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines an object that raises the PropertyChanging</summary>
 //-----------------------------------------------------------------------
-#if (ANDROID || IOS) || ANDROID || IOS || NETFX_CORE
+#if PCL46 || PCL259
 using System;
 
 namespace Csla.Core

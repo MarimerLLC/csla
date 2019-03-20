@@ -82,6 +82,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+    [Ignore] // frequently times out on appveyor server
     [TestMethod]
     public void ValidateMultipleObjectsSimultaneously()
     {
@@ -138,34 +139,6 @@ namespace Csla.Test.ValidationRules
 
       context.Complete();
     }
-#if SILVERLIGHT
-    /// <summary>
-    /// This only works on Silverlight because when run through NUnit it is not running
-    /// in the UI thread, thus the Dispatcher will not behave as expected. I'm not sure how to 
-    /// simulate the UI thread in NUnit but maybe we can assume it will work since this is the
-    /// expected behavior of BackgroundWorker and this test passes in Silverlight. Developers
-    /// will be responsible for Dispatching back to the UI thread by either getting the current
-    /// thread dispatcher or using a BackgroundWorker or, in silverlight, making a WCF service
-    /// call will do this automatically.
-    /// </summary>
-    [TestMethod]
-    public void AsyncCompleteVerifyUIThread()
-    {
-      UnitTestContext context = GetContext();
-      Thread expected = Thread.CurrentThread;
 
-      HasAsyncRule har = new HasAsyncRule();
-      context.Assert.IsTrue(har.IsValid, "IsValid 1");
-
-      har.ValidationComplete += (o, e) =>
-      {
-        Thread actual = Thread.CurrentThread;
-        context.Assert.AreSame(expected, actual);
-        context.Assert.Success();
-      };
-      har.Name = "success";
-      context.Complete();
-    }
-#endif
   }
 }

@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Rolodex.Silverlight.Views.LoginView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+    xmlns:csla="clr-namespace:Csla;assembly=Csla"
     xmlns:core="clr-namespace:Rolodex.Silverlight.Core"
     xmlns:controls="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
     xmlns:cal="clr-namespace:Microsoft.Practices.Composite.Presentation.Commands;assembly=Microsoft.Practices.Composite.Presentation"       

@@ -18,6 +18,21 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusinessListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\BrowsableAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationErrorsException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettingsCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConfigurationManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ConnectionStringSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaConfigurationOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataPortalConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSecurityConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaSerializationConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\CslaDataPortalConfigurationOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />
@@ -25,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\BusinessBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BusyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ChildChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\MetaPropertyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ContextDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ErrorEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ExtendedBindingList.cs" />
@@ -37,6 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\GraphMerger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBusinessObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ICheckRules.cs" />
@@ -101,13 +118,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortal.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DefaultPortalProxyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\HttpProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IWcfPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\LocalProxy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\MobileProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\PrimitiveCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\WcfProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalEventArgs.cs" />
@@ -115,6 +132,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerResourceAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerRoutingTagAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManagerT.cs" />
@@ -142,6 +162,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ICommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortalResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\IdentityManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDataPortalFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LazySingleton.cs" />
@@ -162,7 +184,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\MethodCacheKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\MethodCaller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\Reflect.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Reflection\TypeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RelationshipTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources.Designer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\AuthorizationActions.cs" />
@@ -183,6 +204,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IHostRules.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\IRuleContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ObjectRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\PropertyRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleContext.cs" />
@@ -191,6 +213,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleUri.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ValidationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RunLocalAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\CslaClaimsPrincipal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaIdentity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\CslaPrincipal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\IAuthorizeReadWrite.cs" />
@@ -207,6 +230,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\BinaryFormatterWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ISerializationFormatter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\AssemblyNameTranslator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaLegacyBinaryWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaLegacyBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaBinaryWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaKnownTypes.cs" />
@@ -231,6 +256,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\AuthorizeRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\ChildDataPortal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\Activity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\Dashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\DashboardFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\IDashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Dashboard\NullDashboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalContext.cs" />

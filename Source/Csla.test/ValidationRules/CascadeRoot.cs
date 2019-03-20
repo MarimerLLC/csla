@@ -208,7 +208,7 @@ namespace Csla.Test.ValidationRules
       return HasMessageDelegate ? base.MessageText : "The sum of {0} and {1} must be equal to {2}.";
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value1 = context.GetInputValue(_value1Property);
       var value2 = context.GetInputValue(_value2Property);
@@ -235,7 +235,7 @@ namespace Csla.Test.ValidationRules
       AffectedProperties.Add(affectedProperty);
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var val = context.GetInputValue(_primaryProperty);
       context.AddOutValue(_affectedProperty, val + 1);
@@ -253,7 +253,7 @@ namespace Csla.Test.ValidationRules
       _sourceProperty = sourceProperty;
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var source = context.GetInputValue(_sourceProperty);
       context.AddOutValue(source);
@@ -276,7 +276,7 @@ namespace Csla.Test.ValidationRules
       RuleUri.AddQueryParameter("fraction", fraction.ToString());
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var source = context.GetInputValue(_sourceProperty);
       context.AddOutValue(Math.Round(source * _fraction, 2, MidpointRounding.AwayFromZero));
@@ -301,7 +301,7 @@ namespace Csla.Test.ValidationRules
     /// Business or validation rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       // Use linq Sum to calculate the sum value
       dynamic sum = context.InputPropertyValues.Aggregate<KeyValuePair<IPropertyInfo, object>, dynamic>(0, (current, item) => current + (dynamic)item.Value);
@@ -329,7 +329,7 @@ namespace Csla.Test.ValidationRules
       this.CanRunAsAffectedProperty = false; 
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var val = context.GetInputValue(_primaryProperty);
       context.AddOutValue(_affectedProperty, val + 1);

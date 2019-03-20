@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Test</RootNamespace>
     <AssemblyName>Csla.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -142,6 +142,7 @@
     <Compile Include="ChildChanged\ContainsList.cs" />
     <Compile Include="ChildChanged\GrandChild.cs" />
     <Compile Include="ChildChanged\ListContainerList.cs" />
+    <Compile Include="ChildChanged\OptimizeChildChangedTests.cs" />
     <Compile Include="ChildChanged\SingleChild.cs" />
     <Compile Include="ChildChanged\SingleList.cs" />
     <Compile Include="ChildChanged\SingleRoot.cs" />
@@ -209,6 +210,9 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
+    <Compile Include="GraphMerge\GraphMergerTests.cs" />
+    <Compile Include="GraphMerge\IdentityTests.cs" />
+    <Compile Include="GraphMerge\TestClasses.cs" />
     <Compile Include="LazySingelton\LazySingeltonTest.cs" />
     <Compile Include="Linq\LinqObservableCollectionTest.cs" />
     <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />
@@ -258,6 +262,7 @@
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
     <Compile Include="Serialization\BinaryReaderWriterTestClass.cs" />
+    <Compile Include="Serialization\CslaClaimsPrincipalSerializationTests.cs" />
     <Compile Include="Serialization\DCRoot.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\NonSerializedClass.cs" />
@@ -272,7 +277,6 @@
     <Compile Include="Silverlight\CommandBase\CommandBaseTests.cs" />
     <Compile Include="DataPortal\AuthorizeDataPortalTests.cs" />
     <Compile Include="Silverlight\DataPortal\AuthorizeDataPortalTests.cs" />
-    <Compile Include="Silverlight\DataPortal\ClientCultureDataPortalTests.cs" />
     <Compile Include="Silverlight\NameValueList\NameValueListTests.cs" />
     <Compile Include="Silverlight\PropertyGetSet\AbstractGetSet.cs" />
     <Compile Include="Silverlight\PropertyGetSet\InheritedLoadPropertySet.cs" />
@@ -281,7 +285,6 @@
     <Compile Include="Silverlight\ReadOnly\MockReadOnlyList.cs" />
     <Compile Include="Silverlight\ReadOnly\ReadOnlyTests.cs" />
     <Compile Include="Silverlight\Rollback\RollbackRoot.cs" />
-    <Compile Include="Silverlight\Rollback\RollbackTests.cs" />
     <Compile Include="Silverlight\Security\SecurityTests.server.cs" />
     <Compile Include="Silverlight\Security\SecurityTests.cs" />
     <Compile Include="Silverlight\Serialization\Address.cs" />
@@ -349,6 +352,7 @@
     <Compile Include="ValidationRules\ValidationTests.cs" />
     <Compile Include="ViewModelTests\TestViewModel.cs" />
     <Compile Include="ViewModelTests\ViewModelTests.cs" />
+    <Compile Include="WellKnownValues.cs" />
     <Compile Include="Windows\ActionExtenderTests.cs" />
     <Compile Include="Windows\BindingRefreshTests.cs" />
     <Compile Include="Windows\EditablePerson.cs" />
@@ -361,6 +365,11 @@
     <Compile Include="Windows\ReadWriteAuthorizationTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\config\testConnectionStrings.config">
+      <Link>testConnectionStrings.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="app.config" />
     <None Include="DataPortalTestDatabaseDataSet.xsc">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
@@ -465,6 +474,7 @@
       <Name>csla.silverlight.server.test</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

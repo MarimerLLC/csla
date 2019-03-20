@@ -42,6 +42,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeRoot"].ToString(), "Complete should have run");
       Assert.AreEqual("CreateInstance", Csla.ApplicationContext.GlobalContext["Activate1+InitializeRoot"].ToString(), "CreateInstance should have run");
       Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
+      Assert.AreEqual("ResolveType", Csla.ApplicationContext.GlobalContext["Activate4+InitializeRoot"].ToString(), "ResolveType should have run");
     }
 
     [TestMethod]
@@ -243,6 +244,12 @@ namespace Csla.Test.DataPortal
     public void FinalizeInstance(object obj)
     {
       Csla.ApplicationContext.GlobalContext["Activate3+" + obj.GetType().Name] = "FinalizeInstance";
+    }
+
+    public Type ResolveType(Type requestedType)
+    {
+      Csla.ApplicationContext.GlobalContext["Activate4+" + requestedType.Name] = "ResolveType";
+      return requestedType;
     }
   }
 }

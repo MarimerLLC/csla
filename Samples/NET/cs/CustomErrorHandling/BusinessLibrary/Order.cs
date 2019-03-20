@@ -7,21 +7,21 @@ namespace BusinessLibrary
   [Csla.Server.ObjectFactory("DataAccess.OrderFactory, DataAccess")]
   public class Order : BusinessBase<Order>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> CustomerNameProperty = RegisterProperty(new PropertyInfo<string>("CustomerName", "Customer name"));
+    public static readonly PropertyInfo<string> CustomerNameProperty = RegisterProperty(new PropertyInfo<string>("CustomerName", "Customer name"));
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }
       set { SetProperty(CustomerNameProperty, value); }
     }
 
-    public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty(new PropertyInfo<LineItems>("LineItems", "Line items"));
+    public static readonly PropertyInfo<LineItems> LineItemsProperty = RegisterProperty(new PropertyInfo<LineItems>("LineItems", "Line items"));
     public LineItems LineItems
     {
       get
@@ -37,7 +37,7 @@ namespace BusinessLibrary
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
     }
 
-    private Order()
+    public Order()
     { /* require use of factory methods */ }
 
     public static Order NewOrder()

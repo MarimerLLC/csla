@@ -1,4 +1,3 @@
-#if !NETFX_CORE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="ConnectionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -7,7 +6,7 @@
 // <summary>Provides an automated way to reuse open</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Data;
 using System.Data.Common;
 using Csla.Properties;
@@ -108,23 +107,28 @@ namespace Csla.Data
         database = conn;
       }
 
+      ConnectionManager mgr = null;
+      var ctxName = GetContextName(database, label);
       lock (_lock)
       {
-        var ctxName = GetContextName(database, label);
-        ConnectionManager mgr = null;
-        if (ApplicationContext.LocalContext.Contains(ctxName))
+        var cached = ApplicationContext.LocalContext.GetValueOrNull(ctxName);
+        if (cached != null)
         {
-          mgr = (ConnectionManager)(ApplicationContext.LocalContext[ctxName]);
-
+          mgr = (ConnectionManager)cached;
+          mgr.AddRef();
         }
-        else
-        {
-          mgr = new ConnectionManager(database, label);
-          ApplicationContext.LocalContext[ctxName] = mgr;
-        }
-        mgr.AddRef();
-        return mgr;
       }
+
+      if (mgr == null)
+      {
+        mgr = new ConnectionManager(database, label);
+        lock (_lock)
+        {
+          ApplicationContext.LocalContext[ctxName] = mgr;
+          mgr.AddRef();
+        }
+      }
+      return mgr;
     }
 
     private ConnectionManager(string connectionString, string label)
@@ -132,7 +136,11 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      string provider = ConfigurationManager.AppSettings["dbProvider"];
+#if NETSTANDARD2_0
+      _connection = new System.Data.SqlClient.SqlConnection(connectionString);
+      _connection.Open();
+#else
+      string provider = ConfigurationManager.AppSettings["CslaDbProvider"];
       if (string.IsNullOrEmpty(provider))
         provider = "System.Data.SqlClient";
 
@@ -142,7 +150,7 @@ namespace Csla.Data
       _connection = factory.CreateConnection();
       _connection.ConnectionString = connectionString;
       _connection.Open();
-
+#endif
     }
 
     private static string GetContextName(string connectionString, string label)
@@ -163,8 +171,6 @@ namespace Csla.Data
       }
     }
 
-#region  Reference counting
-
     private int _refCount;
 
     /// <summary>
@@ -183,22 +189,15 @@ namespace Csla.Data
 
     private void DeRef()
     {
-
-      lock (_lock)
+      _refCount -= 1;
+      if (_refCount == 0)
       {
-        _refCount -= 1;
-        if (_refCount == 0)
-        {
-          _connection.Dispose();
+        _connection.Close();
+        _connection.Dispose();
+        lock (_lock)
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
-        }
       }
-
     }
-
-#endregion
-
-#region  IDisposable
 
     /// <summary>
     /// Dispose object, dereferencing or
@@ -209,9 +208,5 @@ namespace Csla.Data
     {
       DeRef();
     }
-
-#endregion
-
   }
 }
-#endif

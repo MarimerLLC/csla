@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-#if SILVERLIGHT
-using Csla.Serialization;
-#endif
 
 namespace Csla.Test.Threading
 {

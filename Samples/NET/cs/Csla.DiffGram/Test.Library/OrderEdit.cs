@@ -10,21 +10,21 @@ namespace Test.Library
   [Serializable]
   public class OrderEdit : DiffBase<OrderEdit>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(c => c.CustomerName);
+    public static readonly PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(c => c.CustomerName);
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }
       set { SetProperty(CustomerNameProperty, value); }
     }
 
-    public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(c => c.LineItems);
+    public static readonly PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(c => c.LineItems);
     public LineItems LineItems
     {
       get { return GetProperty(LineItemsProperty); }
@@ -65,7 +65,7 @@ namespace Test.Library
 
     #region Save
 
-    public override OrderEdit Save()
+    public new OrderEdit Save()
     {
       var dg = new Csla.DiffGram.DiffGramGenerator();
       var dto = dg.GenerateGraph(this);

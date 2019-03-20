@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEdit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaBaseTypes\BusinessBase.cs" />

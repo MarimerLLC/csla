@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,8 +28,14 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTestss
+{
+  public class VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist : BusinessBase<VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist>
+  {
+    private VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist(int a) { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -55,8 +60,14 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExists))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTestss
+{
+  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExists : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExists>
+  {
+    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExists() { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -81,8 +92,16 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTests
+{
+  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists
+    : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists>
+  {
+    // Hey! Don't loose me! 
+    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists() { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -108,8 +127,15 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTests
+{
+  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists
+    : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists>
+  {
+    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists()/* And not this either */ { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -134,8 +160,21 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTestss
+{
+  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses
+    : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses>
+  {
+    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses() { }
+
+    public class NestedClass
+      : BusinessBase<NestedClass>
+    {
+      private NestedClass() { }
+    }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostic = (await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer()))

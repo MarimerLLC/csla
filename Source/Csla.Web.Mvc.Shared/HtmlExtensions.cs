@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NETSTANDARD && !NETSTANDARD2_0
+//-----------------------------------------------------------------------
 // <copyright file="HtmlExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -223,3 +224,4 @@ namespace Csla.Web.Mvc
     }
   }
 }
+#endif

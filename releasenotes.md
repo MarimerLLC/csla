@@ -1,25 +1,45 @@
-This release is focused primarily on enhancing the existing Xamarin support. There is now a Csla.dll targeting PCL Profile111, which is the current profile for Xamarin.Forms projects and .NET Core. 
+I am pleased to announce the release of CSLA .NET version 4.9.0.
 
-There is also now a CSLA-Xamarin NuGet package that includes a Csla.Xaml.dll with support for Xamarin.Forms. This includes the same viewmodel base classes as the other XAML platforms, and an implementation of the `PropertyInfo` control tailored for use in Xamarin.Forms.
+The major enhancements are described in some detail in a [CSLA .NET 4.9.0 blog post](http://www.lhotka.net/weblog/CSLANETVersion49NewFeatures.aspx).
 
-[@JasonBock](https://github.com/JasonBock) added even more analyzers for Visual Studio 2015 to help developers avoid common coding mistakes when building CSLA .NET business classes.
+### Dependabot and NuGet dependencies
+We've started using Dependabot to help keep NuGet dependencies current. As a result, the following updates are included in this release:
 
-We now have support for the prerelease of Entity Framework 7.
+* Bump Microsoft.AspNet.Razor from 2.0.20710 to 2.0.30506 in /Source
+* Bump Microsoft.EntityFrameworkCore from 2.1.4 to 2.2.0 in /Source
+* Bump System.Data.SqlClient from 4.5.1 to 4.6.0 in /Source
+* Bump Xamarin.Forms from 3.0.0.482510 to 3.4.0.1008975 in /Source
+* Bump Microsoft.EntityFrameworkCore from 2.0.2 to 2.1.4 in /Source 
+* Bump System.Security.Principal.Windows from 4.5.0 to 4.5.1 in /Source 
+* Bump System.Data.SqlClient from 4.4.3 to 4.5.1 in /Source 
+* Bump Microsoft.AspNetCore from 2.0.2 to 2.1.6 in /Source 
+* Bump Microsoft.AspNet.WebPages from 2.0.20710 to 3.2.7 in /Source 
+* Bump System.ComponentModel.Annotations from 4.4.1 to 4.5.0 in /Source 
+* [Security] Bump Microsoft.NETCore.UniversalWindowsPlatform 
 
-The pt and pt-BR resources for Csla.dll have been updated. **Other languages need updates as well - please contribute if you are a native speaker!**
+### Docs and wiki
+We've updated some of the docs and officially removed the wiki. All the wiki/docs content is now in the [/docs directory](https://github.com/MarimerLLC/csla/blob/master/docs/index.md).
 
-There is a new way to customize the server-side data portal by implementing an interceptor that is invoked via the new `DataPortalBroker`. ([#564](https://github.com/marimerllc/csla/issues/564))
+### Data portal enhancements
 
-This release is available via NuGet.
+* [#993](https://github.com/marimerllc/csla/issues/993) Implement `SaveAndMergeAsync` methods 
+* [#972](https://github.com/marimerllc/csla/issues/972) Implement data portal router
+* [#959](https://github.com/marimerllc/csla/issues/959) Enhance data portal to use different endpoint per business type
+* [#961](https://github.com/marimerllc/csla/issues/961) Create data portal health/instrumentation endpoint
+* [#1011](https://github.com/marimerllc/csla/issues/1011) Implement `IsOffline` property for data portal
+* [#982](https://github.com/marimerllc/csla/issues/982) Add new `IDataPortalFactory` singleton for page injection in ASP.NET Core
 
-* [#550](https://github.com/marimerllc/csla/issues/550) Add Xamarin.Forms support in Csla.Xaml 
-* [#568](https://github.com/marimerllc/csla/issues/568) Add PCL support for Profile111 (Xamarin.Forms and .NET Core) 
-* [#457](https://github.com/marimerllc/csla/issues/457) Analyzer: Find Usages of Non-Serializable Types 
-* [#458](https://github.com/marimerllc/csla/issues/458) Analyzer: Catch when Save() is Called on Itself 
-* [#553](https://github.com/marimerllc/csla/issues/553) Analyzer: Address => Property Syntax in Analyzers 
-* [#555](https://github.com/marimerllc/csla/issues/555) Analyzer: Fix Issue with Partial Classes in Analyzers 
-* [#518](https://github.com/marimerllc/csla/issues/518) EF7 Support 
-* [#539](https://github.com/marimerllc/csla/issues/539) Fix WinRT bug with OnDeserializedHandler
-* [#576](https://github.com/marimerllc/csla/issues/576) Update Resources pt and pt-BR 
-* [#564](https://github.com/marimerllc/csla/issues/564) Add DataPortalBroker to allow DataPortal Interception 
-* [#574](https://github.com/marimerllc/csla/issues/574) Fix issue with HttpProxy and Xamarin
+### Configuration enhancements
+
+* [#966](https://github.com/marimerllc/csla/issues/966) Add fluent config types to CSLA: `Csla.Configuration.CslaConfiguration`
+* [#967](https://github.com/marimerllc/csla/issues/967) Read CSLA config values from .NET Core config subsystem: `CslaConfigurationOptions`
+* [#1012](https://github.com/marimerllc/csla/issues/1012) Implement `ConfigureCsla` extension method to `IConfiguration` for use in .NET Core configuration
+* [#982](https://github.com/marimerllc/csla/issues/982) Implement `AddCsla` method for use in ASP.NET Core `ConfigureServices` 
+
+### Bug fixes
+
+* [#949](https://github.com/marimerllc/csla/issues/949) [samples] Fix WinForms and WPF DataPortal configuration to use Azure
+* [#956](https://github.com/marimerllc/csla/issues/956) [bug] Check for null User in authz rules 
+* [#962](https://github.com/marimerllc/csla/issues/962) [bug] Object not serializable (Csla.Core.ContextDictionary) after compiled with .Net Native tool chain and Optimize Code Enabled
+
+You can see all the [closed work items in GitHub](https://github.com/MarimerLLC/csla/projects/4).

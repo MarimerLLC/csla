@@ -96,30 +96,18 @@ namespace Csla.Test.Security
     #endregion
 
     #region "Constructors"
-#if SILVERLIGHT
-    public PermissionsRoot2() { }
-#else
-
     private PermissionsRoot2()
     {
       //require use of factory methods
     }
-#endif
     #endregion
 
     #region "factory methods"
 
-#if SILVERLIGHT
-    public static PermissionsRoot2 NewPermissionsRoot()
-    {
-      return new PermissionsRoot2();
-    }
-#else
     public static PermissionsRoot NewPermissionsRoot()
     {
       return Csla.DataPortal.Create<PermissionsRoot>();
     }
-#endif
     #endregion
 
     #region "Criteria"
@@ -132,14 +120,10 @@ namespace Csla.Test.Security
 
     #endregion
 
-#if !SILVERLIGHT
-
     [RunLocal()]
     protected override void DataPortal_Create()
     {
       _firstName = "default value"; //for now...
     }
-
-#endif
   }
 }

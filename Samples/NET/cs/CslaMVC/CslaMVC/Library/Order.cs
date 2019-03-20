@@ -15,49 +15,49 @@ namespace CslaMVC.Library
     {
         #region Business Methods
 
-        private static PropertyInfo<int> CustomerNoProperty = RegisterProperty<int>(o => o.CustomerNo, "Customer No");
+        public static readonly PropertyInfo<int> CustomerNoProperty = RegisterProperty<int>(o => o.CustomerNo, "Customer No");
         public int CustomerNo
         {
             get { return GetProperty(CustomerNoProperty); }
             set { SetProperty(CustomerNoProperty, value); }
         }
 
-        private static PropertyInfo<Guid> OrderIdProperty = RegisterProperty<Guid>(o => o.OrderId, "Order Id");
+        public static readonly PropertyInfo<Guid> OrderIdProperty = RegisterProperty<Guid>(o => o.OrderId, "Order Id");
         public Guid OrderId
         {
             get { return GetProperty(OrderIdProperty); }
             set { SetProperty(OrderIdProperty, value); }
         }
 
-        private static PropertyInfo<DateTime> OrderDateProperty = RegisterProperty<DateTime>(o => o.OrderDate, "Order Date");
+        public static readonly PropertyInfo<DateTime> OrderDateProperty = RegisterProperty<DateTime>(o => o.OrderDate, "Order Date");
         public DateTime OrderDate
         {
             get { return GetProperty(OrderDateProperty); }
             set { SetProperty(OrderDateProperty, value); }
         }
 
-        private static PropertyInfo<int> StatusProperty = RegisterProperty<int>(o => o.Status, "Status");
+        public static readonly PropertyInfo<int> StatusProperty = RegisterProperty<int>(o => o.Status, "Status");
         public int Status
         {
             get { return GetProperty(StatusProperty); }
             set { SetProperty(StatusProperty, value); }
         }
 
-        private static PropertyInfo<DateTime?> ShippedDateProperty = RegisterProperty<DateTime?>(o => o.ShippedDate, "Shipped Date");
+        public static readonly PropertyInfo<DateTime?> ShippedDateProperty = RegisterProperty<DateTime?>(o => o.ShippedDate, "Shipped Date");
         public DateTime? ShippedDate
         {
             get { return GetProperty(ShippedDateProperty); }
             set { SetProperty(ShippedDateProperty, value); }
         }
 
-        private static PropertyInfo<DateTime?> ReceivedDateProperty = RegisterProperty<DateTime?>(o => o.ReceivedDate, "Received Date");
+        public static readonly PropertyInfo<DateTime?> ReceivedDateProperty = RegisterProperty<DateTime?>(o => o.ReceivedDate, "Received Date");
         public DateTime? ReceivedDate
         {
             get { return GetProperty(ReceivedDateProperty); }
             set { SetProperty(ReceivedDateProperty, value); }
         }
 
-        private static PropertyInfo<OrderDetailsLists> OrderDetailsProperty = RegisterProperty<OrderDetailsLists>(o => o.OrderDetails, "Order Details");
+        public static readonly PropertyInfo<OrderDetailsLists> OrderDetailsProperty = RegisterProperty<OrderDetailsLists>(o => o.OrderDetails, "Order Details");
         public OrderDetailsLists OrderDetails
         {
             get { return GetProperty(OrderDetailsProperty); }
@@ -76,7 +76,7 @@ namespace CslaMVC.Library
             //BusinessRules.AddRule(new Csla.Rules.CommonRules.Lambda(c => TestRuleAction(c)));
         }
 
-        private void TestRuleAction(RuleContext context)
+        private void TestRuleAction(IRuleContext context)
         {
             context.AddErrorResult("test rule broken");
         }
@@ -105,7 +105,7 @@ namespace CslaMVC.Library
             return order;
         }
 
-        private Order()
+      public Order()
         { /* Require use of factory methods */ }
 
         #endregion

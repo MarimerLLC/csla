@@ -10,7 +10,7 @@ namespace MVVMexperiment
   [Serializable]
   public class Data : BusinessBase<Data>
   {
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     [Range(0, 10, ErrorMessage = "Id must be between 0 and 10")]
     public int Id
     {
@@ -18,7 +18,7 @@ namespace MVVMexperiment
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     [Required(ErrorMessage = "Name is required")]
     public string Name
     {

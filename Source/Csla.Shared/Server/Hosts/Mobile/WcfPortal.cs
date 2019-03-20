@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS)
+﻿#if !NETFX_CORE && !(ANDROID || IOS) && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="WcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -7,7 +7,7 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using Csla.Serialization.Mobile;
 using System.ServiceModel;
 using System.ServiceModel.Activation;

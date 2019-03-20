@@ -38,6 +38,14 @@ namespace ProjectTracker.Library
       set { SetProperty(NameProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> CoolPropertyProperty = 
+      RegisterProperty<string>(c => c.CoolProperty);
+    public string CoolProperty
+    {
+      get { return GetProperty(CoolPropertyProperty); }
+      set { SetProperty(CoolPropertyProperty, value); }
+    }
+
     public static readonly PropertyInfo<DateTime?> StartedProperty = RegisterProperty<DateTime?>(c => c.Started);
     public DateTime? Started
     {
@@ -61,10 +69,10 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
-      RegisterProperty<ProjectResources>(p => p.Resources);
+      RegisterProperty<ProjectResources>(p => p.Resources, RelationshipTypes.Child);
     public ProjectResources Resources
     {
-      get { return LazyGetProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>); }
+      get { return GetProperty(ResourcesProperty); }
       private set { LoadProperty(ResourcesProperty, value); }
     }
 
@@ -121,7 +129,7 @@ namespace ProjectTracker.Library
 
     private class NoDuplicateResource : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
         foreach (var item in target.Resources)
@@ -138,7 +146,7 @@ namespace ProjectTracker.Library
 
     private class StartDateGTEndDate : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
 
@@ -149,6 +157,7 @@ namespace ProjectTracker.Library
       }
     }
 
+#if FULL_DOTNET
     public static void NewProject(EventHandler<DataPortalResult<ProjectEdit>> callback)
     {
       ProjectGetter.CreateNewProject((o, e) =>
@@ -181,6 +190,7 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginDelete<ProjectEdit>(id, callback);
     }
+#endif
 
     public async static System.Threading.Tasks.Task<ProjectEdit> NewProjectAsync()
     {
@@ -192,7 +202,7 @@ namespace ProjectTracker.Library
       return await DataPortal.FetchAsync<ProjectEdit>(id);
     }
 
-#if FULL_DOTNET
+#if FULL_DOTNET 
     public static ProjectEdit NewProject()
     {
       return DataPortal.Create<ProjectEdit>();
@@ -214,10 +224,12 @@ namespace ProjectTracker.Library
       cmd = DataPortal.Execute<ProjectExistsCommand>(cmd);
       return cmd.ProjectExists;
     }
+#endif
 
     [RunLocal]
     protected override void DataPortal_Create()
     {
+      LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
       base.DataPortal_Create();
     }
 
@@ -301,6 +313,5 @@ namespace ProjectTracker.Library
         dal.Delete(id);
       }
     }
-#endif
   }
 }

@@ -28,7 +28,7 @@ namespace Csla.Properties
 
     private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
-#if PCL46 // rely on NuGet bait-and-switch for actual implementation
+#if PCL46 || PCL259 // rely on NuGet bait-and-switch for actual implementation
       return null;
 #else
 #pragma warning disable
@@ -1110,6 +1110,17 @@ namespace Csla.Properties
     ///   Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
     /// </summary>
     public static string TypeLoadException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
+    /// </summary>
+    public static string UnableToLoadDataPortalProxyFactory
     {
       get
       {

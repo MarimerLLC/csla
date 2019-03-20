@@ -8,14 +8,14 @@ namespace WindowsApplication2
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
@@ -27,7 +27,7 @@ namespace WindowsApplication2
       get { return new SortedBindingList<Child>(RealChildren); }
     }
 
-    public static PropertyInfo<ChildList> RealChildrenProperty = RegisterProperty<ChildList>(p => p.RealChildren, RelationshipTypes.LazyLoad);
+    public static readonly PropertyInfo<ChildList> RealChildrenProperty = RegisterProperty<ChildList>(p => p.RealChildren, RelationshipTypes.LazyLoad);
     public ChildList RealChildren
     {
       get

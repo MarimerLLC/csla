@@ -29,15 +29,6 @@ namespace cslalighttest.Stereotypes
   [TestClass]
   public class EditableRootTests : TestBase
   {
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-    }
-#endif
-
     [TestMethod]
     public void CanConstructTest()
     {
@@ -67,6 +58,7 @@ namespace cslalighttest.Stereotypes
     }
 
     [TestMethod]
+    
     public void When_New_EditableRoot_is_Saved_Then_returned_object_isMarked_NotNew_NotDirty()
     {
       var context = GetContext();
@@ -90,6 +82,7 @@ namespace cslalighttest.Stereotypes
     }
 
     [TestMethod]
+    
     public void When_EditableRoot_is_Saved_Then_we_receive_an_object_back_that_is_Marked_as_NotNew_NotDirty()
     {
       var context = GetContext();
@@ -116,6 +109,7 @@ namespace cslalighttest.Stereotypes
     }
 
     [TestMethod]
+    
     public void If_EditableRoot_IsDeleted_Then_Saved_Returns_New_Dirty_Instance_of_Root_That_is_no_longer_marked_Deleted()
     {
       var context = GetContext();

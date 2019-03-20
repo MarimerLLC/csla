@@ -10,14 +10,14 @@ namespace Test.Library
   [Serializable]
   public class LineItemEdit : DiffBase<LineItemEdit>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
+    public static readonly PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
     public string ProductName
     {
       get { return GetProperty(ProductNameProperty); }

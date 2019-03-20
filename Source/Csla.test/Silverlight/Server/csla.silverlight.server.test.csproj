@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Testing.Business</RootNamespace>
     <AssemblyName>Csla.Testing.Business</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -116,7 +116,6 @@
     <Compile Include="CslaDataProvider\CustomerContact.cs" />
     <Compile Include="CslaDataProvider\CustomerContactList.cs" />
     <Compile Include="CslaDataProvider\CustomerList.cs" />
-    <Compile Include="CslaDataProvider\IDCriteria.cs" />
     <Compile Include="DataPortal\AsyncPortalWithCulture.cs" />
     <Compile Include="DataPortal\AuthorizeDataPortalStub.cs" />
     <Compile Include="DataPortal\PrimitiveCriteriaSingle.cs" />

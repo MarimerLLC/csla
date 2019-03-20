@@ -27,11 +27,7 @@ namespace cslalighttest.Serialization
   {
     public MockMobileList()
     {
-#if SILVERLIGHT
-        this.CollectionChanged += (o, e) => {this.HasRaisedOnListChanged = true;};
-#else 
         this.ListChanged += (o, e) => {this.HasRaisedOnListChanged = true;};
-#endif
     }
 
     public bool HasRaisedOnListChanged { get; set; }

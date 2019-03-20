@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS)
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="PrincipalCache.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -21,19 +20,27 @@ namespace Csla.Security
     private static List<IPrincipal> _cache = new List<IPrincipal>();
 
     private static int _maxCacheSize;
-    private static int MaxCacheSize
+
+    /// <summary>
+    /// Gets the maximum cache size
+    /// </summary>
+    public static int MaxCacheSize
     {
       get
       {
         if (_maxCacheSize == 0)
         {
-          string tmp = System.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
+          string tmp = Csla.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
           if (string.IsNullOrEmpty(tmp))
             _maxCacheSize = 10;
           else
             _maxCacheSize = Convert.ToInt32(tmp);
         }
         return _maxCacheSize;
+      }
+      internal set
+      {
+        _maxCacheSize = value;
       }
     }
 
@@ -85,4 +92,3 @@ namespace Csla.Security
     }
   }
 }
-#endif

@@ -13,11 +13,7 @@ using Csla.Serialization;
 namespace Csla.Test.BypassPropertyChecks
 {
   [Serializable()]
-#if !SILVERLIGHT || WINDOWS_PHONE
   [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Test")]
-#else
-  [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,cslalighttest, Version=..., Culture=neutral, PublicKeyToken=null")]
-#endif
   public class BypassBusinessBaseUsingFactory : BusinessBase<BypassBusinessBaseUsingFactory>
   {
     internal BypassBusinessBaseUsingFactory()
@@ -25,34 +21,19 @@ namespace Csla.Test.BypassPropertyChecks
       MarkOld();
     }
 
-#if !SILVERLIGHT
-
     public static BypassBusinessBaseUsingFactory GetObject()
     {
       return Csla.DataPortal.Fetch<BypassBusinessBaseUsingFactory>();
     }
-#else
 
-    public static void GetBypassBusinessBaseUsingFactory(EventHandler<DataPortalResult<BypassBusinessBaseUsingFactory>> handler)
-    {
-      var dp = new DataPortal<BypassBusinessBaseUsingFactory>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch();
-    }
-
-    public void DataPortal_Fetch()
-    {
-    }
-
-#endif
-    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Id"));
+    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value); }
     }
 
-    protected static PropertyInfo<int> Id2Property = RegisterProperty<int>(new PropertyInfo<int>("Id2", "Id2"));
+    protected static PropertyInfo<int> Id2Property = RegisterProperty<int>(c => c.Id2, "Id2");
     public int Id2
     {
       get { return GetProperty<int>(Id2Property); }
@@ -60,7 +41,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     private int _id3;
-    protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(new PropertyInfo<int>("Id3", "Id3"));
+    protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(c => c.Id3, "Id3");
     public int Id3
     {
       get { return GetProperty<int>(Id3Property, _id3); }
@@ -68,7 +49,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     private int _id4;
-    protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(new PropertyInfo<int>("Id4", "Id4"));
+    protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(c => c.Id4, "Id4");
     public int Id4
     {
       get { return GetProperty<int>(Id4Property, _id4); }

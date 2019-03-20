@@ -18,37 +18,15 @@ namespace Csla.Testing.Business.EditableChildTests
   {
     private MockList() { }
 
-    #region  Data Access
-
-#if __ANDROID__
-    public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed)
-    {
-      // fetch with no filter
-      Fetch("", completed);
-    }
-
-    public void DataPortal_Fetch(SingleCriteria<MockList, string> criteria, LocalProxy<MockList>.CompletedHandler completed)
-    {
-      Fetch(criteria.Value, completed);
-    }
-
-    public override void DataPortal_Update(LocalProxy<MockList>.CompletedHandler completed)
-    {
-      Child_Update();
-
-      completed(this, null);
-    }
-
-#else
     private void DataPortal_Fetch()
     {
       // fetch with no filter
       Fetch("");
     }
 
-    private void DataPortal_Fetch(SingleCriteria<MockList, string> criteria)
+    private void DataPortal_Fetch(string criteria)
     {
-      Fetch(criteria.Value);
+      Fetch(criteria);
     }
 
 
@@ -56,8 +34,5 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       Child_Update();
     }
-#endif
-
-    #endregion
   }
 }

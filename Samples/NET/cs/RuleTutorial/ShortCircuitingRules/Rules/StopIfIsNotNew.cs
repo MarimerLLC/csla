@@ -35,7 +35,7 @@ namespace ShortCircuitingRules.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var target = (Csla.Core.ITrackStatus)context.Target;
       if (!target.IsNew)

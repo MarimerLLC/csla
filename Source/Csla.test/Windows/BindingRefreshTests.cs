@@ -33,6 +33,7 @@ namespace Csla.Test.Windows
   {
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestDoNotRefreshOnException()
     {
       ApplicationContext.GlobalContext.Clear();
@@ -53,7 +54,7 @@ namespace Csla.Test.Windows
         {
           personForm.firstNameTextBox.Text = "Dummy First Name Value";
         }
-        catch (System.Security.SecurityException ex) { };
+        catch (System.Security.SecurityException) { };
         
         Assert.AreNotEqual(personForm.firstNameTextBox.Text, personRoot.FirstName);
       }
@@ -61,6 +62,7 @@ namespace Csla.Test.Windows
 
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestRefreshOnException()
     {
       ApplicationContext.GlobalContext.Clear();
@@ -81,7 +83,7 @@ namespace Csla.Test.Windows
         {
           personForm.firstNameTextBox.Text = "Dummy First Name Value";
         }
-        catch (System.Security.SecurityException ex) { };
+        catch (System.Security.SecurityException) { };
 
         Assert.AreEqual(personForm.firstNameTextBox.Text, personRoot.FirstName, "Values did not refresh");
       }

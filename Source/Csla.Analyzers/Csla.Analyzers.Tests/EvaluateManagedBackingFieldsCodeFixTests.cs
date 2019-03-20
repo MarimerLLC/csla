@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,8 +28,21 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixes()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsCodeFixTests)}\{(nameof(this.VerifyGetFixes))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.EvaluateManagedBackingFieldsCodeFixTests
+{
+  public class User 
+    : BusinessBase<User>
+  {
+    PropertyInfo<string> DataProperty =
+      RegisterProperty<string>(_ => _.Data);
+    public string Data
+    {
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
+    }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());
@@ -55,8 +67,19 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWithTrivia()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsCodeFixTests)}\{(nameof(this.VerifyGetFixesWithTrivia))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.EvaluateManagedBackingFieldsCodeFixTests
+{
+  public class VerifyGetFixesWithTrivia
+    : BusinessBase<VerifyGetFixesWithTrivia>
+  {
+    #region Properties
+    private static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+    #endregion
+
+    public string Data => GetProperty(DataProperty);
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());

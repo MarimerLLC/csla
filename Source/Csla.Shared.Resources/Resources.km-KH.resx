@@ -129,9 +129,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>ប្រតិបត្តិការផ្លាស់ប្តូរធាតុ គ្មានសុពលភាព</value>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>តម្លៃរបស់ កម្មវត្ថុមេ មិនអាចកំណត់ សំរាប់ កម្មវត្ថុកូនទេ ។</value>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>មិនអាចកំណត់សំគាល់ object​ ដើម្បីលុបដោយផ្ទាល់បានទេ  អ្នកគួរតែលុបវាតាមរយៈ object មេរបស់វា ។</value>
   </data>

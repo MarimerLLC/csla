@@ -7,7 +7,7 @@
 // <summary>Provides an automated way to reuse open</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Data;
 using Csla.Properties;
 
@@ -107,14 +107,18 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
+#if NETSTANDARD2_0
+        throw new NotSupportedException("isDatabaseName==true");
+#else
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
 
         var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
         if (string.IsNullOrEmpty(conn))
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
+#endif
       }
 
       lock (_lock)

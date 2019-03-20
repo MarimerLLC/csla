@@ -41,6 +41,12 @@ namespace UwpUI.Views
       DataContext = vm;
     }
 
+    private void DisplayItem(object sender, RoutedEventArgs e)
+    {
+      var vm = (ViewModels.ProjectList.ProjectInfo)((Button)sender).DataContext;
+      vm.DisplayItem();
+    }
+
     private void EditItem(object sender, RoutedEventArgs e)
     {
       var vm = (ViewModels.ProjectList.ProjectInfo)((Button)sender).DataContext;

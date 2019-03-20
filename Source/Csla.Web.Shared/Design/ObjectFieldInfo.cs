@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Contains schema information for a single</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.Web.UI.Design;
 using System.ComponentModel;
@@ -182,4 +181,3 @@ namespace Csla.Web.Design
     }
   }
 }
-#endif

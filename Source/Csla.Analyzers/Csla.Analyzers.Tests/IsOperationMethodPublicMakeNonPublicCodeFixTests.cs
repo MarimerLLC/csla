@@ -1,13 +1,10 @@
-﻿using Csla.Analyzers;
-using Csla.Analyzers.Tests;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +28,19 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenClassIsNotSealed()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenClassIsNotSealed))}.cs");
+      var code =
+@"using Csla;
+using System;
+
+namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicMakeNonPublicCodeFixTests
+{
+  [Serializable]
+  public class VerifyGetFixesWhenClassIsNotSealed
+    : BusinessBase<VerifyGetFixesWhenClassIsNotSealed>
+  {
+    public void DataPortal_Fetch() { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());
@@ -62,8 +70,19 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenClassIsSealed()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenClassIsSealed))}.cs");
+      var code =
+@"using Csla;
+using System;
+
+namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicMakeNonPublicCodeFixTests
+{
+  [Serializable]
+  public sealed class VerifyGetFixesWhenClassIsSealed
+    : BusinessBase<VerifyGetFixesWhenClassIsSealed>
+  {
+    public void DataPortal_Fetch() { }
+  }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());

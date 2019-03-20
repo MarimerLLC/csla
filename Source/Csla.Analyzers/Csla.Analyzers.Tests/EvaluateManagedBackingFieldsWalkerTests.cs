@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,9 +10,8 @@ namespace Csla.Analyzers.Tests
   [TestClass]
   public sealed class EvaluateManagedBackingFieldsWalkerTests
   {
-    private static async Task<EvaluateManagedBackingFieldsWalker> GetWalker(string path)
+    private static async Task<EvaluateManagedBackingFieldsWalker> GetWalker(string code)
     {
-      var code = File.ReadAllText(path);
       var document = TestHelpers.Create(code);
       var root = await document.GetSyntaxRootAsync();
       var model = await document.GetSemanticModelAsync();
@@ -31,16 +29,41 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task WalkWhenFieldIsUsedByPropertyInfoManagement()
     {
-      var walker = await EvaluateManagedBackingFieldsWalkerTests.GetWalker(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsWalkerTests)}\{(nameof(this.WalkWhenFieldIsUsedByPropertyInfoManagement))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.FindSetOrLoadInvocationsWalkerTests
+{
+  public class WalkWhenFieldIsUsedByPropertyInfoManagement
+    : BusinessBase<WalkWhenFieldIsUsedByPropertyInfoManagement>
+  {
+    public static readonly PropertyInfo<string> DataProperty =
+      RegisterProperty<string>(_ => _.Data);
+
+    public string Data
+    {
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
+    }
+  }
+}";
+      var walker = await EvaluateManagedBackingFieldsWalkerTests.GetWalker(code);
       Assert.IsTrue(walker.UsesField);
     }
 
     [TestMethod]
     public async Task WalkWhenFieldIsNotUsedByPropertyInfoManagement()
     {
-      var walker = await EvaluateManagedBackingFieldsWalkerTests.GetWalker(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsWalkerTests)}\{(nameof(this.WalkWhenFieldIsNotUsedByPropertyInfoManagement))}.cs");
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.FindSetOrLoadInvocationsWalkerTests
+{
+  public class WalkWhenFieldIsNotUsedByPropertyInfoManagement
+    : BusinessBase<WalkWhenFieldIsNotUsedByPropertyInfoManagement>
+  {
+    public static readonly PropertyInfo<string> DataProperty =
+      RegisterProperty<string>(_ => _.Data);
+    public string Data { get; set; }
+  }
+}";
+      var walker = await EvaluateManagedBackingFieldsWalkerTests.GetWalker(code);
       Assert.IsFalse(walker.UsesField);
     }
   }

@@ -31,25 +31,44 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsNotMobileObject()
     {
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
+{
+  public class AnalyzeWhenClassIsNotMobileObject { }
+}";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotMobileObject))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
+      var code =
+@"using System;
+
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
+{
+  [Serializable]
+  public class AnalyzeWhenClassIsMobileObjectAndIsSerializable
+    : BusinessBase<AnalyzeWhenClassIsMobileObjectAndIsSerializable>
+  { }
+}";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsSerializable))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
+      var code =
+@"namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
+{
+  public class AnalyzeWhenClassIsMobileObjectAndIsNotSerializable
+    : BusinessBase<AnalyzeWhenClassIsMobileObjectAndIsNotSerializable>
+  { }
+}";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsNotSerializable))}.cs",
-        new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+        code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
     }
   }
 }

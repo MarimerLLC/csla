@@ -44,6 +44,12 @@ Here's a tl;dr summary if you just want to get working without all the backgroun
    1. You can push your local clone to GitHub as often as you'd like, this acts as a backup, and allows for collaboration (other people can see your changes via the GitHub web UI)
 
 ## Create a Pull Request (PR)
+1. Make sure your feature branch is current with MarimerLLC/master
+   1. `git pull marimer master`
+   1. That may result in a need to merge changes; resolve any merge conflicts
+   1. Make sure your updated/merged feature branch still builds
+   1. Make sure your unit tests still pass
+   1. `git push origin`
 1. Create a PR from your GitHub fork to MarimerLLC/csla
    1. Use the GitHub web UI to create a PR from your fork to MarimerLLC/csla
    1. Navigate to your fork and branch in GitHub, then click the button to create a pull request, the defaults should be correct

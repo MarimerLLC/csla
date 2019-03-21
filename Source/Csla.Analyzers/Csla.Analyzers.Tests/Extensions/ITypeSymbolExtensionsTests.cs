@@ -13,6 +13,104 @@ namespace Csla.Analyzers.Tests.Extensions
   public sealed class ITypeSymbolExtensionsTests
   {
     [TestMethod]
+    public async Task IsPrimitiveForNonPrimitiveType()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsFalse(model.Compilation.GetTypeByMetadataName("System.Guid").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForBool()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Boolean").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForChar()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Char").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForString()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.String").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForByte()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Byte").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForSByte()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.SByte").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForInt16()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Int16").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForUInt16()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.UInt16").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForInt32()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Int32").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForUInt32()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.UInt32").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForInt64()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Int64").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForUInt64()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.UInt64").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForSingle()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Single").IsPrimitive());
+    }
+
+    [TestMethod]
+    public async Task IsPrimitiveForDouble()
+    {
+      var (_, model) = await this.GetRootAndModel(string.Empty, string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName("System.Double").IsPrimitive());
+    }
+
+    [TestMethod]
     public void IsBusinessBaseWhenSymbolIsNull()
     {
       Assert.IsFalse((null as ITypeSymbol).IsBusinessBase());
@@ -206,63 +304,6 @@ namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
 }";
       Assert.IsFalse((await this.GetTypeSymbolAsync(code,
         nameof(ITypeSymbolExtensionsTests.IsEditableStereotypeWhenSymbolIsACommandBase))).IsEditableStereotype());
-    }
-
-    [TestMethod]
-    public void IsSerializableWhenSymbolIsNull()
-    {
-      Assert.IsFalse((null as ITypeSymbol).IsSerializable());
-    }
-
-    [TestMethod]
-    public async Task IsSerializableWhenSymbolIsNotSerializable()
-    {
-      var code =
-@"namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
-{
-  public class IsSerializableWhenSymbolIsNotSerializable { }
-}";
-      Assert.IsFalse((await this.GetTypeSymbolAsync(code,
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsNotSerializable))).IsSerializable());
-    }
-
-    [TestMethod]
-    public async Task IsSerializableWhenSymbolHasSerializableAttribute()
-    {
-      var code =
-@"using System;
-
-namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
-{
-  [Serializable]
-  public class IsSerializableWhenSymbolHasSerializableAttribute { }
-}";
-      Assert.IsTrue((await this.GetTypeSymbolAsync(code,
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolHasSerializableAttribute))).IsSerializable());
-    }
-
-    [TestMethod]
-    public async Task IsSerializableWhenSymbolIsEnum()
-    {
-      var code =
-@"namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
-{
-  public enum IsSerializableWhenSymbolIsEnum { }
-}";
-      Assert.IsTrue((await this.GetEnumSymbolAsync(code,
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsEnum))).IsSerializable());
-    }
-
-    [TestMethod]
-    public async Task IsSerializableWhenSymbolIsDelegate()
-    {
-      var code =
-@"namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
-{
-  public delegate int IsSerializableWhenSymbolIsDelegate();
-}";
-      Assert.IsTrue((await this.GetDelegateSymbolAsync(code, 
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsDelegate))).IsSerializable());
     }
 
     [TestMethod]

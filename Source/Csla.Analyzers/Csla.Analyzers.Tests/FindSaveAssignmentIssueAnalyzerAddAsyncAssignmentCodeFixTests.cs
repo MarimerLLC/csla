@@ -62,7 +62,7 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerAddAsyncAs
 
       await TestHelpers.VerifyActionAsync(actions,
         FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription, document,
-        tree, new[] { $@"x = " });
+        tree, new[] { "x =" });
     }
   }
 }

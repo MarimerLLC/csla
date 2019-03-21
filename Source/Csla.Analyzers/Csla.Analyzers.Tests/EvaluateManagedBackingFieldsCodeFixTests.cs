@@ -61,7 +61,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
-        tree, new[] { "    public static readonly " });
+        tree, new[] { "public static readonly" });
     }
 
     [TestMethod]
@@ -98,7 +98,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
-        tree, new[] { "    #region Properties\r\n        public" });
+        tree, new[] { "#region Properties", "public" });
     }
   }
 }

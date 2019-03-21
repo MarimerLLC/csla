@@ -19,12 +19,6 @@ namespace Csla.Analyzers
       var symbol = this.Model.GetSymbolInfo(node);
       var methodSymbol = symbol.Symbol as IMethodSymbol;
 
-      if (methodSymbol == null && symbol.CandidateReason == CandidateReason.OverloadResolutionFailure && 
-        symbol.CandidateSymbols.Length > 0)
-      {
-        methodSymbol = symbol.CandidateSymbols[0] as IMethodSymbol;
-      }
-
       if (methodSymbol.IsPropertyInfoManagementMethod())
       {
         this.Invocation = node;

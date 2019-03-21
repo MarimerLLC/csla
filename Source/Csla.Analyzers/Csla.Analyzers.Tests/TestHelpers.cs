@@ -26,11 +26,9 @@ namespace Csla.Analyzers.Tests
       var newTree = await newDoc.GetSyntaxTreeAsync();
       var changes = newTree.GetChanges(tree);
 
-      Assert.AreEqual(expectedNewTexts.Length, changes.Count, nameof(changes.Count));
-
       foreach(var expectedNewText in expectedNewTexts)
       {
-        Assert.IsTrue(changes.Any(_ => _.NewText == expectedNewText), 
+        Assert.IsTrue(changes.Any(_ => _.NewText.Contains(expectedNewText)), 
           string.Join($"{Environment.NewLine}{Environment.NewLine}", changes.Select(_ => $"Change text: {_.NewText}")));
       }
     }

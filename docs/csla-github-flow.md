@@ -36,6 +36,10 @@ Here's a tl;dr summary if you just want to get working without all the backgroun
 1. Rinse and repeat as you work
    1. It is a good idea to commit frequently so you can roll back to a previous state in case of badness
    1. Committing only updates your _local clone_, it has no impact on anything in the cloud until you push (next step)
+1. Watch for changes from marimer/master
+   1. `git fetch marimer` - will fetch changes from marimer. This does not update your local branch. It only updates your local repository.
+   1. `git log ..marimer/master` - will log all commits that have been made to marimer/master that are **not** in your branch. This can tell you if you need to update your branch. If there are no incoming changes, this prints nothing and there is no need to do the next step.
+   1. `git pull marimer master` - will update your local branch with changes that have been made to marimer/master. This is how you keep your local branch up to date.
    
 ## Upload your work to the cloud
 1. Push your local clone to your GitHub fork

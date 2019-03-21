@@ -58,7 +58,7 @@ namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializa
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, new[] { $"  [Serializable]{Environment.NewLine}    " });
+        tree, new[] { "[Serializable]" });
     }
 
     [TestMethod]
@@ -93,7 +93,7 @@ namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializa
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, new[] { $"using System;{Environment.NewLine}", $"  [Serializable]{Environment.NewLine}    " });
+        tree, new[] { "using System;", "[Serializable]" });
     }
   }
 }

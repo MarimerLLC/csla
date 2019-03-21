@@ -54,7 +54,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription, document,
-        tree, new[] { $@"      public VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist(){Environment.NewLine}        {{{Environment.NewLine}        }}{Environment.NewLine}    " });
+        tree, new[] { "public VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist()" });
     }
 
     [TestMethod]
@@ -86,7 +86,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { "    public" });
+        tree, new[] { "public" });
     }
 
     [TestMethod]
@@ -120,8 +120,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { @"    // Hey! Don't loose me! 
-        public" });
+        tree, new[] { "// Hey! Don't loose me!", "public" });
     }
 
     [TestMethod]
@@ -154,7 +153,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { @"    public" });
+        tree, new[] { "public" });
     }
 
     [TestMethod]
@@ -195,7 +194,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { @"    public" });
+        tree, new[] { "public" });
     }
   }
 }

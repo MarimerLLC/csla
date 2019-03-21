@@ -176,25 +176,27 @@ namespace Csla.Analyzers.Tests
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
-      var diagnostic = (await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer()))
-        .Single(_ => _.Location.SourceSpan.End == 184 &&
-          _.Location.SourceSpan.Start == 114);
-      var sourceSpan = diagnostic.Location.SourceSpan;
+      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
 
-      var actions = new List<CodeAction>();
-      var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
-        (a, _) => { actions.Add(a); });
+      foreach(var diagnostic in diagnostics)
+      {
+        var sourceSpan = diagnostic.Location.SourceSpan;
 
-      var fix = new CheckConstructorsAnalyzerPublicConstructorCodeFix();
-      var codeFixContext = new CodeFixContext(document, diagnostic,
-        codeActionRegistration, new CancellationToken(false));
-      await fix.RegisterCodeFixesAsync(codeFixContext);
+        var actions = new List<CodeAction>();
+        var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
+          (a, _) => { actions.Add(a); });
 
-      Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+        var fix = new CheckConstructorsAnalyzerPublicConstructorCodeFix();
+        var codeFixContext = new CodeFixContext(document, diagnostic,
+          codeActionRegistration, new CancellationToken(false));
+        await fix.RegisterCodeFixesAsync(codeFixContext);
 
-      await TestHelpers.VerifyActionAsync(actions,
-        CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { "public" });
+        Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+
+        await TestHelpers.VerifyActionAsync(actions,
+          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
+          tree, new[] { "public" });
+      }
     }
   }
 }

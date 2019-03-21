@@ -55,6 +55,8 @@ Here's a tl;dr summary if you just want to get working without all the backgroun
    1. Navigate to your fork and branch in GitHub, then click the button to create a pull request, the defaults should be correct
    1. Double-check to make sure MarimerLLC/csla-master is on the left, and yourname/csla-yourbranch is on the right
    1. Creating the PR will trigger a CI build
+      1. We will only accept a PR if it can be automatically merged (green checkmark)
+      1. We will only accept a PR if the build/tests all pass (green checkmark from CI build)
    1. Your PR _has no effect_ on master or production, it is a _pending_ change
    1. Subsequent changes to your feature branch in your GitHub fork automatically become part of your PR; each time you push to your GitHub fork's feature branch triggers a CI build of the PR
    

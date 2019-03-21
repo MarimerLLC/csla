@@ -41,8 +41,8 @@ namespace Csla.Analyzers
       {
         foreach(var argument in methodSymbol.Parameters)
         {
-          if(argument.Type.TypeKind != TypeKind.Interface &&
-            !argument.Type.IsSerializable())
+          if (!argument.Type.IsPrimitive() &&
+            (argument.Type is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable))
           {
             context.ReportDiagnostic(Diagnostic.Create(
               FindOperationsWithNonSerializableArgumentsAnalyzer.shouldUseSerializableTypesRule,

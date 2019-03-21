@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <!--<TargetFramework>netcoreapp2.2</TargetFramework>-->
+    <TargetFramework>net461</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AssemblyName>Csla.Analyzers.IntegrationTests</AssemblyName>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

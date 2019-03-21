@@ -94,6 +94,8 @@ namespace Csla.Analyzers.Tests
       var code =
 @"namespace Csla.Analyzers.Tests.Targets.FindOperationsWithNonSerializableArgumentsAnalyzerTests
 {
+  public class NonSerializableClass { }
+
   public class AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument
     : BusinessBase<AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument>
   {
@@ -102,6 +104,27 @@ namespace Csla.Analyzers.Tests
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, new[] { Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgumentCustomType()
+    {
+      var code =
+@"using System;
+
+namespace Csla.Analyzers.Tests.Targets.FindOperationsWithNonSerializableArgumentsAnalyzerTests
+{
+  [Serializable]
+  public class SerializableClass { }
+
+  public class AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument
+    : BusinessBase<AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument>
+  {
+    private void DataPortal_Fetch(SerializableClass x) { }
+  }
+}";
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
@@ -142,6 +165,8 @@ namespace Csla.Analyzers.Tests
       var code =
 @"namespace Csla.Analyzers.Tests.Targets.FindOperationsWithNonSerializableArgumentsAnalyzerTests
 {
+  public class NonSerializableClass { }
+
   public class AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument
     : BusinessBase<AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument>
   {

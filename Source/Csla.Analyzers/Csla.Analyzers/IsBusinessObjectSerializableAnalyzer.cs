@@ -35,7 +35,7 @@ namespace Csla.Analyzers
       var classNode = (ClassDeclarationSyntax)context.Node;
       var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
 
-      if (classSymbol.IsMobileObject() && !classSymbol.IsSerializable())
+      if (classSymbol.IsMobileObject() && !classSymbol.IsSerializable)
       {
         context.ReportDiagnostic(Diagnostic.Create(IsBusinessObjectSerializableAnalyzer.makeSerializableRule,
           classNode.Identifier.GetLocation()));

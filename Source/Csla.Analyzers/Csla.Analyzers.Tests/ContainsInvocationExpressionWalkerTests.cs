@@ -17,12 +17,8 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task WalkWhenNodeHasNoInvocations()
     {
-      var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSetOrLoadInvocationsWalker
-{
-  public class WalkWhenNodeHasNoInvocations { }
-}";
-      var walker = await ContainsInvocationExpressionWalkerTests.GetWalker(code);
+      var code = "public class WalkWhenNodeHasNoInvocations { }";
+      var walker = await GetWalker(code);
       Assert.IsFalse(walker.HasIssue);
     }
 
@@ -30,17 +26,11 @@ namespace Csla.Analyzers.Tests
     public async Task WalkWhenNodeHasInvocation()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSetOrLoadInvocationsWalker
+@"public class WalkWhenNodeHasInvocation
 {
-  public class WalkWhenNodeHasInvocation
-  {
-    public void Go()
-    {
-      this.GetHashCode();
-    }
-  }
+  public void Go() => this.GetHashCode();
 }";
-      var walker = await ContainsInvocationExpressionWalkerTests.GetWalker(code);
+      var walker = await GetWalker(code);
       Assert.IsTrue(walker.HasIssue);
     }
   }

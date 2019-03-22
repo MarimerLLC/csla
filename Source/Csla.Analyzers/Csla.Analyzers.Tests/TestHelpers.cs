@@ -37,7 +37,7 @@ namespace Csla.Analyzers.Tests
       Action<List<Diagnostic>> diagnosticInspector = null)
       where T : DiagnosticAnalyzer, new()
     {
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new T());
+      var diagnostics = await GetDiagnosticsAsync(code, new T());
       Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
 
       foreach (var diagnosticId in diagnosticIds)
@@ -50,7 +50,7 @@ namespace Csla.Analyzers.Tests
 
     internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer)
     {
-      var document = TestHelpers.Create(code);
+      var document = Create(code);
       var root = await document.GetSyntaxRootAsync();
       var compilation = (await document.Project.GetCompilationAsync())
         .WithAnalyzers(ImmutableArray.Create(analyzer));

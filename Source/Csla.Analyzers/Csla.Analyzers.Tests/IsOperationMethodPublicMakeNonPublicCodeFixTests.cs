@@ -32,14 +32,10 @@ namespace Csla.Analyzers.Tests
 @"using Csla;
 using System;
 
-namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicMakeNonPublicCodeFixTests
+[Serializable]
+public class A : BusinessBase<A>
 {
-  [Serializable]
-  public class VerifyGetFixesWhenClassIsNotSealed
-    : BusinessBase<VerifyGetFixesWhenClassIsNotSealed>
-  {
-    public void DataPortal_Fetch() { }
-  }
+  public void DataPortal_Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -74,14 +70,10 @@ namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicMakeNonPublicCodeF
 @"using Csla;
 using System;
 
-namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicMakeNonPublicCodeFixTests
+[Serializable]
+public sealed class A : BusinessBase<A>
 {
-  [Serializable]
-  public sealed class VerifyGetFixesWhenClassIsSealed
-    : BusinessBase<VerifyGetFixesWhenClassIsSealed>
-  {
-    public void DataPortal_Fetch() { }
-  }
+  public void DataPortal_Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();

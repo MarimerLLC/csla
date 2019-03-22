@@ -13,30 +13,20 @@ namespace Csla.Analyzers
   public sealed class FindSaveAssignmentIssueAnalyzer
     : DiagnosticAnalyzer
   {
-    private static DiagnosticDescriptor saveResultIsNotAssignedRule = new DiagnosticDescriptor(
+    private static readonly DiagnosticDescriptor saveResultIsNotAssignedRule = new DiagnosticDescriptor(
       Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, FindSaveAssignmentIssueAnalyzerConstants.Title,
       FindSaveAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true);
-    private static DiagnosticDescriptor saveAsyncResultIsNotAssignedRule = new DiagnosticDescriptor(
+    private static readonly DiagnosticDescriptor saveAsyncResultIsNotAssignedRule = new DiagnosticDescriptor(
       Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue, FindSaveAsyncAssignmentIssueAnalyzerConstants.Title,
       FindSaveAsyncAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-    {
-      get
-      {
-        return ImmutableArray.Create(
-          FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule,
-          FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
-      }
-    }
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
+      ImmutableArray.Create(saveResultIsNotAssignedRule, saveAsyncResultIsNotAssignedRule);
 
-    public override void Initialize(AnalysisContext context)
-    {
-      context.RegisterSyntaxNodeAction<SyntaxKind>(
-        FindSaveAssignmentIssueAnalyzer.AnalyzeInvocation, SyntaxKind.InvocationExpression);
-    }
+    public override void Initialize(AnalysisContext context) => 
+      context.RegisterSyntaxNodeAction(AnalyzeInvocation, SyntaxKind.InvocationExpression);
 
     private static void AnalyzeInvocation(SyntaxNodeAnalysisContext context)
     {
@@ -55,13 +45,13 @@ namespace Csla.Analyzers
 
           if (invocationSymbol?.Name == Constants.SaveMethodNames.Save)
           {
-            FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
-              expressionStatementNode, FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule);
+            CheckForCondition(context, invocationNode,
+              expressionStatementNode, saveResultIsNotAssignedRule);
           }
           else if (invocationSymbol?.Name == Constants.SaveMethodNames.SaveAsync)
           {
-            FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
-              expressionStatementNode, FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
+            CheckForCondition(context, invocationNode,
+              expressionStatementNode, saveAsyncResultIsNotAssignedRule);
           }
         }
       }
@@ -75,7 +65,7 @@ namespace Csla.Analyzers
         !invocationNode.DescendantNodesAndTokens().Any(_ => _.IsKind(SyntaxKind.ThisExpression) || _.IsKind(SyntaxKind.BaseExpression))) &&
         (!expressionStatementParent?.DescendantNodesAndTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false) &&
         !(invocationNode.DescendantNodes()?.Any(_ => new ContainsInvocationExpressionWalker(_).HasIssue) ?? false) &&
-        !FindSaveAssignmentIssueAnalyzer.IsReturnValue(invocationNode))
+        !IsReturnValue(invocationNode))
       {
         context.ReportDiagnostic(Diagnostic.Create(descriptor, invocationNode.GetLocation()));
       }

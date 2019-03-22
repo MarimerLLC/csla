@@ -13,25 +13,18 @@ namespace Csla.Analyzers
   public sealed class EvaluateManagedBackingFieldsAnalayzer
     : DiagnosticAnalyzer
   {
-    private static DiagnosticDescriptor mustBePublicStaticAndReadonlyRule = new DiagnosticDescriptor(
-      Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
-      EvaluateManagedBackingFieldsAnalayzerConstants.Title,
-      EvaluateManagedBackingFieldsAnalayzerConstants.Message,
-      Constants.Categories.Usage, DiagnosticSeverity.Error, true);
+    private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule = 
+      new DiagnosticDescriptor(
+        Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
+        EvaluateManagedBackingFieldsAnalayzerConstants.Title,
+        EvaluateManagedBackingFieldsAnalayzerConstants.Message,
+        Constants.Categories.Usage, DiagnosticSeverity.Error, true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-    {
-      get
-      {
-        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule);
-      }
-    }
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
+      ImmutableArray.Create(mustBePublicStaticAndReadonlyRule);
 
-    public override void Initialize(AnalysisContext context)
-    {
-      context.RegisterSyntaxNodeAction<SyntaxKind>(
-        EvaluateManagedBackingFieldsAnalayzer.AnalyzeFieldDeclaration, SyntaxKind.FieldDeclaration);
-    }
+    public override void Initialize(AnalysisContext context) => 
+      context.RegisterSyntaxNodeAction(AnalyzeFieldDeclaration, SyntaxKind.FieldDeclaration);
 
     private static void AnalyzeFieldDeclaration(SyntaxNodeAnalysisContext context)
     {
@@ -46,8 +39,7 @@ namespace Csla.Analyzers
 
           context.CancellationToken.ThrowIfCancellationRequested();
 
-          if (fieldSymbol != null && classSymbol != null &&
-            classSymbol.IsStereotype())
+          if (fieldSymbol != null && classSymbol != null && classSymbol.IsStereotype())
           {
             if (fieldSymbol.Type.IsIPropertyInfo())
             {
@@ -59,13 +51,11 @@ namespace Csla.Analyzers
 
                   if (!classProperty.IsIndexer)
                   {
-                    if (EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
-                      context, fieldSymbol, classProperty))
+                    if (DetermineIfPropertyUsesField(context, fieldSymbol, classProperty))
                     {
                       context.CancellationToken.ThrowIfCancellationRequested();
 
-                      EvaluateManagedBackingFieldsAnalayzer.CheckForDiagnostics(
-                        context, fieldNode, fieldSymbol);
+                      CheckForDiagnostics(context, fieldNode, fieldSymbol);
                       break;
                     }
                   }
@@ -86,8 +76,7 @@ namespace Csla.Analyzers
       if (!isStatic || !isPublic || !isReadOnly)
       {
         context.ReportDiagnostic(Diagnostic.Create(
-          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
-          fieldNode.GetLocation()));
+          mustBePublicStaticAndReadonlyRule, fieldNode.GetLocation()));
       }
     }
 
@@ -101,9 +90,7 @@ namespace Csla.Analyzers
 
       if (rootSpan.Contains(classPropertyLocationSpan))
       {
-        var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
-
-        if (propertyNode != null)
+        if (root.FindNode(classPropertyLocationSpan) is PropertyDeclarationSyntax propertyNode)
         {
           var getter = propertyBody(propertyNode);
 
@@ -117,24 +104,38 @@ namespace Csla.Analyzers
       return false;
     }
 
+    public string A { get; set; }
+
+    public string B
+    {
+      get => string.Empty;
+      set => B = value;
+    }
+
+    public string C
+    {
+      get { return string.Empty; }
+      set { C = value; }
+    }
+
     private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context,
       IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
     {
       if (classProperty.GetMethod != null)
       {
-        return EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
+        return DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
           propertyNode => propertyNode.ExpressionBody as SyntaxNode ??
             propertyNode.AccessorList.Accessors.Single(
-              _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body);
+              _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)));
       }
 
       if (classProperty.SetMethod != null)
       {
-        return EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
+        return DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
           propertyNode => propertyNode.AccessorList.Accessors.Single(
-            _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)).Body);
+            _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)));
       }
 
       return false;

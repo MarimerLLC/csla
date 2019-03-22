@@ -10,21 +10,20 @@ namespace Csla.Analyzers
   {
     internal EvaluateManagedBackingFieldsWalker(SyntaxNode node, SemanticModel model, IFieldSymbol fieldSymbol)
     {
-      this.FieldSymbol = fieldSymbol;
-      this.Model = model;
-      base.Visit(node);
+      (FieldSymbol, Model) = (fieldSymbol, model);
+      Visit(node);
     }
 
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
-      var invocationSymbol = this.Model.GetSymbolInfo(node).Symbol as IMethodSymbol;
+      var invocationSymbol = Model.GetSymbolInfo(node).Symbol as IMethodSymbol;
 
       if (invocationSymbol.IsPropertyInfoManagementMethod())
       {
         foreach (var argument in node.ArgumentList.Arguments)
         {
-          var argumentSymbol = this.Model.GetSymbolInfo(argument.Expression).Symbol;
-          this.UsesField = argumentSymbol != null && argumentSymbol == this.FieldSymbol;
+          var argumentSymbol = Model.GetSymbolInfo(argument.Expression).Symbol;
+          UsesField = argumentSymbol != null && argumentSymbol == FieldSymbol;
         }
       }
     }

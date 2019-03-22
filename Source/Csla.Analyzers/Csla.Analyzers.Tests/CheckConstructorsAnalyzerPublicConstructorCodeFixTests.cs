@@ -29,12 +29,11 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTestss
+@"using Csla;
+
+public class A : BusinessBase<A>
 {
-  public class VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist : BusinessBase<VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist>
-  {
-    private VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist(int a) { }
-  }
+  private A(int a) { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -54,19 +53,18 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription, document,
-        tree, new[] { "public VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist()" });
+        tree, new[] { "public A()" });
     }
 
     [TestMethod]
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExists()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTestss
+@"using Csla;
+
+public class A : BusinessBase<A>
 {
-  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExists : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExists>
-  {
-    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExists() { }
-  }
+  private A() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -93,14 +91,12 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTests
+@"using Csla;
+
+public class A : BusinessBase<A>
 {
-  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists
-    : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists>
-  {
-    // Hey! Don't loose me! 
-    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists() { }
-  }
+  // Hey! Don't loose me! 
+  private A() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -127,13 +123,11 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTests
+@"using Csla;
+
+public class A : BusinessBase<A>
 {
-  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists
-    : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists>
-  {
-    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists()/* And not this either */ { }
-  }
+  private A()/* And not this either */ { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -160,18 +154,16 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerPublicConstructorCodeFixTestss
-{
-  public class VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses
-    : BusinessBase<VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses>
-  {
-    private VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses() { }
+@"using Csla;
 
-    public class NestedClass
-      : BusinessBase<NestedClass>
-    {
-      private NestedClass() { }
-    }
+public class A : BusinessBase<A>
+{
+  private A() { }
+
+  public class B
+    : BusinessBase<B>
+  {
+    private B() { }
   }
 }";
       var document = TestHelpers.Create(code);

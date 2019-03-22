@@ -41,20 +41,17 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+@"public class A
 {
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase
-  {
-    public AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase Save() { return null; }
-  }
+  public A Save() => null;
+}
 
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBaseCaller
+public class B
+{
+  public void Call()
   {
-    public void Call()
-    {
-      var x = new AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase();
-      x.Save();
-    }
+    var x = new A();
+    x.Save();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -67,23 +64,17 @@ namespace Csla.Analyzers.Tests
       var code =
 @"using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase
-  {
-    public async Task<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase> SaveAsync()
-    {
-      return await Task.FromResult<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase>(null);
-    }
-  }
+  public async Task<A> SaveAsync() => await Task.FromResult<A>(null);
+}
 
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBaseCaller
+public class B
+{
+  public async Task Call()
   {
-    public async Task Call()
-    {
-      var x = new AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase();
-      await x.SaveAsync();
-    }
+    var x = new A();
+    await x.SaveAsync();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -94,19 +85,16 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
-{
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned>
-  { }
+@"using Csla;
 
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssignedCaller
+public class A : BusinessBase<A> { }
+
+public class B
+{
+  public void Call()
   {
-    public void Call()
-    {
-      var x = new AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned();
-      x = x.Save();
-    }
+    var x = new A();
+    x = x.Save();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -117,21 +105,17 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A> { }
+
+public class B
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned>
-  { }
-
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssignedCaller
+  public async Task Call()
   {
-    public async Task Call()
-    {
-      var x = new AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned();
-      x = await x.SaveAsync();
-    }
+    var x = new A();
+    x = await x.SaveAsync();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -142,19 +126,16 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
-{
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned>
-  { }
+@"using Csla;
 
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssignedCaller
+public class A : BusinessBase<A> { }
+
+public class B
+{
+  public void Call()
   {
-    public void Call()
-    {
-      var x = new AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned();
-      x.Save();
-    }
+    var x = new A();
+    x.Save();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -165,21 +146,17 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A> { }
+
+public class B
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned>
-  { }
-
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssignedCaller
+  public async Task Call()
   {
-    public async Task Call()
-    {
-      var x = new AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned();
-      await x.SaveAsync();
-    }
+    var x = new A();
+    await x.SaveAsync();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -190,19 +167,16 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
-{
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned>
-  { }
+@"using Csla;
 
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedCaller
+public class A : BusinessBase<A>{ }
+
+public class B
+{
+  public A Call()
   {
-    public AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned Call()
-    {
-      var x = new AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned();
-      return x.Save();
-    }
+    var x = new A();
+    return x.Save();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -213,21 +187,17 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>{ }
+
+public class B
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned>
-  { }
-
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedCaller
+  public async Task<A> Call()
   {
-    public async Task<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned> AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedCall()
-    {
-      var x = new AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned();
-      return await x.SaveAsync();
-    }
+    var x = new A();
+    return await x.SaveAsync();
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
@@ -238,29 +208,21 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda()
     {
       var code =
-@"using System;
+@"using Csla;
+using System;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>{ }
+
+public class B
 {
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda>
-  { }
-
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaCaller
+  public void Call()
   {
-    public void Call()
-    {
-      var x = new AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda();
+    var x = new A();
 
-      this.Run(() => x.Save());
-    }
-
-    private AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda Run(
-      Func<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda> code)
-    {
-      return code();
-    }
+    this.Run(() => x.Save());
   }
+
+  private B Run(Func<B> code) => code();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -270,30 +232,22 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda()
     {
       var code =
-@"using System;
+@"using Csla;
+using System;
 using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>{ }
+
+public class B
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda>
-  { }
-
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaCaller
+  public async Task Call()
   {
-    public async Task Call()
-    {
-      var x = new AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda();
+    var x = new A();
 
-      await this.Run(async () => await x.SaveAsync());
-    }
-
-    private async Task<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda> Run(
-      Func<Task<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda>> code)
-    {
-      return await code();
-    }
+    await this.Run(async () => await x.SaveAsync());
   }
+
+  private async Task<A> Run(Func<Task<A>> code) => await code();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -303,32 +257,25 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock()
     {
       var code =
-@"using System;
+@"using Csla;
+using System;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>{ }
+
+public class B
 {
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock>
-  { }
-
-  public class AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlockCaller
+  public void Call()
   {
-    public void Call()
+    this.Run(() =>
     {
-      this.Run(() =>
-      {
-        var x = new AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock();
-        return x.Save();
-      });
-    }
-
-    private AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock Run(
-      Func<AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock> code)
-    {
-      return code();
-    }
+      var x = new A();
+      return x.Save();
+    });
   }
-}";
+
+  private A Run(Func<A> code) => code();
+}
+";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
     }
@@ -337,32 +284,24 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock()
     {
       var code =
-@"using System;
+@"using Csla;
+using System;
 using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>{ }
+
+public class B
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock>
-  { }
-
-  public class AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlockCaller
+  public async Task Call()
   {
-    public async Task Call()
+    await this.Run(async () =>
     {
-      await this.Run(async () =>
-      {
-        var x = new AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock();
-        return await x.SaveAsync();
-      });
-    }
-
-    private async Task<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock> Run(
-      Func<Task<AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock>> code)
-    {
-      return await code();
-    }
+      var x = new A();
+      return await x.SaveAsync();
+    });
   }
+
+  private async Task<A> Run(Func<Task<A>> code) => await code();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -372,16 +311,11 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+@"using Csla;
+
+public class A : BusinessBase<A>
 {
-  public class AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself>
-  {
-    public void Foo()
-    {
-      Save();
-    }
-  }
+  public void Foo() => Save();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -391,18 +325,12 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself>
-  {
-    public async Task Foo()
-    {
-      await SaveAsync();
-    }
-  }
+  public async Task Foo() => await SaveAsync();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -412,16 +340,11 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+@"using Csla;
+
+public class A : BusinessBase<A>
 {
-  public class AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis>
-  {
-    public void Foo()
-    {
-      this.Save();
-    }
-  }
+  public void Foo() => this.Save();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -431,18 +354,12 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis>
-  {
-    public async Task Foo()
-    {
-      await this.SaveAsync();
-    }
-  }
+  public async Task Foo() => this.SaveAsync();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -452,16 +369,12 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+@"using Csla;
+
+public class A
+  : BusinessBase<A>
 {
-  public class AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase
-    : BusinessBase<AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase>
-  {
-    public void Foo()
-    {
-      base.Save();
-    }
-  }
+  public void Foo() => base.Save();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());
@@ -471,18 +384,12 @@ namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
     public async Task AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerTests
+public class A : BusinessBase<A>
 {
-  public class AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase
-    : BusinessBase<AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase>
-  {
-    public async Task Foo()
-    {
-      await base.SaveAsync();
-    }
-  }
+  public async Task Foo() => await base.SaveAsync();
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         code, Array.Empty<string>());

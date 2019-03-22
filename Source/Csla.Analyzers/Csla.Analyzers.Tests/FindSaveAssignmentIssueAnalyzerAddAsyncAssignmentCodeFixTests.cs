@@ -29,19 +29,17 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes()
     {
       var code =
-@"using System.Threading.Tasks;
+@"using Csla;
+using System.Threading.Tasks;
 
-namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests
+public class A : BusinessBase<A> { }
+
+public class VerifyGetFixes
 {
-  public class User : BusinessBase<User> { }
-
-  public class VerifyGetFixes
+  public async Task Use()
   {
-    public async Task UseUser()
-    {
-      var x = DataPortal.Fetch<User>();
-      await x.SaveAsync();
-    }
+    var x = DataPortal.Fetch<A>();
+    await x.SaveAsync();
   }
 }";
       var document = TestHelpers.Create(code);

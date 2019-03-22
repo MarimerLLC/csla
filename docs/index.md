@@ -31,6 +31,7 @@ External links
 --------------
 * [Rockford Lhotka home page](http://www.lhotka.net)
 * [Rockford Lhotka blog](http://www.lhotka.net/weblog/)
+* [Jonny Bekkum blog](https://jonnybekkum.wordpress.com/)
 * [CSLA .NET archive download page](http://www.lhotka.net/cslanet/download.aspx)
 * [Wikipedia page](http://en.wikipedia.org/wiki/CSLA_.NET)
 * [Open Hub](https://www.openhub.net/p/cslanet)

@@ -8,6 +8,7 @@
       public const string IsOperationMethodPublic = "CSLA0002";
       public const string PublicNoArgumentConstructorIsMissing = "CSLA0003";
       public const string ConstructorHasParameters = "CSLA0004";
+      public const string FindBusinessObjectCreation = "CSLA0011";
       public const string FindSaveAssignmentIssue = "CSLA0005";
       public const string FindSaveAsyncAssignmentIssue = "CSLA0006";
       public const string OnlyUseCslaPropertyMethodsInGetSetRule = "CSLA0007";

@@ -9,6 +9,14 @@ namespace Csla.Analyzers.Extensions
 {
   internal static class ITypeSymbolExtensions
   {
+    internal static bool IsObjectFactory(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.ObjectFactoryBase &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsObjectFactory());
+    }
+
     internal static bool IsBusinessBase(this ITypeSymbol @this)
     {
       return @this != null &&

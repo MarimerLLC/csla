@@ -1,4 +1,10 @@
-I am pleased to announce the release of CSLA .NET version 4.9.0.
+I am pleased to announce the release of CSLA .NET version 4.10.0.
+
+This is a bug fix release from 4.9.0.
+
+* [#1084](https://github.com/marimerllc/csla/issues/1084) Backport sync context changes from v5.0 
+
+## CSLA .NET version 4.9.0 Release Notes
 
 The major enhancements are described in some detail in a [CSLA .NET 4.9.0 blog post](http://www.lhotka.net/weblog/CSLANETVersion49NewFeatures.aspx).
 

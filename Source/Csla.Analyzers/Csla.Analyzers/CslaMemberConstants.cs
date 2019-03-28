@@ -46,6 +46,7 @@
       public const string IMobileObject = "IMobileObject";
       public const string IPropertyInfo = "IPropertyInfo";
       public const string ManagedObjectBase = "ManagedObjectBase";
+      public const string ObjectFactoryBase = "ObjectFactory";
       public const string ReadOnlyBase = "ReadOnlyBase";
     }
 

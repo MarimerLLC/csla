@@ -25,6 +25,9 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Warning, ctorHasParametersDiagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, nameof(EvaluatePropertiesForSimplicityAnalyzer)),
+        ctorHasParametersDiagnostic.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]

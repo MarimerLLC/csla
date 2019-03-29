@@ -11,11 +11,13 @@ namespace Csla.Analyzers
   public sealed class FindOperationsWithNonSerializableArgumentsAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor shouldUseSerializableTypesRule = 
+    private static readonly DiagnosticDescriptor shouldUseSerializableTypesRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, FindOperationsWithNonSerializableArgumentsConstants.Title,
         FindOperationsWithNonSerializableArgumentsConstants.Message, Constants.Categories.Design,
-        DiagnosticSeverity.Warning, true);
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, nameof(FindOperationsWithNonSerializableArgumentsAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
       ImmutableArray.Create(shouldUseSerializableTypesRule);

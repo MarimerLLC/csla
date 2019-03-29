@@ -27,6 +27,9 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.FindBusinessObjectCreation, nameof(FindBusinessObjectCreationAnalyzer)),
+        diagnostic.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]

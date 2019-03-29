@@ -25,8 +25,11 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.IsOperationMethodPublic, nameof(IsOperationMethodPublicAnalyzer)),
+        diagnostic.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
 
-      var diagnosticForInterface = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
+      var diagnosticForInterface = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface);
       Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Title, diagnosticForInterface.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
       Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Message, diagnosticForInterface.MessageFormat.ToString(),
@@ -35,6 +38,9 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Warning, diagnosticForInterface.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, nameof(IsOperationMethodPublicAnalyzer)),
+        diagnosticForInterface.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]

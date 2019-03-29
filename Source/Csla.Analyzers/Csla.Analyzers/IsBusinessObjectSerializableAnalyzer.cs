@@ -11,11 +11,13 @@ namespace Csla.Analyzers
   public sealed class IsBusinessObjectSerializableAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor makeSerializableRule = 
+    private static readonly DiagnosticDescriptor makeSerializableRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, IsBusinessObjectSerializableConstants.Title,
         IsBusinessObjectSerializableConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Error, true);
+        DiagnosticSeverity.Error, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, nameof(IsBusinessObjectSerializableAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(makeSerializableRule);
 

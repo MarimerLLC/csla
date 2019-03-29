@@ -16,12 +16,16 @@ namespace Csla.Analyzers
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
         PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Error, true);
+        DiagnosticSeverity.Error, true, 
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, nameof(CheckConstructorsAnalyzer)));
     private static readonly DiagnosticDescriptor constructorHasParametersRule = 
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
         ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Warning, true);
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.ConstructorHasParameters, nameof(CheckConstructorsAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(

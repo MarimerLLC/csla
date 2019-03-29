@@ -12,11 +12,13 @@ namespace Csla.Analyzers
   public sealed class EvaluatePropertiesForSimplicityAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor onlyUseCslaPropertyMethodsInGetSetRule = 
+    private static readonly DiagnosticDescriptor onlyUseCslaPropertyMethodsInGetSetRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
         OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Warning, true);
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, nameof(EvaluatePropertiesForSimplicityAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(onlyUseCslaPropertyMethodsInGetSetRule);
 

@@ -13,12 +13,14 @@ namespace Csla.Analyzers
   public sealed class EvaluateManagedBackingFieldsAnalayzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule = 
+    private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
         EvaluateManagedBackingFieldsAnalayzerConstants.Title,
         EvaluateManagedBackingFieldsAnalayzerConstants.Message,
-        Constants.Categories.Usage, DiagnosticSeverity.Error, true);
+        Constants.Categories.Usage, DiagnosticSeverity.Error, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalayzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
       ImmutableArray.Create(mustBePublicStaticAndReadonlyRule);

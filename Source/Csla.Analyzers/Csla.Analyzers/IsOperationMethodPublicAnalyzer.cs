@@ -13,17 +13,21 @@ namespace Csla.Analyzers
   public sealed class IsOperationMethodPublicAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor makeNonPublicRule = 
+    private static readonly DiagnosticDescriptor makeNonPublicRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublic, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
-        DiagnosticSeverity.Warning, true);
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.IsOperationMethodPublic, nameof(IsOperationMethodPublicAnalyzer)));
 
     private static readonly DiagnosticDescriptor makeNonPublicForInterfaceRule = 
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
-        DiagnosticSeverity.Warning, true);
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, nameof(IsOperationMethodPublicAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
       ImmutableArray.Create(makeNonPublicRule, makeNonPublicForInterfaceRule);

@@ -16,11 +16,16 @@ namespace Csla.Analyzers
     private static readonly DiagnosticDescriptor saveResultIsNotAssignedRule = new DiagnosticDescriptor(
       Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, FindSaveAssignmentIssueAnalyzerConstants.Title,
       FindSaveAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
-      DiagnosticSeverity.Error, true);
+      DiagnosticSeverity.Error, true,
+      helpLinkUri: HelpUrlBuilder.Build(
+        Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, nameof(FindSaveAssignmentIssueAnalyzer)));
+
     private static readonly DiagnosticDescriptor saveAsyncResultIsNotAssignedRule = new DiagnosticDescriptor(
       Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue, FindSaveAsyncAssignmentIssueAnalyzerConstants.Title,
       FindSaveAsyncAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
-      DiagnosticSeverity.Error, true);
+      DiagnosticSeverity.Error, true,
+      helpLinkUri: HelpUrlBuilder.Build(
+        Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue, nameof(FindSaveAssignmentIssueAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
       ImmutableArray.Create(saveResultIsNotAssignedRule, saveAsyncResultIsNotAssignedRule);

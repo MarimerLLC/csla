@@ -12,11 +12,13 @@ namespace Csla.Analyzers
   public sealed class FindBusinessObjectCreationAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor objectCreatedRule = 
+    private static readonly DiagnosticDescriptor objectCreatedRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.FindBusinessObjectCreation, FindBusinessObjectCreationConstants.Title,
         FindBusinessObjectCreationConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Error, true);
+        DiagnosticSeverity.Error, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.FindBusinessObjectCreation, nameof(FindBusinessObjectCreationAnalyzer)));
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(objectCreatedRule);

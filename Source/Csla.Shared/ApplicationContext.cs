@@ -712,7 +712,7 @@ namespace Csla
       }
     }
 
-    private static int _defaultTransactionTimeoutInSeconds = 30;
+    private static int _defaultTransactionTimeoutInSeconds = 600;
     private static bool _defaultTransactionTimeoutInSecondsSet = false;
 
     /// <summary>

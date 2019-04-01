@@ -33,7 +33,7 @@ namespace Csla.Test.PropertyInfo
 
     #region DataPortal Methods
 
-    private void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
     }
 

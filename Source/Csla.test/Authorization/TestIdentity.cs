@@ -14,6 +14,12 @@ namespace Csla.Test.Security
   {
     public TestIdentity() { }
 
+    public TestIdentity(string username, string password)
+    {
+      this.IsAuthenticated = true;
+      this.Name = username;
+    }
+
     public bool IsInRole(string role)
     {
       if (role == "Admin")
@@ -24,13 +30,6 @@ namespace Csla.Test.Security
       {
         return false;
       }
-    }
-
-    
-    public TestIdentity(string username, string password)
-    {
-      this.IsAuthenticated = true;
-      this.Name = username;
     }
   }
 }

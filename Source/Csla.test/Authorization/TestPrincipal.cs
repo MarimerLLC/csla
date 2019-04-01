@@ -15,8 +15,7 @@ namespace Csla.Test.Security
       public TestPrincipal() { }
         public override bool IsInRole(string role)
         {
-            TestIdentity identity = (TestIdentity)(this.Identity);
-            return identity.IsInRole(role);
+            return ((TestIdentity)Identity).IsInRole(role);
         }
 
         private TestPrincipal(System.Security.Principal.IIdentity identity) : base(identity)
@@ -24,11 +23,7 @@ namespace Csla.Test.Security
 
         public static void SimulateLogin()
         {
-            TestIdentity identity = new TestIdentity("User", "password");
-            TestPrincipal p = new TestPrincipal(identity);
-
-            Csla.ApplicationContext.User = p;
-            //System.Threading.Thread.CurrentPrincipal = p;
+            Csla.ApplicationContext.User = new TestPrincipal(new TestIdentity("User", "password"));
         }
 
         public static void SimulateLogout()

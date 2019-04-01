@@ -43,7 +43,7 @@ namespace Csla.Test.Data
       }
     }
 
-    protected void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       using (var manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(TestDBConnection, true))
       {

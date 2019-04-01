@@ -15,7 +15,9 @@ namespace Csla.Test.Security
       public TestPrincipal() { }
         public override bool IsInRole(string role)
         {
+#pragma warning disable CS0436 // Type conflicts with imported type
             return ((TestIdentity)Identity).IsInRole(role);
+#pragma warning restore CS0436 // Type conflicts with imported type
         }
 
         private TestPrincipal(System.Security.Principal.IIdentity identity) : base(identity)
@@ -23,7 +25,11 @@ namespace Csla.Test.Security
 
         public static void SimulateLogin()
         {
+#pragma warning disable CS0436 // Type conflicts with imported type
+#pragma warning disable CS0436 // Type conflicts with imported type
             Csla.ApplicationContext.User = new TestPrincipal(new TestIdentity("User", "password"));
+#pragma warning restore CS0436 // Type conflicts with imported type
+#pragma warning restore CS0436 // Type conflicts with imported type
         }
 
         public static void SimulateLogout()

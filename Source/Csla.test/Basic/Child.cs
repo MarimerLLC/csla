@@ -48,6 +48,11 @@ namespace Csla.Test.Basic
             return _data == ((Child)(obj))._data;
         }
 
+        public override int GetHashCode()
+        {
+          return base.GetHashCode();
+        }
+
         public Guid Guid
         {
             get { return _guid; }

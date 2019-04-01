@@ -39,7 +39,13 @@ namespace Csla.Web
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      return HttpContext.Current.User;
+      var result = HttpContext.Current.User;
+      if (result == null)
+      {
+        result = new Csla.Security.UnauthenticatedPrincipal();
+        SetUser(result);
+      }
+      return result;
     }
 
     /// <summary>

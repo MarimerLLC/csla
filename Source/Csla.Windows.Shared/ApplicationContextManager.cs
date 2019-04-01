@@ -25,16 +25,14 @@ namespace Csla.Windows
     /// <returns></returns>
     public override IPrincipal GetUser()
     {
-      IPrincipal current;
       if (_principal == null)
       {
         if (ApplicationContext.AuthenticationType != "Windows")
-          _principal = new Csla.Security.UnauthenticatedPrincipal();
+          SetUser(new Csla.Security.UnauthenticatedPrincipal());
         else
-          _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+          SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
       }
-      current = _principal;
-      return current;
+      return _principal;
     }
 
     /// <summary>

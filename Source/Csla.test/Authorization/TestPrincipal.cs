@@ -6,10 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using Csla.Serialization;
 
 namespace Csla.Test.Security
 {
@@ -38,16 +34,6 @@ namespace Csla.Test.Security
         public static void SimulateLogout()
         {
             Csla.ApplicationContext.User = null;
-            //System.Threading.Thread.CurrentPrincipal = null;
         }
-
-        //public static void SetUnAuthenticatedPrincipal()
-        //{
-        //    TestIdentity identity = new TestIdentity();
-        //    TestPrincipal principal = new TestPrincipal(identity);
-
-        //    Csla.ApplicationContext.User = principal;
-        //    //System.Threading.Thread.CurrentPrincipal = principal;
-        //}
     }
 }

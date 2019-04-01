@@ -70,7 +70,13 @@ namespace Csla.Web
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      return HttpContext?.User;
+      var result = HttpContext?.User;
+      if (result == null)
+      {
+        result = new Csla.Security.CslaClaimsPrincipal();
+        SetUser(result);
+      }
+      return result;
     }
 
     /// <summary>

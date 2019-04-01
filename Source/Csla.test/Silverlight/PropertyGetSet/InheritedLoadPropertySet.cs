@@ -12,7 +12,9 @@ namespace Csla.Test.Silverlight.PropertyGetSet
   [Serializable]
   public class InheritedLoadPropertySet : AbstractGetSet<InheritedLoadPropertySet>
   {
+#pragma warning disable CS0414
     private static int _forceLoad;
+#pragma warning restore CS0414
 
     public InheritedLoadPropertySet()
     {

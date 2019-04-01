@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -56,6 +55,19 @@ namespace Csla.Core
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a MetaData (IsXYZ) property
+    /// </summary>
+    /// <param name="propertyName">The name of the property that has changed.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMetaPropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new MetaPropertyChangedEventArgs(propertyName));
+    }
+
 #else
     [NonSerialized()]
     private PropertyChangedEventHandler _nonSerializableChangedHandlers;
@@ -120,6 +132,27 @@ namespace Csla.Core
       if (_serializableChangedHandlers != null)
         _serializableChangedHandlers.Invoke(this,
           new PropertyChangedEventArgs(propertyName));
+    }
+
+        /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a MetaData (IsXYZ) property
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMetaPropertyChanged(string propertyName)
+    {
+      if (_nonSerializableChangedHandlers != null)
+        _nonSerializableChangedHandlers.Invoke(this,
+          new MetaPropertyChangedEventArgs(propertyName));
+      if (_serializableChangedHandlers != null)
+        _serializableChangedHandlers.Invoke(this,
+          new MetaPropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>

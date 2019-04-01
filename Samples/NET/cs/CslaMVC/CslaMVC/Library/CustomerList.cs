@@ -28,7 +28,7 @@ namespace CslaMVC.Library
               new SingleCriteria<CustomerList, int>(GroupNo));
         }
 
-        private CustomerList()
+      public CustomerList()
         { /* Require use of factory methods */ }
 
         #endregion

@@ -8,7 +8,6 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Csla.Serialization;
 using Csla.Core;
 using Csla.Properties;
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ namespace Csla
 #endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       ExtendedBindingList<C>,
 #else
       ObservableBindingList<C>,
@@ -49,6 +48,7 @@ namespace Csla
     /// </summary>
     protected BusinessListBase()
     {
+      InitializeIdentity();
       Initialize();
       AllowNew = true;
     }
@@ -62,6 +62,40 @@ namespace Csla
     /// </summary>
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
+
+    #region Identity
+
+    private int _identity = -1;
+
+    int IBusinessObject.Identity
+    {
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity(_identity);
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity(int current)
+    {
+      if (this.Parent != null)
+      {
+        return this.Parent.GetNextIdentity(current);
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity(current);
+      }
+    }
 
     #endregion
 
@@ -141,7 +175,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> if the internal deleted list
+    /// Returns true if the internal deleted list
     /// contains the specified child object.
     /// </summary>
     /// <param name="item">Child object to check.</param>
@@ -252,7 +286,7 @@ namespace Csla
 
     #region Insert, Remove, Clear
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -461,7 +495,7 @@ namespace Csla
     private void CopyState(int parentEditLevel)
     {
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
 
       // we are going a level deeper in editing
       _editLevel += 1;
@@ -493,7 +527,7 @@ namespace Csla
       C child;
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       _editLevel -= 1;
@@ -566,7 +600,7 @@ namespace Csla
     private void AcceptChanges(int parentEditLevel)
     {
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       _editLevel -= 1;
@@ -606,7 +640,7 @@ namespace Csla
     protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
-      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
     }
 
@@ -621,7 +655,8 @@ namespace Csla
     protected override void OnSetState(SerializationInfo info)
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
-      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      _editLevel = 0;
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
     }
 
@@ -702,6 +737,7 @@ namespace Csla
     /// </remarks>
     protected void MarkAsChild()
     {
+      _identity = -1;
       _isChild = true;
     }
 
@@ -772,7 +808,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object has changes, is valid,
+    /// Returns true if this object has changes, is valid,
     /// the user is authorized and the object is not busy.
     /// </summary>
     public virtual bool IsSavable
@@ -889,7 +925,7 @@ namespace Csla
 
     #region Data Access
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -900,9 +936,9 @@ namespace Csla
     /// each object's current state.
     /// </para><para>
     /// All this is contingent on <see cref="IsDirty" />. If
-    /// this value is <see langword="false"/>, no data operation occurs. 
+    /// this value is false, no data operation occurs. 
     /// It is also contingent on <see cref="IsValid" />. If this value is 
-    /// <see langword="false"/> an exception will be thrown to 
+    /// false an exception will be thrown to 
     /// indicate that the UI attempted to save an invalid object.
     /// </para><para>
     /// It is important to note that this method returns a new version of the
@@ -978,6 +1014,16 @@ namespace Csla
       }
       OnSaved(result, null, userState);
       return result;
+    }
+
+    /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public async Task SaveAndMergeAsync()
+    {
+      new GraphMerger().MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
     }
 
     /// <summary>
@@ -1114,7 +1160,7 @@ namespace Csla
 
     #region ISavable Members
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1146,7 +1192,7 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
@@ -1217,6 +1263,9 @@ namespace Csla
     /// </remarks>
     [Browsable(false)]
     [Display(AutoGenerateField=false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {
@@ -1235,6 +1284,8 @@ namespace Csla
     protected virtual void SetParent(Core.IParent parent)
     {
       _parent = parent;
+      _identityManager = null;
+      InitializeIdentity();
     }
 
     /// <summary>

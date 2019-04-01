@@ -9,11 +9,11 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using Csla.Serialization;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;
 using System.Reflection;
+using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
 {
@@ -26,7 +26,7 @@ namespace Csla.Core.FieldManager
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
   public class FieldDataManager : MobileObject, IUndoableObject
 #else
   public class FieldDataManager : IUndoableObject, IMobileObject
@@ -39,7 +39,7 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -454,7 +454,7 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
 #else
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
@@ -471,9 +471,9 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
       SerializationInfo state = new SerializationInfo(0);
       OnGetState(state, StateMode.Undo);
 
@@ -521,7 +521,7 @@ namespace Csla.Core.FieldManager
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        var formatter = SerializationFormatterFactory.GetFormatter();
+        var formatter = SerializationFormatterFactory.GetNativeFormatter();
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -533,9 +533,9 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
         SerializationInfo state = _stateStack.Pop();
         OnSetState(state, StateMode.Undo);
 
@@ -557,7 +557,7 @@ namespace Csla.Core.FieldManager
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter();
+          var formatter = SerializationFormatterFactory.GetNativeFormatter();
           state = (IFieldData[])(formatter.Deserialize(buffer));
         }
 
@@ -588,7 +588,7 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {
@@ -652,7 +652,7 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IMobileObject Members
 
     /// <summary>
@@ -947,7 +947,7 @@ namespace Csla.Core.FieldManager
     /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       var attr =
         BindingFlags.Static |
         BindingFlags.Public |

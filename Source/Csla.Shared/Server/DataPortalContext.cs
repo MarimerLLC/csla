@@ -9,7 +9,6 @@ using System;
 using System.Security.Principal;
 using System.Collections.Specialized;
 using Csla.Core;
-using Csla.Serialization;
 
 namespace Csla.Server
 {
@@ -41,7 +40,7 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the 
+    /// Returns true if the 
     /// server-side DataPortal is running
     /// on a remote server via remoting.
     /// </summary>
@@ -112,9 +111,8 @@ namespace Csla.Server
         _principal = principal;
         _remotePortal = isRemotePortal;
 #if NETFX_CORE
-        var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
-        _clientCulture = language;
-        _clientUICulture = language;
+        _clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+        _clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
 #else
         _clientCulture = 
           System.Threading.Thread.CurrentThread.CurrentCulture.Name;

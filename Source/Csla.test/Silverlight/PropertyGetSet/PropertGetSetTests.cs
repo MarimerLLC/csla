@@ -23,6 +23,7 @@ namespace Csla.Test.Silverlight.PropertyGetSet
   [TestClass]
   public class PropertGetSetTests : TestBase
   {
+#if DEBUG
     /// <remarks>
     /// Test created for Bug Tracker Item 64
     /// Currently the properties we try to load that were declared and registered 
@@ -31,6 +32,7 @@ namespace Csla.Test.Silverlight.PropertyGetSet
     /// This is due to property being registered only with Base type
     /// </remarks>
     [TestMethod]
+    
     public void ProperyInfoDeclaredInBaseClassShouldLoadInAnotherDomain()
     {
       var context = GetContext();
@@ -48,6 +50,6 @@ namespace Csla.Test.Silverlight.PropertyGetSet
 
       context.Complete();
     }
-
+#endif
   }
 }

@@ -44,7 +44,7 @@ namespace BusinessRuleDemo
       _list = null;
     }
 
-    private StatesNVL()
+    public StatesNVL()
     { /* require use of factory methods */ }
 
     #endregion

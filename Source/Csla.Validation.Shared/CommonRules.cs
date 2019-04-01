@@ -32,7 +32,7 @@ namespace Csla.Validation
     /// <param name="target">Object containing the data to validate</param>
     /// <param name="e">Arguments parameter specifying the name of the string
     /// property to validate</param>
-    /// <returns><see langword="false" /> if the rule is broken</returns>
+    /// <returns>false if the rule is broken</returns>
     /// <remarks>
     /// This implementation uses late binding, and will only work
     /// against string property values.
@@ -61,7 +61,7 @@ namespace Csla.Validation
     /// <param name="target">Object containing the data to validate</param>
     /// <param name="e">Arguments parameter specifying the name of the string
     /// property to validate</param>
-    /// <returns><see langword="false" /> if the rule is broken</returns>
+    /// <returns>false if the rule is broken</returns>
     /// <remarks>
     /// This implementation uses late binding, and will only work
     /// against string property values.
@@ -204,7 +204,7 @@ namespace Csla.Validation
     /// <param name="target">Object containing the data to validate</param>
     /// <param name="e">Arguments parameter specifying the name of the string
     /// property to validate</param>
-    /// <returns><see langword="false" /> if the rule is broken</returns>
+    /// <returns>false if the rule is broken</returns>
     /// <remarks>
     /// This implementation uses late binding, and will only work
     /// against string property values.
@@ -349,7 +349,7 @@ namespace Csla.Validation
     /// <param name="target">Object containing the data to validate.</param>
     /// <param name="e">Arguments parameter specifying the name of the
     /// property to validate.</param>
-    /// <returns><see langword="false"/> if the rule is broken.</returns>
+    /// <returns>false if the rule is broken.</returns>
     public static bool IntegerMaxValue(object target, RuleArgs e)
     {
       DecoratedRuleArgs args = (DecoratedRuleArgs)e;
@@ -482,7 +482,7 @@ namespace Csla.Validation
     /// <param name="target">Object containing the data to validate.</param>
     /// <param name="e">Arguments parameter specifying the name of the
     /// property to validate.</param>
-    /// <returns><see langword="false"/> if the rule is broken.</returns>
+    /// <returns>false if the rule is broken.</returns>
     public static bool IntegerMinValue(object target, RuleArgs e)
     {
       DecoratedRuleArgs args = (DecoratedRuleArgs)e;
@@ -1430,31 +1430,21 @@ namespace Csla.Validation
     public static bool DataAnnotation(object target, RuleArgs e)
     {
       var args = (DataAnnotationRuleArgs)e;
-      object pValue = Utilities.CallByName(
-        target, e.PropertyName, CallType.Get);
-#if SILVERLIGHT || NETFX_PHONE
-      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null, null);
+      object pValue = Utilities.CallByName(target, e.PropertyName, CallType.Get);
+
+      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null, null)
+      {
+        MemberName = RuleArgs.GetPropertyName(e)
+      };
+
       var result = args.Attribute.GetValidationResult(pValue, ctx);
+
       if (result != null)
       {
         e.Description = result.ErrorMessage;
         return false;
       }
-#elif NETFX_CORE
-      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null);
-      var result = args.Attribute.GetValidationResult(pValue, ctx);
-      if (result != null)
-      {
-        e.Description = result.ErrorMessage;
-        return false;
-      }
-#else
-      if (!args.Attribute.IsValid(pValue))
-      {
-        e.Description = args.Attribute.FormatErrorMessage(RuleArgs.GetPropertyName(e));
-        return false;
-      }
-#endif
+
       return true;
     }
 

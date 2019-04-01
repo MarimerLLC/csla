@@ -16,7 +16,6 @@ using Csla.Core.LoadManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -84,6 +83,22 @@ namespace Csla.Core
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="T">Type of Target</typeparam>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
     }
 
     /// <summary>
@@ -344,7 +359,7 @@ namespace Csla.Core
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       var t = this.GetType();
-#if NET40 || SILVERLIGHT
+#if NET40 || (ANDROID || IOS)
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
       var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
 #else
@@ -468,7 +483,8 @@ namespace Csla.Core
 
     #region OnDeserialized
 
-#if !__ANDROID__ && !IOS
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
+
     [System.Runtime.Serialization.OnDeserialized()]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)

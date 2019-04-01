@@ -24,7 +24,7 @@ function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
     $nuSpecFile = Get-Item $nuSpecFilePath | Select-Object -First 1
     
     # Bring the XML Linq namespace in
-    [Reflection.Assembly]::LoadWithPartialName( “System.Xml.Linq” ) | Out-Null
+    [Reflection.Assembly]::LoadWithPartialName( "System.Xml.Linq" ) | Out-Null
     
     # Update the XML document with the new version
     $xDoc = [System.Xml.Linq.XDocument]::Load( $nuSpecFile.FullName )
@@ -122,12 +122,12 @@ try
     ## Before building NuGet package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document
     ## - JH: Not sure if I should get direct from source code file or from file version of compiled library instead.
     ## - JH: Going with product version in assembly for now
-    $cslaAssembly = Get-ChildItem "$pathToBin\NET\Csla.dll" | Select-Object -First 1
+    $cslaAssembly = Get-ChildItem "$pathToBin\NET46\Csla.dll" | Select-Object -First 1
     ## - JH: If $preRelease is specified, then append it with a dash following the 3rd component of the quad-dotted-version number
     ##       Refer: http://docs.nuget.org/docs/Reference/Versioning 
     if ( [System.String]::IsNullOrEmpty( $preRelease ) -ne $true )
     {
-        $productVersion = [System.String]::Format( "{0}.{1}.{2}-{3}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart, $preRelease )
+        $productVersion = [System.String]::Format( "{0}.{1}.{2}-R{3}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart, $preRelease )
     }
     else
     {
@@ -137,7 +137,7 @@ try
     
     ## Launch NuGet.exe to build package
     Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -Symbols
+    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" # -Symbols
     
     ## Publish package to Gallery using API Key
     ## JH - TODO

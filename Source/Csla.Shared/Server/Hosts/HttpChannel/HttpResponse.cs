@@ -1,5 +1,4 @@
-﻿#if !NETFX_PHONE
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="HttpResponse.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -11,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Csla.Serialization;
 
 namespace Csla.Server.Hosts.HttpChannel
 {
@@ -60,4 +58,3 @@ namespace Csla.Server.Hosts.HttpChannel
     }
   }
 }
-#endif

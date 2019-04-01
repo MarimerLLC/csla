@@ -28,7 +28,9 @@ namespace Csla.Test.DPException
     [TestClass()]
     public class DataPortalExceptionTests
     {
+#if DEBUG
         [TestMethod()]
+        
         public void CheckInnerExceptionsOnSave()
         {
             Csla.ApplicationContext.Clear();
@@ -72,6 +74,7 @@ namespace Csla.Test.DPException
             //was called for the business object that threw the exception
             Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
         }
+#endif
 
         [TestMethod()]
         public void CheckInnerExceptionsOnDelete()

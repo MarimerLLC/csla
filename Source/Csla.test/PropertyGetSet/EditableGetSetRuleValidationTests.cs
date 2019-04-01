@@ -29,14 +29,6 @@ namespace Csla.Test.PropertyGetSet
   [TestClass]
   public class EditableGetSetRuleValidationTests
   {
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.DataPortal.ProxyTypeName = "Local"; // "Csla.DataPortalClient.WcfProxy, Csla";
-    }
-#endif
-
     #region Constant(s)
 
     private const string ID = "CSLA_TEST";

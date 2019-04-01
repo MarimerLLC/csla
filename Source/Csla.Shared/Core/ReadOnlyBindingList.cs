@@ -7,10 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Properties;
-#if NETFX_CORE || IOS || ANDROID
-using Csla.Serialization;
-using Csla.Serialization.Mobile;
-#endif
 
 namespace Csla.Core
 {
@@ -30,6 +26,15 @@ namespace Csla.Core
   public abstract class ReadOnlyBindingList<C> :
     Core.ExtendedBindingList<C>, Core.IBusinessObject, Core.IReadOnlyBindingList
   {
+    #region Identity
+
+    int IBusinessObject.Identity
+    {
+      get { return 0; }
+    }
+
+    #endregion
+
     private bool _isReadOnly = true;
 
     /// <summary>
@@ -97,7 +102,7 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
     protected override void AddNewCore()
     {
       if (!IsReadOnly)

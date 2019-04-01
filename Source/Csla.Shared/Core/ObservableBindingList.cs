@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core.FieldManager;
 using Csla.Core;
@@ -89,7 +88,7 @@ namespace Csla.Core
       set { _raiseListChangedEvents = value; }
     }
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Adds a new item to this collection.
     /// </summary>
@@ -235,6 +234,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsBusy
     {
       get { return false; }
@@ -245,6 +247,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
@@ -387,7 +392,7 @@ namespace Csla.Core
       // could override if needed
     }
 
-#if !__ANDROID__ && !IOS
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
@@ -465,7 +470,13 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      RaiseChildChanged(sender, e, null);
+      // Issue 813
+      // MetaPropertyHasChanged calls in OnChildChanged we're leading to exponential growth in OnChildChanged calls
+      // Those notifications are for the UI. Ignore them in the parent
+      if (!(e is MetaPropertyChangedEventArgs))
+      {
+        RaiseChildChanged(sender, e, null);
+      }
     }
 
     /// <summary>
@@ -522,7 +533,7 @@ namespace Csla.Core
       }
     }
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 

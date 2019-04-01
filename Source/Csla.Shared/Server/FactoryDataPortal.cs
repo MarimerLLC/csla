@@ -6,9 +6,7 @@
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 using System.Threading.Tasks;
 using Csla.Properties;
 
@@ -37,14 +35,12 @@ namespace Csla.Server
       {
         if (_factoryLoader == null)
         {
-#if !SILVERLIGHT && !NETFX_CORE
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
-#endif
-            _factoryLoader = new ObjectFactoryLoader();
+          _factoryLoader = new ObjectFactoryLoader();
         }
         return _factoryLoader;
       }
@@ -58,7 +54,7 @@ namespace Csla.Server
 
     #region Method invokes
 
-    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, DataPortalContext context)
+    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, DataPortalContext context, bool isSync)
     {
       object factory = FactoryLoader.GetFactory(factoryTypeName);
       var eventArgs = new DataPortalEventArgs(context, objectType, null, operation);
@@ -67,6 +63,8 @@ namespace Csla.Server
       object result = null;
       try
       {
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
+
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
         var error = result as Exception;
         if (error != null)
@@ -87,7 +85,7 @@ namespace Csla.Server
       return new DataPortalResult(result);
     }
 
-    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context)
+    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context, bool isSync)
     {
       object factory = FactoryLoader.GetFactory(factoryTypeName);
       var eventArgs = new DataPortalEventArgs(context, objectType, e, operation);
@@ -96,6 +94,8 @@ namespace Csla.Server
       object result = null;
       try
       {
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName, e);
+
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
         var error = result as Exception;
         if (error != null)
@@ -134,9 +134,9 @@ namespace Csla.Server
       {
         DataPortalResult result = null;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, context).ConfigureAwait(false);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, criteria, context).ConfigureAwait(false);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
@@ -163,9 +163,9 @@ namespace Csla.Server
       {
         DataPortalResult result = null;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, context).ConfigureAwait(false);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, criteria, context).ConfigureAwait(false);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
@@ -196,7 +196,7 @@ namespace Csla.Server
         else
           methodName = context.FactoryInfo.UpdateMethodName;
 
-        result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context).ConfigureAwait(false);
+        result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
@@ -224,9 +224,9 @@ namespace Csla.Server
       {
         DataPortalResult result = null;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, context).ConfigureAwait(false);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, criteria, context).ConfigureAwait(false);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)

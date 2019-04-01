@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-XamarinForms</id>
+    <title>CSLA .NET - Xamarin Forms</title>
+    <tags>CSLA Xamarin Xamarin.Forms</tags>
+    <version>4.6.3-Beta10</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of Xamarin.Forms applications for iOS, Android, and Windows.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the creation of Xamarin.Forms applications.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- Xamarin.Forms Csla.Xaml -->
+    <file src="..\..\Bin\Release\Xamarin\netstandard2.0\**\Csla.Xaml.*" target="lib\netstandard2.0"/>
+  </files>
+</package>

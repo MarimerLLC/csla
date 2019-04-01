@@ -13,9 +13,6 @@ using Csla.Properties;
 using Csla.Core;
 using Csla.Reflection;
 using System.Threading.Tasks;
-#if NETFX_CORE
-using Csla.Serialization;
-#endif
 
 namespace Csla
 {
@@ -97,15 +94,15 @@ namespace Csla
     /// to be inserted, updated or deleted within the database based on the
     /// object's current state.
     /// </para><para>
-    /// If <see cref="Core.BusinessBase.IsDeleted" /> is <see langword="true"/>
+    /// If <see cref="Core.BusinessBase.IsDeleted" /> is true
     /// the object will be deleted. Otherwise, if <see cref="Core.BusinessBase.IsNew" /> 
-    /// is <see langword="true"/> the object will be inserted. 
+    /// is true the object will be inserted. 
     /// Otherwise the object's data will be updated in the database.
     /// </para><para>
     /// All this is contingent on <see cref="Core.BusinessBase.IsDirty" />. If
-    /// this value is <see langword="false"/>, no data operation occurs. 
+    /// this value is false, no data operation occurs. 
     /// It is also contingent on <see cref="Core.BusinessBase.IsValid" />. 
-    /// If this value is <see langword="false"/> an
+    /// If this value is false an
     /// exception will be thrown to indicate that the UI attempted to save an
     /// invalid object.
     /// </para><para>
@@ -148,8 +145,8 @@ namespace Csla
     /// Saves the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     public async System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
     {
@@ -160,8 +157,8 @@ namespace Csla
     /// Saves the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <param name="userState">User state data.</param>
     /// <param name="isSync">True if the save operation should be synchronous.</param>
@@ -213,11 +210,11 @@ namespace Csla
 
     /// <summary>
     /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// IsNew to false and IsDirty to True.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <returns>A new object containing the saved values.</returns>
     /// <remarks>
@@ -236,6 +233,30 @@ namespace Csla
         MarkDirty(true);
       }
       return this.Save();
+    }
+
+    /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public async Task SaveAndMergeAsync()
+    {
+      await SaveAndMergeAsync(false);
+    }
+
+    /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling SaveAndMergeAsync().
+    /// </param>
+    public async Task SaveAndMergeAsync(bool forceUpdate)
+    {
+      new GraphMerger().MergeGraph(this, await SaveAsync(forceUpdate));
     }
 
     /// <summary>
@@ -270,8 +291,8 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <param name="handler">
     /// Method called when the operation is complete.
@@ -307,8 +328,8 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <remarks>
     /// This overload is designed for use in web applications
@@ -324,8 +345,8 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <param name="handler">
     /// Delegate reference to a callback handler that will
@@ -343,7 +364,7 @@ namespace Csla
 
     /// <summary>
     /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// IsNew to false and IsDirty to True.
     /// </summary>
     /// <param name="handler">
     /// Delegate reference to a callback handler that will
@@ -375,7 +396,7 @@ namespace Csla
       OnSaved(newObject, null, null);
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
 
     object Csla.Core.ISavable.Save()
     {
@@ -452,7 +473,7 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
@@ -505,6 +526,21 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, string.Empty, defaultValue));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <returns></returns>
@@ -512,7 +548,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, relationship));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, string.Empty, relationship));
     }
 
     /// <summary>

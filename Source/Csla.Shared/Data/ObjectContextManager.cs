@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !MONO
+﻿#if !NETFX_CORE && !MONO && !(ANDROID || IOS) && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="ObjectContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -7,7 +7,7 @@
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
+using Csla.Configuration;
 using System.Data.Objects;
 using Csla.Properties;
 
@@ -104,10 +104,10 @@ namespace Csla.Data
       {
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
         if (string.IsNullOrEmpty(conn))
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
       }
 
@@ -190,7 +190,7 @@ namespace Csla.Data
 
     }
 
-    #endregion
+#endregion
 
 #region  IDisposable
 
@@ -204,7 +204,7 @@ namespace Csla.Data
       DeRef();
     }
 
-    #endregion
+#endregion
 
   }
 }

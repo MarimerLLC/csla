@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE || WINDOWS_PHONE
+﻿#if NETFX_CORE && !NETCORE
 using System.Runtime.CompilerServices;
 
 
@@ -28,12 +28,8 @@ namespace Csla.Properties
 
     private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
-#if WINDOWS_PHONE
-      global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
-      var value = temp.GetString("ms-resource:///Csla/Resources/" + resourceName);
-      if (string.IsNullOrWhiteSpace(value))
-        throw new NullReferenceException(resourceName);
-      return value;
+#if PCL46 || PCL259 // rely on NuGet bait-and-switch for actual implementation
+      return null;
 #else
 #pragma warning disable
       var loader = new Windows.ApplicationModel.Resources.ResourceLoader("Csla/Resources");
@@ -1124,6 +1120,17 @@ namespace Csla.Properties
     /// <summary>
     ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
     /// </summary>
+    public static string UnableToLoadDataPortalProxyFactory
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
+    /// </summary>
     public static string UpdateMethodNameNotSpecified
     {
       get
@@ -1224,6 +1231,17 @@ namespace Csla.Properties
     /// Looks up a localized string.
     /// </summary>
     public static string AsyncLoadException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string AsyncMethodOnSyncClientNotAllowed
     {
       get
       {

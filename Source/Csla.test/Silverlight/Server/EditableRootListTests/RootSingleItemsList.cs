@@ -20,11 +20,7 @@ namespace Csla.Testing.Business.EditableRootListTests
   [Serializable]
   public class RootSingleItemsList : DynamicBindingListBase<SingleItem>
  {
-#if SILVERLIGHT
-    public RootSingleItemsList() { }
-#else
     private RootSingleItemsList() { }
-#endif
 
     [Serializable()]
     public class FetchCriteria : CriteriaBase<FetchCriteria>
@@ -52,14 +48,6 @@ namespace Csla.Testing.Business.EditableRootListTests
       }
     }
 
-#if SILVERLIGHT
-    public static void GetRootSingleItemsList(int startID, int endID, EventHandler<DataPortalResult<RootSingleItemsList>> handler)
-    {
-      DataPortal<RootSingleItemsList> dp = new DataPortal<RootSingleItemsList>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(new FetchCriteria(startID, endID));
-    }
-#else
     protected void DataPortal_Fetch(FetchCriteria criteria )
     {
       RaiseListChangedEvents = false;
@@ -70,7 +58,5 @@ namespace Csla.Testing.Business.EditableRootListTests
       }
       RaiseListChangedEvents = true;
     }
-#endif
-
   }
 }

@@ -10,7 +10,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
-using Csla.Serialization;
+using System.Reflection;
 using Csla.Reflection;
 
 namespace Csla.Core
@@ -52,7 +52,7 @@ namespace Csla.Core
       info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew);
       info.AddValue("Csla.Core.MobileList.AllowRemove", AllowRemove);
       info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       info.AddValue("Csla.Core.MobileList._supportsChangeNotificationCore", SupportsChangeNotificationCore);
 #endif
     }

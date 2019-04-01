@@ -21,11 +21,7 @@ namespace Csla.Test.Windows
   [Serializable()]
   public class EditablePerson : BusinessBase<EditablePerson>
   {
-#if SILVERLIGHT
-    public EditablePerson()
-#else
     private EditablePerson()
-#endif
     {
       LoadProperty(FirstNameProperty, "John");
       LoadProperty(LastNameProperty, "Doe");
@@ -67,21 +63,21 @@ namespace Csla.Test.Windows
       set { SetProperty(LastNameProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> MiddleNameProperty = RegisterProperty(new PropertyInfo<string>("MiddleName", "MiddleName"));
+    public static readonly PropertyInfo<string> MiddleNameProperty = RegisterProperty(new PropertyInfo<string>("MiddleName"));
     public string MiddleName
     {
       get { return GetProperty(MiddleNameProperty); }
       set { SetProperty(MiddleNameProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> PlaceOfBirthProperty = RegisterProperty(new PropertyInfo<string>("PlaceOfBirth", "PlaceOfBirth"));
+    public static readonly PropertyInfo<string> PlaceOfBirthProperty = RegisterProperty(new PropertyInfo<string>("PlaceOfBirth"));
     public string PlaceOfBirth
     {
       get { return GetProperty(PlaceOfBirthProperty); }
       set { SetProperty(PlaceOfBirthProperty, value); }
     }
 
-    public static readonly PropertyInfo<int> AuthLevelProperty = RegisterProperty(new PropertyInfo<int>("AuthLevel", "AuthLevel"));
+    public static readonly PropertyInfo<int> AuthLevelProperty = RegisterProperty(new PropertyInfo<int>("AuthLevel"));
     public int AuthLevel
     {
       get { return GetProperty(AuthLevelProperty); }

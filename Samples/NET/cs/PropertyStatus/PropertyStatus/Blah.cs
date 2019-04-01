@@ -10,6 +10,7 @@ using System.Threading;
 
 namespace PropertyStatus
 {
+  [Serializable]
   public class Blah : BusinessBase
   {
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty(
@@ -36,7 +37,7 @@ namespace PropertyStatus
         IsAsync = true;
       }
 
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         BackgroundWorker worker = new BackgroundWorker();
         worker.DoWork += (o, e) => Thread.Sleep(3000);

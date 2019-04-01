@@ -35,7 +35,7 @@ namespace CustomAuthzRules.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var target = (Csla.Core.BusinessBase)context.Target;
 

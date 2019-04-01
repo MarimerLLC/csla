@@ -133,10 +133,6 @@
     <value>Het wijzigen van een element is een ongeldige bewerking</value>
     <comment>Changing an element is an invalid operation</comment>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Parent waarde kan alleen voor child objecten gewijzigd worden</value>
-    <comment>Parent comment can only be set for child objects</comment>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Kan geen child object markeren om te verwijderen - gebruik de parent collectie</value>
     <comment>Can not directly mark a child object for deletion - use its parent collection</comment>

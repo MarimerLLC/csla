@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Core.FieldManager;
@@ -24,9 +23,7 @@ using Csla.Rules;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if SILVERLIGHT || NETFX_CORE
-using Csla.Serialization;
-#endif
+using System.Collections.Concurrent;
 
 namespace Csla
 {
@@ -109,17 +106,28 @@ namespace Csla
 
     #endregion
 
+    #region Identity
+
+    int IBusinessObject.Identity
+    {
+      get { return 0; }
+    }
+
+    #endregion
+
     #region Authorization
 
+#if !PCL259
     [NotUndoable()]
     [NonSerialized()]
-    private Dictionary<string, bool> _readResultCache;
+    private ConcurrentDictionary<string, bool> _readResultCache;
     [NotUndoable()]
     [NonSerialized()]
-    private Dictionary<string, bool> _executeResultCache;
+    private ConcurrentDictionary<string, bool> _executeResultCache;
     [NotUndoable()]
     [NonSerialized()]
     private System.Security.Principal.IPrincipal _lastPrincipal;
+#endif
 
     private void InitializeBusinessRules()
     {
@@ -188,7 +196,7 @@ namespace Csla
     { }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// calling property.
     /// </summary>
     /// <param name="property">Property to check.</param>
@@ -196,6 +204,7 @@ namespace Csla
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
       bool result = true;
+#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
@@ -203,17 +212,17 @@ namespace Csla
       {
         result = BusinessRules.HasPermission(AuthorizationActions.ReadProperty, property);
         // store value in cache
-        _readResultCache[property.Name] = result;
+        _readResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
       }
-
+#endif
       return result;
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <returns>true if read is allowed.</returns>
     /// <param name="property">Property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -232,7 +241,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
@@ -243,7 +252,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
@@ -254,7 +263,7 @@ namespace Csla
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || SILVERLIGHT
+#if NETFX_CORE || (ANDROID || IOS)
 #else
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
 #endif
@@ -275,10 +284,11 @@ namespace Csla
 
     private void VerifyAuthorizationCache()
     {
+#if !PCL259 // rely on bait-and-switch for implementation
       if (_readResultCache == null)
-        _readResultCache = new Dictionary<string, bool>();
+        _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
-        _executeResultCache = new Dictionary<string, bool>();
+        _executeResultCache = new ConcurrentDictionary<string, bool>();
       if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
@@ -286,34 +296,37 @@ namespace Csla
         _executeResultCache.Clear();
         _lastPrincipal = Csla.ApplicationContext.User;
       }
+#endif
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <param name="method">Method to execute.</param>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
       bool result = true;
+#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
       if (!_executeResultCache.TryGetValue(method.Name, out result))
       {
         result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
-        _executeResultCache[method.Name] = result;
+        _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
       }
+#endif
       return result;
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     /// <param name="method">Method to execute.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -334,11 +347,11 @@ namespace Csla
 
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <param name="methodName">Name of the method to execute.</param>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(string methodName)
     {
@@ -357,9 +370,9 @@ namespace Csla
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region IClonable
+#region IClonable
 
     object ICloneable.Clone()
     {
@@ -386,9 +399,9 @@ namespace Csla
     {
       return (T)GetClone();
     }
-    #endregion
+#endregion
 
-    #region Data Access
+#region Data Access
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
@@ -484,19 +497,19 @@ namespace Csla
     {
     }
 
-    #endregion
+#endregion
 
-    #region Serialization Notification
+#region Serialization Notification
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new StreamingContext());
+      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !IOS
-    [OnDeserialized()]
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
+    [System.Runtime.Serialization.OnDeserialized()]
 #endif
-    private void OnDeserializedHandler(StreamingContext context)
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
@@ -510,15 +523,15 @@ namespace Csla
     /// </summary>
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
+    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       // do nothing - this is here so a subclass
       // could override if needed
     }
 
-    #endregion
+#endregion
 
-    #region  Register Properties
+#region  Register Properties
 
     /// <summary>
     /// Indicates that the specified property belongs
@@ -571,6 +584,21 @@ namespace Csla
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
     }
 
     /// <summary>
@@ -637,9 +665,9 @@ namespace Csla
       return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, relationship));
     }
 
-    #endregion
+#endregion
 
-    #region Register Methods
+#region Register Methods
 
     /// <summary>
     /// Indicates that the specified method belongs
@@ -694,9 +722,9 @@ namespace Csla
       return RegisterMethod(typeof(T), reflectedMethodInfo.Name);
     }
 
-    #endregion
+#endregion
 
-    #region  Get Properties
+#region  Get Properties
 
     /// <summary>
     /// Gets a property's value, first checking authorization.
@@ -739,14 +767,14 @@ namespace Csla
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      #region Check to see if the property is marked with RelationshipTypes.PrivateField
+#region Check to see if the property is marked with RelationshipTypes.PrivateField
 
       var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PrivateFieldException);
 
-      #endregion
+#endregion
 
       if (CanReadProperty(propertyInfo, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         return field;
@@ -793,6 +821,61 @@ namespace Csla
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
       return GetProperty<P>(propertyInfo.Name, field, defaultValue, noAccess);
+    }
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P LazyGetProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    {
+      if (!(FieldManager.FieldExists(property)))
+      {
+        var result = valueGenerator();
+        LoadProperty(property, result);
+      }
+      return GetProperty<P>(property);
+    }
+
+    private List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// Note that the first value returned is almost certainly
+    /// the defaultValue because the value is initialized asynchronously.
+    /// The real value is provided later along with a PropertyChanged
+    /// event to indicate the value has changed.
+    /// </para><para>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </para>
+    /// </remarks>
+    protected P LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      {
+        _lazyLoadingProperties.Add(property);
+        LoadPropertyAsync(property, factory);
+      }
+      return GetProperty<P>(property);
     }
 
     /// <summary>
@@ -966,9 +1049,9 @@ namespace Csla
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region  Read Properties
+#region  Read Properties
 
     /// <summary>
     /// Gets a property's value from the list of 
@@ -1042,9 +1125,57 @@ namespace Csla
       return result;
     }
 
-    #endregion
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    protected P LazyReadProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    {
+      if (!(FieldManager.FieldExists(property)))
+      {
+        var result = valueGenerator();
+        LoadProperty(property, result);
+      }
+      return ReadProperty<P>(property);
+    }
 
-    #region  Load Properties
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    protected P LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      {
+        _lazyLoadingProperties.Add(property);
+        LoadPropertyAsync(property, factory);
+      }
+      return ReadProperty<P>(property);
+    }
+
+    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      return LazyReadProperty(propertyInfo, valueGenerator);
+    }
+
+    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      return LazyReadPropertyAsync(propertyInfo, factory);
+    }
+
+#endregion
+
+#region  Load Properties
 
     /// <summary>
     /// Loads a property's managed field with the 
@@ -1241,9 +1372,9 @@ namespace Csla
     {
       LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
     }
-    #endregion
+#endregion
 
-    #region  Field Manager
+#region  Field Manager
 
     [NotUndoable()]
     private FieldDataManager _fieldManager;
@@ -1264,9 +1395,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region IsBusy / IsIdle
+#region IsBusy / IsIdle
 
     [NonSerialized]
     [NotUndoable]
@@ -1304,6 +1435,9 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -1316,6 +1450,9 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsSelfBusy
     {
       get { return _isBusy || LoadManager.IsLoading; }
@@ -1363,9 +1500,9 @@ namespace Csla
         _propertyBusy(this, args);
     }
 
-    #endregion
+#endregion
 
-    #region IDataPortalTarget Members
+#region IDataPortalTarget Members
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
@@ -1409,9 +1546,9 @@ namespace Csla
       this.Child_OnDataPortalException(e, ex);
     }
 
-    #endregion
+#endregion
 
-    #region IManageProperties Members
+#region IManageProperties Members
 
     bool IManageProperties.HasManagedProperties
     {
@@ -1426,6 +1563,16 @@ namespace Csla
     object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
     {
       return GetProperty(propertyInfo);
+    }
+
+    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      return LazyGetProperty(propertyInfo, valueGenerator);
+    }
+
+    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      return LazyGetPropertyAsync(propertyInfo, factory);
     }
 
     object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
@@ -1458,9 +1605,9 @@ namespace Csla
     {
       return FieldManager.GetChildren();
     }
-    #endregion
+#endregion
 
-    #region MobileFormatter
+#region MobileFormatter
 
     /// <summary>
     /// Override this method to insert your child object
@@ -1505,9 +1652,9 @@ namespace Csla
       base.OnSetChildren(info, formatter);
     }
 
-    #endregion
+#endregion
 
-    #region INotifyUnhandledAsyncException Members
+#region INotifyUnhandledAsyncException Members
 
     [NotUndoable]
     [NonSerialized]
@@ -1546,6 +1693,6 @@ namespace Csla
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
-    #endregion
+#endregion
   }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
 using System.Security.Permissions;
 #endif
 using System.Text;
 using System.Threading.Tasks;
-using Csla.Serialization;
 
 namespace Csla.Security
 {
@@ -39,7 +38,7 @@ namespace Csla.Security
       : base(message, innerException)
     { }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

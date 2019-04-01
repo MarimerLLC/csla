@@ -6,7 +6,6 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 
 namespace Csla.Server
 {
@@ -55,7 +54,7 @@ namespace Csla.Server
       _result = result;
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

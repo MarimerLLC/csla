@@ -9,13 +9,12 @@ using System;
 #if !NETFX_CORE
 using System.Security.Permissions;
 #endif
-using Csla.Serialization;
 
 namespace Csla
 {
 
   /// <summary>
-  /// This exception is returned for any errors occuring
+  /// This exception is returned for any errors occurring
   /// during the server-side DataPortal invocation.
   /// </summary>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
@@ -64,7 +63,8 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETFX_PHONE
+#if !NETFX_PHONE || PCL46 || PCL259
+#if !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -74,6 +74,7 @@ namespace Csla
     {
       this.ErrorInfo = new Csla.Server.Hosts.HttpChannel.HttpErrorInfo(info);
     }
+#endif
 
     /// <summary>
     /// Creates an instance of the object.
@@ -156,7 +157,14 @@ namespace Csla
     {
       get
       {
-        return this.InnerException.InnerException;
+        var result = this.InnerException;
+        if (result != null)
+          result = result.InnerException;
+        if (result is DataPortalException dpe && dpe.InnerException != null)
+          result = dpe.InnerException;
+        if (result is Csla.Reflection.CallMethodException cme && cme.InnerException != null)
+          result = cme.InnerException;
+        return result;
       }
     }
 
@@ -170,7 +178,7 @@ namespace Csla
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

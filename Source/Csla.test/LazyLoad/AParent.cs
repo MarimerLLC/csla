@@ -22,7 +22,7 @@ namespace Csla.Test.LazyLoad
     }
 
     private static PropertyInfo<AChildList> ChildListProperty = 
-      RegisterProperty<AChildList>(typeof(AParent), new PropertyInfo<AChildList>("ChildList", "Child list"));
+      RegisterProperty<AChildList>(c => c.ChildList, "Child list");
     public AChildList ChildList
     {
       get 
@@ -42,7 +42,7 @@ namespace Csla.Test.LazyLoad
       //return _children;
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }

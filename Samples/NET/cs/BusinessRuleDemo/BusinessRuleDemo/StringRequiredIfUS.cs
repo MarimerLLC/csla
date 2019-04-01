@@ -32,7 +32,7 @@ namespace BusinessRuleDemo
         InputProperties.AddRange(inputProps);
     }
 
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       // TODO: Add actual rule code here. 
       var country = (string)context.InputPropertyValues[_countryProperty];

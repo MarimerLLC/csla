@@ -23,7 +23,7 @@ namespace CslaMVC.Library
               new SingleCriteria<OrdersList, int>(CustomerNo));
         }
 
-        private OrdersList()
+      public OrdersList()
         { /* Require use of factory methods */ }
 
         #endregion

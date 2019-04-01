@@ -17,11 +17,7 @@ namespace Csla.Testing.Business.Security
   [Serializable()]
     public class SilverlightWindowsIdentity : Csla.Silverlight.Security.WindowsIdentity
   {
-#if SILVERLIGHT
-    public SilverlightWindowsIdentity() { }
-#else
     protected SilverlightWindowsIdentity() { }
-#endif
 
     internal static void GetSilverlightWindowsIdentity(EventHandler<DataPortalResult<SilverlightWindowsIdentity>> completed)
     {
@@ -30,13 +26,9 @@ namespace Csla.Testing.Business.Security
       dp.BeginFetch();
     }
 
-#if SILVERLIGHT
-    
-#else
     private void DataPortal_Fetch()
     {
       base.PopulateWindowsIdentity();
     }
-#endif
   }
 }

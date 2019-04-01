@@ -1,3 +1,4 @@
+#if !NETFX_PHONE && !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -5,14 +6,13 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-#if !NETFX_PHONE
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.WcfChannel;
 #endif
@@ -39,14 +39,28 @@ namespace Csla.DataPortalClient
       {
         if (_defaultBinding == null)
         {
-          _defaultBinding  = new BasicHttpBinding();
+#if !NETFX_CORE && !(IOS || ANDROID)
+          _defaultBinding = new WSHttpBinding();
+          WSHttpBinding binding = (WSHttpBinding)_defaultBinding;
+#else
+          _defaultBinding = new BasicHttpBinding();
           BasicHttpBinding binding = (BasicHttpBinding)_defaultBinding;
           binding.MaxBufferSize = int.MaxValue;
+#endif
           binding.MaxReceivedMessageSize = int.MaxValue;
+          binding.ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas()
+          {
+            MaxBytesPerRead = int.MaxValue,
+            MaxDepth = int.MaxValue,
+            MaxArrayLength = int.MaxValue,
+            MaxStringContentLength = int.MaxValue,
+            MaxNameTableCharCount = int.MaxValue
+          };
+
           binding.ReceiveTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
           binding.SendTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
           binding.OpenTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
-        }; 
+        } 
         return _defaultBinding; 
       }
       set { _defaultBinding = value; }
@@ -86,6 +100,19 @@ namespace Csla.DataPortalClient
       this.Binding = WcfProxy.DefaultBinding;
       this.EndPoint = WcfProxy.DefaultEndPoint;
     }
+
+    /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the supplied URL and DefaultBinding
+    /// values.
+    /// </summary>
+    /// <param name="dataPortalUrl">Server endpoint URL</param>
+    public WcfProxy(string dataPortalUrl)
+    {
+      this.DataPortalUrl = dataPortalUrl;
+      this.Binding = WcfProxy.DefaultBinding;
+      this.EndPoint = WcfProxy.DefaultEndPoint;
+    }
     
     /// <summary>
     /// Gets a value indicating whether the data portal
@@ -113,34 +140,23 @@ namespace Csla.DataPortalClient
     /// </summary>
     public string EndPoint { get; protected set; }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Returns an instance of the channel factory
     /// used by GetProxy() to create the WCF proxy
     /// object.
     /// </summary>
+    /// <remarks>
+    /// If DataPortalUrl is given, the factory will be created using it
+    /// and the default binding. Otherwise, it will use the endpoint
+    /// config from app/web.config.
+    /// </remarks>
     protected virtual ChannelFactory<IWcfPortal> GetChannelFactory()
     {
-      // if dataportal url is specified use this with default wsHttBinding
       if (!string.IsNullOrEmpty(ApplicationContext.DataPortalUrlString))
-      {
-        var binding = new WSHttpBinding()
-        { 
-          MaxReceivedMessageSize = int.MaxValue, 
-          ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas() 
-          {
-            MaxBytesPerRead = int.MaxValue,
-            MaxDepth = int.MaxValue,
-            MaxArrayLength = int.MaxValue,
-            MaxStringContentLength = int.MaxValue,
-            MaxNameTableCharCount = int.MaxValue
-          }
-        };
-        return new ChannelFactory<IWcfPortal>(binding, new EndpointAddress(ApplicationContext.DataPortalUrl));
-      }
-
-      // else return a channelfactory that uses the endpoint configuration in app.config/web.config
-      return new ChannelFactory<IWcfPortal>(EndPoint);
+        return new ChannelFactory<IWcfPortal>(Binding, new EndpointAddress(ApplicationContext.DataPortalUrl));
+      else
+        return new ChannelFactory<IWcfPortal>(EndPoint);
     }
 
     /// <summary>
@@ -176,7 +192,7 @@ namespace Csla.DataPortalClient
       }
       else
       {
-#if NETFX_CORE
+#if NETFX_CORE || IOS || ANDROID
         return new WcfPortal.WcfPortalClient();
 #else
         if (string.IsNullOrEmpty(EndPoint))
@@ -188,8 +204,8 @@ namespace Csla.DataPortalClient
     }
 #endif
 
-#if SILVERLIGHT || NETFX_CORE
-    #region Criteria
+#if (ANDROID || IOS) || NETFX_CORE
+#region Criteria
 
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -241,7 +257,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-    #endregion
+#endregion
 #endif
 
     /// <summary>
@@ -256,7 +272,7 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -328,7 +344,7 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.CreateCompleted += (s, e) => 
         {
@@ -413,7 +429,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -487,7 +503,7 @@ namespace Csla.DataPortalClient
       var proxy = GetProxy();
       DataPortalResult result = null;
 
-#if !NETFX_CORE // Silverlight
+#if !NETFX_CORE  && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.FetchCompleted += (s, e) => 
         {
@@ -572,11 +588,11 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
-      #if NET40
+#if NET40
       try
       {
         var request = new UpdateRequest(obj, context);
@@ -639,7 +655,7 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.UpdateCompleted += (s, e) => 
         {
@@ -724,7 +740,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -796,7 +812,7 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.DeleteCompleted += (s, e) => 
         {
@@ -865,8 +881,8 @@ namespace Csla.DataPortalClient
 #endif
     }
 
-#if SILVERLIGHT || NETFX_CORE
-    #region Extension Method for Requests
+#if ANDROID || IOS || NETFX_CORE
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -898,7 +914,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    #endregion
+#endregion
 #endif
   }
 }

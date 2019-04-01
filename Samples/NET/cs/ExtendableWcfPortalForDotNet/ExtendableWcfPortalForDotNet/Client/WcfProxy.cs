@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Csla.Server;
 using Csla.Serialization;
 using Csla.Core;
@@ -25,6 +26,11 @@ namespace ExtendableWcfPortalForDotNet.Client
 
     private string _endPoint = "WcfDataPortal";
 
+    private Type _objectType;
+    private object _criteria;
+    private DataPortalContext _context;
+    private object _obj;
+
     /// <summary>
     /// Gets or sets the WCF endpoint used
     /// to contact the server.
@@ -34,14 +40,8 @@ namespace ExtendableWcfPortalForDotNet.Client
     /// </remarks>
     protected string EndPoint
     {
-      get
-      {
-        return _endPoint;
-      }
-      set
-      {
-        _endPoint = value;
-      }
+      get { return _endPoint; }
+      set { _endPoint = value; }
     }
 
     /// <summary>
@@ -73,19 +73,27 @@ namespace ExtendableWcfPortalForDotNet.Client
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="context"><see cref="DataPortalContext" /> object passed to the server.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns></returns>
+    public Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      ChannelFactory<IExtendableWcfPortalForDotNet> cf = GetChannelFactory();
-      IExtendableWcfPortalForDotNet svr = GetProxy(cf);
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      _objectType = objectType;
+      _criteria = criteria;
+      _context = context;
+
+      return new Task<DataPortalResult>(Create);
+    }
+
+    private DataPortalResult Create()
+    {
+      var cf = GetChannelFactory();
+      var svr = GetProxy(cf);
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
-        response =
-          svr.Create(GetRequest(formatter, objectType, criteria, context));
+        response = svr.Create(GetRequest(formatter, _objectType, _criteria, _context));
         if (cf != null)
           cf.Close();
       }
@@ -94,12 +102,13 @@ namespace ExtendableWcfPortalForDotNet.Client
         cf.Abort();
         throw;
       }
-      DataPortalResult result = GetResult(formatter, response);
-      Exception error = (Exception)formatter.Deserialize(response.Error);
+      var result = GetResult(formatter, response);
+      var error = (Exception) formatter.Deserialize(response.Error);
       if (error != null)
       {
         throw error;
       }
+
       return result;
     }
 
@@ -109,19 +118,27 @@ namespace ExtendableWcfPortalForDotNet.Client
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="context"><see cref="DataPortalContext" /> object passed to the server.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns></returns>
+    public Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      ChannelFactory<IExtendableWcfPortalForDotNet> cf = GetChannelFactory();
-      IExtendableWcfPortalForDotNet svr = GetProxy(cf);
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      _objectType = objectType;
+      _criteria = criteria;
+      _context = context;
+
+      return new Task<DataPortalResult>(Fetch);
+    }
+
+    private DataPortalResult Fetch()
+    {
+      var cf = GetChannelFactory();
+      var svr = GetProxy(cf);
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
-        response =
-               svr.Fetch(GetRequest(formatter, objectType, criteria, context));
+        response = svr.Fetch(GetRequest(formatter, _objectType, _criteria, _context));
         if (cf != null)
           cf.Close();
       }
@@ -130,8 +147,8 @@ namespace ExtendableWcfPortalForDotNet.Client
         cf.Abort();
         throw;
       }
-      DataPortalResult result = GetResult(formatter, response);
-      Exception error = (Exception)formatter.Deserialize(response.Error);
+      var result = GetResult(formatter, response);
+      var error = (Exception) formatter.Deserialize(response.Error);
       if (error != null)
       {
         throw error;
@@ -144,19 +161,26 @@ namespace ExtendableWcfPortalForDotNet.Client
     /// business object.
     /// </summary>
     /// <param name="obj">The business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    public DataPortalResult Update(object obj, DataPortalContext context)
+    /// <param name="context"><see cref="DataPortalContext" /> object passed to the server.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns></returns>
+    public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      ChannelFactory<IExtendableWcfPortalForDotNet> cf = GetChannelFactory();
-      IExtendableWcfPortalForDotNet svr = GetProxy(cf);
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      _obj = obj;
+      _context = context;
+
+      return new Task<DataPortalResult>(Update);
+    }
+
+    private DataPortalResult Update()
+    {
+      var cf = GetChannelFactory();
+      var svr = GetProxy(cf);
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
-        response =
-              svr.Update(GetRequest(formatter, obj, context));
+        response = svr.Update(GetRequest(formatter, _obj, _context));
         if (cf != null)
           cf.Close();
       }
@@ -166,9 +190,8 @@ namespace ExtendableWcfPortalForDotNet.Client
         throw;
       }
 
-
-      DataPortalResult result = GetResult(formatter, response);
-      Exception error = (Exception)formatter.Deserialize(response.Error);
+      var result = GetResult(formatter, response);
+      var error = (Exception) formatter.Deserialize(response.Error);
       if (error != null)
       {
         throw error;
@@ -182,19 +205,27 @@ namespace ExtendableWcfPortalForDotNet.Client
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="context"><see cref="DataPortalContext" /> object passed to the server.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns></returns>
+    public Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      ChannelFactory<IExtendableWcfPortalForDotNet> cf = GetChannelFactory();
-      IExtendableWcfPortalForDotNet svr = GetProxy(cf);
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      _objectType = objectType;
+      _criteria = criteria;
+      _context = context;
+
+      return new Task<DataPortalResult>(Delete);
+    }
+
+    private DataPortalResult Delete()
+    {
+      var cf = GetChannelFactory();
+      var svr = GetProxy(cf);
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
-        response =
-              svr.Delete(GetRequest(formatter, objectType, criteria, context));
+        response = svr.Delete(GetRequest(formatter, _objectType, _criteria, _context));
         if (cf != null)
           cf.Close();
       }
@@ -203,8 +234,8 @@ namespace ExtendableWcfPortalForDotNet.Client
         cf.Abort();
         throw;
       }
-      DataPortalResult result = GetResult(formatter, response);
-      Exception error = (Exception)formatter.Deserialize(response.Error);
+      var result = GetResult(formatter, response);
+      var error = (Exception) formatter.Deserialize(response.Error);
       if (error != null)
       {
         throw error;
@@ -214,9 +245,10 @@ namespace ExtendableWcfPortalForDotNet.Client
 
     #endregion
 
-    private CriteriaRequest GetRequest(ISerializationFormatter formatter, Type objectType, object criteria, DataPortalContext context)
+    private CriteriaRequest GetRequest(ISerializationFormatter formatter, Type objectType, object criteria,
+      DataPortalContext context)
     {
-      CriteriaRequest request = new CriteriaRequest();
+      var request = new CriteriaRequest();
       request.ClientContext = formatter.Serialize(Csla.ApplicationContext.ClientContext);
       request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
@@ -230,7 +262,7 @@ namespace ExtendableWcfPortalForDotNet.Client
 
     private UpdateRequest GetRequest(ISerializationFormatter formatter, object obj, DataPortalContext context)
     {
-      UpdateRequest request = new UpdateRequest();
+      var request = new UpdateRequest();
       request.ClientContext = formatter.Serialize(Csla.ApplicationContext.ClientContext);
       request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
@@ -245,7 +277,7 @@ namespace ExtendableWcfPortalForDotNet.Client
     {
       response = ConvertResponse(response);
       object result = formatter.Deserialize(response.ObjectData);
-      ContextDictionary globalContext = (ContextDictionary)formatter.Deserialize(response.GlobalContext);
+      ContextDictionary globalContext = (ContextDictionary) formatter.Deserialize(response.GlobalContext);
       DataPortalResult returnValue = new DataPortalResult(result, globalContext);
       return returnValue;
     }
@@ -259,11 +291,10 @@ namespace ExtendableWcfPortalForDotNet.Client
     {
       return request;
     }
+
     protected virtual UpdateRequest ConvertRequest(UpdateRequest request)
     {
       return request;
     }
-
-
   }
 }

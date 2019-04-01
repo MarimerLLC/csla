@@ -11,7 +11,6 @@ using System.ComponentModel;
 using System.Linq;
 using Csla.Core.FieldManager;
 using Csla.Reflection;
-using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
@@ -24,7 +23,7 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
 , IUndoableObject
 #endif
   {
@@ -291,6 +290,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(AuthorizationActions action, Type objectType)
     {
+      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, objectType, ApplicationContext.RuleSet);
     }
@@ -813,7 +813,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0) 
@@ -854,7 +854,7 @@ namespace Csla.Rules
 
     #endregion
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IUndoableObject Members
 
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
@@ -867,7 +867,7 @@ namespace Csla.Rules
     void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (((IUndoableObject)this).EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel - 1);
 
       SerializationInfo state = new SerializationInfo(0);
       OnGetState(state, StateMode.Undo);
@@ -886,7 +886,7 @@ namespace Csla.Rules
       if (((IUndoableObject)this).EditLevel > 0)
       {
         if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
-          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
 
         SerializationInfo state = _stateStack.Pop();
         OnSetState(state, StateMode.Undo);
@@ -907,7 +907,7 @@ namespace Csla.Rules
     void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
 
       if (((IUndoableObject)this).EditLevel > 0)
       {
@@ -937,7 +937,7 @@ namespace Csla.Rules
       info.AddValue("_ruleSet", _ruleSet);
       info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
       //info.AddValue("_isBusy", _isBusy);
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       if (mode == StateMode.Serialization)
       {
         if (_stateStack.Count > 0)
@@ -967,7 +967,7 @@ namespace Csla.Rules
       _ruleSet = info.GetValue<string>("_ruleSet");
       _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
       //_isBusy = info.GetValue<bool>("_isBusy");
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       if (mode == StateMode.Serialization)
       {
         _stateStack.Clear();
@@ -1038,18 +1038,20 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();
     }
 
-    #endregion
+#endregion
 
     #region Get All Broken Rules (tree)
 
     /// <summary>
-    /// Gets all nodes in tree thar have IsValid = false (and all parents) 
+    /// Gets all nodes in tree that have IsValid = false (and all parents) 
     /// </summary>
     /// <param name="root">The root.</param>
     /// <returns>BrukenRulesTree list</returns>
@@ -1107,7 +1109,7 @@ namespace Csla.Rules
       {
         var nodeKey = counter++;
         var isValid = ((ITrackStatus)obj).IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj };
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);

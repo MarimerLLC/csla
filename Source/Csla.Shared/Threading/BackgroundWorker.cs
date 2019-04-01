@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE && !WINDOWS_UWP && !PCL46 && !NETSTANDARD && !PCL259
 //-----------------------------------------------------------------------
 // <copyright file="BackgroundWorker.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -22,7 +22,7 @@ namespace Csla.Threading
   /// A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, GlobalContext, CurrentCulture 
   /// and CurrentUICulture to the background thread.
   /// </summary>
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
   public class BackgroundWorker : System.Object
 #else
   public class BackgroundWorker : System.ComponentModel.Component
@@ -177,7 +177,7 @@ namespace Csla.Threading
       }
     }
 
-    #region Worker Async Request
+#region Worker Async Request
 
     private class WorkerAsyncRequest : ContextParams
     {
@@ -204,9 +204,9 @@ namespace Csla.Threading
       }
     }
 
-    #endregion
+#endregion
 
-    #region GlobalContext
+#region GlobalContext
 
 
     /// <summary>
@@ -215,9 +215,9 @@ namespace Csla.Threading
     /// </summary>
     public Csla.Core.ContextDictionary GlobalContext { get; private set; }
 
-    #endregion
+#endregion
 
-    #region RunWorkerAsync
+#region RunWorkerAsync
 
     /// <summary>
     /// Starts execution of a background operation.
@@ -246,9 +246,9 @@ namespace Csla.Threading
     }
 
 
-    #endregion
+#endregion
 
-    #region Private methods
+#region Private methods
 
     /// <summary>
     /// Run the internal DoWork
@@ -353,7 +353,7 @@ namespace Csla.Threading
       _myWorker.ReportProgress(percentProgress, userState);
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

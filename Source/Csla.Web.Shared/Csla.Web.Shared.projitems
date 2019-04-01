@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>64816801-0d82-4883-aee5-82037d3ebadb</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Csla.Web.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaDataSourceView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DeleteObjectArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.designer.cs">
+      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceDesigner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Design\CslaDesignerDataSourceView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Design\ObjectFieldInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Design\ObjectSchema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Design\ObjectViewSchema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InsertObjectArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\IdentityFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SelectObjectArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UpdateObjectArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.fr.resx" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.pt-BR.resx" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.pt.resx" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Design\CslaDataSourceConfiguration.resx">
+      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

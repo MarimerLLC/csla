@@ -41,13 +41,8 @@ namespace Csla.Testing.Business.CommandBase
       Parameter = parameter; 
     }
 
-#if SILVERLIGHT
-    public TestCommandBase()
-    { }
-#else
     protected TestCommandBase() 
     { }
-#endif
 
     public static void ExecuteCommand(string parameter, EventHandler<DataPortalResult<TestCommandBase>> handler)
     {
@@ -75,16 +70,9 @@ namespace Csla.Testing.Business.CommandBase
       Csla.DataPortal.BeginExecute<TestCommandBase>(command, handler, userState);
     }
 
-#if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {
       ExecutionResult = ExecutionSignal + Parameter;
     }
-#else
-    protected override void DataPortal_Execute()
-    {
-      ExecutionResult = ExecutionSignal + Parameter;
-    }
-#endif
   }
 }

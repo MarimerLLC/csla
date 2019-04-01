@@ -18,7 +18,6 @@ namespace System.ComponentModel.DataAnnotations
   /// </summary>
   public class ValidationContext
   {
-#if NETFX_PHONE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -27,7 +26,7 @@ namespace System.ComponentModel.DataAnnotations
     {
       ObjectInstance = instance;
     }
-#endif
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -62,4 +61,6 @@ namespace System.ComponentModel.DataAnnotations
     public IDictionary<object, object> Items { get; protected set; }
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.DataAnnotations.ValidationContext))]
 #endif

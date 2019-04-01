@@ -1,12 +1,7 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F88363B8-6EC9-49DE-BB7E-046DA5FDEAC7}"
-	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
-		Readme.txt = Readme.txt
-	EndProjectSection
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPerf", "BasicPerf\BasicPerf.csproj", "{FFDF4D99-79B8-4F87-B823-BA41805FB875}"
 EndProject
 Global
@@ -25,5 +20,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6DE69AC9-AC99-4506-A225-19406B42A53F}
 	EndGlobalSection
 EndGlobal

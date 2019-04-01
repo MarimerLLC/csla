@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinFormsUi.Views.ProjectList">
+  <ListView ItemsSource="{Binding Model}">
+    <ListView.ItemTemplate>
+      <DataTemplate>
+        <ViewCell>
+          <StackLayout Orientation="Horizontal">
+            <Button Text="Edit" Margin="3" Clicked="EditItem"/>
+            <Label Text="{Binding Name}" Margin="3"/>
+          </StackLayout>
+        </ViewCell>
+      </DataTemplate>
+    </ListView.ItemTemplate>    
+  </ListView>
+</ContentPage>

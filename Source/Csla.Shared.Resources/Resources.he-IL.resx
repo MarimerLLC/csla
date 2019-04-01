@@ -129,9 +129,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>אסור לשנות אלמנט</value>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>ערך הורה יכול לקבל ערך רק עבור אפיקים שהם ילדים</value>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>לא ניתן למחוק אוביקט ילד ישירות - יש להשתמש באוסף האב</value>
   </data>
@@ -222,9 +219,6 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>פעולה אסורה - לא ניתן להוסף</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>אסורה החזרה Nothing בפעולת GetIdValue</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>לא ניתן למשוך נתונים מתְּכוּנָה</value>
   </data>
@@ -233,9 +227,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>פרמטר  חייב להיות שונה מ-"כלום"</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>סוג פרמטר חייב להיות פרמיטיבי</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>העתקת תְּכוּנָה נכשלה</value>

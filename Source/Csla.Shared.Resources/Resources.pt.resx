@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -133,16 +133,12 @@
     <value>Alterar um elemento é uma operação inválida</value>
     <comment>Changing an element is an invalid operation</comment>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>O valor "pai" só pode ser atribuído aos objectos filho</value>
-    <comment>Parent value can only be set for child objects</comment>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Não pode marcar directamente um objecto filho para apagar - use a colecção pai</value>
     <comment>Can not directly mark a child object for deletion - use its parent collection</comment>
   </data>
   <data name="NoDeleteRootException" xml:space="preserve">
-    <value>Inválido para objectos raíz - em vez disso, use "apagar"</value>
+    <value>Inválido para objectos raíz - em vez disso, use "Delete"</value>
     <comment>Invalid for root objects - use Delete instead</comment>
   </data>
   <data name="NoSaveChildException" xml:space="preserve">
@@ -158,31 +154,31 @@
     <comment>Object is not valid and can not be saved</comment>
   </data>
   <data name="CreateNotSupportedException" xml:space="preserve">
-    <value>Operação inválida - não pode criar</value>
+    <value>Operação inválida - não é permitido criar</value>
     <comment>Invalid operation - create not allowed</comment>
   </data>
   <data name="FetchNotSupportedException" xml:space="preserve">
-    <value>Operação inválida - não pode ler</value>
+    <value>Operação inválida - não é permitido ler</value>
     <comment>Invalid operation - fetch not allowed</comment>
   </data>
   <data name="UpdateNotSupportedException" xml:space="preserve">
-    <value>Operação inválida - não pode actualizar</value>
+    <value>Operação inválida - não é permitido actualizar</value>
     <comment>Invalid operation - update not allowed</comment>
   </data>
   <data name="DeleteNotSupportedException" xml:space="preserve">
-    <value>Operação inválida - não pode apagar</value>
+    <value>Operação inválida - não é permitido apagar</value>
     <comment>Invalid operation - delete not allowed</comment>
   </data>
   <data name="NoBeginEditChildException" xml:space="preserve">
-    <value>"BeginEdit" não é válido para um objecto filho</value>
+    <value>BeginEdit não é válido para um objecto filho</value>
     <comment>BeginEdit is not valid on a child object</comment>
   </data>
   <data name="NoCancelEditChildException" xml:space="preserve">
-    <value>"CancelEdit" não é válido para um objecto filho</value>
+    <value>CancelEdit não é válido para um objecto filho</value>
     <comment>CancelEdit is not valid on a child object</comment>
   </data>
   <data name="NoApplyEditChildException" xml:space="preserve">
-    <value>"ApplyEdit" não é válido para um objecto filho</value>
+    <value>ApplyEdit não é válido para um objecto filho</value>
     <comment>ApplyEdit is not valid on a child object</comment>
   </data>
   <data name="NoSuchValueExistsException" xml:space="preserve">
@@ -198,15 +194,15 @@
     <comment>String value can not be converted to a date</comment>
   </data>
   <data name="ValueNotSmartDateException" xml:space="preserve">
-    <value>O valor não é uma "SmartDate"</value>
+    <value>O valor não é uma SmartDate</value>
     <comment>Value is not a SmartDate</comment>
   </data>
   <data name="NoPrincipalAllowedException" xml:space="preserve">
-    <value>Quando se usa a segurança integrada do Windows, nenhum objecto "Principal" deve ser passado para o "DataPortal"</value>
+    <value>Nenhum objecto "Principal" deve ser passado para o DataPortal, quando se usa a segurança integrada do Windows</value>
     <comment>No principal object should be passed to DataPortal when using Windows integrated security</comment>
   </data>
   <data name="BusinessPrincipalException" xml:space="preserve">
-    <value>"Principal" tem que ser do tipo "BusinessPrincipal", não</value>
+    <value>"Principal" tem que ser do tipo BusinessPrincipal, não</value>
     <comment>Principal must be of type BusinessPrincipal, not</comment>
   </data>
   <data name="SmartDateT" xml:space="preserve">
@@ -230,7 +226,7 @@
     <comment>tom</comment>
   </data>
   <data name="SmartDateTomorrow" xml:space="preserve">
-    <value>amanha</value>
+    <value>amanhã</value>
     <comment>tomorrow</comment>
   </data>
   <data name="Failed" xml:space="preserve">
@@ -250,19 +246,19 @@
     <comment>not implemented</comment>
   </data>
   <data name="ExecuteNotSupportedException" xml:space="preserve">
-    <value>Operação inválida - não pode executar</value>
+    <value>Operação inválida - não é permitido executar</value>
     <comment>Invalid operation - execute not allowed</comment>
   </data>
   <data name="InsertNotSupportedException" xml:space="preserve">
-    <value>Operação inválida - não pode inserir</value>
+    <value>Operação inválida - não é permitido inserir</value>
     <comment>Invalid operation - insert not allowed</comment>
   </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
-    <value>Não pode ler o valor da propriedade</value>
+    <value>Não é permitido ler o valor da propriedade</value>
     <comment>Property get not allowed</comment>
   </data>
   <data name="PropertySetNotAllowed" xml:space="preserve">
-    <value>Não pode atribuir valor à propriedade</value>
+    <value>Não é permitido atribuir valor à propriedade</value>
     <comment>Property set not allowed</comment>
   </data>
   <data name="NothingNotValid" xml:space="preserve">
@@ -298,7 +294,7 @@
     <comment>Failed to load type '{0}'</comment>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
-    <value>O método factory não existe:{0}</value>
+    <value>O método "factory" não existe:{0}</value>
     <comment>No such factory method:{0}</comment>
   </data>
   <data name="StringMinLengthRule" xml:space="preserve">
@@ -306,11 +302,210 @@
     <comment>{0} must be at least {1} characters</comment>
   </data>
   <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Troca de Edit Level em {0}</value>
+    <value>Discordância no nível de edição em {0}</value>
     <comment>Edit level mismatch in {0}</comment>
   </data>
   <data name="MethodExecuteNotAllowed" xml:space="preserve">
-    <value>Não pode executar o método</value>
+    <value>Não é permitido executar o método</value>
     <comment>Method execution not allowed</comment>
+  </data>
+  <data name="FilterRequiredException" xml:space="preserve">
+    <value>São exigidos o parâmetro e o fornecedor do filtro</value>
+  </data>
+  <data name="PropertyLoadException" xml:space="preserve">
+    <value>Carregar ou estabelecer propriedade falhou para a propriedade {0} ({1})</value>
+  </data>
+  <data name="UserNotAuthorizedException" xml:space="preserve">
+    <value>Utilizador não autorizado a executar a acção [{0}] em objectos do tipo {1}</value>
+  </data>
+  <data name="DatabaseNameNotFound" xml:space="preserve">
+    <value>Nome da base de dados não foi encontrado no ficheiro de configuração ({0})</value>
+  </data>
+  <data name="PropertyNotRegistered" xml:space="preserve">
+    <value>Uma ou mais propriedades não estão registadas para este tipo</value>
+  </data>
+  <data name="FactoryTypeNotFoundException" xml:space="preserve">
+    <value>Não foi possível carregar o tipo "factory" ou "assembly" ({0})</value>
+  </data>
+  <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
+    <value>Não se podem serializar colecções do tipo IMobileObject</value>
+  </data>
+  <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
+    <value>Objecto marcado como ocupado não pode ser marcado como ocupado novamente</value>
+  </data>
+  <data name="BusyObjectsMayNotBeSaved" xml:space="preserve">
+    <value>Objecto marcado como ocupado não pode ser guardado</value>
+  </data>
+  <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
+    <value>Não foi possível serializar o tipo '{0}'. Verifique se a "assembly" que contém esta classe tem o mesmo nome no cliente e no servidor, e que é referenciada no servidor</value>
+  </data>
+  <data name="MustImplementIMobileObject" xml:space="preserve">
+    <value>Tipo {0} deve implementar IMobileObject</value>
+  </data>
+  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
+    <value>Objecto não serializável ({0})</value>
+  </data>
+  <data name="AuthenticationProviderDoesNotImplementIAuthorizeDataPortal" xml:space="preserve">
+    <value>Csla Authentication Provider especificado não implementa IAuthorizeDataPortal</value>
+  </data>
+  <data name="AuthorizationProviderNameNotSpecified" xml:space="preserve">
+    <value>Csla Authorization Provider App Setting não especifica "name"</value>
+  </data>
+  <data name="ClientQueryIsInvalid" xml:space="preserve">
+    <value>A "query" do cliente não é válida:</value>
+  </data>
+  <data name="ConstructorsWithParametersNotSupported" xml:space="preserve">
+    <value>Construtor com parâmetros não é suportado</value>
+  </data>
+  <data name="CreateMethodNameNotSpecified" xml:space="preserve">
+    <value>Nome do método "create" não foi especificado no atributo MobileFactory</value>
+  </data>
+  <data name="CslaAuthenticationProviderNotSet" xml:space="preserve">
+    <value>Csla Authentication Provider não estabelecido!</value>
+  </data>
+  <data name="DefaultConstructor" xml:space="preserve">
+    <value>Construtor pré-definido</value>
+  </data>
+  <data name="DeleteMethodNameNotSpecified" xml:space="preserve">
+    <value>Nome do método "delete" não foi especificado no atributo MobileFactory </value>
+  </data>
+  <data name="ExceptionOccurredDuringSaveOperation" xml:space="preserve">
+    <value>Ocorreu um erro durante a operação de guardar</value>
+  </data>
+  <data name="FetchMethodNameNotSpecified" xml:space="preserve">
+    <value>Nome do método "fetch" não foi especificado no atributo MobileFactory </value>
+  </data>
+  <data name="ObjectTypeCouldNotBeLoaded" xml:space="preserve">
+    <value>Não foi possível carregar o tipo do objecto ou "assembly" ({0})</value>
+  </data>
+  <data name="SortingNotSupported" xml:space="preserve">
+    <value>Ordenação não é suportada</value>
+  </data>
+  <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
+    <value>Nome do método "update" não foi especificado no atributo MobileFactory </value>
+  </data>
+  <data name="BindingSourceNotProvided" xml:space="preserve">
+    <value>Não foi fornecido um "binding source" raiz.</value>
+  </data>
+  <data name="MemberNotFoundException" xml:space="preserve">
+    <value>Membro não foi encontrado no objecto ({0})</value>
+  </data>
+  <data name="IManagePropertiesRequiredException" xml:space="preserve">
+    <value>Objecto alvo deve implementar IManageProperties</value>
+  </data>
+  <data name="PropertyRegisterNotAllowed" xml:space="preserve">
+    <value>Não pode registar a propriedade {0} depois de instanciar o tipo ({1}) que a contem</value>
+  </data>
+  <data name="IEditableCollectionRequiredException" xml:space="preserve">
+    <value>Objecto alvo deve implementar IEditableCollection</value>
+  </data>
+  <data name="ActionExtenderCloseConfirmation" xml:space="preserve">
+    <value>Confirma que quer fechar?</value>
+  </data>
+  <data name="ActionExtenderDirtyWarningMessagePropertyDefault" xml:space="preserve">
+    <value>Objecto atualmente está sujo.</value>
+  </data>
+  <data name="ActionExtenderInvalidBindingSourceCast" xml:space="preserve">
+    <value>DataSource não representa um BindingSource</value>
+  </data>
+  <data name="ActionExtenderInvalidBusinessObjectBaseCast" xml:space="preserve">
+    <value>A fonte de dados base subjacente não representa um objecto CSLA BusinessBase</value>
+  </data>
+  <data name="ActionExtenderSourceMustBeBindingSource" xml:space="preserve">
+    <value>DataSource deve ser uma instância do controle BindingSource</value>
+  </data>
+  <data name="ActionExtenderWarnOnCancelMessagePropertyDefault" xml:space="preserve">
+    <value>Confirma que quer reverter para os valores anteriores?</value>
+  </data>
+  <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
+    <value>Não pode registrar a propriedade {0}, pois já existe uma PropertyInfo com o mesmo nome.</value>
+  </data>
+  <data name="ExecuteBadParams" xml:space="preserve">
+    <value>Método a executar deve ter 0 ou 2 parâmetros</value>
+  </data>
+  <data name="ExecuteBadTriggerEvent" xml:space="preserve">
+    <value>Evento de "trigger" tem uma assinatura não suportada</value>
+  </data>
+  <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
+    <value>Deve implementar AddNewCore</value>
+  </data>
+  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
+    <value>Não pode alterar uma lista ou coleção só de leitura</value>
+  </data>
+  <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
+    <value>Nome da propriedade '{0}' não foi encontrado na lista</value>
+  </data>
+  <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
+    <value>Expressões indexadas devem ser fechadas</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
+    <value>Estabeleça o NavigatorProvider antes da propriedade TriggerEvent.</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="ObjectNotNull" xml:space="preserve">
+    <value>Não pode estabelecer propriedade se o objecto de dados não fôr nulo</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="PropertyNameDoesNotExist" xml:space="preserve">
+    <value>Nome da propriedade '{0}' não existe</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="PropertyRequiresIndexArguments" xml:space="preserve">
+    <value>Esta propriedade requer {0} argumentos índice e foram fornecidos {1}</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="NoSuchMethod" xml:space="preserve">
+    <value>O método {0} não existe</value>
+  </data>
+  <data name="PropertyIsPrivateField" xml:space="preserve">
+    <value>Tentativa de ler/carregar propriedade com campo privado em propriedades "managed".</value>
+  </data>
+  <data name="ListItemNotAChildException" xml:space="preserve">
+    <value>Item de lista deve ser marcado como objecto filho</value>
+  </data>
+  <data name="PrivateFieldException" xml:space="preserve">
+    <value>Nas propriedade com campos de rectaguarda privados, estes devem ser marcados como Relationship.PrivateField</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Aviso</value>
+  </data>
+  <data name="ObjectRulesCannotSetPrimaryProperty" xml:space="preserve">
+    <value>Regra de objecto não pode ter PrimaryPropery.</value>
+  </data>
+  <data name="UnandledKNownTypeException" xml:space="preserve">
+    <value>Foi encontrado um tipo CSLA conhecido que não é tratado</value>
+  </data>
+  <data name="BinaryWriterObjectSerializationException" xml:space="preserve">
+    <value>Serialização do tipo de objecto não é suportada.</value>
+  </data>
+  <data name="PropertyNotInAffectedPropertiesException" xml:space="preserve">
+    <value>Propriedade {0} tem que ser acrescentada às AffectedProperties. </value>
+    <comment>RuleContext</comment>
+  </data>
+  <data name="PropertyNameNotRegisteredException" xml:space="preserve">
+    <value>Propriedade '{0}' não está registada.</value>
+  </data>
+  <data name="RuleMessageRequired" xml:space="preserve">
+    <value>É exigida a mensagem para a regra violada. Regra: {0}</value>
+  </data>
+  <data name="TaskOfObjectException" xml:space="preserve">
+    <value>Método {0} deve retornar uma Task&lt;object&gt;</value>
+  </data>
+  <data name="AsyncLoadException" xml:space="preserve">
+    <value>Falha no carregamento assíncrono da propriedade {0}</value>
+    <comment>Csla 4.5</comment>
+  </data>
+  <data name="ActionExtenderErrorCaption" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="ActionExtenderInformationCaption" xml:space="preserve">
+    <value>Informação</value>
+  </data>
+  <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
+    <value>O objecto é válido</value>
+  </data>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Não é possível chamar de forma síncrona {0}, que é um método assíncrono</value>
   </data>
 </root>

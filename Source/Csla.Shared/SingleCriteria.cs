@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 #if !MONO
 using System;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 
@@ -22,6 +21,7 @@ namespace Csla
   /// </typeparam>
   /// <remarks></remarks>
   [Serializable()]
+  [Obsolete("Use custom class derived from CriteriaBase e.g. ProjectCriteria : CriteriaBase<ProjectCriteria> instead.")]
   public class SingleCriteria<C> : CriteriaBase<SingleCriteria<C>>
   {
     private C _value;
@@ -53,7 +53,7 @@ namespace Csla
     /// you must provide a criteria value
     /// parameter.
     /// </summary>
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     public SingleCriteria()
     { }
 #else
@@ -123,6 +123,7 @@ namespace Csla
   /// </typeparam>
   /// <remarks></remarks>
   [Serializable()]
+  [Obsolete("Use custom class derived from CriteriaBase e.g. ProjectCriteria : CriteriaBase<ProjectCriteria> instead.")]
   public class SingleCriteria<B, C> : SingleCriteria<C>
   {
     /// <summary>
@@ -143,7 +144,7 @@ namespace Csla
     /// you must provide a criteria value
     /// parameter.
     /// </summary>
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     public SingleCriteria()
     { }
 #else

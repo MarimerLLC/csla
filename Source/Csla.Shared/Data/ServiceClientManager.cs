@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE && !NETCORE && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="ServiceClientManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

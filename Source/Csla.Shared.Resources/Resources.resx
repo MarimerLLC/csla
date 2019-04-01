@@ -439,7 +439,7 @@
     <value>Property '{0}' not registered.</value>
   </data>
   <data name="RuleMessageRequired" xml:space="preserve">
-    <value>Message for broken rule is required. Rule:{0}</value>
+    <value>Message for broken rule is required. Rule: {0}</value>
   </data>
   <data name="TaskOfObjectException" xml:space="preserve">
     <value>Method {0} must return Task&lt;object&gt;</value>
@@ -456,5 +456,11 @@
   </data>
   <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
     <value>Object is valid</value>
+  </data>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Cannot synchronously call {0} which is an asynchronous method</value>
+  </data>
+  <data name="UnableToLoadDataPortalProxyFactory" xml:space="preserve">
+    <value>Unable to load DataPortalProxyFactory {0}</value>
   </data>
 </root>

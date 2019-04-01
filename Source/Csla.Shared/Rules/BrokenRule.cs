@@ -6,7 +6,6 @@
 // <summary>Stores details about a specific broken business rule.</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 
@@ -18,7 +17,7 @@ namespace Csla.Rules
   [Serializable]
   public partial class BrokenRule : MobileObject
   {
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Creates an instance of this object.
     /// </summary>

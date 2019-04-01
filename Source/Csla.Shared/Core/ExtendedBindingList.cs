@@ -8,8 +8,7 @@
 using System;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
-#if NETFX_CORE
-using Csla.Serialization;
+#if NETFX_CORE || (ANDROID || IOS)
 using System.Collections.Generic;
 using System.Collections.Specialized;
 #endif
@@ -30,7 +29,7 @@ namespace Csla.Core
     ISerializationNotification
   {
 
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
     /// <summary>
     /// Implements a serialization-safe RemovingItem event.
     /// </summary>
@@ -167,6 +166,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsBusy
     {
       get { throw new NotImplementedException(); }
@@ -177,6 +179,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+#if !PCL46 && !PCL259 
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+#endif
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
@@ -307,8 +312,9 @@ namespace Csla.Core
       OnDeserialized();
     }
 
-#if !NETFX_CORE
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
+#endif 
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       foreach (T item in this)
@@ -316,7 +322,6 @@ namespace Csla.Core
 
       OnDeserialized();
     }
-#endif
 
     [NonSerialized]
     [NotUndoable]
@@ -353,7 +358,8 @@ namespace Csla.Core
         _childChangedHandlers.Invoke(this, e);
     }
 
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
+
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>

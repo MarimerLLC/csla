@@ -32,22 +32,12 @@ namespace Csla.Test.PropertyGetSet
   {
     private ApplicationContext.PropertyChangedModes _mode;
 
-#if SILVERLIGHT
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.DataPortal.ProxyTypeName = "Local"; // "Csla.DataPortalClient.WcfProxy, Csla";
-      _mode = Csla.ApplicationContext.PropertyChangedMode;
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
-    }
-#else
     [TestInitialize]
     public void Initialize()
     {
       _mode = Csla.ApplicationContext.PropertyChangedMode;
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
     }
-#endif
 
     [TestCleanup]
     public void Cleanup()
@@ -376,6 +366,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootUndoApply()
     {
       EditableGetSet root = new EditableGetSet();
@@ -402,11 +393,7 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
       Assert.IsTrue(root.IsValid, "Root should be valid (no validation rules exist)");
 
-#if SILVERLIGHT
-      root.BeginSave((o, e) => { root = (EditableGetSet)e.NewObject; });
-#else
       root = root.Save();
-#endif
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
     }
@@ -428,9 +415,7 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(0, root.EditLevel, "Root edit level after CancelEdit");
       EditableGetSet secondChild = root.ManagedChild;
       Assert.AreEqual(0, secondChild.EditLevel, "Second child edit level after being created");
-#if !SILVERLIGHT
       Assert.IsFalse(ReferenceEquals(initialChild, secondChild), "Child objects should be different");
-#endif
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after second child created");
     }
@@ -497,11 +482,7 @@ namespace Csla.Test.PropertyGetSet
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
 
-#if SILVERLIGHT
-      root.BeginSave((o, e) => { root = (EditableGetSet)e.NewObject; });
-#else
       root = root.Save();
-#endif
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
     }
@@ -534,6 +515,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootChildListUndoApply()
     {
       var root = new EditableGetSet();
@@ -559,11 +541,7 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
       Assert.IsTrue(secondChildList.IsDirty, "Second list should be dirty");
 
-#if SILVERLIGHT
-      root.BeginSave((o, e) => { root = (EditableGetSet)e.NewObject; });
-#else
       root = root.Save();
-#endif
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
       Assert.IsFalse(root.ManagedChildList.IsDirty, "List should not be dirty after Save");
@@ -747,13 +725,11 @@ namespace Csla.Test.PropertyGetSet
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed";
       Assert.AreEqual(1, changed, "after MobileFormatter");
 
-#if !SILVERLIGHT
       changed = 0;
       root = root.Clone();
       root.ChildChanged += (o, e) => { changed++; };
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed again";
       Assert.AreEqual(1, changed, "after clone");
-#endif
     }
 
     [TestMethod]

@@ -60,6 +60,13 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(obj.Message, obj2.Message);
     }
 
+    [TestMethod]
+    public void CorrectDefaultSerializer()
+    {
+      var serializer = ApplicationContext.SerializationFormatter;
+      Assert.AreEqual(ApplicationContext.SerializationFormatters.BinaryFormatter, serializer);
+    }
+
     [TestMethod()]
     public void TestWithoutSerializableHandler()
     {
@@ -198,7 +205,7 @@ namespace Csla.Test.Serialization
         b.Serialize(new MemoryStream(), root);
         Assert.Fail("Serialization should have thrown an exception");
       }
-      catch (System.Runtime.Serialization.SerializationException ex)
+      catch (System.Runtime.Serialization.SerializationException)
       {
         // serialization failed as expected
       }
@@ -225,6 +232,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestValidationRulesAfterSerialization()
     {
       UnitTestContext context = GetContext();
@@ -391,7 +399,7 @@ namespace Csla.Test.Serialization
       {
         root.FirstName = "something";
       }
-      catch (Csla.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException)
       {
         Assert.Fail("exception occurred");
       }
@@ -416,7 +424,7 @@ namespace Csla.Test.Serialization
       {
         rootClone.FirstName = "something new";
       }
-      catch (Csla.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException)
       {
         Assert.Fail("exception occurred");
       }
@@ -443,6 +451,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DCClone()
     {
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
@@ -463,15 +472,9 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    
     public void DCEditLevels()
     {
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
-        "NetDataContractSerializer";
-      Assert.AreEqual(
-        Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
-        Csla.ApplicationContext.SerializationFormatter,
-        "Formatter should be NetDataContractSerializer");
-
       DCRoot root = new DCRoot();
       root.BeginEdit();
       root.Data = 123;
@@ -504,13 +507,13 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    
     public void SerializeCommand()
     {
       var cmd = new TestCommand();
       cmd.Name = "test data";
 
       var buffer = new System.IO.MemoryStream();
-#if !SILVERLIGHT
       var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
       Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
 
@@ -519,7 +522,6 @@ namespace Csla.Test.Serialization
       buffer.Position = 0;
       var n = (TestCommand)ndcs.Deserialize(buffer);
       Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
-#endif
 
       buffer = new System.IO.MemoryStream();
       var mf = new Csla.Serialization.Mobile.MobileFormatter();
@@ -529,8 +531,8 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
     }
 
-#if !SILVERLIGHT
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CommandOverDataPortal()
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
@@ -549,8 +551,43 @@ namespace Csla.Test.Serialization
         System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
       }
     }
-#endif
+
+#if !NETFX_CORE
+    [TestMethod]
+    public void UseCustomSerializationFormatter()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "Csla.Serialization.NetDataContractSerializerWrapper, Csla";
+      try
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter();
+
+        Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.CustomFormatter);
+        Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
+      }
+    }
+
+    [TestMethod]
+    public void UseNetDataContractSerializer()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "NetDataContractSerializer";
+      try
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter();
+
+        Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.NetDataContractSerializer);
+        Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
+      }
+    }
   }
+#endif
 
   [Serializable]
   public class TestCommand : CommandBase<TestCommand>

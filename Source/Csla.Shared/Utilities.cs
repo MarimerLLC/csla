@@ -10,7 +10,8 @@ using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;
 using System.Text;
-#if NETFX_CORE && !NETFX_PHONE
+using Csla.Properties;
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
 using System.Text.RegularExpressions;
 using Csla.WcfPortal;
 #endif
@@ -103,14 +104,15 @@ namespace Csla
       else
       {
 #if NETFX_CORE
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
 #else
-        DefaultMemberAttribute indexer =
+        var indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
 #endif
         if (indexer != null)
+        {
           foreach (PropertyInfo prop in listType.GetProperties(
             BindingFlags.Public |
             BindingFlags.Instance |
@@ -119,6 +121,11 @@ namespace Csla
             if (prop.Name == indexer.MemberName)
               result = Utilities.GetPropertyType(prop.PropertyType);
           }
+        }
+        if (result == null)
+        {
+          result = listType.GetMethod("get_Item")?.ReturnType;
+        }
       }
       return result;
     }
@@ -182,6 +189,22 @@ namespace Csla
       }
 
 #if NETFX_CORE
+      if (desiredType.IsEnum())
+#else
+      if (desiredType.IsEnum)
+#endif
+      {
+        if (value is byte? && ((byte?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((byte?) value).Value.ToString());
+        if (value is short? && ((short?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((short?) value).Value.ToString());
+        if (value is int? && ((int?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((int?) value).Value.ToString());
+        if (value is long? && ((long?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((long?) value).Value.ToString());
+      }
+
+#if NETFX_CORE
       if (desiredType.IsEnum() &&
 #else
       if (desiredType.IsEnum && 
@@ -223,8 +246,11 @@ namespace Csla
       {
 #if !NETFX_CORE
         TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
+        TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
           return cnv.ConvertFrom(value);
+        else if (cnv1 != null && cnv1.CanConvertTo(desiredType))
+          return cnv1.ConvertTo(value, desiredType);
         else
 #endif
           throw;
@@ -271,7 +297,7 @@ namespace Csla
 
     #endregion
 
-#if NETFX_CORE && !NETFX_PHONE
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
     #region Error Handling
 
     /// <summary>
@@ -333,7 +359,7 @@ namespace Csla
     /// For linked files calling Uri.EscapeDataString you can use the following C# code snippet 
     /// to ensure platform compatibility:
     /// 
-    /// #if SILVERLIGHT
+    /// #if (ANDROID || IOS)
     /// using Uri = Csla.Utilities;
     /// #endif
     /// </remarks>
@@ -357,6 +383,42 @@ namespace Csla
 
     #endregion
 #endif
+
+    /// <summary>
+    /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
+    /// </summary>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="methodName">Name of the method.</param>
+    /// <returns></returns>
+    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName)
+    {
+      if (isSync
+        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && MethodCaller.IsAsyncMethod(obj, methodName))
+      {
+        throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
+      }
+    }
+
+    /// <summary>
+    /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
+    /// </summary>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="methodName">Name of the method.</param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName, params object[] parameters)
+    {
+      if (isSync
+        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && MethodCaller.IsAsyncMethod(obj, methodName, parameters))
+      {
+        throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
+      }
+    }
   }
 
   /// <summary>

@@ -16,14 +16,8 @@ namespace Csla
   /// can be derived.
   /// </summary>
   public interface IReadOnlyBase
-#if !NETFX_CORE && !WINDOWS_PHONE && !IOS
  : ICloneable, IReadOnlyObject, IBusinessObject, ISerializationNotification,
     IAuthorizeReadWrite, INotifyBusy, INotifyUnhandledAsyncException, IHostRules,
     INotifyPropertyChanged, INotifyPropertyChanging, IMobileObject
-#else
- : IReadOnlyObject, IBusinessObject, ISerializationNotification, IAuthorizeReadWrite, 
-    INotifyBusy, INotifyUnhandledAsyncException, IHostRules,
-    INotifyPropertyChanged, IMobileObject
-#endif
   { }
 }

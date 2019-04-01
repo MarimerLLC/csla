@@ -25,7 +25,7 @@ namespace Csla
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if (SILVERLIGHT || NETFX_CORE) && !__ANDROID__ && !IOS
+#if NETFX_CORE && !ANDROID && !IOS
     ,INotifyDataErrorInfo
 #else
     , IDataErrorInfo

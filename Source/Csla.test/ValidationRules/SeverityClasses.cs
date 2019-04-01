@@ -34,7 +34,7 @@ namespace Csla.Test.ValidationRules
 
     public class AlwaysInfo : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         context.AddInformationResult("Always info");
       }
@@ -42,7 +42,7 @@ namespace Csla.Test.ValidationRules
 
     public class AlwaysWarns : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         context.AddWarningResult("Always warns");
       }
@@ -50,7 +50,7 @@ namespace Csla.Test.ValidationRules
 
     public class AlwaysError : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         context.AddErrorResult("Always error");
       }
@@ -79,7 +79,7 @@ namespace Csla.Test.ValidationRules
 
     public class AlwaysInfo : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         context.AddInformationResult("Always info");
       }
@@ -87,7 +87,7 @@ namespace Csla.Test.ValidationRules
 
     public class AlwaysWarns : Rules.BusinessRule
     {
-      protected override void Execute(Rules.RuleContext context)
+      protected override void Execute(Rules.IRuleContext context)
       {
         context.AddWarningResult("Always warns");
       }

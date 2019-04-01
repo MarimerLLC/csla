@@ -571,4 +571,3 @@ namespace Csla.WcfPortal {
         }
     }
 }
-#pragma warning restore

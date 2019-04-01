@@ -15,12 +15,14 @@ namespace Csla
   /// </summary>
   public enum TransactionalTypes
   {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
+#if !NETSTANDARD2_0
     /// <summary>
     /// Causes the server-side DataPortal to
     /// use Enterprise Services (COM+) transactions.
     /// </summary>
     EnterpriseServices,
+#endif
     /// <summary>
     /// Causes the server-side DataPortal to
     /// use System.Transactions TransactionScope

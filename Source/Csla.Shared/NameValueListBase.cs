@@ -10,7 +10,6 @@ using System.ComponentModel;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 
 namespace Csla
 {
@@ -164,7 +163,7 @@ namespace Csla
       private K _key;
       private V _value;
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       /// <summary>
       /// Creates an instance of the object.
       /// </summary>

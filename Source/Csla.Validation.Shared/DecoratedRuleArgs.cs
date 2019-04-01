@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using Csla.Rules;
 
-#if SILVERLIGHT
+#if (ANDROID || IOS)
 using Uri = Csla.Utilities;
 #endif
 

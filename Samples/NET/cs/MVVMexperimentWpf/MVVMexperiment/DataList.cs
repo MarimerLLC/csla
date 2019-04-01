@@ -30,7 +30,7 @@ namespace MVVMexperiment
       this.RaiseListChangedEvents = rle;
     }
 
-    private DataList()
+    public DataList()
     {
       AllowNew = true;
     }

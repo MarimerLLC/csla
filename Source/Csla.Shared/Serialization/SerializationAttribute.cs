@@ -1,4 +1,5 @@
-﻿#if (!__ANDROID__ && !IOS) && NETFX_CORE
+﻿#if !NETSTANDARD1_6 && !WINDOWS_UWP
+#if NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="SerializationAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -8,15 +9,18 @@
 //-----------------------------------------------------------------------
 using System;
 
-namespace Csla.Serialization
+namespace System
 {
   /// <summary>
   /// Indicates that an object may be
   /// serialized by the MobileFormatter.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum)]
   public class SerializableAttribute : Attribute
   {
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.SerializableAttribute))]
+#endif
 #endif

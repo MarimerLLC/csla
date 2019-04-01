@@ -1,13 +1,13 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AE1617BD-43FA-4DA5-9D26-8F5D9B0D3DB6}"
-	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
-		Readme.txt = Readme.txt
-	EndProjectSection
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMexperiment", "MVVMexperiment\MVVMexperiment.csproj", "{07C23F52-95BF-47C6-8E17-A86F54F0B6A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7779482-2868-45BA-AE38-C1AA510EEA9C}"
+	ProjectSection(SolutionItems) = preProject
+		ErrorLog.txt = ErrorLog.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,5 +22,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4BF7360D-2C6B-49FC-9EDD-431F53C8AE2B}
 	EndGlobalSection
 EndGlobal

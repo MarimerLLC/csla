@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------
 using System.Collections.Generic;
 using System.Linq;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System;
+using System.Reflection;
 using Csla.Reflection;
 
 namespace Csla.Core
@@ -72,7 +72,18 @@ namespace Csla.Core
       DetermineTypes();
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+    /// <summary>
+    /// Gets a value indicating whether the
+    /// dictionary contains the specified key
+    /// value.
+    /// </summary>
+    /// <param name="key">Key value</param>
+    public bool Contains(K key)
+    {
+      return base.ContainsKey(key);
+    }
+
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

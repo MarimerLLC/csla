@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE && !PCL259 || PCL46
 //-----------------------------------------------------------------------
 // <copyright file="HttpProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -36,6 +36,7 @@ namespace Csla.DataPortalClient
       get { return _timeoutInMilliseconds; }
       set { _timeoutInMilliseconds = value; }
     }
+
     /// <summary>
     /// Gets or sets the default URL address
     /// for the data portal server.
@@ -60,6 +61,16 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the supplied URL.
+    /// </summary>
+    /// <param name="dataPortalUrl">Server endpoint URL</param>
+    public HttpProxy(string dataPortalUrl)
+    {
+      this.DataPortalUrl = dataPortalUrl;
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
     /// </summary>
@@ -73,14 +84,40 @@ namespace Csla.DataPortalClient
     /// used by this proxy instance.
     /// </summary>
     public string DataPortalUrl { get; protected set; }
+
+    private static HttpClient _client;
+    
     /// <summary>
     /// Gets an HttpClient object for use in
     /// communication with the server.
     /// </summary>
     protected virtual HttpClient GetClient()
     {
-      return new HttpClient();
+      if (_client == null) {
+        _client = new HttpClient();
+        if (this.Timeout > 0) {
+          _client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
+        }
+      }
+
+      return _client;
     }
+
+    /// <summary>
+    /// Set HttpClient object for use by data portal.
+    /// </summary>
+    /// <param name="client">HttpClient instance.</param>
+    public static void SetHttpClient(HttpClient client)
+    {
+      _client = client;
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use
+    /// text/string serialization instead of the default
+    /// binary serialization.
+    /// </summary>
+    public static bool UseTextSerialization { get; set; } = false;
 
     #region Criteria
 
@@ -98,14 +135,8 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-#if NETFX_CORE || NETFX_PHONE
-      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
-      request.ClientCulture = language;
-      request.ClientUICulture = language;
-#else
-      request.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
-      request.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
-#endif
+      request.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      request.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
       return request;
     }
 
@@ -123,7 +154,10 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-#if NETFX_CORE || NETFX_PHONE
+#if NETCORE || PCL46 || PCL259
+      request.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      request.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+#elif NETFX_CORE || NETFX_PHONE
       var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;
@@ -134,7 +168,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -154,10 +188,8 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
-        request.TypeName = objectType.AssemblyQualifiedName;
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -165,16 +197,11 @@ namespace Csla.DataPortalClient
         request.CriteriaData = MobileFormatter.Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=create", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        serialized = await CallDataPortalServer(client, serialized, "create", GetRoutingToken(objectType));
 
-        var httpResponse = await client.SendAsync(httpRequest);
-        httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
-
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -221,10 +248,8 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
-        request.TypeName = objectType.AssemblyQualifiedName;
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -232,16 +257,11 @@ namespace Csla.DataPortalClient
         request.CriteriaData = MobileFormatter.Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=fetch", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        serialized = await CallDataPortalServer(client, serialized, "fetch", GetRoutingToken(objectType));
 
-        var httpResponse = await client.SendAsync(httpRequest);
-        httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
-
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -287,22 +307,15 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout); 
         var request = GetBaseUpdateCriteriaRequest();
         request.ObjectData = MobileFormatter.Serialize(obj);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=update", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        serialized = await CallDataPortalServer(client, serialized, "update", GetRoutingToken(obj.GetType()));
 
-        var httpResponse = await client.SendAsync(httpRequest);
-        httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
-
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -349,10 +362,8 @@ namespace Csla.DataPortalClient
         if (isSync)
           throw new NotSupportedException("isSync == true");
         var client = GetClient();
-        if (this.Timeout > 0)
-          client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
-        request.TypeName = objectType.AssemblyQualifiedName;
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -360,16 +371,11 @@ namespace Csla.DataPortalClient
         request.CriteriaData = MobileFormatter.Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=delete", DataPortalUrl));
-        httpRequest.Content = new ByteArrayContent(serialized);
+        serialized = await CallDataPortalServer(client, serialized, "delete", GetRoutingToken(objectType));
 
-        var httpResponse = await client.SendAsync(httpRequest);
-        httpResponse.EnsureSuccessStatusCode();
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
-
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -395,7 +401,43 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    #region Extension Method for Requests
+    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken)
+    {
+      HttpRequestMessage httpRequest = null;
+      httpRequest = new HttpRequestMessage(
+        HttpMethod.Post, 
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
+      if (UseTextSerialization)
+        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
+      else
+        httpRequest.Content = new ByteArrayContent(serialized);
+      var httpResponse = await client.SendAsync(httpRequest);
+      httpResponse.EnsureSuccessStatusCode();
+      if (UseTextSerialization)
+        serialized = System.Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync());
+      else
+        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
+      return serialized;
+    }
+
+    private string CreateOperationTag(string operatation, string versionToken, string routingToken)
+    {
+      if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
+        return $"{operatation}/{routingToken}-{versionToken}";
+      else
+        return operatation;
+    }
+
+    private string GetRoutingToken(Type objectType)
+    {
+      string result = null;
+      var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
+      if (list.Count() > 0)
+        result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
+      return result;
+    }
+
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -427,7 +469,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

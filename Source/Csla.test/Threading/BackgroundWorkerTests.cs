@@ -87,6 +87,7 @@ namespace Csla.Test.Threading
     ///A test for BackgroundWorker normal run 
     ///</summary>
     [TestMethod]
+    
     public void BackgroundWorker_RunWorkerAsync_CallsDoWorkAndWorkerCompleted()
     {
 
@@ -231,11 +232,10 @@ namespace Csla.Test.Threading
     ///A test for BackgroundWorker when reporting progress
     ///</summary>
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BackgroundWorker_CancelAsync_ReportsCancelledWhenWorkerSupportsCancellationIsTrue()
     {
       UnitTestContext context = GetContext();
-
-      int numTimesProgressCalled = 0;
 
       BackgroundWorker target = new BackgroundWorker();
       target.DoWork += (o, e) =>

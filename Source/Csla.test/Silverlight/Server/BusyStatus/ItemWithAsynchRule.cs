@@ -22,7 +22,7 @@ namespace Csla.Testing.Business.BusyStatus
   {
     public ItemWithAsynchRule() { }
 
-    private static PropertyInfo<string> IdProperty = RegisterProperty<string>(new PropertyInfo<string>("Id", "Id", string.Empty));
+    private static PropertyInfo<string> IdProperty = RegisterProperty<string>(c=>c.Id);
 
     public string Id
     {
@@ -36,7 +36,7 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
-    private static PropertyInfo<string> OperationResultProperty = RegisterProperty<string>(new PropertyInfo<string>("OperationResult", "Operation Result", string.Empty));
+    private static PropertyInfo<string> OperationResultProperty = RegisterProperty<string>(c=>c.OperationResult, "Operation Result", string.Empty);
 
     public string OperationResult
     {
@@ -50,7 +50,7 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
-    private static PropertyInfo<string> RuleFieldProperty = RegisterProperty<string>(new PropertyInfo<string>("RuleField", "Rule Field",string.Empty));
+    private static PropertyInfo<string> RuleFieldProperty = RegisterProperty<string>(c=>c.RuleField, "Rule Field", string.Empty);
 
     public string RuleField
     {
@@ -77,7 +77,7 @@ namespace Csla.Testing.Business.BusyStatus
     {
       DataPortal<ItemWithAsynchRule> dp = new DataPortal<ItemWithAsynchRule>();
       dp.FetchCompleted += completed;
-      dp.BeginFetch(new SingleCriteria<ItemWithAsynchRule, string>(id));
+      dp.BeginFetch(id);
     }
 
     public static void NewItemWithAsynchRule(EventHandler<DataPortalResult<ItemWithAsynchRule>> completed)
@@ -106,7 +106,7 @@ namespace Csla.Testing.Business.BusyStatus
         InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         if (Csla.ApplicationContext.LogicalExecutionLocation == Csla.ApplicationContext.LogicalExecutionLocations.Client)
         {
@@ -135,44 +135,9 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
-#if SILVERLIGHT
-
-    public void DataPortal_Fetch(SingleCriteria<ItemWithAsynchRule, string> criteria)
+    internal void DataPortal_Fetch(string criteria)
     {
-      this.Id = "fetch_" + criteria.Value;
-      this.OperationResult = "DataPortal_Fetch/with parameters";
-      this.MarkOld();
-    }
-
-    protected override void DataPortal_Create()
-    {
-      this.Id = "random_create";
-      this.OperationResult = "DataPortal_Create/no parameters";
-      this.MarkNew();
-    }
-
-    protected override void DataPortal_Insert()
-    {
-      this.Id = "random_insert";
-      this.OperationResult = "DataPortal_Insert";
-      this.MarkOld();
-    }
-
-    protected override void DataPortal_Update()
-    {
-      this.Id = "random_update";
-      this.OperationResult = "DataPortal_Update";
-      this.MarkOld();
-    }
-
-    public void DoDataPortal_Update()
-    {
-      DataPortal_Update();
-    }
-#else
-    internal void DataPortal_Fetch(SingleCriteria<ItemWithAsynchRule, string> criteria)
-    {
-      this.Id = "fetch_" + criteria.Value;
+      this.Id = "fetch_" + criteria;
       this.OperationResult = "DataPortal_Fetch/with parameters";
       this.MarkOld();
     }
@@ -204,7 +169,5 @@ namespace Csla.Testing.Business.BusyStatus
       this.OperationResult = "DataPortal_Update";
       this.MarkOld();
     }
-#endif
-
   }
 }

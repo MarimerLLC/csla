@@ -1,4 +1,5 @@
-﻿#if (!__ANDROID__ && !IOS) && NETFX_CORE
+﻿#if !NETSTANDARD1_6 && !WINDOWS_UWP
+#if NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -8,7 +9,7 @@
 //-----------------------------------------------------------------------
 using System;
 
-namespace Csla.Serialization
+namespace System
 {
   /// <summary>
   /// Indicates that a field should not be
@@ -19,4 +20,7 @@ namespace Csla.Serialization
   {
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.NonSerializedAttribute))]
+#endif
 #endif

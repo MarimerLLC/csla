@@ -6,9 +6,9 @@
 // <summary>Base class to simplify the retrieval of Windows identity</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Core;
+using System.Runtime.Serialization;
 
 namespace Csla.Silverlight.Security
 {
@@ -23,12 +23,6 @@ namespace Csla.Silverlight.Security
       System.Security.Principal.IIdentity, Csla.Security.ICheckRoles
   {
     #region Constructor, Helper Setter
-#if SILVERLIGHT || NETFX_CORE
-    /// <summary>
-    /// Creates an instance of the class.
-    /// </summary>
-    public WindowsIdentity() { }
-#else
     private static int _forceInit;
 
     /// <summary>
@@ -43,12 +37,11 @@ namespace Csla.Silverlight.Security
     /// Method invoked when the object is deserialized.
     /// </summary>
     /// <param name="context">Serialization context.</param>
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    protected override void OnDeserialized(StreamingContext context)
     {
-      _forceInit = 0;
+      _forceInit = _forceInit + 0;
       base.OnDeserialized(context);
     }
-#endif
 
     private void SetWindowsIdentity(MobileList<string> roles, bool isAuthenticated, string name)
     {
@@ -60,7 +53,17 @@ namespace Csla.Silverlight.Security
 
     #region Identity and roles population
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if NETSTANDARD2_0
+    /// <summary>
+    /// Retrieves identity and role information from the currently
+    /// logged in Windows user.
+    /// </summary>
+    protected virtual void PopulateWindowsIdentity()
+    {
+      throw new NotImplementedException();
+    }
+#endif
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
     /// <summary>
     /// Retrieves identity and role information from the currently
     /// logged in Windows user.

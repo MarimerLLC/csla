@@ -25,6 +25,7 @@ namespace Csla.Test.RollBack
   public class RollBackTests
   {
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void NoFail()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -52,6 +53,7 @@ namespace Csla.Test.RollBack
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void YesFail()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -88,6 +90,7 @@ namespace Csla.Test.RollBack
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void YesFailCancel()
     {
       Csla.ApplicationContext.GlobalContext.Clear();

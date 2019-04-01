@@ -1,13 +1,12 @@
-﻿//-----------------------------------------------------------------------
+﻿#if NETFX_CORE
+//-----------------------------------------------------------------------
 // <copyright file="ICloneable.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Defines a cloneable object.</summary>
 //-----------------------------------------------------------------------
-using System;
-
-namespace Csla
+namespace System
 {
   /// <summary>
   /// Defines a cloneable object.
@@ -20,3 +19,6 @@ namespace Csla
     object Clone();
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ICloneable))]
+#endif

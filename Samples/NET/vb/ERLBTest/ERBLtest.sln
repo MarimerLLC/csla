@@ -1,12 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20D03548-B88D-4C41-B7D5-442AC20357CE}"
-	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
-		Readme.txt = Readme.txt
-	EndProjectSection
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ERBLtest", "ERBLtest\ERBLtest.vbproj", "{2F0E74D6-C0FA-4FF5-9130-6F07D7A2BF93}"
 EndProject
 Global
@@ -22,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {396EECB7-D63A-47D0-B893-C8A6F8E45C00}
 	EndGlobalSection
 EndGlobal

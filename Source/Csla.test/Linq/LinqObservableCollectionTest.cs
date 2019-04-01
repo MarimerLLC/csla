@@ -347,7 +347,6 @@ namespace Csla.Test.Linq
       Assert.AreEqual("r", obj[0]);
     }
 
-#if !SILVERLIGHT
     [TestMethod]
     public void MoveItem()
     {
@@ -376,7 +375,6 @@ namespace Csla.Test.Linq
       Assert.AreEqual("b", source[2]);
       Assert.AreEqual("c", source[1]);
     }
-#endif
 
     [TestMethod]
     public void ClearSource()

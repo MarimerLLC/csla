@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnitDriven;
-#if !SILVERLIGHT
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
@@ -22,7 +21,6 @@ using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #endif
-#endif
 
 namespace Csla.Test.MethodCaller
 {
@@ -30,8 +28,8 @@ namespace Csla.Test.MethodCaller
   public class FieldTests
   {
 
-    private class Test1 { 
-      private string _f1 = "private";
+    private class Test1 {
+      private string _f1 = "private"; // accessed by tests via reflection
       public string _f2 = "public";
     }
 

@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !MONO
+#if !NETFX_CORE && !MONO && !(ANDROID || IOS) && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="ServicedDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -43,7 +43,7 @@ namespace Csla.Server
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalSelector();
+      var portal = new DataPortalBroker();
       return await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
     }
 
@@ -64,7 +64,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalSelector();
+      var portal = new DataPortalBroker();
       return await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
     }
 
@@ -84,7 +84,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalSelector();
+      var portal = new DataPortalBroker();
       return await portal.Update(obj, context, isSync).ConfigureAwait(false);
     }
 
@@ -104,7 +104,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalSelector();
+      var portal = new DataPortalBroker();
       return await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
     }
   }

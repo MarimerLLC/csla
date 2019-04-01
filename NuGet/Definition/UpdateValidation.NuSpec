@@ -4,11 +4,11 @@
     <id>CSLA-UpdateValidation</id>
     <title>CSLA .NET - Legacy Validation</title>
     <tags>CSLA Validation</tags>
-    <version>4.5.700</version>
+    <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
-    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
-    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports legacy CSLA .NET 3.8 style validation and business rules in newer versions of CSLA .NET.
@@ -20,7 +20,7 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
@@ -31,48 +31,29 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\NET4\**\Csla.Validation.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Validation.xml*" target="lib\net40" />
     <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- > None -->
-    <!-- Silverlight 5.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.dll*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.pdb*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.resources.dll*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.resources.pdb*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.xml*" target="lib\sl50" />
-    <!-- Windows Phone 7 Client -->
-    <!-- > None -->
-    <!-- Windows Phone 8 Silverlight Client -->
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.dll*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.pdb*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.dll*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.pdb*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.xml*" target="lib\wp" />
-    <!-- Windows Phone 8 WinRT Client -->
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.dll*" target="lib\wpa" />
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.pdb*" target="lib\wpa" />
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.xml*" target="lib\wpa" />
-    <!-- Windows Runtime Client -->
-    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.dll*" target="lib\NetCore45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pdb*" target="lib\NetCore45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pri*" target="lib\NetCore45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.xml*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.resources.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.resources.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.xml*" target="lib\net461" />
+    <!-- UWP Client -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.dll*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.pdb*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.pri*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Validation.xml*" target="lib\uap10.0" />
     <!-- Xamarin Android Client -->
     <file src="..\..\Bin\Release\Android\**\Csla.Validation.dll*" target="lib\MonoAndroid10" />
     <file src="..\..\Bin\Release\Android\**\Csla.Validation.pdb*" target="lib\MonoAndroid10" />
     <file src="..\..\Bin\Release\Android\**\Csla.Validation.xml*" target="lib\MonoAndroid10" />
     <!-- Xamarin iOS Client -->
-    <file src="..\..\Bin\Release\iOSClassic\**\Csla.Validation.dll*" target="lib\MonoTouch10" />
-    <file src="..\..\Bin\Release\iOSClassic\**\Csla.Validation.pdb*" target="lib\MonoTouch10" />
-    <file src="..\..\Bin\Release\iOSClassic\**\Csla.Validation.xml*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.dll*" target="lib\Xamarin.iOS10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.pdb*" target="lib\Xamarin.iOS10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.xml*" target="lib\Xamarin.iOS10" />
-    <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Validation\**\*.cs" target="src" />
   </files>
 </package>

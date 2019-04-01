@@ -26,5 +26,11 @@ namespace Csla.Server
     {
       // do no work by default
     }
+
+    public Type ResolveType(Type requestedType)
+    {
+      // return requested type by default
+      return requestedType;
+    }
   }
 }

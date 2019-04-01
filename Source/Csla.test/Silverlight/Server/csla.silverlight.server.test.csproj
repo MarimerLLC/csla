@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Testing.Business</RootNamespace>
     <AssemblyName>Csla.Testing.Business</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -116,7 +116,6 @@
     <Compile Include="CslaDataProvider\CustomerContact.cs" />
     <Compile Include="CslaDataProvider\CustomerContactList.cs" />
     <Compile Include="CslaDataProvider\CustomerList.cs" />
-    <Compile Include="CslaDataProvider\IDCriteria.cs" />
     <Compile Include="DataPortal\AsyncPortalWithCulture.cs" />
     <Compile Include="DataPortal\AuthorizeDataPortalStub.cs" />
     <Compile Include="DataPortal\PrimitiveCriteriaSingle.cs" />
@@ -191,9 +190,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\csla\csla.csproj">
-      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>Csla</Name>
+    <ProjectReference Include="..\..\..\Csla.Net4.6\Csla.Net4.6.csproj">
+      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
+      <Name>Csla.Net4.6</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

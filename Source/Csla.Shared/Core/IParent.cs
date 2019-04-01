@@ -37,5 +37,13 @@ namespace Csla.Core
     /// This value will be Nothing for root objects and DynamicLists.
     /// </remarks>
     IParent Parent { get; }
+    /// <summary>
+    /// Gets and consumes the next available unique identity value 
+    /// for an object instance in the object graph. Implemented by
+    /// the root object of the graph.
+    /// </summary>
+    /// <param name="current">Current identity</param>
+    /// <returns>The next available identity value.</returns>
+    int GetNextIdentity(int current);
   }
 }

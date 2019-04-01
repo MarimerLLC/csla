@@ -6,9 +6,7 @@
 // <summary>Selects the appropriate data portal implementation</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
-using System.Configuration;
-#endif
+using Csla.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

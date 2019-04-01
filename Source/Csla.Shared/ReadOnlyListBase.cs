@@ -8,7 +8,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Csla.Serialization;
 using Csla.Properties;
 using System;
 
@@ -23,7 +22,7 @@ namespace Csla
   [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
   public abstract class ReadOnlyListBase<T, C> :
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     Core.ReadOnlyBindingList<C>,
 #else
     Core.ReadOnlyObservableBindingList<C>, 
@@ -54,6 +53,15 @@ namespace Csla
     /// </summary>
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
+
+    #region Identity
+
+    int Core.IBusinessObject.Identity
+    {
+      get { return 0; }
+    }
 
     #endregion
 

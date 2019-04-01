@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>79283f86-5f62-4a53-adc2-8058a17d4b13</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Csla.Windows.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindingSourceHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindingSourceNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindingSourceRefresh.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.designer.cs">
+      <DependentUpon>BusyAnimation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)CslaActionCancelEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaActionEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaActionExtender.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)CslaActionExtenderProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaActionExtenderToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Enums.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorEncounteredEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HasBrokenRulesEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HostPropertyAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectSaveException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReadWriteAuthorization.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)BusyAnimation.resx">
+      <DependentUpon>BusyAnimation.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

@@ -15,17 +15,9 @@ namespace Csla
   /// of readonly objects should be derived.
   /// </summary>
   public interface IReadOnlyListBase<C>
-#if !NETFX_CORE && !WINDOWS_PHONE
  : IReadOnlyCollection, IBusinessObject, ICloneable, IObservableBindingList,
     INotifyBusy, INotifyUnhandledAsyncException, INotifyChildChanged, ISerializationNotification,
     IMobileObject, INotifyCollectionChanged, INotifyPropertyChanged,
     IList<C>, ICollection<C>, IEnumerable<C>
-#else
- : IReadOnlyCollection, IBusinessObject, 
-    IExtendedBindingList,
-    INotifyBusy, INotifyUnhandledAsyncException, INotifyChildChanged, ISerializationNotification,
-    IMobileObject, INotifyCollectionChanged, INotifyPropertyChanged, 
-    IList<C>, ICollection<C>, IEnumerable<C>
-#endif
   { }
 }

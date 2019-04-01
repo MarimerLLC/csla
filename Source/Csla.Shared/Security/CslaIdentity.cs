@@ -8,7 +8,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Security.Principal;
-using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Core.FieldManager;
 using System.Runtime.Serialization;
@@ -26,7 +25,7 @@ namespace Csla.Security
   public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>,
     ICslaIdentity
   {
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Retrieves an instance of the identity
     /// object.
@@ -60,7 +59,7 @@ namespace Csla.Security
     /// Object containing the user's credentials.
     /// </param>
     /// <returns></returns>
-    public static T GetCslaIdentity<T>(object criteria) 
+    public static T GetCslaIdentity<T>(object criteria)
       where T : CslaIdentity
     {
       return DataPortal.Fetch<T>(criteria);

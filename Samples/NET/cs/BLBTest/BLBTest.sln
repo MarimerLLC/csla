@@ -1,12 +1,13 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9800E9DE-B7C8-48F3-89CE-9CF2A6E1631D}"
-	ProjectSection(SolutionItems) = preProject
-		Readme.txt = Readme.txt
-	EndProjectSection
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLBTest", "BLBTest\BLBTest.csproj", "{2C9B4D16-5F77-4C16-A97A-CC95FB971A06}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DE08D99-5097-4C5E-9664-41293DA3AFD0}"
+	ProjectSection(SolutionItems) = preProject
+		RuntimeErrorLog.txt = RuntimeErrorLog.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,5 +22,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6CBAF336-B8EF-4FE1-8D16-4DD6B93A146C}
 	EndGlobalSection
 EndGlobal

@@ -1,12 +1,7 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{033F5E65-88C4-4FBE-8490-144A35AD0D01}"
-	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
-		Readme.txt = Readme.txt
-	EndProjectSection
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultipleBindingSources", "MultipleBindingSources\MultipleBindingSources.csproj", "{7FE9561B-9A7D-4236-B49D-D4318DAF6204}"
 EndProject
 Global
@@ -32,5 +27,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B6FF6F9-C373-41C3-A721-FE16AA058A10}
 	EndGlobalSection
 EndGlobal

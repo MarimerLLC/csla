@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla
@@ -44,19 +43,20 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public abstract class DynamicListBase<T> :
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     ExtendedBindingList<T>,
 #else
     ObservableBindingList<T>,
 #endif
-    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification
-    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject
+    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification, IBusinessObject
+    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public DynamicListBase()
     {
+      InitializeIdentity();
       Initialize();
       AllowNew = true;
     }
@@ -70,6 +70,41 @@ namespace Csla
     /// </summary>
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
+
+    #region Identity
+
+    private int _identity = -1;
+
+    int IBusinessObject.Identity
+    {
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity(_identity);
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity(int current)
+    {
+      var me = (IParent)this;
+      if (me.Parent != null)
+      {
+        return me.Parent.GetNextIdentity(current);
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity(current);
+      }
+    }
 
     #endregion
 
@@ -258,7 +293,7 @@ namespace Csla
 
     #region  Insert, Remove, Clear
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
     /// <summary>
     /// Adds a new item to the list.
     /// Uses ProcyModes.LocalOnly as default. 
@@ -578,6 +613,36 @@ namespace Csla
 
     void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
+
+    #endregion
+
+    #region Mobile object overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
+      base.OnGetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
+      base.OnSetState(info);
+    }
 
     #endregion
   }

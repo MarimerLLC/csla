@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla;
-using Csla.Serialization;
 
 namespace Csla.Security
 {
@@ -63,7 +62,7 @@ namespace Csla.Security
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     public UsernameCriteria()
     { }
 #else

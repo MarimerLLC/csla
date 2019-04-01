@@ -4,11 +4,11 @@
     <id>CSLA-Android</id>
     <title>CSLA .NET - Android</title>
     <tags>CSLA Android</tags>
-    <version>4.5.700</version>
+    <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
-    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
-    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Xamarin Android applications.
@@ -20,22 +20,11 @@ Supports the creation of Xamarin Android applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
-    <!-- .NET 4.0 Client -->
-    <!-- > None -->
-    <!-- Silverlight 4.0 Client -->
-    <!-- Silverlight 5.0 Client -->
-    <!-- Windows Phone 7 Client -->
     <!-- Xamarin Android Client -->
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll.mdb*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.pdb*" target="lib\MonoAndroid10" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.xml*" target="lib\MonoAndroid10" />
-    <!-- > None -->
-    <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Axml.Android\**\*.cs" target="src" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Axml." target="lib\MonoAndroid10" />
   </files>
 </package>

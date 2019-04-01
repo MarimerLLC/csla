@@ -5,18 +5,13 @@
 // </copyright>
 // <summary>Implements n-level undo capabilities as</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE
+#if NETFX_CORE || IOS || ANDROID
 using System;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
-using System.IO;
-#if !__ANDROID__ && !IOS
-using System.Runtime.Serialization;
-#endif
 
 namespace Csla.Core
 {
@@ -124,7 +119,7 @@ namespace Csla.Core
       CopyingState();
 
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
       SerializationInfo state = new SerializationInfo(0);
       OnCopyState(state);
@@ -178,7 +173,7 @@ namespace Csla.Core
       UndoingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (parentEditLevel >= 0)
       {
@@ -233,7 +228,7 @@ namespace Csla.Core
       AcceptingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
         _stateStack.Pop();
@@ -241,7 +236,7 @@ namespace Csla.Core
       AcceptChangesComplete();
     }
 
-#region Helper Functions
+      #region Helper Functions
 
     private static bool NotUndoableField(FieldInfo field)
     {
@@ -258,9 +253,9 @@ namespace Csla.Core
       return field.DeclaringType.FullName + "!" + field.Name;
     }
 
-#endregion
+      #endregion
 
-#region  Reset child edit level
+      #region  Reset child edit level
 
     internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel, bool bindingEdit)
     {
@@ -277,9 +272,9 @@ namespace Csla.Core
         child.CopyState(targetLevel, false);
     }
 
-#endregion
+    #endregion
 
-#region MobileObject overrides
+    #region MobileObject overrides
 
     /// <summary>
     /// Gets the state of the object for serialization.
@@ -329,20 +324,19 @@ namespace Csla.Core
       base.OnSetState(info, mode);
     }
 
-#endregion
+    #endregion
   }
 }
 #else
 using System;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
-using Csla.Serialization;
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
+using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -446,10 +440,10 @@ namespace Csla.Core
       CopyingState();
 
       Type currentType = this.GetType();
-      HybridDictionary state = new HybridDictionary();
+      var state = new MobileDictionary<string, object>();
 
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
       do
       {
@@ -488,7 +482,7 @@ namespace Csla.Core
       using (MemoryStream buffer = new MemoryStream())
       {
         ISerializationFormatter formatter =
-          SerializationFormatterFactory.GetFormatter();
+          SerializationFormatterFactory.GetNativeFormatter();
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -534,15 +528,15 @@ namespace Csla.Core
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
-        HybridDictionary state;
+        MobileDictionary<string, object> state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           ISerializationFormatter formatter =
-            SerializationFormatterFactory.GetFormatter();
-          state = (HybridDictionary)formatter.Deserialize(buffer);
+            SerializationFormatterFactory.GetNativeFormatter();
+          state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
         }
 
         Type currentType = this.GetType();
@@ -626,7 +620,7 @@ namespace Csla.Core
       AcceptingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {

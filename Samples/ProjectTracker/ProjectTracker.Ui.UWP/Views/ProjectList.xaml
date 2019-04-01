@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="UwpUI.Views.ProjectList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpUI.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <CommandBar Grid.Row="0">
+      <AppBarButton Name="AddButton" Margin="3" IsEnabled="{Binding Path=CanAdd}" Icon="Add" Label="Add" ToolTipService.ToolTip="Add new project"/>
+    </CommandBar>
+    <TextBlock Grid.Row="1" Text="Project list" Style="{StaticResource SubheaderTextBlockStyle}" Margin="3" />
+    <ListBox Grid.Row="2" ItemsSource="{Binding Path=ItemList}" Name="modelListBox" Margin="3">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE18B;" Name="DisplayButton" Margin="3" Click="DisplayItem"/>
+            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE104;" Name="EditButton" IsEnabled="{Binding Path=CanEdit}" Margin="3" Click="EditItem"/>
+            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE107;" Name="RemoveButton" IsEnabled="{Binding Path=CanRemove}" Margin="3"/>
+            <TextBlock Text="{Binding Path=Model.Name}" Margin="3"/>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Grid>
+</Page>

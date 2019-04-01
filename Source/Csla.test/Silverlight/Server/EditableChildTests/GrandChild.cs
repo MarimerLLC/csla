@@ -60,11 +60,9 @@ namespace Csla.Testing.Business.EditableChildTests
 
     #endregion
 
-#if !SILVERLIGHT
     protected override void DataPortal_Update()
     {
       LoadProperty<string>(DataPortalMethodProperty, "DataPortal_Update");
     }
-#endif
   }
 }

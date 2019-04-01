@@ -10,7 +10,6 @@ using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
 #if NETFX_CORE
 using System.Collections.Generic;
-using Csla.Serialization;
 #endif
 
 namespace Csla.Core
@@ -26,7 +25,12 @@ namespace Csla.Core
   public class ContextDictionary : HybridDictionary, IMobileObject
 #endif
   {
-    internal object GetValueOrNull(string key)
+    /// <summary>
+    /// Get a value from the dictionary, or return null
+    /// if the key is not found in the dictionary.
+    /// </summary>
+    /// <param name="key">Key of value to get from dictionary.</param>
+    public  object GetValueOrNull(string key)
     {
 #if NETFX_CORE
       object value;

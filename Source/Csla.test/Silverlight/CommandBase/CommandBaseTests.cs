@@ -37,13 +37,10 @@ namespace cslalighttest.CommandBase
     [TestInitialize]
     public void Setup()
     {
-#if SILVERLIGHT
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
-      WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-#endif      
     }
 
     [TestMethod]
+    
     public void Asynch_Remote_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()
     {
       var context = GetContext();
@@ -79,50 +76,12 @@ namespace cslalighttest.CommandBase
       context.Complete();
     }
 
-#if SILVERLIGHT
-    [TestMethod]
-    public void Asynch_Local_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()
-    {
-      var context = GetContext();
-      DataPortal.ProxyTypeName = "Local";
-
-      TestCommandBase.ExecuteCommand(Parameter, (o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual(ExpectedExecutionResult, e.Object.ExecutionResult, ExecutionResultInvalidMessage);
-
-        context.Assert.Success();
-      });
-      context.Complete();
-    }
-    [TestMethod]
-    public void Asynch_Local_call_with_userState_passed_Results_parameters_passed_to_server_with_userState_and_noException()
-    {
-      var context = GetContext();
-      DataPortal.ProxyTypeName = "Local";
-
-      TestCommandBase.ExecuteCommand(Parameter, (o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual(ExpectedExecutionResult, e.Object.ExecutionResult, ExecutionResultInvalidMessage);
-        context.Assert.AreEqual(ExpectedUserState, e.UserState);
-
-        context.Assert.Success();
-      },ExpectedUserState);
-      context.Complete();
-    }
-#else
-
     [TestMethod]
     public void Synch_StaticPortal_call_Results_parameters_passed_to_server_and_noException()
     {
       TestCommandBase command = DataPortal.Execute<TestCommandBase>(new TestCommandBase(Parameter));
       Assert.AreEqual(ExpectedExecutionResult, command.ExecutionResult, "Execution result is not valid");
     }
-
-#endif
 
     [TestMethod]
     public void Asynch_StaticPortal_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()

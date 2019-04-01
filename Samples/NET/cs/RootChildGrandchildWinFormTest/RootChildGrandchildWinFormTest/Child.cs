@@ -7,21 +7,21 @@ namespace WindowsApplication2
   [Serializable]
   public class Child : BusinessBase<Child>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
       set { SetProperty<string>(NameProperty, value); }
     }
 
-    public static PropertyInfo<GrandchildList> GrandchildrenProperty = RegisterProperty<GrandchildList>(p => p.Grandchildren, RelationshipTypes.LazyLoad);
+    public static readonly PropertyInfo<GrandchildList> GrandchildrenProperty = RegisterProperty<GrandchildList>(p => p.Grandchildren, RelationshipTypes.LazyLoad);
     public GrandchildList Grandchildren
     {
       get

@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
 using System;
-using Csla.Serialization;
 
 namespace Csla
 {
@@ -62,6 +61,7 @@ namespace Csla
     /// </summary>
     protected BusinessBindingListBase()
     {
+      InitializeIdentity();
       Initialize();
       this.AllowNew = true;
     }
@@ -78,11 +78,45 @@ namespace Csla
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-#endregion
+    #endregion
 
-#region IsDirty, IsValid, IsSavable
+    #region Identity
 
-        /// <summary>
+    private int _identity = -1;
+
+    int IBusinessObject.Identity
+    {
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity(_identity);
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity(int current)
+    {
+      if (this.Parent != null)
+      {
+        return this.Parent.GetNextIdentity(current);
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity(current);
+      }
+    }
+
+    #endregion
+
+    #region IsDirty, IsValid, IsSavable
+
+    /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
     bool Core.ITrackStatus.IsSelfDirty
@@ -95,6 +129,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public bool IsDirty
     {
       get
@@ -134,6 +169,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public virtual bool IsValid
     {
       get
@@ -149,7 +185,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// Returns true if this object is both dirty and valid.
     /// </summary>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
@@ -284,7 +320,7 @@ namespace Csla
     private void CopyState(int parentEditLevel)
     {
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
 
       // we are going a level deeper in editing
       _editLevel += 1;
@@ -305,7 +341,7 @@ namespace Csla
       C child;
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       _editLevel -= 1;
@@ -367,7 +403,7 @@ namespace Csla
     private void AcceptChanges(int parentEditLevel)
     {
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       _editLevel -= 1;
@@ -440,7 +476,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> if the internal deleted list
+    /// Returns true if the internal deleted list
     /// contains the specified child object.
     /// </summary>
     /// <param name="item">Child object to check.</param>
@@ -454,18 +490,6 @@ namespace Csla
 
 #region Insert, Remove, Clear
 
-#if SILVERLIGHT
-    /// <summary>
-    /// Override this method to create a new object that is added
-    /// to the collection. 
-    /// </summary>
-    protected override void  AddNewCore()
-    {
-      var item = DataPortal.CreateChild<C>();
-      Add(item);
-      OnAddedNew(item);
-    }
-#else
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -476,7 +500,6 @@ namespace Csla
       Add(item);
       return item;
     }
-#endif
 
     /// <summary>
     /// This method is called by a child object when it
@@ -688,6 +711,7 @@ namespace Csla
     /// <returns>True if this is a child object.</returns>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public bool IsChild
     {
       get { return _isChild; }
@@ -712,6 +736,7 @@ namespace Csla
     /// </remarks>
     protected void MarkAsChild()
     {
+      _identity = -1;
       _isChild = true;
     }
 
@@ -825,9 +850,9 @@ namespace Csla
     /// each object's current state.
     /// </para><para>
     /// All this is contingent on <see cref="IsDirty" />. If
-    /// this value is <see langword="false"/>, no data operation occurs. 
+    /// this value is false, no data operation occurs. 
     /// It is also contingent on <see cref="IsValid" />. If this value is 
-    /// <see langword="false"/> an exception will be thrown to 
+    /// false an exception will be thrown to 
     /// indicate that the UI attempted to save an invalid object.
     /// </para><para>
     /// It is important to note that this method returns a new version of the
@@ -1076,6 +1101,7 @@ namespace Csla
 
 #region ISavable Members
 
+#if !(ANDROID || IOS) && !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1085,6 +1111,7 @@ namespace Csla
     {
       return Save();
     }
+#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -1101,10 +1128,12 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
+#if !(ANDROID || IOS) && !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
     }
+#endif
 
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {
@@ -1187,6 +1216,7 @@ namespace Csla
     /// </remarks>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {
@@ -1205,6 +1235,8 @@ namespace Csla
     protected virtual void SetParent(Core.IParent parent)
     {
       _parent = parent;
+      _identityManager = null;
+      InitializeIdentity();
     }
 
     /// <summary>
@@ -1257,6 +1289,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     public override bool IsBusy
     {
       get
@@ -1341,6 +1374,7 @@ namespace Csla
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
     }
 
@@ -1356,6 +1390,7 @@ namespace Csla
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
     }
 

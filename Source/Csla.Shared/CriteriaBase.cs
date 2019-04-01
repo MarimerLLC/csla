@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using System.Reflection;
-using Csla.Serialization;
 
 namespace Csla
 {
@@ -24,7 +23,7 @@ namespace Csla
   public abstract class CriteriaBase<T> : ManagedObjectBase
     where T : CriteriaBase<T>
   {
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     private static bool _forceInit = false;
 
     /// <summary>
@@ -93,6 +92,21 @@ namespace Csla
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
     }
 
     /// <summary>

@@ -818,7 +818,13 @@ namespace Csla
       /// <returns>The current user principal</returns>
       public virtual IPrincipal GetUser()
       {
-        return Thread.CurrentPrincipal;
+        IPrincipal result = Thread.CurrentPrincipal;
+        if (result == null)
+        {
+          result = new Csla.Security.UnauthenticatedPrincipal();
+          SetUser(result);
+        }
+        return result;
       }
 
       /// <summary>

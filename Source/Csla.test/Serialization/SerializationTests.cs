@@ -393,7 +393,9 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       try
       {
@@ -404,7 +406,9 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
 
@@ -418,7 +422,9 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       try
       {
@@ -429,7 +435,9 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
     }
 

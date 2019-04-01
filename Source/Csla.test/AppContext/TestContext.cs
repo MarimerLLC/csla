@@ -25,8 +25,13 @@ namespace Csla.Test.AppContext
 
     public IPrincipal GetUser()
     {
-      IPrincipal current = Thread.CurrentPrincipal;
-      return current;
+      IPrincipal result = Thread.CurrentPrincipal;
+      if (result == null)
+      {
+        result = new Csla.Security.UnauthenticatedPrincipal();
+        SetUser(result);
+      }
+      return result;
     }
 
     public void SetUser(IPrincipal principal)

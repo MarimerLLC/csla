@@ -185,8 +185,6 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        if (isSync)
-          throw new NotSupportedException("isSync == true");
         var client = GetClient();
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
@@ -199,7 +197,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "create", GetRoutingToken(objectType));
+        serialized = await CallDataPortalServer(client, serialized, "create", GetRoutingToken(objectType), isSync);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -245,8 +243,6 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        if (isSync)
-          throw new NotSupportedException("isSync == true");
         var client = GetClient();
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
@@ -259,7 +255,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "fetch", GetRoutingToken(objectType));
+        serialized = await CallDataPortalServer(client, serialized, "fetch", GetRoutingToken(objectType), isSync);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -304,8 +300,6 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        if (isSync)
-          throw new NotSupportedException("isSync == true");
         var client = GetClient();
         var request = GetBaseUpdateCriteriaRequest();
         request.ObjectData = MobileFormatter.Serialize(obj);
@@ -313,7 +307,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "update", GetRoutingToken(obj.GetType()));
+        serialized = await CallDataPortalServer(client, serialized, "update", GetRoutingToken(obj.GetType()), isSync);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -359,8 +353,6 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        if (isSync)
-          throw new NotSupportedException("isSync == true");
         var client = GetClient();
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
@@ -373,7 +365,7 @@ namespace Csla.DataPortalClient
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(client, serialized, "delete", GetRoutingToken(objectType));
+        serialized = await CallDataPortalServer(client, serialized, "delete", GetRoutingToken(objectType), isSync);
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -399,6 +391,16 @@ namespace Csla.DataPortalClient
       if (result.Error != null)
         throw result.Error;
       return result;
+    }
+
+    private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken, bool isSync)
+    {
+      if (isSync)
+        serialized = Threading.SyncTask.Run(new Func<Task<byte[]>>(
+          async () => await CallDataPortalServer(client, serialized, operation, routingToken)));
+      else
+        serialized = await CallDataPortalServer(client, serialized, operation, routingToken);
+      return serialized;
     }
 
     private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken)

@@ -9,6 +9,7 @@
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
+using Csla.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -395,11 +396,11 @@ namespace Csla.DataPortalClient
 
     private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken, bool isSync)
     {
+      var task = CallDataPortalServer(client, serialized, operation, routingToken);
       if (isSync)
-        serialized = Threading.SyncTask.Run(new Func<Task<byte[]>>(
-          async () => await CallDataPortalServer(client, serialized, operation, routingToken)));
+        serialized = task.RunWithContext(_client.Timeout);
       else
-        serialized = await CallDataPortalServer(client, serialized, operation, routingToken);
+        serialized = await task;
       return serialized;
     }
 

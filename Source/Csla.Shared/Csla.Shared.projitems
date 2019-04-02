@@ -328,7 +328,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Threading\BusyLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\ContextParams.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\CslaTaskScheduler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Threading\SyncTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionalAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionalTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionIsolationLevel.cs" />

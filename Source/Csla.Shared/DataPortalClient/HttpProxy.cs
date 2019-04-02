@@ -186,6 +186,10 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
+#if NET40
+        if (isSync)
+          throw new NotSupportedException("isSync == true");
+#endif
         var client = GetClient();
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
@@ -244,6 +248,10 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
+#if NET40
+        if (isSync)
+          throw new NotSupportedException("isSync == true");
+#endif
         var client = GetClient();
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
@@ -301,6 +309,10 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
+#if NET40
+        if (isSync)
+          throw new NotSupportedException("isSync == true");
+#endif
         var client = GetClient();
         var request = GetBaseUpdateCriteriaRequest();
         request.ObjectData = MobileFormatter.Serialize(obj);
@@ -354,6 +366,10 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
+#if NET40
+        if (isSync)
+          throw new NotSupportedException("isSync == true");
+#endif
         var client = GetClient();
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
@@ -397,10 +413,12 @@ namespace Csla.DataPortalClient
     private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken, bool isSync)
     {
       var task = CallDataPortalServer(client, serialized, operation, routingToken);
+#if !NET40
       if (isSync)
         serialized = task.RunWithContext(_client.Timeout);
       else
-        serialized = await task;
+#endif
+      serialized = await task;
       return serialized;
     }
 

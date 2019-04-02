@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NET40
+//-----------------------------------------------------------------------
 // <copyright file="AsyncManualResetEvent.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -90,3 +91,4 @@ namespace Csla.Threading
     }
   }
 }
+#endif

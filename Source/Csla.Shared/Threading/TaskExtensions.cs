@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NET40
+//-----------------------------------------------------------------------
 // <copyright file="TaskExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -97,3 +98,4 @@ namespace Csla.Threading
     }
   }
 }
+#endif

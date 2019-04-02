@@ -35,6 +35,20 @@ namespace Csla.Configuration
 #endif
 
     /// <summary>
+    /// Sets the context manager.
+    /// </summary>
+    /// <param name="contextManager">Context manager instance.</param>
+    /// <returns>
+    /// ContextManager normally defaults to the correct value. Override for
+    /// non-standard or custom behaviors.
+    /// </returns>
+    public ICslaConfiguration ContextManager(IContextManager contextManager)
+    {
+      ApplicationContext.ContextManager = contextManager;
+      return this;
+    }
+
+    /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
     /// System.Linq.Expressions (true, default).

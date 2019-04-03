@@ -712,7 +712,7 @@ namespace Csla
       }
     }
 
-    private static int _defaultTransactionTimeoutInSeconds = 30;
+    private static int _defaultTransactionTimeoutInSeconds = 600;
     private static bool _defaultTransactionTimeoutInSecondsSet = false;
 
     /// <summary>
@@ -818,7 +818,13 @@ namespace Csla
       /// <returns>The current user principal</returns>
       public virtual IPrincipal GetUser()
       {
-        return Thread.CurrentPrincipal;
+        IPrincipal result = Thread.CurrentPrincipal;
+        if (result == null)
+        {
+          result = new Csla.Security.UnauthenticatedPrincipal();
+          SetUser(result);
+        }
+        return result;
       }
 
       /// <summary>

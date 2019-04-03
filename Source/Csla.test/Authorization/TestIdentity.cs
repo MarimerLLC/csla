@@ -6,10 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Security.Principal;
-using Csla.Serialization;
 
 namespace Csla.Test.Security
 {
@@ -17,6 +13,12 @@ namespace Csla.Test.Security
   public class TestIdentity : Csla.Security.CslaIdentity
   {
     public TestIdentity() { }
+
+    public TestIdentity(string username, string password)
+    {
+      this.IsAuthenticated = true;
+      this.Name = username;
+    }
 
     public bool IsInRole(string role)
     {
@@ -28,13 +30,6 @@ namespace Csla.Test.Security
       {
         return false;
       }
-    }
-
-    
-    public TestIdentity(string username, string password)
-    {
-      this.IsAuthenticated = true;
-      this.Name = username;
     }
   }
 }

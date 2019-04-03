@@ -22,7 +22,9 @@ namespace Csla.Test.Silverlight.PropertyGetSet
       set { SetProperty<int>(IdProperty, value); }
     }
 
+#pragma warning disable CS0414
     private static int _forceLoad;
+#pragma warning restore CS0414
 
     protected AbstractGetSet()
     {

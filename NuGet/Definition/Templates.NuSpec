@@ -6,7 +6,7 @@
     <tags>CSLA Business Object Snippet Templates</tags>
     <version>..</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>

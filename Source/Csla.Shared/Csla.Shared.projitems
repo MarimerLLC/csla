@@ -322,13 +322,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)SingleCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SmartDate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SortedBindingList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Threading\AsyncManualResetEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\BackgroundWorker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\BackgroundWorkerBCL.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\BusyLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\ContextParams.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\CslaTaskScheduler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Threading\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionalAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionalTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionIsolationLevel.cs" />

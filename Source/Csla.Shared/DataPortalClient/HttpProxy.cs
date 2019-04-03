@@ -412,13 +412,14 @@ namespace Csla.DataPortalClient
 
     private async Task<byte[]> CallDataPortalServer(HttpClient client, byte[] serialized, string operation, string routingToken, bool isSync)
     {
-      var task = CallDataPortalServer(client, serialized, operation, routingToken);
+      //var task = CallDataPortalServer(client, serialized, operation, routingToken);
 #if !NET40
       if (isSync)
-        serialized = task.RunWithContext(_client.Timeout);
+        Task.Run(async () => 
+        serialized = await CallDataPortalServer(client, serialized, operation, routingToken)).Wait();
       else
 #endif
-      serialized = await task;
+        serialized = await CallDataPortalServer(client, serialized, operation, routingToken);
       return serialized;
     }
 

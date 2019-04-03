@@ -25,7 +25,7 @@ namespace Csla
     /// </summary>
     /// <param name="name">Name of the property.</param>
     public PropertyInfo(string name)
-      : this(name, null, null, default(T), RelationshipTypes.None)
+      : this(name, null, null, DataBindingFriendlyDefault(), RelationshipTypes.None)
     { }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace Csla
     /// <param name="name">Name of the property.</param>
     /// <param name="relationship">Relationship with referenced object.</param>
     public PropertyInfo(string name, RelationshipTypes relationship)
-      : this(name, null, null, default(T), relationship)
+      : this(name, null, null, DataBindingFriendlyDefault(), relationship)
     { }
 
     /// <summary>
@@ -56,7 +56,7 @@ namespace Csla
     /// Friendly display name for the property.
     /// </param>
     public PropertyInfo(string name, string friendlyName)
-        : this(name, friendlyName, null, default(T), RelationshipTypes.None)
+        : this(name, friendlyName, null, DataBindingFriendlyDefault(), RelationshipTypes.None)
     { }
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace Csla
     /// Factory to provide display name from attributes.
     /// </param>
     public PropertyInfo(string name, string friendlyName, Type containingType)
-        : this(name, friendlyName, containingType, default(T), RelationshipTypes.None)
+        : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None)
     { }
 
     /// <summary>
@@ -102,7 +102,7 @@ namespace Csla
     /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
     public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship) 
-      : this(name, friendlyName, null, default(T), relationship)
+      : this(name, friendlyName, null, DataBindingFriendlyDefault(), relationship)
     { }
 
     /// <summary>
@@ -128,15 +128,7 @@ namespace Csla
       if (containingType != null)
         _propertyInfo = containingType.GetProperty(Name);
 
-      // if T is string we need an empty string, not null, for data binding
-      if (typeof(T).Equals(typeof(string)) && defaultValue == null)
-      {
-        _defaultValue = (T)((object)string.Empty);
-      }
-      else
-      {
-        _defaultValue = defaultValue;
-      }
+      _defaultValue = defaultValue;
     }
 
     /// <summary>
@@ -265,5 +257,18 @@ namespace Csla
     }
 
     #endregion
+
+    /// <summary>
+    /// Creates the CSLA Data Binding Friendly default for the given type T.
+    /// </summary>
+    /// <returns>Default value for T which is compatible with Data Binding</returns>
+    public static T DataBindingFriendlyDefault()
+    {
+      // if T is string we need an empty string, not null, for data binding
+      if (typeof(T) == typeof(string))
+        return (T)(object)string.Empty;
+
+      return default(T);
+    }
   }
 }

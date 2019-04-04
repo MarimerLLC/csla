@@ -57,10 +57,6 @@ Public Class ReadOnlyChild
     Return DataPortal.FetchChild(Of ReadOnlyChild)(childData)
   End Function
 
-  ' require use of factory methods 
-  Private Sub New()
-  End Sub
-
 #End Region
 
 #Region "Data Access"

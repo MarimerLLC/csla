@@ -42,9 +42,8 @@ namespace Templates
       return DataPortal.Fetch<DynamicRootList>();
     }
 
-    private DynamicRootList()
+    public DynamicRootList()
     {
-      // require use of factory methods
       AllowNew = true;
     }
 

@@ -52,10 +52,6 @@ Public Class CommandObject
     Return cmd.Result
   End Function
 
-  Private Sub New()
-    ' require use of factory methods
-  End Sub
-
 #End Region
 
 #Region " Server-side Code "

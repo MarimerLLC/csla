@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ReadOnlyBindingList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>A readonly version of BindingList(Of T)</summary>
 //-----------------------------------------------------------------------

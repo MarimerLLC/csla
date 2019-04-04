@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="SmartDate.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Provides a date data type that understands the concept</summary>
 //-----------------------------------------------------------------------

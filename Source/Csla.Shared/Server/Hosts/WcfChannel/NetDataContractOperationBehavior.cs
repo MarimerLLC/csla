@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="NetDataContractOperationBehavior.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Override the DataContract serialization behavior to</summary>
 //-----------------------------------------------------------------------

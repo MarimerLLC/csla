@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataProvider.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Wraps and creates a CSLA .NET-style object </summary>
 //-----------------------------------------------------------------------

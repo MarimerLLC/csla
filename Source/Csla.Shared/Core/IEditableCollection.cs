@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="IEditableCollection.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Defines the common methods required by all</summary>
 //-----------------------------------------------------------------------

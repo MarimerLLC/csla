@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="AppContextTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Test to see if contexts get cleared out properly</summary>
 //-----------------------------------------------------------------------

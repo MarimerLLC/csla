@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="UseNetDataContractAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Specify that WCF should serialize objects in a .NET</summary>
 //-----------------------------------------------------------------------

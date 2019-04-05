@@ -40,6 +40,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Technical Debt
 
+* [#1115](https://github.com/marimerllc/csla/issues/1115)Remove private constructors from templates
 * [#968](https://github.com/marimerllc/csla/issues/968) Remove ApplicationContext.IsInRoleProvider property ⚠
 * [#1053](https://github.com/marimerllc/csla/issues/1053) Update nuspec files to use license element 
 * [#1070](https://github.com/marimerllc/csla/issues/1070) Remove unused legacy Silverlight test code and resolve SonarQube warning

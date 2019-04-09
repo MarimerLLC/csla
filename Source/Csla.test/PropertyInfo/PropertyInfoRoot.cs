@@ -81,6 +81,13 @@ namespace Csla.Test.PropertyInfo
       set { SetProperty(NameDefaultValueProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> StringNullDefaultValueProperty = RegisterProperty<string>(c => c.StringNullDefaultValue, string.Empty, null);
+    public string StringNullDefaultValue
+    {
+      get { return GetProperty(StringNullDefaultValueProperty); }
+      set { SetProperty(StringNullDefaultValueProperty, value); }
+    }
+
     #endregion
   }
 }

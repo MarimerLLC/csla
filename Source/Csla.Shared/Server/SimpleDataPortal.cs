@@ -57,13 +57,13 @@ namespace Csla.Server
         // tell the business object to create its data
         if (criteria is EmptyCriteria)
         {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Create");
+          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Create");
 
           await obj.CallMethodTryAsync("DataPortal_Create").ConfigureAwait(false);
         }
         else
         {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Create", criteria);
+          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Create", criteria);
 
           await obj.CallMethodTryAsync("DataPortal_Create", criteria).ConfigureAwait(false);
         }
@@ -148,13 +148,13 @@ namespace Csla.Server
         // tell the business object to fetch its data
         if (criteria is EmptyCriteria)
         {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Fetch");
+          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Fetch");
 
           await obj.CallMethodTryAsync("DataPortal_Fetch").ConfigureAwait(false);
         }
         else
         {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Fetch", criteria);
+          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Fetch", criteria);
 
           await obj.CallMethodTryAsync("DataPortal_Fetch", criteria).ConfigureAwait(false);
         }
@@ -237,7 +237,7 @@ namespace Csla.Server
           {
             if (!busObj.IsNew)
             {
-              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_DeleteSelf");
+              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_DeleteSelf");
 
               // tell the object to delete itself
               await lb.CallMethodTryAsync("DataPortal_DeleteSelf").ConfigureAwait(false);
@@ -251,14 +251,14 @@ namespace Csla.Server
           {
             if (busObj.IsNew)
             {
-              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Insert");
+              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Insert");
 
               // tell the object to insert itself
               await lb.CallMethodTryAsync("DataPortal_Insert").ConfigureAwait(false);
             }
             else
             {
-              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Update");
+              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Update");
 
               // tell the object to update itself
               await lb.CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
@@ -273,14 +273,14 @@ namespace Csla.Server
         {
           operation = DataPortalOperations.Execute;
 
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Execute");
+          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Execute");
 
           // tell the object to update itself
           await lb.CallMethodTryAsync("DataPortal_Execute").ConfigureAwait(false);
         }
         else
         {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Update");
+          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Update");
 
           // this is an updatable collection or some other
           // non-BusinessBase type of object
@@ -361,7 +361,7 @@ namespace Csla.Server
         else
           obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
 
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, target, "DataPortal_Delete", criteria);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Delete", criteria);
 
         // tell the business object to delete itself
         await obj.CallMethodTryAsync("DataPortal_Delete", criteria).ConfigureAwait(false);

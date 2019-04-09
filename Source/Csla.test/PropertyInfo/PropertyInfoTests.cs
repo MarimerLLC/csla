@@ -45,11 +45,19 @@ namespace Csla.Test.PropertyInfo
     {
       Assert.AreEqual("Name: Friendly Name", PropertyInfoRoot._nameFriendlyNameProperty.FriendlyName);
     }
-
+    
     [TestMethod]
     public void TestDefaultValue()
     {
       Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
+      Assert.AreEqual("x", PropertyInfoRoot.NewPropertyInfoRoot().NameDefaultValue);
+    }
+
+    [TestMethod]
+    public void TestStringNullDefaultValue()
+    {
+      Assert.AreEqual(null, PropertyInfoRoot.StringNullDefaultValueProperty.DefaultValue);
+      Assert.AreEqual(null, PropertyInfoRoot.NewPropertyInfoRoot().StringNullDefaultValue);
     }
   }
 }

@@ -34,7 +34,7 @@ Here's a tl;dr summary if you just want to get working without all the backgroun
 1. Create a feature branch (work area) based on the upstream master
    1. `git checkout -b 123-feature-branch marimer/<maintenance-branch-name>`
    1. Your local workspace is now in a feature branch based on the latest code in the maintenance branch
-1. **Important:** when you submit your PR (later in this doc) make sure the target of your PR is _<maintenance-branch-name>_, not master
+1. **Important:** when you submit your PR (later in this doc) make sure the target of your PR is _maintenance-branch-name_, not master
 
 ## Do your work
 1. Edit code, and do other stuff

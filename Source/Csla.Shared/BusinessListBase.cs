@@ -604,7 +604,6 @@ namespace Csla
 
       // we are coming up one edit level
       _editLevel -= 1;
-      if (_editLevel < 0) _editLevel = 0;
 
       // cascade the call to all child objects
       foreach (C child in this)
@@ -623,6 +622,8 @@ namespace Csla
         if (child.EditLevelAdded > _editLevel)
           DeletedList.RemoveAt(index);
       }
+      
+      if (_editLevel < 0) _editLevel = 0;
     }
 
     #endregion

@@ -6,6 +6,10 @@ Basics
 * Get the framework binaries from [NuGet](http://nuget.org/packages?q=csla) or use older version from the [releases page](https://github.com/MarimerLLC/csla/releases).
 * Review the [CSLA Fast Start](https://github.com/MarimerLLC/csla/tree/master/Samples/CslaFastStart) sample.
 
+CSLA 5
+------
+ * Read _Using CSLA 2019_ (see the [Books and videos](Books-and-videos.md) page)
+
 CSLA 4
 ------
  * Read the _Using CSLA 4 ebook series_ (see the [Books and videos](Books-and-videos.md) page)

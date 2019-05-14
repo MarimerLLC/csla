@@ -37,5 +37,5 @@ External links
 * [Wikipedia page](http://en.wikipedia.org/wiki/CSLA_.NET)
 * [Open Hub](https://www.openhub.net/p/cslanet)
 * [LinkedIn](https://www.linkedin.com/groups/99453/)
-* [Facebook](https://www.facebook.com/CslaNet) 
+* Facebook [Group](https://www.facebook.com/groups/cslanet/) | [Page](https://www.facebook.com/CslaNet) 
 * [StackOverflow](http://stackoverflow.com/tags/csla/info)

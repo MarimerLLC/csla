@@ -610,7 +610,7 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasPrivateFields : BusinessBase<HasPrivateFields>
   {
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, RelationshipTypes.PrivateField);
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name), RelationshipTypes.PrivateField);
     private string _name = NameProperty.DefaultValue;
     public string Name
     {
@@ -740,7 +740,7 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasLazyField : BusinessBase<HasLazyField>
   {
-    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1, RelationshipTypes.LazyLoad);
+    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(nameof(Value1), RelationshipTypes.LazyLoad);
     public string Value1
     {
       get

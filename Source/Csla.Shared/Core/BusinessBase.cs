@@ -1693,9 +1693,9 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<P>(string propertyName, P field, P defaultValue)
+    protected P GetProperty<P>(P field, P defaultValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-      return GetProperty<P>(propertyName, field, defaultValue, Security.NoAccessBehavior.SuppressException);
+      return GetProperty<P>(field, defaultValue, Security.NoAccessBehavior.SuppressException, propertyName);
     }
 
     /// <summary>
@@ -1714,16 +1714,14 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
-    protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
+    protected P GetProperty<P>(P field, P defaultValue, Security.NoAccessBehavior noAccess, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-#region Check to see if the property is marked with RelationshipTypes.PrivateField
-
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
       var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PrivateFieldException);
-
-#endregion
 
       if (_bypassPropertyChecks || CanReadProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
@@ -1748,7 +1746,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field)
     {
-      return GetProperty<P>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException);
+      return GetProperty<P>(field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException, propertyInfo.Name);
     }
 
     /// <summary>
@@ -1769,7 +1767,7 @@ namespace Csla.Core
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      return GetProperty<P>(propertyInfo.Name, field, defaultValue, noAccess);
+      return GetProperty<P>(field, defaultValue, noAccess, propertyInfo.Name);
     }
 
     /// <summary>
@@ -1793,7 +1791,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field)
     {
-      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException));
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException, propertyInfo.Name));
     }
 
     /// <summary>
@@ -1820,7 +1818,28 @@ namespace Csla.Core
     /// </remarks>
     protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
     {
-      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess));
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(field, propertyInfo.DefaultValue, noAccess, propertyInfo.Name));
+    }
+
+    /// <summary>
+    /// Gets a property's managed field value, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>([System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      return GetProperty<P>(propertyInfo, Security.NoAccessBehavior.SuppressException);
     }
 
     /// <summary>
@@ -1840,6 +1859,31 @@ namespace Csla.Core
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo)
     {
       return GetProperty<P>(propertyInfo, Security.NoAccessBehavior.SuppressException);
+    }
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, first checking authorization,
+    /// and converting the value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetPropertyConvert<F, P>([System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<F>)FieldManager.GetRegisteredProperty(propertyName);
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, Security.NoAccessBehavior.SuppressException));
     }
 
     /// <summary>
@@ -1876,6 +1920,34 @@ namespace Csla.Core
     /// <typeparam name="P">
     /// Type of the property.
     /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetPropertyConvert<F, P>(Security.NoAccessBehavior noAccess, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<F>)FieldManager.GetRegisteredProperty(propertyName);
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, noAccess));
+    }
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, first checking authorization,
+    /// and converting the value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="noAccess">
@@ -1898,6 +1970,30 @@ namespace Csla.Core
     /// <typeparam name="P">
     /// Type of the property.
     /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(Security.NoAccessBehavior noAccess, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      return GetProperty<P>(propertyInfo, noAccess);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="noAccess">
@@ -1910,12 +2006,29 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
-      P result = default(P);
+      P result;
       if (_bypassPropertyChecks || CanReadProperty(propertyInfo, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
       else
         result = propertyInfo.DefaultValue;
       return result;
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <param name="propertyName">Property name</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected object GetProperty([System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
+      return GetProperty(propertyInfo);
     }
 
     /// <summary>
@@ -1930,16 +2043,11 @@ namespace Csla.Core
     /// </remarks>
     protected object GetProperty(IPropertyInfo propertyInfo)
     {
-      object result = null;
+      object result;
       if (_bypassPropertyChecks || CanReadProperty(propertyInfo, false))
-      {
-        // call ReadProperty (may be overloaded in actual class)
         result = ReadProperty(propertyInfo);
-      }
       else
-      {
         result = propertyInfo.DefaultValue;
-      }
       return result;
     }
 
@@ -1967,6 +2075,33 @@ namespace Csla.Core
     /// the resulting value.
     /// </summary>
     /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P LazyGetProperty<P>(Func<P> valueGenerator, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+
+      if (!(FieldManager.FieldExists(propertyInfo)))
+      {
+        var result = valueGenerator();
+        LoadProperty(propertyInfo, result);
+      }
+      return LazyGetProperty<P>(propertyInfo, valueGenerator);
+    }
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="property">PropertyInfo object containing property metadata.</param>
     /// <param name="valueGenerator">Method returning the new value.</param>
     /// <returns></returns>
@@ -1987,14 +2122,14 @@ namespace Csla.Core
 
     [NotUndoable]
     [NonSerialized]
-    private List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
+    private readonly List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
 
     /// <summary>
     /// Lazily initializes a property and returns
     /// the resulting value.
     /// </summary>
     /// <typeparam name="P">Type of the property.</typeparam>
-    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="propertyName">Property name</param>
     /// <param name="factory">Async method returning the new value.</param>
     /// <returns></returns>
     /// <remarks>
@@ -2009,14 +2144,42 @@ namespace Csla.Core
     /// result.
     /// </para>
     /// </remarks>
-    protected P LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    protected P LazyGetPropertyAsync<P>(Task<P> factory, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      return LazyGetPropertyAsync<P>(propertyInfo, factory);
+    }
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// Note that the first value returned is almost certainly
+    /// the defaultValue because the value is initialized asynchronously.
+    /// The real value is provided later along with a PropertyChanged
+    /// event to indicate the value has changed.
+    /// </para><para>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </para>
+    /// </remarks>
+    protected P LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(propertyInfo)) && !_lazyLoadingProperties.Contains(propertyInfo))
       {
-        _lazyLoadingProperties.Add(property);
-        LoadPropertyAsync(property, factory);
+        _lazyLoadingProperties.Add(propertyInfo);
+        LoadPropertyAsync(propertyInfo, factory);
       }
-      return GetProperty<P>(property);
+      return GetProperty<P>(propertyInfo);
     }
 
     object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)

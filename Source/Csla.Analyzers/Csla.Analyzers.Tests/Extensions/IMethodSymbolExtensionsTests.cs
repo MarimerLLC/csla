@@ -45,7 +45,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public void AMethod()
     {
       this.GetProperty((string)null);
-      this.GetPropertyConvert<string, string>((string)null, (string)null);
+      this.GetPropertyConvert<string, string>(null, (string)null);
       this.SetProperty(null, null);
       this.SetPropertyConvert<string, string>(null, null);
       this.LoadProperty(null, null);
@@ -54,8 +54,8 @@ namespace Csla.Analyzers.Tests.Extensions
       this.LoadPropertyMarkDirty(null, null);
       this.ReadProperty(null);
       this.ReadPropertyConvert<string, string>(null);
-      this.LazyGetProperty<string>(null, null);
-      this.LazyGetPropertyAsync<string>(null, null);
+      this.LazyGetProperty<string>(null, (string)null);
+      this.LazyGetPropertyAsync<string>(null, (string)null);
       this.LazyReadProperty<string>(null, null);
       this.LazyReadPropertyAsync<string>(null, null);
       this.Something();

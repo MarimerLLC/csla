@@ -44,8 +44,8 @@ namespace Csla.Analyzers.Tests.Extensions
   {
     public void AMethod()
     {
-      this.GetProperty(null);
-      this.GetPropertyConvert<string, string>(null, null);
+      this.GetProperty((string)null);
+      this.GetPropertyConvert<string, string>((string)null, (string)null);
       this.SetProperty(null, null);
       this.SetPropertyConvert<string, string>(null, null);
       this.LoadProperty(null, null);

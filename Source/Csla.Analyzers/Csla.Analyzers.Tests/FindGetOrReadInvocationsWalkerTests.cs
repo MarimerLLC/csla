@@ -45,7 +45,7 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  public void Go() => this.GetProperty(null);
+  public void Go() => this.GetProperty((string)null);
 }";
       var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
@@ -59,7 +59,7 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  public void Go() => this.GetPropertyConvert<int, int>(null);
+  public void Go() => this.GetPropertyConvert<int, int>((string)null);
 }";
       var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);

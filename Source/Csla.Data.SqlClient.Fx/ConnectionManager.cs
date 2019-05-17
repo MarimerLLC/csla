@@ -1,4 +1,3 @@
-#if !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="ConnectionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -9,10 +8,10 @@
 using System;
 using Csla.Configuration;
 using System.Data;
-using System.Data.Common;
+using System.Data.SqlClient;
 using Csla.Properties;
 
-namespace Csla.Data
+namespace Csla.Data.SqlClient
 {
   /// <summary>
   /// Provides an automated way to reuse open
@@ -30,10 +29,9 @@ namespace Csla.Data
   /// </remarks>
   public class ConnectionManager : IDisposable
   {
-    private static object _lock = new object();
-    private IDbConnection _connection;
-    private string _connectionString;
-    private string _label;
+    private static readonly object _lock = new object();
+    private readonly string _connectionString;
+    private readonly string _label;
 
     /// <summary>
     /// Gets the ConnectionManager object for the 
@@ -137,21 +135,8 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-#if NETSTANDARD2_0
-      _connection = new System.Data.SqlClient.SqlConnection(connectionString);
-      _connection.Open();
-#else
-      string provider = ConfigurationManager.AppSettings["CslaDbProvider"];
-      if (string.IsNullOrEmpty(provider))
-        provider = "System.Data.SqlClient";
-
-      DbProviderFactory factory = DbProviderFactories.GetFactory(provider);
-
-      // open connection
-      _connection = factory.CreateConnection();
-      _connection.ConnectionString = connectionString;
-      _connection.Open();
-#endif
+      Connection = new SqlConnection(connectionString);
+      Connection.Open();
     }
 
     private static string GetContextName(string connectionString, string label)
@@ -164,37 +149,26 @@ namespace Csla.Data
     /// disposing the connection it is
     /// managing.
     /// </summary>
-    public IDbConnection Connection
-    {
-      get
-      {
-        return _connection;
-      }
-    }
-
-    private int _refCount;
+    public IDbConnection Connection { get; }
 
     /// <summary>
     /// Gets the current reference count for this
     /// object.
     /// </summary>
-    public int RefCount
-    {
-      get { return _refCount; }
-    }
+    public int RefCount { get; private set; }
 
     private void AddRef()
     {
-      _refCount += 1;
+      RefCount += 1;
     }
 
     private void DeRef()
     {
-      _refCount -= 1;
-      if (_refCount == 0)
+      RefCount -= 1;
+      if (RefCount == 0)
       {
-        _connection.Close();
-        _connection.Dispose();
+        Connection.Close();
+        Connection.Dispose();
         lock (_lock)
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
       }
@@ -211,4 +185,3 @@ namespace Csla.Data
     }
   }
 }
-#endif

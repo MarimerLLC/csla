@@ -101,7 +101,7 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  public void Go() => this.LazyGetProperty<int>(null, null);
+  public void Go() => this.LazyGetProperty<int>(null);
 }";
       var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
@@ -115,7 +115,7 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  public void Go() => this.LazyGetPropertyAsync<int>(null, null);
+  public void Go() => this.LazyGetPropertyAsync<int>(null);
 }";
       var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);

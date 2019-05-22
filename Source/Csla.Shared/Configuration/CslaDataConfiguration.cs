@@ -53,5 +53,18 @@ namespace Csla.Configuration
       ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = seconds.ToString();
       return RootConfiguration;
     }
+
+#if !NET40 && !NET45
+    /// <summary>
+    /// Sets the default transaction async flow option
+    /// used to create new TransactionScope objects.
+    /// </summary>
+    /// <param name="asyncFlowOption">Async flow option</param>
+    public ICslaConfiguration DefaultTransactionAsyncFlowOption(System.Transactions.TransactionScopeAsyncFlowOption asyncFlowOption)
+    {
+      ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = asyncFlowOption.ToString();
+      return RootConfiguration;
+    }
+#endif
   }
 }

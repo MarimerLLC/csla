@@ -740,9 +740,38 @@ namespace Csla
       }
     }
 
+#if !NET40 && !NET45
+    private static System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
+    private static bool _defaultTransactionAsyncFlowOptionSet;
+
+    /// <summary>
+    /// Gets or sets the default transaction async flow option
+    /// used to create new TransactionScope objects.
+    /// </summary>
+    public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
+    {
+      get
+      {
+        if (!_defaultTransactionAsyncFlowOptionSet)
+        {
+          _defaultTransactionAsyncFlowOptionSet = true;
+          var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"];
+          if (!Enum.TryParse<System.Transactions.TransactionScopeAsyncFlowOption>(tmp, out _defaultTransactionAsyncFlowOption))
+            _defaultTransactionAsyncFlowOption = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
+        }
+        return _defaultTransactionAsyncFlowOption;
+      }
+      set
+      {
+        _defaultTransactionAsyncFlowOption = value;
+        _defaultTransactionAsyncFlowOptionSet = true;
+      }
+    }
+#endif
+
 #endregion
 
-#region Logical Execution Location
+    #region Logical Execution Location
     /// <summary>
     /// Enum representing the logical execution location
     /// The setting is set to server when server is execting

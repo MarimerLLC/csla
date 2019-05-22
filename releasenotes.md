@@ -4,6 +4,12 @@ This release contains numerous potential breaking changes so please pay attentio
 
 Some changes were made to address common issues people face using CSLA. I've tried to mark these as things to look out for because they'll likely simplify your life: 🎉
 
+### NuGet Package Naming
+
+* [#1151](https://github.com/marimerllc/csla/issues/1151) Rename NuGet packages to use modern conventions 🛑
+
+**ALERT:** To use CSLA .NET version 5.0.0 or higher you will need to remove all older NuGet package references and reference the modern equivalents.
+
 ### Dependabot and NuGet dependencies
 
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.1 in /Source

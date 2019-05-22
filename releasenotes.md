@@ -1,3 +1,12 @@
+I am pleased to announce the release of CSLA .NET version 4.10.1.
+
+This is a bug fix release from 4.10.0.
+
+* [#1130](https://github.com/marimerllc/csla/issues/1130) Backport SimpleDataPortal async mismatch check fix [#1117](https://github.com/marimerllc/csla/issues/1117) and fix for explicit null default values for string properties to version 4.x [#1103](https://github.com/marimerllc/csla/issues/1103)
+* [#1155](https://github.com/marimerllc/csla/issues/1155) Backport fix for Blazor scenario with `HttpProxy` to autoflush text writer
+
+## CSLA .NET version 4.19.0 Release Notes
+
 I am pleased to announce the release of CSLA .NET version 4.10.0.
 
 This is a bug fix release from 4.9.0.

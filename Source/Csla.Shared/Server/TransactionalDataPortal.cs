@@ -64,20 +64,24 @@ namespace Csla.Server
 
     private TransactionScope CreateTransactionScope()
     {
+#if NET40 || NET45
       return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions());
+#else
+      return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions(), _transactionalAttribute.AsyncFlowOption);
+#endif
     }
 
     private TransactionOptions GetTransactionOptions()
     {
       var option = new TransactionOptions
                      {
-                       IsolationLevel = GetIsolaionLevel(_transactionalAttribute.TransactionIsolationLevel),
+                       IsolationLevel = GetIsolationLevel(_transactionalAttribute.TransactionIsolationLevel),
                        Timeout = TimeSpan.FromSeconds(_transactionalAttribute.TimeoutInSeconds)
                      };
       return option;
     }
 
-    private IsolationLevel GetIsolaionLevel(TransactionIsolationLevel transactionIsolationLevel)
+    private IsolationLevel GetIsolationLevel(TransactionIsolationLevel transactionIsolationLevel)
     {
       switch (transactionIsolationLevel)
       {

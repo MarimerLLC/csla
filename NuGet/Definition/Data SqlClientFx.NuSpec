@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-SqlClientFx</id>
+    <id>Csla.Data.SqlClient.Fx</id>
     <title>CSLA .NET - System.Data.SqlClient</title>
     <tags>CSLA SqlClient</tags>
     <version>4.6.3-Beta10</version>
@@ -13,14 +13,14 @@
     <description>
 Supports the use of System.Data.SqlClient.
 
-CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
 Supports the use of System.Data.SqlClient.
     </summary>
     <language>en-US</language>
     <dependencies>     
-      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+      <dependency id="Csla" version="[4.6.3-Beta10]" />
       <dependency id="System.Data.SqlClient" version="4.6.1" />    
     </dependencies>
   </metadata>

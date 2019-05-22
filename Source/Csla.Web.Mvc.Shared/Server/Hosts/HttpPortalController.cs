@@ -213,6 +213,7 @@ namespace Csla.Server.Hosts
       responseBuffer.Position = 0;
       using (var writer = new StreamWriter(responseStream))
       {
+        writer.AutoFlush = true;
         await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
       }
     }

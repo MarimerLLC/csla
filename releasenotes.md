@@ -9,7 +9,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.1 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.3 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform in /Source
-* Bump Xamarin.Forms from 3.4.0.1008975 to 3.6.0.293080 in /Source
+* Bump Xamarin.Forms from 3.4.0.1008975 to 4.0.0.425677 in /Source
 
 ### Data Portal 
 
@@ -18,6 +18,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#1038](https://github.com/marimerllc/csla/issues/1038) Set default transaction timeout to 600 seconds (to match Microsoft default) ⚠
 * [#960](https://github.com/marimerllc/csla/issues/960) Make sure only one `SaveObject` method is virtual ⚠
 * [#1103](https://github.com/marimerllc/csla/issues/1103) Fix null ref exception when interacting with types that don't implement `IDataPortalTarget`
+* [#1152](https://github.com/marimerllc/csla/issues/1152) Fix server response content-length issue with Blazor serialization
 
 ### Basic Usage
 
@@ -37,6 +38,12 @@ Some changes were made to address common issues people face using CSLA. I've tri
 ### Xamarin
 
 * [#1010](https://github.com/marimerllc/csla/issues/1010) Fix issue where `ApplicationContext.User` wasn't persisted during async operations
+
+### Data Access
+
+* [#1138](https://github.com/marimerllc/csla/issues/1138) Fix NETfx-NS2 conflict with `TransactionTypes` enum
+* [#1150](https://github.com/marimerllc/csla/issues/1150) Add support for `Microsoft.Data.SqlClient` via new `Csla.Data.SqlClient` package 🎉
+* [#981](https://github.com/marimerllc/csla/issues/981) Move support for `System.Data.SqlClient` into new `Csla.Data.SqlClient.Fx` package - it is no longer in the core of CSLA 🛑
 
 ### Technical Debt
 

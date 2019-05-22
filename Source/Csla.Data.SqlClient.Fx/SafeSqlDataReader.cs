@@ -7,7 +7,11 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Data;
+#if NETFX
 using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
 using System.Threading.Tasks;
 
 namespace Csla.Data.SqlClient

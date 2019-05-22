@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-ASP.NET</id>
+    <id>Csla.AspNet</id>
     <title>CSLA .NET - ASP.NET</title>
     <tags>CSLA ASP.NET</tags>
     <version>4.6.3-Beta10</version>
@@ -13,14 +13,14 @@
     <description>
 Supports the creation of ASP.NET Web Forms applications, and is required for any ASP.NET hosted application model.
 
-CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
 Supports the creation of ASP.NET Web Forms applications, and is required for any ASP.NET hosted application model.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+      <dependency id="Csla" version="[4.6.3-Beta10]" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Web" targetFramework="net40-full" />

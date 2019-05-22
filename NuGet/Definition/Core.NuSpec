@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-Core</id>
+    <id>Csla</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
     <version>4.6.3-Beta2</version>
@@ -13,10 +13,10 @@
     <description>
 Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
 
-CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
-Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
+Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native application models.
     </summary>
     <language>en-US</language>
     <dependencies>

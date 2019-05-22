@@ -15,14 +15,12 @@ using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Rules;
-using System.Security;
 using Csla.Core.FieldManager;
 using System.Reflection;
 
@@ -45,19 +43,15 @@ namespace Csla.Core
     IParent,
     IDataPortalTarget,
     IManageProperties,
-    Rules.IHostRules,
+    IHostRules,
     ICheckRules,
     INotifyBusy,
     INotifyChildChanged,
-    ISerializationNotification
-#if ((ANDROID || IOS) || NETFX_CORE) && !ANDROID && !IOS
-, INotifyDataErrorInfo
-#else
-, IDataErrorInfo
-#endif
+    ISerializationNotification, 
+    IDataErrorInfo
   {
 
-    #region Constructors
+#region Constructors
 
     /// <summary>
     /// Creates an instance of the object.
@@ -71,7 +65,7 @@ namespace Csla.Core
 
     #endregion
 
-    #region Initialize
+#region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -81,9 +75,9 @@ namespace Csla.Core
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-    #endregion
+#endregion
 
-    #region Identity
+#region Identity
 
     private int _identity = -1;
 
@@ -115,9 +109,9 @@ namespace Csla.Core
       }
     }
     
-    #endregion
+#endregion
 
-    #region Parent/Child link
+#region Parent/Child link
 
     [NotUndoable]
     [NonSerialized]
@@ -132,9 +126,7 @@ namespace Csla.Core
     /// </remarks>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {
@@ -154,9 +146,9 @@ namespace Csla.Core
       InitializeIdentity();
     }
 
-    #endregion
+#endregion
 
-    #region IsNew, IsDeleted, IsDirty, IsSavable
+#region IsNew, IsDeleted, IsDirty, IsSavable
 
     // keep track of whether we are new, deleted or dirty
     private bool _isNew = true;
@@ -178,9 +170,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is new.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public bool IsNew
     {
       get { return _isNew; }
@@ -202,9 +192,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is marked for deletion.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public bool IsDeleted
     {
       get { return _isDeleted; }
@@ -231,9 +219,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsDirty
     {
       get { return IsSelfDirty || (_fieldManager != null && FieldManager.IsDirty()); }
@@ -258,9 +244,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfDirty
     {
       get { return _isDirty; }
@@ -472,9 +456,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSavable
     {
       get
@@ -490,11 +472,10 @@ namespace Csla.Core
       }
     }
 
-    #endregion
+#endregion
 
-    #region Authorization
+#region Authorization
 
-#if !PCL259
     [NotUndoable]
     [NonSerialized]
     private ConcurrentDictionary<string, bool> _readResultCache;
@@ -507,7 +488,6 @@ namespace Csla.Core
     [NotUndoable]
     [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
-#endif
 
     /// <summary>
     /// Returns true if the user is allowed to read the
@@ -518,8 +498,6 @@ namespace Csla.Core
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
       var result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
-
       VerifyAuthorizationCache();
 
       if (!_readResultCache.TryGetValue(property.Name, out result))
@@ -531,7 +509,6 @@ namespace Csla.Core
           _readResultCache.AddOrUpdate(property.Name, result, (a,b) => { return result; });
         }
       }
-#endif
       return result;
     }
 
@@ -580,10 +557,7 @@ namespace Csla.Core
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || (ANDROID || IOS)
-#else
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
-#endif
         return true;
       }
       return CanReadProperty(propertyInfo, throwOnFalse);
@@ -598,8 +572,6 @@ namespace Csla.Core
     public virtual bool CanWriteProperty(Csla.Core.IPropertyInfo property)
     {
       bool result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
-
       VerifyAuthorizationCache();
 
       if (!_writeResultCache.TryGetValue(property.Name, out result))
@@ -611,7 +583,6 @@ namespace Csla.Core
           _writeResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
         }
       }
-#endif
       return result;
     }
 
@@ -659,10 +630,7 @@ namespace Csla.Core
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || (ANDROID || IOS)
-#else
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
-#endif
         return true;
       }
       return CanWriteProperty(propertyInfo, throwOnFalse);
@@ -670,7 +638,6 @@ namespace Csla.Core
 
     private void VerifyAuthorizationCache()
     {
-#if !PCL259 // rely on bait-and-switch for implementation
       if (_readResultCache == null)
         _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_writeResultCache == null)
@@ -685,7 +652,6 @@ namespace Csla.Core
         _executeResultCache.Clear();
         _lastPrincipal = Csla.ApplicationContext.User;
       }
-#endif
     }
 
     /// <summary>
@@ -698,8 +664,6 @@ namespace Csla.Core
     public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
       bool result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
-
       VerifyAuthorizationCache();
 
       if (!_executeResultCache.TryGetValue(method.Name, out result))
@@ -711,7 +675,6 @@ namespace Csla.Core
           _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
         }
       }
-#endif
       return result;
     }
 
@@ -963,9 +926,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public bool IsChild
     {
       get { return _isChild; }
@@ -1077,22 +1038,6 @@ namespace Csla.Core
 
 #region BusinessRules, IsValid
 
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Event raised when validation is complete.
-    /// </summary>
-    public event EventHandler ValidationComplete;
-
-    /// <summary>
-    /// Raises the ValidationComplete event.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void OnValidationComplete()
-    {
-      if (ValidationComplete != null)
-        ValidationComplete(this, EventArgs.Empty);
-    }
-#else
     [NonSerialized]
     [NotUndoable]
     private EventHandler _validationCompleteHandlers;
@@ -1123,7 +1068,6 @@ namespace Csla.Core
       if (_validationCompleteHandlers != null)
         _validationCompleteHandlers(this, EventArgs.Empty);
     }
-#endif
 
     private void InitializeBusinessRules()
     {
@@ -1243,9 +1187,7 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsValid
     {
       get { return IsSelfValid && (_fieldManager == null || FieldManager.IsValid()); }
@@ -1268,9 +1210,7 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfValid
     {
       get { return BusinessRules.IsValid; }
@@ -1282,11 +1222,9 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+    [ScaffoldColumn(false)]
 #if !NET40
     [System.ComponentModel.DataAnnotations.Schema.NotMapped]
-#endif
 #endif
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual Rules.BrokenRulesCollection BrokenRulesCollection
@@ -1403,9 +1341,8 @@ namespace Csla.Core
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
-#endregion
+    #endregion
 
-#if (!(ANDROID || IOS) && !NETFX_CORE) || ANDROID || IOS
 #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -1437,7 +1374,6 @@ namespace Csla.Core
     }
 
 #endregion
-#endif
 
 #region Serialization Notification
 
@@ -1446,9 +1382,7 @@ namespace Csla.Core
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
-#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       BusinessRules.SetTarget(this);
@@ -1490,30 +1424,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnAddEventHooks(IBusinessObject child)
     {
-      INotifyBusy busy = child as INotifyBusy;
-      if (busy != null)
+      if (child is INotifyBusy busy)
         busy.BusyChanged += Child_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (child is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException += Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
+      if (child is INotifyPropertyChanged pc)
         pc.PropertyChanged += Child_PropertyChanged;
 
-#if !(ANDROID || IOS) && !NETFX_CORE
-      IBindingList bl = child as IBindingList;
-      if (bl != null)
+      if (child is IBindingList bl)
         bl.ListChanged += Child_ListChanged;
-#endif
 
-      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
-      if (ncc != null)
+      if (child is INotifyCollectionChanged ncc)
         ncc.CollectionChanged += Child_CollectionChanged;
 
-      INotifyChildChanged cc = child as INotifyChildChanged;
-      if (cc != null)
+      if (child is INotifyChildChanged cc)
         cc.ChildChanged += Child_Changed;
     }
 
@@ -1534,30 +1460,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnRemoveEventHooks(IBusinessObject child)
     {
-      INotifyBusy busy = child as INotifyBusy;
-      if (busy != null)
+      if (child is INotifyBusy busy)
         busy.BusyChanged -= Child_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (child is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException -= Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
+      if (child is INotifyPropertyChanged pc)
         pc.PropertyChanged -= Child_PropertyChanged;
 
-#if !(ANDROID || IOS) && !NETFX_CORE
-      IBindingList bl = child as IBindingList;
-      if (bl != null)
+      if (child is IBindingList bl)
         bl.ListChanged -= Child_ListChanged;
-#endif
 
-      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
-      if (ncc != null)
+      if (child is INotifyCollectionChanged ncc)
         ncc.CollectionChanged -= Child_CollectionChanged;
 
-      INotifyChildChanged cc = child as INotifyChildChanged;
-      if (cc != null)
+      if (child is INotifyChildChanged cc)
         cc.ChildChanged -= Child_Changed;
     }
 
@@ -1718,15 +1636,8 @@ namespace Csla.Core
     {
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentNullException("propertyName");
-      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
-
-      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
-        throw new InvalidOperationException(Resources.PrivateFieldException);
-
-      if (_bypassPropertyChecks || CanReadProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
-        return field;
-
-      return defaultValue;
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      return GetProperty<P>(propertyInfo, field, defaultValue, noAccess);
     }
 
     /// <summary>
@@ -2220,6 +2131,22 @@ namespace Csla.Core
     /// <typeparam name="P">
     /// Type of the property.
     /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    protected P ReadProperty<P>([System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+
+      return ReadProperty<P>(propertyInfo);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
@@ -2227,7 +2154,7 @@ namespace Csla.Core
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
-      P result = default(P);
+      P result;
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
@@ -2284,6 +2211,23 @@ namespace Csla.Core
     /// <typeparam name="P">
     /// Type of the property.
     /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    protected P LazyReadProperty<P>(Func<P> valueGenerator, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+
+      return LazyReadProperty<P>(propertyInfo, valueGenerator);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
     /// <param name="property">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="valueGenerator">Method returning the new value.</param>
@@ -2295,6 +2239,23 @@ namespace Csla.Core
         LoadProperty(property, result);
       }
       return ReadProperty<P>(property);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    protected P LazyReadPropertyAsync<P>(Task<P> factory, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+
+      return LazyReadPropertyAsync<P>(propertyInfo, factory);
     }
 
     /// <summary>
@@ -2339,6 +2300,25 @@ namespace Csla.Core
     /// A reference to the backing field for the property.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
+    /// <param name="propertyName">Property name</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P>(ref P field, P newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      SetProperty<P>(propertyName, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the supplied
+    /// value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
@@ -2347,7 +2327,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P field, P newValue)
     {
-      SetProperty<P>(propertyInfo.Name, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+      SetProperty<P>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2385,15 +2365,15 @@ namespace Csla.Core
     /// A reference to the backing field for the property.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <param name="propertyInfo">
-    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
     /// <remarks>
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
+    protected void SetPropertyConvert<P, V>(ref P field, V newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-      SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+      SetPropertyConvert<P, V>(propertyName, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2413,16 +2393,32 @@ namespace Csla.Core
     /// The new value for the property.</param>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
+    {
+      SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the supplied
+    /// value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    /// <remarks>
-    /// If the field value is of type string, any incoming
-    /// null values are converted to string.Empty.
-    /// </remarks>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetProperty<P>(ref P field, P newValue, Security.NoAccessBehavior noAccess, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-      SetPropertyConvert<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
+      SetProperty<P>(propertyName, ref field, newValue, noAccess);
     }
 
     /// <summary>
@@ -2441,16 +2437,32 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      SetProperty<P>(propertyInfo, ref field, newValue, noAccess);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the supplied
+    /// value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P field, P newValue, Security.NoAccessBehavior noAccess)
+    {
       try
       {
-#region Check to see if the property is marked with RelationshipTypes.PrivateField
-
-        var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
-
         if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
           throw new InvalidOperationException(Resources.PrivateFieldException);
-
-#endregion
 
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         {
@@ -2469,9 +2481,9 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo.Name);
             field = newValue;
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo.Name);
           }
         }
       }
@@ -2486,8 +2498,37 @@ namespace Csla.Core
       catch (Exception ex)
       {
         throw new PropertyLoadException(
-          string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message), ex);
+          string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message, ex.Message), ex);
       }
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the field being set.
+    /// </typeparam>
+    /// <typeparam name="V">
+    /// Type of the value provided to the field.
+    /// </typeparam>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    /// <remarks>
+    /// If the field value is of type string, any incoming
+    /// null values are converted to string.Empty.
+    /// </remarks>
+    protected void SetPropertyConvert<P, V>(ref P field, V newValue, Security.NoAccessBehavior noAccess, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      SetPropertyConvert<P, V>(propertyName, ref field, newValue, noAccess);
     }
 
     /// <summary>
@@ -2516,16 +2557,43 @@ namespace Csla.Core
     /// </remarks>
     protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, noAccess);
+
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the field being set.
+    /// </typeparam>
+    /// <typeparam name="V">
+    /// Type of the value provided to the field.
+    /// </typeparam>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    /// <remarks>
+    /// If the field value is of type string, any incoming
+    /// null values are converted to string.Empty.
+    /// </remarks>
+    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    {
       try
       {
-#region Check to see if the property is marked with RelationshipTypes.PrivateField
-
-        var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
-
         if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
           throw new InvalidOperationException(Resources.PrivateFieldException);
-
-#endregion
 
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         {
@@ -2544,9 +2612,9 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo.Name);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo.Name);
           }
         }
       }
@@ -2561,8 +2629,29 @@ namespace Csla.Core
       catch (Exception ex)
       {
         throw new PropertyLoadException(
-          string.Format(Properties.Resources.PropertyLoadException, propertyName, ex.Message), ex);
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">Property type.</typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P>(P newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      SetProperty<P>(propertyInfo, newValue);
     }
 
     /// <summary>
@@ -2582,6 +2671,26 @@ namespace Csla.Core
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       SetProperty<P>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetPropertyConvert<P, F>(F newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      SetPropertyConvert<P, F>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2742,30 +2851,30 @@ namespace Csla.Core
       }
     }
 
-    /// <summary>
-    /// Sets a property's managed field with the 
-    /// supplied value, and then
-    /// calls PropertyHasChanged if the value does change.
-    /// </summary>
-    /// <typeparam name="P">
-    /// Type of the property.
-    /// </typeparam>
-    /// <param name="propertyInfo">
-    /// PropertyInfo object containing property metadata.</param>
-    /// <param name="newValue">
-    /// The new value for the property.</param>
-    /// <remarks>
-    /// If the user is not authorized to change the 
-    /// property a SecurityException is thrown.
-    /// </remarks>
-    protected void SetProperty<P>(IPropertyInfo propertyInfo, P newValue)
-    {
-      SetProperty(propertyInfo, (object)newValue);
-    }
-
 #endregion
 
 #region  Load Properties
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value.
+    /// </summary>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadPropertyConvert<P, F>(F newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      LoadPropertyConvert<P, F>(propertyInfo, newValue);
+    }
 
     /// <summary>
     /// Loads a property's managed field with the 
@@ -2826,6 +2935,28 @@ namespace Csla.Core
     /// <typeparam name="P">
     /// Type of the property.
     /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty<P>(P newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      LoadProperty<P>(propertyInfo, newValue);
+    }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
@@ -2840,7 +2971,7 @@ namespace Csla.Core
     {
       try
       {
-        P oldValue = default(P);
+        P oldValue;
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -2849,7 +2980,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
+          var fd = fieldData as IFieldData<P>;
           if (fd != null)
             oldValue = fd.Value;
           else
@@ -2871,10 +3002,36 @@ namespace Csla.Core
     /// <typeparam name="P">
     /// Type of the property.
     /// </typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <returns>Value indicating whether the old and new values differ</returns>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected bool LoadPropertyMarkDirty<P>(P newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      return LoadPropertyMarkDirty<P>(propertyInfo, newValue);
+    }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value and mark field as dirty if value is modified.
+    /// </summary> 
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
+    /// <returns>Value indicating whether the old and new values differ</returns>
     /// <remarks>
     /// No authorization checks occur when this method is called,
     /// and no PropertyChanging or PropertyChanged events are raised.
@@ -2885,7 +3042,7 @@ namespace Csla.Core
     {
       try
       {
-        P oldValue = default(P);
+        P oldValue;
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -2894,7 +3051,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
+          var fd = fieldData as IFieldData<P>;
           if (fd != null)
             oldValue = fd.Value;
           else
@@ -2938,19 +3095,18 @@ namespace Csla.Core
     /// <summary>
     /// Check if old and new values are different.
     /// </summary>
-    /// <typeparam name="P"></typeparam>
+    /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>
     /// <returns></returns>
     private static bool ValuesDiffer<P>(PropertyInfo<P> propertyInfo, P newValue, P oldValue)
     {
-      var valuesDiffer = false;
+      bool valuesDiffer;
       if (oldValue == null)
         valuesDiffer = newValue != null;
       else
       {
-        // use reference equals for objects that inherit from CSLA base class
         if (typeof (IBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
           valuesDiffer = !(ReferenceEquals(oldValue, newValue));
@@ -2970,11 +3126,9 @@ namespace Csla.Core
       if (valuesDiffer)
       {
 
-        IBusinessObject old = oldValue as IBusinessObject;
-        if (old != null)
+        if (oldValue is IBusinessObject old)
           RemoveEventHooks(old);
-        IBusinessObject @new = newValue as IBusinessObject;
-        if (@new != null)
+        if (newValue is IBusinessObject @new)
           AddEventHooks(@new);
 
 
@@ -3026,84 +3180,49 @@ namespace Csla.Core
     /// Loads a property's managed field with the 
     /// supplied value.
     /// </summary>
-    /// <param name="propertyInfo">
-    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="propertyName">Property name</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
+    /// <returns>Value indicating whether the old and new values differ</returns>
     /// <remarks>
     /// No authorization checks occur when this method is called,
     /// and no PropertyChanging or PropertyChanged events are raised.
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected virtual bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    protected bool LoadPropertyMarkDirty(object newValue, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-      // private field 
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
+      return LoadPropertyMarkDirty(propertyInfo, newValue);
+    }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <returns>Value indicating whether the old and new values differ</returns>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    {
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
         LoadProperty(propertyInfo, newValue);
         return false;
       }
 
-#if IOS
-      //manually call LoadProperty<T> if the type is nullable otherwise JIT error will occur
-      if (propertyInfo.Type == typeof(int?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<int?>)propertyInfo, (int?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(bool?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<bool?>)propertyInfo, (bool?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(DateTime?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<DateTime?>)propertyInfo, (DateTime?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(decimal?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<decimal?>)propertyInfo, (decimal?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(double?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<double?>)propertyInfo, (double?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(long?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<long?>)propertyInfo, (long?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(byte?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<byte?>)propertyInfo, (byte?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(char?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<char?>)propertyInfo, (char?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(short?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<short?>)propertyInfo, (short?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(uint?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<uint?>)propertyInfo, (uint?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ulong?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<ulong?>)propertyInfo, (ulong?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ushort?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<ushort?>)propertyInfo, (ushort?)newValue);
-      }
-      else
-      {
-        return (bool)LoadPropertyByReflection("LoadPropertyMarkDirty", propertyInfo, newValue);
-      }
-#else
       return (bool)LoadPropertyByReflection("LoadPropertyMarkDirty", propertyInfo, newValue);
-#endif
     }
-
 
     /// <summary>
     /// Loads a property's managed field with the 
@@ -3119,65 +3238,9 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-#if IOS
-      //manually call LoadProperty<T> if the type is nullable otherwise JIT error will occur
-      if (propertyInfo.Type == typeof(int?))
-      {
-        LoadProperty((PropertyInfo<int?>)propertyInfo, (int?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(bool?))
-      {
-        LoadProperty((PropertyInfo<bool?>)propertyInfo, (bool?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(DateTime?))
-      {
-        LoadProperty((PropertyInfo<DateTime?>)propertyInfo, (DateTime?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(decimal?))
-      {
-        LoadProperty((PropertyInfo<decimal?>)propertyInfo, (decimal?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(double?))
-      {
-        LoadProperty((PropertyInfo<double?>)propertyInfo, (double?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(long?))
-      {
-        LoadProperty((PropertyInfo<long?>)propertyInfo, (long?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(byte?))
-      {
-        LoadProperty((PropertyInfo<byte?>)propertyInfo, (byte?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(char?))
-      {
-        LoadProperty((PropertyInfo<char?>)propertyInfo, (char?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(short?))
-      {
-        LoadProperty((PropertyInfo<short?>)propertyInfo, (short?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(uint?))
-      {
-        LoadProperty((PropertyInfo<uint?>)propertyInfo, (uint?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ulong?))
-      {
-        LoadProperty((PropertyInfo<ulong?>)propertyInfo, (ulong?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ushort?))
-      {
-        LoadProperty((PropertyInfo<ushort?>)propertyInfo, (ushort?)newValue);
-      }
-      else
-      {
-        LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
-      }
-#else
       LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
-#endif
     }
 
     /// <summary>
@@ -3263,12 +3326,26 @@ namespace Csla.Core
     /// <summary>
     /// Load a property from an async method. 
     /// </summary>
-    /// <typeparam name="R"></typeparam>
-    /// <param name="property"></param>
-    /// <param name="factory"></param>
-    protected void LoadPropertyAsync<R>(PropertyInfo<R> property, Task<R> factory)
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="factory">Factory method invoked to load propety value</param>
+    protected void LoadPropertyAsync<P>(Task<P> factory, [System.Runtime.CompilerServices.CallerMemberName]string propertyName = "")
     {
-      LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentNullException("propertyName");
+      var propertyInfo = (PropertyInfo<P>)FieldManager.GetRegisteredProperty(propertyName);
+      LoadPropertyAsync<P>(propertyInfo, factory);
+    }
+
+    /// <summary>
+    /// Load a property from an async method. 
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyInfo">PropertyInfo object containing property metadata</param>
+    /// <param name="factory">Factory method invoked to load propety value</param>
+    protected void LoadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      LoadManager.BeginLoad(new TaskLoader<P>(propertyInfo, factory));
     }
 
 #endregion
@@ -3311,9 +3388,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -3325,9 +3400,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
       get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
@@ -3487,7 +3560,6 @@ namespace Csla.Core
       OnChildChanged(args);
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
@@ -3497,7 +3569,6 @@ namespace Csla.Core
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
     }
-#endif
 
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
@@ -3525,7 +3596,6 @@ namespace Csla.Core
       }
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Handles any ListChanged event from 
     /// a child list and echoes it up as
@@ -3536,7 +3606,6 @@ namespace Csla.Core
       if (e.ListChangedType != ListChangedType.ItemChanged)
         RaiseChildChanged(sender, null, e);
     }
-#endif
 
     /// <summary>
     /// Handles any CollectionChanged event
@@ -3899,8 +3968,6 @@ namespace Csla.Core
         _businessObject._bypassPropertyChecks = true;
       }
 
-#region IDisposable Members
-
       /// <summary>
       /// Disposes the object.
       /// </summary>
@@ -3936,8 +4003,6 @@ namespace Csla.Core
         return businessObject._bypassPropertyChecksObject;
       }
 
-#region  Reference counting
-
       private int _refCount;
 
       /// <summary>
@@ -3968,116 +4033,9 @@ namespace Csla.Core
           }
         }
       }
-
-#endregion
-#endregion
     }
 
 #endregion
-
-#if NETFX_CORE
-#region UndoableBase overrides
-
-#if !NETSTANDARD1_6 && !WINDOWS_UWP
-    /// <summary>
-    /// Copy object state.
-    /// </summary>
-    /// <param name="state">Serialization state.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void OnCopyState(Csla.Serialization.Mobile.SerializationInfo state)
-    {
-      OnGetState(state, StateMode.Undo);
-      ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
-      ((IUndoableObject)BusinessRules).CopyState(this.EditLevel + 1, false);
-
-      base.OnCopyState(state);
-    }
-
-    /// <summary>
-    /// Undo object state.
-    /// </summary>
-    /// <param name="state">Serialization state.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void OnUndoChanges(Csla.Serialization.Mobile.SerializationInfo state)
-    {
-      OnSetState(state, StateMode.Undo);
-      ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);
-      ((IUndoableObject)BusinessRules).UndoChanges(this.EditLevel - 1, false);
-
-      base.OnUndoChanges(state);
-    }
-#endif
-
-    /// <summary>
-    /// Accept object state.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void AcceptingChanges()
-    {
-      ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
-      ((IUndoableObject)BusinessRules).AcceptChanges(this.EditLevel - 1, false);
-
-      base.AcceptingChanges();
-    }
-
-#endregion
-
-#if !ANDROID && !IOS
-#region INotifyDataErrorInfo
-
-    /// <summary>
-    /// Event raised when error information has changed.
-    /// </summary>
-    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-    /// <summary>
-    /// Raises the ErrorsChanged event.
-    /// </summary>
-    /// <param name="e">Event arguments.</param>
-    protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
-    {
-      if (ErrorsChanged != null)
-        ErrorsChanged(this, e);
-    }
-
-    System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
-    {
-      return BusinessRules.GetBrokenRules()
-        .Where(c => (string.IsNullOrEmpty(propertyName) || c.Property == propertyName) && c.Severity == RuleSeverity.Error)
-        .ToList();
-    }
-
-    bool INotifyDataErrorInfo.HasErrors
-    {
-      get { return !IsSelfValid; }
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a specific property.
-    /// </summary>
-    /// <param name="propertyName">Name of the property that
-    /// is being changed.</param>
-    protected override void OnPropertyChanged(string propertyName)
-    {
-      base.OnPropertyChanged(propertyName);
-      OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for all object properties.
-    /// </summary>
-    protected override void OnUnknownPropertyChanged()
-    {
-      base.OnUnknownPropertyChanged();
-      foreach (var p in FieldManager.GetRegisteredProperties())
-        OnErrorsChanged(new DataErrorsChangedEventArgs(p.Name));
-    }
-
-#endregion
-#endif
-#endif
 
 #region ISuppressRuleChecking Members
 

@@ -8,7 +8,11 @@
 using System;
 using Csla.Configuration;
 using System.Data;
+#if NETFX
 using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
 using Csla.Properties;
 
 namespace Csla.Data.SqlClient

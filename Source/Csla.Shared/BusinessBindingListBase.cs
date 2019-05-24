@@ -932,6 +932,7 @@ namespace Csla
     /// <summary>
     /// Starts an async operation to save the object to the database.
     /// </summary>
+    [Obsolete]
     public void BeginSave()
     {
       BeginSave(null, null);
@@ -941,6 +942,7 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public void BeginSave(object userState)
     {
       BeginSave(null, userState);
@@ -952,6 +954,7 @@ namespace Csla
     /// <param name="handler">
     /// Method called when the operation is complete.
     /// </param>
+    [Obsolete]
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(handler, null);
@@ -964,6 +967,7 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public async void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       T result = default(T);

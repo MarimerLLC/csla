@@ -44,6 +44,7 @@ namespace Csla.Core
     /// Saves the object to the database asynchronously. The saved event will contain
     /// the new object when the save operation completes.
     /// </summary>
+    [Obsolete]
     void BeginSave();
     /// <summary>
     /// Saves the object to the database asynchronously. The saved event will contain
@@ -52,6 +53,7 @@ namespace Csla.Core
     /// <param name="userState">
     /// User state object.
     /// </param>
+    [Obsolete]
     void BeginSave(object userState);
     /// <summary>
     /// INTERNAL CSLA .NET USE ONLY.

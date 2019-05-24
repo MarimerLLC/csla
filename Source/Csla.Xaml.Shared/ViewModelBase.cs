@@ -904,6 +904,7 @@ namespace Csla.Xaml
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
+    [Obsolete]
     protected virtual void BeginSave()
     {
       try

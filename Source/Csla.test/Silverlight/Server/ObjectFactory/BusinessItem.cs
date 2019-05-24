@@ -44,41 +44,5 @@ namespace Csla.Testing.Business.ObjectFactory
         SetProperty(OperationResultProperty, value);
       }
     }
-
-
-    public static void GetBusinessItem(string id, EventHandler<DataPortalResult<BusinessItem>> completed)
-    {
-      DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch(id);
-    }
-
-    public static void GetBusinessItem(EventHandler<DataPortalResult<BusinessItem>> completed)
-    {
-      DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
-
-    public static void NewBusinessItem(string id, EventHandler<DataPortalResult<BusinessItem>> completed)
-    {
-      DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
-      dp.CreateCompleted += completed;
-      dp.BeginCreate(id);
-    }
-
-    public static void NewBusinessItem(EventHandler<DataPortalResult<BusinessItem>> completed)
-    {
-      DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
-      dp.CreateCompleted += completed;
-      dp.BeginCreate();
-    }
-
-    public static void DeleteBusinessItem(string id, EventHandler<DataPortalResult<BusinessItem>> completed)
-    {
-      DataPortal<BusinessItem> dp = new DataPortal<BusinessItem>();
-      dp.DeleteCompleted += completed;
-      dp.BeginDelete(id);
-    }
   }
 }

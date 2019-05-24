@@ -39,16 +39,6 @@ namespace Csla.Test.BasicModern
       MarkOld();
     }
 
-    public static void NewRoot(EventHandler<DataPortalResult<Root>> callback)
-    {
-      Csla.DataPortal.BeginCreate<Root>(callback);
-    }
-
-    public static void GetRoot(int id, EventHandler<DataPortalResult<Root>> callback)
-    {
-      Csla.DataPortal.BeginFetch<Root>(id, callback);
-    }
-
     public static async Task<Root> NewRootAsync()
     {
       return await Csla.DataPortal.CreateAsync<Root>();

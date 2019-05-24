@@ -73,20 +73,6 @@ namespace Csla.Testing.Business.BusyStatus
       return returnValue;
     }
 
-    public static void GetItemWithAsynchRule(string id, EventHandler<DataPortalResult<ItemWithAsynchRule>> completed)
-    {
-      DataPortal<ItemWithAsynchRule> dp = new DataPortal<ItemWithAsynchRule>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch(id);
-    }
-
-    public static void NewItemWithAsynchRule(EventHandler<DataPortalResult<ItemWithAsynchRule>> completed)
-    {
-      DataPortal<ItemWithAsynchRule> dp = new DataPortal<ItemWithAsynchRule>();
-      dp.CreateCompleted += completed;
-      dp.BeginCreate();
-    }
-
     public bool IsRunningRules
     {
       get { return BusinessRules.RunningAsyncRules && BusinessRules.RunningRules; }

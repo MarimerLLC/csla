@@ -121,13 +121,6 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    public static void GetCustomerWithError(int CustomerWithErrorID, EventHandler<DataPortalResult<CustomerWithError>> handler)
-    {
-      var dp = new DataPortal<CustomerWithError>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(CustomerWithErrorID);
-    }
-
     internal static CustomerWithError GetCustomerWithError(int CustomerWithErrorID)
     {
       CustomerWithError newCustomerWithError = new CustomerWithError();
@@ -176,21 +169,6 @@ namespace cslalighttest.CslaDataProvider
   [Serializable]
   public class CustomerWithErrorWO_DP_XYZ : BusinessBase<CustomerWithErrorWO_DP_XYZ>
   {
-    public static void GetCustomerWithError(EventHandler<DataPortalResult<CustomerWithErrorWO_DP_XYZ>> handler)
-    {
-      int CustomerWithErrorID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<CustomerWithErrorWO_DP_XYZ>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(CustomerWithErrorID);
-    }
-
-    public static void CreateCustomerWithError(EventHandler<DataPortalResult<CustomerWithErrorWO_DP_XYZ>> handler)
-    {
-      int CustomerWithErrorID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<CustomerWithErrorWO_DP_XYZ>();
-      dp.CreateCompleted += handler;
-      dp.BeginCreate(CustomerWithErrorID);
-    }
   }
 
 }

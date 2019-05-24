@@ -31,7 +31,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [Serializable()]
-    private class Criteria : CriteriaBase<Criteria>
+    public class Criteria : CriteriaBase<Criteria>
     {
       public string _name;
 
@@ -56,27 +56,6 @@ namespace Csla.Test.ValidationRules
         _name = info.GetValue<string>("_name");
         base.OnSetState(info, mode);
       }
-    }
-
-    public static void NewHasRulesManager2(EventHandler<DataPortalResult<HasRulesManager2>> completed)
-    {
-      Csla.DataPortal.BeginCreate<HasRulesManager2>(
-        new Criteria(),
-        completed);
-    }
-
-    public static void GetHasRulesManager2(string name, EventHandler<DataPortalResult<HasRulesManager2>> completed)
-    {
-      Csla.DataPortal.BeginFetch<HasRulesManager2>(
-        new Criteria(name),
-        completed);
-    }
-
-    public static void DeleteHasRulesManager2(string name)
-    {
-      Csla.DataPortal.BeginDelete<HasRulesManager2>(
-        new Criteria(name),
-        (o, e) => { });
     }
   }
 }

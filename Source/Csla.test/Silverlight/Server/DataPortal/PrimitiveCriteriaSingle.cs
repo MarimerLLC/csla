@@ -43,30 +43,8 @@ namespace Csla.Test.DataPortalTest
 
     #endregion
 
-
-    #region Factory Methods
-
-
-
-    public static void DeleteObject(int id, EventHandler<DataPortalResult<PrimitiveCriteriaSingle>> handler)
-    {
-      Csla.DataPortal.BeginDelete<PrimitiveCriteriaSingle>(id, handler);
-    }
-
-    public static void GetObject(int id, EventHandler<DataPortalResult<PrimitiveCriteriaSingle>> handler)
-    {
-      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(id, handler);
-    }
-
-    public static void NewObject(int id, EventHandler<DataPortalResult<PrimitiveCriteriaSingle>> handler)
-    {
-      Csla.DataPortal.BeginCreate<PrimitiveCriteriaSingle>(id, handler);
-    }
-
     public PrimitiveCriteriaSingle()
-    { /* Require use of factory methods */ }
-
-    #endregion
+    { }
 
     #region Data Access
 

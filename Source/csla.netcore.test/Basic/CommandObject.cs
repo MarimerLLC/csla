@@ -23,11 +23,13 @@ namespace Csla.Test.Basic
       return Csla.DataPortal.Execute(this);
     }
 
+    [Obsolete]
     public void ExecuteServerCodeAsunch(EventHandler<DataPortalResult<CommandObject>> handler)
     {
       Csla.DataPortal.BeginExecute<CommandObject>(this, handler);
     }
 
+    [Obsolete]
     public void ExecuteServerCodeAsunch(EventHandler<DataPortalResult<CommandObject>> handler, object userState)
     {
       Csla.DataPortal.BeginExecute<CommandObject>(this, handler, userState);

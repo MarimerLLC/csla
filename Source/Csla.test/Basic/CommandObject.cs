@@ -23,16 +23,6 @@ namespace Csla.Test.Basic
       return Csla.DataPortal.Execute(this);
     }
 
-    public void ExecuteServerCodeAsunch(EventHandler<DataPortalResult<CommandObject>> handler)
-    {
-      Csla.DataPortal.BeginExecute<CommandObject>(this, handler);
-    }
-
-    public void ExecuteServerCodeAsunch(EventHandler<DataPortalResult<CommandObject>> handler, object userState)
-    {
-      Csla.DataPortal.BeginExecute<CommandObject>(this, handler, userState);
-    }
-
     private string _property = "";
     public string AProperty
     {
@@ -46,7 +36,6 @@ namespace Csla.Test.Basic
     {
       lock (locker)
       {
-        //Csla.ApplicationContext.GlobalContext.Add("CommandObject", "DataPortal_Execute called");
         _property = "Executed";
       }
     }

@@ -39,14 +39,6 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
 
-    public static void NewRoot(EventHandler<DataPortalResult<AsyncRuleRoot>> callback)
-    {
-      var portal = new DataPortal<AsyncRuleRoot>();
-
-      portal.CreateCompleted += callback;
-      portal.BeginCreate();
-    }
-
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNumberProperty));

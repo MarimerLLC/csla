@@ -271,7 +271,7 @@ namespace Csla.Test.GraphMerge
       var saved = obj.Save();
       Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)saved[0]).Identity, "identity should survive save");
 
-      Assert.AreNotEqual(obj[0].IsNew, saved[0].IsNew, "saved object is not original");
+      Assert.IsTrue(!ReferenceEquals(obj[0], saved[0]), "saved object is not original");
 
       new GraphMerger().MergeBusinessListGraph<FooList, Foo>(obj, saved);
 

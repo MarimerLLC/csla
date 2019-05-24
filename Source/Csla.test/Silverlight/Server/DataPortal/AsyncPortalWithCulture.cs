@@ -46,15 +46,7 @@ namespace Csla.Testing.Business.DataPortal
     public static PropertyInfo<string> CurrentCultureProperty =
       RegisterProperty<string>(new PropertyInfo<string>("CurrentCulture"));
 
-
-    protected AsyncPortalWithCulture() { }
-    public static void BeginExecuteCommand(EventHandler<DataPortalResult<AsyncPortalWithCulture>> handler)
-    {
-      var command = new AsyncPortalWithCulture();
-      var dp = new DataPortal<AsyncPortalWithCulture>();
-      dp.ExecuteCompleted += handler;
-      dp.BeginExecute(command);
-    }
+    public AsyncPortalWithCulture() { }
 
     protected override void DataPortal_Execute()
     {    

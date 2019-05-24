@@ -19,6 +19,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Data Portal 
 
+* [#1060](https://github.com/marimerllc/csla/issues/1060) Mark Silverlight-style data portal methods (e.g. `BeginFetch`, `BeginSave`) obsolete 🛑
 * [#1059](https://github.com/marimerllc/csla/issues/1059) `HttpProxy` now supports both sync and async operations 🎉
 * [#1072](https://github.com/marimerllc/csla/issues/1072) Fix issue where `LocalProxy` didn't flow context to async calls as expected
 * [#1038](https://github.com/marimerllc/csla/issues/1038) Set default transaction timeout to 600 seconds (to match Microsoft default) ⚠

@@ -25,29 +25,6 @@ namespace Csla.Security
   public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>,
     ICslaIdentity
   {
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Retrieves an instance of the identity
-    /// object.
-    /// </summary>
-    /// <typeparam name="T">
-    /// Type of object.
-    /// </typeparam>
-    /// <param name="completed">
-    /// Method called when the operation is
-    /// complete.
-    /// </param>
-    /// <param name="criteria">
-    /// Criteria object for the query.
-    /// </param>
-    public static void GetCslaIdentity<T>(EventHandler<DataPortalResult<T>> completed, object criteria)
-      where T : CslaIdentity
-    {
-      DataPortal<T> dp = new DataPortal<T>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch(criteria);
-    }
-#else
     /// <summary>
     /// Invokes the data portal to get an instance of
     /// the identity object.
@@ -64,7 +41,6 @@ namespace Csla.Security
     {
       return DataPortal.Fetch<T>(criteria);
     }
-#endif
   }
 
   /// <summary>
@@ -77,8 +53,6 @@ namespace Csla.Security
     ICslaIdentity
     where T : CslaIdentityBase<T>
   {
-    #region UnauthenticatedIdentity
-
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
@@ -87,9 +61,6 @@ namespace Csla.Security
     {
       return new Csla.Security.UnauthenticatedIdentity();
     }
-    #endregion
-
-    #region  IsInRole
 
     /// <summary>
     /// Property info for Roles property
@@ -114,10 +85,6 @@ namespace Csla.Security
         return false;
     }
 
-    #endregion
-
-    #region  IIdentity
-
     /// <summary>
     /// Property info for Authentication property
     /// </summary>
@@ -129,11 +96,7 @@ namespace Csla.Security
     public string AuthenticationType
     {
       get { return GetProperty<string>(AuthenticationTypeProperty); }
-#if IOS
-      set { LoadProperty<string>(AuthenticationTypeProperty, value); }
-#else
       protected set { LoadProperty<string>(AuthenticationTypeProperty, value); }
-#endif
     }
 
 
@@ -149,11 +112,7 @@ namespace Csla.Security
     public bool IsAuthenticated
     {
       get { return GetProperty<bool>(IsAuthenticatedProperty); }
-#if IOS
-      set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
-#else
       protected set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
-#endif
     }
 
     /// <summary>
@@ -167,13 +126,7 @@ namespace Csla.Security
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
-#if IOS
-      set { LoadProperty<string>(NameProperty, value); }
-#else
       protected set { LoadProperty<string>(NameProperty, value); }
-#endif
     }
-
-    #endregion
   }
 }

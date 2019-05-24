@@ -37,7 +37,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void Save(object sender, ExecuteEventArgs e)
     {
-      BeginSave();
+      SaveAsync().RunSynchronously();
     }
 
     /// <summary>

@@ -76,10 +76,5 @@ namespace Csla.Test.ValidationRules
     {
       BusinessRules.CheckRules(ChildListProperty);
     }
-
-    public static void NewObject(EventHandler<DataPortalResult<HasChildren>> completed)
-    {
-      Csla.DataPortal.BeginCreate<HasChildren>(completed);
-    }
   }
 }

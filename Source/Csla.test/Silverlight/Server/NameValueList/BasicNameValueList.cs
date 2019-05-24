@@ -15,15 +15,6 @@ namespace cslalighttest.NameValueList
   [Serializable()]
   public class BasicNameValueList : NameValueListBase<Int32, string>
   {
-    public static void GetBasicNameValueList(EventHandler<DataPortalResult<BasicNameValueList>> completed)
-    {
-      DataPortal<BasicNameValueList> dp = new DataPortal<BasicNameValueList>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
-
-
-
     public static BasicNameValueList GetBasicNameValueList()
     {
       return DataPortal.Fetch<BasicNameValueList>();

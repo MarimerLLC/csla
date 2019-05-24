@@ -56,21 +56,5 @@ namespace Csla.Testing.Business.EditableRootTests
     {
       return Id.ToString();
     }
-
-    public static void CreateNew(EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      Csla.DataPortal.BeginCreate<MockEditableRoot>(completed);
-    }
-
-    public static void Fetch(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      Csla.DataPortal.BeginFetch<MockEditableRoot>(id, completed);
-    }
-
-    public static void Delete(Guid id) { Delete(id, null); }
-    public static void Delete(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      Csla.DataPortal.BeginDelete<MockEditableRoot>(id, completed);
-    }
   }
 }

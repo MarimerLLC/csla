@@ -10,6 +10,7 @@ using UnitDriven;
 using Csla.DataPortalClient;
 
 using System;
+using System.Threading.Tasks;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -33,132 +34,71 @@ namespace Csla.Test.Silverlight.DataPortal
   [TestClass]
   public class AuthorizeDataPortalTests : TestBase
   {
-    [TestCleanup]
-    public void Teardown()
+    [TestMethod]
+    public async Task IAuthorizeDataPortal_Implementation_Allows_Creation()
     {
+      //setup for the test
+      var command = new SetAppSettingValueCmd(
+        "CslaAuthorizationProvider",
+        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business");
+      await Csla.DataPortal.ExecuteAsync(command);
+      //actual test
+      var dp = new DataPortal<TestBO>();
+      await dp.CreateAsync();
+
       //Setting CslaAuthorizationnProvider to "" will force NullAuthorizer - we can not set it here as it is protected class
-      SetAppSettingValueCmd.ExecuteCommand(
-        "CslaAuthorizationProvider", "",
-        (o, e) =>
-        { });
+      command = new SetAppSettingValueCmd("CslaAuthorizationProvider", "");
+      await Csla.DataPortal.ExecuteAsync(command);
     }
-
-    #region DataPortal.Create() Tests
 
     [TestMethod]
-    public void IAuthorizeDataPortal_Implementation_Allows_Creation()
+    public async Task IAuthorizeDataPortal_Implementation_Allows_Fetch()
     {
-      var context = GetContext();
-
       //setup for the test
-      SetAppSettingValueCmd
-        .ExecuteCommand(
+      var command = new SetAppSettingValueCmd(
         "CslaAuthorizationProvider",
-        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business",
-        (o, e) =>
-          {
-            //actual test
-            var dp = new DataPortal<TestBO>();
-            dp.CreateCompleted += ((sender, e1) =>
-             {
-               context.Assert.IsNull(e1.Error);
-               context.Assert.Success();
-             });
-            dp.BeginCreate();
-          });
+        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business");
+      await Csla.DataPortal.ExecuteAsync(command);
+      //actual test
+      var dp = new DataPortal<TestBO>();
+      await dp.FetchAsync();
 
-      context.Complete();
+      //Setting CslaAuthorizationnProvider to "" will force NullAuthorizer - we can not set it here as it is protected class
+      command = new SetAppSettingValueCmd("CslaAuthorizationProvider", "");
+      await Csla.DataPortal.ExecuteAsync(command);
     }
-
-    #endregion
-
-    #region DataPortal.Fetch() Tests
 
     [TestMethod]
-    public void IAuthorizeDataPortal_Implementation_Allows_Fetch()
+    public async Task IAuthorizeDataPortal_Implementation_Allows_Delete()
     {
-      var context = GetContext();
-
-      //setup for the test
-      SetAppSettingValueCmd
-        .ExecuteCommand(
+      var cmd = new SetAppSettingValueCmd(
         "CslaAuthorizationProvider",
-        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business",
-        (o, e) =>
-          {
-            //actual test
-            var dp = new DataPortal<TestBO>();
-            dp.FetchCompleted += ((sender, e1) =>
-              {
-                context.Assert.IsNull(e1.Error);
-                context.Assert.Success();
-              });
-            dp.BeginFetch(1);
-          });
+        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business");
+      await Csla.DataPortal.ExecuteAsync(cmd);
 
-      context.Complete();
+      //Setting CslaAuthorizationnProvider to "" will force NullAuthorizer - we can not set it here as it is protected class
+      var command = new SetAppSettingValueCmd("CslaAuthorizationProvider", "");
+      await Csla.DataPortal.ExecuteAsync(command);
+
     }
-
-    #endregion
-
-    #region DataPortal.Delete() Tests
 
     [TestMethod]
-    public void IAuthorizeDataPortal_Implementation_Allows_Delete()
+    public async Task IAuthorizeDataPortal_Implementation_Allows_Update()
     {
-      var context = GetContext();
-
       //setup for the test
-      SetAppSettingValueCmd
-        .ExecuteCommand(
+      var cmd = new SetAppSettingValueCmd(
         "CslaAuthorizationProvider",
-        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business",
-        (o, e) =>
-          {
-            //actual test
-            var dp = new DataPortal<TestBO>();
-            dp.DeleteCompleted += ((sender, e1) =>
-             {
-               context.Assert.IsNull(e1.Error);
-               context.Assert.Success();
-             });
-            dp.BeginDelete(1);
-          });
+        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business");
+      await Csla.DataPortal.ExecuteAsync(cmd);
+      //actual test
+      var dp = new DataPortal<TestBO>();
+      var obj = await dp.CreateAsync();
+      await dp.UpdateAsync(obj);
 
-      context.Complete();
+      //Setting CslaAuthorizationnProvider to "" will force NullAuthorizer - we can not set it here as it is protected class
+      var command = new SetAppSettingValueCmd("CslaAuthorizationProvider", "");
+      await Csla.DataPortal.ExecuteAsync(command);
+
     }
-
-    #endregion
-
-    #region DataPortal.Update() Tests
-
-    [TestMethod]
-    public void IAuthorizeDataPortal_Implementation_Allows_Update()
-    {
-      var context = GetContext();
-
-      //setup for the test
-      SetAppSettingValueCmd
-        .ExecuteCommand(
-        "CslaAuthorizationProvider",
-        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business",
-        (o, e) =>
-          {
-            //actual test
-            var dp = new DataPortal<TestBO>();
-            dp.UpdateCompleted += ((sender, e1) =>
-             {
-               context.Assert.IsNull(e1.Error);
-               context.Assert.Success();
-             });
-            dp.BeginUpdate(new TestBO());
-          });
-
-      context.Complete();
-    }
-
-    #endregion
-
-
   }
 }

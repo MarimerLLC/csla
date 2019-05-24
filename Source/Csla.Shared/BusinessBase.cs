@@ -262,6 +262,7 @@ namespace Csla
     /// <summary>
     /// Starts an async operation to save the object to the database.
     /// </summary>
+    [Obsolete]
     public void BeginSave()
     {
       BeginSave(null);
@@ -271,6 +272,7 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public void BeginSave(object userState)
     {
       BeginSave(false, null, userState);
@@ -282,6 +284,7 @@ namespace Csla
     /// <param name="handler">
     /// Method called when the operation is complete.
     /// </param>
+    [Obsolete]
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(false, handler, null);
@@ -298,6 +301,7 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
       T result = default(T);
@@ -336,6 +340,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
+    [Obsolete]
     public void BeginSave(bool forceUpdate)
     {
       this.BeginSave(forceUpdate, null);
@@ -357,6 +362,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
+    [Obsolete]
     public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
     {
       this.BeginSave(forceUpdate, handler, null);
@@ -376,6 +382,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
+    [Obsolete]
     public void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       this.BeginSave(false, handler, userState);

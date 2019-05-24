@@ -19,12 +19,6 @@ namespace Csla.Testing.Business.Security
   {
     protected SilverlightWindowsIdentity() { }
 
-    internal static void GetSilverlightWindowsIdentity(EventHandler<DataPortalResult<SilverlightWindowsIdentity>> completed)
-    {
-      DataPortal<SilverlightWindowsIdentity> dp = new DataPortal<SilverlightWindowsIdentity>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
 
     private void DataPortal_Fetch()
     {

@@ -139,13 +139,6 @@ namespace Csla.Test.CslaDataProvider
       }
     }
 
-    public static void GetCustomer(int customerID, EventHandler<DataPortalResult<Customer>> handler)
-    {
-      var dp = new DataPortal<Customer>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(customerID);
-    }
-
     internal static Customer GetCustomer(int customerID)
     {
       Customer newCustomer = new Customer();

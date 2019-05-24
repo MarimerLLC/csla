@@ -51,16 +51,6 @@ namespace Csla.Test.DataPortalTest
       Csla.DataPortal.Delete<Single>(id);
     }
 
-    public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler)
-    {
-      Csla.DataPortal.BeginDelete<Single>(id, handler);
-    }
-
-    public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler, object userState)
-    {
-      Csla.DataPortal.BeginDelete<Single>(id, handler, userState);
-    }
-
     public Single()
     { }
 

@@ -45,7 +45,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
-    public RuleUri(IBusinessRule rule, Csla.Core.IPropertyInfo property)
+    public RuleUri(IBusinessRuleBase rule, Csla.Core.IPropertyInfo property)
       : this(GetTypeName(rule), ((property == null) ? "(object)" : property.Name))
       //: this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
     { }
@@ -176,7 +176,7 @@ namespace Csla.Rules
       }
     }
 
-    private static string GetTypeName(IBusinessRule rule)
+    private static string GetTypeName(IBusinessRuleBase rule)
     {
       var type = rule.GetType();
       return GetTypeName(type);

@@ -196,6 +196,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BrokenRulesTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BrukenRulesNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRuleAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRuleBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRuleManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRulesExtensions.cs" />

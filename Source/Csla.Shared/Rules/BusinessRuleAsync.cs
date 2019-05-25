@@ -1,39 +1,41 @@
-﻿﻿//-----------------------------------------------------------------------
-// <copyright file="BusinessRule.cs" company="Marimer LLC">
+﻿#if !NET40 && !NET45
+//-----------------------------------------------------------------------
+// <copyright file="BusinessRuleAsync.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Base class used to create business and validation</summary>
 //-----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Csla.Properties;
+
 namespace Csla.Rules
 {
   /// <summary>
-  /// Base class used to create business and validation
-  /// rules.
+  /// Base class used to create async 
+  /// business and validation rules.
   /// </summary>
-  public abstract class BusinessRule : BusinessRuleBase, IBusinessRule
+  public abstract class BusinessRuleAsync : BusinessRuleBase, IBusinessRuleAsync
   {
-    private bool _isAsync;
-
     /// <summary>
     /// Gets a value indicating whether the rule will run
     /// on a background thread.
     /// </summary>
     public override bool IsAsync
     {
-      get { return _isAsync; }
-      protected set
-      {
-        CanWriteProperty("IsAsync"); 
-        _isAsync = value;
-      }
+      get { return true; }
+      protected set { }
     }
 
     /// <summary>
     /// Creates an instance of the rule that applies
     /// to a business object as a whole.
     /// </summary>
-    protected BusinessRule()
+    protected BusinessRuleAsync()
       : this(null)
     { }
 
@@ -42,7 +44,7 @@ namespace Csla.Rules
     /// to a specfic property.
     /// </summary>
     /// <param name="primaryProperty">Primary property for this rule.</param>
-    protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
+    protected BusinessRuleAsync(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     { }
 
@@ -50,13 +52,16 @@ namespace Csla.Rules
     /// Business or validation rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected virtual void Execute(IRuleContext context)
-    { }
+    protected virtual Task ExecuteAsync(IRuleContext context)
+    {
+      return Task.CompletedTask;
+    }
 
-    void IBusinessRule.Execute(IRuleContext context)
+    Task IBusinessRuleAsync.ExecuteAsync(IRuleContext context)
     {
       PropertiesLocked = true;
-      Execute(context);
+      return ExecuteAsync(context);
     }
   }
 }
+#endif

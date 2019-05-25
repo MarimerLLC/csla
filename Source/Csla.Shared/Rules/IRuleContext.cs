@@ -21,7 +21,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the rule object.
     /// </summary>
-    IBusinessRule Rule { get; }
+    IBusinessRuleBase Rule { get; }
 
     /// <summary>
     /// Gets a reference to the target business object.
@@ -60,7 +60,7 @@ namespace Csla.Rules
     /// Creates a chained context and if CanRunRule will execute the inner rule.  
     /// </summary>
     /// <param name="innerRule">The inner rule.</param>
-    void ExecuteRule(IBusinessRule innerRule);
+    void ExecuteRule(IBusinessRuleBase innerRule);
     /// <summary>
     /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
     /// </summary>
@@ -100,7 +100,7 @@ namespace Csla.Rules
     /// of the Rule property which is set using the supplied
     /// IBusinessRule value.
     /// </remarks>
-    IRuleContext GetChainedContext(IBusinessRule rule);
+    IRuleContext GetChainedContext(IBusinessRuleBase rule);
     /// <summary>
     /// Add a Error severity result to the Results list.
     /// </summary>

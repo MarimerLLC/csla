@@ -29,6 +29,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Basic Usage
 
+* [#409](https://github.com/marimerllc/csla/issues/409) Allow use of `async Task ExecuteAsync` business rule implementations via new `BusinessRuleAsync` type 🎉
 * [#1043](https://github.com/marimerllc/csla/issues/1043) Default null principal to an unauthenticated principal` (no longer need to manually set principal on app startup) 🎉
 * [#1080](https://github.com/marimerllc/csla/issues/1080) Fixed issues caused by using `MobileFormatter` for n-level undo in .NET Framework 
 * [#974](https://github.com/marimerllc/csla/issues/974) Rename DbProvider config key to CslaDbProvider 🛑

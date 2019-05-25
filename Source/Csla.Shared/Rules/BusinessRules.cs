@@ -169,7 +169,7 @@ namespace Csla.Rules
     /// Associates a business rule with the business object.
     /// </summary>
     /// <param name="rule">Rule object.</param>
-    public void AddRule(IBusinessRule rule)
+    public void AddRule(IBusinessRuleBase rule)
     {
       TypeRules.Rules.Add(rule);
     }
@@ -179,7 +179,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="rule">Rule object.</param>
     /// <param name="ruleSet">Rule set name.</param>
-    public void AddRule(IBusinessRule rule, string ruleSet)
+    public void AddRule(IBusinessRuleBase rule, string ruleSet)
     {
       var typeRules = BusinessRuleManager.GetRulesForType(_target.GetType(), ruleSet);
       typeRules.Rules.Add(rule);
@@ -537,7 +537,7 @@ namespace Csla.Rules
     /// <returns>
     /// 	<c>true</c> if this instance [can run rule] the specified context mode; otherwise, <c>false</c>.
     /// </returns>
-    internal static bool CanRunRule(IBusinessRule rule, RuleContextModes contextMode)
+    internal static bool CanRunRule(IBusinessRuleBase rule, RuleContextModes contextMode)
     {
       // default then just return true
       if (rule.RunMode == RunModes.Default) return true;
@@ -545,13 +545,13 @@ namespace Csla.Rules
       bool canRun = true;
 
       if ((contextMode & RuleContextModes.AsAffectedPoperty) > 0)
-        canRun = canRun & (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
+        canRun &= (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
       if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
-        canRun = canRun & ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
+        canRun &= ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
 
       if ((contextMode & RuleContextModes.CheckRules) > 0)
-        canRun = canRun &  (rule.RunMode & RunModes.DenyCheckRules) == 0;
+        canRun &= (rule.RunMode & RunModes.DenyCheckRules) == 0;
 
       return canRun;
     }
@@ -638,7 +638,7 @@ namespace Csla.Rules
     /// <param name="cascade">if set to <c>true</c> cascade.</param>
     /// <param name="executionContext">The execution context.</param>
     /// <returns></returns>
-    private RunRulesResult RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleContextModes executionContext)
+    private RunRulesResult RunRules(IEnumerable<IBusinessRuleBase> rules, bool cascade, RuleContextModes executionContext)
     {
       var affectedProperties = new List<string>();
       var dirtyProperties = new List<string>();
@@ -661,7 +661,7 @@ namespace Csla.Rules
                 foreach (var item in r.OutputPropertyValues)
                 {
                   // value is changed add to dirtyValues
-                  if (((IManageProperties) _target).LoadPropertyMarkDirty(item.Key, item.Value))
+                  if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
                     r.AddDirtyProperty(item.Key);
                 }
               // update broken rules list
@@ -675,7 +675,7 @@ namespace Csla.Rules
                   {
                     var doCascade = false;
                     if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
-                       doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
+                      doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
                     affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedPoperty));
                   }
 
@@ -691,7 +691,7 @@ namespace Csla.Rules
               foreach (var property in affected.Distinct())
               {
                 // property is not in AffectedProperties (already signalled to UI)
-                if (!r.Rule.AffectedProperties.Any(p => p.Name == property)) 
+                if (!r.Rule.AffectedProperties.Any(p => p.Name == property))
                   _target.RuleComplete(property);
               }
 
@@ -722,8 +722,10 @@ namespace Csla.Rules
 
             complete = true;
           }
-        });
-        context.Rule = rule;
+        })
+        {
+          Rule = rule
+        };
         if (rule.PrimaryProperty != null)
           context.OriginPropertyName = rule.PrimaryProperty.Name;
         context.ExecuteContext = executionContext;
@@ -733,7 +735,7 @@ namespace Csla.Rules
         // get input properties
         if (rule.InputProperties != null)
         {
-          var target = (Core.IManageProperties) _target;
+          var target = (IManageProperties) _target;
           context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
           foreach (var item in rule.InputProperties)
           {
@@ -768,7 +770,12 @@ namespace Csla.Rules
         // execute (or start executing) rule
         try
         {
-          rule.Execute(context);
+          if (rule is IBusinessRule syncRule)
+            syncRule.Execute(context);
+          else if (rule is IBusinessRuleAsync asyncRule)
+            asyncRule.ExecuteAsync(context).ContinueWith((t)=> { context.Complete(); });
+          else
+            throw new ArgumentOutOfRangeException(rule.GetType().FullName);
         }
         catch (Exception ex)
         {

@@ -6,6 +6,7 @@
 // <summary>Encapsulates server-side data portal invocations</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Csla.Reflection;
 
@@ -13,12 +14,17 @@ namespace Csla.Server
 {
   internal class DataPortalTarget : LateBoundObject
   {
+    private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList =
+      new ConcurrentDictionary<Type, DataPortalMethodNames>();
     private readonly IDataPortalTarget _target;
+    private readonly DataPortalMethodNames _methodNames;
 
     public DataPortalTarget(object obj)
       : base(obj)
     {
       _target = obj as IDataPortalTarget;
+      _methodNames = _methodNameList.GetOrAdd(obj.GetType(), 
+        (t) => DataPortalMethodNames.Default); // TODO: get method names dynamically
     }
 
     public void OnDataPortalInvoke(DataPortalEventArgs eventArgs)
@@ -26,7 +32,7 @@ namespace Csla.Server
       if (_target != null)
         _target.DataPortal_OnDataPortalInvoke(eventArgs);
       else
-        CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
+        CallMethodIfImplemented(_methodNames.OnDataPortalInvoke, eventArgs);
     }
 
     public void OnDataPortalInvokeComplete(DataPortalEventArgs eventArgs)
@@ -34,7 +40,7 @@ namespace Csla.Server
       if (_target != null)
         _target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
       else
-        CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", eventArgs);
+        CallMethodIfImplemented(_methodNames.OnDataPortalInvokeComplete, eventArgs);
     }
 
     internal void OnDataPortalException(DataPortalEventArgs eventArgs, Exception ex)
@@ -42,7 +48,7 @@ namespace Csla.Server
       if (_target != null)
         _target.DataPortal_OnDataPortalException(eventArgs, ex);
       else
-        CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex);
+        CallMethodIfImplemented(_methodNames.OnDataPortalException, eventArgs, ex);
     }
 
     public void ThrowIfBusy()
@@ -71,13 +77,13 @@ namespace Csla.Server
     {
       if (criteria is EmptyCriteria)
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Create");
-        await CallMethodTryAsync("DataPortal_Create").ConfigureAwait(false);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Create);
+        await CallMethodTryAsync(_methodNames.Create).ConfigureAwait(false);
       }
       else
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Create", criteria);
-        await CallMethodTryAsync("DataPortal_Create", criteria).ConfigureAwait(false);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.CreateCriteria, criteria);
+        await CallMethodTryAsync(_methodNames.CreateCriteria, criteria).ConfigureAwait(false);
       }
     }
 
@@ -85,13 +91,13 @@ namespace Csla.Server
     {
       if (criteria is EmptyCriteria)
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Fetch");
-        await CallMethodTryAsync("DataPortal_Fetch").ConfigureAwait(false);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Fetch);
+        await CallMethodTryAsync(_methodNames.Fetch).ConfigureAwait(false);
       }
       else
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Fetch", criteria);
-        await CallMethodTryAsync("DataPortal_Fetch", criteria).ConfigureAwait(false);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.FetchCriteria, criteria);
+        await CallMethodTryAsync(_methodNames.FetchCriteria, criteria).ConfigureAwait(false);
       }
     }
 
@@ -104,8 +110,8 @@ namespace Csla.Server
           if (!busObj.IsNew)
           {
             // tell the object to delete itself
-            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_DeleteSelf");
-            await CallMethodTryAsync("DataPortal_DeleteSelf").ConfigureAwait(false);
+            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.DeleteSelf);
+            await CallMethodTryAsync(_methodNames.DeleteSelf).ConfigureAwait(false);
           }
           MarkNew();
         }
@@ -114,14 +120,14 @@ namespace Csla.Server
           if (busObj.IsNew)
           {
             // tell the object to insert itself
-            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Insert");
-            await CallMethodTryAsync("DataPortal_Insert").ConfigureAwait(false);
+            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Insert);
+            await CallMethodTryAsync(_methodNames.Insert).ConfigureAwait(false);
           }
           else
           {
             // tell the object to update itself
-            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Update");
-            await CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
+            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Update);
+            await CallMethodTryAsync(_methodNames.Update).ConfigureAwait(false);
           }
           MarkOld();
         }
@@ -131,22 +137,39 @@ namespace Csla.Server
         // this is an updatable collection or some other
         // non-BusinessBase type of object
         // tell the object to update itself
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Update");
-        await CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Update);
+        await CallMethodTryAsync(_methodNames.Update).ConfigureAwait(false);
         MarkOld();
       }
     }
 
     public async Task ExecuteAsync(bool isSync)
     {
-      Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Execute");
-      await CallMethodTryAsync("DataPortal_Execute").ConfigureAwait(false);
+      Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Execute);
+      await CallMethodTryAsync(_methodNames.Execute).ConfigureAwait(false);
     }
 
     public async Task DeleteAsync(object criteria, bool isSync)
     {
-      Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, "DataPortal_Delete", criteria);
-      await CallMethodTryAsync("DataPortal_Delete", criteria).ConfigureAwait(false);
+      Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Delete, criteria);
+      await CallMethodTryAsync(_methodNames.Delete, criteria).ConfigureAwait(false);
     }
+  }
+
+  internal class DataPortalMethodNames
+  {
+    public static readonly DataPortalMethodNames Default = new DataPortalMethodNames();
+    public string Create { get; set; } = "DataPortal_Create";
+    public string CreateCriteria { get; set; } = "DataPortal_Create";
+    public string Fetch { get; set; } = "DataPortal_Fetch";
+    public string FetchCriteria { get; set; } = "DataPortal_Fetch";
+    public string Insert { get; set; } = "DataPortal_Insert";
+    public string Update { get; set; } = "DataPortal_Update";
+    public string Execute { get; set; } = "DataPortal_Execute";
+    public string Delete { get; set; } = "DataPortal_Delete";
+    public string DeleteSelf { get; set; } = "DataPortal_DeleteSelf";
+    public string OnDataPortalInvoke { get; set; } = "DataPortal_OnDataPortalInvoke";
+    public string OnDataPortalInvokeComplete { get; set; } = "DataPortal_OnDataPortalInvokeComplete";
+    public string OnDataPortalException { get; set; } = "DataPortal_OnDataPortalException";
   }
 }

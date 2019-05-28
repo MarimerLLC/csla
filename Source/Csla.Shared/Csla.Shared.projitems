@@ -272,6 +272,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalMethodInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DefaultDataPortalActivator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\EmptyCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\FactoryDataPortal.cs" />

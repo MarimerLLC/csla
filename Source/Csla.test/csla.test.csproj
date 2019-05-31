@@ -210,6 +210,11 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
+    <Compile Include="FieldManager\Child.cs" />
+    <Compile Include="FieldManager\ChildList.cs" />
+    <Compile Include="FieldManager\ChildUpdateTests.cs" />
+    <Compile Include="FieldManager\Root.cs" />
+    <Compile Include="FieldManager\RootUpdateAllChildren.cs" />
     <Compile Include="GraphMerge\GraphMergerTests.cs" />
     <Compile Include="GraphMerge\IdentityTests.cs" />
     <Compile Include="GraphMerge\TestClasses.cs" />

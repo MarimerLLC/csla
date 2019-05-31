@@ -226,5 +226,20 @@ namespace Csla.Configuration
       Csla.Server.Dashboard.DashboardFactory.Reset();
       return RootConfiguration;
     }
+
+    /// <summary>
+    /// Sets a value indicating whether any
+    /// synchronization context should be flowed to
+    /// child tasks by LocalProxy. Setting this 
+    /// to true may restrict or eliminate the 
+    /// use of background threads by LocalProxy.
+    /// </summary>
+    /// <param name="flow">True to flow context</param>
+    /// <returns></returns>
+    public ICslaConfiguration FlowSynchronizationContext(bool flow)
+    {
+      ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] = flow.ToString().ToLower();
+      return RootConfiguration;
+    }
   }
 }

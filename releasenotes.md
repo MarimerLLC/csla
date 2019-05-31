@@ -80,3 +80,4 @@ I want to extend special recognition to the following contributors to this relea
 * [@kellyethridge](https://github.com/kellyethridge) fixed a LocalProxy issue
 * [@skalpin](https://github.com/skalpin) helped review/update some of the docs
 * [@dazinator](https://github.com/dazinator) and [@ajj7060](https://github.com/ajj7060) have been engaged in identifying issues and solutions
+* [@j055](https://github.com/j055) for data portal enhancements

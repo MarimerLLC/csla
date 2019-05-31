@@ -31,7 +31,7 @@ namespace Csla.Configuration
     public string AuthenticationType
     {
       get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
-      set { ConfigurationManager.AppSettings["CslaAuthentication"] = value;}
+      set { ConfigurationManager.AppSettings["CslaAuthentication"] = value; }
     }
 
     /// <summary>
@@ -41,15 +41,13 @@ namespace Csla.Configuration
     /// </summary>
     public bool AutoCloneOnUpdate
     {
-      get {
-        if (ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] != null)
-        {
+      get
+      {
+        if (ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] == null)
+          return false;
+        else
           return bool.Parse(ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"]);
-        }
-
-        return false;
       }
-
       set
       {
         ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString();
@@ -127,12 +125,10 @@ namespace Csla.Configuration
     {
       get
       {
-        if (ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] != null)
-        {
+        if (ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] == null)
+          return false;
+        else
           return bool.Parse(ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"]);
-        }
-
-        return false;
       }
       set { Csla.ApplicationContext.DataPortalReturnObjectOnException = value; }
     }
@@ -157,6 +153,25 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaObjectFactoryLoader"]; }
       set { ConfigurationManager.AppSettings["CslaObjectFactoryLoader"] = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether any
+    /// synchronization context should be flowed to
+    /// child tasks by LocalProxy. Setting this 
+    /// to true may restrict or eliminate the 
+    /// use of background threads by LocalProxy.
+    /// </summary>
+    public bool FlowSynchronizationContext
+    {
+      get
+      {
+        if (ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] == null)
+          return false;
+        else
+          return bool.Parse(ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"]);
+      }
+      set { ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] = value.ToString(); }
     }
   }
 }

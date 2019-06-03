@@ -22,7 +22,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared $MethodName$Method As MethodInfo = RegisterMethod(Function(c) c.$MethodName$())
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared $MethodName$Method As MethodInfo = RegisterMethod(NameOf($MethodName$))
 Public Sub $MethodName$()
   ' Check Authorization, trows UserNotAuthorizedException if not authorized
   CanExecuteMethod($MethodName$Method, True)

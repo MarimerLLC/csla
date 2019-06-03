@@ -29,7 +29,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(c => c.$PropertyName$, RelationshipTypes.Child);
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(nameof($PropertyName$), RelationshipTypes.Child);
 public $ChildType$ $PropertyName$
 {
   get { return GetProperty($PropertyName$Property); }

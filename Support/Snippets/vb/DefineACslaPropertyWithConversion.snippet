@@ -43,7 +43,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ManagedFieldType$) = RegisterProperty(Of $ManagedFieldType$)(Function(c) c.$PropertyName$)
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ManagedFieldType$) = RegisterProperty(Of $ManagedFieldType$)(NameOf($IdProperty$))
 Public Property $PropertyName$() As $PropertyType$
 	Get
 		Return GetPropertyConvert(Of $ManagedFieldType$, $PropertyType$)(PropertyNameProperty)

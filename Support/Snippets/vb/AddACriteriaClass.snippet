@@ -43,7 +43,7 @@
       <Code Language="VB" Kind="type decl"><![CDATA[<Serializable()> _
 Private Class $ClassName$ Inherits CriteriaBase
 
-Public Shared ReadOnly $IdProperty$Property As PropertyInfo(Of $IdType$) = RegisterProperty(Of $IdType$)(Function(c) c.$IdProperty$)
+Public Shared ReadOnly $IdProperty$Property As PropertyInfo(Of $IdType$) = RegisterProperty(Of $IdType$)(NameOf($IdProperty$))
 Public Property $IdProperty$() As $IdType$
     Get
         Return ReadProperty($IdProperty$Property)

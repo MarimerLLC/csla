@@ -19,6 +19,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Data Portal 
 
+* [#1167](https://github.com/MarimerLLC/csla/issues/1167) Add `UpdateAllChildren` method to `FieldManager` to persist all child objects even if `IsDirty` is false
+* [#1164](https://github.com/MarimerLLC/csla/issues/1164) Fix issue where `LocalProxy` would lock on async calls from Windows Forms
 * [#1060](https://github.com/marimerllc/csla/issues/1060) Mark Silverlight-style data portal methods (e.g. `BeginFetch`, `BeginSave`) obsolete ⚠
 * [#1059](https://github.com/marimerllc/csla/issues/1059) `HttpProxy` now supports both sync and async operations 🎉
 * [#1072](https://github.com/marimerllc/csla/issues/1072) Fix issue where `LocalProxy` didn't flow context to async calls as expected
@@ -78,3 +80,4 @@ I want to extend special recognition to the following contributors to this relea
 * [@kellyethridge](https://github.com/kellyethridge) fixed a LocalProxy issue
 * [@skalpin](https://github.com/skalpin) helped review/update some of the docs
 * [@dazinator](https://github.com/dazinator) and [@ajj7060](https://github.com/ajj7060) have been engaged in identifying issues and solutions
+* [@j055](https://github.com/j055) for data portal enhancements

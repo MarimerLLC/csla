@@ -50,7 +50,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$, RelationshipTypes.PrivateField)
+      <Code Language="csharp" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(NameOf($IdProperty$), RelationshipTypes.PrivateField)
 Private $PrivateFieldName$ As $PropertyType$ = $PropertyName$Property.DefaultValue
 Public Property $PropertyName$() As $PropertyType$
 	Get

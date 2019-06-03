@@ -36,7 +36,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$UsingType$> $PropertyName$Property = RegisterProperty<$UsingType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$UsingType$> $PropertyName$Property = RegisterProperty<$UsingType$>(nameof($PropertyName$), RelationshipTypes.PrivateField);
 [NotUndoable, NonSerialized]
 private $UsingType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
 public $UsingType$ $PropertyName$

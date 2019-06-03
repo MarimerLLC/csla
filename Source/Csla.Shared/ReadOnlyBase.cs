@@ -789,6 +789,16 @@ namespace Csla
     }
 
     /// <summary>
+    /// Registers a method for use in Authorization.
+    /// </summary>
+    /// <param name="methodName">Method name from nameof()</param>
+    /// <returns></returns>
+    protected static MethodInfo RegisterMethod(string methodName)
+    {
+      return RegisterMethod(typeof(T), methodName);
+    }
+
+    /// <summary>
     /// Registers the method.
     /// </summary>
     /// <param name="methodLambdaExpression">The method lambda expression.</param>
@@ -796,8 +806,7 @@ namespace Csla
     protected static MethodInfo RegisterMethod(Expression<Action<T>> methodLambdaExpression)
     {
       System.Reflection.MethodInfo reflectedMethodInfo = Reflect<T>.GetMethod(methodLambdaExpression);
-
-      return RegisterMethod(typeof(T), reflectedMethodInfo.Name);
+      return RegisterMethod(reflectedMethodInfo.Name);
     }
 
 #endregion

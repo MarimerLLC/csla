@@ -304,7 +304,7 @@ namespace Csla
     [Obsolete]
     public async void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
-      T result = default(T);
+      T result = default;
       Exception error = null;
       try
       {
@@ -324,8 +324,7 @@ namespace Csla
 
       if (error != null)
         OnSaved(null, error, userState);
-      if (handler != null)
-        handler(this, new SavedEventArgs(result, error, userState));
+      handler?.Invoke(this, new SavedEventArgs(result, error, userState));
     }
 
     /// <summary>
@@ -388,7 +387,6 @@ namespace Csla
       this.BeginSave(false, handler, userState);
     }
 
-
     #endregion
 
     #region ISavable Members
@@ -402,8 +400,6 @@ namespace Csla
     {
       OnSaved(newObject, null, null);
     }
-
-#if !(ANDROID || IOS) && !NETFX_CORE
 
     object Csla.Core.ISavable.Save()
     {
@@ -451,12 +447,6 @@ namespace Csla
             System.Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
-#else
-    /// <summary>
-    /// Event raised when an object has been saved.
-    /// </summary>
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
-#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -480,20 +470,15 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-#if !(ANDROID || IOS) && !NETFX_CORE
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
-#else
-      if (Saved != null)
-        Saved(this, args);
-#endif
     }
 
     #endregion
 
-    #region  Register Properties
+    #region  Register Properties/Methods
 
     /// <summary>
     /// Indicates that the specified property belongs
@@ -685,9 +670,15 @@ namespace Csla
       return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
 
-    #endregion
-
-    #region Register Methods
+    /// <summary>
+    /// Registers a method for use in Authorization.
+    /// </summary>
+    /// <param name="methodName">Method name from nameof()</param>
+    /// <returns></returns>
+    protected static MethodInfo RegisterMethod(string methodName)
+    {
+      return RegisterMethod(typeof(T), methodName);
+    }
 
     /// <summary>
     /// Registers a method for use in Authorization.
@@ -697,8 +688,7 @@ namespace Csla
     protected static MethodInfo RegisterMethod(Expression<Action<T>> methodLambdaExpression)
     {
       System.Reflection.MethodInfo reflectedMethodInfo = Reflect<T>.GetMethod(methodLambdaExpression);
-
-      return RegisterMethod(typeof(T), reflectedMethodInfo.Name);
+      return RegisterMethod(reflectedMethodInfo.Name);
     }
 
     #endregion

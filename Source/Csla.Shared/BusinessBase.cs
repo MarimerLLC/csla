@@ -304,7 +304,7 @@ namespace Csla
     [Obsolete]
     public async void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
-      T result = default;
+      T result = default(T);
       Exception error = null;
       try
       {

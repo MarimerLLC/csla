@@ -74,6 +74,23 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindMethodCriteriaMultipleDI()
+    {
+      var obj = new CriteriaCreateWithMultipleDI();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(Create), new object[] { 123 });
+      Assert.IsNotNull(method);
+      Assert.AreEqual(3, method.GetParameters().Count());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(System.Reflection.AmbiguousMatchException))]
+    public void FindMethodCriteriaMultipleAmbiguousDI()
+    {
+      var obj = new CriteriaCreateWithMultipleAmbiguousDI();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(Create), new object[] { 123 });
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(System.Reflection.TargetParameterCountException))]
     public void FindMethodSingleCriteriaInvalid()
     {
@@ -116,12 +133,12 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Reflection.AmbiguousMatchException))]
     public void FindMethodAmbiguousCriteria()
     {
       var obj = new AmbiguousNoCriteriaCreate();
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(Create), null);
       Assert.IsNotNull(method);
+      Assert.AreEqual(1, method.GetParameters().Count());
     }
   }
 
@@ -182,6 +199,29 @@ namespace Csla.Test.DataPortal
 
     [Create]
     private void Create(int id, string foo, [FromServices] ICloneable x) { }
+  }
+
+  [Serializable]
+  public class CriteriaCreateWithMultipleDI : BusinessBase<CriteriaCreateWithMultipleDI>
+  {
+    [Create]
+    private void Create(int id, [FromServices] ICloneable x) { }
+
+    [Create]
+    private void Create(int id, [FromServices] ICloneable x, [FromServices] IAsyncResult y) { }
+  }
+
+  [Serializable]
+  public class CriteriaCreateWithMultipleAmbiguousDI : BusinessBase<CriteriaCreateWithMultipleAmbiguousDI>
+  {
+    [Create]
+    private void Create(int id, [FromServices] ICloneable x) { }
+
+    [Create]
+    private void Create(int id, [FromServices] ICloneable x, [FromServices] IAsyncResult y) { }
+
+    [Create]
+    private void Create(int id, [FromServices] ICloneable x, [FromServices] IFormattable y) { }
   }
 
   [Serializable]

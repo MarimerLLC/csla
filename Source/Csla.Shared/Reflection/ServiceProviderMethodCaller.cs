@@ -71,7 +71,7 @@ namespace Csla.Reflection
       {
         foreach (var item in candidates)
         {
-          var methodParams = GetCriteriaParameters(item); // item.GetParameters();
+          var methodParams = GetCriteriaParameters(item);
           if (methodParams.Count() >= criteriaLength)
           {
             var index = 0;
@@ -96,9 +96,29 @@ namespace Csla.Reflection
       }
       if (matches.Count == 0)
         throw new TargetParameterCountException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+      var result = matches[0];
       if (matches.Count > 1)
-        throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
-      return matches[0];
+      {
+        int max = 0;
+        int maxCount = 0;
+        foreach (var item in matches)
+        {
+          var count = item.GetParameters().Count();
+          if (count > max)
+          {
+            maxCount = 1;
+            max = count;
+            result = item;
+          }
+          else if (count == max)
+          {
+            maxCount++;
+          }
+        }
+        if (maxCount > 1)
+          throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+      }
+      return result;
     }
 
     private static ParameterInfo[] GetCriteriaParameters(System.Reflection.MethodInfo method)

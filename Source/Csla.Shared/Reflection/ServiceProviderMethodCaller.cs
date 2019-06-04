@@ -54,9 +54,9 @@ namespace Csla.Reflection
         Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList();
       if (candidates.Count == 0)
       {
-        var attributeName = attributeType.Name;
+        var attributeName = attributeType.Name.Substring(0, attributeType.Name.IndexOf("Attribute"));
         if (attributeName.Contains("Child"))
-          candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_" + attributeName.Replace("Child", "")));
+          candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"))));
         else
           candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "DataPortal_" + attributeName));
       }

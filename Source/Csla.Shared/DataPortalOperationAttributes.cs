@@ -14,7 +14,7 @@ namespace Csla
   /// via dependency injection.
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public class FromServices : Attribute
+  public class FromServicesAttribute : Attribute
   { }
 
   /// <summary>
@@ -23,7 +23,7 @@ namespace Csla
   /// domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class Create : Attribute
+  public class CreateAttribute : Attribute
   { }
 
   /// <summary>
@@ -32,7 +32,7 @@ namespace Csla
   /// the domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class Fetch : Attribute
+  public class FetchAttribute : Attribute
   { }
 
   /// <summary>
@@ -41,7 +41,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class Insert : Attribute
+  public class InsertAttribute : Attribute
   { }
 
   /// <summary>
@@ -50,7 +50,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class Update : Attribute
+  public class UpdateAttribute : Attribute
   { }
 
   /// <summary>
@@ -59,7 +59,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class Delete : Attribute
+  public class DeleteAttribute : Attribute
   { }
 
   /// <summary>
@@ -68,7 +68,7 @@ namespace Csla
   /// during an explicit delete operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelf : Attribute
+  public class DeleteSelfAttribute : Attribute
   { }
 
   /// <summary>
@@ -77,7 +77,7 @@ namespace Csla
   /// child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateChild : Attribute
+  public class CreateChildAttribute : Attribute
   { }
 
   /// <summary>
@@ -86,7 +86,7 @@ namespace Csla
   /// the child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchChild : Attribute
+  public class FetchChildAttribute : Attribute
   { }
 
   /// <summary>
@@ -95,7 +95,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertChild : Attribute
+  public class InsertChildAttribute : Attribute
   { }
 
   /// <summary>
@@ -104,7 +104,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateChild : Attribute
+  public class UpdateChildAttribute : Attribute
   { }
 
   /// <summary>
@@ -113,6 +113,6 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfChild : Attribute
+  public class DeleteSelfChildAttribute : Attribute
   { }
 }

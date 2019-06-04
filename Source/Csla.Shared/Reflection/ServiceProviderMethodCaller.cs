@@ -126,7 +126,7 @@ namespace Csla.Reflection
       var result = new List<ParameterInfo>();
       foreach (var item in method.GetParameters())
       {
-        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(FromServices)) == 0)
+        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(FromServicesAttribute)) == 0)
           result.Add(item);
       }
       return result.ToArray();

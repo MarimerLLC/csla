@@ -185,6 +185,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\MethodCacheKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\MethodCaller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\Reflect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Reflection\ServiceProviderMethodCaller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RelationshipTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources.Designer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\AuthorizationActions.cs" />

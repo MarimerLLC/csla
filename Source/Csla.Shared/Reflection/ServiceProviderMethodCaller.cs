@@ -51,9 +51,17 @@ namespace Csla.Reflection
 
       var targetType = target.GetType();
       var candidates = targetType.GetMethods(_bindingAttr).
-        Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToArray();
-      if (candidates.GetLength(0) == 0)
-        throw new InvalidOperationException($"Invoke {target.GetType().FullName} 0 candidates");
+        Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList();
+      if (candidates.Count == 0)
+      {
+        var attributeName = attributeType.Name;
+        if (attributeName.Contains("Child"))
+          candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_" + attributeName.Replace("Child", "")));
+        else
+          candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "DataPortal_" + attributeName));
+      }
+      if (candidates.Count == 0)
+        throw new MissingMethodException($"{target.GetType().FullName}" + ".[" + attributeType.Name + "]");
       
       int criteriaLength = 0;
       if (criteria != null)
@@ -63,13 +71,13 @@ namespace Csla.Reflection
       {
         foreach (var item in candidates)
         {
-          var methodParams = item.GetParameters();
+          var methodParams = GetCriteriaParameters(item); // item.GetParameters();
           if (methodParams.Count() >= criteriaLength)
           {
             var index = 0;
             foreach (var c in criteria)
             {
-              if (c != null && c.GetType() != methodParams[index].GetType())
+              if (c != null && c.GetType() != methodParams[index].ParameterType)
                 break;
               index++;
             }
@@ -87,9 +95,9 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException(target.GetType().FullName + "." + candidates[0]);
+        throw new TargetParameterCountException(target.GetType().FullName + ".[" + attributeType.Name + "]");
       if (matches.Count > 1)
-        throw new AmbiguousMatchException(target.GetType().FullName + "." + candidates[0]);
+        throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
       return matches[0];
     }
 

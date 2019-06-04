@@ -113,6 +113,6 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteChild : Attribute
+  public class DeleteSelfChild : Attribute
   { }
 }

@@ -10,6 +10,14 @@ using System;
 namespace Csla
 {
   /// <summary>
+  /// Specifies a parameter that is provided
+  /// via dependency injection.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Parameter)]
+  public class FromServices : Attribute
+  { }
+
+  /// <summary>
   /// Specifies a method used by the server-side
   /// data portal to initialize a new
   /// domain object.

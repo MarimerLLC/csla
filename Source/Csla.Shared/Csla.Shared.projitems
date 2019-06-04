@@ -129,6 +129,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\WcfProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperationAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalOperations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalResult.cs" />

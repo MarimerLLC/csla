@@ -153,7 +153,7 @@ namespace Csla.Web
     /// <param name="serviceProvider">IServiceProvider instance</param>
     public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
     {
-      throw new InvalidOperationException();
+      /* ignore value - we get the one from HttpContext */
     }
 
     /// <summary>
@@ -161,7 +161,11 @@ namespace Csla.Web
     /// </summary>
     public IServiceProvider GetScopedServiceProvider()
     {
-      return HttpContext?.RequestServices;
+      IServiceProvider result;
+      result = (IServiceProvider)GetLocalContext().GetValueOrNull("__ssp");
+      if (result == null)
+        result = GetDefaultServiceProvider();
+      return result;
     }
 
     /// <summary>
@@ -170,7 +174,7 @@ namespace Csla.Web
     /// <param name="serviceProvider">IServiceProvider instance</param>
     public void SetScopedServiceProvider(IServiceProvider serviceProvider)
     {
-      throw new InvalidOperationException();
+      GetLocalContext()["__ssp"] = serviceProvider;
     }
   }
 }

@@ -20,5 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortalController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebConfiguration.cs" />
   </ItemGroup>
 </Project>

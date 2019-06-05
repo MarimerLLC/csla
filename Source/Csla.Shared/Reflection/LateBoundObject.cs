@@ -154,5 +154,36 @@ namespace Csla.Reflection
         throw new CallMethodException(Instance.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, ex);
       }
     }
+
+#if !NET40
+    /// <summary>
+    /// Invokes a method using the await keyword
+    /// if the method returns Task,
+    /// otherwise synchronously invokes the method.
+    /// </summary>
+    /// <param name="isSync">Is client calling this synchronously</param>
+    /// <param name="attributeType">Data portal operation attribute</param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    public async Task CallMethodTryAsyncDI(bool isSync, Type attributeType, params object[] parameters)
+    {
+      var method = ServiceProviderMethodCaller.FindMethodForCriteria(
+        Instance, attributeType, parameters);
+      try
+      {
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method);
+        await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters);
+      }
+      catch (CallMethodException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new CallMethodException(Instance.GetType().Name + "." + method.Name + " " + Resources.MethodCallFailed, ex);
+      }
+    }
+#endif
   }
 }

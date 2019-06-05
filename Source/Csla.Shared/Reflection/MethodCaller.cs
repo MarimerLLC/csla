@@ -970,7 +970,7 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
+    public async static Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
     {
       return await CallMethodTryAsync(obj, method, true, parameters);
     }
@@ -983,12 +983,12 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method)
+    public async static Task<object> CallMethodTryAsync(object obj, string method)
     {
       return await CallMethodTryAsync(obj, method, false, null);
     }
 
-    private async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)
+    private async static Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)
     {
       try
       {
@@ -997,16 +997,16 @@ namespace Csla.Reflection
           var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
           if (info == null)
             throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-          var isAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
-          var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
+          var isAsyncTask = (info.ReturnType == typeof(Task));
+          var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
           if (isAsyncTask)
           {
-            await (System.Threading.Tasks.Task)CallMethod(obj, method, hasParameters, parameters);
+            await (Task)CallMethod(obj, method, hasParameters, parameters);
             return null;
           }
           else if (isAsyncTaskObject)
           {
-            return await (System.Threading.Tasks.Task<object>)CallMethod(obj, method, hasParameters, parameters);
+            return await (Task<object>)CallMethod(obj, method, hasParameters, parameters);
           }
           else
           {
@@ -1020,12 +1020,12 @@ namespace Csla.Reflection
             throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
           if (mh.IsAsyncTask)
           {
-            await (System.Threading.Tasks.Task)CallMethod(obj, mh, hasParameters, parameters);
+            await (Task)CallMethod(obj, mh, hasParameters, parameters);
             return null;
           }
           else if (mh.IsAsyncTaskObject)
           {
-            return await (System.Threading.Tasks.Task<object>)CallMethod(obj, mh, hasParameters, parameters);
+            return await (Task<object>)CallMethod(obj, mh, hasParameters, parameters);
           }
           else
           {
@@ -1064,6 +1064,13 @@ namespace Csla.Reflection
       return IsAsyncMethod(obj, method, true, parameters);
     }
 
+    internal static bool IsAsyncMethod(System.Reflection.MethodInfo info)
+    {
+      var isAsyncTask = (info.ReturnType == typeof(Task));
+      var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+      return isAsyncTask || isAsyncTaskObject;
+    }
+
     private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -1071,10 +1078,7 @@ namespace Csla.Reflection
         var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
         if (info == null)
           throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-        var isAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
-        var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
-
-        return isAsyncTask || isAsyncTaskObject;
+        return IsAsyncMethod(info);
       }
       else
       {

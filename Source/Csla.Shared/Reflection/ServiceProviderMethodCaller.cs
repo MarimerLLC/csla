@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
+using Csla.Properties;
 using Csla.Server;
 
 namespace Csla.Reflection
@@ -130,6 +132,57 @@ namespace Csla.Reflection
           result.Add(item);
       }
       return result.ToArray();
+    }
+
+    /// <summary>
+    /// Invoke a method async if possible, providing
+    /// paramters from the params array and from DI
+    /// </summary>
+    /// <param name="obj">Target object</param>
+    /// <param name="info">Method to invoke</param>
+    /// <param name="parameters">Criteria params array</param>
+    /// <returns></returns>
+    public static async Task<object> CallMethodTryAsync(object obj, System.Reflection.MethodInfo info, object[] parameters)
+    {
+      if (info == null)
+        throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
+
+      var methodParameters = info.GetParameters();
+      var plist = new object[methodParameters.Count()];
+      int index = 0;
+      int criteriaIndex = 0;
+
+      IServiceProvider service = null; // TODO: get default provider for this scope
+
+      foreach (var item in methodParameters)
+      {
+        if (item.CustomAttributes.Where(a => a.AttributeType == typeof(FromServicesAttribute)).Count() > 0)
+        {
+          plist[index] = service.GetService(item.ParameterType);
+        }
+        else
+        {
+          plist[index] = parameters[criteriaIndex];
+          criteriaIndex++;
+        }
+        index++;
+      }
+
+      var isAsyncTask = (info.ReturnType == typeof(Task));
+      var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+      if (isAsyncTask)
+      {
+        await (Task)info.Invoke(obj, plist);
+        return null;
+      }
+      else if (isAsyncTaskObject)
+      {
+        return await (Task<object>)info.Invoke(obj, plist);
+      }
+      else
+      {
+        return info.Invoke(obj, plist);
+      }
     }
   }
 }

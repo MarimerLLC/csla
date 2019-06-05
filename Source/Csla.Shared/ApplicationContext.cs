@@ -814,9 +814,33 @@ namespace Csla
     {
       LocalContext["__logicalExecutionLocation"] = location;
     }
-#endregion
+    #endregion
 
-#region Default context manager
+    #region ServiceProvider
+
+    /// <summary>
+    /// Gets or sets the default service provider
+    /// for this application.
+    /// </summary>
+    public static IServiceProvider DefaultServiceProvider
+    {
+      get => _contextManager.GetDefaultServiceProvider();
+      set => _contextManager.SetDefaultServiceProvider(value);
+    }
+
+    /// <summary>
+    /// Gets or sets the service provider
+    /// for this application context.
+    /// </summary>
+    public static IServiceProvider ScopedServiceProvider
+    {
+      get => _contextManager.GetScopedServiceProvider();
+      set => _contextManager.SetScopedServiceProvider(value);
+    }
+
+    #endregion
+
+    #region Default context manager
 
     /// <summary>
     /// Default context manager for the user property
@@ -951,8 +975,48 @@ namespace Csla
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         Thread.SetData(slot, globalContext);
       }
+
+      private static IServiceProvider _provider;
+
+      /// <summary>
+      /// Gets the default IServiceProvider
+      /// </summary>
+      public IServiceProvider GetDefaultServiceProvider()
+      {
+        return _provider;
+      }
+
+      /// <summary>
+      /// Sets the default IServiceProvider
+      /// </summary>
+      /// <param name="serviceProvider">IServiceProvider instance</param>
+      public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
+      {
+        _provider = serviceProvider;
+      }
+
+      /// <summary>
+      /// Gets the scoped IServiceProvider
+      /// </summary>
+      public IServiceProvider GetScopedServiceProvider()
+      {
+        IServiceProvider result;
+        result = (IServiceProvider)GetLocalContext().GetValueOrNull("__ssp");
+        if (result == null)
+          result = GetDefaultServiceProvider();
+        return result;
+      }
+
+      /// <summary>
+      /// Sets the scoped IServiceProvider
+      /// </summary>
+      /// <param name="serviceProvider">IServiceProvider instance</param>
+      public void SetScopedServiceProvider(IServiceProvider serviceProvider)
+      {
+        GetLocalContext()["__ssp"] = serviceProvider;
+      }
     }
 
-#endregion
+    #endregion
   }
 }

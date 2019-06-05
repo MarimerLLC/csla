@@ -138,6 +138,40 @@ namespace Csla.Web
     {
       HttpContext.Items[_globalContextName] = globalContext;
     }
+
+    /// <summary>
+    /// Gets the default IServiceProvider
+    /// </summary>
+    public IServiceProvider GetDefaultServiceProvider()
+    {
+      return HttpContext?.RequestServices;
+    }
+
+    /// <summary>
+    /// Sets the default IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
+    {
+      throw new InvalidOperationException();
+    }
+
+    /// <summary>
+    /// Gets the scoped IServiceProvider
+    /// </summary>
+    public IServiceProvider GetScopedServiceProvider()
+    {
+      return HttpContext?.RequestServices;
+    }
+
+    /// <summary>
+    /// Sets the scoped IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
+    {
+      throw new InvalidOperationException();
+    }
   }
 }
 #endif

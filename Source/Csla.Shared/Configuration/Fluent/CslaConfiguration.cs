@@ -18,6 +18,14 @@ namespace Csla.Configuration
   public class CslaConfiguration : ICslaConfiguration
   {
     /// <summary>
+    /// Gets a configuration instance.
+    /// </summary>
+    public static ICslaConfiguration Configure()
+    {
+      return new CslaConfiguration();
+    }
+
+    /// <summary>
     /// Sets the web context manager.
     /// </summary>
     /// <param name="contextManager">Web context manager instance</param>

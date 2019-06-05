@@ -152,13 +152,14 @@ namespace Csla.Reflection
       int index = 0;
       int criteriaIndex = 0;
 
-      IServiceProvider service = null; // TODO: get default provider for this scope
+      IServiceProvider service = ApplicationContext.ScopedServiceProvider;
 
       foreach (var item in methodParameters)
       {
         if (item.CustomAttributes.Where(a => a.AttributeType == typeof(FromServicesAttribute)).Count() > 0)
         {
-          plist[index] = service.GetService(item.ParameterType);
+          if (service != null)
+            plist[index] = service.GetService(item.ParameterType);
         }
         else
         {
@@ -181,7 +182,8 @@ namespace Csla.Reflection
       }
       else
       {
-        return info.Invoke(obj, plist);
+        var result = info.Invoke(obj, plist);
+        return result;
       }
     }
   }

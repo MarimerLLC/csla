@@ -1000,8 +1000,8 @@ namespace Csla
       /// </summary>
       public IServiceProvider GetScopedServiceProvider()
       {
-        IServiceProvider result;
-        result = (IServiceProvider)GetLocalContext().GetValueOrNull("__ssp");
+        IServiceProvider result = null;
+        result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
         if (result == null)
           result = GetDefaultServiceProvider();
         return result;
@@ -1013,7 +1013,7 @@ namespace Csla
       /// <param name="serviceProvider">IServiceProvider instance</param>
       public void SetScopedServiceProvider(IServiceProvider serviceProvider)
       {
-        GetLocalContext()["__ssp"] = serviceProvider;
+        Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
       }
     }
 

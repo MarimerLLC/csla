@@ -83,7 +83,10 @@ namespace Csla.Server
       else
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.CreateCriteria, criteria);
-        await CallMethodTryAsync(_methodNames.CreateCriteria, criteria).ConfigureAwait(false);
+        if (criteria is Core.MobileList<object> list)
+          await CallMethodTryAsync(_methodNames.CreateCriteria, list.ToArray()).ConfigureAwait(false);
+        else
+          await CallMethodTryAsync(_methodNames.CreateCriteria, criteria).ConfigureAwait(false);
       }
     }
 

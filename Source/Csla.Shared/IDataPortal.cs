@@ -23,15 +23,10 @@ namespace Csla
     /// Starts an asynchronous data portal operation to
     /// create a business object.
     /// </summary>
-    Task<T> CreateAsync();
-    /// <summary>
-    /// Starts an asynchronous data portal operation to
-    /// create a business object.
-    /// </summary>
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> CreateAsync(object criteria);
+    Task<T> CreateAsync(params object[] criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -63,7 +58,6 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     Task DeleteAsync(object criteria);
-#if (!ANDROID && !IOS && !NETFX_CORE) || NETSTANDARD
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -71,14 +65,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    T Create(object criteria);
-    /// <summary>
-    /// Called by a factory method in a business class to create 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
-    /// <returns>A new object, populated with default values.</returns>
-    T Create();
+    T Create(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
@@ -132,7 +119,6 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     void Delete(object criteria);
-#endif
     /// <summary>
     /// Gets a reference to the global context returned from
     /// the background thread and/or server.

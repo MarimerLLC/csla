@@ -69,14 +69,6 @@ namespace Csla
       }
     }
 
-    private void SetThreadContext(DataPortalAsyncRequest request)
-    {
-      Csla.ApplicationContext.User = request.Principal;
-      Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
-      Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
-      Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
-    }
-
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
       Server.DataPortalResult result = null;
@@ -112,8 +104,7 @@ namespace Csla
         {
           if (ex.InnerExceptions.Count > 0)
           {
-            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
-            if (dpe != null)
+            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleCreateDataPortalException(dpe, isSync, proxy);
           }
           throw new DataPortalException(
@@ -144,22 +135,16 @@ namespace Csla
     /// a new object, which is loaded with default
     /// values from the database.
     /// </summary>
-    /// <returns>A new object, populated with default values.</returns>
-    public T Create()
-    {
-      return Create(EmptyCriteria);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class to create 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    public T Create(object criteria)
+    public T Create(params object[] criteria)
     {
-      return (T)Create(typeof(T), criteria);
+      if (criteria == null || criteria.GetLength(0) == 0)
+        return (T)Create(typeof(T), EmptyCriteria);
+      else if (criteria.GetLength(0) == 1)
+        return (T)Create(typeof(T), criteria[0]);
+      else
+        return (T)Create(typeof(T), new Core.MobileList<object>(criteria));
     }
 
     internal static object Create(Type objectType, object criteria)
@@ -183,20 +168,15 @@ namespace Csla
     /// by the UI to create a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
-    public async Task<T> CreateAsync()
-    {
-      return await CreateAsync(EmptyCriteria);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to create a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public async Task<T> CreateAsync(object criteria)
+    public async Task<T> CreateAsync(params object[] criteria)
     {
-      return (T)await DoCreateAsync(typeof(T), criteria, false);
+      if (criteria == null || criteria.GetLength(0) == 0)
+        return (T)await DoCreateAsync(typeof(T), EmptyCriteria, false);
+      else if (criteria.GetLength(0) == 1)
+        return (T)await DoCreateAsync(typeof(T), criteria[0], false);
+      else
+        return (T)await DoCreateAsync(typeof(T), new Core.MobileList<object>(criteria), false);
     }
 
     /// <summary>

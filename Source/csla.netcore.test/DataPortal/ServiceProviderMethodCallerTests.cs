@@ -108,11 +108,43 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindMethodObjectCriteriaValid()
+    {
+      var obj = new ObjectCriteriaCreate();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void FindMethodObjectCriteriaSubtype()
+    {
+      var obj = new ObjectCriteriaCreateSubtype();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(System.Reflection.TargetParameterCountException))]
     public void FindMethodSingleCriteriaBadType()
     {
       var obj = new SimpleCriteriaCreate();
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { "hi" });
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_CreateBase()
+    {
+      var obj = new OldStyleNoOverride();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), null);
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_CreateCriteria()
+    {
+      var obj = new OldStyleCreate();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -143,15 +175,22 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class OldStyleCreate : BusinessBase<SimpleNoCriteriaCreate>
+  public class OldStyleNoOverride : BusinessBase<OldStyleNoOverride>
   {
-    protected override void DataPortal_Create()
-    {
-    }
+  }
 
-    private void DataPortal_Create(int id)
-    {
-    }
+  [Serializable]
+  public class OldStyleCreate : BusinessBase<OldStyleCreate>
+  {
+    protected override void DataPortal_Create() { }
+
+    private void DataPortal_Create(int id) { }
+  }
+
+  [Serializable]
+  public class OldStyleCriteria : BusinessBase<OldStyleCriteria>
+  {
+    private void DataPortal_Create(int id) { }
   }
 
   [Serializable]
@@ -165,11 +204,22 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class SimpleCriteriaCreate : BusinessBase<SimpleNoCriteriaCreate>
+  public class SimpleCriteriaCreate : BusinessBase<SimpleCriteriaCreate>
   {
     [Create]
     private void Create(int id) { }
   }
+
+  [Serializable]
+  public class ObjectCriteriaCreate : BusinessBase<ObjectCriteriaCreate>
+  {
+    [Create]
+    private void Create(object id) { }
+  }
+
+  [Serializable]
+  public class ObjectCriteriaCreateSubtype : ObjectCriteriaCreate
+  { }
 
   [Serializable]
   public class AmbiguousNoCriteriaCreate : BusinessBase<AmbiguousNoCriteriaCreate>

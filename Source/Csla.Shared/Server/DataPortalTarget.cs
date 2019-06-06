@@ -24,7 +24,7 @@ namespace Csla.Server
     {
       _target = obj as IDataPortalTarget;
       _methodNames = _methodNameList.GetOrAdd(obj.GetType(), 
-        (t) => DataPortalMethodNames.Default); // TODO: get method names dynamically
+        (t) => DataPortalMethodNames.Default);
     }
 
     public void OnDataPortalInvoke(DataPortalEventArgs eventArgs)
@@ -75,6 +75,7 @@ namespace Csla.Server
 
     public async Task CreateAsync(object criteria, bool isSync)
     {
+#if NET40
       if (criteria is EmptyCriteria)
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Create);
@@ -88,6 +89,19 @@ namespace Csla.Server
         else
           await CallMethodTryAsync(_methodNames.CreateCriteria, criteria).ConfigureAwait(false);
       }
+#else
+      if (criteria is EmptyCriteria)
+      {
+        await CallMethodTryAsyncDI(isSync, typeof(CreateAttribute), null).ConfigureAwait(false);
+      }
+      else
+      {
+        if (criteria is Core.MobileList<object> list)
+          await CallMethodTryAsyncDI(isSync, typeof(CreateAttribute), list.ToArray()).ConfigureAwait(false);
+        else
+          await CallMethodTryAsyncDI(isSync, typeof(CreateAttribute), criteria).ConfigureAwait(false);
+      }
+#endif
     }
 
     public async Task FetchAsync(object criteria, bool isSync)

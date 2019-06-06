@@ -36,7 +36,7 @@ namespace Csla.Reflection
     //  var method = FindMethodForCriteria(target, candidates, criteria);
     //}
 
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -79,7 +79,7 @@ namespace Csla.Reflection
             var index = 0;
             foreach (var c in criteria)
             {
-              if (c != null && c.GetType() != methodParams[index].ParameterType)
+              if (c != null && c.GetType() != methodParams[index].ParameterType && methodParams[index].ParameterType != typeof(object))
                 break;
               index++;
             }

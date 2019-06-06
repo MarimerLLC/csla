@@ -73,6 +73,23 @@ namespace Csla.Server
         CallMethodIfImplemented("MarkOld");
     }
 
+#if !NET40
+    private async Task InvokeOperationAsync(object criteria, bool isSync, Type attributeType)
+    {
+      if (criteria is EmptyCriteria)
+      {
+        await CallMethodTryAsyncDI(isSync, attributeType, null).ConfigureAwait(false);
+      }
+      else
+      {
+        if (criteria is Core.MobileList<object> list)
+          await CallMethodTryAsyncDI(isSync, attributeType, list.ToArray()).ConfigureAwait(false);
+        else
+          await CallMethodTryAsyncDI(isSync, attributeType, criteria).ConfigureAwait(false);
+      }
+    }
+#endif
+
     public async Task CreateAsync(object criteria, bool isSync)
     {
 #if NET40
@@ -90,22 +107,13 @@ namespace Csla.Server
           await CallMethodTryAsync(_methodNames.CreateCriteria, criteria).ConfigureAwait(false);
       }
 #else
-      if (criteria is EmptyCriteria)
-      {
-        await CallMethodTryAsyncDI(isSync, typeof(CreateAttribute), null).ConfigureAwait(false);
-      }
-      else
-      {
-        if (criteria is Core.MobileList<object> list)
-          await CallMethodTryAsyncDI(isSync, typeof(CreateAttribute), list.ToArray()).ConfigureAwait(false);
-        else
-          await CallMethodTryAsyncDI(isSync, typeof(CreateAttribute), criteria).ConfigureAwait(false);
-      }
+      await InvokeOperationAsync(criteria, isSync, typeof(CreateAttribute)).ConfigureAwait(false);
 #endif
     }
 
     public async Task FetchAsync(object criteria, bool isSync)
     {
+#if NET40
       if (criteria is EmptyCriteria)
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Fetch);
@@ -116,6 +124,9 @@ namespace Csla.Server
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.FetchCriteria, criteria);
         await CallMethodTryAsync(_methodNames.FetchCriteria, criteria).ConfigureAwait(false);
       }
+#else
+      await InvokeOperationAsync(criteria, isSync, typeof(FetchAttribute)).ConfigureAwait(false);
+#endif
     }
 
     public async Task UpdateAsync(bool isSync)
@@ -127,8 +138,12 @@ namespace Csla.Server
           if (!busObj.IsNew)
           {
             // tell the object to delete itself
+#if NET40
             Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.DeleteSelf);
             await CallMethodTryAsync(_methodNames.DeleteSelf).ConfigureAwait(false);
+#else
+            await InvokeOperationAsync(EmptyCriteria.Instance, isSync, typeof(DeleteSelfAttribute)).ConfigureAwait(false);
+#endif
           }
           MarkNew();
         }
@@ -137,14 +152,22 @@ namespace Csla.Server
           if (busObj.IsNew)
           {
             // tell the object to insert itself
+#if NET40
             Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Insert);
             await CallMethodTryAsync(_methodNames.Insert).ConfigureAwait(false);
+#else
+            await InvokeOperationAsync(EmptyCriteria.Instance, isSync, typeof(InsertAttribute)).ConfigureAwait(false);
+#endif
           }
           else
           {
             // tell the object to update itself
+#if NET40
             Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Update);
             await CallMethodTryAsync(_methodNames.Update).ConfigureAwait(false);
+#else
+            await InvokeOperationAsync(EmptyCriteria.Instance, isSync, typeof(UpdateAttribute)).ConfigureAwait(false);
+#endif
           }
           MarkOld();
         }
@@ -154,22 +177,34 @@ namespace Csla.Server
         // this is an updatable collection or some other
         // non-BusinessBase type of object
         // tell the object to update itself
+#if NET40
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Update);
         await CallMethodTryAsync(_methodNames.Update).ConfigureAwait(false);
+#else
+        await InvokeOperationAsync(EmptyCriteria.Instance, isSync, typeof(UpdateAttribute)).ConfigureAwait(false);
+#endif
         MarkOld();
       }
     }
 
     public async Task ExecuteAsync(bool isSync)
     {
+#if NET40
       Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Execute);
       await CallMethodTryAsync(_methodNames.Execute).ConfigureAwait(false);
+#else
+      await InvokeOperationAsync(EmptyCriteria.Instance, isSync, typeof(ExecuteAttribute)).ConfigureAwait(false);
+#endif
     }
 
     public async Task DeleteAsync(object criteria, bool isSync)
     {
+#if NET40
       Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Delete, criteria);
       await CallMethodTryAsync(_methodNames.Delete, criteria).ConfigureAwait(false);
+#else
+      await InvokeOperationAsync(criteria, isSync, typeof(DeleteAttribute)).ConfigureAwait(false);
+#endif
     }
   }
 

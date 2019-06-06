@@ -20,7 +20,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Adds CSLA to the application
     /// </summary>
-    /// <param name="config">ApplicationBuilder object</param>
+    /// <param name="app">ApplicationBuilder object</param>
     public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
     {
       Csla.ApplicationContext.DefaultServiceProvider = app.ApplicationServices;

@@ -36,7 +36,7 @@ namespace Csla.Reflection
     //  var method = FindMethodForCriteria(target, candidates, criteria);
     //}
 
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -52,19 +52,46 @@ namespace Csla.Reflection
         throw new ArgumentNullException("target");
 
       var targetType = target.GetType();
-      var candidates = targetType.GetMethods(_bindingAttr).
-        Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList();
+      var candidates = new List<System.Reflection.MethodInfo>();
+      var tType = targetType;
+      do
+      {
+        candidates.AddRange(tType.GetMethods(_bindingAttr).
+          Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList());
+        tType = tType.BaseType;
+      } while (tType != null);
+
+      // if no attribute-based methods found, look for legacy methods
       if (candidates.Count == 0)
       {
         var attributeName = attributeType.Name.Substring(0, attributeType.Name.IndexOf("Attribute"));
         if (attributeName.Contains("Child"))
-          candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"))));
+        {
+          var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
+          tType = targetType;
+          do
+          {
+            candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
+              m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
+            tType = tType.BaseType;
+          } while (tType != null);
+        }
         else
-          candidates.AddRange(targetType.GetMethods(_bindingAttr).Where(m => m.Name == "DataPortal_" + attributeName));
+        {
+          var methodName = "DataPortal_" + attributeName;
+          tType = targetType;
+          do
+          {
+            candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
+              m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
+            tType = tType.BaseType;
+          } while (tType != null);
+        }
       }
       if (candidates.Count == 0)
         throw new MissingMethodException($"{target.GetType().FullName}" + ".[" + attributeType.Name + "]");
       
+      // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
       if (criteria != null)
         criteriaLength = criteria.GetLength(0);
@@ -97,7 +124,10 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+          throw new TargetParameterCountException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+
+      // disambiguate if necessary, using a greedy algorithm
+      // so more DI parameters are better
       var result = matches[0];
       if (matches.Count > 1)
       {
@@ -117,8 +147,31 @@ namespace Csla.Reflection
             maxCount++;
           }
         }
+
+        // disambiguate if necessary, trying to eliminate
+        // System.Object parameters - favor strong typing
         if (maxCount > 1)
-          throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+        {
+          bool ambiguous = false;
+          int min = int.MaxValue;
+          foreach (var item in matches)
+          {
+            var objectCount = System.Text.RegularExpressions.Regex.Matches(
+              item.ToString(), "System\\.Object").Count;
+            if (objectCount < min)
+            {
+              min = objectCount;
+              result = item;
+            }
+            else if (objectCount == min)
+            {
+              ambiguous = true;
+              break;
+            }
+          }
+          if (ambiguous)
+            throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+        }
       }
       return result;
     }

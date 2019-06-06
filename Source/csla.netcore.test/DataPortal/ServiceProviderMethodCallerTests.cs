@@ -149,6 +149,14 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindMethodDataPortal_CreateCriteriaBase()
+    {
+      var obj = new OldStyleCriteriaBase();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
     public void FindMethodDataPortal_Create()
     {
       var obj = new OldStyleCreate();
@@ -191,6 +199,11 @@ namespace Csla.Test.DataPortal
   public class OldStyleCriteria : BusinessBase<OldStyleCriteria>
   {
     private void DataPortal_Create(int id) { }
+  }
+
+  [Serializable]
+  public class OldStyleCriteriaBase : OldStyleCriteria
+  {
   }
 
   [Serializable]

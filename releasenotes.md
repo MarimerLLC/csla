@@ -1,3 +1,11 @@
+I am pleased to announce the release of CSLA .NET version 4.11.1.
+
+This is a bug fix release from 4.11.0.
+
+* [#1138](https://github.com/MarimerLLC/csla/issues/1138) Backport fix for TransactionTypes enum issue
+
+## CSLA .NET version 4.11.0 Release Notes
+
 I am pleased to announce the release of CSLA .NET version 4.11.0.
 
 This is an enhancement and bug fix release from 4.10.1.

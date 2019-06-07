@@ -14,8 +14,8 @@
     <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <AssemblyVersion>4.10.1.0</AssemblyVersion>
-    <FileVersion>4.10.1.0</FileVersion>
+    <AssemblyVersion>4.11.0.0</AssemblyVersion>
+    <FileVersion>4.11.0.0</FileVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

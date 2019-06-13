@@ -31,15 +31,10 @@ namespace Csla
     /// Starts an asynchronous data portal operation to
     /// create a business object.
     /// </summary>
-    Task<T> FetchAsync();
-    /// <summary>
-    /// Starts an asynchronous data portal operation to
-    /// create a business object.
-    /// </summary>
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> FetchAsync(object criteria);
+    Task<T> FetchAsync(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
@@ -57,7 +52,7 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    Task DeleteAsync(object criteria);
+    Task DeleteAsync(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -72,13 +67,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    T Fetch(object criteria);
-    /// <summary>
-    /// Called by a factory method in a business class to retrieve
-    /// an object, which is loaded with values from the database.
-    /// </summary>
-    /// <returns>An object populated with values from the database.</returns>
-    T Fetch();
+    T Fetch(params object[] criteria);
     /// <summary>
     /// Called to execute a Command object on the server.
     /// </summary>
@@ -118,7 +107,7 @@ namespace Csla
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    void Delete(object criteria);
+    void Delete(params object[] criteria);
     /// <summary>
     /// Gets a reference to the global context returned from
     /// the background thread and/or server.
@@ -149,6 +138,7 @@ namespace Csla
     /// by the UI to create a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
+    [Obsolete]
     void BeginCreate();
     /// <summary>
     /// Called by a factory method in a business class or
@@ -156,6 +146,7 @@ namespace Csla
     /// with default values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     void BeginCreate(object criteria);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -164,6 +155,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginCreate(object criteria, object userState);
     /// <summary>
     /// Event raised when the operation has completed.

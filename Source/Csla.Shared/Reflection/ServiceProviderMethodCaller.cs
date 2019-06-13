@@ -10,10 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Csla.Properties;
-using Csla.Server;
 
 namespace Csla.Reflection
 {
@@ -23,19 +21,6 @@ namespace Csla.Reflection
   /// </summary>
   public static class ServiceProviderMethodCaller
   {
-    ///// <summary>
-    ///// Invoke a method based on data portal criteria
-    ///// and providing any remaining parameters with
-    ///// values from an IServiceProvider
-    ///// </summary>
-    ///// <param name="target">Object with methods</param>
-    ///// <param name="candidates">List of candidate method names</param>
-    ///// <param name="criteria">Data portal criteria values</param>
-    //public static void Invoke(object target, string[] candidates, object[] criteria)
-    //{
-    //  var method = FindMethodForCriteria(target, candidates, criteria);
-    //}
-
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
     /// <summary>
@@ -95,23 +80,36 @@ namespace Csla.Reflection
       int criteriaLength = 0;
       if (criteria != null)
         criteriaLength = criteria.GetLength(0);
-      List<System.Reflection.MethodInfo> matches = new List<System.Reflection.MethodInfo>();
+      var matches = new List<ScoredMethodInfo>();
       if (criteriaLength > 0)
       {
         foreach (var item in candidates)
         {
+          int score = 0;
           var methodParams = GetCriteriaParameters(item);
           if (methodParams.Count() >= criteriaLength)
           {
             var index = 0;
             foreach (var c in criteria)
             {
-              if (c != null && c.GetType() != methodParams[index].ParameterType && methodParams[index].ParameterType != typeof(object))
-                break;
+              if (c == null) 
+              {
+                if (methodParams[index].ParameterType.IsPrimitive)
+                  break;
+                else if (methodParams[index].ParameterType == typeof(object))
+                  score++;
+              }
+              else
+              {
+                if (c.GetType() == methodParams[index].ParameterType)
+                  score++;
+                else if (methodParams[index].ParameterType != typeof(object))
+                  break;
+              }
               index++;
             }
             if (index == criteriaLength)
-              matches.Add(item);
+              matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = score });
           }
         }
       }
@@ -120,60 +118,39 @@ namespace Csla.Reflection
         foreach (var item in candidates)
         {
           if (GetCriteriaParameters(item).Count() == 0)
-            matches.Add(item);
+            matches.Add(new ScoredMethodInfo { MethodInfo = item });
         }
       }
       if (matches.Count == 0)
           throw new TargetParameterCountException(target.GetType().FullName + ".[" + attributeType.Name + "]");
 
-      // disambiguate if necessary, using a greedy algorithm
-      // so more DI parameters are better
       var result = matches[0];
       if (matches.Count > 1)
       {
-        int max = 0;
-        int maxCount = 0;
+        // disambiguate if necessary, using a greedy algorithm
+        // so more DI parameters are better
+        foreach (var item in matches)
+          item.Score += item.MethodInfo.GetParameters().Count();
+
+        var maxScore = int.MinValue;
+        var maxCount = 0;
         foreach (var item in matches)
         {
-          var count = item.GetParameters().Count();
-          if (count > max)
+          if (item.Score > maxScore)
           {
+            maxScore = item.Score;
             maxCount = 1;
-            max = count;
             result = item;
           }
-          else if (count == max)
+          else if (item.Score == maxScore)
           {
             maxCount++;
           }
         }
-
-        // disambiguate if necessary, trying to eliminate
-        // System.Object parameters - favor strong typing
         if (maxCount > 1)
-        {
-          bool ambiguous = false;
-          int min = int.MaxValue;
-          foreach (var item in matches)
-          {
-            var objectCount = System.Text.RegularExpressions.Regex.Matches(
-              item.ToString(), "System\\.Object").Count;
-            if (objectCount < min)
-            {
-              min = objectCount;
-              result = item;
-            }
-            else if (objectCount == min)
-            {
-              ambiguous = true;
-              break;
-            }
-          }
-          if (ambiguous)
-            throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
-        }
+          throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
       }
-      return result;
+      return result.MethodInfo;
     }
 
     private static ParameterInfo[] GetCriteriaParameters(System.Reflection.MethodInfo method)
@@ -224,20 +201,38 @@ namespace Csla.Reflection
 
       var isAsyncTask = (info.ReturnType == typeof(Task));
       var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
-      if (isAsyncTask)
+      try
       {
-        await (Task)info.Invoke(obj, plist);
-        return null;
+        if (isAsyncTask)
+        {
+          await (Task)info.Invoke(obj, plist);
+          return null;
+        }
+        else if (isAsyncTaskObject)
+        {
+          return await (Task<object>)info.Invoke(obj, plist);
+        }
+        else
+        {
+          var result = info.Invoke(obj, plist);
+          return result;
+        }
       }
-      else if (isAsyncTaskObject)
+      catch (Exception ex)
       {
-        return await (Task<object>)info.Invoke(obj, plist);
+        Exception inner = null;
+        if (ex.InnerException == null)
+          inner = ex;
+        else
+          inner = ex.InnerException;
+        throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
-      else
-      {
-        var result = info.Invoke(obj, plist);
-        return result;
-      }
+    }
+
+    private class ScoredMethodInfo
+    {
+      public int Score { get; set; }
+      public System.Reflection.MethodInfo MethodInfo { get; set; }
     }
   }
 }

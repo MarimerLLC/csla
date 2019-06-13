@@ -391,22 +391,16 @@ namespace Csla
     /// a new object, which is loaded with default
     /// values from the database.
     /// </summary>
-    /// <returns>A new object, populated with default values.</returns>
-    public T Fetch()
-    {
-      return Fetch(EmptyCriteria);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class to Fetch 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    public T Fetch(object criteria)
+    public T Fetch(params object[] criteria)
     {
-      return (T)Fetch(typeof(T), criteria);
+      if (criteria == null || criteria.GetLength(0) == 0)
+        return (T)Fetch(typeof(T), EmptyCriteria);
+      else if (criteria.GetLength(0) == 1)
+        return (T)Fetch(typeof(T), criteria[0]);
+      else
+        return (T)Fetch(typeof(T), new Core.MobileList<object>(criteria));
     }
 
     internal static object Fetch(Type objectType, object criteria)
@@ -430,20 +424,15 @@ namespace Csla
     /// by the UI to Fetch a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
-    public async Task<T> FetchAsync()
-    {
-      return await FetchAsync(EmptyCriteria);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to Fetch a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public async Task<T> FetchAsync(object criteria)
+    public async Task<T> FetchAsync(params object[] criteria)
     {
-      return (T)await DoFetchAsync(typeof(T), criteria, false);
+      if (criteria == null || criteria.GetLength(0) == 0)
+        return (T)await DoFetchAsync(typeof(T), EmptyCriteria, false);
+      else if (criteria.GetLength(0) == 1)
+        return (T)await DoFetchAsync(typeof(T), criteria[0], false);
+      else
+        return (T)await DoFetchAsync(typeof(T), new Core.MobileList<object>(criteria), false);
     }
 
     /// <summary>
@@ -926,9 +915,14 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public void Delete(object criteria)
+    public void Delete(params object[] criteria)
     {
-      Delete(typeof(T), criteria);
+      if (criteria == null || criteria.GetLength(0) == 0)
+        Delete(typeof(T), EmptyCriteria);
+      else if (criteria.GetLength(0) == 1)
+        Delete(typeof(T), criteria[0]);
+      else
+        Delete(typeof(T), new Core.MobileList<object>(criteria));
     }
 
     internal static void Delete(Type objectType, object criteria)
@@ -994,9 +988,14 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public async Task DeleteAsync(object criteria)
+    public async Task DeleteAsync(params object[] criteria)
     {
-      await DoDeleteAsync(typeof(T), criteria, false);
+      if (criteria == null || criteria.GetLength(0) == 0)
+        await DoDeleteAsync(typeof(T), EmptyCriteria, false);
+      else if (criteria.GetLength(0) == 1)
+        await DoDeleteAsync(typeof(T), criteria[0], false);
+      else
+        await DoDeleteAsync(typeof(T), new Core.MobileList<object>(criteria), false);
     }
 
     /// <summary>

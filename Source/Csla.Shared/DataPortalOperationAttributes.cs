@@ -55,6 +55,15 @@ namespace Csla
 
   /// <summary>
   /// Specifies a method used by the server-side
+  /// data portal to execute a command
+  /// object.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Method)]
+  public class ExecuteAttribute : Attribute
+  { }
+
+  /// <summary>
+  /// Specifies a method used by the server-side
   /// data portal to delete domain object data
   /// during an update operation.
   /// </summary>

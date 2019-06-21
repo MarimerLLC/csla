@@ -13,7 +13,7 @@ CSLA .NET is developed and maintained by a [global development team](https://git
 * For beginners we suggest
   * This online course on [contributing to OSS projects on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
   * This excellent blog post on [Being a good open source citizen](https://hackernoon.com/being-a-good-open-source-citizen-9060d0ab9732#.4owk5884d)
-
+  * Information on the [CSLA git flow](https://github.com/MarimerLLC/csla/blob/master/docs/csla-github-flow.md) used on this project
 ## Making Changes
 
 * Create a topic/feature/issue branch from where you want to base your work.

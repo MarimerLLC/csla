@@ -29,14 +29,14 @@ namespace Csla.Test.DataPortal
     [ExpectedException(typeof(ArgumentNullException))]
     public void NoTarget()
     {
-      Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(null, typeof(CreateAttribute), null);
+      Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(null, typeof(CreateAttribute), null);
     }
 
     [TestMethod]
     public void FindMethodNoCriteriaNoDI()
     {
       var obj = new SimpleNoCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), null);
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), null);
       Assert.IsNotNull(method);
     }
 
@@ -44,7 +44,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodCriteriaDI()
     {
       var obj = new CriteriaCreateWithDI();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -53,7 +53,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodBadCriteriaDI()
     {
       var obj = new CriteriaCreateWithDI();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { "hi" });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { "hi" });
       Assert.IsNotNull(method);
     }
 
@@ -61,7 +61,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodMultipleCriteriaDI()
     {
       var obj = new MultipleCriteriaCreateWithDI();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123, "hi" });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123, "hi" });
       Assert.IsNotNull(method);
     }
 
@@ -69,7 +69,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodMultipleCriteriaDIInterleaved()
     {
       var obj = new MultipleCriteriaCreateWithDIInterleaved();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123, "hi" });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123, "hi" });
       Assert.IsNotNull(method);
     }
 
@@ -77,7 +77,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodCriteriaMultipleDI()
     {
       var obj = new CriteriaCreateWithMultipleDI();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
       Assert.AreEqual(3, method.GetParameters().Count());
     }
@@ -87,7 +87,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodCriteriaMultipleAmbiguousDI()
     {
       var obj = new CriteriaCreateWithMultipleAmbiguousDI();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
     }
 
     [TestMethod]
@@ -95,7 +95,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodSingleCriteriaInvalid()
     {
       var obj = new SimpleNoCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -103,7 +103,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodSingleCriteriaValid()
     {
       var obj = new SimpleCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -111,7 +111,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodObjectCriteriaValid()
     {
       var obj = new ObjectCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -119,7 +119,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodObjectCriteriaSubtype()
     {
       var obj = new ObjectCriteriaCreateSubtype();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -128,7 +128,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodSingleCriteriaBadType()
     {
       var obj = new SimpleCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { "hi" });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { "hi" });
       Assert.IsNotNull(method);
     }
 
@@ -136,7 +136,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodDataPortal_CreateBase()
     {
       var obj = new OldStyleNoOverride();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), null);
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), null);
       Assert.IsNotNull(method);
     }
 
@@ -144,7 +144,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodDataPortal_CreateCriteria()
     {
       var obj = new OldStyleCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -152,7 +152,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodDataPortal_CreateCriteriaBase()
     {
       var obj = new OldStyleCriteriaBase();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -160,7 +160,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodDataPortal_Create()
     {
       var obj = new OldStyleCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), null);
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), null);
       Assert.IsNotNull(method);
     }
 
@@ -168,7 +168,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodDataPortal_Create_Criteria()
     {
       var obj = new OldStyleCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), new object[] { 123 });
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), new object[] { 123 });
       Assert.IsNotNull(method);
     }
 
@@ -176,7 +176,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodAmbiguousCriteria()
     {
       var obj = new AmbiguousNoCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindMethodForCriteria(obj, typeof(CreateAttribute), null);
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(CreateAttribute), null);
       Assert.IsNotNull(method);
       Assert.AreEqual(1, method.GetParameters().Count());
     }

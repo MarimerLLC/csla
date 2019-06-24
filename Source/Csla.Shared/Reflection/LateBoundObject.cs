@@ -168,7 +168,7 @@ namespace Csla.Reflection
     /// </param>
     public async Task CallMethodTryAsyncDI(bool isSync, Type attributeType, params object[] parameters)
     {
-      var method = ServiceProviderMethodCaller.FindMethodForCriteria(
+      var method = ServiceProviderMethodCaller.FindDataPortalMethod(
         Instance, attributeType, parameters);
       try
       {

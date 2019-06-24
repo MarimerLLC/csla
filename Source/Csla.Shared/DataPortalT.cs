@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Properties;
@@ -22,7 +23,7 @@ namespace Csla
   /// </typeparam>
   public class DataPortal<T> : IDataPortal<T>
   {
-    internal static Csla.Server.EmptyCriteria EmptyCriteria = new Server.EmptyCriteria();
+    internal static Csla.Server.EmptyCriteria EmptyCriteria = Server.EmptyCriteria.Instance;
 
     /// <summary>
     /// Gets a reference to the global context returned from
@@ -69,6 +70,30 @@ namespace Csla
       }
     }
 
+    private static object GetCriteriaFromArray(params object[] criteria)
+    {
+      if (criteria == null)
+        return null;
+      else if (criteria.GetLength(0) == 0)
+        return EmptyCriteria;
+      else if (criteria.GetLength(0) == 1)
+        return criteria[0];
+      else
+        return new Core.MobileList<object>(criteria);
+    }
+
+    private static object[] GetCriteriaArray(object criteria)
+    {
+      if (criteria == EmptyCriteria)
+        return null;
+      else if (criteria is object[] array)
+        return array;
+      else if (criteria is Core.MobileList<object> list)
+        return list.ToArray();
+      else
+        return new object[] { criteria };
+    }
+
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
       Server.DataPortalResult result = null;
@@ -82,11 +107,13 @@ namespace Csla
             Resources.UserNotAuthorizedException,
             "create",
             objectType.Name));
-
+#if NET40
         var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
-
-        DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(objectType, method.RunLocal);
+        var proxy = GetDataPortalProxy(objectType, method.RunLocal);
+#else
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(CreateAttribute), GetCriteriaArray(criteria));
+        var proxy = GetDataPortalProxy(objectType, method.RunLocal());
+#endif
 
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -139,12 +166,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public T Create(params object[] criteria)
     {
-      if (criteria == null || criteria.GetLength(0) == 0)
-        return (T)Create(typeof(T), EmptyCriteria);
-      else if (criteria.GetLength(0) == 1)
-        return (T)Create(typeof(T), criteria[0]);
-      else
-        return (T)Create(typeof(T), new Core.MobileList<object>(criteria));
+      return (T)Create(typeof(T), GetCriteriaFromArray(criteria));
     }
 
     internal static object Create(Type objectType, object criteria)
@@ -221,6 +243,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     protected virtual void OnCreateCompleted(DataPortalResult<T> e)
     {
       CreateCompleted?.Invoke(this, e);
@@ -291,10 +314,13 @@ namespace Csla
             "get",
             objectType.Name));
 
+#if NET40
         var method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria);
-
-        DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(objectType, method.RunLocal);
+        var proxy = GetDataPortalProxy(objectType, method.RunLocal);
+#else
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(FetchAttribute), GetCriteriaArray(criteria));
+        var proxy = GetDataPortalProxy(objectType, method.RunLocal());
+#endif
 
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -381,6 +407,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     protected virtual void OnFetchCompleted(DataPortalResult<T> e)
     {
       FetchCompleted?.Invoke(this, e);
@@ -395,12 +422,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public T Fetch(params object[] criteria)
     {
-      if (criteria == null || criteria.GetLength(0) == 0)
-        return (T)Fetch(typeof(T), EmptyCriteria);
-      else if (criteria.GetLength(0) == 1)
-        return (T)Fetch(typeof(T), criteria[0]);
-      else
-        return (T)Fetch(typeof(T), new Core.MobileList<object>(criteria));
+      return (T)Fetch(typeof(T), GetCriteriaFromArray(criteria));
     }
 
     internal static object Fetch(Type objectType, object criteria)
@@ -495,10 +517,11 @@ namespace Csla
       try
       {
         DataPortal.OnDataPortalInitInvoke(null);
-        Csla.Server.DataPortalMethodInfo method = null;
+        DataPortalClient.IDataPortalProxy proxy = null;
         var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
+          Csla.Server.DataPortalMethodInfo method = null;
           var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
 
           if (obj is Core.ICommandObject)
@@ -561,9 +584,12 @@ namespace Csla
           }
           if (method == null)
             method = new Csla.Server.DataPortalMethodInfo();
+          proxy = GetDataPortalProxy(objectType, method.RunLocal);
         }
+#if NET40
         else
         {
+          Csla.Server.DataPortalMethodInfo method = null;
           string methodName;
           if (obj is Core.ICommandObject)
           {
@@ -615,10 +641,59 @@ namespace Csla
             }
           }
           method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
+          proxy = GetDataPortalProxy(objectType, method.RunLocal);
         }
-
-        DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(objectType, method.RunLocal);
+#else
+        else
+        {
+          System.Reflection.MethodInfo method;
+          var criteria = GetCriteriaArray(EmptyCriteria);
+          if (obj is Core.ICommandObject)
+          {
+            operation = DataPortalOperations.Execute;
+            if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                "execute",
+                objectType.Name));
+            method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(ExecuteAttribute), criteria);
+          }
+          else
+          {
+            if (obj is Core.BusinessBase bbase)
+            {
+              if (bbase.IsDeleted)
+              {
+                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                    "delete",
+                    objectType.Name));
+                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(DeleteSelfAttribute), criteria);
+              }
+              else if (bbase.IsNew)
+              {
+                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                    "create",
+                    objectType.Name));
+                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(InsertAttribute), criteria);
+              }
+              else
+              {
+                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                    "save",
+                    objectType.Name));
+                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(UpdateAttribute), criteria);
+              }
+            }
+            else
+            {
+              method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(UpdateAttribute), criteria);
+            }
+          }
+          proxy = GetDataPortalProxy(objectType, method.RunLocal());
+        }
+#endif
 
         dpContext =
           new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -631,8 +706,7 @@ namespace Csla
           {
             // when using local data portal, automatically
             // clone original object before saving
-            ICloneable cloneable = obj as ICloneable;
-            if (cloneable != null)
+            if (obj is ICloneable cloneable)
               obj = (T)cloneable.Clone();
           }
           result = await proxy.Update(obj, dpContext, isSync);
@@ -641,8 +715,7 @@ namespace Csla
         {
           if (ex.InnerExceptions.Count > 0)
           {
-            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
-            if (dpe != null)
+            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleUpdateDataPortalException(dpe, isSync, proxy);
           }
           throw new DataPortalException(
@@ -729,6 +802,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     protected virtual void OnUpdateCompleted(DataPortalResult<T> e)
     {
       UpdateCompleted?.Invoke(this, e);
@@ -815,10 +889,13 @@ namespace Csla
             "delete",
             objectType.Name));
 
+#if NET40
         var method = Server.DataPortalMethodCache.GetDeleteMethod(objectType, criteria);
-
-        DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(objectType, method.RunLocal);
+        var proxy = GetDataPortalProxy(objectType, method.RunLocal);
+#else
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(DeleteAttribute), GetCriteriaArray(criteria));
+        var proxy = GetDataPortalProxy(objectType, method.RunLocal());
+#endif
 
         dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
@@ -905,6 +982,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     protected virtual void OnDeleteCompleted(DataPortalResult<T> e)
     {
       DeleteCompleted?.Invoke(this, e);
@@ -917,12 +995,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public void Delete(params object[] criteria)
     {
-      if (criteria == null || criteria.GetLength(0) == 0)
-        Delete(typeof(T), EmptyCriteria);
-      else if (criteria.GetLength(0) == 1)
-        Delete(typeof(T), criteria[0]);
-      else
-        Delete(typeof(T), new Core.MobileList<object>(criteria));
+      Delete(typeof(T), GetCriteriaFromArray(criteria));
     }
 
     internal static void Delete(Type objectType, object criteria)
@@ -1008,6 +1081,7 @@ namespace Csla
     /// Raises the ExecuteCompleted event.
     /// </summary>
     /// <param name="e">Event arguments.</param>
+    [Obsolete]
     protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
     {
       ExecuteCompleted?.Invoke(this, e);
@@ -1101,4 +1175,14 @@ namespace Csla
       }
     }
   }
+
+#if !NET40
+  internal static class Extensions
+  {
+    internal static bool RunLocal(this System.Reflection.MethodInfo t)
+    {
+      return t.CustomAttributes.Count(a => a.AttributeType.Equals(typeof(RunLocalAttribute))) > 0;
+    }
+  }
+#endif
 }

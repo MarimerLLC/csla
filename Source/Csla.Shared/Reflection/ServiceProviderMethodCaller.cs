@@ -31,50 +31,88 @@ namespace Csla.Reflection
     /// <param name="target">Object with methods</param>
     /// <param name="attributeType">Data portal operation attribute</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public static System.Reflection.MethodInfo FindMethodForCriteria(object target, Type attributeType, object[] criteria)
+    public static System.Reflection.MethodInfo FindDataPortalMethod(object target, Type attributeType, object[] criteria)
     {
       if (target == null)
         throw new ArgumentNullException("target");
 
       var targetType = target.GetType();
-      var candidates = new List<System.Reflection.MethodInfo>();
-      var tType = targetType;
-      do
-      {
-        candidates.AddRange(tType.GetMethods(_bindingAttr).
-          Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList());
-        tType = tType.BaseType;
-      } while (tType != null);
+      return FindDataPortalMethod(targetType, attributeType, criteria);
+    }
 
-      // if no attribute-based methods found, look for legacy methods
-      if (candidates.Count == 0)
+    /// <summary>
+    /// Find a method based on data portal criteria
+    /// and providing any remaining parameters with
+    /// values from an IServiceProvider
+    /// </summary>
+    /// <param name="targetType">Type of domain object</param>
+    /// <param name="attributeType">Data portal operation attribute</param>
+    /// <param name="criteria">Data portal criteria values</param>
+    public static System.Reflection.MethodInfo FindDataPortalMethod(Type targetType, Type attributeType, object[] criteria)
+    {
+      if (targetType == null)
+        throw new ArgumentNullException("targetType");
+
+      var candidates = new List<System.Reflection.MethodInfo>();
+
+      var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
+      if (factoryInfo != null)
       {
-        var attributeName = attributeType.Name.Substring(0, attributeType.Name.IndexOf("Attribute"));
-        if (attributeName.Contains("Child"))
+        var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
+        if (factoryType != null)
         {
-          var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
-          tType = targetType;
-          do
-          {
-            candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
-              m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
-            tType = tType.BaseType;
-          } while (tType != null);
+          if (attributeType == typeof(CreateAttribute))
+            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName).ToList();
+          else if (attributeType == typeof(FetchAttribute))
+            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName).ToList();
+          else if (attributeType == typeof(DeleteAttribute))
+            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName).ToList();
+          else if (attributeType == typeof(ExecuteAttribute))
+            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName).ToList();
+          else
+            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName).ToList();
         }
-        else
+      }
+      else
+      {
+        var tType = targetType;
+        do
         {
-          var methodName = "DataPortal_" + attributeName;
-          tType = targetType;
-          do
+          candidates.AddRange(tType.GetMethods(_bindingAttr).
+            Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList());
+          tType = tType.BaseType;
+        } while (tType != null);
+
+        // if no attribute-based methods found, look for legacy methods
+        if (candidates.Count == 0)
+        {
+          var attributeName = attributeType.Name.Substring(0, attributeType.Name.IndexOf("Attribute"));
+          if (attributeName.Contains("Child"))
           {
-            candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
-              m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
-            tType = tType.BaseType;
-          } while (tType != null);
+            var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
+            tType = targetType;
+            do
+            {
+              candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
+                m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
+              tType = tType.BaseType;
+            } while (tType != null);
+          }
+          else
+          {
+            var methodName = "DataPortal_" + attributeName;
+            tType = targetType;
+            do
+            {
+              candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
+                m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
+              tType = tType.BaseType;
+            } while (tType != null);
+          }
         }
       }
       if (candidates.Count == 0)
-        throw new MissingMethodException($"{target.GetType().FullName}" + ".[" + attributeType.Name + "]");
+        throw new MissingMethodException($"{targetType.FullName}" + ".[" + attributeType.Name + "]");
       
       // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
@@ -122,7 +160,7 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-          throw new TargetParameterCountException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+          throw new TargetParameterCountException(targetType.FullName + ".[" + attributeType.Name + "]");
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -148,7 +186,7 @@ namespace Csla.Reflection
           }
         }
         if (maxCount > 1)
-          throw new AmbiguousMatchException(target.GetType().FullName + ".[" + attributeType.Name + "]");
+          throw new AmbiguousMatchException(targetType.FullName + ".[" + attributeType.Name + "]");
       }
       return result.MethodInfo;
     }

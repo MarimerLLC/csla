@@ -659,7 +659,8 @@ namespace Csla
           }
           else
           {
-            if (obj is Core.BusinessBase bbase)
+            var bbase = obj as Core.BusinessBase;
+            if (bbase != null)
             {
               if (bbase.IsDeleted)
               {

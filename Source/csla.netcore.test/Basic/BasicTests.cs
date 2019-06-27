@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -179,31 +180,6 @@ namespace Csla.Test.Basic
             child.GrandChildren.Remove(child.GrandChildren[0]);
             Assert.AreEqual(0, child.GrandChildren.Count);
         }
-
-        ///<remarks>"the non-generic method AreEqual cannot be used with type arguments" - though
-        ///it is used with type arguments in BasicTests.vb
-        ///</remarks>
-        //[TestMethod]
-        //public void CloneGraph()
-        //{
-        //    Csla.ApplicationContext.GlobalContext.Clear();
-        //    Root root = Csla.Test.Basic.Root.NewRoot();
-        //    FormSimulator form = new FormSimulator(root);
-        //    SerializableListener listener = new SerializableListener(root);
-        //    root.Children.Add("1");
-        //    Child child = root.Children[0];
-        //    Child.GrandChildren.Add("1");
-        //    Assert.AreEqual<int>(1, child.GrandChildren.Count);
-        //    Assert.AreEqual<string>("1", child.GrandChildren[0].Data);
-
-        //    Root clone = ((Root)(root.Clone()));
-        //    child = clone.Children[0];
-        //    Assert.AreEqual<int>(1, child.GrandChildren.Count);
-        //    Assert.AreEqual<string>("1", child.GrandChildren[0].Data);
-
-        //    Assert.AreEqual<string>("root Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["Deserialized"])));
-        //    Assert.AreEqual<string>("GC Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["GCDeserialized"])));
-        //}
 
         [TestMethod]
         public void ClearChildList()
@@ -387,8 +363,19 @@ namespace Csla.Test.Basic
           Assert.AreEqual(child, obj[0]);
         }
 
+        [TestMethod]
+        public async Task ChildEditLevelClone()
+        {
+          var list = await DataPortal.CreateAsync<RootList>();
+          list.BeginEdit();
+          list.AddNew();
+          var clone = (RootList)((ICloneable)list).Clone();
+          clone.ApplyEdit();
+        }
+
         [TestCleanup]
-        public void ClearContextsAfterEachTest() {
+        public void ClearContextsAfterEachTest()
+        {
           Csla.ApplicationContext.GlobalContext.Clear();
         }
       }

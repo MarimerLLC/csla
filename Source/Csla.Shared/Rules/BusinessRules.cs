@@ -22,10 +22,8 @@ namespace Csla.Rules
   /// Tracks the business rules for a business object.
   /// </summary>
   [Serializable]
-  public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
-#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
-, IUndoableObject
-#endif
+  public class BusinessRules :
+    MobileObject, ISerializationNotification, IBusinessRules
   {
     [NonSerialized]
     private object SyncRoot = new object();
@@ -820,10 +818,10 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !NETSTANDARD2_0
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
-      if (classAttList.Length > 0) 
+      if (classAttList.Length > 0)
       {
         metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
         AddDataAnnotationsFromType(metadataType);
@@ -861,71 +859,6 @@ namespace Csla.Rules
 
     #endregion
 
-#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
-    #region IUndoableObject Members
-
-    private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
-
-    int IUndoableObject.EditLevel
-    {
-      get { return _stateStack.Count; }
-    }
-
-    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
-    {
-      if (((IUndoableObject)this).EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel - 1);
-
-      SerializationInfo state = new SerializationInfo(0);
-      OnGetState(state, StateMode.Undo);
-
-      if (_brokenRules != null && _brokenRules.Count > 0)
-      {
-        byte[] rules = MobileFormatter.Serialize(_brokenRules);
-        state.AddValue("_rules", Convert.ToBase64String(rules));
-      }
-
-      _stateStack.Push(state);
-    }
-
-    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
-    {
-      if (((IUndoableObject)this).EditLevel > 0)
-      {
-        if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
-          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
-
-        SerializationInfo state = _stateStack.Pop();
-        OnSetState(state, StateMode.Undo);
-
-        lock (SyncRoot)
-          _brokenRules = null;
-
-        if (state.Values.ContainsKey("_rules"))
-        {
-          byte[] rules = Convert.FromBase64String(state.GetValue<string>("_rules"));
-
-          lock (SyncRoot)
-            _brokenRules = (BrokenRulesCollection)MobileFormatter.Deserialize(rules);
-        }
-      }
-    }
-
-    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
-    {
-      if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
-
-      if (((IUndoableObject)this).EditLevel > 0)
-      {
-        // discard latest recorded state
-        _stateStack.Pop();
-      }
-    }
-
-    #endregion
-#endif
-
     #region MobileObject overrides
 
     /// <summary>
@@ -943,18 +876,6 @@ namespace Csla.Rules
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
       info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
-      //info.AddValue("_isBusy", _isBusy);
-#if (ANDROID || IOS) || NETFX_CORE
-      if (mode == StateMode.Serialization)
-      {
-        if (_stateStack.Count > 0)
-        {
-          MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
-          byte[] xml = MobileFormatter.Serialize(list);
-          info.AddValue("_stateStack", xml);
-        }
-      }
-#endif
       base.OnGetState(info, mode);
     }
 
@@ -973,23 +894,6 @@ namespace Csla.Rules
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
       _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
-      //_isBusy = info.GetValue<bool>("_isBusy");
-#if (ANDROID || IOS) || NETFX_CORE
-      if (mode == StateMode.Serialization)
-      {
-        _stateStack.Clear();
-
-        if (info.Values.ContainsKey("_stateStack"))
-        {
-          byte[] xml = info.GetValue<byte[]>("_stateStack");
-          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
-          SerializationInfo[] layers = list.ToArray();
-          Array.Reverse(layers);
-          foreach (SerializationInfo layer in layers)
-            _stateStack.Push(layer);
-        }
-      }
-#endif
       base.OnSetState(info, mode);
     }
 
@@ -1045,15 +949,13 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
-#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();
     }
 
-#endregion
+    #endregion
 
     #region Get All Broken Rules (tree)
 
@@ -1139,7 +1041,7 @@ namespace Csla.Rules
       }
       return;
     }
-    
+
     #endregion
 
 

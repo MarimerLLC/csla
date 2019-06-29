@@ -69,7 +69,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       if (Csla.ApplicationContext.User != null)
       {
@@ -147,7 +147,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       context.HasPermission = true;
       if (Csla.ApplicationContext.User != null)

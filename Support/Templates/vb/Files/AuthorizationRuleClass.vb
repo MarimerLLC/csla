@@ -40,7 +40,7 @@ Public Class AuthorizationRuleClass
   'End Property
   
 
-  Protected Overrides Sub Execute(ByVal context As AuthorizationContext)
+  Protected Overrides Sub Execute(ByVal context As IAuthorizationContext)
     ' TODO: Add actual rule code here. 
     'if (!access_condition)
     '{

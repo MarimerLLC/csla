@@ -22,7 +22,7 @@ namespace Csla.Rules
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    void Execute(AuthorizationContext context);
+    void Execute(IAuthorizationContext context);
     /// <summary>
     /// Gets the element (property/method)
     /// to which this rule is associated.

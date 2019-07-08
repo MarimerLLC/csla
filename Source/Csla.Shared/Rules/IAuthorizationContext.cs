@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IAuthorizationContext.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Interface defining an authorization context</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Rules 
 {

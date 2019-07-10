@@ -46,7 +46,7 @@ namespace Csla.Rules
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected abstract void Execute(AuthorizationContext context);
+    protected abstract void Execute(IAuthorizationContext context);
 
 
     /// <summary>
@@ -95,12 +95,12 @@ namespace Csla.Rules
     private void CanWriteProperty(string argument)
     {
       if (_locked)
-        new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
+        throw new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
     }
 
     #region IAuthorizationRule
 
-    void IAuthorizationRule.Execute(AuthorizationContext context)
+    void IAuthorizationRule.Execute(IAuthorizationContext context)
     {
       if (!_locked)
         _locked = true;

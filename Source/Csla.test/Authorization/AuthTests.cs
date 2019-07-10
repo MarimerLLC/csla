@@ -625,7 +625,7 @@ namespace Csla.Test.Authorization
         : base(action)
       {}
 
-      protected override void Execute(AuthorizationContext context)
+      protected override void Execute(IAuthorizationContext context)
       {
         context.HasPermission = false;
       }

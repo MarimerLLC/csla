@@ -9,7 +9,6 @@
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using System;
-using static Csla.ApplicationContext;
 
 namespace Csla.Configuration
 {

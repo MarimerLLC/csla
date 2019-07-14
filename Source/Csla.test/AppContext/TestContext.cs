@@ -74,5 +74,45 @@ namespace Csla.Test.AppContext
     {
       _myContext[_globalContextName] = globalContext;
     }
+
+    private static IServiceProvider _provider;
+
+    /// <summary>
+    /// Gets the default IServiceProvider
+    /// </summary>
+    public IServiceProvider GetDefaultServiceProvider()
+    {
+      return _provider;
+    }
+
+    /// <summary>
+    /// Sets the default IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
+    {
+      _provider = serviceProvider;
+    }
+
+    /// <summary>
+    /// Gets the scoped IServiceProvider
+    /// </summary>
+    public IServiceProvider GetScopedServiceProvider()
+    {
+      IServiceProvider result;
+      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
+      if (result == null)
+        result = GetDefaultServiceProvider();
+      return result;
+    }
+
+    /// <summary>
+    /// Sets the scoped IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
+    {
+      Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
+    }
   }
 }

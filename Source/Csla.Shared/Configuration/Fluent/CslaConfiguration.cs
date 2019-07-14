@@ -17,7 +17,14 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaConfiguration : ICslaConfiguration
   {
-#if !NETSTANDARD2_0
+    /// <summary>
+    /// Gets a configuration instance.
+    /// </summary>
+    public static ICslaConfiguration Configure()
+    {
+      return new CslaConfiguration();
+    }
+
     /// <summary>
     /// Sets the web context manager.
     /// </summary>
@@ -32,7 +39,6 @@ namespace Csla.Configuration
       ApplicationContext.WebContextManager = contextManager;
       return this;
     }
-#endif
 
     /// <summary>
     /// Sets the context manager.
@@ -112,6 +118,16 @@ namespace Csla.Configuration
     public ICslaConfiguration PropertyInfoFactory(string typeName)
     {
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the default IServiceProvider for the application.
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public ICslaConfiguration DefaultServiceProvider(IServiceProvider serviceProvider)
+    {
+      ApplicationContext.DefaultServiceProvider = serviceProvider;
       return this;
     }
 

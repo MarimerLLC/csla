@@ -20,8 +20,6 @@ namespace Csla
   /// </summary>
   public static class DataPortal
   {
-    private static readonly EmptyCriteria EmptyCriteria = new EmptyCriteria();
-
     /// <summary>
     /// Raised by DataPortal before it starts
     /// setting up to call a server-side
@@ -79,7 +77,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>()
     {
-      return Create<T>(EmptyCriteria);
+      return Create<T>(EmptyCriteria.Instance);
     }
 
     /// <summary>
@@ -111,7 +109,7 @@ namespace Csla
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, null);
+      BeginCreate<T>(EmptyCriteria.Instance, callback, null);
     }
 
     /// <summary>
@@ -131,7 +129,7 @@ namespace Csla
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, userState);
+      BeginCreate<T>(EmptyCriteria.Instance, callback, userState);
     }
 
     /// <summary>
@@ -231,7 +229,7 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>()
     {
-      return Fetch<T>(EmptyCriteria);
+      return Fetch<T>(EmptyCriteria.Instance);
     }
 
     internal static object Fetch(Type objectType, object criteria)
@@ -255,7 +253,7 @@ namespace Csla
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, null);
+      BeginFetch<T>(EmptyCriteria.Instance, callback, null);
     }
 
     /// <summary>
@@ -275,7 +273,7 @@ namespace Csla
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, userState);
+      BeginFetch<T>(EmptyCriteria.Instance, callback, userState);
     }
 
     /// <summary>

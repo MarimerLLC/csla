@@ -366,7 +366,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task ChildEditLevelClone()
     {
-      var list = await DataPortal.CreateAsync<RootList>();
+      var list = await Csla.DataPortal.CreateAsync<RootList>();
       list.BeginEdit();
       list.AddNew();
       var clone = (RootList)((ICloneable)list).Clone();

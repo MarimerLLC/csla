@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
+
+using System.Linq;
 using Csla.Rules;
 
 namespace Csla.Test.Authorization 
@@ -17,7 +19,7 @@ namespace Csla.Test.Authorization
     
     protected override void Execute(IAuthorizationContext context) 
     {
-      context.HasPermission = context.Criteria is PermissionRootWithCriteria.Criteria;
+      context.HasPermission = context.Criteria?.FirstOrDefault() is PermissionRootWithCriteria.Criteria;
     }
   }
 }

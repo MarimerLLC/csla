@@ -496,20 +496,20 @@ namespace Csla.Test.Authorization
         BusinessRules.HasPermission(
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
-          new PermissionRootWithCriteria.Criteria()));
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
-          new object()));
+          new[] { new object() }));
 
     
       Assert.IsFalse(
         BusinessRules.HasPermission(
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
-          (object)null));
+          (object[])null));
     }
 
     [TestMethod]
@@ -519,20 +519,20 @@ namespace Csla.Test.Authorization
         BusinessRules.HasPermission(
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
-          new PermissionRootWithCriteria.Criteria()));
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
-          new object()));
+          new[] { new object() }));
 
     
       Assert.IsFalse(
         BusinessRules.HasPermission(
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
-          (object)null));
+          (object[])null));
     }
   
     [TestMethod]
@@ -542,20 +542,20 @@ namespace Csla.Test.Authorization
         BusinessRules.HasPermission(
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
-          new PermissionRootWithCriteria.Criteria()));
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
-          new object()));
+          new[] { new object() }));
 
     
       Assert.IsFalse(
         BusinessRules.HasPermission(
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
-          (object)null));
+          (object[])null));
     }
   }
 

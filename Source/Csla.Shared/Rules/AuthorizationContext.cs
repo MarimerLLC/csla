@@ -39,7 +39,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets an object which is the criteria specified in the data portal call, if any.
     /// </summary>
-    public object Criteria { get; internal set; }
+    public object[] Criteria { get; internal set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthorizationContext"/> class.

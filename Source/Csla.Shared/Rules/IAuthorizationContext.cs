@@ -40,6 +40,6 @@ namespace Csla.Rules
     /// <summary>
     /// Gets an object which is the criteria specified in the data portal call, if any.
     /// </summary>
-    object Criteria { get; }
+    object[] Criteria { get; }
   }
 }

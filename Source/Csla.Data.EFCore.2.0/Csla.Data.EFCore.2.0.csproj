@@ -5,7 +5,7 @@
     <AssemblyName>Csla.Data.EntityFrameworkCore</AssemblyName>
     <RootNamespace>Csla.Data.EntityFrameworkCore</RootNamespace>
     <PackageId>Csla.Data.EntityFrameworkCore</PackageId>
-    <Version>4.11.0.0</Version>
+    <Version>4.11.1.0</Version>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>

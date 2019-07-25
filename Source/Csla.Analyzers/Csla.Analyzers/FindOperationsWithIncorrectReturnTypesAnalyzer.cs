@@ -23,8 +23,12 @@ namespace Csla.Analyzers
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(shouldOnlyReturnVoidOrTaskRule);
 
-    public override void Initialize(AnalysisContext context) =>
+    public override void Initialize(AnalysisContext context)
+    {
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+      context.EnableConcurrentExecution();
       context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+    }
 
     private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
     {
@@ -35,7 +39,7 @@ namespace Csla.Analyzers
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())
       {
         var taskType = context.Compilation.GetTypeByMetadataName(typeof(Task).FullName);
-        if(!(methodSymbol.ReturnsVoid || methodSymbol.ReturnType == taskType))
+        if(!(methodSymbol.ReturnsVoid || Equals(methodSymbol.ReturnType, taskType)))
         {
           context.ReportDiagnostic(Diagnostic.Create(
             shouldOnlyReturnVoidOrTaskRule, methodSymbol.Locations[0]));

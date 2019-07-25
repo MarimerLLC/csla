@@ -32,7 +32,7 @@ namespace Csla.Analyzers
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
       var typeSymbol = methodSymbol.ContainingType;
 
-      if (typeSymbol.IsStereotype() && methodSymbol.IsRootDataPortalOperation())
+      if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())
       {
         var taskType = context.Compilation.GetTypeByMetadataName(typeof(Task).FullName);
         if(!(methodSymbol.ReturnsVoid || methodSymbol.ReturnType == taskType))

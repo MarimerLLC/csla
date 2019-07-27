@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ChildDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
@@ -204,7 +204,7 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public void Update(object obj)
     {
-      Update(obj, false, null);
+      Update(obj, false, false, null);
     }
 
     /// <summary>
@@ -216,16 +216,37 @@ namespace Csla.Server
     /// </param>
     public void Update(object obj, params object[] parameters)
     {
-      Update(obj, true, parameters);
+      Update(obj, true, false, parameters);
     }
 
-    private void Update(object obj, bool hasParameters, params object[] parameters)
+    /// <summary>
+    /// Update a business object. Include objects which are not dirty.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    public void UpdateAll(object obj)
+    {
+      Update(obj, false, true, null);
+    }
+
+    /// <summary>
+    /// Update a business object. Include objects which are not dirty.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    /// <param name="parameters">
+    /// Parameters passed to method.
+    /// </param>
+    public void UpdateAll(object obj, params object[] parameters)
+    {
+      Update(obj, true, true, parameters);
+    }
+
+    private void Update(object obj, bool hasParameters, bool bypassIsDirtyTest, params object[] parameters)
     {
       if (obj == null)
         return;
 
       var busObj = obj as Core.BusinessBase;
-      if (busObj != null && busObj.IsDirty == false)
+      if (busObj != null && busObj.IsDirty == false && bypassIsDirtyTest == false)
       {
         // if the object isn't dirty, then just exit
         return;

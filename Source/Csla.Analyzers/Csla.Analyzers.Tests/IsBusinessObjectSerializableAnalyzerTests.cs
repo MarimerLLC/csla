@@ -26,16 +26,15 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, nameof(IsBusinessObjectSerializableAnalyzer)),
+        diagnostic.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsNotMobileObject()
     {
-      var code =
-@"namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
-{
-  public class AnalyzeWhenClassIsNotMobileObject { }
-}";
+      var code = "public class A { }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
         code, Array.Empty<string>());
     }
@@ -44,15 +43,11 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
       var code =
-@"using System;
+@"using Csla;
+using System;
 
-namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
-{
-  [Serializable]
-  public class AnalyzeWhenClassIsMobileObjectAndIsSerializable
-    : BusinessBase<AnalyzeWhenClassIsMobileObjectAndIsSerializable>
-  { }
-}";
+[Serializable]
+public class A : BusinessBase<A>{ }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
         code, Array.Empty<string>());
     }
@@ -61,12 +56,9 @@ namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
     public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
-{
-  public class AnalyzeWhenClassIsMobileObjectAndIsNotSerializable
-    : BusinessBase<AnalyzeWhenClassIsMobileObjectAndIsNotSerializable>
-  { }
-}";
+@"using Csla;
+
+public class A : BusinessBase<A>{ }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
         code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
     }

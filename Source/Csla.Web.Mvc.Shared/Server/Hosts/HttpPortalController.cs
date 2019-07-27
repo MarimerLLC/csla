@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="HttpPortalController.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
@@ -213,6 +213,7 @@ namespace Csla.Server.Hosts
       responseBuffer.Position = 0;
       using (var writer = new StreamWriter(responseStream))
       {
+        writer.AutoFlush = true;
         await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
       }
     }

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="HasChildren.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -75,11 +75,6 @@ namespace Csla.Test.ValidationRules
     void HasChildren_ChildChanged(object sender, ChildChangedEventArgs e)
     {
       BusinessRules.CheckRules(ChildListProperty);
-    }
-
-    public static void NewObject(EventHandler<DataPortalResult<HasChildren>> completed)
-    {
-      Csla.DataPortal.BeginCreate<HasChildren>(completed);
     }
   }
 }

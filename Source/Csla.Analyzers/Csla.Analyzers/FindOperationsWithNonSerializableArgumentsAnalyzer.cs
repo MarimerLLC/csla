@@ -11,24 +11,22 @@ namespace Csla.Analyzers
   public sealed class FindOperationsWithNonSerializableArgumentsAnalyzer
     : DiagnosticAnalyzer
   {
-    private static DiagnosticDescriptor shouldUseSerializableTypesRule = new DiagnosticDescriptor(
-      Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, FindOperationsWithNonSerializableArgumentsConstants.Title,
-      FindOperationsWithNonSerializableArgumentsConstants.Message, Constants.Categories.Design,
-      DiagnosticSeverity.Warning, true);
+    private static readonly DiagnosticDescriptor shouldUseSerializableTypesRule =
+      new DiagnosticDescriptor(
+        Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, FindOperationsWithNonSerializableArgumentsConstants.Title,
+        FindOperationsWithNonSerializableArgumentsConstants.Message, Constants.Categories.Design,
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, nameof(FindOperationsWithNonSerializableArgumentsAnalyzer)));
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-    {
-      get
-      {
-        return ImmutableArray.Create(
-          FindOperationsWithNonSerializableArgumentsAnalyzer.shouldUseSerializableTypesRule);
-      }
-    }
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
+      ImmutableArray.Create(shouldUseSerializableTypesRule);
 
     public override void Initialize(AnalysisContext context)
     {
-      context.RegisterSyntaxNodeAction<SyntaxKind>(
-        FindOperationsWithNonSerializableArgumentsAnalyzer.AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+      context.EnableConcurrentExecution();
+      context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
     }
 
     private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
@@ -45,8 +43,7 @@ namespace Csla.Analyzers
             (argument.Type is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable))
           {
             context.ReportDiagnostic(Diagnostic.Create(
-              FindOperationsWithNonSerializableArgumentsAnalyzer.shouldUseSerializableTypesRule,
-              argument.Locations[0]));
+              shouldUseSerializableTypesRule, argument.Locations[0]));
           }
         }
       }

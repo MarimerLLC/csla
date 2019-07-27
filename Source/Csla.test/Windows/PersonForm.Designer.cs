@@ -320,7 +320,9 @@
         private Csla.Windows.CslaActionExtender cslaActionExtender1;
         public System.Windows.Forms.Button SaveButton;
         public System.Windows.Forms.Button CloseButton;
+#pragma warning disable CS0108 
         public System.Windows.Forms.Button CancelButton;
+#pragma warning restore CS0108 
         public System.Windows.Forms.Button ValidateButton;
         public Csla.Windows.BindingSourceRefresh bindingSourceRefresh1;
         private Csla.Windows.CslaActionExtenderToolStrip cslaActionExtenderToolStrip1;

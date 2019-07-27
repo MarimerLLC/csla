@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CslaDataPortalConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
@@ -224,6 +224,21 @@ namespace Csla.Configuration
     {
       ConfigurationManager.AppSettings["CslaDashboardType"] = typeName;
       Csla.Server.Dashboard.DashboardFactory.Reset();
+      return RootConfiguration;
+    }
+
+    /// <summary>
+    /// Sets a value indicating whether any
+    /// synchronization context should be flowed to
+    /// child tasks by LocalProxy. Setting this 
+    /// to true may restrict or eliminate the 
+    /// use of background threads by LocalProxy.
+    /// </summary>
+    /// <param name="flow">True to flow context</param>
+    /// <returns></returns>
+    public ICslaConfiguration FlowSynchronizationContext(bool flow)
+    {
+      ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] = flow.ToString().ToLower();
       return RootConfiguration;
     }
   }

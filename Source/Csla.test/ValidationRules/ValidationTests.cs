@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ValidationTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -14,6 +14,7 @@ using Csla.Core;
 using Csla.Rules;
 using UnitDriven;
 using Csla.Serialization;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -32,261 +33,222 @@ namespace Csla.Test.ValidationRules
   {
 
     [TestMethod()]
-    public void TestValidationRulesWithPrivateMember()
+    public async Task TestValidationRulesWithPrivateMember()
     {
       //works now because we are calling ValidationRules.CheckRules() in DataPortal_Create
       UnitTestContext context = GetContext();
       Csla.ApplicationContext.GlobalContext.Clear();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        HasRulesManager root = e.Object;
-        context.Assert.AreEqual("<new>", root.Name);
-        context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
-        root.BeginEdit();
-        root.Name = "";
-        root.CancelEdit();
+      root.BeginEdit();
+      root.Name = "";
+      root.CancelEdit();
 
-        context.Assert.AreEqual("<new>", root.Name);
-        context.Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
-        root.BeginEdit();
-        root.Name = "";
-        root.ApplyEdit();
+      root.BeginEdit();
+      root.Name = "";
+      root.ApplyEdit();
 
-        context.Assert.AreEqual("", root.Name);
-        context.Assert.AreEqual(false, root.IsValid);
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
-        context.Assert.Success();
-      });
+      context.Assert.AreEqual("", root.Name);
+      context.Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+      context.Assert.Success();
 
       context.Complete();
     }
 
     [TestMethod()]
-    public void TestValidationRulesWithPublicProperty()
+    public async Task TestValidationRulesWithPublicProperty()
     {
-      UnitTestContext context = GetContext();
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
       Csla.ApplicationContext.GlobalContext.Clear();
-      HasRulesManager2.NewHasRulesManager2((o, e) =>
-      {
-        HasRulesManager2 root = e.Object;
-        context.Assert.AreEqual("<new>", root.Name);
-        context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>(new HasRulesManager2.Criteria("<new>"));
+      Assert.AreEqual("<new>", root.Name);
+      Assert.AreEqual(true, root.IsValid, "should be valid on create");
+      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
-        root.BeginEdit();
-        root.Name = "";
-        root.CancelEdit();
+      root.BeginEdit();
+      root.Name = "";
+      root.CancelEdit();
 
-        context.Assert.AreEqual("<new>", root.Name);
-        context.Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      Assert.AreEqual("<new>", root.Name);
+      Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
+      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
-        root.BeginEdit();
-        root.Name = "";
-        root.ApplyEdit();
+      root.BeginEdit();
+      root.Name = "";
+      root.ApplyEdit();
 
-        context.Assert.AreEqual("", root.Name);
-        context.Assert.AreEqual(false, root.IsValid);
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstMessage(HasRulesManager2.NameProperty).Description);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstBrokenRule(HasRulesManager2.NameProperty).Description);
-        context.Assert.Success();
-      });
-
-      context.Complete();
+      Assert.AreEqual("", root.Name);
+      Assert.AreEqual(false, root.IsValid);
+      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+      Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstMessage(HasRulesManager2.NameProperty).Description);
+      Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstBrokenRule(HasRulesManager2.NameProperty).Description);
     }
 
     [TestMethod()]
-    public void TestValidationAfterEditCycle()
+    public async Task TestValidationAfterEditCycle()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        HasRulesManager root = e.Object;
-        context.Assert.AreEqual("<new>", root.Name);
-        context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
-        bool validationComplete = false;
-        root.ValidationComplete += (vo, ve) => { validationComplete = true; };
+      bool validationComplete = false;
+      root.ValidationComplete += (vo, ve) => { validationComplete = true; };
 
-        root.BeginEdit();
-        root.Name = "";
-        context.Assert.AreEqual("", root.Name);
-        context.Assert.AreEqual(false, root.IsValid);
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
-        context.Assert.IsTrue(validationComplete, "ValidationComplete should have run");
-        root.BeginEdit();
-        root.Name = "Begin 1";
-        context.Assert.AreEqual("Begin 1", root.Name);
-        context.Assert.AreEqual(true, root.IsValid);
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        root.BeginEdit();
-        root.Name = "Begin 2";
-        context.Assert.AreEqual("Begin 2", root.Name);
-        context.Assert.AreEqual(true, root.IsValid);
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        root.BeginEdit();
-        root.Name = "Begin 3";
-        context.Assert.AreEqual("Begin 3", root.Name);
-        context.Assert.AreEqual(true, root.IsValid);
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      root.BeginEdit();
+      root.Name = "";
+      context.Assert.AreEqual("", root.Name);
+      context.Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+      context.Assert.IsTrue(validationComplete, "ValidationComplete should have run");
+      root.BeginEdit();
+      root.Name = "Begin 1";
+      context.Assert.AreEqual("Begin 1", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      root.BeginEdit();
+      root.Name = "Begin 2";
+      context.Assert.AreEqual("Begin 2", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      root.BeginEdit();
+      root.Name = "Begin 3";
+      context.Assert.AreEqual("Begin 3", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
-        HasRulesManager hrmClone = root.Clone();
+      HasRulesManager hrmClone = root.Clone();
 
-        //Test validation rule cancels for both clone and cloned
-        root.CancelEdit();
-        context.Assert.AreEqual("Begin 2", root.Name);
-        context.Assert.AreEqual(true, root.IsValid);
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        hrmClone.CancelEdit();
-        context.Assert.AreEqual("Begin 2", hrmClone.Name);
-        context.Assert.AreEqual(true, hrmClone.IsValid);
-        context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
-        root.CancelEdit();
-        context.Assert.AreEqual("Begin 1", root.Name);
-        context.Assert.AreEqual(true, root.IsValid);
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        hrmClone.CancelEdit();
-        context.Assert.AreEqual("Begin 1", hrmClone.Name);
-        context.Assert.AreEqual(true, hrmClone.IsValid);
-        context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
-        root.CancelEdit();
-        context.Assert.AreEqual("", root.Name);
-        context.Assert.AreEqual(false, root.IsValid);
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
-        hrmClone.CancelEdit();
-        context.Assert.AreEqual("", hrmClone.Name);
-        context.Assert.AreEqual(false, hrmClone.IsValid);
-        context.Assert.AreEqual(1, hrmClone.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", hrmClone.BrokenRulesCollection[0].Description);
-        root.CancelEdit();
-        context.Assert.AreEqual("<new>", root.Name);
-        context.Assert.AreEqual(true, root.IsValid);
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        hrmClone.CancelEdit();
-        context.Assert.AreEqual("<new>", hrmClone.Name);
-        context.Assert.AreEqual(true, hrmClone.IsValid);
-        context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
-        context.Assert.Success();
-      });
+      //Test validation rule cancels for both clone and cloned
+      root.CancelEdit();
+      context.Assert.AreEqual("Begin 2", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      hrmClone.CancelEdit();
+      context.Assert.AreEqual("Begin 2", hrmClone.Name);
+      context.Assert.AreEqual(true, hrmClone.IsValid);
+      context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      root.CancelEdit();
+      context.Assert.AreEqual("Begin 1", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      hrmClone.CancelEdit();
+      context.Assert.AreEqual("Begin 1", hrmClone.Name);
+      context.Assert.AreEqual(true, hrmClone.IsValid);
+      context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      root.CancelEdit();
+      context.Assert.AreEqual("", root.Name);
+      context.Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+      hrmClone.CancelEdit();
+      context.Assert.AreEqual("", hrmClone.Name);
+      context.Assert.AreEqual(false, hrmClone.IsValid);
+      context.Assert.AreEqual(1, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", hrmClone.BrokenRulesCollection[0].Description);
+      root.CancelEdit();
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      hrmClone.CancelEdit();
+      context.Assert.AreEqual("<new>", hrmClone.Name);
+      context.Assert.AreEqual(true, hrmClone.IsValid);
+      context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.Success();
 
       context.Complete();
     }
 
     [TestMethod()]
-    public void TestValidationRulesAfterClone()
+    public async Task TestValidationRulesAfterClone()
     {
       //this test uses HasRulesManager2, which assigns criteria._name to its public
       //property in DataPortal_Create.  If it used HasRulesManager, it would fail
       //the first assert, but pass the others
       Csla.ApplicationContext.GlobalContext.Clear();
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>(new HasRulesManager2.Criteria("test"));
+      Assert.AreEqual(true, root.IsValid);
+      root.BeginEdit();
+      root.Name = "";
+      root.ApplyEdit();
+
+      Assert.AreEqual(false, root.IsValid);
+      HasRulesManager2 rootClone = root.Clone();
+      Assert.AreEqual(false, rootClone.IsValid);
+
+      rootClone.Name = "something";
+      Assert.AreEqual(true, rootClone.IsValid);
+    }
+
+    [TestMethod()]
+
+    public async Task BreakRequiredRule()
+    {
+      Csla.ApplicationContext.GlobalContext.Clear();
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      root.Name = "";
+      Assert.AreEqual(false, root.IsValid, "should not be valid");
+      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+    }
+
+    [TestMethod()]
+
+    public async Task BreakLengthRule()
+    {
+      Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
-      HasRulesManager2.NewHasRulesManager2((o, e) =>
-      {
-        context.Assert.Try(() =>
-          {
-            HasRulesManager2 root = e.Object;
-            context.Assert.AreEqual(true, root.IsValid);
-            root.BeginEdit();
-            root.Name = "";
-            root.ApplyEdit();
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      root.Name = "12345678901";
+      context.Assert.AreEqual(false, root.IsValid, "should not be valid");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description);
+      Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
-            context.Assert.AreEqual(false, root.IsValid);
-            HasRulesManager2 rootClone = root.Clone();
-            context.Assert.AreEqual(false, rootClone.IsValid);
-
-            rootClone.Name = "something";
-            context.Assert.AreEqual(true, rootClone.IsValid);
-            context.Assert.Success();
-          });
-      });
+      root.Name = "1234567890";
+      context.Assert.AreEqual(true, root.IsValid, "should be valid");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.Success();
       context.Complete();
     }
 
     [TestMethod()]
-    
-    public void BreakRequiredRule()
+
+    public async Task BreakLengthRuleAndClone()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        context.Assert.Try(() =>
-          {
-            HasRulesManager root = e.Object;
-            root.Name = "";
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      root.Name = "12345678901";
+      context.Assert.AreEqual(false, root.IsValid, "should not be valid before clone");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
+      Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
-            context.Assert.AreEqual(false, root.IsValid, "should not be valid");
-            context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-            context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
-            context.Assert.Success();
-          });
-      });
+      root = (HasRulesManager)(root.Clone());
+      context.Assert.AreEqual(false, root.IsValid, "should not be valid after clone");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
+      context.Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
-      context.Complete();
-    }
-
-    [TestMethod()]
-    
-    public void BreakLengthRule()
-    {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      UnitTestContext context = GetContext();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        HasRulesManager root = e.Object;
-        root.Name = "12345678901";
-        context.Assert.AreEqual(false, root.IsValid, "should not be valid");
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description);
-        Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
-
-        root.Name = "1234567890";
-        context.Assert.AreEqual(true, root.IsValid, "should be valid");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        context.Assert.Success();
-      });
-      context.Complete();
-    }
-
-    [TestMethod()]
-    
-    public void BreakLengthRuleAndClone()
-    {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      UnitTestContext context = GetContext();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        HasRulesManager root = e.Object;
-        root.Name = "12345678901";
-        context.Assert.AreEqual(false, root.IsValid, "should not be valid before clone");
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
-        Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
-
-        root = (HasRulesManager)(root.Clone());
-        context.Assert.AreEqual(false, root.IsValid, "should not be valid after clone");
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
-        context.Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
-
-        root.Name = "1234567890";
-        context.Assert.AreEqual(true, root.IsValid, "Should be valid");
-        context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
-        context.Assert.Success();
-      });
+      root.Name = "1234567890";
+      context.Assert.AreEqual(true, root.IsValid, "Should be valid");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.Success();
       context.Complete();
     }
 
@@ -328,57 +290,43 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    public void VerifyUndoableStateStackOnClone()
+    public async Task VerifyUndoableStateStackOnClone()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       using (UnitTestContext context = GetContext())
       {
-        HasRulesManager2.NewHasRulesManager2((o, e) =>
-        {
-          context.Assert.IsNull(e.Error);
-          HasRulesManager2 root = e.Object;
+        var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>();
+        string expected = root.Name;
+        root.BeginEdit();
+        root.Name = "";
+        HasRulesManager2 rootClone = root.Clone();
+        rootClone.CancelEdit();
 
-          string expected = root.Name;
-          root.BeginEdit();
-          root.Name = "";
-          HasRulesManager2 rootClone = root.Clone();
-          rootClone.CancelEdit();
+        string actual = rootClone.Name;
+        context.Assert.AreEqual(expected, actual);
+        context.Assert.Try(rootClone.ApplyEdit);
 
-          string actual = rootClone.Name;
-          context.Assert.AreEqual(expected, actual);
-          context.Assert.Try(rootClone.ApplyEdit);
-
-          context.Assert.Success();
-        });
+        context.Assert.Success();
         context.Complete();
       }
     }
 
     [TestMethod()]
-    public void ListChangedEventTrigger()
+    public async Task ListChangedEventTrigger()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
-      HasChildren.NewObject((o, e) =>
-      {
-        try
-        {
-          HasChildren root = e.Object;
-          context.Assert.AreEqual(false, root.IsValid);
-          root.BeginEdit();
-          root.ChildList.Add(Csla.DataPortal.CreateChild<Child>());
-          context.Assert.AreEqual(true, root.IsValid);
+      var root = await Csla.DataPortal.CreateAsync<HasChildren>();
+      context.Assert.AreEqual(false, root.IsValid);
+      root.BeginEdit();
+      root.ChildList.Add(Csla.DataPortal.CreateChild<Child>());
+      context.Assert.AreEqual(true, root.IsValid);
 
-          root.CancelEdit();
-          context.Assert.AreEqual(false, root.IsValid);
+      root.CancelEdit();
+      context.Assert.AreEqual(false, root.IsValid);
 
-          context.Assert.Success();
-        }
-        finally
-        {
-          context.Complete();
-        }
-      });
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
@@ -610,7 +558,7 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasPrivateFields : BusinessBase<HasPrivateFields>
   {
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, RelationshipTypes.PrivateField);
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name), RelationshipTypes.PrivateField);
     private string _name = NameProperty.DefaultValue;
     public string Name
     {
@@ -740,7 +688,7 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasLazyField : BusinessBase<HasLazyField>
   {
-    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1, RelationshipTypes.LazyLoad);
+    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(nameof(Value1), RelationshipTypes.LazyLoad);
     public string Value1
     {
       get

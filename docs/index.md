@@ -10,15 +10,16 @@ Basic information
 Documentation
 -------------
 The primary documentation for the CSLA .NET framework is through the _Using CSLA 4_ ebook series:
-* [Using CSLA 4 ebook series](http://store.lhotka.net/Default.aspx?tabid=1560&ProductID=22)
 * [Books and Videos](Books-and-videos.md)
 * [Reference](Reference.md)
+* [CSLA .NET FAQ](https://github.com/MarimerLLC/csla/blob/master/docs/index.md)
 
 Resources
 ---------
 You can learn how to get started using the resources listed here:
 * [Getting started](Getting-started.md)
 * [Discussion forum](https://github.com/MarimerLLC/cslaforum)
+* [Code generators](https://github.com/MarimerLLC/csla/blob/master/docs/code-generators.md)
 
 Contributing
 ------------
@@ -31,8 +32,10 @@ External links
 --------------
 * [Rockford Lhotka home page](http://www.lhotka.net)
 * [Rockford Lhotka blog](http://www.lhotka.net/weblog/)
+* [Jonny Bekkum blog](https://jonnybekkum.wordpress.com/)
 * [CSLA .NET archive download page](http://www.lhotka.net/cslanet/download.aspx)
 * [Wikipedia page](http://en.wikipedia.org/wiki/CSLA_.NET)
 * [Open Hub](https://www.openhub.net/p/cslanet)
-* [Facebook](https://www.facebook.com/CslaNet) 
+* [LinkedIn](https://www.linkedin.com/groups/99453/)
+* Facebook [Group](https://www.facebook.com/groups/cslanet/) | [Page](https://www.facebook.com/CslaNet) 
 * [StackOverflow](http://stackoverflow.com/tags/csla/info)

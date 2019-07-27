@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="FieldTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -28,8 +28,10 @@ namespace Csla.Test.MethodCaller
   public class FieldTests
   {
 
-    private class Test1 {
+      private class Test1 {
+#pragma warning disable CS0414
       private string _f1 = "private"; // accessed by tests via reflection
+#pragma warning restore CS0414
       public string _f2 = "public";
     }
 

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="MethodCaller.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Provides methods to dynamically find and call methods.</summary>
 //-----------------------------------------------------------------------

@@ -22,10 +22,6 @@ Imports Csla.Security
     Return DataPortal.FetchChild(Of ReadOnlyChildList)(childData)
   End Function
 
-  ' require use of factory methods 
-  Private Sub New()
-  End Sub
-
 #End Region
 
 #Region "Data Access"

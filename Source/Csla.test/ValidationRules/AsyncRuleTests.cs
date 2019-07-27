@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AsyncRuleTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
@@ -12,6 +12,7 @@ using System.Text;
 using System.Windows.Threading;
 using System.Threading;
 using UnitDriven;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -138,6 +139,20 @@ namespace Csla.Test.ValidationRules
       har.CustomerNumber = "123456";
 
       context.Complete();
+    }
+
+    [TestMethod]
+    public async Task TestAsyncAwaitRule()
+    {
+      var har = new AsyncRuleRoot();
+      var tcs = new TaskCompletionSource<bool>();
+      har.ValidationComplete += (o, e) =>
+      {
+        Assert.AreEqual("abc", har.AsyncAwait, "ends with value");
+        tcs.SetResult(true);
+      };
+      har.AsyncAwait = "123456";
+      await tcs.Task;
     }
 
   }

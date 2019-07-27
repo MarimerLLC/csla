@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AuthorizationRules.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>IsInRole authorization rule.</summary>
 //-----------------------------------------------------------------------
@@ -69,7 +69,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       if (Csla.ApplicationContext.User != null)
       {
@@ -147,7 +147,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       context.HasPermission = true;
       if (Csla.ApplicationContext.User != null)

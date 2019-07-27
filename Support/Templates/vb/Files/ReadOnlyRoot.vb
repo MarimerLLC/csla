@@ -56,10 +56,6 @@ Public Class ReadOnlyRoot
     Return DataPortal.Fetch(Of ReadOnlyRoot)(id)
   End Function
 
-  ' require use of factory methods 
-  Private Sub New()
-  End Sub
-
 #End Region
 
 #Region "Data Access"

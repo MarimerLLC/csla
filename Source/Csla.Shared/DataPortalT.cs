@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="DataPortalT.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
@@ -217,6 +217,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
 
     /// <summary>
@@ -250,6 +251,7 @@ namespace Csla
     /// by the UI to create a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
+    [Obsolete]
     public void BeginCreate()
     {
       BeginCreate(EmptyCriteria);
@@ -261,6 +263,7 @@ namespace Csla
     /// with default values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     public void BeginCreate(object criteria)
     {
       BeginCreate(criteria, null);
@@ -273,6 +276,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginCreate(object criteria, object userState)
     {
       try
@@ -373,6 +377,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     public event EventHandler<DataPortalResult<T>> FetchCompleted;
 
     /// <summary>
@@ -466,6 +471,7 @@ namespace Csla
     /// by the UI to Fetch a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
+    [Obsolete]
     public void BeginFetch()
     {
       BeginFetch(EmptyCriteria);
@@ -477,6 +483,7 @@ namespace Csla
     /// with default values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     public void BeginFetch(object criteria)
     {
       BeginFetch(criteria, null);
@@ -489,6 +496,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginFetch(object criteria, object userState)
     {
       try
@@ -728,6 +736,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     public event EventHandler<DataPortalResult<T>> UpdateCompleted;
 
     /// <summary>
@@ -781,6 +790,7 @@ namespace Csla
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
+    [Obsolete]
     public void BeginUpdate(T obj)
     {
       BeginUpdate(obj, null);
@@ -792,6 +802,7 @@ namespace Csla
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginUpdate(T obj, object userState)
     {
       try
@@ -901,6 +912,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     public event EventHandler<DataPortalResult<T>> DeleteCompleted;
 
     /// <summary>
@@ -964,6 +976,7 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     public void BeginDelete(object criteria)
     {
       BeginDelete(criteria, null);
@@ -975,6 +988,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginDelete(object criteria, object userState)
     {
       try
@@ -1008,6 +1022,7 @@ namespace Csla
     /// <summary>
     /// Event indicating an execute operation is complete.
     /// </summary>
+    [Obsolete]
     public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
 
     /// <summary>
@@ -1034,6 +1049,7 @@ namespace Csla
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
+    [Obsolete]
     public void BeginExecute(T command)
     {
       BeginExecute(command, null);
@@ -1045,6 +1061,7 @@ namespace Csla
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginExecute(T command, object userState)
     {
       try

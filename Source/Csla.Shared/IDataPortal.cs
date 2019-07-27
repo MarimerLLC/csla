@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Interface defining the members of the data portal type</summary>
 //-----------------------------------------------------------------------
@@ -156,6 +156,7 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> CreateCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
@@ -196,12 +197,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> FetchCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to retrieve an existing object, which is loaded 
     /// with values from the database.
     /// </summary>
+    [Obsolete]
     void BeginFetch();
     /// <summary>
     /// Called by a factory method in a business class or
@@ -209,6 +212,7 @@ namespace Csla
     /// with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     void BeginFetch(object criteria);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -217,6 +221,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginFetch(object criteria, object userState);
     /// <summary>
     /// Event raised when the operation has completed.
@@ -236,12 +241,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> UpdateCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
+    [Obsolete]
     void BeginUpdate(T obj);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -249,6 +256,7 @@ namespace Csla
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginUpdate(T obj, object userState);
     /// <summary>
     /// Event raised when the operation has completed.
@@ -268,12 +276,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> DeleteCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     void BeginDelete(object criteria);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -281,16 +291,19 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginDelete(object criteria, object userState);
     /// <summary>
     /// Event indicating an execute operation is complete.
     /// </summary>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> ExecuteCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
+    [Obsolete]
     void BeginExecute(T command);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -298,6 +311,7 @@ namespace Csla
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginExecute(T command, object userState);
   }
 }

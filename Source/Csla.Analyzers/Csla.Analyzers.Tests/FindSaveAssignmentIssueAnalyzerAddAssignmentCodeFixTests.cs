@@ -1,13 +1,10 @@
-﻿using Csla.Analyzers;
-using Csla.Analyzers.Tests;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,17 +29,16 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes()
     {
       var code =
-@"namespace Csla.Analyzers.Tests.Targets.FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests
-{
-  public class User : BusinessBase<User> { }
+@"using Csla;
 
-  public class VerifyGetFixes
+public class A : BusinessBase<A> { }
+
+public class VerifyGetFixes
+{
+  public void Use()
   {
-    public void UseUser()
-    {
-      var x = DataPortal.Fetch<User>();
-      x.Save();
-    }
+    var x = DataPortal.Fetch<A>();
+    x.Save();
   }
 }";
       var document = TestHelpers.Create(code);

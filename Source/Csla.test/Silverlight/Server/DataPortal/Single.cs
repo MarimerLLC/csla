@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Single.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -49,16 +49,6 @@ namespace Csla.Test.DataPortalTest
     public static void DeleteObject(int id)
     {
       Csla.DataPortal.Delete<Single>(id);
-    }
-
-    public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler)
-    {
-      Csla.DataPortal.BeginDelete<Single>(id, handler);
-    }
-
-    public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler, object userState)
-    {
-      Csla.DataPortal.BeginDelete<Single>(id, handler, userState);
     }
 
     public Single()

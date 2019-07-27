@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Customer.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -137,13 +137,6 @@ namespace Csla.Test.CslaDataProvider
         base.OnSetState(info, mode);
         _customerId = info.GetValue<int>("_customerId");
       }
-    }
-
-    public static void GetCustomer(int customerID, EventHandler<DataPortalResult<Customer>> handler)
-    {
-      var dp = new DataPortal<Customer>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(customerID);
     }
 
     internal static Customer GetCustomer(int customerID)

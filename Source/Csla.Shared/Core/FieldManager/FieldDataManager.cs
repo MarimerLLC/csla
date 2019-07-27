@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="FieldDataManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
@@ -650,6 +650,25 @@ namespace Csla.Core.FieldManager
       }
     }
 
+    /// <summary>
+    /// Invokes the data portal to update
+    /// all child objects, including those which are not dirty,
+    /// contained in the list of fields.
+    /// </summary>
+    public void UpdateAllChildren(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      foreach (var item in _fieldData)
+      {
+        if (item != null)
+        {
+          object obj = item.Value;
+          if (obj is IEditableBusinessObject || obj is IEditableCollection)
+            portal.UpdateAll(obj, parameters);
+        }
+      }
+    }
+ 
     #endregion
 
 #if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0

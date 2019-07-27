@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Application context manager that uses HttpContext</summary>
 //-----------------------------------------------------------------------
@@ -39,7 +39,13 @@ namespace Csla.Web
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      return HttpContext.Current.User;
+      var result = HttpContext.Current.User;
+      if (result == null)
+      {
+        result = new Csla.Security.UnauthenticatedPrincipal();
+        SetUser(result);
+      }
+      return result;
     }
 
     /// <summary>

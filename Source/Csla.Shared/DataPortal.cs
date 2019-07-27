@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This is the client-side DataPortal.</summary>
 //-----------------------------------------------------------------------
@@ -107,6 +107,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -126,6 +127,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -147,6 +149,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -169,6 +172,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -234,7 +238,7 @@ namespace Csla
     {
       return DataPortal<object>.Fetch(objectType, criteria);
     }
-    
+
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// fetch a business object.
@@ -247,6 +251,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -266,6 +271,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -287,6 +293,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -309,6 +316,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -366,7 +374,7 @@ namespace Csla
       var dp = new DataPortal<T>();
       return dp.Update(obj);
     }
-    
+
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// update a business object.
@@ -382,6 +390,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginUpdate<T>(T obj, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -404,6 +413,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginUpdate<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -444,7 +454,7 @@ namespace Csla
     {
       DataPortal<object>.Delete(objectType, criteria);
     }
-   
+
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// delete a business object.
@@ -460,6 +470,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -482,6 +493,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -532,7 +544,7 @@ namespace Csla
     {
       return Update(obj);
     }
-    
+
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// execute a command object.
@@ -548,6 +560,7 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
+    [Obsolete]
     public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback) 
       where T : IMobileObject
     {
@@ -570,6 +583,7 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState) 
       where T : IMobileObject
     {

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CslaDataConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
@@ -53,5 +53,18 @@ namespace Csla.Configuration
       ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = seconds.ToString();
       return RootConfiguration;
     }
+
+#if !NET40 && !NET45
+    /// <summary>
+    /// Sets the default transaction async flow option
+    /// used to create new TransactionScope objects.
+    /// </summary>
+    /// <param name="asyncFlowOption">Async flow option</param>
+    public ICslaConfiguration DefaultTransactionAsyncFlowOption(System.Transactions.TransactionScopeAsyncFlowOption asyncFlowOption)
+    {
+      ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = asyncFlowOption.ToString();
+      return RootConfiguration;
+    }
+#endif
   }
 }

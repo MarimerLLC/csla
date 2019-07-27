@@ -30,15 +30,10 @@ namespace Csla.Analyzers.Tests
     {
       var code =
 @"using Csla;
-using System;
 
-namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
+public class A : BusinessBase<A>
 {
-  public class VerifyGetFixesWhenUsingSystemExists
-    : BusinessBase<VerifyGetFixesWhenUsingSystemExists>
-  {
-    public void DataPortal_Fetch() { }
-  }
+  public void DataPortal_Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -67,13 +62,9 @@ namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializa
       var code =
 @"using Csla;
 
-namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
+public class A : BusinessBase<A>
 {
-  public class VerifyGetFixesWhenUsingSystemDoesNotExists
-    : BusinessBase<VerifyGetFixesWhenUsingSystemDoesNotExists>
-  {
-    public void DataPortal_Fetch() { }
-  }
+  public void DataPortal_Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();

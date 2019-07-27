@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CslaConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
@@ -33,6 +33,20 @@ namespace Csla.Configuration
       return this;
     }
 #endif
+
+    /// <summary>
+    /// Sets the context manager.
+    /// </summary>
+    /// <param name="contextManager">Context manager instance.</param>
+    /// <returns>
+    /// ContextManager normally defaults to the correct value. Override for
+    /// non-standard or custom behaviors.
+    /// </returns>
+    public ICslaConfiguration ContextManager(IContextManager contextManager)
+    {
+      ApplicationContext.ContextManager = contextManager;
+      return this;
+    }
 
     /// <summary>
     /// Sets a value indicating whether CSLA

@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="BackgroundWorkerBCL.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Implementation of old BCL BackgroundWorker ported to WinRT.</summary>
 //-----------------------------------------------------------------------

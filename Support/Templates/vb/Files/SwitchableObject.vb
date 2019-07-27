@@ -79,10 +79,6 @@ Public Class SwitchableObject
     Return DataPortal.FetchChild(Of SwitchableObject)(childData)
   End Function
 
-  ' Require use of factory methods 
-  Private Sub New()
-  End Sub
-
 #End Region
 
 #Region "Root Data Access"

@@ -7,6 +7,8 @@ CSLA .NET
 
 ![](https://raw.github.com/MarimerLLC/csla/master/Support/Logos/csla%20win8_mid.png)
 
+### A home for your business logic
+
 CSLA .NET is a software development framework that helps you build a reusable, maintainable object-oriented business layer for your app. This framework reduces the cost of building and maintaining applications. 
 
 More information about CSLA .NET is available from the following sources:

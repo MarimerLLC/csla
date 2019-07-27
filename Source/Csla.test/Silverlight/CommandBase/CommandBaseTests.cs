@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CommandBaseTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -9,6 +9,7 @@ using Csla;
 using Csla.DataPortalClient;
 using UnitDriven;
 using Csla.Testing.Business.CommandBase;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -21,103 +22,23 @@ using TestSetup = NUnit.Framework.SetUpAttribute;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
-
-
 namespace cslalighttest.CommandBase
 {
   [TestClass]
   public class CommandBaseTests : TestBase
   {
     private const string ExecutionResultInvalidMessage = "Execution result is not valid";
-    private const string ExpectedUserState = "state";
     private const string Parameter = "test parameter";
     private const string ExpectedExecutionResult = TestCommandBase.ExecutionSignal + Parameter;
 
 
-    [TestInitialize]
-    public void Setup()
-    {
-    }
-
     [TestMethod]
-    
-    public void Asynch_Remote_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()
+
+    public async Task Asynch_Remote_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()
     {
-      var context = GetContext();
-
-      TestCommandBase.ExecuteCommand(Parameter, (o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.IsNull(e.UserState);
-        context.Assert.AreEqual(ExpectedExecutionResult, e.Object.ExecutionResult, ExecutionResultInvalidMessage);
-
-        context.Assert.Success();
-      });
-
-      context.Complete();
+      var command = new TestCommandBase(Parameter);
+      var result = await DataPortal.ExecuteAsync<TestCommandBase>(command);
+      Assert.AreEqual(ExpectedExecutionResult, result.ExecutionResult, ExecutionResultInvalidMessage);
     }
-
-    [TestMethod]
-    public void Asynch_Remote_call_with_userState_passed_Results_parameters_passed_to_server_with_userState_and_noException()
-    {
-      var context = GetContext();
-
-      TestCommandBase.ExecuteCommand(Parameter, (o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual(ExpectedUserState, e.UserState);
-        context.Assert.AreEqual(ExpectedExecutionResult, e.Object.ExecutionResult, ExecutionResultInvalidMessage);
-
-        context.Assert.Success();
-      }, ExpectedUserState);
-
-      context.Complete();
-    }
-
-    [TestMethod]
-    public void Synch_StaticPortal_call_Results_parameters_passed_to_server_and_noException()
-    {
-      TestCommandBase command = DataPortal.Execute<TestCommandBase>(new TestCommandBase(Parameter));
-      Assert.AreEqual(ExpectedExecutionResult, command.ExecutionResult, "Execution result is not valid");
-    }
-
-    [TestMethod]
-    public void Asynch_StaticPortal_call_wo_userState_passed_Results_parameters_passed_to_server_and_noException()
-    {
-      var context = GetContext();
-
-      TestCommandBase.ExecuteCommandStaticPortal(Parameter, (o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual(ExpectedExecutionResult, e.Object.ExecutionResult, ExecutionResultInvalidMessage);
-
-        context.Assert.Success();
-      });
-      context.Complete();
-    }
-
-    [TestMethod]
-    public void Asynch_StaticPortal_call_with_userState_passed_Results_parameters_passed_to_server_with_userState_and_noException()
-    {
-      var context = GetContext();
-
-      TestCommandBase.ExecuteCommandStaticPortal(Parameter, (o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual(ExpectedExecutionResult, e.Object.ExecutionResult, ExecutionResultInvalidMessage);
-        context.Assert.AreEqual(ExpectedUserState, e.UserState);
-
-        context.Assert.Success();
-      }, ExpectedUserState);
-      context.Complete();
-    }
-
   }
-
-
-
 }

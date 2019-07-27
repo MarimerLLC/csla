@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CslaConfigurationOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Contains configuration options which can be loaded </summary>
 //-----------------------------------------------------------------------
@@ -132,6 +132,18 @@ namespace Csla.Configuration
       get { return int.Parse(ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] ?? "0"); }
       set { ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = value.ToString(); }
     }
+
+#if !NET40 && !NET45
+    /// <summary>
+    /// Gets or sets the default transaction async flow option
+    /// used to create new TransactionScope objects. (Enabled or Suppress)
+    /// </summary>
+    public string DefaultTransactionAsyncFlowOption
+    {
+      get { return ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"]; }
+      set { ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = value.ToString(); }
+    }
+#endif
 
     /// <summary>
     /// Gets the maximum cache size

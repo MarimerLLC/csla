@@ -22,7 +22,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static MethodInfo $MethodName$Method = RegisterMethod(c => c.$MethodName$());
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static MethodInfo $MethodName$Method = RegisterMethod(nameof($MethodName$));
 public void $MethodName$()
 {
   // Check Authorization, trows UserNotAuthorizedException if not authorized

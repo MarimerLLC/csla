@@ -373,6 +373,17 @@ namespace Csla.Test.Basic
           clone.ApplyEdit();
         }
 
+        [TestMethod]
+        public async Task ChildEditLevelDeleteClone()
+        {
+          var list = await DataPortal.CreateAsync<RootList>();
+          list.BeginEdit();
+          list.AddNew();
+          list.RemoveAt(0);
+          var clone = (RootList)((ICloneable)list).Clone();
+          clone.ApplyEdit();
+        }
+
         [TestCleanup]
         public void ClearContextsAfterEachTest()
         {

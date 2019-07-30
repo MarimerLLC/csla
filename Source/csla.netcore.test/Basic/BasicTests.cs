@@ -373,6 +373,40 @@ namespace Csla.Test.Basic
       clone.ApplyEdit();
     }
 
+    [TestMethod]
+    public async Task ChildEditLevelDeleteClone()
+    {
+      var list = await DataPortal.CreateAsync<RootList>();
+      list.BeginEdit();
+      list.AddNew();
+      list.RemoveAt(0);
+      var clone = (RootList)((ICloneable)list).Clone();
+      clone.ApplyEdit();
+    }
+
+    [TestMethod]
+    public async Task UndoStateStack()
+    {
+      var obj = await DataPortal.CreateAsync<Root>();
+      obj.BeginEdit();
+      obj.Data = "1";
+      obj.BeginEdit();
+      obj.Data = "2";
+      Assert.AreEqual("2", obj.Data);
+      obj.CancelEdit();
+      Assert.AreEqual("1", obj.Data);
+      obj.BeginEdit();
+      obj.Data = "2";
+      Assert.AreEqual(2, obj.GetEditLevel());
+      var clone = obj.Clone();
+      Assert.AreEqual(2, clone.GetEditLevel());
+      Assert.AreEqual("2", clone.Data);
+      clone.CancelEdit();
+      Assert.AreEqual("1", clone.Data);
+      clone.CancelEdit();
+      Assert.AreEqual("", clone.Data);
+    }
+
     [TestCleanup]
     public void ClearContextsAfterEachTest()
     {

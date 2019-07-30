@@ -119,6 +119,16 @@ namespace Csla.Serialization.Mobile
         writer.Write(((byte[])target).Length);
         writer.Write((byte[])target);
       }
+      else if (target is byte[][] outerArray)
+      {
+        Write(CslaKnownTypes.ByteArrayArray, writer);
+        writer.Write(outerArray.Length);
+        foreach (var item in outerArray)
+        {
+          writer.Write(item.Length);
+          writer.Write(item);
+        }
+      }
       else if (target is char[])
       {
         Write(CslaKnownTypes.CharArray, writer);

@@ -140,5 +140,9 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext["dpinvokecomplete"] = ApplicationContext.GlobalContext["global"];
     }
 
+    internal int GetEditLevel()
+    {
+      return EditLevel;
+    }
   }
 }

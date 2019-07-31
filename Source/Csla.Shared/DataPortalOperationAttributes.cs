@@ -18,12 +18,20 @@ namespace Csla
   { }
 
   /// <summary>
+  /// Base type for data portal operation
+  /// attributes.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Method)]
+  public class DataPortalOperationAttribute : Attribute
+  { }
+
+  /// <summary>
   /// Specifies a method used by the server-side
   /// data portal to initialize a new
   /// domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateAttribute : Attribute
+  public class CreateAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -32,7 +40,7 @@ namespace Csla
   /// the domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchAttribute : Attribute
+  public class FetchAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -41,7 +49,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertAttribute : Attribute
+  public class InsertAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -50,7 +58,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateAttribute : Attribute
+  public class UpdateAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -59,7 +67,7 @@ namespace Csla
   /// object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ExecuteAttribute : Attribute
+  public class ExecuteAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -68,7 +76,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteAttribute : Attribute
+  public class DeleteAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -77,7 +85,7 @@ namespace Csla
   /// during an explicit delete operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfAttribute : Attribute
+  public class DeleteSelfAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -86,7 +94,7 @@ namespace Csla
   /// child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateChildAttribute : Attribute
+  public class CreateChildAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -95,7 +103,7 @@ namespace Csla
   /// the child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchChildAttribute : Attribute
+  public class FetchChildAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -104,7 +112,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertChildAttribute : Attribute
+  public class InsertChildAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -113,7 +121,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateChildAttribute : Attribute
+  public class UpdateChildAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -122,7 +130,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfChildAttribute : Attribute
+  public class DeleteSelfChildAttribute : DataPortalOperationAttribute
   { }
 
   /// <summary>
@@ -131,6 +139,6 @@ namespace Csla
   /// object during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ExecuteChildAttribute : Attribute
+  public class ExecuteChildAttribute : DataPortalOperationAttribute
   { }
 }

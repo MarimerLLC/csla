@@ -376,7 +376,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task ChildEditLevelDeleteClone()
     {
-      var list = await DataPortal.CreateAsync<RootList>();
+      var list = await Csla.DataPortal.CreateAsync<RootList>();
       list.BeginEdit();
       list.AddNew();
       list.RemoveAt(0);
@@ -387,7 +387,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task UndoStateStack()
     {
-      var obj = await DataPortal.CreateAsync<Root>();
+      var obj = await Csla.DataPortal.CreateAsync<Root>();
       obj.BeginEdit();
       obj.Data = "1";
       obj.BeginEdit();

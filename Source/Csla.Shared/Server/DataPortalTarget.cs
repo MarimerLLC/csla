@@ -35,6 +35,15 @@ namespace Csla.Server
         CallMethodIfImplemented(_methodNames.OnDataPortalInvoke, eventArgs);
     }
 
+    public void Child_OnDataPortalInvoke(DataPortalEventArgs eventArgs)
+    {
+      if (_target != null)
+        _target.Child_OnDataPortalInvoke(eventArgs);
+      else
+        CallMethodIfImplemented("Child_OnDataPortalInvoke", eventArgs);
+    }
+
+
     public void OnDataPortalInvokeComplete(DataPortalEventArgs eventArgs)
     {
       if (_target != null)
@@ -43,12 +52,29 @@ namespace Csla.Server
         CallMethodIfImplemented(_methodNames.OnDataPortalInvokeComplete, eventArgs);
     }
 
+    internal void Child_OnDataPortalInvokeComplete(DataPortalEventArgs eventArgs)
+    {
+      if (_target != null)
+        _target.Child_OnDataPortalInvokeComplete(eventArgs);
+      else
+        CallMethodIfImplemented("Child_OnDataPortalInvokeComplete", eventArgs);
+    }
+
     internal void OnDataPortalException(DataPortalEventArgs eventArgs, Exception ex)
     {
       if (_target != null)
         _target.DataPortal_OnDataPortalException(eventArgs, ex);
       else
         CallMethodIfImplemented(_methodNames.OnDataPortalException, eventArgs, ex);
+    }
+
+
+    internal void Child_OnDataPortalException(DataPortalEventArgs eventArgs, Exception ex)
+    {
+      if (_target != null)
+        _target.Child_OnDataPortalException(eventArgs, ex);
+      else
+        CallMethodIfImplemented("Child_OnDataPortalException", eventArgs, ex);
     }
 
     public void ThrowIfBusy()
@@ -63,6 +89,14 @@ namespace Csla.Server
         _target.MarkNew();
       else
         CallMethodIfImplemented("MarkNew");
+    }
+
+    public void MarkAsChild()
+    {
+      if (_target != null)
+        _target.MarkAsChild();
+      else
+        CallMethodIfImplemented("MarkAsChild");
     }
 
     internal void MarkOld()
@@ -111,6 +145,25 @@ namespace Csla.Server
 #endif
     }
 
+    public async Task CreateChildAsync(object criteria)
+    {
+#if NET40
+      if (criteria is EmptyCriteria)
+      {
+        await CallMethodTryAsync(_methodNames.CreateChild).ConfigureAwait(false);
+      }
+      else
+      {
+        if (criteria is Core.MobileList<object> list)
+          await CallMethodTryAsync(_methodNames.CreateChild, list.ToArray()).ConfigureAwait(false);
+        else
+          await CallMethodTryAsync(_methodNames.CreateChild, criteria).ConfigureAwait(false);
+      }
+#else
+      await InvokeOperationAsync(criteria, false, typeof(CreateChildAttribute)).ConfigureAwait(false);
+#endif
+    }
+
     public async Task FetchAsync(object criteria, bool isSync)
     {
 #if NET40
@@ -128,6 +181,26 @@ namespace Csla.Server
       await InvokeOperationAsync(criteria, isSync, typeof(FetchAttribute)).ConfigureAwait(false);
 #endif
     }
+
+    public async Task FetchChildAsync(object criteria)
+    {
+#if NET40
+      if (criteria is EmptyCriteria)
+      {
+        await CallMethodTryAsync(_methodNames.FetchChild).ConfigureAwait(false);
+      }
+      else
+      {
+        if (criteria is Core.MobileList<object> list)
+          await CallMethodTryAsync(_methodNames.FetchChild, list.ToArray()).ConfigureAwait(false);
+        else
+          await CallMethodTryAsync(_methodNames.FetchChild, criteria).ConfigureAwait(false);
+      }
+#else
+      await InvokeOperationAsync(criteria, false, typeof(FetchChildAttribute)).ConfigureAwait(false);
+#endif
+    }
+
 
     public async Task UpdateAsync(bool isSync)
     {
@@ -220,6 +293,9 @@ namespace Csla.Server
     public string Execute { get; set; } = "DataPortal_Execute";
     public string Delete { get; set; } = "DataPortal_Delete";
     public string DeleteSelf { get; set; } = "DataPortal_DeleteSelf";
+    public string CreateChild { get; set; } = "Child_Create";
+    public string FetchChild { get; set; } = "Child_Fetch";
+    public string UpdateChild { get; set; } = "Child_Update";
     public string OnDataPortalInvoke { get; set; } = "DataPortal_OnDataPortalInvoke";
     public string OnDataPortalInvokeComplete { get; set; } = "DataPortal_OnDataPortalInvokeComplete";
     public string OnDataPortalException { get; set; } = "DataPortal_OnDataPortalException";

@@ -6,6 +6,7 @@
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 using Csla.Reflection;
 
 namespace Csla.Server
@@ -37,47 +38,44 @@ namespace Csla.Server
       return Create(objectType, true, parameters);
     }
 
-    private object Create(System.Type objectType, bool hasParameters, params object[] parameters)
+    /// <summary>
+    /// Create a new business object.
+    /// </summary>
+    public async Task<T> CreateAsync<T>()
     {
-      LateBoundObject obj = null;
-      IDataPortalTarget target = null;
-      var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
+      return (T) await Create(typeof(T), false, null).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Create a new business object.
+    /// </summary>
+    /// <param name="parameters">
+    /// Criteria parameters passed from caller.
+    /// </param>
+    public async Task<T> CreateAsync<T>(params object[] parameters)
+    {
+      return (T)await Create(typeof(T), true, parameters).ConfigureAwait(false);
+    }
+
+    private async Task<object> Create(System.Type objectType, bool hasParameters, params object[] parameters)
+    {
+      object criteria = EmptyCriteria.Instance;
+      if (hasParameters && parameters == null)
+        criteria = null;
+      else if (hasParameters)
+        criteria = parameters;
+
+      DataPortalTarget obj = null;
+      var eventArgs = new DataPortalEventArgs(null, objectType, criteria, DataPortalOperations.Create);
       try
       {
-        // create an instance of the business object
-        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
         ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
-
-        target = obj.Instance as IDataPortalTarget;
-
-        if (target != null)
-        {
-          target.Child_OnDataPortalInvoke(eventArgs);
-          target.MarkAsChild();
-          target.MarkNew();
-        }
-        else
-        {
-          obj.CallMethodIfImplemented("Child_OnDataPortalInvoke",
-            eventArgs);
-          obj.CallMethodIfImplemented("MarkAsChild");
-          obj.CallMethodIfImplemented("MarkNew");
-        }
-
-
-        // tell the business object to create its data
-        if (hasParameters)
-          obj.CallMethod("Child_Create", parameters);
-        else
-          obj.CallMethod("Child_Create");
-
-        if (target != null)
-          target.Child_OnDataPortalInvokeComplete(eventArgs);
-        else
-          obj.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete",
-            eventArgs);
-
-        // return the populated business object as a result
+        obj.Child_OnDataPortalInvoke(eventArgs);
+        obj.MarkAsChild();
+        obj.MarkNew();
+        await obj.CreateChildAsync(criteria).ConfigureAwait(false);
+        obj.OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
       }
@@ -85,25 +83,24 @@ namespace Csla.Server
       {
         try
         {
-          if (target != null)
-            target.Child_OnDataPortalException(eventArgs, ex);
-          else if (obj != null)
-            obj.CallMethodIfImplemented("Child_OnDataPortalException",
-              eventArgs, ex);
+          if (obj != null)
+            obj.Child_OnDataPortalException(eventArgs, ex);
         }
         catch
         {
           // ignore exceptions from the exception handler
         }
-        object bo = null;
-        if (obj != null)
-          bo = obj.Instance;
+        object outval = null;
+        if (obj != null) outval = obj.Instance;
         throw new Csla.DataPortalException(
-          "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, bo);
+          "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, outval);
       }
       finally
       {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+        object reference = null;
+        if (obj != null)
+          reference = obj.Instance;
+        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -128,69 +125,65 @@ namespace Csla.Server
       return Fetch(objectType, true, parameters);
     }
 
-    private object Fetch(Type objectType, bool hasParameters, params object[] parameters)
+    /// <summary>
+    /// Get an existing business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
+    public async Task<T> FetchAsync<T>()
     {
+      return (T)await Fetch(typeof(T), false, null).ConfigureAwait(false);
+    }
 
-      LateBoundObject obj = null;
-      IDataPortalTarget target = null;
+    /// <summary>
+    /// Get an existing business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
+    /// <param name="parameters">
+    /// Criteria parameters passed from caller.
+    /// </param>
+    public async Task<T> FetchAsync<T>(params object[] parameters)
+    {
+      return (T)await Fetch(typeof(T), true, parameters).ConfigureAwait(false);
+    }
+
+    private async Task<object> Fetch(Type objectType, bool hasParameters, params object[] parameters)
+    {
+      object criteria = EmptyCriteria.Instance;
+      if (hasParameters && parameters == null)
+        criteria = null;
+      else if (hasParameters)
+        criteria = parameters;
+
+      DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
       try
       {
         // create an instance of the business object
-        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
         ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
-        target = obj.Instance as IDataPortalTarget;
-
-        if (target != null)
-        {
-          target.Child_OnDataPortalInvoke(eventArgs);
-          target.MarkAsChild();
-          target.MarkOld();
-        }
-        else
-        {
-          obj.CallMethodIfImplemented("Child_OnDataPortalInvoke",
-            eventArgs);
-          obj.CallMethodIfImplemented("MarkAsChild");
-          obj.CallMethodIfImplemented("MarkOld");
-        }
-
-        // tell the business object to fetch its data
-        if (hasParameters)
-          obj.CallMethod("Child_Fetch", parameters);
-        else
-          obj.CallMethod("Child_Fetch");
-
-        if (target != null)
-          target.Child_OnDataPortalInvokeComplete(eventArgs);
-        else
-          obj.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete",
-            eventArgs);
-
-        // return the populated business object as a result
+        obj.Child_OnDataPortalInvoke(eventArgs);
+        obj.MarkAsChild();
+        obj.MarkOld();
+        await obj.FetchChildAsync(criteria).ConfigureAwait(false);
+        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
-
       }
       catch (Exception ex)
       {
         try
         {
-          if (target != null)
-            target.Child_OnDataPortalException(eventArgs, ex);
-          else if (obj != null)
-            obj.CallMethodIfImplemented("Child_OnDataPortalException",
-              eventArgs, ex);
+          if (obj != null)
+            obj.Child_OnDataPortalException(eventArgs, ex);
         }
         catch
         {
           // ignore exceptions from the exception handler
         }
-        object bo = null;
-        if (obj != null)
-          bo = obj.Instance;
+        object outval = null;
+        if (obj != null) outval = obj.Instance;
         throw new Csla.DataPortalException(
-          "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, bo);
+          "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
       }
       finally
       {

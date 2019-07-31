@@ -14,7 +14,7 @@ namespace Csla
   /// via dependency injection.
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public class FromServicesAttribute : Attribute
+  public class InjectAttribute : Attribute
   { }
 
   /// <summary>
@@ -123,5 +123,14 @@ namespace Csla
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
   public class DeleteSelfChildAttribute : Attribute
+  { }
+
+  /// <summary>
+  /// Specifies a method used by the server-side
+  /// data portal to execute a child command
+  /// object during an update operation.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Method)]
+  public class ExecuteChildAttribute : Attribute
   { }
 }

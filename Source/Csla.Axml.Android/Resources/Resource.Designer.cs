@@ -40,8 +40,8 @@ namespace Csla.Axml
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f020000
-			public static int ApplicationName = 2130837504;
+			// aapt resource value: 0x7F010000
+			public static int ApplicationName = 2130771968;
 			
 			static String()
 			{

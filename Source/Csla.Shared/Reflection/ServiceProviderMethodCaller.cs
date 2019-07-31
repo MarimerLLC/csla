@@ -196,7 +196,7 @@ namespace Csla.Reflection
       var result = new List<ParameterInfo>();
       foreach (var item in method.GetParameters())
       {
-        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(FromServicesAttribute)) == 0)
+        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(InjectAttribute)) == 0)
           result.Add(item);
       }
       return result.ToArray();
@@ -224,7 +224,7 @@ namespace Csla.Reflection
 
       foreach (var item in methodParameters)
       {
-        if (item.CustomAttributes.Where(a => a.AttributeType == typeof(FromServicesAttribute)).Count() > 0)
+        if (item.CustomAttributes.Where(a => a.AttributeType == typeof(InjectAttribute)).Count() > 0)
         {
           if (service != null)
             plist[index] = service.GetService(item.ParameterType);

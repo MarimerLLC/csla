@@ -260,6 +260,71 @@ namespace Csla.Server
       }
     }
 
+    public async Task UpdateChildAsync(object criteria)
+    {
+      // tell the business object to update itself
+      if (Instance is Core.BusinessBase busObj)
+      {
+        if (busObj.IsDeleted)
+        {
+          if (!busObj.IsNew)
+          {
+            // tell the object to delete itself
+#if NET40
+            await CallMethodTryAsync(_methodNames.DeleteSelfChild, criteria).ConfigureAwait(false);
+#else
+            await InvokeOperationAsync(criteria, false, typeof(DeleteSelfChildAttribute)).ConfigureAwait(false);
+#endif
+            MarkNew();
+          }
+        }
+        else
+        {
+          if (busObj.IsNew)
+          {
+            // tell the object to insert itself
+#if NET40
+            await CallMethodTryAsync(_methodNames.InsertChild, criteria).ConfigureAwait(false);
+#else
+            await InvokeOperationAsync(criteria, false, typeof(InsertChildAttribute)).ConfigureAwait(false);
+#endif
+          }
+          else
+          {
+            // tell the object to update itself
+#if NET40
+            await CallMethodTryAsync(_methodNames.UpdateChild, criteria).ConfigureAwait(false);
+#else
+            await InvokeOperationAsync(criteria, false, typeof(UpdateChildAttribute)).ConfigureAwait(false);
+#endif
+          }
+          MarkOld();
+        }
+
+      }
+      else if (Instance is Core.ICommandObject)
+      {
+        // tell the object to update itself
+#if NET40
+        await CallMethodTryAsync(_methodNames.ExecuteChild, criteria).ConfigureAwait(false);
+#else
+        await InvokeOperationAsync(criteria, false, typeof(ExecuteChildAttribute)).ConfigureAwait(false);
+#endif
+      }
+      else
+      {
+        // this is an updatable collection or some other
+        // non-BusinessBase type of object
+        // tell the object to update itself
+#if NET40
+        await CallMethodTryAsync(_methodNames.UpdateChild, criteria).ConfigureAwait(false);
+#else
+        await InvokeOperationAsync(criteria, false, typeof(UpdateChildAttribute)).ConfigureAwait(false);
+#endif
+        MarkOld();
+      }
+    }
+
     public async Task ExecuteAsync(bool isSync)
     {
 #if NET40
@@ -296,6 +361,9 @@ namespace Csla.Server
     public string CreateChild { get; set; } = "Child_Create";
     public string FetchChild { get; set; } = "Child_Fetch";
     public string UpdateChild { get; set; } = "Child_Update";
+    public string InsertChild { get; set; } = "Child_Insert";
+    public string DeleteSelfChild { get; set; } = "Child_DeleteSelf";
+    public string ExecuteChild { get; set; } = "Child_Execute";
     public string OnDataPortalInvoke { get; set; } = "DataPortal_OnDataPortalInvoke";
     public string OnDataPortalInvokeComplete { get; set; } = "DataPortal_OnDataPortalInvokeComplete";
     public string OnDataPortalException { get; set; } = "DataPortal_OnDataPortalException";

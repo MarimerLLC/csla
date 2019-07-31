@@ -241,7 +241,7 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create([FromServices] ICloneable x) { }
+    private void Create([Inject] ICloneable x) { }
   }
 
   [Serializable]
@@ -251,7 +251,7 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x) { }
+    private void Create(int id, [Inject] ICloneable x) { }
   }
 
   [Serializable]
@@ -261,30 +261,30 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create(int id, string foo, [FromServices] ICloneable x) { }
+    private void Create(int id, string foo, [Inject] ICloneable x) { }
   }
 
   [Serializable]
   public class CriteriaCreateWithMultipleDI : BusinessBase<CriteriaCreateWithMultipleDI>
   {
     [Create]
-    private void Create(int id, [FromServices] ICloneable x) { }
+    private void Create(int id, [Inject] ICloneable x) { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, [FromServices] IAsyncResult y) { }
+    private void Create(int id, [Inject] ICloneable x, [Inject] IAsyncResult y) { }
   }
 
   [Serializable]
   public class CriteriaCreateWithMultipleAmbiguousDI : BusinessBase<CriteriaCreateWithMultipleAmbiguousDI>
   {
     [Create]
-    private void Create(int id, [FromServices] ICloneable x) { }
+    private void Create(int id, [Inject] ICloneable x) { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, [FromServices] IAsyncResult y) { }
+    private void Create(int id, [Inject] ICloneable x, [Inject] IAsyncResult y) { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, [FromServices] IFormattable y) { }
+    private void Create(int id, [Inject] ICloneable x, [Inject] IFormattable y) { }
   }
 
   [Serializable]
@@ -294,6 +294,6 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, string foo) { }
+    private void Create(int id, [Inject] ICloneable x, string foo) { }
   }
 }

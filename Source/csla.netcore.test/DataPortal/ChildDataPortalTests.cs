@@ -35,14 +35,6 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public async Task CreateChildNullCriteria()
-    {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.CreateAsync<TestChild>(null);
-      Assert.AreEqual("null", child.Name);
-    }
-
-    [TestMethod]
     public async Task CreateChildInt32Criteria()
     {
       var dp = new Server.ChildDataPortal();
@@ -54,7 +46,7 @@ namespace Csla.Test.DataPortal
     public async Task CreateChildMultipleCriteria()
     {
       var dp = new Server.ChildDataPortal();
-      var child = await dp.CreateAsync<TestChild>(123, "abc");
+      var child = await dp.CreateAsync<TestChild>("abc", 123);
       Assert.AreEqual("2", child.Name);
     }
 
@@ -63,14 +55,6 @@ namespace Csla.Test.DataPortal
     {
       var child = await Csla.DataPortal.FetchChildAsync<TestChild>();
       Assert.AreEqual("none", child.Name);
-    }
-
-    [TestMethod]
-    public async Task FetchChildNullCriteria()
-    {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChild>(null);
-      Assert.AreEqual("null", child.Name);
     }
 
     [TestMethod]
@@ -85,8 +69,17 @@ namespace Csla.Test.DataPortal
     public async Task FetchChildMultipleCriteria()
     {
       var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChild>(123, "abc");
+      var child = await dp.FetchAsync<TestChild>("abc", 123);
       Assert.AreEqual("2", child.Name);
+    }
+
+    [TestMethod]
+    public async Task UpdateChild()
+    {
+      var dp = new Server.ChildDataPortal();
+      var child = await dp.FetchAsync<TestChild>();
+      await dp.UpdateAsync(child, "update", 123);
+      Assert.AreEqual("update/123", child.Name);
     }
   }
 
@@ -109,6 +102,14 @@ namespace Csla.Test.DataPortal
     }
 
     [CreateChild]
+    private async Task CreateChild(int i)
+    {
+      await Task.Delay(0);
+      Name = "Int32";
+      return;
+    }
+
+    [CreateChild]
     private async Task CreateChild(object o)
     {
       await Task.Delay(0);
@@ -120,15 +121,10 @@ namespace Csla.Test.DataPortal
     }
 
     [CreateChild]
-    private async Task CreateChild(params object[] parameters)
+    private async Task CreateChild(string s, int i)
     {
       await Task.Delay(0);
-      if (parameters == null)
-        Name = "null array";
-      else if (parameters.Length == 1)
-        Name = parameters[0].GetType().Name;
-      else
-        Name = parameters.Length.ToString();
+      Name = "2";
       return;
     }
 
@@ -146,22 +142,40 @@ namespace Csla.Test.DataPortal
       await Task.Delay(0);
       if (o == null)
         Name = "null";
+      else if (o is Int32)
+        Name = "Int32";
       else
         Name = "bad";
       return;
     }
 
     [FetchChild]
-    private async Task FetchChild(params object[] parameters)
+    private async Task FetchChild(string s, int i)
     {
       await Task.Delay(0);
-      if (parameters == null)
-        Name = "null array";
-      else if (parameters.Length == 1)
-        Name = parameters[0].GetType().Name;
-      else
-        Name = parameters.Length.ToString();
+      Name = "2";
       return;
+    }
+
+    [UpdateChild]
+    private async Task UpdateChild(string s, int i)
+    {
+      await Task.Delay(0);
+      Name = $"{s}/{i}";
+    }
+
+    [InsertChild]
+    private async Task InsertChild(params object[] parameters)
+    {
+      await Task.Delay(0);
+      Name = parameters[0].ToString();
+    }
+
+    [DeleteSelfChild]
+    private async Task DeleteChild(params object[] parameters)
+    {
+      await Task.Delay(0);
+      Name = parameters[0].ToString();
     }
   }
 }

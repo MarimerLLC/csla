@@ -70,7 +70,7 @@ namespace Csla
       }
     }
 
-    private static object GetCriteriaFromArray(params object[] criteria)
+    internal static object GetCriteriaFromArray(params object[] criteria)
     {
       if (criteria == null)
         return null;
@@ -82,7 +82,7 @@ namespace Csla
         return new Core.MobileList<object>(criteria);
     }
 
-    private static object[] GetCriteriaArray(object criteria)
+    internal static object[] GetCriteriaArray(object criteria)
     {
       if (criteria == EmptyCriteria)
         return null;

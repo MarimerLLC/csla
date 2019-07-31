@@ -43,7 +43,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> CreateAsync<T>()
     {
-      return (T) await Create(typeof(T), false, null).ConfigureAwait(false);
+      return (T) await Create(typeof(T), false, EmptyCriteria.Instance).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -59,11 +59,7 @@ namespace Csla.Server
 
     private async Task<object> Create(System.Type objectType, bool hasParameters, params object[] parameters)
     {
-      object criteria = EmptyCriteria.Instance;
-      if (hasParameters && parameters == null)
-        criteria = null;
-      else if (hasParameters)
-        criteria = parameters;
+      var criteria = DataPortal<object>.GetCriteriaFromArray(parameters);
 
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, criteria, DataPortalOperations.Create);
@@ -131,7 +127,7 @@ namespace Csla.Server
     /// <param name="objectType">Type of business object to retrieve.</param>
     public async Task<T> FetchAsync<T>()
     {
-      return (T)await Fetch(typeof(T), false, null).ConfigureAwait(false);
+      return (T)await Fetch(typeof(T), false, EmptyCriteria.Instance).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -148,11 +144,7 @@ namespace Csla.Server
 
     private async Task<object> Fetch(Type objectType, bool hasParameters, params object[] parameters)
     {
-      object criteria = EmptyCriteria.Instance;
-      if (hasParameters && parameters == null)
-        criteria = null;
-      else if (hasParameters)
-        criteria = parameters;
+      var criteria = DataPortal<object>.GetCriteriaFromArray(parameters);
 
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
@@ -197,7 +189,7 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public void Update(object obj)
     {
-      Update(obj, false, false, null);
+      Update(obj, false, false, null).Wait();
     }
 
     /// <summary>
@@ -209,7 +201,28 @@ namespace Csla.Server
     /// </param>
     public void Update(object obj, params object[] parameters)
     {
-      Update(obj, true, false, parameters);
+      Update(obj, true, false, parameters).Wait();
+    }
+
+    /// <summary>
+    /// Update a business object.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    public async Task UpdateAsync(object obj)
+    {
+      await Update(obj, false, false, null).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Update a business object.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    /// <param name="parameters">
+    /// Parameters passed to method.
+    /// </param>
+    public async Task UpdateAsync(object obj, params object[] parameters)
+    {
+      await Update(obj, true, false, parameters).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -218,7 +231,7 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public void UpdateAll(object obj)
     {
-      Update(obj, false, true, null);
+      Update(obj, false, true, null).Wait();
     }
 
     /// <summary>
@@ -230,127 +243,61 @@ namespace Csla.Server
     /// </param>
     public void UpdateAll(object obj, params object[] parameters)
     {
-      Update(obj, true, true, parameters);
+      Update(obj, true, true, parameters).Wait();
     }
 
-    private void Update(object obj, bool hasParameters, bool bypassIsDirtyTest, params object[] parameters)
+    /// <summary>
+    /// Update a business object. Include objects which are not dirty.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    public async Task UpdateAllAsync(object obj)
+    {
+      await Update(obj, false, true, null).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Update a business object. Include objects which are not dirty.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    /// <param name="parameters">
+    /// Parameters passed to method.
+    /// </param>
+    public async Task UpdateAllAsync(object obj, params object[] parameters)
+    {
+      await Update(obj, true, true, parameters).ConfigureAwait(false);
+    }
+
+    private async Task Update(object obj, bool hasParameters, bool bypassIsDirtyTest, params object[] parameters)
     {
       if (obj == null)
         return;
 
-      var busObj = obj as Core.BusinessBase;
-      if (busObj != null && busObj.IsDirty == false && bypassIsDirtyTest == false)
+      if (obj is Core.BusinessBase busObj && busObj.IsDirty == false && bypassIsDirtyTest == false)
       {
         // if the object isn't dirty, then just exit
         return;
       }
 
+      var criteria = DataPortal<object>.GetCriteriaFromArray(parameters);
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      IDataPortalTarget target = obj as IDataPortalTarget;
-      LateBoundObject lb = new LateBoundObject(obj);
+      DataPortalTarget lb = new DataPortalTarget(obj);
       ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
 
       try
       {
-        if (target != null)
-          target.Child_OnDataPortalInvoke(
+        lb.Child_OnDataPortalInvoke(
+          new DataPortalEventArgs(null, objectType, obj, operation));
+        await lb.UpdateChildAsync(criteria).ConfigureAwait(false);
+        lb.Child_OnDataPortalInvokeComplete(
             new DataPortalEventArgs(null, objectType, obj, operation));
-        else
-          lb.CallMethodIfImplemented("Child_OnDataPortalInvoke",
-            new DataPortalEventArgs(null, objectType, obj, operation));
-
-        // tell the business object to update itself
-        if (busObj != null)
-        {
-          if (busObj.IsDeleted)
-          {
-            if (!busObj.IsNew)
-            {
-              // tell the object to delete itself
-              if (hasParameters)
-                lb.CallMethod("Child_DeleteSelf", parameters);
-              else
-                lb.CallMethod("Child_DeleteSelf");
-            }
-            if (target != null)
-              target.MarkNew();
-            else
-              lb.CallMethodIfImplemented("MarkNew");
-
-          }
-          else
-          {
-            if (busObj.IsNew)
-            {
-              // tell the object to insert itself
-              if (hasParameters)
-                lb.CallMethod("Child_Insert", parameters);
-              else
-              {
-                lb.CallMethod("Child_Insert");
-              }
-
-            }
-            else
-            {
-              // tell the object to update itself
-              if (hasParameters)
-                lb.CallMethod("Child_Update", parameters);
-              else
-              {
-                lb.CallMethod("Child_Update");
-              }
-            }
-            if (target != null)
-              target.MarkOld();
-            else
-              lb.CallMethodIfImplemented("MarkOld");
-          }
-
-        }
-        else if (obj is Core.ICommandObject)
-        {
-          // tell the object to update itself
-          if (hasParameters)
-            lb.CallMethod("Child_Execute", parameters);
-          else
-            lb.CallMethod("Child_Execute");
-          operation = DataPortalOperations.Execute;
-
-        }
-        else
-        {
-          // this is an updatable collection or some other
-          // non-BusinessBase type of object
-          // tell the object to update itself
-          if (hasParameters)
-            lb.CallMethod("Child_Update", parameters);
-          else
-            lb.CallMethod("Child_Update");
-          if (target != null)
-            target.MarkOld();
-          else
-            lb.CallMethodIfImplemented("MarkOld");
-        }
-
-        if (target != null)
-          target.Child_OnDataPortalInvokeComplete(
-            new DataPortalEventArgs(null, objectType, obj, operation));
-        else
-          lb.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete",
-            new DataPortalEventArgs(null, objectType, obj, operation));
-
       }
       catch (Exception ex)
       {
         try
         {
-          if (target != null)
-            target.Child_OnDataPortalException(
-              new DataPortalEventArgs(null, objectType, obj, operation), ex);
-          else if (lb != null)
-            lb.CallMethodIfImplemented("Child_OnDataPortalException",
+          if (lb != null)
+            lb.Child_OnDataPortalException(
               new DataPortalEventArgs(null, objectType, obj, operation), ex);
         }
         catch

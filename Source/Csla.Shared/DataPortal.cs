@@ -646,7 +646,7 @@ namespace Csla
     public static async Task<T> CreateChildAsync<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.CreateAsync<T>();
+      return await portal.CreateAsync<T>(EmptyCriteria.Instance);
     }
 
     /// <summary>
@@ -704,7 +704,7 @@ namespace Csla
     public static async Task<T> FetchChildAsync<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.FetchAsync<T>();
+      return await portal.FetchAsync<T>(EmptyCriteria.Instance);
     }
 
     /// <summary>
@@ -750,6 +750,35 @@ namespace Csla
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       portal.Update(child, parameters);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public static async Task UpdateChildAsync(object child)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      await portal.UpdateAsync(child).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
+    public static async Task UpdateChildAsync(object child, params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
 
     private static DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;

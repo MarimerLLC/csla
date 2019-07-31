@@ -84,8 +84,10 @@ namespace Csla
 
     internal static object[] GetCriteriaArray(object criteria)
     {
-      if (criteria == EmptyCriteria)
+      if (criteria == null)
         return null;
+      else if (criteria == EmptyCriteria)
+        return new object[] { };
       else if (criteria is object[] array)
         return array;
       else if (criteria is Core.MobileList<object> list)

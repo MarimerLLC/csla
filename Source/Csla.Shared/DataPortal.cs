@@ -617,7 +617,7 @@ namespace Csla
     public static T CreateChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Create(typeof(T)));
+      return (T)(portal.Create(typeof(T), EmptyCriteria.Instance));
     }
 
     /// <summary>
@@ -675,7 +675,7 @@ namespace Csla
     public static T FetchChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Fetch(typeof(T)));
+      return (T)(portal.Fetch(typeof(T), EmptyCriteria.Instance));
     }
 
     /// <summary>

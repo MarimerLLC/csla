@@ -180,6 +180,22 @@ namespace Csla.Test.DataPortal
       Assert.IsNotNull(method);
       Assert.AreEqual(1, method.GetParameters().Count());
     }
+
+    [TestMethod]
+    public void FindChildLegacyUpdate()
+    {
+      var obj = new BasicChild();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(UpdateChildAttribute), null);
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void FindChildParamsUpdate()
+    {
+      var obj = new ParamsChild();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(UpdateChildAttribute), null);
+      Assert.IsNotNull(method);
+    }
   }
 
   [Serializable]
@@ -295,5 +311,23 @@ namespace Csla.Test.DataPortal
 
     [Create]
     private void Create(int id, [Inject] ICloneable x, string foo) { }
+  }
+
+  [Serializable]
+  public class BasicChild : BusinessBase<BasicChild>
+  {
+    private void Child_Update()
+    {
+      // nada
+    }
+  }
+
+  [Serializable]
+  public class ParamsChild : BusinessBase<ParamsChild>
+  {
+    private void Child_Update(params object[] parameters)
+    {
+      // nada
+    }
   }
 }

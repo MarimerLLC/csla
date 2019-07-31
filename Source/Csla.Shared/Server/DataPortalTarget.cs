@@ -110,17 +110,8 @@ namespace Csla.Server
 #if !NET40
     private async Task InvokeOperationAsync(object criteria, bool isSync, Type attributeType)
     {
-      if (criteria is EmptyCriteria)
-      {
-        await CallMethodTryAsyncDI(isSync, attributeType, null).ConfigureAwait(false);
-      }
-      else
-      {
-        if (criteria is Core.MobileList<object> list)
-          await CallMethodTryAsyncDI(isSync, attributeType, list.ToArray()).ConfigureAwait(false);
-        else
-          await CallMethodTryAsyncDI(isSync, attributeType, criteria).ConfigureAwait(false);
-      }
+      object[] parameters = DataPortal<object>.GetCriteriaArray(criteria);
+      await CallMethodTryAsyncDI(isSync, attributeType, parameters).ConfigureAwait(false);
     }
 #endif
 

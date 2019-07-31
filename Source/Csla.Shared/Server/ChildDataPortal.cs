@@ -23,7 +23,14 @@ namespace Csla.Server
     /// <param name="objectType">Type of business object to create.</param>
     public object Create(System.Type objectType)
     {
-      return Create(objectType, false);
+      try
+      { 
+        return Create(objectType, false).Result;
+      }
+      catch (AggregateException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     /// <summary>
@@ -35,7 +42,14 @@ namespace Csla.Server
     /// </param>
     public object Create(System.Type objectType, params object[] parameters)
     {
-      return Create(objectType, true, parameters);
+      try
+      { 
+        return Create(objectType, true, parameters).Result;
+      }
+      catch (AggregateException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     /// <summary>
@@ -106,7 +120,14 @@ namespace Csla.Server
     /// <param name="objectType">Type of business object to retrieve.</param>
     public object Fetch(Type objectType)
     {
-      return Fetch(objectType, false, null);
+      try
+      {
+        return Fetch(objectType, false, null).Result;
+      }
+      catch (AggregateException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     /// <summary>
@@ -118,7 +139,14 @@ namespace Csla.Server
     /// </param>
     public object Fetch(Type objectType, params object[] parameters)
     {
-      return Fetch(objectType, true, parameters);
+      try
+      {
+        return Fetch(objectType, true, parameters).Result;
+      }
+      catch (AggregateException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     /// <summary>
@@ -187,7 +215,14 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public void Update(object obj)
     {
-      Update(obj, false, false, null).Wait();
+      try
+      {
+        Update(obj, false, false, null).Wait();
+      }
+      catch (AggregateException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     /// <summary>
@@ -199,7 +234,14 @@ namespace Csla.Server
     /// </param>
     public void Update(object obj, params object[] parameters)
     {
-      Update(obj, true, false, parameters).Wait();
+      try
+      { 
+        Update(obj, true, false, parameters).Wait();
+      }
+      catch (AggregateException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     /// <summary>

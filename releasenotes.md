@@ -1,3 +1,11 @@
+I am pleased to announce the release of CSLA .NET version 4.11.2.
+
+This is a bug fix release from 4.11.1.
+
+* [#1212](https://github.com/MarimerLLC/csla/issues/1212) Fix issue with n-level undo and cloning
+
+## CSLA .NET version 4.11.1 Release Notes
+
 I am pleased to announce the release of CSLA .NET version 4.11.1.
 
 This is a bug fix release from 4.11.0.

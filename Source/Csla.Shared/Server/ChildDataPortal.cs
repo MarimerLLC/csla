@@ -124,7 +124,6 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
     public async Task<T> FetchAsync<T>()
     {
       return (T)await Fetch(typeof(T), false, EmptyCriteria.Instance).ConfigureAwait(false);
@@ -133,7 +132,6 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>

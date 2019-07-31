@@ -37,7 +37,7 @@ namespace Csla.Test.Data
 
     #region Invalid connection strings
     [TestMethod]
-    [ExpectedException(typeof(ConfigurationErrorsException))]
+    [ExpectedException(typeof(System.Collections.Generic.KeyNotFoundException))]
     public void InvalidConnectionSetting_Throws_ConfigurationErrorsException_for_SqlConnection()
     {
       using (var objectContextManager = ConnectionManager<SqlConnection>.GetManager(InvalidTestDBConnection, true))
@@ -46,7 +46,7 @@ namespace Csla.Test.Data
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ConfigurationErrorsException))]
+    [ExpectedException(typeof(System.Collections.Generic.KeyNotFoundException))]
     public void InvalidConnectionSetting_Throws_ConfigurationErrorsException_for_LinqToSqlContextDataContext()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(InvalidTestDBConnection, true))
@@ -55,7 +55,7 @@ namespace Csla.Test.Data
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ConfigurationErrorsException))]
+    [ExpectedException(typeof(System.Collections.Generic.KeyNotFoundException))]
     public void InvalidConnectionSetting_Throws_ConfigurationErrorsException_for_EntitiesContextDataContext()
     {
       using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager("DataPortalTestDatabaseEntitiesxxxxxx", true))

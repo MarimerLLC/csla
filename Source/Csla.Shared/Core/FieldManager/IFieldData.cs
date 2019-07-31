@@ -5,13 +5,15 @@
 // </copyright>
 // <summary>Defines the members required by a field</summary>
 //-----------------------------------------------------------------------
+using Csla.Serialization.Mobile;
+
 namespace Csla.Core.FieldManager
 {
   /// <summary>
   /// Defines the members required by a field
   /// data storage object.
   /// </summary>
-  public interface IFieldData : ITrackStatus
+  public interface IFieldData : ITrackStatus, IMobileObject
   {
     /// <summary>
     /// Gets the name of the field.

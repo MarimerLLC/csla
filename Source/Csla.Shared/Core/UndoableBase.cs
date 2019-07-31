@@ -14,6 +14,7 @@ using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
 using Csla.Serialization;
+using System.Linq;
 
 namespace Csla.Core
 {
@@ -407,7 +408,15 @@ namespace Csla.Core
     /// </param>
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
-      info.AddValue("_bindingEdit", _bindingEdit);
+      if (mode != StateMode.Undo)
+      {
+        info.AddValue("_bindingEdit", _bindingEdit);
+        if (_stateStack.Count > 0)
+        {
+          var stackArray = _stateStack.ToArray();
+          info.AddValue("_stateStack", stackArray);
+        }
+      }
       base.OnGetState(info, mode);
     }
 
@@ -423,9 +432,17 @@ namespace Csla.Core
     /// </param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      _stateStack.Clear();
-
-      _bindingEdit = info.GetValue<bool>("_bindingEdit");
+      if (mode != StateMode.Undo)
+      {
+        _bindingEdit = info.GetValue<bool>("_bindingEdit");
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          _stateStack.Clear();
+          foreach (var item in stackArray.Reverse())
+            _stateStack.Push(item);
+        }
+      }
       base.OnSetState(info, mode);
     }
 

@@ -641,6 +641,7 @@ namespace Csla
     protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
+      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
       info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
     }
@@ -656,7 +657,7 @@ namespace Csla
     protected override void OnSetState(SerializationInfo info)
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
-      _editLevel = 0;
+      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
     }

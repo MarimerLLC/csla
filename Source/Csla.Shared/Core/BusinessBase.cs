@@ -3422,17 +3422,14 @@ namespace Csla.Core
     {
       foreach (object item in FieldManager.GetChildren())
       {
-        IBusinessObject business = item as IBusinessObject;
-        if (business != null)
+        if (item is IBusinessObject business)
           OnAddEventHooks(business);
 
-        IEditableBusinessObject child = item as IEditableBusinessObject;
-        if (child != null)
+        if (item is IEditableBusinessObject child)
         {
           child.SetParent(this);
         }
-        IEditableCollection childCollection = item as IEditableCollection;
-        if (childCollection != null)
+        if (item is IEditableCollection childCollection)
         {
           childCollection.SetParent(this);
         }

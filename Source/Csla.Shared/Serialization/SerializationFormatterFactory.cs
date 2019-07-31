@@ -50,11 +50,12 @@ namespace Csla.Serialization
     /// </summary>
     internal static ISerializationFormatter GetNativeFormatter()
     {
-#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
-      return new Csla.Serialization.Mobile.MobileFormatter();
-#else
-      return new NetDataContractSerializerWrapper();
-#endif
+      return GetFormatter();
+//#if NETSTANDARD2_0
+//      return new Csla.Serialization.Mobile.MobileFormatter();
+//#else
+//      return new NetDataContractSerializerWrapper();
+//#endif
     }
   }
 }

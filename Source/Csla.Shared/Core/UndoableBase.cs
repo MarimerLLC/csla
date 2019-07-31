@@ -411,8 +411,11 @@ namespace Csla.Core
       if (mode != StateMode.Undo)
       {
         info.AddValue("_bindingEdit", _bindingEdit);
-        var stackArray = _stateStack.ToArray();
-        info.AddValue("_stateStack", stackArray);
+        if (_stateStack.Count > 0)
+        {
+          var stackArray = _stateStack.ToArray();
+          info.AddValue("_stateStack", stackArray);
+        }
       }
       base.OnGetState(info, mode);
     }
@@ -432,10 +435,13 @@ namespace Csla.Core
       if (mode != StateMode.Undo)
       {
         _bindingEdit = info.GetValue<bool>("_bindingEdit");
-        var stackArray = info.GetValue<byte[][]>("_stateStack");
-        _stateStack.Clear();
-        foreach (var item in stackArray.Reverse())
-          _stateStack.Push(item);
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          _stateStack.Clear();
+          foreach (var item in stackArray.Reverse())
+            _stateStack.Push(item);
+        }
       }
       base.OnSetState(info, mode);
     }

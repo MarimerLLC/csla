@@ -19,5 +19,10 @@ namespace Csla.Server
   /// </summary>
   [Serializable]
   public class EmptyCriteria : Csla.Core.MobileObject
-  { }
+  {
+    /// <summary>
+    /// Gets an instance of EmptyCriteria
+    /// </summary>
+    public static EmptyCriteria Instance { get; } = new EmptyCriteria();
+  }
 }

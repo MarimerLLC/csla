@@ -41,7 +41,7 @@ namespace Csla.Test.PropertyGetSet
 
     #region Properties
 
-    public static readonly PropertyInfo<System.String> _memberBackedIdProperty = RegisterProperty<System.String>(p => p.MemberBackedId, string.Empty, RelationshipTypes.PrivateField);
+    public static readonly PropertyInfo<System.String> _memberBackedIdProperty = RegisterProperty<System.String>(p => p.MemberBackedId, RelationshipTypes.PrivateField);
     private System.String _memberBackedId = _memberBackedIdProperty.DefaultValue;
     public System.String MemberBackedId
     {

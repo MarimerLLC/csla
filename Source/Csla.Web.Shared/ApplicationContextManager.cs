@@ -107,5 +107,47 @@ namespace Csla.Web
     {
       HttpContext.Current.Items[_globalContextName] = globalContext;
     }
+
+    /// <summary>
+    /// Gets the default IServiceProvider
+    /// </summary>
+    public IServiceProvider GetDefaultServiceProvider()
+    {
+      IServiceProvider result;
+      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__dsp"];
+      if (result == null)
+        result = GetDefaultServiceProvider();
+      return result;
+    }
+
+    /// <summary>
+    /// Sets the default IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
+    {
+      Csla.ApplicationContext.LocalContext["__dsp"] = serviceProvider;
+    }
+
+    /// <summary>
+    /// Gets the scoped IServiceProvider
+    /// </summary>
+    public IServiceProvider GetScopedServiceProvider()
+    {
+      IServiceProvider result;
+      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
+      if (result == null)
+        result = GetDefaultServiceProvider();
+      return result;
+    }
+
+    /// <summary>
+    /// Sets the scoped IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
+    {
+      Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
+    }
   }
 }

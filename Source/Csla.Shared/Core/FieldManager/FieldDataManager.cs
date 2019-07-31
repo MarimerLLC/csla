@@ -637,6 +637,17 @@ namespace Csla.Core.FieldManager
     /// all child objects contained in 
     /// the list of fields.
     /// </summary>
+    public void UpdateChildren()
+    {
+      UpdateChildren(Server.EmptyCriteria.Instance);
+    }
+
+    /// <summary>
+    /// Invokes the data portal to update
+    /// all child objects contained in 
+    /// the list of fields.
+    /// </summary>
+    /// <param name="parameters">Paramters for method</param>
     public void UpdateChildren(params object[] parameters)
     {
       foreach (var item in _fieldData)
@@ -655,6 +666,17 @@ namespace Csla.Core.FieldManager
     /// all child objects, including those which are not dirty,
     /// contained in the list of fields.
     /// </summary>
+    public void UpdateAllChildren()
+    {
+      UpdateAllChildren(Server.EmptyCriteria.Instance);
+    }
+
+    /// <summary>
+    /// Invokes the data portal to update
+    /// all child objects, including those which are not dirty,
+    /// contained in the list of fields.
+    /// </summary>
+    /// <param name="parameters">Paramters for method</param>
     public void UpdateAllChildren(params object[] parameters)
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();

@@ -366,7 +366,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task ChildEditLevelClone()
     {
-      var list = await DataPortal.CreateAsync<RootList>();
+      var list = await Csla.DataPortal.CreateAsync<RootList>();
       list.BeginEdit();
       list.AddNew();
       var clone = (RootList)((ICloneable)list).Clone();
@@ -382,30 +382,30 @@ namespace Csla.Test.Basic
 
   public class FormSimulator
   {
-    private Core.BusinessBase _obj;
+    private readonly Core.BusinessBase _obj;
 
     public FormSimulator(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Obj_IsDirtyChanged);
       this._obj = obj;
     }
 
-    private void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void Obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     { }
   }
 
   [Serializable()]
   public class SerializableListener
   {
-    private Core.BusinessBase _obj;
+    private readonly Core.BusinessBase _obj;
 
     public SerializableListener(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Obj_IsDirtyChanged);
       this._obj = obj;
     }
 
-    public void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    public void Obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     { }
   }
 }

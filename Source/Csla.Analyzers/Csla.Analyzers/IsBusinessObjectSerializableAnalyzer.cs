@@ -21,8 +21,12 @@ namespace Csla.Analyzers
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(makeSerializableRule);
 
-    public override void Initialize(AnalysisContext context) => 
+    public override void Initialize(AnalysisContext context)
+    {
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+      context.EnableConcurrentExecution();
       context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+    }
 
     private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
     {

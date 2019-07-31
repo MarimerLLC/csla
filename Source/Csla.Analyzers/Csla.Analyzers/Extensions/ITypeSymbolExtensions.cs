@@ -1,9 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
-using static System.Reflection.IntrospectionExtensions;
 
 namespace Csla.Analyzers.Extensions
 {
@@ -60,21 +56,6 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Types.BusinessBindingListBase) &&
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
           @this.BaseType.IsEditableStereotype());
-    }
-
-    private static ImmutableArray<PropertyInfo> GetAllProperties(this ITypeSymbol @this)
-    {
-      var properties = new List<PropertyInfo>();
-
-      var type = @this.GetType().GetTypeInfo();
-
-      while(type != null)
-      {
-        properties.AddRange(type.DeclaredProperties);
-        type = type.BaseType?.GetTypeInfo();
-      }
-
-      return properties.ToImmutableArray();
     }
 
     internal static bool IsStereotype(this ITypeSymbol @this)

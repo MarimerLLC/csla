@@ -22,8 +22,12 @@ namespace Csla.Analyzers
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(onlyUseCslaPropertyMethodsInGetSetRule);
 
-    public override void Initialize(AnalysisContext context) => 
+    public override void Initialize(AnalysisContext context)
+    {
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+      context.EnableConcurrentExecution();
       context.RegisterSyntaxNodeAction(AnalyzePropertyDeclaration, SyntaxKind.PropertyDeclaration);
+    }
 
     private static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
     {

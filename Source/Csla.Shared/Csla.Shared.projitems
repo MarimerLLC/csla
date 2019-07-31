@@ -204,6 +204,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\BusinessRulesExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\CommonRules.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\IAuthorizationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IAuthorizationRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IBusinessRules.cs" />

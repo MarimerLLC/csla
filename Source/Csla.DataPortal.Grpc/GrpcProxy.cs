@@ -1,31 +1,33 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="HttpProxy.cs" company="Marimer LLC">
+// <copyright file="GrpcProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using Csla.Core;
-using Csla.Serialization.Mobile;
-using Csla.Server;
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Csla.Core;
+using Csla.GrpcChannel.Client;
+using Csla.Serialization.Mobile;
+using Csla.Server;
+using Google.Protobuf;
+using Grpc.Net.Client;
 
 namespace Csla.DataPortalClient
 {
   /// <summary>
   /// Implements a data portal proxy to relay data portal
-  /// calls to a remote application server by using http.
+  /// calls to a remote application server by using gRPC.
   /// </summary>
-  public class HttpProxy : IDataPortalProxy
+  public class GrpcProxy : IDataPortalProxy
   {
     /// <summary>
     /// Gets or sets the HttpClient timeout
-    /// in milliseconds (0 uses default HttpClient/WebClient timeout).
+    /// in milliseconds (0 uses default HttpClient timeout).
     /// </summary>
     public int Timeout { get; set; }
 
@@ -47,9 +49,9 @@ namespace Csla.DataPortalClient
     /// it to use the DefaultUrl 
     /// values.
     /// </summary>
-    public HttpProxy()
+    public GrpcProxy()
     {
-      this.DataPortalUrl = HttpProxy.DefaultUrl;
+      this.DataPortalUrl = GrpcProxy.DefaultUrl;
     }
 
     /// <summary>
@@ -57,18 +59,9 @@ namespace Csla.DataPortalClient
     /// it to use the supplied URL.
     /// </summary>
     /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public HttpProxy(string dataPortalUrl)
+    public GrpcProxy(string dataPortalUrl)
     {
       this.DataPortalUrl = dataPortalUrl;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the data portal
-    /// is hosted on a remote server.
-    /// </summary>
-    public bool IsServerRemote
-    {
-      get { return true; }
     }
 
     /// <summary>
@@ -78,89 +71,60 @@ namespace Csla.DataPortalClient
     public string DataPortalUrl { get; protected set; }
 
     private static HttpClient _httpClient;
-    
+
     /// <summary>
-    /// Gets an HttpClient object for use in
-    /// communication with the server.
+    /// Gets an HttpClient object for use 
+    /// by the gRPC client.
     /// </summary>
     protected virtual HttpClient GetHttpClient()
     {
-      if (_httpClient == null) {
-        _httpClient = new HttpClient();
-        if (this.Timeout > 0) {
+      if (_httpClient == null)
+      {
+        _httpClient = new HttpClient
+        {
+          BaseAddress = new Uri(DataPortalUrl)
+        };
+        if (this.Timeout > 0)
+        {
           _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         }
       }
-
       return _httpClient;
     }
 
     /// <summary>
-    /// Set HttpClient object for use by data portal.
+    /// Set HttpClient object for use by the gRPC client.
     /// </summary>
     /// <param name="client">HttpClient instance.</param>
     public static void SetHttpClient(HttpClient client)
     {
       _httpClient = client;
+      _grpcClient = null;
+    }
+
+    private static GrpcPortal.GrpcPortalClient _grpcClient;
+
+    protected virtual GrpcPortal.GrpcPortalClient GetGrpcClient()
+    {
+      if (_grpcClient == null)
+        _grpcClient = GrpcClient.Create<GrpcPortal.GrpcPortalClient>(GetHttpClient());
+      return _grpcClient;
     }
 
     /// <summary>
-    /// Gets an WebClient object for use in
-    /// communication with the server.
+    /// Set gRPC client object for use by data portal.
     /// </summary>
-    protected virtual WebClient GetWebClient()
+    /// <param name="client">gRPC client instance.</param>
+    public static void SetGrpcClient(GrpcPortal.GrpcPortalClient client)
     {
-      return new DefaultWebClient(this.Timeout);
+      _grpcClient = client;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to use
-    /// text/string serialization instead of the default
-    /// binary serialization.
+    /// Gets a value indicating whether the data portal
+    /// is hosted on a remote server.
     /// </summary>
-    public static bool UseTextSerialization { get; set; } = false;
-
-    #region Criteria
-
-    private Csla.Server.Hosts.HttpChannel.CriteriaRequest GetBaseCriteriaRequest()
-    {
-      var request = new Csla.Server.Hosts.HttpChannel.CriteriaRequest();
-      request.CriteriaData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      if (ApplicationContext.AuthenticationType == "Windows")
-      {
-        request.Principal = MobileFormatter.Serialize(null);
-      }
-      else
-      {
-        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
-      }
-      request.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
-      request.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
-      return request;
-    }
-
-    private Csla.Server.Hosts.HttpChannel.UpdateRequest GetBaseUpdateCriteriaRequest()
-    {
-      var request = new Csla.Server.Hosts.HttpChannel.UpdateRequest();
-      request.ObjectData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      if (ApplicationContext.AuthenticationType == "Windows")
-      {
-        request.Principal = MobileFormatter.Serialize(null);
-      }
-      else
-      {
-        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
-      }
-      request.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
-      request.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
-      return request;
-    }
-
-#endregion
+    public bool IsServerRemote => true;
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -227,9 +191,7 @@ namespace Csla.DataPortalClient
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
-#pragma warning restore 1998
     {
       DataPortalResult result;
       try
@@ -283,9 +245,7 @@ namespace Csla.DataPortalClient
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
-#pragma warning restore 1998
     {
       DataPortalResult result;
       try
@@ -335,9 +295,7 @@ namespace Csla.DataPortalClient
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
-#pragma warning restore 1998
     {
       DataPortalResult result;
       try
@@ -384,48 +342,23 @@ namespace Csla.DataPortalClient
 
     private async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
+      ByteString outbound = ByteString.CopyFrom(serialized);
+      var request = new RequestMessage
+      {
+        Body = outbound,
+        Operation = CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)
+      };
+      ResponseMessage response;
       if (isSync)
-        serialized = CallViaWebClient(serialized, operation, routingToken);
+        response = GetGrpcClient().Invoke(request);
       else
-        serialized = await CallViaHttpClient(serialized, operation, routingToken);
-      return serialized;
+        response = await GetGrpcClient().InvokeAsync(request);
+      return response.Body.ToByteArray();
     }
 
-    private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
+    internal async Task<ResponseMessage> RouteMessage(RequestMessage request)
     {
-      HttpClient client = GetHttpClient();
-      HttpRequestMessage httpRequest = null;
-      httpRequest = new HttpRequestMessage(
-        HttpMethod.Post, 
-        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
-      if (UseTextSerialization)
-        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
-      else
-        httpRequest.Content = new ByteArrayContent(serialized);
-      var httpResponse = await client.SendAsync(httpRequest);
-      httpResponse.EnsureSuccessStatusCode();
-      if (UseTextSerialization)
-        serialized = System.Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync());
-      else
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
-      return serialized;
-    }
-
-    private byte[] CallViaWebClient(byte[] serialized, string operation, string routingToken)
-    {
-      WebClient client = GetWebClient();
-      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";
-      if (UseTextSerialization)
-      {
-        var result = client.UploadString(url, System.Convert.ToBase64String(serialized));
-        serialized = System.Convert.FromBase64String(result);
-      }
-      else
-      {
-        var result = client.UploadData(url, serialized);
-        serialized = result;
-      }
-      return serialized;
+      return await GetGrpcClient().InvokeAsync(request);
     }
 
     private string CreateOperationTag(string operatation, string versionToken, string routingToken)
@@ -475,22 +408,46 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    private class DefaultWebClient : WebClient
+    #region Criteria
+
+    private Csla.Server.Hosts.HttpChannel.CriteriaRequest GetBaseCriteriaRequest()
     {
-      private int Timeout { get; set; }
-
-      public DefaultWebClient(int timeout)
+      var request = new Csla.Server.Hosts.HttpChannel.CriteriaRequest();
+      request.CriteriaData = null;
+      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
+      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      if (ApplicationContext.AuthenticationType == "Windows")
       {
-        Timeout = timeout;
+        request.Principal = MobileFormatter.Serialize(null);
       }
-
-      protected override WebRequest GetWebRequest(Uri address)
+      else
       {
-        var req = base.GetWebRequest(address);
-        if (Timeout > 0)
-          req.Timeout = Timeout;
-        return req;
+        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
+      request.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      request.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+      return request;
     }
+
+    private Csla.Server.Hosts.HttpChannel.UpdateRequest GetBaseUpdateCriteriaRequest()
+    {
+      var request = new Csla.Server.Hosts.HttpChannel.UpdateRequest();
+      request.ObjectData = null;
+      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
+      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      if (ApplicationContext.AuthenticationType == "Windows")
+      {
+        request.Principal = MobileFormatter.Serialize(null);
+      }
+      else
+      {
+        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      }
+      request.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
+      return request;
+    }
+
+    #endregion
   }
 }

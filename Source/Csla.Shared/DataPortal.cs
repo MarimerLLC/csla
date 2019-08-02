@@ -20,8 +20,6 @@ namespace Csla
   /// </summary>
   public static class DataPortal
   {
-    private static readonly EmptyCriteria EmptyCriteria = new EmptyCriteria();
-
     /// <summary>
     /// Raised by DataPortal before it starts
     /// setting up to call a server-side
@@ -79,7 +77,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>()
     {
-      return Create<T>(EmptyCriteria);
+      return Create<T>(EmptyCriteria.Instance);
     }
 
     /// <summary>
@@ -111,7 +109,7 @@ namespace Csla
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, null);
+      BeginCreate<T>(EmptyCriteria.Instance, callback, null);
     }
 
     /// <summary>
@@ -131,7 +129,7 @@ namespace Csla
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, userState);
+      BeginCreate<T>(EmptyCriteria.Instance, callback, userState);
     }
 
     /// <summary>
@@ -231,7 +229,7 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>()
     {
-      return Fetch<T>(EmptyCriteria);
+      return Fetch<T>(EmptyCriteria.Instance);
     }
 
     internal static object Fetch(Type objectType, object criteria)
@@ -255,7 +253,7 @@ namespace Csla
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, null);
+      BeginFetch<T>(EmptyCriteria.Instance, callback, null);
     }
 
     /// <summary>
@@ -275,7 +273,7 @@ namespace Csla
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, userState);
+      BeginFetch<T>(EmptyCriteria.Instance, callback, userState);
     }
 
     /// <summary>
@@ -619,7 +617,7 @@ namespace Csla
     public static T CreateChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Create(typeof(T)));
+      return (T)(portal.Create(typeof(T), EmptyCriteria.Instance));
     }
 
     /// <summary>
@@ -639,6 +637,35 @@ namespace Csla
     }
 
     /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    public static async Task<T> CreateChildAsync<T>()
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.CreateAsync<T>(EmptyCriteria.Instance);
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    /// <param name="parameters">
+    /// Parameters passed to child create method.
+    /// </param>
+    public static async Task<T> CreateChildAsync<T>(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.CreateAsync<T>(parameters);
+    }
+
+    /// <summary>
     /// Creates and loads an existing
     /// child business object.
     /// </summary>
@@ -648,7 +675,7 @@ namespace Csla
     public static T FetchChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Fetch(typeof(T)));
+      return (T)(portal.Fetch(typeof(T), EmptyCriteria.Instance));
     }
 
     /// <summary>
@@ -665,6 +692,35 @@ namespace Csla
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       return (T)(portal.Fetch(typeof(T), parameters));
+    }
+
+    /// <summary>
+    /// Fetchs and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to Fetch.
+    /// </typeparam>
+    public static async Task<T> FetchChildAsync<T>()
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.FetchAsync<T>(EmptyCriteria.Instance);
+    }
+
+    /// <summary>
+    /// Fetchs and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to Fetch.
+    /// </typeparam>
+    /// <param name="parameters">
+    /// Parameters passed to child Fetch method.
+    /// </param>
+    public static async Task<T> FetchChildAsync<T>(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.FetchAsync<T>(parameters);
     }
 
     /// <summary>
@@ -694,6 +750,35 @@ namespace Csla
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       portal.Update(child, parameters);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public static async Task UpdateChildAsync(object child)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      await portal.UpdateAsync(child).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
+    public static async Task UpdateChildAsync(object child, params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
 
     private static DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;

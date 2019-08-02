@@ -32,63 +32,25 @@ namespace Csla.Server
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      LateBoundObject obj = null;
-      IDataPortalTarget target = null;
+      DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
-        // create an instance of the business object.
-        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
         ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
-
-        target = obj.Instance as IDataPortalTarget;
-
-        if (target != null)
-        {
-          target.DataPortal_OnDataPortalInvoke(eventArgs);
-          target.MarkNew();
-        }
-        else
-        {
-          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
-          obj.CallMethodIfImplemented("MarkNew");
-        }
-
-        // tell the business object to create its data
-        if (criteria is EmptyCriteria)
-        {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Create");
-
-          await obj.CallMethodTryAsync("DataPortal_Create").ConfigureAwait(false);
-        }
-        else
-        {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Create", criteria);
-
-          await obj.CallMethodTryAsync("DataPortal_Create", criteria).ConfigureAwait(false);
-        }
-
-        var busy = obj.Instance as Csla.Core.ITrackStatus;
-        if (busy != null && busy.IsBusy)
-          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
-
-        if (target != null)
-          target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
-        else
-          obj.CallMethodIfImplemented(
-            "DataPortal_OnDataPortalInvokeComplete", eventArgs);
-
-        // return the populated business object as a result
+        obj.OnDataPortalInvoke(eventArgs);
+        obj.MarkNew();
+        await obj.CreateAsync(criteria, isSync);
+        obj.ThrowIfBusy();
+        obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(obj.Instance);
       }
       catch (Exception ex)
       {
         try
         {
-          if (target != null)
-            target.DataPortal_OnDataPortalException(eventArgs, ex);
-          else if (obj != null)
-            obj.CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex);
+          if (obj != null)
+            obj.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -123,64 +85,25 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      LateBoundObject obj = null;
-      IDataPortalTarget target = null;
+      DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
-        // create an instance of the business object.
-        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
         ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
-
-        target = obj.Instance as IDataPortalTarget;
-
-        if (target != null)
-        {
-          target.DataPortal_OnDataPortalInvoke(eventArgs);
-          target.MarkOld();
-        }
-        else
-        {
-          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
-          obj.CallMethodIfImplemented("MarkOld");
-        }
-
-        // tell the business object to fetch its data
-        if (criteria is EmptyCriteria)
-        {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Fetch");
-
-          await obj.CallMethodTryAsync("DataPortal_Fetch").ConfigureAwait(false);
-        }
-        else
-        {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Fetch", criteria);
-
-          await obj.CallMethodTryAsync("DataPortal_Fetch", criteria).ConfigureAwait(false);
-        }
-
-        var busy = obj.Instance as Csla.Core.ITrackStatus;
-        if (busy != null && busy.IsBusy)
-          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
-
-        if (target != null)
-          target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
-        else
-          obj.CallMethodIfImplemented(
-            "DataPortal_OnDataPortalInvokeComplete",
-            eventArgs);
-
-        // return the populated business object as a result
+        obj.OnDataPortalInvoke(eventArgs);
+        obj.MarkOld();
+        await obj.FetchAsync(criteria, isSync);
+        obj.ThrowIfBusy();
+        obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(obj.Instance);
       }
       catch (Exception ex)
       {
         try
         {
-          if (target != null)
-            target.DataPortal_OnDataPortalException(eventArgs, ex);
-          else if (obj != null)
-            obj.CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex);
+          if (obj != null)
+            obj.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -216,104 +139,25 @@ namespace Csla.Server
     {
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      var target = obj as IDataPortalTarget;
-      LateBoundObject lb = new LateBoundObject(obj);
-      ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
+      var lb = new DataPortalTarget(obj);
+      if (lb.Instance is Core.ICommandObject)
+        return await Execute(lb, context, isSync);
+
+      var eventArgs = new DataPortalEventArgs(context, objectType, obj, operation);
       try
       {
-        if (target != null)
-          target.DataPortal_OnDataPortalInvoke(
-            new DataPortalEventArgs(context, objectType, obj, operation));
-        else
-          lb.CallMethodIfImplemented(
-            "DataPortal_OnDataPortalInvoke",
-            new DataPortalEventArgs(context, objectType, obj, operation));
-
-        // tell the business object to update itself
-        var busObj = obj as Core.BusinessBase;
-        if (busObj != null)
-        {
-          if (busObj.IsDeleted)
-          {
-            if (!busObj.IsNew)
-            {
-              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_DeleteSelf");
-
-              // tell the object to delete itself
-              await lb.CallMethodTryAsync("DataPortal_DeleteSelf").ConfigureAwait(false);
-            }
-            if (target != null)
-              target.MarkNew();
-            else
-              lb.CallMethodIfImplemented("MarkNew");
-          }
-          else
-          {
-            if (busObj.IsNew)
-            {
-              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Insert");
-
-              // tell the object to insert itself
-              await lb.CallMethodTryAsync("DataPortal_Insert").ConfigureAwait(false);
-            }
-            else
-            {
-              Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Update");
-
-              // tell the object to update itself
-              await lb.CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
-            }
-            if (target != null)
-              target.MarkOld();
-            else
-              lb.CallMethodIfImplemented("MarkOld");
-          }
-        }
-        else if (obj is Core.ICommandObject)
-        {
-          operation = DataPortalOperations.Execute;
-
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Execute");
-
-          // tell the object to update itself
-          await lb.CallMethodTryAsync("DataPortal_Execute").ConfigureAwait(false);
-        }
-        else
-        {
-          Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj, "DataPortal_Update");
-
-          // this is an updatable collection or some other
-          // non-BusinessBase type of object
-          // tell the object to update itself
-          await lb.CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
-          if (target != null)
-            target.MarkOld();
-          else
-            lb.CallMethodIfImplemented("MarkOld");
-        }
-
-        var busy = busObj as Csla.Core.ITrackStatus;
-        if (busy != null && busy.IsBusy)
-          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
-
-        if (target != null)
-          target.DataPortal_OnDataPortalInvokeComplete(
-            new DataPortalEventArgs(context, objectType, obj, operation));
-        else
-          lb.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete",
-            new DataPortalEventArgs(context, objectType, obj, operation));
-
-        return new DataPortalResult(obj);
+        ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
+        lb.OnDataPortalInvoke(eventArgs);
+        await lb.UpdateAsync(isSync);
+        lb.ThrowIfBusy();
+        lb.OnDataPortalInvokeComplete(eventArgs);
+        return new DataPortalResult(lb.Instance);
       }
       catch (Exception ex)
       {
         try
         {
-          if (target != null)
-            target.DataPortal_OnDataPortalException(
-              new DataPortalEventArgs(context, objectType, obj, operation), ex);
-          else
-            lb.CallMethodIfImplemented("DataPortal_OnDataPortalException", new DataPortalEventArgs(context, objectType, obj, operation), ex);
+          lb.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -333,6 +177,43 @@ namespace Csla.Server
       }
     }
 
+    private async Task<DataPortalResult> Execute(DataPortalTarget obj, DataPortalContext context, bool isSync)
+    {
+      DataPortalOperations operation = DataPortalOperations.Execute;
+      Type objectType = obj.Instance.GetType();
+      var eventArgs = new DataPortalEventArgs(context, objectType, obj, operation);
+      try
+      {
+        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        obj.OnDataPortalInvoke(eventArgs);
+        await obj.ExecuteAsync(isSync);
+        obj.ThrowIfBusy();
+        obj.OnDataPortalInvokeComplete(eventArgs);
+        return new DataPortalResult(obj.Instance);
+      }
+      catch (Exception ex)
+      {
+        try
+        {
+          obj.OnDataPortalException(eventArgs, ex);
+        }
+        catch
+        {
+          // ignore exceptions from the exception handler
+        }
+        throw DataPortal.NewDataPortalException(
+              "DataPortal.Execute " + Resources.FailedOnServer,
+              new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Execute", ex),
+              obj);
+      }
+      finally
+      {
+        object reference = null;
+        if (obj != null)
+          reference = obj.Instance;
+        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+      }
+    }
     /// <summary>
     /// Delete a business object.
     /// </summary>
@@ -345,46 +226,23 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      LateBoundObject obj = null;
-      IDataPortalTarget target = null;
+      DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
-        // create an instance of the business objet
-        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
         ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
-
-        target = obj.Instance as IDataPortalTarget;
-
-        if (target != null)
-          target.DataPortal_OnDataPortalInvoke(eventArgs);
-        else
-          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
-
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, obj.Instance, "DataPortal_Delete", criteria);
-
-        // tell the business object to delete itself
-        await obj.CallMethodTryAsync("DataPortal_Delete", criteria).ConfigureAwait(false);
-
-        var busy = obj.Instance as Csla.Core.ITrackStatus;
-        if (busy != null && busy.IsBusy)
-          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
-
-        if (target != null)
-          target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
-        else
-          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", eventArgs);
-
+        obj.OnDataPortalInvoke(eventArgs);
+        await obj.DeleteAsync(criteria, isSync);
+        obj.ThrowIfBusy();
+        obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult();
       }
       catch (Exception ex)
       {
         try
         {
-          if (target != null)
-            target.DataPortal_OnDataPortalException(eventArgs, ex);
-          else if (obj != null)
-            obj.CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex);
+          obj.OnDataPortalException(eventArgs, ex);
         }
         catch
         {

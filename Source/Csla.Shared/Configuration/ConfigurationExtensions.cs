@@ -17,10 +17,9 @@ namespace Csla.Configuration
   public static class ConfigurationExtensions
   {
     /// <summary>
-    /// Add CSLA .NET services for use by the application
-    /// and enable CSLA .NET configuration.
+    /// Add CSLA .NET services for use by the application.
     /// </summary>
-    /// <param name="services">IServiceCollection object</param>
+    /// <param name="services">ServiceCollection object</param>
     public static ICslaBuilder AddCsla(this IServiceCollection services)
     {
       services.AddSingleton<IDataPortalFactory, DataPortalFactory>();

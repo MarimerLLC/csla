@@ -29,7 +29,7 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(IdProperty, value); }
     }
 
-    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty(c => c.MethodCalled, "MethodCalled");
+    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty<string>(c => c.MethodCalled, "MethodCalled");
     public string MethodCalled
     {
       get { return GetProperty(MethodCalledProperty); }

@@ -71,18 +71,35 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
+    public void CreateWithParam()
+    {
+      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+          new ObjectFactoryLoader();
+      var root = Csla.DataPortal.Create<Root>("abc");
+      Assert.AreEqual("Create abc", root.Data, "Data should match");
+      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
+      Assert.IsTrue(root.IsNew, "Should be new");
+      Assert.IsTrue(root.IsDirty, "Should be dirty");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);
-      var root = Csla.DataPortal.Create<Root>("abc");
-      Assert.AreEqual("Create abc", root.Data, "Data should match");
-      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
-      Assert.IsTrue(root.IsNew, "Should be new");
-      Assert.IsTrue(root.IsDirty, "Should be dirty");
+      try
+      {
+        var root = Csla.DataPortal.Create<Root>("abc");
+      }
+      catch (DataPortalException ex)
+      {
+        throw ex.BusinessException;
+      }
     }
 
     [TestMethod]

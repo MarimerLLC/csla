@@ -24,9 +24,8 @@ namespace Csla.Analyzers.Extensions
     internal static bool IsRunLocalAttribute(this ITypeSymbol @this)
     {
       return @this != null &&
-        ((@this.Name == CslaMemberConstants.Types.RunLocalAttribute &&
-          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
-          @this.BaseType.IsBusinessBase());
+        @this.Name == CslaMemberConstants.Types.RunLocalAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName;
     }
 
     internal static bool IsPrimitive(this ITypeSymbol @this)

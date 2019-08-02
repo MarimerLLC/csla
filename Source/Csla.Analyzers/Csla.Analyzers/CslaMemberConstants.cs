@@ -48,6 +48,7 @@
       public const string ManagedObjectBase = "ManagedObjectBase";
       public const string ObjectFactoryBase = "ObjectFactory";
       public const string ReadOnlyBase = "ReadOnlyBase";
+      public const string RunLocalAttribute = "RunLocalAttribute";
     }
 
     public const string AssemblyName = "Csla";

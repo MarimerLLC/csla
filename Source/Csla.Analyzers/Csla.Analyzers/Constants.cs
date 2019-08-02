@@ -16,6 +16,7 @@
       public const string FindOperationsWithNonSerializableArguments = "CSLA0010";
       public const string FindBusinessObjectCreation = "CSLA0011";
       public const string FindOperationsWithIncorrectReturnTypes = "CSLA0012";
+      public const string DoesChildOperationHaveRunLocal = "CSLA0013";
     }
 
     public static class Categories

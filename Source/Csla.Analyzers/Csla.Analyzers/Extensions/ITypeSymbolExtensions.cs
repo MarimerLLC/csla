@@ -21,6 +21,14 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsBusinessBase());
     }
 
+    internal static bool IsRunLocalAttribute(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.RunLocalAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsBusinessBase());
+    }
+
     internal static bool IsPrimitive(this ITypeSymbol @this)
     {
       var specialType = @this.SpecialType;

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyInfoFactory.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Creates the factory object that</summary>
 //-----------------------------------------------------------------------
@@ -30,6 +30,9 @@ namespace Csla.Core.FieldManager
       {
         if (_factory == null)
         {
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+          _factory = new DefaultPropertyInfoFactory();
+#else
           var typeName = Csla.Configuration.ConfigurationManager.AppSettings["CslaPropertyInfoFactory"];
           if (string.IsNullOrEmpty(typeName))
           {
@@ -40,6 +43,7 @@ namespace Csla.Core.FieldManager
             var type = Type.GetType(typeName);
             _factory = (Csla.Core.IPropertyInfoFactory)Activator.CreateInstance(type);
           }
+#endif
         }
         return _factory;
       }

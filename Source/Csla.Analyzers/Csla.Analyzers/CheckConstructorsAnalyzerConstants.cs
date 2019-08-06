@@ -15,13 +15,6 @@
     public const string Message = "CSLA business objects should not have public constructors with parameters.";
   }
 
-  public static class FindBusinessObjectCreationConstants
-  {
-    public const string Title = "Find CSLA Business Objects That Are Created Outside of a ObjectFactory";
-    public const string IdentifierText = "BusinessObjectCreated";
-    public const string Message = "CSLA business objects should not be created outside of a ObjectFactory instance.";
-  }
-
   public static class CheckConstructorsAnalyzerPublicConstructorCodeFixConstants
   {
     public const string AddPublicConstructorDescription = "Add public constructor with no arguments";

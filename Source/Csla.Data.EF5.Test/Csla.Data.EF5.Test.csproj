@@ -80,10 +80,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\config\testConnectionStrings.config">
-      <Link>testConnectionStrings.config</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

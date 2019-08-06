@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="NotUndoableAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Marks a field to indicate that the value should not </summary>
 //-----------------------------------------------------------------------

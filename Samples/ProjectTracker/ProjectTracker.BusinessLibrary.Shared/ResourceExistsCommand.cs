@@ -29,6 +29,7 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResourceExistsProperty, value); }
     }
 
+#if FULL_DOTNET
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -37,5 +38,6 @@ namespace ProjectTracker.Library
         ResourceExists = dal.Exists(ResourceId);
       }
     }
+#endif
   }
 }

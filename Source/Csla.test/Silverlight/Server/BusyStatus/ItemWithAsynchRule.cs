@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ItemWithAsynchRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -71,6 +71,20 @@ namespace Csla.Testing.Business.BusyStatus
       returnValue.MarkAsChild();
       returnValue.MarkOld();
       return returnValue;
+    }
+
+    public static void GetItemWithAsynchRule(string id, EventHandler<DataPortalResult<ItemWithAsynchRule>> completed)
+    {
+      DataPortal<ItemWithAsynchRule> dp = new DataPortal<ItemWithAsynchRule>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch(id);
+    }
+
+    public static void NewItemWithAsynchRule(EventHandler<DataPortalResult<ItemWithAsynchRule>> completed)
+    {
+      DataPortal<ItemWithAsynchRule> dp = new DataPortal<ItemWithAsynchRule>();
+      dp.CreateCompleted += completed;
+      dp.BeginCreate();
     }
 
     public bool IsRunningRules

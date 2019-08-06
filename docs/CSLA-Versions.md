@@ -1,15 +1,10 @@
 ## Primary Versions
-CSLA version 4.8 supports
-* Runtimes
-  * .NET Standard 2.0
-  * .NET Core 2.1
-  * .NET Framework 4, 4.5, 4.6
-  * mono
-* Platform support
-  * ASP.NET Core 2.1
-  * Xamarin (iOS, Android, UWP, Mac, Linux)
-  * Windows Forms, WPF
-  * UWP
+CSLA 4 version 4.6 supports 
+* .NET 4, 4.5, 4.6
+* UWP
+* Xamarin (iOS, Android, UWP)
+* PCL Profile111
+* WinRT (Windows 8/8.1/Phone)
 
 CSLA 4 version 4.5 supports 
 * .NET 4, 4.5

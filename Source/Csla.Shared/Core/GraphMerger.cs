@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="GrapherMerger.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
@@ -25,22 +25,26 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     public void MergeGraph(IEditableBusinessObject target, IEditableBusinessObject source)
     {
-      if (target is IManageProperties imp)
+      var imp = target as IManageProperties;
+      if (imp != null)
       {
         var targetProperties = imp.GetManagedProperties();
         foreach (var item in targetProperties)
         {
           var sourceValue = ReadProperty(source, item);
-          if (sourceValue is IEditableBusinessObject sourceChild)
+          var sourceChild = sourceValue as IEditableBusinessObject;
+          if (sourceChild != null)
           {
-            if (ReadProperty(target, item) is IEditableBusinessObject targetChild)
+            var targetChild = ReadProperty(target, item) as IEditableBusinessObject;
+            if (targetChild != null)
               MergeGraph(targetChild, sourceChild);
             else
               LoadProperty(target, item, sourceChild);
           }
           else
           {
-            if (sourceValue is IEditableCollection sourceList)
+            var sourceList = sourceValue as IEditableCollection;
+            if (sourceList != null)
             {
               var targetList = ReadProperty(target, item) as IEditableCollection;
               MergeGraph(targetList, sourceList);
@@ -52,35 +56,10 @@ namespace Csla.Core
           }
         }
         if (source.IsNew)
-        {
           MarkNew(target);
-        }
         else if (!source.IsDirty)
-        {
           MarkOld(target);
-        }
-        else
-        {
-          CopyField(source, target, "_isDirty");
-          CopyField(source, target, "_isNew");
-          CopyField(source, target, "_isDeleted");
-        }
         CheckRules(target);
-      }
-    }
-
-    private static void CopyField(object source, object target, string fieldName)
-    {
-      if (source == null) return;
-      if (target == null) return;
-      var sourceField = source.GetType().GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-      if (sourceField != null)
-      {
-        var targetField = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-        if (targetField!= null)
-        {
-          targetField.SetValue(target, sourceField.GetValue(source));
-        }
       }
     }
 
@@ -108,8 +87,8 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     public void MergeBusinessListGraph<T,C>(T target, T source)
-      where T : BusinessListBase<T,C>
-      where C : Core.IEditableBusinessObject
+      where T : BusinessListBase<T,C> 
+      where C : BusinessBase<C>, IBusinessObject
     {
       var deleted = new List<C>();
       foreach (var item in target)

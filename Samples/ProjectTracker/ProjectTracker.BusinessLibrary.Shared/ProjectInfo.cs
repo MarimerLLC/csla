@@ -35,10 +35,12 @@ namespace ProjectTracker.Library
       return Name;
     }
 
+#if FULL_DOTNET 
     private void Child_Fetch(ProjectTracker.Dal.ProjectDto item)
     {
       Id = item.Id;
       Name = item.Name;
     }
+#endif
   }
 }

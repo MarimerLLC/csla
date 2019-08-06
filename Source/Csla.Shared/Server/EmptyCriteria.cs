@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="EmptyCriteria.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Empty criteria used by the data portal as a</summary>
 //-----------------------------------------------------------------------
@@ -19,10 +19,5 @@ namespace Csla.Server
   /// </summary>
   [Serializable]
   public class EmptyCriteria : Csla.Core.MobileObject
-  {
-    /// <summary>
-    /// Gets an instance of EmptyCriteria
-    /// </summary>
-    public static EmptyCriteria Instance { get; } = new EmptyCriteria();
-  }
+  { }
 }

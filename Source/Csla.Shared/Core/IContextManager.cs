@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Defines the interface for an application </summary>
 //-----------------------------------------------------------------------
@@ -58,23 +58,5 @@ namespace Csla.Core
     /// </summary>
     /// <param name="globalContext">Global context.</param>
     void SetGlobalContext(ContextDictionary globalContext);
-    /// <summary>
-    /// Gets the default IServiceProvider
-    /// </summary>
-    IServiceProvider GetDefaultServiceProvider();
-    /// <summary>
-    /// Sets the default IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    void SetDefaultServiceProvider(IServiceProvider serviceProvider);
-    /// <summary>
-    /// Gets the scoped IServiceProvider
-    /// </summary>
-    IServiceProvider GetScopedServiceProvider();
-    /// <summary>
-    /// Sets the scoped IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    void SetScopedServiceProvider(IServiceProvider serviceProvider);
   }
 }

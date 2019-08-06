@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ISupportUndo.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Define the common methods used by the UI to </summary>
 //-----------------------------------------------------------------------

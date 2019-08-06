@@ -1,7 +1,8 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NETFX_CORE && !(ANDROID || IOS)
+//-----------------------------------------------------------------------
 // <copyright file="MobileRequestProcessor.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Object taht processes all the requests from a Silverlight client</summary>
 //-----------------------------------------------------------------------
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
-  /// Object that processes all the requests from a Silverlight client
+  /// Object taht processes all the requests from a Silverlight client
   /// </summary>
   public class MobileRequestProcessor
   {
@@ -35,12 +36,16 @@ namespace Csla.Server.Hosts.Mobile
       {
         if (_factoryLoader == null)
         {
+#if NETSTANDARD2_0
+          _factoryLoader = new MobileFactoryLoader();
+#else
           string setting = ConfigurationManager.AppSettings["CslaMobileFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IMobileFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
             _factoryLoader = new MobileFactoryLoader();
+#endif
         }
         return _factoryLoader;
       }
@@ -91,7 +96,7 @@ namespace Csla.Server.Hosts.Mobile
           if (criteria != null)
             newObject = Csla.DataPortal.Create(businessObjectType, criteria);
           else
-            newObject = Csla.DataPortal.Create(businessObjectType, EmptyCriteria.Instance);
+            newObject = Csla.DataPortal.Create(businessObjectType, new EmptyCriteria());
 #else
           if (criteria != null)
             newObject = await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "CreateAsync", new Type[] { businessObjectType }, true, criteria).ConfigureAwait(false);
@@ -178,7 +183,7 @@ namespace Csla.Server.Hosts.Mobile
         {
 #if NET40
           if (criteria == null)
-            newObject = Csla.DataPortal.Fetch(businessObjectType, EmptyCriteria.Instance);
+            newObject = Csla.DataPortal.Fetch(businessObjectType, new EmptyCriteria());
           else
             newObject = Csla.DataPortal.Fetch(businessObjectType, criteria);
 #else
@@ -467,3 +472,4 @@ namespace Csla.Server.Hosts.Mobile
 #endregion
   }
 }
+#endif

@@ -21,7 +21,7 @@ namespace Templates
       // IsAsync = true; 
     }
 
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       // TODO: Asyncronous rules 
       // If rule is async make sure that ALL excution paths call context.Complete

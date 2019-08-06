@@ -62,8 +62,8 @@ Public Class DynamicRoot
     Return New DynamicRoot(rootData)
   End Function
 
-  Public Sub New()
-    ' required for serialization
+  Private Sub New()
+    ' require use of factory methods
   End Sub
 
   Private Sub New(ByVal rootData As Object)

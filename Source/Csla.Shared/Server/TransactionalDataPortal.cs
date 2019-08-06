@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="TransactionalDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Implements the server-side Serviced </summary>
 //-----------------------------------------------------------------------
@@ -64,24 +64,20 @@ namespace Csla.Server
 
     private TransactionScope CreateTransactionScope()
     {
-#if NET40 || NET45
       return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions());
-#else
-      return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions(), _transactionalAttribute.AsyncFlowOption);
-#endif
     }
 
     private TransactionOptions GetTransactionOptions()
     {
       var option = new TransactionOptions
                      {
-                       IsolationLevel = GetIsolationLevel(_transactionalAttribute.TransactionIsolationLevel),
+                       IsolationLevel = GetIsolaionLevel(_transactionalAttribute.TransactionIsolationLevel),
                        Timeout = TimeSpan.FromSeconds(_transactionalAttribute.TimeoutInSeconds)
                      };
       return option;
     }
 
-    private IsolationLevel GetIsolationLevel(TransactionIsolationLevel transactionIsolationLevel)
+    private IsolationLevel GetIsolaionLevel(TransactionIsolationLevel transactionIsolationLevel)
     {
       switch (transactionIsolationLevel)
       {

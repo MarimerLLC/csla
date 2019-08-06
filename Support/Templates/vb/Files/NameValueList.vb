@@ -19,6 +19,10 @@ Public Class NameValueList
     _list = Nothing
   End Sub
 
+  ' require use of factory methods 
+  Private Sub New()
+  End Sub
+
 #End Region
 
 #Region "Data Access"

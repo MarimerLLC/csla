@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Implements the server-side DataPortal </summary>
 //-----------------------------------------------------------------------
@@ -25,16 +25,6 @@ namespace Csla.Server
   /// </summary>
   public class DataPortal : IDataPortalServer
   {
-    /// <summary>
-    /// Gets the data portal dashboard instance.
-    /// </summary>
-    public static Dashboard.IDashboard Dashboard { get; internal set; }
-
-    static DataPortal()
-    {
-      Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
-    }
-
     #region Constructors
     /// <summary>
     /// Default constructor
@@ -97,7 +87,11 @@ namespace Csla.Server
 
       if (null == _authorizer)//not yet instantiated
       {
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+        string authProvider = string.Empty;
+#else
         var authProvider = ConfigurationManager.AppSettings[cslaAuthorizationProviderAppSettingName];
+#endif
         return string.IsNullOrEmpty(authProvider) ?
           typeof(NullAuthorizer) :
           Type.GetType(authProvider, true);
@@ -564,9 +558,11 @@ namespace Csla.Server
       {
         if (!_InterceptorTypeSet)
         {
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
           var typeName = ConfigurationManager.AppSettings["CslaDataPortalInterceptor"];
           if (!string.IsNullOrWhiteSpace(typeName))
             InterceptorType = Type.GetType(typeName);
+#endif
           _InterceptorTypeSet = true;
         }
         return _interceptorType;
@@ -580,19 +576,12 @@ namespace Csla.Server
 
     internal void Complete(InterceptArgs e)
     {
-      var startTime = (DateTimeOffset)ApplicationContext.ClientContext["__dataportaltimer"];
-      e.Runtime = DateTimeOffset.Now - startTime;
-      Dashboard.CompleteCall(e);
-
       if (_interceptor != null)
         _interceptor.Complete(e);
     }
 
     internal void Initialize(InterceptArgs e)
     {
-      ApplicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
-      Dashboard.InitializeCall(e);
-
       if (_interceptor != null)
         _interceptor.Initialize(e);
     }

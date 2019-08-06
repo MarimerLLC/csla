@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IRuleContext.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
@@ -21,7 +21,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the rule object.
     /// </summary>
-    IBusinessRuleBase Rule { get; }
+    IBusinessRule Rule { get; }
 
     /// <summary>
     /// Gets a reference to the target business object.
@@ -60,7 +60,7 @@ namespace Csla.Rules
     /// Creates a chained context and if CanRunRule will execute the inner rule.  
     /// </summary>
     /// <param name="innerRule">The inner rule.</param>
-    void ExecuteRule(IBusinessRuleBase innerRule);
+    void ExecuteRule(IBusinessRule innerRule);
     /// <summary>
     /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
     /// </summary>
@@ -100,7 +100,7 @@ namespace Csla.Rules
     /// of the Rule property which is set using the supplied
     /// IBusinessRule value.
     /// </remarks>
-    IRuleContext GetChainedContext(IBusinessRuleBase rule);
+    IRuleContext GetChainedContext(IBusinessRule rule);
     /// <summary>
     /// Add a Error severity result to the Results list.
     /// </summary>

@@ -210,11 +210,6 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
-    <Compile Include="FieldManager\Child.cs" />
-    <Compile Include="FieldManager\ChildList.cs" />
-    <Compile Include="FieldManager\ChildUpdateTests.cs" />
-    <Compile Include="FieldManager\Root.cs" />
-    <Compile Include="FieldManager\RootUpdateAllChildren.cs" />
     <Compile Include="GraphMerge\GraphMergerTests.cs" />
     <Compile Include="GraphMerge\IdentityTests.cs" />
     <Compile Include="GraphMerge\TestClasses.cs" />
@@ -357,7 +352,6 @@
     <Compile Include="ValidationRules\ValidationTests.cs" />
     <Compile Include="ViewModelTests\TestViewModel.cs" />
     <Compile Include="ViewModelTests\ViewModelTests.cs" />
-    <Compile Include="WellKnownValues.cs" />
     <Compile Include="Windows\ActionExtenderTests.cs" />
     <Compile Include="Windows\BindingRefreshTests.cs" />
     <Compile Include="Windows\EditablePerson.cs" />
@@ -370,11 +364,6 @@
     <Compile Include="Windows\ReadWriteAuthorizationTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\config\testConnectionStrings.config">
-      <Link>testConnectionStrings.config</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="app.config" />
     <None Include="DataPortalTestDatabaseDataSet.xsc">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>

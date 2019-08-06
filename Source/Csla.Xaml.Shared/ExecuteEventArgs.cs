@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ExecuteEventArgs.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Arguments passed to a method invoked</summary>
 //-----------------------------------------------------------------------

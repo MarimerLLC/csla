@@ -22,7 +22,7 @@ namespace CompareFieldsRules.Rules
       return HasMessageDelegate ? base.GetMessage() : Resources.AnyRequiredRule;
     }
 
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       // if all values are Null or Empty
       if (context.InputPropertyValues.Select(keyvalue => keyvalue.Value.ToString().Trim()).All(string.IsNullOrEmpty))

@@ -76,7 +76,7 @@ namespace CslaMVC.Library
             //BusinessRules.AddRule(new Csla.Rules.CommonRules.Lambda(c => TestRuleAction(c)));
         }
 
-        private void TestRuleAction(IRuleContext context)
+        private void TestRuleAction(RuleContext context)
         {
             context.AddErrorResult("test rule broken");
         }

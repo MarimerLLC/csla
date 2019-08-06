@@ -10,6 +10,13 @@ namespace cslalighttest.ViewModelTests
   {
     #region Factory Methods
 
+    public static void NewEditableList(EventHandler<DataPortalResult<TestBusinessBindingList>> callback)
+    {
+      var portal = new Csla.DataPortal<TestBusinessBindingList>();
+      portal.CreateCompleted += callback;
+      portal.BeginCreate();
+    }
+
     public TestBusinessBindingList()
     { }
 

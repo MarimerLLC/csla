@@ -14,8 +14,8 @@
     <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <AssemblyVersion>5.0.0.0</AssemblyVersion>
-    <FileVersion>5.0.0.0</FileVersion>
+    <AssemblyVersion>4.8.100.0</AssemblyVersion>
+    <FileVersion>4.8.100.0</FileVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -26,6 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
   </ItemGroup>
 

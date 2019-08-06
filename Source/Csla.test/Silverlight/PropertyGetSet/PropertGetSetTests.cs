@@ -1,12 +1,11 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PropertGetSetTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Test created for Bug Tracker Item 64</summary>
 //-----------------------------------------------------------------------
 using UnitDriven;
-using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -33,12 +32,22 @@ namespace Csla.Test.Silverlight.PropertyGetSet
     /// This is due to property being registered only with Base type
     /// </remarks>
     [TestMethod]
-
-    public async Task ProperyInfoDeclaredInBaseClassShouldLoadInAnotherDomain()
+    public void ProperyInfoDeclaredInBaseClassShouldLoadInAnotherDomain()
     {
-      var item = new InheritedLoadPropertySet();
-      item = await item.SaveAsync();
-      Assert.AreEqual(1, item.Id);
+      var context = GetContext();
+
+      context.Assert.Try(() =>
+        {
+          var item = new InheritedLoadPropertySet();
+          item.Saved += (o, e) =>
+            {
+              context.Assert.AreEqual(1, ((InheritedLoadPropertySet)e.NewObject).Id);
+              context.Assert.Success();
+            };
+          item.BeginSave();
+        });
+
+      context.Complete();
     }
 #endif
   }

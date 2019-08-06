@@ -24,7 +24,7 @@ Public Class BusinessRuleClass
     ' IsAsync = True
   End Sub
 
-  Protected Overrides Sub Execute(ByVal context As IRuleContext)
+  Protected Overrides Sub Execute(ByVal context As RuleContext)
     ' TODO: Asyncronous rules 
     ' If rule is async make sure that ALL excution paths call context.Complete
 

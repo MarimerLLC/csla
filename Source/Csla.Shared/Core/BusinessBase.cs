@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="BusinessBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
@@ -3422,14 +3422,17 @@ namespace Csla.Core
     {
       foreach (object item in FieldManager.GetChildren())
       {
-        if (item is IBusinessObject business)
+        IBusinessObject business = item as IBusinessObject;
+        if (business != null)
           OnAddEventHooks(business);
 
-        if (item is IEditableBusinessObject child)
+        IEditableBusinessObject child = item as IEditableBusinessObject;
+        if (child != null)
         {
           child.SetParent(this);
         }
-        if (item is IEditableCollection childCollection)
+        IEditableCollection childCollection = item as IEditableCollection;
+        if (childCollection != null)
         {
           childCollection.SetParent(this);
         }

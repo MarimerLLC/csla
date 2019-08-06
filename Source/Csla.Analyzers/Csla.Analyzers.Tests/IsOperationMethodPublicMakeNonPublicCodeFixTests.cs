@@ -1,10 +1,13 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Csla.Analyzers;
+using Csla.Analyzers.Tests;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,15 +31,8 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenClassIsNotSealed()
     {
-      var code =
-@"using Csla;
-using System;
-
-[Serializable]
-public class A : BusinessBase<A>
-{
-  public void DataPortal_Fetch() { }
-}";
+      var code = File.ReadAllText(
+        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenClassIsNotSealed))}.cs");
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());
@@ -66,15 +62,8 @@ public class A : BusinessBase<A>
     [TestMethod]
     public async Task VerifyGetFixesWhenClassIsSealed()
     {
-      var code =
-@"using Csla;
-using System;
-
-[Serializable]
-public sealed class A : BusinessBase<A>
-{
-  public void DataPortal_Fetch() { }
-}";
+      var code = File.ReadAllText(
+        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenClassIsSealed))}.cs");
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());

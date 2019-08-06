@@ -23,7 +23,7 @@ namespace BusinessRuleDemo
     /// Look up State and set the state name 
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       var stateId = (string)context.InputPropertyValues[PrimaryProperty];
       var state = StatesNVL.GetNameValueList().Where(p => p.Key == stateId).FirstOrDefault();

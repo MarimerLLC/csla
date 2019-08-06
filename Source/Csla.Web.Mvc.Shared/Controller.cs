@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Controller.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Provides methods that respond to HTTP requests</summary>
 //-----------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace Csla.Web.Mvc
     /// <param name="item">The business object to insert.</param>
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
-    protected bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
+    protected virtual bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
     {
       return SaveObject(item,
         null,

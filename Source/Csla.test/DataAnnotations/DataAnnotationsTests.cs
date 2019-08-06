@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="DataAnnotationsTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -15,7 +15,6 @@ using Csla.Rules;
 using Csla.Serialization;
 using UnitDriven;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -37,56 +36,75 @@ namespace Csla.Test.DataAnnotations
   public class DataAnnotationsTests : TestBase
   {
     [TestMethod]
-    public async Task SingleAttribute()
+    public void SingleAttribute()
     {
       var context = GetContext();
 
       var dp = new Csla.DataPortal<Single>();
-      var root = await dp.CreateAsync();
-      var rules = root.GetRules();
+      dp.CreateCompleted += (o, e) =>
+        {
+          var root = e.Object;
+          var rules = root.GetRules();
 
-      Assert.AreEqual(1, rules.Length, "Should be 1 rule");
-      Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
-      Assert.AreEqual("Name value required", root.BrokenRulesCollection[0].Description, "Desc should match");
-      context.Assert.Success();
+          Assert.AreEqual(1, rules.Length, "Should be 1 rule");
+          Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
+          Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
+          Assert.AreEqual("Name value required", root.BrokenRulesCollection[0].Description, "Desc should match");
+          context.Assert.Success();
+        };
+      dp.BeginCreate();
 
       context.Complete();
     }
 
     [TestMethod]
-    public async Task MultipleAttributes()
+    public void MultipleAttributes()
     {
       var context = GetContext();
 
       var dp = new Csla.DataPortal<Multiple>();
-      var root = await dp.CreateAsync();
-      var rules = root.GetRules();
+      dp.CreateCompleted += (o, e) =>
+        {
+          if (e.Error != null)
+          {
+            context.Assert.Fail(e.Error);
+          }
+          else
+          {
+            var root = e.Object;
+            var rules = root.GetRules();
 
-      Assert.AreEqual(3, rules.Length, "Should be 3 rules");
-      Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
-      root.Name = "xyz";
-      Assert.AreEqual(2, root.BrokenRulesCollection.Count, "Should be 2 broken rules after edit");
-      context.Assert.Success();
+            Assert.AreEqual(3, rules.Length, "Should be 3 rules");
+            Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
+            Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
+            root.Name = "xyz";
+            Assert.AreEqual(2, root.BrokenRulesCollection.Count, "Should be 2 broken rules after edit");
+          }
+          context.Assert.Success();
+        };
+      dp.BeginCreate();
 
       context.Complete();
     }
 
     [TestMethod]
-    public async Task CustomAttribute()
+    public void CustomAttribute()
     {
       var context = GetContext();
 
       var dp = new Csla.DataPortal<Custom>();
-      var root = await dp.CreateAsync();
-      var rules = root.GetRules();
+      dp.CreateCompleted += (o, e) =>
+      {
+        var root = e.Object;
+        var rules = root.GetRules();
 
-      Assert.AreEqual(1, rules.Length, "Should be 1 rule");
-      Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
-      Assert.AreEqual("Name must be abc", root.BrokenRulesCollection[0].Description, "Desc should match");
-      context.Assert.Success();
+        Assert.AreEqual(1, rules.Length, "Should be 1 rule");
+        Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
+        Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
+        Assert.AreEqual("Name must be abc", root.BrokenRulesCollection[0].Description, "Desc should match");
+        context.Assert.Success();
+      };
+      dp.BeginCreate();
 
       context.Complete();
     }

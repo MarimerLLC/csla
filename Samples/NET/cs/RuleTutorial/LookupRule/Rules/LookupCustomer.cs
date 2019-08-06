@@ -63,7 +63,7 @@ namespace LookupRule.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       var id = (int) context.InputPropertyValues[PrimaryProperty];
 

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="TestCommandBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -43,6 +43,32 @@ namespace Csla.Testing.Business.CommandBase
 
     protected TestCommandBase() 
     { }
+
+    public static void ExecuteCommand(string parameter, EventHandler<DataPortalResult<TestCommandBase>> handler)
+    {
+      var dp = new DataPortal<TestCommandBase>();
+      dp.ExecuteCompleted += handler;
+      dp.BeginExecute(new TestCommandBase(parameter));
+    }
+
+    public static void ExecuteCommand(string parameter, EventHandler<DataPortalResult<TestCommandBase>> handler, object userState)
+    {
+      var dp = new DataPortal<TestCommandBase>();
+      dp.ExecuteCompleted += handler;
+      dp.BeginExecute(new TestCommandBase(parameter), userState);
+    }
+
+    public static void ExecuteCommandStaticPortal(string parameter, EventHandler<DataPortalResult<TestCommandBase>> handler)
+    {
+      var command = new TestCommandBase(parameter);
+      Csla.DataPortal.BeginExecute<TestCommandBase>(command, handler);
+    }
+
+    public static void ExecuteCommandStaticPortal(string parameter, EventHandler<DataPortalResult<TestCommandBase>> handler, object userState)
+    {
+      var command = new TestCommandBase(parameter);
+      Csla.DataPortal.BeginExecute<TestCommandBase>(command, handler, userState);
+    }
 
     protected override void DataPortal_Execute()
     {

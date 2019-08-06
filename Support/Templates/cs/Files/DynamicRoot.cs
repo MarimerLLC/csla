@@ -57,8 +57,8 @@ namespace Templates
       return new DynamicRoot(rootData);
     }
 
-    public DynamicRoot()
-    { /* Required for serialization */ }
+    private DynamicRoot()
+    { /* Require use of factory methods */ }
 
     private DynamicRoot(object rootData)
     {

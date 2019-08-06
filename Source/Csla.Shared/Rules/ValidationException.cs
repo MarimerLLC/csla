@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ValidationException.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Exception class indicating that there was a validation</summary>
 //-----------------------------------------------------------------------

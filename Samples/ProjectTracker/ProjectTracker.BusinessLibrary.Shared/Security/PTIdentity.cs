@@ -19,6 +19,7 @@ namespace ProjectTracker.Library.Security
     }
 
 #if FULL_DOTNET 
+
     public static PTIdentity GetPTIdentity(string username, string password)
     {
       return DataPortal.Fetch<PTIdentity>(new UsernameCriteria(username, password));
@@ -28,7 +29,6 @@ namespace ProjectTracker.Library.Security
     {
       return DataPortal.Fetch<PTIdentity>(username);
     }
-#endif
 
     private void DataPortal_Fetch(string username)
     {
@@ -83,5 +83,6 @@ namespace ProjectTracker.Library.Security
         base.Roles = new Csla.Core.MobileList<string>();
       }
     }
+#endif
   }
 }

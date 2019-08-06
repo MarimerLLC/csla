@@ -13,30 +13,30 @@ namespace Csla.Analyzers
   public sealed class IsOperationMethodPublicAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor makeNonPublicRule =
-      new DiagnosticDescriptor(
-        Constants.AnalyzerIdentifiers.IsOperationMethodPublic, IsOperationMethodPublicAnalyzerConstants.Title,
-        IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
-        DiagnosticSeverity.Warning, true,
-        helpLinkUri: HelpUrlBuilder.Build(
-          Constants.AnalyzerIdentifiers.IsOperationMethodPublic, nameof(IsOperationMethodPublicAnalyzer)));
+    private static DiagnosticDescriptor makeNonPublicRule = new DiagnosticDescriptor(
+      Constants.AnalyzerIdentifiers.IsOperationMethodPublic, IsOperationMethodPublicAnalyzerConstants.Title,
+      IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
+      DiagnosticSeverity.Warning, true);
 
-    private static readonly DiagnosticDescriptor makeNonPublicForInterfaceRule = 
-      new DiagnosticDescriptor(
-        Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
-        IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
-        DiagnosticSeverity.Warning, true,
-        helpLinkUri: HelpUrlBuilder.Build(
-          Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, nameof(IsOperationMethodPublicAnalyzer)));
+    private static DiagnosticDescriptor makeNonPublicForInterfaceRule = new DiagnosticDescriptor(
+      Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
+      IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
+      DiagnosticSeverity.Warning, true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(makeNonPublicRule, makeNonPublicForInterfaceRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+    {
+      get
+      {
+        return ImmutableArray.Create(
+          IsOperationMethodPublicAnalyzer.makeNonPublicRule,
+          IsOperationMethodPublicAnalyzer.makeNonPublicForInterfaceRule);
+      }
+    }
 
     public override void Initialize(AnalysisContext context)
     {
-      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-      context.EnableConcurrentExecution();
-      context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+      context.RegisterSyntaxNodeAction<SyntaxKind>(
+        IsOperationMethodPublicAnalyzer.AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
     }
 
     private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
@@ -51,7 +51,8 @@ namespace Csla.Analyzers
         if(typeSymbol.TypeKind == TypeKind.Interface)
         {
           context.ReportDiagnostic(Diagnostic.Create(
-            makeNonPublicForInterfaceRule, methodNode.Identifier.GetLocation()));
+            IsOperationMethodPublicAnalyzer.makeNonPublicForInterfaceRule,
+            methodNode.Identifier.GetLocation()));
         }
         else
         {
@@ -60,7 +61,7 @@ namespace Csla.Analyzers
             [IsOperationMethodPublicAnalyzerConstants.IsSealed] = typeSymbol.IsSealed.ToString()
           }.ToImmutableDictionary();
 
-          context.ReportDiagnostic(Diagnostic.Create(makeNonPublicRule,
+          context.ReportDiagnostic(Diagnostic.Create(IsOperationMethodPublicAnalyzer.makeNonPublicRule,
             methodNode.Identifier.GetLocation(), properties));
         }
       }

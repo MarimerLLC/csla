@@ -7,6 +7,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignmentEdit>
   {
+#if FULL_DOTNET || NETSTANDARD2_0
     public ResourceAssignmentEdit AssignTo(int projectId)
     {
       if (!(Contains(projectId)))
@@ -20,6 +21,7 @@ namespace ProjectTracker.Library
         throw new InvalidOperationException("Resource already assigned to project");
       }
     }
+#endif
 
     public void Remove(int projectId)
     {
@@ -46,6 +48,7 @@ namespace ProjectTracker.Library
       return count > 0;
     }
 
+#if FULL_DOTNET
     private void Child_Fetch(int resourceId)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -59,5 +62,6 @@ namespace ProjectTracker.Library
         RaiseListChangedEvents = rlce;
       }
     }
+#endif
   }
 }

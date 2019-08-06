@@ -76,7 +76,7 @@ namespace MultipleBindingSources
         InputProperties = new List<Csla.Core.IPropertyInfo> { primaryProperty };
       }
 
-      protected override void Execute(Csla.Rules.IRuleContext context)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
         var sender = (Root)context.Target;
         using (sender.BypassPropertyChecks)

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="NullableTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -26,7 +26,6 @@ namespace Csla.Test.Nullable
     public class NullableTests
     {
         [TestMethod()]
-        [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableProperty()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -38,7 +37,6 @@ namespace Csla.Test.Nullable
         }
 
         [TestMethod()]
-        [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableField()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -48,7 +46,6 @@ namespace Csla.Test.Nullable
         }
 
         [TestMethod()]
-        [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableAfterClone()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -61,7 +58,6 @@ namespace Csla.Test.Nullable
         }
 
         [TestMethod()]
-        [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableAfterEditCycle()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

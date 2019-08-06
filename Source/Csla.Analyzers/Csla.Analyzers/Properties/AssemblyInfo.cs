@@ -11,5 +11,5 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("Csla.Analyzers.Tests")]
 
-[assembly: AssemblyVersion("5.0.0.0")]
-[assembly: AssemblyFileVersion("5.0.0.0")]
+[assembly: AssemblyVersion("4.8.100.0")]
+[assembly: AssemblyFileVersion("4.8.100.0")]

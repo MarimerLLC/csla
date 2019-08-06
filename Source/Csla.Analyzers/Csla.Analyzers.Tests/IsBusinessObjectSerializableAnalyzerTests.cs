@@ -26,41 +26,30 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
-      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, nameof(IsBusinessObjectSerializableAnalyzer)),
-        diagnostic.HelpLinkUri,
-        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsNotMobileObject()
     {
-      var code = "public class A { }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, Array.Empty<string>());
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotMobileObject))}.cs",
+        Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
-      var code =
-@"using Csla;
-using System;
-
-[Serializable]
-public class A : BusinessBase<A>{ }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, Array.Empty<string>());
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsSerializable))}.cs",
+        Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
-      var code =
-@"using Csla;
-
-public class A : BusinessBase<A>{ }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsNotSerializable))}.cs",
+        new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
     }
   }
 }

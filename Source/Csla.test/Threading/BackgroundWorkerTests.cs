@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BackgroundWorkerTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------using System;
@@ -87,7 +87,6 @@ namespace Csla.Test.Threading
     ///A test for BackgroundWorker normal run 
     ///</summary>
     [TestMethod]
-    
     public void BackgroundWorker_RunWorkerAsync_CallsDoWorkAndWorkerCompleted()
     {
 
@@ -232,7 +231,6 @@ namespace Csla.Test.Threading
     ///A test for BackgroundWorker when reporting progress
     ///</summary>
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BackgroundWorker_CancelAsync_ReportsCancelledWhenWorkerSupportsCancellationIsTrue()
     {
       UnitTestContext context = GetContext();

@@ -57,7 +57,7 @@ namespace TestApp
 
     private class StopProcessing : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.IRuleContext context)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
         var obj = (CustomerEdit)context.Target;
         if (obj.BrokenRulesCollection.Where(c => c.Property == PrimaryProperty.Name).Count() > 0)
@@ -67,7 +67,7 @@ namespace TestApp
 
     private class CanWrite : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.IRuleContext context)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
         var target = (Csla.Core.BusinessBase)context.Target;
         if (!target.CanWriteProperty(PrimaryProperty))
@@ -77,7 +77,7 @@ namespace TestApp
 
     private class CanRead : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.IRuleContext context)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
         var target = (Csla.Core.BusinessBase)context.Target;
         if (!target.CanReadProperty(PrimaryProperty))

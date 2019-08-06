@@ -7,9 +7,15 @@ namespace Csla.Analyzers
   internal sealed class ContainsInvocationExpressionWalker
     : CSharpSyntaxWalker
   {
-    internal ContainsInvocationExpressionWalker(SyntaxNode node) => Visit(node);
+    internal ContainsInvocationExpressionWalker(SyntaxNode node)
+    {
+      base.Visit(node);
+    }
 
-    public override void VisitInvocationExpression(InvocationExpressionSyntax node) => HasIssue = true;
+    public override void VisitInvocationExpression(InvocationExpressionSyntax node)
+    {
+      this.HasIssue = true;
+    }
 
     internal bool HasIssue { get; private set; }
   }

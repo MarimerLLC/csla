@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ViewModelBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Base class used to create ViewModel objects that</summary>
 //-----------------------------------------------------------------------
@@ -904,7 +904,6 @@ namespace Csla.Xaml
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    [Obsolete]
     protected virtual void BeginSave()
     {
       try

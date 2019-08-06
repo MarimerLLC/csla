@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
@@ -25,14 +25,16 @@ namespace Csla.Windows
     /// <returns></returns>
     public override IPrincipal GetUser()
     {
+      IPrincipal current;
       if (_principal == null)
       {
         if (ApplicationContext.AuthenticationType != "Windows")
-          SetUser(new Csla.Security.UnauthenticatedPrincipal());
+          _principal = new Csla.Security.UnauthenticatedPrincipal();
         else
-          SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
+          _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
       }
-      return _principal;
+      current = _principal;
+      return current;
     }
 
     /// <summary>

@@ -36,7 +36,8 @@ Public Class DynamicRootBindingList
     Return DataPortal.Fetch(Of DynamicRootBindingList)()
   End Function
 
-  Public Sub New()
+  Private Sub New()
+    ' require use of factory methods
     AllowNew = True
   End Sub
 

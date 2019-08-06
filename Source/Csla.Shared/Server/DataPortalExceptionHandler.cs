@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="DataPortalExceptionHandler.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
 //-----------------------------------------------------------------------
@@ -32,12 +32,14 @@ namespace Csla.Server
     {
       get
       {
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
         if (_datePortalInspecorName == null)
         {
           string setting = ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"];
           if (!string.IsNullOrEmpty(setting))
             _datePortalInspecorName = setting;
         }
+#endif
         return _datePortalInspecorName;
       }
       set

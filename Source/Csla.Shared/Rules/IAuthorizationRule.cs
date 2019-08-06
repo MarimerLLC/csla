@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IAuthorizationRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Interface defining an authorization</summary>
 //-----------------------------------------------------------------------
@@ -22,7 +22,7 @@ namespace Csla.Rules
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    void Execute(IAuthorizationContext context);
+    void Execute(AuthorizationContext context);
     /// <summary>
     /// Gets the element (property/method)
     /// to which this rule is associated.

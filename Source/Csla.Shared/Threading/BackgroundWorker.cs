@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="BackgroundWorker.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Wraps a System.ComponentModel.BackgroundWorker and transfers ApplicationContext.User, ClientContest, GlobalContext, CurrentCulture and CurrentUICulture to background thread.</summary>
 //-----------------------------------------------------------------------

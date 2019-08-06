@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AbstractGetSet.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -22,9 +22,7 @@ namespace Csla.Test.Silverlight.PropertyGetSet
       set { SetProperty<int>(IdProperty, value); }
     }
 
-#pragma warning disable CS0414
     private static int _forceLoad;
-#pragma warning restore CS0414
 
     protected AbstractGetSet()
     {

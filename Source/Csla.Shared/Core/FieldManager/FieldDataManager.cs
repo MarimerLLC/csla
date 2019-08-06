@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="FieldDataManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
@@ -26,7 +26,11 @@ namespace Csla.Core.FieldManager
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
   public class FieldDataManager : MobileObject, IUndoableObject
+#else
+  public class FieldDataManager : IUndoableObject, IMobileObject
+#endif
   {
     private string _businessObjectType;
     [NonSerialized]
@@ -35,10 +39,15 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public FieldDataManager() { }
+#else
+    private FieldDataManager()
+    { /* exists to support MobileFormatter */ }
+#endif
 
     internal FieldDataManager(Type businessObjectType)
     {
@@ -143,7 +152,11 @@ namespace Csla.Core.FieldManager
       do
       {
         hierarchy.Add(current);
+#if NETFX_CORE
+        current = current.BaseType();
+#else
         current = current.BaseType;
+#endif
       } while (current != null && !current.Equals(typeof(BusinessBase)));
 
       // walk from top to bottom to build consolidated list
@@ -173,7 +186,7 @@ namespace Csla.Core.FieldManager
     }
 
     #endregion
-
+    
     #region  Get/Set/Find fields
 
     /// <summary>
@@ -441,7 +454,11 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-    private readonly Stack<byte[]> _stateStack = new Stack<byte[]>();
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+    private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
+#else
+    private Stack<byte[]> _stateStack = new Stack<byte[]>();
+#endif
 
     /// <summary>
     /// Gets the current edit level of the object.
@@ -456,6 +473,28 @@ namespace Csla.Core.FieldManager
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
 
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+      SerializationInfo state = new SerializationInfo(0);
+      OnGetState(state, StateMode.Undo);
+
+      // This is used instead of a foreach because of some weird silverlight bug
+      // throwing an unknown exception from a foreach here.
+      for (var index = 0; index < _fieldData.Length; index++)
+      {
+        var item = _fieldData[index];
+        if (item != null)
+        {
+          var child = item.Value as IUndoableObject;
+          if (child != null)
+          {
+            // cascade call to child
+            child.CopyState(parentEditLevel, parentBindingEdit);
+          }
+        }
+      }
+
+      _stateStack.Push(state);
+#else
       IFieldData[] state = new IFieldData[_propertyList.Count];
 
       for (var index = 0; index < _fieldData.Length; index++)
@@ -463,7 +502,8 @@ namespace Csla.Core.FieldManager
         var item = _fieldData[index];
         if (item != null)
         {
-          if (item.Value is IUndoableObject child)
+          var child = item.Value as IUndoableObject;
+          if (child != null)
           {
             // cascade call to child
             child.CopyState(parentEditLevel, parentBindingEdit);
@@ -482,10 +522,10 @@ namespace Csla.Core.FieldManager
       using (MemoryStream buffer = new MemoryStream())
       {
         var formatter = SerializationFormatterFactory.GetFormatter();
-        var stateList = new MobileList<IFieldData>(state.ToList());
-        formatter.Serialize(buffer, stateList);
+        formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
+#endif
     }
 
     void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
@@ -495,12 +535,30 @@ namespace Csla.Core.FieldManager
         if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+        SerializationInfo state = _stateStack.Pop();
+        OnSetState(state, StateMode.Undo);
+
+        for (var index = 0; index < _fieldData.Length; index++)
+        {
+          var item = _fieldData[index];
+          if (item != null)
+          {
+            // potential child object
+            var child = item.Value as IUndoableObject;
+            if (child != null)
+            {
+              child.UndoChanges(parentEditLevel, parentBindingEdit);
+            }
+          }
+        }
+#else
         IFieldData[] state = null;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           var formatter = SerializationFormatterFactory.GetFormatter();
-          state = ((MobileList<IFieldData>)(formatter.Deserialize(buffer))).ToArray();
+          state = (IFieldData[])(formatter.Deserialize(buffer));
         }
 
         for (var index = 0; index < _fieldData.Length; index++)
@@ -523,6 +581,7 @@ namespace Csla.Core.FieldManager
           // restore IFieldData object into field collection
           _fieldData[index] = oldItem;
         }
+#endif
       }
     }
 
@@ -554,7 +613,7 @@ namespace Csla.Core.FieldManager
     #endregion
 
     #region  Child Objects 
-
+        
     /// <summary>
     /// Returns a list of all child objects
     /// contained in the list of fields.
@@ -578,17 +637,6 @@ namespace Csla.Core.FieldManager
     /// all child objects contained in 
     /// the list of fields.
     /// </summary>
-    public void UpdateChildren()
-    {
-      UpdateChildren(Server.EmptyCriteria.Instance);
-    }
-
-    /// <summary>
-    /// Invokes the data portal to update
-    /// all child objects contained in 
-    /// the list of fields.
-    /// </summary>
-    /// <param name="parameters">Paramters for method</param>
     public void UpdateChildren(params object[] parameters)
     {
       foreach (var item in _fieldData)
@@ -602,38 +650,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    /// <summary>
-    /// Invokes the data portal to update
-    /// all child objects, including those which are not dirty,
-    /// contained in the list of fields.
-    /// </summary>
-    public void UpdateAllChildren()
-    {
-      UpdateAllChildren(Server.EmptyCriteria.Instance);
-    }
-
-    /// <summary>
-    /// Invokes the data portal to update
-    /// all child objects, including those which are not dirty,
-    /// contained in the list of fields.
-    /// </summary>
-    /// <param name="parameters">Paramters for method</param>
-    public void UpdateAllChildren(params object[] parameters)
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      foreach (var item in _fieldData)
-      {
-        if (item != null)
-        {
-          object obj = item.Value;
-          if (obj is IEditableBusinessObject || obj is IEditableCollection)
-            portal.UpdateAll(obj, parameters);
-        }
-      }
-    }
-
     #endregion
 
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
     #region IMobileObject Members
 
     /// <summary>
@@ -651,7 +670,11 @@ namespace Csla.Core.FieldManager
       info.AddValue("_businessObjectType", _businessObjectType);
 
       if (mode == StateMode.Serialization && _stateStack.Count > 0)
-        info.AddValue("_stateStack", _stateStack.ToArray());
+      {
+        MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+        byte[] xml = MobileFormatter.Serialize(list);
+        info.AddValue("_stateStack", xml);
+      }
 
       foreach (IFieldData data in _fieldData)
       {
@@ -659,12 +682,14 @@ namespace Csla.Core.FieldManager
         {
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
-          else if (mode == StateMode.Undo && data.Value is IMobileObject)
+          else if (mode == StateMode.Undo && data.Value is IMobileObject) // is IMobileObject but isn't IUndoableObject (such as SmartDate)
             info.AddValue(data.Name, MobileFormatter.Serialize(data.Value), data.IsDirty);
           else if(!(data.Value is IMobileObject))
             info.AddValue(data.Name, data.Value, data.IsDirty);
+            
         }
       }
+
       base.OnGetState(info, mode);
     }
 
@@ -679,13 +704,15 @@ namespace Csla.Core.FieldManager
       {
         if (data != null)
         {
-          if (data.Value is IMobileObject mobile)
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile != null)
           {
             SerializationInfo childInfo = formatter.SerializeObject(mobile);
             info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
           }
         }
       }
+
       base.OnGetChildren(info, formatter);
     }
 
@@ -710,15 +737,21 @@ namespace Csla.Core.FieldManager
         _stateStack.Clear();
         if (info.Values.ContainsKey("_stateStack"))
         {
-          var stackArray = info.GetValue<byte[][]>("_stateStack");
-          _stateStack.Clear();
-          foreach (var item in stackArray.Reverse())
-            _stateStack.Push(item);
+          //string xml = info.GetValue<string>("_stateStack");
+          byte[] xml = info.GetValue<byte[]>("_stateStack");
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
         }
-
-        _fieldData = new IFieldData[_propertyList.Count];
       }
 
+      // Only clear this list on serialization, otherwise you'll lose
+      // your children during an undo.
+      if (mode == StateMode.Serialization)
+        _fieldData = new IFieldData[_propertyList.Count];
+      
       foreach (IPropertyInfo property in _propertyList)
       {
         if (info.Values.ContainsKey(property.Name))
@@ -752,6 +785,7 @@ namespace Csla.Core.FieldManager
           }
         }
       }
+
       base.OnSetState(info, mode);
     }
 
@@ -774,10 +808,137 @@ namespace Csla.Core.FieldManager
             data.MarkClean();
         }
       }
+
       base.OnSetChildren(info, formatter);
     }
 
     #endregion
+#else
+    #region IMobileObject Members
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      info.AddValue("_businessObjectType", _businessObjectType);
+
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile == null)
+            info.AddValue(data.Name, data.Value, data.IsDirty);
+        }
+      }
+
+      OnGetState(info);
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile != null)
+          {
+            SerializationInfo childInfo = formatter.SerializeObject(mobile);
+            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
+          }
+        }
+      }
+
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      string type = (string)info.Values["_businessObjectType"].Value;
+      Type businessObjecType = Type.GetType(type);
+      SetPropertyList(businessObjecType);
+      _fieldData = new IFieldData[_propertyList.Count];
+
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Values.ContainsKey(property.Name))
+        {
+          SerializationInfo.FieldData value = info.Values[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = value.Value;
+          if (!value.IsDirty)
+            data.MarkClean();
+        }
+      }
+
+      OnSetState(info);
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Children.ContainsKey(property.Name))
+        {
+          SerializationInfo.ChildData childData = info.Children[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = formatter.GetObject(childData.ReferenceId);
+          if (!childData.IsDirty)
+            data.MarkClean();
+        }
+      }
+      OnSetChildren(info, formatter);
+    }
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected virtual void OnGetState(SerializationInfo info) { }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected virtual void OnSetState(SerializationInfo info) { }
+
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) { }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter) { }
+
+    #endregion
+#endif
+
+    #region Force Static Field Init
 
     /// <summary>
     /// Forces initialization of the static fields declared
@@ -786,19 +947,33 @@ namespace Csla.Core.FieldManager
     /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
+#if (ANDROID || IOS) || NETFX_CORE
       var attr =
         BindingFlags.Static |
         BindingFlags.Public |
-        BindingFlags.DeclaredOnly |
-        BindingFlags.NonPublic;
+        BindingFlags.DeclaredOnly;
+#else
+      var attr =
+        System.Reflection.BindingFlags.Static |
+        System.Reflection.BindingFlags.Public |
+        System.Reflection.BindingFlags.DeclaredOnly |
+        System.Reflection.BindingFlags.NonPublic;
+#endif
       var t = type;
       while (t != null)
       {
         var fields = t.GetFields(attr);
         if (fields.Length > 0)
           fields[0].GetValue(null);
+#if NETFX_CORE
+        t = t.BaseType();
+#else
         t = t.BaseType;
+#endif
       }
     }
+
+    #endregion
   }
+
 }

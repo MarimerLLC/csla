@@ -16,10 +16,18 @@ namespace Csla.Analyzers
   public sealed class CheckConstructorsAnalyzerPublicConstructorCodeFix
     : CodeFixProvider
   {
-    public override ImmutableArray<string> FixableDiagnosticIds => 
-      ImmutableArray.Create(Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing);
+    public override ImmutableArray<string> FixableDiagnosticIds
+    {
+      get
+      {
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing);
+      }
+    }
 
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public sealed override FixAllProvider GetFixAllProvider()
+    {
+      return WellKnownFixAllProviders.BatchFixer;
+    }
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -40,13 +48,13 @@ namespace Csla.Analyzers
         if (context.Document.SupportsSemanticModel)
         {
           var model = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-          AddCodeFixWithUpdatingNonPublicConstructor(
+          CheckConstructorsAnalyzerPublicConstructorCodeFix.AddCodeFixWithUpdatingNonPublicConstructor(
             context, root, diagnostic, classNode, model);
         }
       }
       else
       {
-        AddCodeFixWithNewPublicConstructor(
+        CheckConstructorsAnalyzerPublicConstructorCodeFix.AddCodeFixWithNewPublicConstructor(
           context, root, diagnostic, classNode);
       }
     }
@@ -80,6 +88,7 @@ namespace Csla.Analyzers
           CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
           CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription), diagnostic);
+
     }
 
     private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,

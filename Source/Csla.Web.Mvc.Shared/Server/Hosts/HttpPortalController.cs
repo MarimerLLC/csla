@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="HttpPortalController.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
@@ -18,7 +18,6 @@ using System.Net.Http;
 #if NETSTANDARD || NETSTANDARD2_0
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 #else
 using System.Web.Http;
 #endif
@@ -29,7 +28,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD2_0
+#if NETSTANDARD1_6 || NETSTANDARD2_0
   public class HttpPortalController : Controller
   {
     /// <summary>
@@ -45,76 +44,12 @@ namespace Csla.Server.Hosts
     /// <param name="operation">Name of the data portal operation to perform.</param>
     /// <returns>Results from the server-side data portal.</returns>
     [HttpPost]
-    public virtual async Task PostAsync([FromQuery]string operation)
+    public async Task PostAsync([FromQuery]string operation)
     {
-      if (operation.Contains("/"))
-      {
-        var temp = operation.Split('/');
-        await PostAsync(temp[0], temp[1]);
-      }
+      if (UseTextSerialization)
+        await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
       else
-      {
-        if (UseTextSerialization)
-          await InvokeTextPortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
-        else
-          await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
-      }
-    }
-
-    /// <summary>
-    /// Gets a dictionary containing the URLs for each
-    /// data portal route, where each key is the 
-    /// routing tag identifying the route URL.
-    /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls = new Dictionary<string, string>();
-    private static HttpClient _client;
-
-    /// <summary>
-    /// Gets or sets the HttpClient timeout
-    /// in milliseconds (0 uses default HttpClient timeout).
-    /// </summary>
-    protected int HttpClientTimeout { get; set; }
-
-    /// <summary>
-    /// Gets an HttpClient object for use in
-    /// communication with the server.
-    /// </summary>
-    protected virtual HttpClient GetHttpClient()
-    {
-      if (_client == null)
-      {
-        _client = new HttpClient();
-        if (this.HttpClientTimeout > 0)
-        {
-          _client.Timeout = TimeSpan.FromMilliseconds(this.HttpClientTimeout);
-        }
-      }
-
-      return _client;
-    }
-
-    /// <summary>
-    /// Entry point for routing tag based data portal operations.
-    /// </summary>
-    /// <param name="operation">Name of the data portal operation to perform.</param>
-    /// <param name="routingTag">Routing tag from caller</param>
-    protected virtual async Task PostAsync(string operation, string routingTag)
-    {
-      if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
-      {
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{route}?operation={operation}");
-        using (var buffer = new MemoryStream())
-        {
-          await Request.Body.CopyToAsync(buffer);
-          httpRequest.Content = new ByteArrayContent(buffer.ToArray());
-        }
-        var response = await GetHttpClient().SendAsync(httpRequest);
-        await response.Content.CopyToAsync(Response.Body);
-      }
-      else
-      {
-        await PostAsync(operation).ConfigureAwait(false);
-      }
+        await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
     }
 #elif MVC4
   public class HttpPortalController : Controller
@@ -213,7 +148,6 @@ namespace Csla.Server.Hosts
       responseBuffer.Position = 0;
       using (var writer = new StreamWriter(responseStream))
       {
-        writer.AutoFlush = true;
         await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
       }
     }

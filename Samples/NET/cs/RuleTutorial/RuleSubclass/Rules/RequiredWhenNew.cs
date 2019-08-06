@@ -21,7 +21,7 @@ namespace RuleSubclass.Rules
     public RequiredWhenNew(IPropertyInfo primaryProperty, Func<string> messageDelegate) : base(primaryProperty, messageDelegate)
     {}
 
-    protected override void Execute(Csla.Rules.IRuleContext context)
+    protected override void Execute(Csla.Rules.RuleContext context)
     {
       var bb = (BusinessBase) context.Target;
       if (bb.IsNew)

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ReadWriteAuthorization.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Windows Forms extender control that automatically</summary>
 //-----------------------------------------------------------------------

@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>Csla.Data.EntityFramework4</id>
+    <id>CSLA-EF4</id>
     <title>CSLA .NET - ADO.NET EF 4</title>
     <tags>CSLA Windows ADO.NET EF</tags>
     <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
-    <license type="expression">MIT</license>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
     <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the use of ADO.NET Entity Framework 4.
 
-CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
 Supports the use of ADO.NET Entity Framework 4.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
       <dependency id="EntityFramework" version="[4.3.1]" />
     </dependencies>
   </metadata>

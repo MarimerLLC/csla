@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CslaActionExtender.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Extender control providing automation around</summary>
 //-----------------------------------------------------------------------
@@ -746,6 +746,7 @@ namespace Csla.Windows
                     BusinessBase businessObject = savableObject as BusinessBase;
                     if (!businessObject.IsValid)
                     {
+                      // todo: add child broken rules
                       string brokenRules = string.Empty;
                       foreach (var brokenRule in businessObject.GetBrokenRules())
                       {
@@ -846,6 +847,7 @@ namespace Csla.Windows
         {
           if (_autoShowBrokenRules && !businessObject.IsValid)
           {
+            // todo: add child broken rules
             string brokenRules = string.Empty;
             foreach (var brokenRule in businessObject.GetBrokenRules())
             {

@@ -1,19 +1,17 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IFieldData.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Defines the members required by a field</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization.Mobile;
-
 namespace Csla.Core.FieldManager
 {
   /// <summary>
   /// Defines the members required by a field
   /// data storage object.
   /// </summary>
-  public interface IFieldData : ITrackStatus, IMobileObject
+  public interface IFieldData : ITrackStatus
   {
     /// <summary>
     /// Gets the name of the field.

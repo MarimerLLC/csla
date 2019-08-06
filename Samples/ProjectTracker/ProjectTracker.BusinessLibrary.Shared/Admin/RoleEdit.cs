@@ -5,7 +5,6 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla.Serialization;
 using System.ComponentModel;
-using Csla.Rules;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -53,7 +52,7 @@ namespace ProjectTracker.Library.Admin
 
     private class NoDuplicates : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.IRuleContext context)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
         var target = (RoleEdit)context.Target;
         RoleEditList parent = (RoleEditList)target.Parent;
@@ -65,6 +64,17 @@ namespace ProjectTracker.Library.Admin
               break;
             }
       }
+    }
+
+#if !FULL_DOTNET 
+    public static RoleEdit NewRoleEdit()
+    {
+      return DataPortal.CreateChild<RoleEdit>();
+    }
+#else
+    internal static RoleEdit GetRole(object data)
+    {
+      return DataPortal.FetchChild<RoleEdit>(data);
     }
 
     private void Child_Fetch(ProjectTracker.Dal.RoleDto data)
@@ -93,7 +103,7 @@ namespace ProjectTracker.Library.Admin
           TimeStamp = item.LastChanged;
         }
       }
-    }
+   }
 
     private void Child_Update()
     {
@@ -126,5 +136,6 @@ namespace ProjectTracker.Library.Admin
         }
       }
     }
+#endif
   }
 }

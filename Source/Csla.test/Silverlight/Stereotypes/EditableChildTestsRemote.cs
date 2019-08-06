@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="EditableChildTestsRemote.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -10,7 +10,6 @@ using Csla.Testing.Business.EditableChildTests;
 using System;
 using UnitDriven;
 using Csla.DataPortalClient;
-using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -31,160 +30,347 @@ namespace cslalighttest.Stereotypes
   [TestClass]
   public class EditableChildTestsRemote : TestBase
   {
+    #region List With Children - FetchAll
+
     [TestMethod]
-    public async Task FetchAll_Returns_all_3_Elements_and_does_not_throw_any_Exceptions()
+    public void FetchAll_Returns_all_3_Elements_and_does_not_throw_any_Exceptions()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>();
-      Assert.AreEqual(3, list.Count);
+      var context = GetContext();
+
+      MockList.FetchAll((o, e) =>
+      {
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+        context.Assert.AreEqual(3, e.Object.Count);
+        context.Assert.Success();
+      });
+
+      context.Complete();
     }
 
     [TestMethod]
-    public async Task FetchAll_Returns_Elements_with_correctly_assigned_Ids()
+    public void FetchAll_Returns_Elements_with_correctly_assigned_Ids()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>();
-      Assert.AreEqual(MockList.MockEditableChildId1, list[0].Id);
-      Assert.AreEqual("Child_Fetch", list[0].DataPortalMethod);
+      var context = GetContext();
 
-      Assert.AreEqual(MockList.MockEditableChildId2, list[1].Id);
-      Assert.AreEqual("Child_Fetch", list[1].DataPortalMethod);
+      MockList.FetchAll((o, e) =>
+      {
+        var list = (MockList)e.Object;
+        context.Assert.AreEqual(MockList.MockEditableChildId1, list[0].Id);
+        context.Assert.AreEqual("Child_Fetch", list[0].DataPortalMethod);
+ 
+        context.Assert.AreEqual(MockList.MockEditableChildId2, list[1].Id);
+        context.Assert.AreEqual("Child_Fetch", list[1].DataPortalMethod);
 
-      Assert.AreEqual(MockList.MockEditableChildId3, list[2].Id);
-      Assert.AreEqual("Child_Fetch", list[2].DataPortalMethod);
+        context.Assert.AreEqual(MockList.MockEditableChildId3, list[2].Id);
+        context.Assert.AreEqual("Child_Fetch", list[2].DataPortalMethod);
+
+        context.Assert.Success();
+      });
+
+      context.Complete();
     }
 
     [TestMethod]
-    public async Task FetchAll_Loads_GrandChildren_with_correct_Ids()
+    public void FetchAll_Loads_GrandChildren_with_correct_Ids()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>();
-      var expectedGrandChildIds =
+      var context = GetContext();
+
+      MockList.FetchAll((o, e) =>
+      {
+        var list = (MockList)e.Object;
+
+        var expectedGrandChildIds = 
           new[]
           {
-            GrandChildList.GrandChildId1,
+            GrandChildList.GrandChildId1, 
             GrandChildList.GrandChildId2,
             GrandChildList.GrandChildId3
           };
 
-      for (int index = 0; index < list.Count; index++)
-      {
-        var child = list[index];
-        Assert.IsNotNull(child.GrandChildren);
-        Assert.AreEqual(1, child.GrandChildren.Count);
-        Assert.AreEqual(expectedGrandChildIds[index], child.GrandChildren[0].Id);
-        Assert.AreEqual("Child_Fetch", child.GrandChildren[0].DataPortalMethod);
-      }
+        for(int index=0;index<list.Count;index++)
+        {
+          var child = list[index];
+          context.Assert.IsNotNull(child.GrandChildren);
+          context.Assert.AreEqual(1, child.GrandChildren.Count);
+          context.Assert.AreEqual(expectedGrandChildIds[index], child.GrandChildren[0].Id);
+          context.Assert.AreEqual("Child_Fetch", child.GrandChildren[0].DataPortalMethod);
+        }
+
+        context.Assert.Success();
+      });
+
+      context.Complete();
     }
 
+    #endregion
+
+    #region ListWithChildren - FetchByName
     //valid names: c1, c2, c3
     [TestMethod]
-    public async Task FetchByName_INVALID_Returns_Empty_List()
+    public void FetchByName_INVALID_Returns_Empty_List()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("INVALID");
-      Assert.AreEqual(0, list.Count);
+      var context = GetContext();
+      MockList.FetchByName("INVALID", (o, e) =>
+      {
+        var list = (MockList)e.Object;
+
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(list);
+        context.Assert.AreEqual(0, list.Count);
+
+        context.Assert.Success();
+      });
+
+      context.Complete();
     }
 
     [TestMethod]
-    public async Task FetchByName_c2_Returns_one_Element_with_name_c2_and_correct_Id()
+    public void FetchByName_c2_Returns_one_Element_with_name_c2_and_correct_Id()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      Assert.AreEqual(1, list.Count);
-      Assert.AreEqual("c2", list[0].Name);
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+      {
+        var list = (MockList)e.Object;
+
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(list);
+        context.Assert.AreEqual(1, list.Count);
+        context.Assert.AreEqual("c2",list[0].Name);
+
+        context.Assert.Success();
+      });
+
+      context.Complete();
     }
 
 
     [TestMethod]
-    public async Task FetchByName_c2_Returns_Element_with_correct_Id_Marked_NotNew_and_NotDirty()
+    public void FetchByName_c2_Returns_Element_with_correct_Id_Marked_NotNew_and_NotDirty()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      Assert.AreEqual(MockList.MockEditableChildId2, list[0].Id);
-      Assert.AreEqual("Child_Fetch", list[0].DataPortalMethod);
-      Assert.IsFalse(list[0].IsNew);
-      Assert.IsFalse(list[0].IsDirty);
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+       {
+         var list = (MockList)e.Object;
+
+         context.Assert.AreEqual(MockList.MockEditableChildId2, list[0].Id);
+         Assert.AreEqual("Child_Fetch", list[0].DataPortalMethod);
+         context.Assert.IsFalse(list[0].IsNew);
+         context.Assert.IsFalse(list[0].IsDirty);
+
+         context.Assert.Success();
+       });
+
+      context.Complete();
     }
 
     [TestMethod]
-    public async Task FetchByName_c2_Returns_Element_with_one_GrandChild()
+    public void FetchByName_c2_Returns_Element_with_one_GrandChild()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      var child = list[0];
-      Assert.AreEqual(1, child.GrandChildren.Count);
-      Assert.AreEqual(GrandChildList.GrandChildId2, child.GrandChildren[0].Id);
-      Assert.AreEqual("Child_Fetch", child.GrandChildren[0].DataPortalMethod);
-      Assert.IsFalse(child.GrandChildren[0].IsNew);
-      Assert.IsFalse(child.GrandChildren[0].IsDirty);
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+      {
+        var list = (MockList)e.Object;
+        var child = list[0];
+        context.Assert.AreEqual(1, child.GrandChildren.Count);
+        context.Assert.AreEqual(GrandChildList.GrandChildId2, child.GrandChildren[0].Id);
+        Assert.AreEqual("Child_Fetch", child.GrandChildren[0].DataPortalMethod);
+        context.Assert.IsFalse(child.GrandChildren[0].IsNew);
+        context.Assert.IsFalse(child.GrandChildren[0].IsDirty);
+
+        context.Assert.Success();
+      });
+
+      context.Complete();
+    }
+
+    #endregion
+
+    #region Calling Save on non-Root element - Child/GrandChild Save() - NotSupported
+
+    [TestMethod]
+    public void Save_on_EditableChild_Throws_InvalidOperationException()
+    {
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+       {
+         context.Assert.IsNull(e.Error);
+         context.Assert.IsNotNull(e.Object);
+        try
+        {
+          e.Object[0].Save();
+          context.Assert.Fail();
+        }
+        catch (InvalidOperationException)
+        {
+          context.Assert.Success();
+        }
+      });
+
+      context.Complete();
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public async Task Save_on_EditableChild_Throws_InvalidOperationException()
+    public void Save_on_GrandChildList_Throws_InvalidOperationException()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      list[0].Save();
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+                                   {
+                                     context.Assert.IsNull(e.Error);
+                                     context.Assert.IsNotNull(e.Object);
+       try
+       {
+         e.Object[0].GrandChildren.Save();
+         context.Assert.Fail();
+       }
+       catch (InvalidOperationException)
+       {
+         context.Assert.Success();
+       }
+      });
+
+      context.Complete();
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public async Task Save_on_GrandChildList_Throws_InvalidOperationException()
+    public void Save_on_GrandChildList_Item_Throws_InvalidOperationException()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      list[0].GrandChildren.Save();
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+      {
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+         try
+         {
+           e.Object[0].GrandChildren[0].Save();
+           context.Assert.Fail();
+         }
+         catch (InvalidOperationException)
+         {
+           context.Assert.Success();
+         }
+      });
+
+      context.Complete();
+    }
+
+    #endregion
+
+    #region Save()
+    [TestMethod]
+    public void After_Saved_FetchedList_should_contain_same_number_of_items()
+    {
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+      {
+        var fetchedList = (MockList)e.Object;
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(fetchedList);
+        context.Assert.AreEqual(1, fetchedList.Count);
+
+        fetchedList[0].Name = "saving";
+        fetchedList.Saved += (o2, e2) =>
+        {
+          context.Assert.IsNotNull(e2.NewObject);
+          var savedList = (MockList)e2.NewObject;
+          context.Assert.IsNotNull(savedList);
+          if (savedList != null)
+          {
+            context.Assert.AreEqual(fetchedList.Count, savedList.Count);
+            context.Assert.Success();
+          }
+        };
+        fetchedList.BeginSave();
+      });
+
+      context.Complete();
+      
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public async Task Save_on_GrandChildList_Item_Throws_InvalidOperationException()
+    public void After_Saved_FetchedList_Items_should_contain_same_values_and_Marked_NotDirty()
     {
-      var list = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      list[0].GrandChildren[0].Save();
+      var context = GetContext();
+      MockList.FetchByName("c2", (o, e) =>
+      {
+        var fetchedList = (MockList)e.Object;
+
+        context.Assert.AreEqual("c2", fetchedList[0].Name);
+        context.Assert.AreEqual("Child_Fetch", fetchedList[0].DataPortalMethod);
+        
+        fetchedList[0].Name = "saving";
+        context.Assert.IsTrue(fetchedList[0].IsDirty);
+
+        fetchedList.Saved += (o2, e2) =>
+        {
+          context.Assert.IsNotNull(e2.NewObject);
+          var savedList = (MockList)e2.NewObject;
+          context.Assert.IsNotNull(savedList);
+          if (savedList != null)
+          {
+            context.Assert.AreEqual(fetchedList[0].Id, savedList[0].Id);
+            context.Assert.AreEqual(fetchedList[0].Name, savedList[0].Name);
+
+            context.Assert.AreEqual("Child_Update", savedList[0].DataPortalMethod);
+            context.Assert.IsFalse(savedList[0].IsDirty);
+
+            context.Assert.AreEqual(fetchedList[0].GrandChildren.Count, savedList[0].GrandChildren.Count);
+
+            context.Assert.Success();
+          }
+        };
+        fetchedList.BeginSave();
+      });
+
+      context.Complete();
     }
 
     [TestMethod]
-    public async Task After_Saved_FetchedList_should_contain_same_number_of_items()
+    public void After_Saved_GrandChild_should_be_NotDirty_and_should_have_same_value_as_Fetched_GrandChild()
     {
-      var fetchedList = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      Assert.AreEqual(1, fetchedList.Count);
+      var context = GetContext();
 
-      fetchedList[0].Name = "saving";
-      var savedList = await fetchedList.SaveAsync();
-      Assert.AreEqual(fetchedList.Count, savedList.Count);
+      MockList.FetchByName("c2", (o, e) =>
+      {
+        var fetchedList = e.Object;
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+        context.Assert.AreEqual(1, e.Object.Count);
+        context.Assert.AreEqual("c2", e.Object[0].Name);
+
+        var fetchedGrandChild = fetchedList[0].GrandChildren[0];
+
+        context.Assert.AreEqual("Child_Fetch", fetchedGrandChild.DataPortalMethod);
+
+        fetchedGrandChild.Name = "saving";
+        context.Assert.IsTrue(fetchedGrandChild.IsDirty);
+
+        fetchedList.Saved += (o3, e3) =>
+        {
+          //context.Assert.IsNull(e3.Error);
+          context.Assert.IsNotNull(e3.NewObject);
+
+          var savedList = (MockList)e3.NewObject;
+          context.Assert.IsNotNull(savedList);
+          if (savedList != null)
+          {
+            var savedGrandChild = savedList[0].GrandChildren[0];
+            context.Assert.AreEqual("Child_Update", savedGrandChild.DataPortalMethod);
+            context.Assert.IsFalse(savedGrandChild.IsDirty);
+            context.Assert.AreEqual(fetchedGrandChild.Name, savedGrandChild.Name);
+            context.Assert.AreEqual(fetchedGrandChild.Id, savedGrandChild.Id);//Guids used - otherwisewe would not test for this
+            context.Assert.Success();
+          }
+        };
+
+        fetchedList.BeginSave();
+
+      });
+
+      context.Complete();
     }
 
-    [TestMethod]
-    public async Task After_Saved_FetchedList_Items_should_contain_same_values_and_Marked_NotDirty()
-    {
-      var fetchedList = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      Assert.AreEqual("c2", fetchedList[0].Name);
-      Assert.AreEqual("Child_Fetch", fetchedList[0].DataPortalMethod);
+    #endregion
 
-      fetchedList[0].Name = "saving";
-      Assert.IsTrue(fetchedList[0].IsDirty);
-
-      var savedList = await fetchedList.SaveAsync();
-      Assert.AreEqual(fetchedList[0].Id, savedList[0].Id);
-      Assert.AreEqual(fetchedList[0].Name, savedList[0].Name);
-
-      Assert.AreEqual("Child_Update", savedList[0].DataPortalMethod);
-      Assert.IsFalse(savedList[0].IsDirty);
-
-      Assert.AreEqual(fetchedList[0].GrandChildren.Count, savedList[0].GrandChildren.Count);
-    }
-
-    [TestMethod]
-    public async Task After_Saved_GrandChild_should_be_NotDirty_and_should_have_same_value_as_Fetched_GrandChild()
-    {
-      var fetchedList = await Csla.DataPortal.FetchAsync<MockList>("c2");
-      var fetchedGrandChild = fetchedList[0].GrandChildren[0];
-
-      Assert.AreEqual("Child_Fetch", fetchedGrandChild.DataPortalMethod);
-
-      fetchedGrandChild.Name = "saving";
-      Assert.IsTrue(fetchedGrandChild.IsDirty);
-
-      var savedList = await fetchedList.SaveAsync();
-      var savedGrandChild = savedList[0].GrandChildren[0];
-      Assert.AreEqual("Child_Update", savedGrandChild.DataPortalMethod);
-      Assert.IsFalse(savedGrandChild.IsDirty);
-      Assert.AreEqual(fetchedGrandChild.Name, savedGrandChild.Name);
-      Assert.AreEqual(fetchedGrandChild.Id, savedGrandChild.Id);//Guids used - otherwisewe would not test for this
-    }
   }
 }

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AuthorizationRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Base class providing basic authorization rule</summary>
 //-----------------------------------------------------------------------
@@ -46,7 +46,7 @@ namespace Csla.Rules
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected abstract void Execute(IAuthorizationContext context);
+    protected abstract void Execute(AuthorizationContext context);
 
 
     /// <summary>
@@ -95,12 +95,12 @@ namespace Csla.Rules
     private void CanWriteProperty(string argument)
     {
       if (_locked)
-        throw new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
+        new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
     }
 
     #region IAuthorizationRule
 
-    void IAuthorizationRule.Execute(IAuthorizationContext context)
+    void IAuthorizationRule.Execute(AuthorizationContext context)
     {
       if (!_locked)
         _locked = true;

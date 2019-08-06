@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AsynchDataPortalTest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Create is an exception , if BO does not have DP_Create() overload</summary>
 //-----------------------------------------------------------------------
@@ -56,31 +56,84 @@ namespace Csla.Test.DataPortal
     #region Create
 
     [TestMethod]
-
-    public async Task BeginCreate_overload_without_parameters()
+    public void BeginCreate_overload_without_parameters_Results_in_UserState_defaulted_to_Null_and_Id_to_0()
     {
-      var created = await Csla.DataPortal.CreateAsync<Single>();
-      Assert.AreEqual(created.Id, 0);
+      var context = GetContext();
+
+      Csla.DataPortal.BeginCreate<Single>((o, e) =>
+      {
+        var created = e.Object;
+        context.Assert.IsNotNull(created);
+        context.Assert.AreEqual(created.Id, 0);//DP_Create without criteria called
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNull(e.UserState);
+        context.Assert.AreEqual("Created", created.MethodCalled);
+        context.Assert.Success();
+      });
+      context.Complete();
     }
 
     [TestMethod]
-
-    public async Task BeginCreate_overload_with_Criteria_passed_and_Id_set()
+    public void BeginCreate_overload_with_UserState_passed_Results_in_UserState_set_and_Id_defaulted_to_0()
     {
-      var created = await Csla.DataPortal.CreateAsync<Single>(100);
-      Assert.AreEqual(created.Id, 100);
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginCreate<Single>(
+        (o, e) =>
+        {
+          var created = e.Object;
+          context.Assert.IsNotNull(created);
+          context.Assert.AreEqual(created.Id, 0);//DP_Create without criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(userState, e.UserState);
+          context.Assert.AreEqual("Created", created.MethodCalled);
+          context.Assert.Success();
+        }, userState);
+      context.Complete();
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Csla.DataPortalException))]
-    
-    public async Task BeginCreate_with_exception()
+    public void BeginCreate_overload_with_UserState_and_Criteria_passed_Results_in_UserState_and_Id_set()
     {
-      await Csla.DataPortal.CreateAsync<Single>(9999);
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginCreate<Single>(100,
+        (o, e) =>
+        {
+          try
+          {
+            var created = e.Object;
+            context.Assert.IsNotNull(created);
+            context.Assert.AreEqual(created.Id, 100);//DP_Create with criteria called
+            context.Assert.IsNull(e.Error);
+            context.Assert.AreEqual(userState, e.UserState);
+            context.Assert.AreEqual("Created", created.MethodCalled);
+          }
+          catch (Exception ex)
+          {
+            context.Assert.Fail(ex);
+          }
+          context.Assert.Success();
+        }, userState);
+      context.Complete();
     }
 
     [TestMethod]
-    
+    public void BeginCreate_with_exception()
+    {
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginCreate<Single>(9999,
+        (o, e) =>
+        {
+          context.Assert.IsNotNull(e.Error);
+          context.Assert.AreEqual("state", (string)e.UserState);
+          context.Assert.Success();
+        }, userState);
+      context.Complete();
+    }
+
+    [TestMethod]
     public async Task CreateAsync_NoCriteria()
     {
       var result = await Csla.DataPortal.CreateAsync<Single>();
@@ -89,7 +142,6 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    
     public async Task CreateAsync_WithCriteria()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>(123);
@@ -99,7 +151,6 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
-    
     public void CreateAsync_WithException()
     {
       var lck = new AutoResetEvent(false);
@@ -124,7 +175,6 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [Timeout(1000)]
-    
     public async Task CreateAsync_Parrallel()
     {
       var list = new List<int>(500);
@@ -140,9 +190,78 @@ namespace Csla.Test.DataPortal
     #endregion
 
     #region Fetch
+    [TestMethod]
+    public void BeginFetch_overload_without_Parameters_Results_in_UserState_defaulted_to_Null_and_Id_to_0()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<Single>(
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 0);//DP_Create without criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
 
     [TestMethod]
-    
+    public void BeginFetch_overload_with_Crieria_only_passed_Results_in_UserState_defaulted_to_Null_and_Id_set()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<Single>(5,
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 5);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_with_exception()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<Single>(9999,
+        (o, e) =>
+        {
+          context.Assert.IsNotNull(e.Error);
+          context.Assert.AreEqual("DataPortal.Fetch failed (Bad data)", e.Error.Message);
+          context.Assert.AreEqual("state", (string)e.UserState);
+          context.Assert.Success();
+        }, "state");
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_with_Criteria_and_UserState_passed_Results_in_UserState_and_Id_set()
+    {
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginFetch<Single>(5,
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 5);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(userState, e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        },
+        userState);
+      context.Complete();
+    }
+
+    [TestMethod]
     public async Task FetchAsync_NoCriteria()
     {
       var result = await Csla.DataPortal.FetchAsync<Single2>();
@@ -151,7 +270,6 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    
     public async Task FetchAsync_WithCriteria()
     {
       var result = await Csla.DataPortal.FetchAsync<Single2>(123);
@@ -161,7 +279,6 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
-    
     public void FetchAsync_WithException()
     {
       var lck = new AutoResetEvent(false);
@@ -186,7 +303,6 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [Timeout(1000)]
-    
     public async Task FetchAsync_Parrallel()
     {
       var list = new List<int>(500);
@@ -203,8 +319,344 @@ namespace Csla.Test.DataPortal
 
 #if DEBUG
 
+    #region BeginSave
+
     [TestMethod]
-    
+    public void BeginSave_must_call_OnSaved_when_exception_in_dal()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginCreate<SingleWithException>((o, e) =>
+      {
+        var test = e.Object;
+        context.Assert.IsNotNull(test);
+        context.Assert.AreEqual("Created", e.Object.MethodCalled);
+        test.Saved += ((o1, e1) =>
+        {
+          var error = e1.Error;
+          context.Assert.IsNotNull(error);
+          context.Assert.AreEqual(typeof(DataPortalException), error.GetType());
+          var dpe = (DataPortalException)error;
+          context.Assert.AreEqual(typeof(DataException), dpe.BusinessException.GetType());
+          context.Assert.Success();
+        });
+        test.BeginSave();
+
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginSave_must_call_OnSaved_when_object_is_child_and_throws_error()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginCreate<SingleWithException>((o, e) =>
+        {
+          var test = e.Object;
+          test.SetAsChild();
+          context.Assert.IsNotNull(test);
+          context.Assert.AreEqual("Created", e.Object.MethodCalled);
+          test.Saved += ((o1, e1) =>
+          {
+            var error = e1.Error;
+            context.Assert.IsNotNull(error);
+            context.Assert.AreEqual(typeof(InvalidOperationException), error.GetType());
+            context.Assert.Success();
+          });
+          test.BeginSave();
+        });
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_NewObject_without_parameters_Results_in_UserState_dafaulted_to_Null_and_MethodCalled_Inserted()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginCreate<Single>((o, e) =>
+        {
+          var test = e.Object;
+          context.Assert.IsNotNull(test);
+          context.Assert.AreEqual("Created", e.Object.MethodCalled);
+          test.Saved += ((o1, e1) =>
+          {
+            var actual = e1.NewObject;
+            context.Assert.IsNotNull(actual);
+            //if force update was set to false we result in Inserted object otherwise Updated
+            context.Assert.AreEqual("Inserted", ((Single)actual).MethodCalled);
+            context.Assert.IsNull(e1.Error);
+            context.Assert.IsNull(e1.UserState);
+            context.Assert.Success();
+          });
+          test.BeginSave();
+
+        });
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_NewObject_with_callback_parameter_set_Results_in_UserState_defaulted_to_Null_and_id_to_0_and_MethodCalled_Inserted()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginCreate<Single>(
+          (o, e) =>
+          {
+            var created = e.Object;
+            context.Assert.IsNotNull(created);
+            context.Assert.IsNull(e.Error);
+            context.Assert.IsNull(e.UserState);
+            context.Assert.AreEqual("Created", created.MethodCalled);
+            created.BeginSave((o1, e1) =>
+            {
+              var saved = (Single)e1.NewObject;
+              context.Assert.IsNotNull(saved);
+              context.Assert.AreEqual(saved.Id, 0);//DP_Create without criteria called
+              context.Assert.AreEqual("Inserted", saved.MethodCalled);
+              context.Assert.IsNull(e1.Error);
+              context.Assert.IsNull(e1.UserState);
+              context.Assert.Success();
+            });
+          });
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_NewObject_with_UserState_parameter_set_Results_in_UserState_set_and_MethodCalled_Inserted()
+    {
+      var userState = "user";
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginCreate<Single>((o, e) =>
+        {
+          var test = e.Object;
+          context.Assert.IsNotNull(test);
+          context.Assert.AreEqual("Created", e.Object.MethodCalled);
+          test.Saved += ((o1, e1) =>
+          {
+            var actual = (Single)e1.NewObject;
+            context.Assert.IsNotNull(actual);
+            //if force update was set to false we result in Inserted object otherwise Updated
+            context.Assert.AreEqual("Inserted", actual.MethodCalled);
+            context.Assert.IsNull(e1.Error);
+            context.Assert.AreEqual(userState, e1.UserState);
+            context.Assert.Success();
+          });
+
+          test.BeginSave(userState);
+
+        });
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_NewObject_with_UserState_and_calllback_Results_in_UserState_set_and_MethodCalled_Inserted()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        object expectedUserState = "state";
+        Csla.DataPortal.BeginCreate<Single>(
+          (o, e) =>
+          {
+            var created = e.Object;
+            context.Assert.IsNotNull(created);
+            context.Assert.IsNull(e.Error);
+            context.Assert.AreEqual(expectedUserState, e.UserState);
+            context.Assert.AreEqual("Created", created.MethodCalled);
+            created.BeginSave((o1, e1) =>
+            {
+              var saved = (Single)e1.NewObject;
+              context.Assert.IsNotNull(saved);
+              context.Assert.AreEqual("Inserted", saved.MethodCalled);
+              context.Assert.IsNull(e1.Error);
+              context.Assert.AreEqual(expectedUserState, e1.UserState);
+              context.Assert.Success();
+            }, expectedUserState);
+          },
+          expectedUserState);
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_NewObject_with_ForceUpdate_callback_and_UserState_Parameters_set_Results_in_those_params_set_on_server()
+    {
+      var userState = "user";
+      var forceUpdate = true;
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginCreate<Single>((o, e) =>
+        {
+          context.Assert.IsNotNull(e.Object);
+          context.Assert.AreEqual("Created", e.Object.MethodCalled);
+          e.Object.BeginSave(
+            forceUpdate,
+            (o1, e1) =>
+            {
+              var actual = (Single)e1.NewObject;
+              context.Assert.IsNotNull(actual);
+              //if force update was set to false we result in Inserted object otherwise Updated
+              context.Assert.AreEqual("Updated", actual.MethodCalled);
+              context.Assert.IsNull(e1.Error);
+              context.Assert.AreEqual(userState, e1.UserState);
+              context.Assert.Success();
+            },
+            userState);
+        });
+      });
+      context.Complete();
+    }
+
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_FetchedObject_without_parameters_Results_in_UserState_defaulted_to_Null_and_MethodCalled_Updated()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginFetch<Single>(
+          (o, e) =>
+          {
+            var created = e.Object;
+            context.Assert.IsNotNull(created);
+            context.Assert.IsNull(e.Error);
+            context.Assert.AreEqual("Fetched", created.MethodCalled);
+            created.MethodCalled = "";
+            created.BeginSave((o1, e1) =>
+            {
+              var saved = (Single)e1.NewObject;
+              context.Assert.IsNotNull(saved);
+              context.Assert.AreEqual("Updated", saved.MethodCalled);
+              context.Assert.IsNull(e1.Error);
+              context.Assert.IsNull(e1.UserState);
+              context.Assert.Success();
+            });
+          });
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_FetchedObject_with_UserState_results_in_UserState_set_and_MethodCalled_Updated()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        object userState = "state";
+        Csla.DataPortal.BeginFetch<Single>(
+          (o, e) =>
+          {
+            var fetched = e.Object;
+            context.Assert.IsNotNull(fetched);
+            context.Assert.IsNull(e.Error);
+            context.Assert.AreEqual(userState, e.UserState);
+            context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+            fetched.MethodCalled = "";
+            fetched.BeginSave((o1, e1) =>
+            {
+              var saved = (Single)e1.NewObject;
+              context.Assert.IsNotNull(saved);
+              context.Assert.AreEqual(saved.Id, 0);//DP_Create without criteria called
+              context.Assert.AreEqual("Updated", saved.MethodCalled);
+              context.Assert.IsNull(e1.Error);
+              context.Assert.AreEqual(userState, e1.UserState);
+              context.Assert.Success();
+            },
+            userState);
+          },
+          userState);
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void BeginSave_overload_called_on_DeletedObject_with_UserState_results_in_UserState_set_on_server()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        object userState = "state";
+        Csla.DataPortal.BeginFetch<Single>(
+          (o, e) =>
+          {
+            context.Assert.Try(() =>
+            {
+              var fetched = e.Object;
+              context.Assert.IsNull(e.Error, "Got fetch exception: " + e.Error.ToString());
+              context.Assert.IsNotNull(fetched, "Didn't fetch object");
+              context.Assert.AreEqual(userState, e.UserState);
+              context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+              fetched.MethodCalled = "";
+              fetched.Delete();
+              fetched.BeginSave((o1, e1) =>
+              {
+                context.Assert.Try(() =>
+                {
+                  var saved = e1.NewObject;
+                  context.Assert.IsNull(e1.Error, "Got save exception: " + e1.Error.ToString());
+                  context.Assert.IsNotNull(saved, "Should have new object");
+                  context.Assert.AreEqual("SelfDeleted", ((Single)saved).MethodCalled);
+                  context.Assert.AreEqual(userState, e1.UserState);
+                  context.Assert.Success();
+                });
+              },
+              userState);
+            });
+          },
+          userState);
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginSave_called_on_DeletedObject_without_UserState_results_in_UserState_defaulted_to_Null_server()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Csla.DataPortal.BeginFetch<Single>(
+          (o, e) =>
+          {
+            context.Assert.IsNotNull(e.Object);
+            context.Assert.IsNull(e.Error);
+            context.Assert.IsNull(e.UserState);
+            context.Assert.AreEqual("Fetched", e.Object.MethodCalled);
+            e.Object.MethodCalled = "";
+            e.Object.Delete();
+            e.Object.BeginSave((o1, e1) =>
+                                 {
+                                   context.Assert.IsNotNull(e1.NewObject);
+                                   context.Assert.AreEqual("SelfDeleted", ((Single)e1.NewObject).MethodCalled);
+                                   context.Assert.IsNull(e1.Error);
+                                   context.Assert.IsNull(e1.UserState);
+                                   context.Assert.Success();
+                                 });
+          });
+        context.Assert.Success();
+      });
+      context.Complete();
+    }
+
+#if DEBUG
+    [TestMethod]
     public async Task SaveAsync()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>();
@@ -216,9 +668,9 @@ namespace Csla.Test.DataPortal
       Assert.IsFalse(result.IsNew);
       Assert.IsFalse(result.IsDirty);
     }
+#endif
 
     [TestMethod]
-    
     public void SaveAsyncWithException()
     {
       var context = GetContext();
@@ -252,21 +704,104 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
+    #endregion
+
 #endif
+
+    #region Delete
+
+    [TestMethod]
+    public void Delete_called_with_UserState_results_in_UserState_set_on_server()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        object userState = "state";
+        Single.DeleteObject(5, (o1, e1) =>
+                                 {
+                                   context.Assert.IsNull(e1.Error);
+                                   context.Assert.AreEqual(userState, e1.UserState);
+                                   context.Assert.Success();
+                                 }, userState);
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void Delete_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
+    {
+      var context = GetContext();
+      context.Assert.Try(() =>
+      {
+        Single.DeleteObject(5, (o1, e1) =>
+                               {
+                                 context.Assert.IsNull(e1.Error);
+                                 context.Assert.IsNull(e1.UserState);
+                                 context.Assert.Success();
+                               });
+      });
+      context.Complete();
+    }
+
+    //[TestMethod]
+    //public void DeleteAsync_WithException()
+    //{
+    //  var lck = new AutoResetEvent(false);
+    //  new Action(async () =>
+    //  {
+    //    try
+    //    {
+    //      await Csla.DataPortal.DeleteAsync<Single2>(555);
+    //      Assert.Fail("Expected exception not thrown");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+    //    }
+    //    finally
+    //    {
+    //      lck.Set();
+    //    }
+    //  }).Invoke();
+    //  lck.WaitOne();
+    //}
+
+    #endregion
 
     #region ExecuteCommand
 
     [TestMethod]
-    
-    public async Task ExecuteCommand_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
+    public void ExecuteCommand_called_with_UserState_results_in_UserState_set_on_server()
     {
+      var context = GetContext();
+      object userState = "state";
       var command = new CommandObject();
-      var result = await Csla.DataPortal.ExecuteAsync(command);
-      Assert.AreEqual("Executed", result.AProperty);
+      command.ExecuteServerCodeAsunch((o1, e1) =>
+                                        {
+                                          context.Assert.IsNull(e1.Error);
+                                          context.Assert.AreEqual("Executed", e1.Object.AProperty);
+                                          context.Assert.AreEqual(userState, e1.UserState);
+                                          context.Assert.Success();
+                                        }, userState);
+      context.Complete();
     }
 
     [TestMethod]
-    
+    public void ExecuteCommand_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
+    {
+      var context = GetContext();
+      var command = new CommandObject();
+      command.ExecuteServerCodeAsunch((o1, e1) =>
+                                        {
+                                          context.Assert.IsNull(e1.Error);
+                                          context.Assert.AreEqual("Executed", e1.Object.AProperty);
+                                          context.Assert.IsNull(e1.UserState);
+                                          context.Assert.Success();
+                                        });
+      context.Complete();
+    }
+
+    [TestMethod]
     public async Task ExecuteAsync()
     {
       var result = await Csla.DataPortal.ExecuteAsync<SingleCommand>(
@@ -276,7 +811,6 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    
     public void ExecuteAsyncWithException()
     {
       var lck = new AutoResetEvent(false);
@@ -306,23 +840,128 @@ namespace Csla.Test.DataPortal
     /// with that signature, ends up calling parameterless DP_Create() - this is by design
     /// </summary>
     [TestMethod]
-    
-    public async Task BeginCreate_Calling_BO_Without_DP_CREATE_Returns_no_Error_info()
+    public void BeginCreate_Calling_BO_Without_DP_CREATE_Returns_no_Error_info()
     {
-      await Csla.DataPortal.CreateAsync<CustomerWO_DP_XYZ>();
+      var context = GetContext();
+      CustomerWO_DP_XYZ.CreateCustomer((o, e) =>
+      {
+        context.Assert.IsNull(e.Error);
+        context.Assert.Success();
+      });
+      context.Complete();
     }
 
     [TestMethod]
+    public void BeginFetch_PrimitiveCriteria()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(
+        5,
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 5);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
 
-    public async Task BeginFetch_sends_cultureinfo_to_dataportal()
+    [TestMethod]
+    public void BeginFetch_StringCriteria()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(
+        "5",
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 5);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_GuidCriteria()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(
+        System.Guid.NewGuid(),
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 1234);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginCreate_PrimitiveCriteria()
+    {
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginCreate<PrimitiveCriteriaSingle>(100,
+        (o, e) =>
+        {
+          var created = e.Object;
+          context.Assert.IsNotNull(created);
+          context.Assert.AreEqual(created.Id, 100);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(userState, e.UserState);
+          context.Assert.AreEqual("Created", created.MethodCalled);
+          context.Assert.Success();
+        }, userState);
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void Delete_PrimitiveCriteria()
+    {
+      var context = GetContext();
+      object userState = "state";
+      DataPortal<PrimitiveCriteriaSingle> dp = new DataPortal<PrimitiveCriteriaSingle>();
+      dp.DeleteCompleted +=
+        (o1, e1) =>
+        {
+          context.Assert.IsNull(e1.Error);
+
+          context.Assert.AreEqual(dp.GlobalContext["PrimitiveCriteriaSingle"].ToString(), "Deleted");
+          context.Assert.Success();
+        };
+      dp.BeginDelete(5);
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_sends_cultureinfo_to_dataportal()
     {
       string expectedCulture = Thread.CurrentThread.CurrentCulture.Name;
       string expectedUICulture = Thread.CurrentThread.CurrentUICulture.Name;
 
-      var command = new AsyncPortalWithCulture();
-      var result = await Csla.DataPortal.ExecuteAsync(command);
-      Assert.AreEqual(expectedCulture, result.CurrentCulture);
-      Assert.AreEqual(expectedUICulture, result.CurrentUICulture);
+      var context = GetContext();
+      AsyncPortalWithCulture.BeginExecuteCommand(
+        (o, e) =>
+        {
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
+          context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
+          context.Assert.Success();
+        });
+
+      context.Complete();
     }
   }
 }

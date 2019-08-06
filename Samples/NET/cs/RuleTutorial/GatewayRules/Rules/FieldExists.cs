@@ -54,7 +54,7 @@ namespace GatewayRules.Rules
     /// Calls inner rule if PrimaryProperty has value.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       if (context.InputPropertyValues.ContainsKey(PrimaryProperty))
       {

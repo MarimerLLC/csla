@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AuthorizationRules.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>IsInRole authorization rule.</summary>
 //-----------------------------------------------------------------------
@@ -69,23 +69,20 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(IAuthorizationContext context)
+    protected override void Execute(AuthorizationContext context)
     {
-      if (Csla.ApplicationContext.User != null)
+      if (_roles.Count > 0)
       {
-        if (_roles.Count > 0)
-        {
-          foreach (var item in _roles)
-            if (Csla.ApplicationContext.User.IsInRole(item))
-            {
-              context.HasPermission = true;
-              break;
-            }
-        }
-        else
-        {
-          context.HasPermission = true;
-        }
+        foreach (var item in _roles)
+          if (Csla.ApplicationContext.User.IsInRole(item))
+          {
+            context.HasPermission = true;
+            break;
+          }
+      }
+      else
+      {
+        context.HasPermission = true;
       }
     }
   }
@@ -147,18 +144,15 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    protected override void Execute(IAuthorizationContext context)
+    protected override void Execute(AuthorizationContext context)
     {
       context.HasPermission = true;
-      if (Csla.ApplicationContext.User != null)
-      {
-        foreach (var item in _roles)
-          if (Csla.ApplicationContext.User.IsInRole(item))
-          {
-            context.HasPermission = false;
-            break;
-          }
-      }
+      foreach (var item in _roles)
+        if (Csla.ApplicationContext.User.IsInRole(item))
+        {
+          context.HasPermission = false;
+          break;
+        }
     }
   }
 }

@@ -131,7 +131,7 @@ namespace ObjectRules
       /// <param name="context">
       /// The context.
       /// </param>
-      protected override void Execute(IRuleContext context)
+      protected override void Execute(RuleContext context)
       {
         var bo = (Csla.Core.BusinessBase) context.Target;
         var name = (string) ReadProperty(context.Target, Root.NameProperty);

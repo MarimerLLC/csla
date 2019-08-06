@@ -41,7 +41,7 @@ namespace RuleTutorial.Testing.Common
 
     /// <summary>
     /// Executes the rule - will create Input Property Values from BO.
-    /// Will wait for up to 30 seconds for Async rule to complete so test will look as if syncronous. 
+    /// Will wait for up to 3 seconds for Async rule to complete so test will look as if syncronous. 
     /// </summary>
     public void ExecuteRule()
     {

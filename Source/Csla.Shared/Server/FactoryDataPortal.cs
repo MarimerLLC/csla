@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="FactoryDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
@@ -35,11 +35,13 @@ namespace Csla.Server
       {
         if (_factoryLoader == null)
         {
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
+#endif
           _factoryLoader = new ObjectFactoryLoader();
         }
         return _factoryLoader;

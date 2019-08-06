@@ -192,7 +192,6 @@ namespace Csla.Test.ChildChanged
 
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_Fetch()
     {
       var result = Fetch();
@@ -213,7 +212,6 @@ namespace Csla.Test.ChildChanged
     }
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_Name_Depth0()
     {
       var result = Fetch();
@@ -285,7 +283,6 @@ namespace Csla.Test.ChildChanged
     }
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_List_Name_Depth1()
     {
       var result = Fetch();
@@ -303,7 +300,6 @@ namespace Csla.Test.ChildChanged
 
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_List_Name_Depth2()
     {
       var result = Fetch();

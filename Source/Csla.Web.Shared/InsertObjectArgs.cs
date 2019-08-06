@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="InsertObjectArgs.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Argument object used in the InsertObject event.</summary>
 //-----------------------------------------------------------------------

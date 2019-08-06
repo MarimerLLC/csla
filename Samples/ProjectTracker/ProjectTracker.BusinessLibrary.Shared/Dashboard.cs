@@ -33,12 +33,13 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginFetch<Dashboard>(callback);
     }
-
+#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<Dashboard> GetDashboardAsync()
     {
       return await DataPortal.FetchAsync<Dashboard>();
     }
-
+#endif
+#if FULL_DOTNET
     public static Dashboard GetDashboard()
     {
       return DataPortal.Fetch<Dashboard>();
@@ -55,5 +56,6 @@ namespace ProjectTracker.Library
         ResourceCount = data.ResourceCount;
       }
     }
+#endif
   }
 }

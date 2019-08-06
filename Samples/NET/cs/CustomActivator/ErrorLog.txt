@@ -1,1 +1,0 @@
-'CustomActivator' does not implement interface member 'IDataPortalActivator.ResolveType(Type)'

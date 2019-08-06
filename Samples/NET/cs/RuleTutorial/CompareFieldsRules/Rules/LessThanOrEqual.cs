@@ -63,7 +63,7 @@ namespace CompareFieldsRules.Rules
     /// <param name="context">
     /// Rule context object.
     /// </param>
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       var value1 = (IComparable)context.InputPropertyValues[PrimaryProperty];
       var value2 = (IComparable)context.InputPropertyValues[CompareTo];

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyInfoRoot.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Note: We exposed the PropertyInfo's so we can test it...</summary>
 //-----------------------------------------------------------------------
@@ -33,7 +33,7 @@ namespace Csla.Test.PropertyInfo
 
     #region DataPortal Methods
 
-    protected override void DataPortal_Create()
+    private void DataPortal_Create()
     {
     }
 
@@ -80,14 +80,6 @@ namespace Csla.Test.PropertyInfo
       get { return GetProperty(NameDefaultValueProperty); }
       set { SetProperty(NameDefaultValueProperty, value); }
     }
-    
-    public static readonly PropertyInfo<string> StringNullDefaultValueProperty = RegisterProperty<string>(c => c.StringNullDefaultValue, string.Empty, null);
-    public string StringNullDefaultValue
-    {
-      get { return GetProperty(StringNullDefaultValueProperty); }
-      set { SetProperty(StringNullDefaultValueProperty, value); }
-    }
-
 
     #endregion
   }

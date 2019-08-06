@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="MockList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -13,6 +13,20 @@ namespace Csla.Testing.Business.EditableChildTests
   [Serializable]
   public partial class MockList : BusinessListBase<MockList, MockEditableChild>
   {
+    public static void FetchAll(EventHandler<DataPortalResult<MockList>> completed)
+    {
+      var dp = new DataPortal<MockList>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch();
+    }
+
+    public static void FetchByName(string name, EventHandler<DataPortalResult<MockList>> completed)
+    {
+      var dp = new DataPortal<MockList>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch(name);
+    }
+
     public static Guid MockEditableChildId1 = new Guid("{4AF07634-1D10-4d09-BBCB-42396324C103}");
     public static Guid MockEditableChildId2 = new Guid("{402DB94B-0D93-4be2-AFD0-7D1587CDDBC2}");
     public static Guid MockEditableChildId3 = new Guid("{B2ADE99D-7AB4-4e70-AEA1-D70443BCC3B0}");

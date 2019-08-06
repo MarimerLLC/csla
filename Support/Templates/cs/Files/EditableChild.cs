@@ -57,6 +57,9 @@ namespace Templates
       return DataPortal.FetchChild<EditableChild>(childData);
     }
 
+    private EditableChild()
+    { /* Require use of factory methods */ }
+
     #endregion
 
     #region Data Access

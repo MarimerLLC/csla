@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PrimitiveCriteriaSingle.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -29,7 +29,7 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty<string>(c => c.MethodCalled);
+    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty(c => c.MethodCalled, "MethodCalled");
     public string MethodCalled
     {
       get { return GetProperty(MethodCalledProperty); }
@@ -43,8 +43,30 @@ namespace Csla.Test.DataPortalTest
 
     #endregion
 
+
+    #region Factory Methods
+
+
+
+    public static void DeleteObject(int id, EventHandler<DataPortalResult<PrimitiveCriteriaSingle>> handler)
+    {
+      Csla.DataPortal.BeginDelete<PrimitiveCriteriaSingle>(id, handler);
+    }
+
+    public static void GetObject(int id, EventHandler<DataPortalResult<PrimitiveCriteriaSingle>> handler)
+    {
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(id, handler);
+    }
+
+    public static void NewObject(int id, EventHandler<DataPortalResult<PrimitiveCriteriaSingle>> handler)
+    {
+      Csla.DataPortal.BeginCreate<PrimitiveCriteriaSingle>(id, handler);
+    }
+
     public PrimitiveCriteriaSingle()
-    { }
+    { /* Require use of factory methods */ }
+
+    #endregion
 
     #region Data Access
 

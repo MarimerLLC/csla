@@ -31,7 +31,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    public void DataPortal_Create()
     {
       LoadProperty(SsnProperty, string.Empty);
       LoadProperty(Ssn2Property, string.Empty);

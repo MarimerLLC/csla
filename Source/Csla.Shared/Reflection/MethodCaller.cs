@@ -1,15 +1,18 @@
 //-----------------------------------------------------------------------
 // <copyright file="MethodCaller.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Provides methods to dynamically find and call methods.</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using Csla.Properties;
+using Csla.Server;
+using Csla;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -53,7 +56,7 @@ namespace Csla.Reflection
 
     #region Dynamic Method Cache
 
-    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+    private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
 
     private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
@@ -80,6 +83,11 @@ namespace Csla.Reflection
       return mh;
     }
 
+    private static DynamicMethodHandle GetCachedMethod(object obj, string method)
+    {
+      return GetCachedMethod(obj, method, false, null);
+    }
+
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, params object[] parameters)
     {
       return GetCachedMethod(obj, method, true, parameters);
@@ -88,7 +96,8 @@ namespace Csla.Reflection
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
       var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(hasParameters, parameters));
-      if (!_methodCache.TryGetValue(key, out DynamicMethodHandle mh))
+      DynamicMethodHandle mh = null;
+      if (!_methodCache.TryGetValue(key, out mh))
       {
         lock (_methodCache)
         {
@@ -107,7 +116,7 @@ namespace Csla.Reflection
 
     #region Dynamic Constructor Cache
 
-    private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
+    private static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
 
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
     {
@@ -128,7 +137,11 @@ namespace Csla.Reflection
         {
           if (!_ctorCache.TryGetValue(objectType, out result))
           {
+#if NETFX_CORE
+            ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, new Type[] { }, null);
+#else
             ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+#endif
             if (info == null)
               throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture,
@@ -156,8 +169,29 @@ namespace Csla.Reflection
     public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
       string fullTypeName;
+#if NETFX_CORE
+      if (typeName.Contains("Version="))
         fullTypeName = typeName;
+      else
+        fullTypeName = typeName + ", Version=..., Culture=neutral, PublicKeyToken=null";
+#else
+        fullTypeName = typeName;
+#endif
+#if NETFX_CORE
+      if (throwOnError)
+        return Type.GetType(fullTypeName);
+      else
+        try
+        {
+          return Type.GetType(fullTypeName);
+        }
+        catch
+        {
+          return null;
+        }
+#else
         return Type.GetType(fullTypeName, throwOnError, ignoreCase);
+#endif
     }
 
     /// <summary>
@@ -220,7 +254,8 @@ namespace Csla.Reflection
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
     {
       var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
-      if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
+      DynamicMemberHandle mh = null;
+      if (!_memberCache.TryGetValue(key, out mh))
       {
         lock (_memberCache)
         {
@@ -241,7 +276,8 @@ namespace Csla.Reflection
     internal static DynamicMemberHandle GetCachedField(Type objectType, string fieldName)
     {
       var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
-      if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
+      DynamicMemberHandle mh = null;
+      if (!_memberCache.TryGetValue(key, out mh))
       {
         lock (_memberCache)
         {
@@ -482,6 +518,9 @@ namespace Csla.Reflection
     {
       if (ApplicationContext.UseReflectionFallback)
       {
+#if PCL46 || PCL259
+        throw new NotSupportedException("CallMethod + UseReflectionFallback");
+#else
         var infoParams = info.GetParameters();
         var infoParamsCount = infoParams.Length;
         bool hasParamArray = infoParamsCount > 0 && infoParams[infoParamsCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0;
@@ -490,7 +529,7 @@ namespace Csla.Reflection
           specialParamArray = true;
         if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(object[])))
           specialParamArray = true;
-        object[] par;
+        object[] par = null;
         if (infoParamsCount == 1 && specialParamArray)
         {
           par = new object[] { parameters };
@@ -507,14 +546,14 @@ namespace Csla.Reflection
           par = parameters;
         }
 
-        object result;
+        object result = null;
         try
         {
           result = info.Invoke(obj, par);
         }
         catch (Exception e)
         {
-          Exception inner;
+          Exception inner = null;
           if (e.InnerException == null)
             inner = e;
           else
@@ -522,6 +561,7 @@ namespace Csla.Reflection
           throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
         }
         return result;
+#endif
       }
       else
       {
@@ -537,7 +577,7 @@ namespace Csla.Reflection
       object result = null;
       var method = methodHandle.DynamicMethod;
 
-      object[] inParams;
+      object[] inParams = null;
       if (parameters == null)
         inParams = new object[] { null };
       else
@@ -632,9 +672,9 @@ namespace Csla.Reflection
 
     private static System.Reflection.MethodInfo GetMethod(Type objectType, string method, bool hasParameters, params object[] parameters)
     {
-      System.Reflection.MethodInfo result;
+      System.Reflection.MethodInfo result = null;
 
-      object[] inParams;
+      object[] inParams = null;
       if (!hasParameters)
         inParams = new object[] { };
       else if (parameters == null)
@@ -698,7 +738,11 @@ namespace Csla.Reflection
                   break;
                 }
               }
+#if NETFX_CORE
+              if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)
+#else
               if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
+#endif
               {
                 // last param is a param array
                 if (parameterCount == pCount && parameters[pCount - 1].GetType().Equals(infoParams[pCount - 1].ParameterType))
@@ -725,7 +769,11 @@ namespace Csla.Reflection
         }
         if (result != null)
           break;
+#if NETFX_CORE
+        currentType = currentType.BaseType();
+#else
         currentType = currentType.BaseType;
+#endif
       } while (currentType != null);
 
       
@@ -749,7 +797,7 @@ namespace Csla.Reflection
     /// </param>
     public static System.Reflection.MethodInfo FindMethod(Type objectType, string method, Type[] types)
     {
-      System.Reflection.MethodInfo info;
+      System.Reflection.MethodInfo info = null;
       do
       {
         // find for a strongly typed match
@@ -759,7 +807,11 @@ namespace Csla.Reflection
           break; // match found
         }
 
+#if NETFX_CORE
+        objectType = objectType.BaseType();
+#else
         objectType = objectType.BaseType;
+#endif
       } while (objectType != null);
 
       return info;
@@ -795,7 +847,11 @@ namespace Csla.Reflection
           var pCount = infoParams.Length;
           if (pCount > 0 &&
              ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
+#if NETFX_CORE
+             (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)))
+#else
              (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+#endif
           {
             // last param is a param array or only param is an array
             if (parameterCount >= pCount - 1)
@@ -812,7 +868,11 @@ namespace Csla.Reflection
             break;
           }
         }
+#if NETFX_CORE
+        currentType = currentType.BaseType();
+#else
         currentType = currentType.BaseType;
+#endif
       } while (currentType != null);
 
       return result;
@@ -870,6 +930,7 @@ namespace Csla.Reflection
       return result.ToArray();
     }
 
+#if !NETFX_CORE
     /// <summary>
     /// Gets a property type descriptor by name.
     /// </summary>
@@ -887,6 +948,7 @@ namespace Csla.Reflection
         }
       return result;
     }
+#endif
 
     /// <summary>
     /// Gets information about a property.
@@ -906,14 +968,14 @@ namespace Csla.Reflection
     /// <returns>The value of the property.</returns>
     public static object GetPropertyValue(object obj, PropertyInfo info)
     {
-      object result;
+      object result = null;
       try
       {
         result = info.GetValue(obj, null);
       }
       catch (Exception e)
       {
-        Exception inner;
+        Exception inner = null;
         if (e.InnerException == null)
           inner = e;
         else
@@ -931,14 +993,14 @@ namespace Csla.Reflection
     /// <returns>Any value returned from the method.</returns>
     public static object CallMethod(object obj, System.Reflection.MethodInfo info)
     {
-      object result;
+      object result = null;
       try
       {
         result = info.Invoke(obj, null);
       }
       catch (Exception e)
       {
-        Exception inner;
+        Exception inner = null;
         if (e.InnerException == null)
           inner = e;
         else
@@ -962,7 +1024,7 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public async static Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
+    public async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
     {
       return await CallMethodTryAsync(obj, method, true, parameters);
     }
@@ -975,35 +1037,39 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public async static Task<object> CallMethodTryAsync(object obj, string method)
+    public async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method)
     {
       return await CallMethodTryAsync(obj, method, false, null);
     }
 
-    private async static Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)
+    private async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)
     {
       try
       {
         if (ApplicationContext.UseReflectionFallback)
         {
+#if PCL46 || PCL259
+          throw new NotSupportedException("CallMethod + UseReflectionFallback");
+#else
           var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
           if (info == null)
             throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-          var isAsyncTask = (info.ReturnType == typeof(Task));
-          var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+          var isAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
+          var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
           if (isAsyncTask)
           {
-            await (Task)CallMethod(obj, method, hasParameters, parameters);
+            await (System.Threading.Tasks.Task)CallMethod(obj, method, hasParameters, parameters);
             return null;
           }
           else if (isAsyncTaskObject)
           {
-            return await (Task<object>)CallMethod(obj, method, hasParameters, parameters);
+            return await (System.Threading.Tasks.Task<object>)CallMethod(obj, method, hasParameters, parameters);
           }
           else
           {
             return CallMethod(obj, method, hasParameters, parameters);
           }
+#endif
         }
         else
         {
@@ -1012,12 +1078,12 @@ namespace Csla.Reflection
             throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
           if (mh.IsAsyncTask)
           {
-            await (Task)CallMethod(obj, mh, hasParameters, parameters);
+            await (System.Threading.Tasks.Task)CallMethod(obj, mh, hasParameters, parameters);
             return null;
           }
           else if (mh.IsAsyncTaskObject)
           {
-            return await (Task<object>)CallMethod(obj, mh, hasParameters, parameters);
+            return await (System.Threading.Tasks.Task<object>)CallMethod(obj, mh, hasParameters, parameters);
           }
           else
           {
@@ -1056,21 +1122,21 @@ namespace Csla.Reflection
       return IsAsyncMethod(obj, method, true, parameters);
     }
 
-    internal static bool IsAsyncMethod(System.Reflection.MethodInfo info)
-    {
-      var isAsyncTask = (info.ReturnType == typeof(Task));
-      var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
-      return isAsyncTask || isAsyncTaskObject;
-    }
-
     private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
+#if PCL46 || PCL259
+        throw new NotSupportedException("CallMethod + UseReflectionFallback");
+#else
         var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
         if (info == null)
           throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-        return IsAsyncMethod(info);
+        var isAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
+        var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
+
+        return isAsyncTask || isAsyncTaskObject;
+#endif
       }
       else
       {
@@ -1082,6 +1148,7 @@ namespace Csla.Reflection
       }
     }
 
+#if !NETFX_CORE
     /// <summary>
     /// Invokes a generic async static method by name
     /// </summary>
@@ -1126,6 +1193,7 @@ namespace Csla.Reflection
       }
       return tcs.Task;
     }
+#endif
 
     /// <summary>
     /// Invokes a generic method by name
@@ -1139,11 +1207,15 @@ namespace Csla.Reflection
     public static object CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
     {
       var objectType = target.GetType();
-      object result;
+      object result = null;
       if (hasParameters)
       {
         var pTypes = GetParameterTypes(parameters);
+#if NETFX_CORE
+        var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, pTypes, null);
+#else
         var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, CallingConventions.Any, pTypes, null);
+#endif
         if (methodReference == null)
           methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public);
         if (methodReference == null)
@@ -1153,7 +1225,14 @@ namespace Csla.Reflection
       }
       else
       {
+#if PCL46 || PCL259
+        var emptyTypes = new Type[] { };
+        var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, emptyTypes, null);
+#elif NETFX_CORE
+        var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, System.Type.EmptyTypes, null);
+#else
         var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+#endif
         if (methodReference == null)
           throw new InvalidOperationException(objectType.Name + "." + method);
         var gr = methodReference.MakeGenericMethod(typeParams);
@@ -1203,7 +1282,7 @@ namespace Csla.Reflection
       }
       catch (Exception ex)
       {
-        Exception inner;
+        Exception inner = null;
         if (ex.InnerException == null)
           inner = ex;
         else
@@ -1221,10 +1300,15 @@ namespace Csla.Reflection
     /// <param name="method">Name of the method.</param>
     public static System.Reflection.MethodInfo GetNonPublicMethod(Type objectType, string method)
     {
-      var result = FindMethod(objectType, method, privateMethodFlags);
+
+      System.Reflection.MethodInfo result = null;
+
+      result = FindMethod(objectType, method, privateMethodFlags);
+
       return result;
     }
 
+#if !NETFX_CORE
     /// <summary>
     /// Returns information about the specified
     /// method.
@@ -1234,7 +1318,7 @@ namespace Csla.Reflection
     /// <param name="flags">Flag values.</param>
     public static System.Reflection.MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
     {
-      System.Reflection.MethodInfo info;
+      System.Reflection.MethodInfo info = null;
       do
       {
         // find for a strongly typed match
@@ -1246,5 +1330,20 @@ namespace Csla.Reflection
 
       return info;
     }
+#else
+    /// <summary>
+    /// Returns information about the specified
+    /// method.
+    /// </summary>
+    /// <param name="objType">Type of object.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="flags">Flag values.</param>
+    public static System.Reflection.MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
+    {
+      var info = objType.GetMethod(method);
+      return info;
+    }
+#endif
+
   }
 }

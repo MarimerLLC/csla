@@ -118,12 +118,6 @@ namespace Csla.Serialization.Mobile
           return new Guid(reader.ReadBytes(16));  // 16 bytes in a Guid
         case CslaKnownTypes.ByteArray:
           return reader.ReadBytes(reader.ReadInt32());
-        case CslaKnownTypes.ByteArrayArray:
-          var count = reader.ReadInt32();
-          var result = new byte[count][];
-          for (int i = 0; i < count; i++)
-            result[i] = reader.ReadBytes(reader.ReadInt32());
-          return result;
         case CslaKnownTypes.CharArray:
           return reader.ReadChars(reader.ReadInt32());
         case CslaKnownTypes.ListOfInt:

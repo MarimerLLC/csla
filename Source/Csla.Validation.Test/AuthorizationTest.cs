@@ -50,7 +50,6 @@ namespace Csla.Validation.Test
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWhenIsInRoleReturnsObject()
     {
       Thread.CurrentPrincipal = new VPrincipal("Administrator", "ProjectManager");

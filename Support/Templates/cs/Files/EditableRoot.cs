@@ -64,6 +64,9 @@ namespace Templates
       DataPortal.Delete<EditableRoot>(id);
     }
 
+    private EditableRoot()
+    { /* Require use of factory methods */ }
+
     #endregion
 
     #region Data Access

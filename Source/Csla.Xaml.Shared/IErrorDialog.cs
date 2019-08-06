@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="IErrorDialog.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Interface defining the interaction between</summary>
 //-----------------------------------------------------------------------

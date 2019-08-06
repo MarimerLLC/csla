@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyGetSetTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -366,7 +366,6 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootUndoApply()
     {
       EditableGetSet root = new EditableGetSet();
@@ -515,7 +514,6 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootChildListUndoApply()
     {
       var root = new EditableGetSet();

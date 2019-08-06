@@ -13,23 +13,24 @@ namespace Csla.Analyzers
   public sealed class EvaluateManagedBackingFieldsAnalayzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule =
-      new DiagnosticDescriptor(
-        Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
-        EvaluateManagedBackingFieldsAnalayzerConstants.Title,
-        EvaluateManagedBackingFieldsAnalayzerConstants.Message,
-        Constants.Categories.Usage, DiagnosticSeverity.Error, true,
-        helpLinkUri: HelpUrlBuilder.Build(
-          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalayzer)));
+    private static DiagnosticDescriptor mustBePublicStaticAndReadonlyRule = new DiagnosticDescriptor(
+      Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
+      EvaluateManagedBackingFieldsAnalayzerConstants.Title,
+      EvaluateManagedBackingFieldsAnalayzerConstants.Message,
+      Constants.Categories.Usage, DiagnosticSeverity.Error, true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(mustBePublicStaticAndReadonlyRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+    {
+      get
+      {
+        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule);
+      }
+    }
 
     public override void Initialize(AnalysisContext context)
     {
-      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-      context.EnableConcurrentExecution();
-      context.RegisterSyntaxNodeAction(AnalyzeFieldDeclaration, SyntaxKind.FieldDeclaration);
+      context.RegisterSyntaxNodeAction<SyntaxKind>(
+        EvaluateManagedBackingFieldsAnalayzer.AnalyzeFieldDeclaration, SyntaxKind.FieldDeclaration);
     }
 
     private static void AnalyzeFieldDeclaration(SyntaxNodeAnalysisContext context)
@@ -45,7 +46,8 @@ namespace Csla.Analyzers
 
           context.CancellationToken.ThrowIfCancellationRequested();
 
-          if (fieldSymbol != null && classSymbol != null && classSymbol.IsStereotype())
+          if (fieldSymbol != null && classSymbol != null &&
+            classSymbol.IsStereotype())
           {
             if (fieldSymbol.Type.IsIPropertyInfo())
             {
@@ -57,11 +59,13 @@ namespace Csla.Analyzers
 
                   if (!classProperty.IsIndexer)
                   {
-                    if (DetermineIfPropertyUsesField(context, fieldSymbol, classProperty))
+                    if (EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
+                      context, fieldSymbol, classProperty))
                     {
                       context.CancellationToken.ThrowIfCancellationRequested();
 
-                      CheckForDiagnostics(context, fieldNode, fieldSymbol);
+                      EvaluateManagedBackingFieldsAnalayzer.CheckForDiagnostics(
+                        context, fieldNode, fieldSymbol);
                       break;
                     }
                   }
@@ -82,7 +86,8 @@ namespace Csla.Analyzers
       if (!isStatic || !isPublic || !isReadOnly)
       {
         context.ReportDiagnostic(Diagnostic.Create(
-          mustBePublicStaticAndReadonlyRule, fieldNode.GetLocation()));
+          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
+          fieldNode.GetLocation()));
       }
     }
 
@@ -96,7 +101,9 @@ namespace Csla.Analyzers
 
       if (rootSpan.Contains(classPropertyLocationSpan))
       {
-        if (root.FindNode(classPropertyLocationSpan) is PropertyDeclarationSyntax propertyNode)
+        var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
+
+        if (propertyNode != null)
         {
           var getter = propertyBody(propertyNode);
 
@@ -110,38 +117,24 @@ namespace Csla.Analyzers
       return false;
     }
 
-    public string A { get; set; }
-
-    public string B
-    {
-      get => string.Empty;
-      set => B = value;
-    }
-
-    public string C
-    {
-      get { return string.Empty; }
-      set { C = value; }
-    }
-
     private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context,
       IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
     {
       if (classProperty.GetMethod != null)
       {
-        return DetermineIfPropertyUsesField(
+        return EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
           propertyNode => propertyNode.ExpressionBody as SyntaxNode ??
             propertyNode.AccessorList.Accessors.Single(
-              _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)));
+              _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body);
       }
 
       if (classProperty.SetMethod != null)
       {
-        return DetermineIfPropertyUsesField(
+        return EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
           propertyNode => propertyNode.AccessorList.Accessors.Single(
-            _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)));
+            _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)).Body);
       }
 
       return false;

@@ -16,9 +16,18 @@ namespace Csla.Analyzers
   public sealed class FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFix
     : CodeFixProvider
   {
-    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue);
+    public override ImmutableArray<string> FixableDiagnosticIds
+    {
+      get
+      {
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue);
+      }
+    }
 
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public sealed override FixAllProvider GetFixAllProvider()
+    {
+      return WellKnownFixAllProviders.BatchFixer;
+    }
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {

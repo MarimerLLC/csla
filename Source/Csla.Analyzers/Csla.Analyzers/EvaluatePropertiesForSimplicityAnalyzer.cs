@@ -12,21 +12,23 @@ namespace Csla.Analyzers
   public sealed class EvaluatePropertiesForSimplicityAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor onlyUseCslaPropertyMethodsInGetSetRule =
-      new DiagnosticDescriptor(
-        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
-        OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Warning, true,
-        helpLinkUri: HelpUrlBuilder.Build(
-          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, nameof(EvaluatePropertiesForSimplicityAnalyzer)));
+    private static DiagnosticDescriptor onlyUseCslaPropertyMethodsInGetSetRule = new DiagnosticDescriptor(
+      Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
+      OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, Constants.Categories.Usage,
+      DiagnosticSeverity.Warning, true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(onlyUseCslaPropertyMethodsInGetSetRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+    {
+      get
+      {
+        return ImmutableArray.Create(EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule);
+      }
+    }
 
     public override void Initialize(AnalysisContext context)
     {
-      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-      context.EnableConcurrentExecution();
-      context.RegisterSyntaxNodeAction(AnalyzePropertyDeclaration, SyntaxKind.PropertyDeclaration);
+      context.RegisterSyntaxNodeAction<SyntaxKind>(
+        EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertyDeclaration, SyntaxKind.PropertyDeclaration);
     }
 
     private static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
@@ -44,12 +46,12 @@ namespace Csla.Analyzers
         {
           if (propertySymbol.GetMethod != null)
           {
-            AnalyzePropertyGetter(propertyNode, context);
+            EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertyGetter(propertyNode, context);
           }
 
           if (propertySymbol.SetMethod != null)
           {
-            AnalyzePropertySetter(propertyNode, context);
+            EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertySetter(propertyNode, context);
           }
         }
       }
@@ -59,11 +61,11 @@ namespace Csla.Analyzers
     {
       if (propertyNode.ExpressionBody == null)
       {
-        AnalyzePropertyGetterWithGet(propertyNode, context);
+        EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertyGetterWithGet(propertyNode, context);
       }
       else
       {
-        AnalyzePropertyGetterWithExpressionBody(propertyNode, context);
+        EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertyGetterWithExpressionBody(propertyNode, context);
       }
     }
 
@@ -81,7 +83,7 @@ namespace Csla.Analyzers
           getterChildren.Contains(getterWalker.Invocation))
         {
           context.ReportDiagnostic(Diagnostic.Create(
-            onlyUseCslaPropertyMethodsInGetSetRule,
+            EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
             getterExpression.GetLocation()));
         }
       }
@@ -101,26 +103,28 @@ namespace Csla.Analyzers
         if (getterStatements.Count != 1)
         {
           context.ReportDiagnostic(Diagnostic.Create(
-            onlyUseCslaPropertyMethodsInGetSetRule,
+            EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
             getter.GetLocation()));
         }
         else
         {
+          var returnNode = getterStatements[0] as ReturnStatementSyntax;
 
-          if (!(getterStatements[0] is ReturnStatementSyntax returnNode))
+          if (returnNode == null)
           {
             context.ReportDiagnostic(Diagnostic.Create(
-              onlyUseCslaPropertyMethodsInGetSetRule,
+              EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
               getter.GetLocation()));
           }
           else
           {
+            var invocation = returnNode.ChildNodes().SingleOrDefault(
+              _ => _.IsKind(SyntaxKind.InvocationExpression)) as InvocationExpressionSyntax;
 
-            if (!(returnNode.ChildNodes().SingleOrDefault(
-              _ => _.IsKind(SyntaxKind.InvocationExpression)) is InvocationExpressionSyntax invocation) || invocation != getterWalker.Invocation)
+            if (invocation == null || invocation != getterWalker.Invocation)
             {
               context.ReportDiagnostic(Diagnostic.Create(
-                onlyUseCslaPropertyMethodsInGetSetRule,
+                EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
                 getter.GetLocation()));
             }
           }
@@ -142,26 +146,28 @@ namespace Csla.Analyzers
         if (setterStatements.Count() != 1)
         {
           context.ReportDiagnostic(Diagnostic.Create(
-            onlyUseCslaPropertyMethodsInGetSetRule,
+            EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
             setter.GetLocation()));
         }
         else
         {
+          var expressionNode = setterStatements[0] as ExpressionStatementSyntax;
 
-          if (!(setterStatements[0] is ExpressionStatementSyntax expressionNode))
+          if (expressionNode == null)
           {
             context.ReportDiagnostic(Diagnostic.Create(
-              onlyUseCslaPropertyMethodsInGetSetRule,
+              EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
               setter.GetLocation()));
           }
           else
           {
+            var invocation = expressionNode.ChildNodes().SingleOrDefault(
+              _ => _.IsKind(SyntaxKind.InvocationExpression)) as InvocationExpressionSyntax;
 
-            if (!(expressionNode.ChildNodes().SingleOrDefault(
-              _ => _.IsKind(SyntaxKind.InvocationExpression)) is InvocationExpressionSyntax invocation) || invocation != setterWalker.Invocation)
+            if (invocation == null || invocation != setterWalker.Invocation)
             {
               context.ReportDiagnostic(Diagnostic.Create(
-                onlyUseCslaPropertyMethodsInGetSetRule,
+                EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
                 setter.GetLocation()));
             }
           }

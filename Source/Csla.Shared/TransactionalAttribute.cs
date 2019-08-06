@@ -1,13 +1,12 @@
+#if !NETFX_CORE && !(ANDROID || IOS) 
 //-----------------------------------------------------------------------
 // <copyright file="TransactionalAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Marks a DataPortal_XYZ method to run within</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Transactions;
-
 namespace Csla
 {
   /// <summary>
@@ -124,43 +123,6 @@ namespace Csla
       }
     }
 
-#if !NET40 && !NET45
-    /// <summary>
-    /// Marks a method to run within the specified
-    /// type of transactional context.
-    /// </summary>
-    /// <param name="transactionType">
-    /// Specifies the transactional context within which the
-    /// method should run.</param>
-    /// <param name="transactionIsolationLevel">
-    /// Specifies override for transaction isolation level.
-    /// Default can be specified in .config file via CslaTransactionIsolationLevel setting
-    /// If none specified, Serializable level is used
-    /// </param>
-    /// <param name="asyncFlowOption">
-    /// Specifies the async flow option used to initialize
-    /// the transaction.
-    /// </param>
-    public TransactionalAttribute(
-      TransactionalTypes transactionType,
-      TransactionIsolationLevel transactionIsolationLevel,
-      TransactionScopeAsyncFlowOption asyncFlowOption)
-    {
-      TransactionType = transactionType;
-      TransactionIsolationLevel = transactionIsolationLevel;
-#if NETSTANDARD2_0
-      if (transactionType == TransactionalTypes.TransactionScope)
-#else
-      if (transactionType == TransactionalTypes.TransactionScope ||
-        transactionType == TransactionalTypes.EnterpriseServices)
-#endif
-      {
-        TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
-      }
-      AsyncFlowOption = asyncFlowOption;
-    }
-#endif
-
     /// <summary>
     /// Gets the type of transaction requested by the
     /// business object method.
@@ -182,12 +144,6 @@ namespace Csla
     /// </value>
     public int TimeoutInSeconds { get; private set; }
 
-#if !NET40 && !NET45
-    /// <summary>
-    /// Gets the AsyncFlowOption for this transaction
-    /// </summary>
-    public TransactionScopeAsyncFlowOption AsyncFlowOption { get; private set; } = 
-      TransactionScopeAsyncFlowOption.Suppress;
-#endif
   }
 }
+#endif

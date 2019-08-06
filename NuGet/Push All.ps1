@@ -39,7 +39,7 @@ try
     ## Spawn off individual publish processes...
     ## -----------------------------------------
     Write-Host "Publishing packages..." -ForegroundColor Yellow
-    $packages | ForEach-Object { & $pathToNuGetPackager Push "$_" -Source https://www.nuget.org/api/v2/package }
+    $packages | ForEach { & $pathToNuGetPackager Push "$_" -Source https://www.nuget.org/api/v2/package }
     Write-Host "Publish all done." -ForegroundColor Green
 }
 catch 

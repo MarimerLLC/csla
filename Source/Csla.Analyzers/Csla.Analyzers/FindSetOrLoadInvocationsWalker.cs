@@ -10,18 +10,17 @@ namespace Csla.Analyzers
   {
     internal FindSetOrLoadInvocationsWalker(SyntaxNode node, SemanticModel model)
     {
-      Model = model;
-      Visit(node);
+      this.Model = model;
+      base.Visit(node);
     }
 
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
-      var symbol = Model.GetSymbolInfo(node);
-      var methodSymbol = symbol.Symbol as IMethodSymbol;
+      var invocationSymbol = this.Model.GetSymbolInfo(node).Symbol as IMethodSymbol;
 
-      if (methodSymbol.IsPropertyInfoManagementMethod())
+      if (invocationSymbol.IsPropertyInfoManagementMethod())
       {
-        Invocation = node;
+        this.Invocation = node;
       }
     }
 

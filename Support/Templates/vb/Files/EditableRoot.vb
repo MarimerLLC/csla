@@ -63,6 +63,10 @@ Public Class EditableRoot
     DataPortal.Delete(Of EditableRoot)(id)
   End Sub
 
+  Private Sub New()
+    ' require use of factory methods
+  End Sub
+
 #End Region
 
 #Region " Data Access "

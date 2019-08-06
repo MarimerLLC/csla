@@ -1,13 +1,12 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IBusinessRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Interface defining a business/validation</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Csla.Rules
 {
@@ -39,8 +38,13 @@ namespace Csla.Rules
   /// Interface defining a business/validation
   /// rule implementation.
   /// </summary>
-  public interface IBusinessRuleBase
+  public interface IBusinessRule
   {
+    /// <summary>
+    /// Business or validation rule implementation.
+    /// </summary>
+    /// <param name="context">Rule context object.</param>
+    void Execute(IRuleContext context);
     /// <summary>
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.
@@ -65,48 +69,23 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the rule priority.
     /// </summary>
-    int Priority { get; }
+    int Priority { get;  }
+    /// <summary>
+    /// Gets a value indicating whether the Execute() method
+    /// will run asynchronous code.
+    /// </summary>
+    bool IsAsync { get; }
     /// <summary>
     /// Gets a value indicating that the Target property should
     /// be set even for an async rule (note that using Target
     /// from a background thread will cause major problems).
     /// </summary>
     bool ProvideTargetWhenAsync { get; }
+
     /// <summary>
     /// Gets the context in which the rule is allowed to execute.
     /// </summary>
     /// <value>The run in context.</value>
     RunModes RunMode { get; }
-    /// <summary>
-    /// Gets a value indicating whether the Execute() method
-    /// will run asynchronous code.
-    /// </summary>
-    bool IsAsync { get; }
-  }
-
-  /// <summary>
-  /// Interface defining a business/validation
-  /// rule implementation.
-  /// </summary>
-  public interface IBusinessRule : IBusinessRuleBase
-  {
-    /// <summary>
-    /// Business or validation rule implementation.
-    /// </summary>
-    /// <param name="context">Rule context object.</param>
-    void Execute(IRuleContext context);
-  }
-
-  /// <summary>
-  /// Interface defining a business/validation
-  /// rule implementation.
-  /// </summary>
-  public interface IBusinessRuleAsync : IBusinessRuleBase
-  {
-    /// <summary>
-    /// Business or validation rule implementation.
-    /// </summary>
-    /// <param name="context">Rule context object.</param>
-    Task ExecuteAsync(IRuleContext context);
   }
 }

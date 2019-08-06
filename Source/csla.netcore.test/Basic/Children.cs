@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="Children.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -28,6 +28,7 @@ namespace Csla.Test.Basic
 
         internal static Children GetChildren(IDataReader dr)
         {
+            //todo: load child data
             return null;
         }
 

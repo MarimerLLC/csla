@@ -36,6 +36,22 @@ namespace Csla.Axml
 			{
 			}
 		}
+		
+		public partial class String
+		{
+			
+			// aapt resource value: 0x7f020000
+			public static int ApplicationName = 2130837504;
+			
+			static String()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private String()
+			{
+			}
+		}
 	}
 }
 #pragma warning restore 1591

@@ -38,7 +38,7 @@ namespace ShortCircuitingRules.Rules
     /// Short circuit if field is not included in InputPropertyValues.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
 
       if (!context.InputPropertyValues.ContainsKey(PrimaryProperty))

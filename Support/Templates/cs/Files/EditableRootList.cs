@@ -30,6 +30,9 @@ namespace Templates
       return DataPortal.Fetch<EditableRootList>(id);
     }
 
+    private EditableRootList()
+    { /* Require use of factory methods */ }
+
     #endregion
 
     #region Data Access

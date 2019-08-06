@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BypassBusinessBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Csla.Test.BypassPropertyChecks
       MarkOld();
     }
 
-    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id), "Id");
+    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
@@ -35,7 +35,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     private int _id3;
-    protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(c => c.Id3, "Id3", 0, RelationshipTypes.PrivateField);
+    protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(c => c.Id3, "Id3", RelationshipTypes.PrivateField);
     public int Id3
     {
       get { return GetProperty<int>(Id3Property, _id3); }
@@ -43,7 +43,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     private int _id4;
-    protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(c => c.Id4, "Id4", 0, RelationshipTypes.PrivateField);
+    protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(c => c.Id4, "Id4", RelationshipTypes.PrivateField);
     public int Id4
     {
       get { return GetProperty<int>(Id4Property, _id4); }

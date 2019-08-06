@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using Csla;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ProjectTracker.Library
 {
@@ -37,12 +36,12 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginCreate<ProjectList>(name, callback);
     }
-
-    public async static Task<ProjectList> GetProjectListAsync()
+#if !WINDOWS_PHONE
+    public async static System.Threading.Tasks.Task<ProjectList> GetProjectListAsync()
     {
       return await Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectList>();
     }
-
+#endif
 #if FULL_DOTNET
     public static ProjectList GetProjectList()
     {
@@ -53,7 +52,6 @@ namespace ProjectTracker.Library
     {
       return DataPortal.Fetch<ProjectList>(name);
     }
-#endif
 
     private void DataPortal_Fetch()
     {
@@ -79,5 +77,6 @@ namespace ProjectTracker.Library
       IsReadOnly = true;
       RaiseListChangedEvents = rlce;
     }
+#endif
   }
 }

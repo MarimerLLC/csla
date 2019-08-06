@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AsyncPortalWithCulture.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -46,7 +46,15 @@ namespace Csla.Testing.Business.DataPortal
     public static PropertyInfo<string> CurrentCultureProperty =
       RegisterProperty<string>(new PropertyInfo<string>("CurrentCulture"));
 
-    public AsyncPortalWithCulture() { }
+
+    protected AsyncPortalWithCulture() { }
+    public static void BeginExecuteCommand(EventHandler<DataPortalResult<AsyncPortalWithCulture>> handler)
+    {
+      var command = new AsyncPortalWithCulture();
+      var dp = new DataPortal<AsyncPortalWithCulture>();
+      dp.ExecuteCompleted += handler;
+      dp.BeginExecute(command);
+    }
 
     protected override void DataPortal_Execute()
     {    

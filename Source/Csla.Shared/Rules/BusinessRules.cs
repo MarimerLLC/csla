@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BusinessRules.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Tracks the business rules for a business object.</summary>
 //-----------------------------------------------------------------------
@@ -22,8 +22,10 @@ namespace Csla.Rules
   /// Tracks the business rules for a business object.
   /// </summary>
   [Serializable]
-  public class BusinessRules :
-    MobileObject, ISerializationNotification, IBusinessRules
+  public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+, IUndoableObject
+#endif
   {
     [NonSerialized]
     private object SyncRoot = new object();
@@ -167,7 +169,7 @@ namespace Csla.Rules
     /// Associates a business rule with the business object.
     /// </summary>
     /// <param name="rule">Rule object.</param>
-    public void AddRule(IBusinessRuleBase rule)
+    public void AddRule(IBusinessRule rule)
     {
       TypeRules.Rules.Add(rule);
     }
@@ -177,7 +179,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="rule">Rule object.</param>
     /// <param name="ruleSet">Rule set name.</param>
-    public void AddRule(IBusinessRuleBase rule, string ruleSet)
+    public void AddRule(IBusinessRule rule, string ruleSet)
     {
       var typeRules = BusinessRuleManager.GetRulesForType(_target.GetType(), ruleSet);
       typeRules.Rules.Add(rule);
@@ -535,7 +537,7 @@ namespace Csla.Rules
     /// <returns>
     /// 	<c>true</c> if this instance [can run rule] the specified context mode; otherwise, <c>false</c>.
     /// </returns>
-    internal static bool CanRunRule(IBusinessRuleBase rule, RuleContextModes contextMode)
+    internal static bool CanRunRule(IBusinessRule rule, RuleContextModes contextMode)
     {
       // default then just return true
       if (rule.RunMode == RunModes.Default) return true;
@@ -543,13 +545,13 @@ namespace Csla.Rules
       bool canRun = true;
 
       if ((contextMode & RuleContextModes.AsAffectedPoperty) > 0)
-        canRun &= (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
+        canRun = canRun & (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
       if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
-        canRun &= ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
+        canRun = canRun & ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
 
       if ((contextMode & RuleContextModes.CheckRules) > 0)
-        canRun &= (rule.RunMode & RunModes.DenyCheckRules) == 0;
+        canRun = canRun &  (rule.RunMode & RunModes.DenyCheckRules) == 0;
 
       return canRun;
     }
@@ -636,7 +638,7 @@ namespace Csla.Rules
     /// <param name="cascade">if set to <c>true</c> cascade.</param>
     /// <param name="executionContext">The execution context.</param>
     /// <returns></returns>
-    private RunRulesResult RunRules(IEnumerable<IBusinessRuleBase> rules, bool cascade, RuleContextModes executionContext)
+    private RunRulesResult RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleContextModes executionContext)
     {
       var affectedProperties = new List<string>();
       var dirtyProperties = new List<string>();
@@ -659,7 +661,7 @@ namespace Csla.Rules
                 foreach (var item in r.OutputPropertyValues)
                 {
                   // value is changed add to dirtyValues
-                  if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
+                  if (((IManageProperties) _target).LoadPropertyMarkDirty(item.Key, item.Value))
                     r.AddDirtyProperty(item.Key);
                 }
               // update broken rules list
@@ -673,7 +675,7 @@ namespace Csla.Rules
                   {
                     var doCascade = false;
                     if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
-                      doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
+                       doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
                     affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedPoperty));
                   }
 
@@ -689,7 +691,7 @@ namespace Csla.Rules
               foreach (var property in affected.Distinct())
               {
                 // property is not in AffectedProperties (already signalled to UI)
-                if (!r.Rule.AffectedProperties.Any(p => p.Name == property))
+                if (!r.Rule.AffectedProperties.Any(p => p.Name == property)) 
                   _target.RuleComplete(property);
               }
 
@@ -720,10 +722,8 @@ namespace Csla.Rules
 
             complete = true;
           }
-        })
-        {
-          Rule = rule
-        };
+        });
+        context.Rule = rule;
         if (rule.PrimaryProperty != null)
           context.OriginPropertyName = rule.PrimaryProperty.Name;
         context.ExecuteContext = executionContext;
@@ -733,7 +733,7 @@ namespace Csla.Rules
         // get input properties
         if (rule.InputProperties != null)
         {
-          var target = (IManageProperties) _target;
+          var target = (Core.IManageProperties) _target;
           context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
           foreach (var item in rule.InputProperties)
           {
@@ -768,12 +768,7 @@ namespace Csla.Rules
         // execute (or start executing) rule
         try
         {
-          if (rule is IBusinessRule syncRule)
-            syncRule.Execute(context);
-          else if (rule is IBusinessRuleAsync asyncRule)
-            asyncRule.ExecuteAsync(context).ContinueWith((t)=> { context.Complete(); });
-          else
-            throw new ArgumentOutOfRangeException(rule.GetType().FullName);
+          rule.Execute(context);
         }
         catch (Exception ex)
         {
@@ -818,10 +813,10 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
-      if (classAttList.Length > 0)
+      if (classAttList.Length > 0) 
       {
         metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
         AddDataAnnotationsFromType(metadataType);
@@ -859,6 +854,71 @@ namespace Csla.Rules
 
     #endregion
 
+#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
+    #region IUndoableObject Members
+
+    private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
+
+    int IUndoableObject.EditLevel
+    {
+      get { return _stateStack.Count; }
+    }
+
+    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
+    {
+      if (((IUndoableObject)this).EditLevel + 1 > parentEditLevel)
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel - 1);
+
+      SerializationInfo state = new SerializationInfo(0);
+      OnGetState(state, StateMode.Undo);
+
+      if (_brokenRules != null && _brokenRules.Count > 0)
+      {
+        byte[] rules = MobileFormatter.Serialize(_brokenRules);
+        state.AddValue("_rules", Convert.ToBase64String(rules));
+      }
+
+      _stateStack.Push(state);
+    }
+
+    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
+    {
+      if (((IUndoableObject)this).EditLevel > 0)
+      {
+        if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
+          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
+
+        SerializationInfo state = _stateStack.Pop();
+        OnSetState(state, StateMode.Undo);
+
+        lock (SyncRoot)
+          _brokenRules = null;
+
+        if (state.Values.ContainsKey("_rules"))
+        {
+          byte[] rules = Convert.FromBase64String(state.GetValue<string>("_rules"));
+
+          lock (SyncRoot)
+            _brokenRules = (BrokenRulesCollection)MobileFormatter.Deserialize(rules);
+        }
+      }
+    }
+
+    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
+    {
+      if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
+
+      if (((IUndoableObject)this).EditLevel > 0)
+      {
+        // discard latest recorded state
+        _stateStack.Pop();
+      }
+    }
+
+    #endregion
+#endif
+
     #region MobileObject overrides
 
     /// <summary>
@@ -876,6 +936,18 @@ namespace Csla.Rules
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
       info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
+      //info.AddValue("_isBusy", _isBusy);
+#if (ANDROID || IOS) || NETFX_CORE
+      if (mode == StateMode.Serialization)
+      {
+        if (_stateStack.Count > 0)
+        {
+          MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+          byte[] xml = MobileFormatter.Serialize(list);
+          info.AddValue("_stateStack", xml);
+        }
+      }
+#endif
       base.OnGetState(info, mode);
     }
 
@@ -894,6 +966,23 @@ namespace Csla.Rules
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
       _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
+      //_isBusy = info.GetValue<bool>("_isBusy");
+#if (ANDROID || IOS) || NETFX_CORE
+      if (mode == StateMode.Serialization)
+      {
+        _stateStack.Clear();
+
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          byte[] xml = info.GetValue<byte[]>("_stateStack");
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
+        }
+      }
+#endif
       base.OnSetState(info, mode);
     }
 
@@ -949,13 +1038,15 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();
     }
 
-    #endregion
+#endregion
 
     #region Get All Broken Rules (tree)
 
@@ -1041,7 +1132,7 @@ namespace Csla.Rules
       }
       return;
     }
-
+    
     #endregion
 
 

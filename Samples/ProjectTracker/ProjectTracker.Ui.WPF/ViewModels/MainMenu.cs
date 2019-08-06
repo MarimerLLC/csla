@@ -16,22 +16,8 @@ namespace WpfUI.ViewModels
 
     public MainMenu()
     {
-      try
-      {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        ProjectTracker.Library.RoleList.CacheListAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-      }
-      catch (Exception ex)
-      {
-        Bxf.Shell.Instance.ShowError(ex.Message, "Retrieve RoleList");
-      }
-
       _menuItems = new ObservableCollection<MenuItem>
       {
-        new MenuItem {
-          Label = "Dashboard", MethodName = "ShowDashboard", Method = ShowDashboard,
-          IsAuthorized = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(ProjectTracker.Library.Dashboard)) },
         new MenuItem { 
           Label = "Project List", MethodName = "ShowProjectList", Method = ShowProjectList, 
           IsAuthorized = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(ProjectTracker.Library.ProjectList)) },
@@ -52,15 +38,6 @@ namespace WpfUI.ViewModels
         menuItem.Method();
       else
         Bxf.Shell.Instance.ShowError("You are not authorized to perform this action", "Authorization error");
-    }
-
-    public void ShowDashboard()
-    {
-      Bxf.Shell.Instance.ShowView(
-        typeof(Views.Dashboard).AssemblyQualifiedName,
-        "dashboardViewSource",
-        new Dashboard(),
-        "Main");
     }
 
     public void ShowProjectList()

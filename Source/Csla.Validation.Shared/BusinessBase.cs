@@ -1,7 +1,7 @@
 ﻿﻿//-----------------------------------------------------------------------
 // <copyright file="BusinessBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Intermediate base class for BusinessBase that provides properties for the CSLA 3.x migration</summary>
 //-----------------------------------------------------------------------

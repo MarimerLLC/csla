@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="Utilities.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Contains utility methods used by the</summary>
 //-----------------------------------------------------------------------
@@ -9,7 +9,12 @@ using System;
 using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;
+using System.Text;
 using Csla.Properties;
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
+using System.Text.RegularExpressions;
+using Csla.WcfPortal;
+#endif
 
 namespace Csla
 {
@@ -76,7 +81,11 @@ namespace Csla
     public static Type GetPropertyType(Type propertyType)
     {
       Type type = propertyType;
+#if NETFX_CORE
+      if (type.IsGenericType() &&
+#else
       if (type.IsGenericType &&
+#endif
         (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
         return Nullable.GetUnderlyingType(type);
       return type;
@@ -94,9 +103,14 @@ namespace Csla
         result = listType.GetElementType();
       else
       {
+#if NETFX_CORE
+        var indexer =
+          (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
+#else
         var indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
+#endif
         if (indexer != null)
         {
           foreach (PropertyInfo prop in listType.GetProperties(
@@ -159,7 +173,11 @@ namespace Csla
       }
       else
       {
+#if NETFX_CORE
+        if (desiredType.IsGenericType())
+#else
         if (desiredType.IsGenericType)
+#endif
         {
           if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
             if (value == null)
@@ -170,7 +188,11 @@ namespace Csla
         desiredType = Utilities.GetPropertyType(desiredType);
       }
 
+#if NETFX_CORE
+      if (desiredType.IsEnum())
+#else
       if (desiredType.IsEnum)
+#endif
       {
         if (value is byte? && ((byte?) value).HasValue)
           return System.Enum.Parse(desiredType, ((byte?) value).Value.ToString());
@@ -182,7 +204,11 @@ namespace Csla
           return System.Enum.Parse(desiredType, ((long?) value).Value.ToString());
       }
 
+#if NETFX_CORE
+      if (desiredType.IsEnum() &&
+#else
       if (desiredType.IsEnum && 
+#endif
         (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
         return System.Enum.Parse(desiredType, value.ToString());
 
@@ -198,8 +224,13 @@ namespace Csla
         return tmp;
       }
 
+#if NETFX_CORE
+      if ((desiredType.IsPrimitive() || desiredType.Equals(typeof(decimal))) &&
+          valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+#else
       if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) &&
           valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+#endif
         value = 0;
 
       try
@@ -213,6 +244,7 @@ namespace Csla
       }
       catch
       {
+#if !NETFX_CORE
         TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
         TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
@@ -220,9 +252,11 @@ namespace Csla
         else if (cnv1 != null && cnv1.CanConvertTo(desiredType))
           return cnv1.ConvertTo(value, desiredType);
         else
+#endif
           throw;
       }
     }
+
 
     /// <summary>
     /// Attempts to coerce a value of one type into
@@ -263,15 +297,92 @@ namespace Csla
 
     #endregion
 
-    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, System.Reflection.MethodInfo method)
+#if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46 && !PCL259
+    #region Error Handling
+
+    /// <summary>
+    /// Converts an Exception into a
+    /// WcfErrorInfo object.
+    /// </summary>
+    /// <param name="ex">Exception object</param>
+    public static WcfErrorInfo ToErrorInfo(this Exception ex)
     {
-      if (isSync
-        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(method))
+      WcfErrorInfo info = null;
+      if (ex != null)
       {
-        throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, method.Name));
+        info = new WcfErrorInfo
+        {
+          ExceptionTypeName = ex.GetType().FullName,
+          Message = ex.Message,
+          StackTrace = ex.StackTrace,
+          InnerError = ex.InnerException.ToErrorInfo()
+        };
       }
+
+      return info;
     }
+
+    #endregion
+
+    #region Uri
+    //  RFC 2396                   URI Generic Syntax                August 1998
+
+    // Characters in the "reserved" set are not reserved in all contexts.
+    // The set of characters actually reserved within any given URI
+    // component is defined by that component. In general, a character is
+    // reserved if the semantics of the URI changes if the character is
+    // replaced with its escaped US-ASCII encoding.
+
+    //  2.3. Unreserved Characters
+
+    // Data characters that are allowed in a URI but do not have a reserved
+    // purpose are called unreserved.  These include upper and lower case
+    // letters, decimal digits, and a limited set of punctuation marks and
+    // symbols.
+
+    //   unreserved  = alphanum | mark
+
+    //   mark        = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
+
+    // Unreserved characters can be escaped without changing the semantics
+    // of the URI, but this should not be done unless the URI is being used
+    // in a context that does not allow the unescaped character to appear.
+    private static Regex Unreserved = new Regex(@"[0-9A-Za-z-_.!~*'()]");
+
+    /// <summary>
+    /// Escpaes a string according to RFC 2396. This is meant as a replacement for the missing Uri.EscapeDataString
+    /// method in silverlight.
+    /// </summary>
+    /// <param name="data">The string to escape.</param>
+    /// <returns>An escaped version of data.</returns>
+    /// <remarks>
+    /// For linked files calling Uri.EscapeDataString you can use the following C# code snippet 
+    /// to ensure platform compatibility:
+    /// 
+    /// #if (ANDROID || IOS)
+    /// using Uri = Csla.Utilities;
+    /// #endif
+    /// </remarks>
+    public static string EscapeDataString(string data)
+    {
+      StringBuilder sb = new StringBuilder();
+      foreach (char c in data)
+      {
+        if (Unreserved.IsMatch(c.ToString()))
+        {
+          sb.Append(c);
+        }
+        else
+        {
+          sb.Append("%");
+          sb.Append(string.Format("{0:x2}", (int)c).ToUpper());
+        }
+      }
+      return sb.ToString();
+    }
+
+    #endregion
+#endif
 
     /// <summary>
     /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.

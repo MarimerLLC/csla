@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Single.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -29,7 +29,7 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(IdProperty, value); }
     }
 
-    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty<string>(c => c.MethodCalled, "MethodCalled");
+    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty(c => c.MethodCalled, "MethodCalled");
     public string MethodCalled
     {
       get { return GetProperty(MethodCalledProperty); }
@@ -49,6 +49,16 @@ namespace Csla.Test.DataPortalTest
     public static void DeleteObject(int id)
     {
       Csla.DataPortal.Delete<Single>(id);
+    }
+
+    public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler)
+    {
+      Csla.DataPortal.BeginDelete<Single>(id, handler);
+    }
+
+    public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler, object userState)
+    {
+      Csla.DataPortal.BeginDelete<Single>(id, handler, userState);
     }
 
     public Single()

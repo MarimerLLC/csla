@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>This is the client-side DataPortal.</summary>
 //-----------------------------------------------------------------------
@@ -20,6 +20,10 @@ namespace Csla
   /// </summary>
   public static class DataPortal
   {
+    private static readonly EmptyCriteria EmptyCriteria = new EmptyCriteria();
+
+    #region DataPortal events
+
     /// <summary>
     /// Raised by DataPortal before it starts
     /// setting up to call a server-side
@@ -41,18 +45,28 @@ namespace Csla
 
     internal static void OnDataPortalInitInvoke(object e)
     {
-      DataPortalInitInvoke?.Invoke(e);
+      Action<System.Object> action = DataPortalInitInvoke;
+      if (action != null)
+        action(e);
     }
 
     internal static void OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      DataPortalInvoke?.Invoke(e);
+      Action<DataPortalEventArgs> action = DataPortalInvoke;
+      if (action != null)
+        action(e);
     }
 
     internal static void OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      DataPortalInvokeComplete?.Invoke(e);
+      Action<DataPortalEventArgs> action = DataPortalInvokeComplete;
+      if (action != null)
+        action(e);
     }
+
+    #endregion
+
+    #region Create
 
     /// <summary>
     /// Called by a factory method in a business class to create 
@@ -77,7 +91,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>()
     {
-      return Create<T>(EmptyCriteria.Instance);
+      return Create<T>(EmptyCriteria);
     }
 
     /// <summary>
@@ -105,11 +119,10 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      BeginCreate<T>(EmptyCriteria.Instance, callback, null);
+      BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, null);
     }
 
     /// <summary>
@@ -125,11 +138,10 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      BeginCreate<T>(EmptyCriteria.Instance, callback, userState);
+      BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, userState);
     }
 
     /// <summary>
@@ -147,7 +159,6 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -170,7 +181,6 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -208,6 +218,10 @@ namespace Csla
       return await dp.CreateAsync(criteria);
     }
 
+    #endregion
+
+    #region Fetch
+
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
@@ -229,14 +243,14 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>()
     {
-      return Fetch<T>(EmptyCriteria.Instance);
+      return Fetch<T>(EmptyCriteria);
     }
 
     internal static object Fetch(Type objectType, object criteria)
     {
       return DataPortal<object>.Fetch(objectType, criteria);
     }
-
+    
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// fetch a business object.
@@ -249,11 +263,10 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      BeginFetch<T>(EmptyCriteria.Instance, callback, null);
+      BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, null);
     }
 
     /// <summary>
@@ -269,11 +282,10 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      BeginFetch<T>(EmptyCriteria.Instance, callback, userState);
+      BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, userState);
     }
 
     /// <summary>
@@ -291,7 +303,6 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -314,7 +325,6 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -354,6 +364,10 @@ namespace Csla
       return await dp.FetchAsync(criteria);
     }
 
+    #endregion
+
+    #region Update
+
     /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
@@ -372,7 +386,7 @@ namespace Csla
       var dp = new DataPortal<T>();
       return dp.Update(obj);
     }
-
+    
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// update a business object.
@@ -388,7 +402,6 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginUpdate<T>(T obj, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -411,7 +424,6 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginUpdate<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -437,6 +449,10 @@ namespace Csla
       return await dp.UpdateAsync(obj);
     }
 
+    #endregion
+
+    #region Delete
+
     /// <summary>
     /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.
@@ -452,7 +468,7 @@ namespace Csla
     {
       DataPortal<object>.Delete(objectType, criteria);
     }
-
+   
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// delete a business object.
@@ -468,7 +484,6 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -491,7 +506,6 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -516,6 +530,10 @@ namespace Csla
       var dp = new DataPortal<T>();
       await dp.DeleteAsync(criteria);
     }
+
+    #endregion
+
+    #region Execute
 
     /// <summary>
     /// Called to execute a Command object on the server.
@@ -542,7 +560,7 @@ namespace Csla
     {
       return Update(obj);
     }
-
+    
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// execute a command object.
@@ -558,7 +576,6 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    [Obsolete]
     public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback) 
       where T : IMobileObject
     {
@@ -581,7 +598,6 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    [Obsolete]
     public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState) 
       where T : IMobileObject
     {
@@ -607,6 +623,10 @@ namespace Csla
       return await dp.ExecuteAsync(command);
     }
 
+    #endregion
+
+    #region  Child Data Access methods
+
     /// <summary>
     /// Creates and initializes a new
     /// child business object.
@@ -617,7 +637,7 @@ namespace Csla
     public static T CreateChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Create(typeof(T), EmptyCriteria.Instance));
+      return (T)(portal.Create(typeof(T)));
     }
 
     /// <summary>
@@ -637,35 +657,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates and initializes a new
-    /// child business object.
-    /// </summary>
-    /// <typeparam name="T">
-    /// Type of business object to create.
-    /// </typeparam>
-    public static async Task<T> CreateChildAsync<T>()
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.CreateAsync<T>(EmptyCriteria.Instance);
-    }
-
-    /// <summary>
-    /// Creates and initializes a new
-    /// child business object.
-    /// </summary>
-    /// <typeparam name="T">
-    /// Type of business object to create.
-    /// </typeparam>
-    /// <param name="parameters">
-    /// Parameters passed to child create method.
-    /// </param>
-    public static async Task<T> CreateChildAsync<T>(params object[] parameters)
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.CreateAsync<T>(parameters);
-    }
-
-    /// <summary>
     /// Creates and loads an existing
     /// child business object.
     /// </summary>
@@ -675,7 +666,7 @@ namespace Csla
     public static T FetchChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Fetch(typeof(T), EmptyCriteria.Instance));
+      return (T)(portal.Fetch(typeof(T)));
     }
 
     /// <summary>
@@ -692,35 +683,6 @@ namespace Csla
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       return (T)(portal.Fetch(typeof(T), parameters));
-    }
-
-    /// <summary>
-    /// Fetchs and initializes a new
-    /// child business object.
-    /// </summary>
-    /// <typeparam name="T">
-    /// Type of business object to Fetch.
-    /// </typeparam>
-    public static async Task<T> FetchChildAsync<T>()
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.FetchAsync<T>(EmptyCriteria.Instance);
-    }
-
-    /// <summary>
-    /// Fetchs and initializes a new
-    /// child business object.
-    /// </summary>
-    /// <typeparam name="T">
-    /// Type of business object to Fetch.
-    /// </typeparam>
-    /// <param name="parameters">
-    /// Parameters passed to child Fetch method.
-    /// </param>
-    public static async Task<T> FetchChildAsync<T>(params object[] parameters)
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.FetchAsync<T>(parameters);
     }
 
     /// <summary>
@@ -752,34 +714,9 @@ namespace Csla
       portal.Update(child, parameters);
     }
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
-    public static async Task UpdateChildAsync(object child)
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      await portal.UpdateAsync(child).ConfigureAwait(false);
-    }
+    #endregion
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
-    /// <param name="parameters">
-    /// Parameters passed to child update method.
-    /// </param>
-    public static async Task UpdateChildAsync(object child, params object[] parameters)
-    {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
-    }
+    #region DataPortal Proxy
 
     private static DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;
 
@@ -792,7 +729,7 @@ namespace Csla
       {
         if (String.IsNullOrEmpty(ApplicationContext.DataPortalProxyFactory) || ApplicationContext.DataPortalProxyFactory == "Default")
         {
-          _dataProxyFactory = new DataPortalClient.DataPortalProxyFactory();
+          _dataProxyFactory = new DataPortalClient.DefaultPortalProxyFactory();
         }
         else
         {
@@ -873,5 +810,8 @@ namespace Csla
     [Obsolete("Proxies no longer cached")]
     public static void ReleaseProxy()
     { }
+
+    #endregion
+
   }
 }

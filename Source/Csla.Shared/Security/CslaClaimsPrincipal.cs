@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="CslaClaimsPrincipal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>ClaimsPrincipal subclass that supports serialization by MobileFormatter</summary>
 //-----------------------------------------------------------------------

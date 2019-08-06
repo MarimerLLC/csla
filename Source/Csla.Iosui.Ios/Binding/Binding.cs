@@ -1,7 +1,7 @@
 ﻿﻿//-----------------------------------------------------------------------
 // <copyright file="Binding.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Contains an individual binding to tie a property on an Axml view to the property on a supplied object</summary>
 //-----------------------------------------------------------------------

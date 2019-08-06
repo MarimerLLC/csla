@@ -43,7 +43,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(NameOf($IdProperty$), RelationshipTypes.PrivateField)
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$, RelationshipTypes.PrivateField)
 '<NotUndoable, NonSerialized> _
 Private $PrivateField$Name As $PropertyType$ = $PropertyName$Property.DefaultValue
 Public Property $PropertyName$() As $PropertyType$

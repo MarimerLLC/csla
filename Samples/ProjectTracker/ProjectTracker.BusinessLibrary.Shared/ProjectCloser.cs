@@ -41,7 +41,6 @@ namespace ProjectTracker.Library
       cmd = DataPortal.Execute<ProjectCloser>(cmd);
       return cmd;
     }
-#endif
 
     protected override void DataPortal_Execute()
     {
@@ -56,5 +55,6 @@ namespace ProjectTracker.Library
       }
       Closed = true;
     }
+#endif
   }
 }

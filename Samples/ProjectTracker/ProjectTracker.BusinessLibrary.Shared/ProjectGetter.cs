@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -21,7 +20,6 @@ namespace ProjectTracker.Library
       private set { LoadProperty(RoleListProperty, value); }
     }
 
-#if FULL_DOTNET
     public static void CreateNewProject(EventHandler<DataPortalResult<ProjectGetter>> callback)
     {
       DataPortal.BeginFetch<ProjectGetter>(new Criteria { ProjectId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
@@ -45,17 +43,18 @@ namespace ProjectTracker.Library
         callback(o, e);
       });
     }
-#endif
 
-    private async Task DataPortal_Fetch(Criteria criteria)
+#if FULL_DOTNET
+    private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ProjectId == -1)
-        Project = await ProjectEdit.NewProjectAsync();
+        Project = ProjectEdit.NewProject();
       else
-        Project = await ProjectEdit.GetProjectAsync(criteria.ProjectId);
+        Project = ProjectEdit.GetProject(criteria.ProjectId);
       if (criteria.GetRoles)
         RoleList = RoleList.GetCachedList();
     }
+#endif
 
     [Serializable]
     public class Criteria : CriteriaBase<Criteria>

@@ -34,7 +34,9 @@ namespace Csla.Analyzers.Extensions
 
       while (parentNode != null)
       {
-        if (parentNode is T parentAsTypeNode)
+        var parentAsTypeNode = parentNode as T;
+
+        if(parentAsTypeNode != null)
         {
           return parentAsTypeNode;
         }

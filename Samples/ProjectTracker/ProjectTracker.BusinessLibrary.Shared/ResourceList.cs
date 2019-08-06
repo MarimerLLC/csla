@@ -36,18 +36,17 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginFetch<ResourceList>(callback);
     }
-
+#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<ResourceList> GetResourceListAsync()
     {
       return await DataPortal.FetchAsync<ResourceList>();
     }
-
+#endif
 #if FULL_DOTNET
     public static ResourceList GetResourceList()
     {
       return DataPortal.Fetch<ResourceList>();
     }
-#endif
 
     private void DataPortal_Fetch()
     {
@@ -65,5 +64,6 @@ namespace ProjectTracker.Library
       IsReadOnly = true;
       RaiseListChangedEvents = rlce;
     }
+#endif
   }
 }

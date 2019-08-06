@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DataPortalException.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>This exception is returned for any errors occuring</summary>
 //-----------------------------------------------------------------------
@@ -157,12 +157,12 @@ namespace Csla
     {
       get
       {
-        var result = this.InnerException;
-        if (result != null)
-          result = result.InnerException;
-        if (result is DataPortalException dpe && dpe.InnerException != null)
+        var result = this.InnerException.InnerException;
+        var dpe = result as DataPortalException;
+        if (dpe != null && dpe.InnerException != null)
           result = dpe.InnerException;
-        if (result is Csla.Reflection.CallMethodException cme && cme.InnerException != null)
+        var cme = result as Csla.Reflection.CallMethodException;
+        if (cme != null && cme.InnerException != null)
           result = cme.InnerException;
         return result;
       }

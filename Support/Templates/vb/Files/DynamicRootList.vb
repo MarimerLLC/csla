@@ -36,6 +36,11 @@ Public Class DynamicRootList
     Return DataPortal.Fetch(Of DynamicRootList)()
   End Function
 
+  Private Sub New()
+    ' require use of factory methods
+    AllowNew = True
+  End Sub
+
 #End Region
 
 #Region " Data Access "

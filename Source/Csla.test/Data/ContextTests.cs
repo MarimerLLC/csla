@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ContextTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -29,11 +29,11 @@ namespace Csla.Test.Data
   [TestClass]
   public class ContextTests
   {
-    private const string TestDBConnection = nameof(WellKnownValues.DataPortalTestDatabase);
-    private const string InvalidTestDBConnection = "DataPortalTestDatabaseConnectionStringXXXXXXX";
+    private const string TestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString";
+    private const string InvalidTestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionStringXXXXXXX";
 
-    private const string ConnectionWithMissingDB = nameof(WellKnownValues.DataPortalTestDatabaseWithInvalidDBValue);
-    
+    private const string ConnectionWithMissingDB = "DataPortalTestDatabaseConnectionString_with_invalid_DB_value";
+    private const string EntityConnectionWithMissingDB = "DataPortalTestDatabaseEntities_with_invalid_DB_value";
 
     #region Invalid connection strings
     [TestMethod]
@@ -66,7 +66,6 @@ namespace Csla.Test.Data
 #if DEBUG
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
-    
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_SqlConnection()
     {
       //throws SqlException
@@ -80,7 +79,6 @@ namespace Csla.Test.Data
 
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
-    
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_LinqToSqlContextDataContext()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(ConnectionWithMissingDB, true))
@@ -93,10 +91,9 @@ namespace Csla.Test.Data
 
     [TestMethod]
     [ExpectedException(typeof(EntityException))]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_EntitiesContextDataContext()
     {
-      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(WellKnownValues.EntityConnectionWithMissingDBConnectionStringName, true))
+      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(EntityConnectionWithMissingDB, true))
       {
         Assert.IsNotNull(objectContextManager);
         //Throws EntityException
@@ -113,7 +110,6 @@ namespace Csla.Test.Data
 
 #if DEBUG
     [TestMethod]
-    
     public void ExecuteReader_on_Table2_returns_reader_with_3_fields()
     {
       using (var objectContextManager = ConnectionManager<SqlConnection>.GetManager(TestDBConnection, true))
@@ -131,7 +127,6 @@ namespace Csla.Test.Data
 
 #if DEBUG
     [TestMethod]
-    
     public void Table1_retreived_through_LingToSqlDataContext_has_records()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(TestDBConnection, true))
@@ -142,10 +137,9 @@ namespace Csla.Test.Data
     }
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
     {
-      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager(nameof(WellKnownValues.DataPortalTestDatabaseEntities), true))
+      using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager("DataPortalTestDatabaseEntities", true))
       {
         Assert.IsNotNull(objectContextManager);
 
@@ -162,7 +156,6 @@ namespace Csla.Test.Data
 
 #if DEBUG
     [TestMethod]
-    
     public void Using_TransactionManager_Insert_of_2records_rolls_back_if_second_record_fails_insert()
     {
       ApplicationContext.LocalContext.Clear();
@@ -207,7 +200,6 @@ namespace Csla.Test.Data
 
 
     [TestMethod]
-    
     public void Using_TransactionManager_Insert_2records_increases_count_by2_then_removing_them_decreases_count_by2()
     {
       ApplicationContext.LocalContext.Clear();
@@ -257,7 +249,6 @@ namespace Csla.Test.Data
     }
 
     [TestMethod]
-    
     public void TestTransactionsManaagerConnectionProperty()
     {
       using (var manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(TestDBConnection, true))

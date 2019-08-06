@@ -34,7 +34,7 @@ namespace BusinessRuleDemo
     /// Does the check for primary propert less than compareTo property
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       var value1 = (dynamic)context.InputPropertyValues[PrimaryProperty];
       var value2 = (dynamic)context.InputPropertyValues[CompareTo];

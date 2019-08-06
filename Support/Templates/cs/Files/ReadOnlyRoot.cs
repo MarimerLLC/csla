@@ -53,6 +53,9 @@ namespace Templates
       return DataPortal.Fetch<ReadOnlyRoot>(id);
     }
 
+    private ReadOnlyRoot()
+    { /* require use of factory methods */ }
+
     #endregion
 
     #region Data Access

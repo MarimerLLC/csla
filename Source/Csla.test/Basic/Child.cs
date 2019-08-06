@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="Child.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -46,11 +46,6 @@ namespace Csla.Test.Basic
             }
 
             return _data == ((Child)(obj))._data;
-        }
-
-        public override int GetHashCode()
-        {
-          return base.GetHashCode();
         }
 
         public Guid Guid

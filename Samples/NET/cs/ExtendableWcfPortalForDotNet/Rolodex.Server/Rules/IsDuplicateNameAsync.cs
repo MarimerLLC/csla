@@ -25,7 +25,7 @@ namespace Rolodex.Business.Rules
       CanRunOnServer = false;
     }
 
-    protected override void Execute(IRuleContext context)
+    protected override void Execute(RuleContext context)
     {
       var value1 = (int) context.InputPropertyValues[PrimaryProperty];
       var value2 = (string) context.InputPropertyValues[SecondaryProperty];

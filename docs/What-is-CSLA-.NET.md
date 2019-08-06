@@ -9,7 +9,7 @@ MVC, MVP, and MVVM _explicitly_ tell you not to put business logic in your view,
 
 But most people view the model as a set of anemic data container objects, typically shaped based on database tables or service endpoints, not on the actual scenario where the model is used.
 
-CSLA is all about a different way. What if your model was designed using authentic object-oriented design concepts, so the model's shape is appropriate for the business scenario being addressed? And what if your objects were about _behavior_ instead of data? If the objects were actual actors in the user scenario, not just dumb data containers?
+CSLA is all about a different way. What if your model was designed using actual object-oriented design concepts, so the model's shape is appropriate for the business scenario being addressed? And what if your objects were about _behavior_ instead of data? If the objects where actual actors in the user scenario, not just dumb data containers?
 
 And then, suppose you had a framework that helped you create those behavior-based business domain objects so your code is:
 

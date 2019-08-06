@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ContextParams.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Implementation of a lock that waits while</summary>
 //----------------------------------------------------------------------
@@ -40,8 +40,13 @@ namespace Csla.Threading
     {
       Csla.ApplicationContext.User = User;
       Csla.ApplicationContext.SetContext(ClientContext, GlobalContext);
+#if NETFX_CORE
+      // do nothing because we can't set the context on a non-UI thread
+      // in WinRT or UWP
+#else
       Thread.CurrentThread.CurrentUICulture = UICulture;
       Thread.CurrentThread.CurrentCulture = Culture;
+#endif
     }
   }
 }

@@ -22,6 +22,9 @@ namespace Templates
       _list = null;
     }
 
+    private NameValueList()
+    { /* require use of factory methods */ }
+
     #endregion
 
     #region Data Access

@@ -37,7 +37,7 @@ namespace PropertyStatus
         IsAsync = true;
       }
 
-      protected override void Execute(Csla.Rules.IRuleContext context)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
         BackgroundWorker worker = new BackgroundWorker();
         worker.DoWork += (o, e) => Thread.Sleep(3000);

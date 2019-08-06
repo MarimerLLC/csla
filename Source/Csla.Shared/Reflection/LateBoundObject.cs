@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="LateBoundObject.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Enables simple invocation of methods</summary>
 //-----------------------------------------------------------------------
@@ -107,6 +107,70 @@ namespace Csla.Reflection
       return MethodCaller.CallMethod(this.Instance, method, parameters);
     }
 
+//    /// <summary>
+//    /// Gets a value indicating whether the specified method
+//    /// returns a Task of object.
+//    /// </summary>
+//    /// <param name="methodName">Name of the method.</param>
+//    /// <returns>True if the method returns a Task of object.</returns>
+//    public bool IsMethodAsync(string methodName)
+//    {
+//      var info = this.Instance.GetType().GetMethod(methodName);
+//#if NETFX_CORE
+//      var isgeneric = info.ReturnType.IsGenericType();
+//#else
+//     var isgeneric = info.ReturnType.IsGenericType;
+//#endif
+//      return (info.ReturnType.Equals(typeof(Task)));
+//    }
+
+    ///// <summary>
+    ///// Uses reflection to dynamically invoke a method,
+    ///// throwing an exception if it is not
+    ///// implemented on the target object.
+    ///// </summary>
+    ///// <param name="method">
+    ///// Name of the method.
+    ///// </param>
+    //public async Task CallMethodAsync(string method)
+    //{
+    //  try
+    //  {
+    //    await (Task)MethodCaller.CallMethod(this.Instance, method);
+    //  }
+    //  catch (InvalidCastException ex)
+    //  {
+    //    throw new NotSupportedException(
+    //      string.Format(Resources.TaskOfObjectException, this.Instance.GetType().Name + "." + method),
+    //      ex);
+    //  }
+    //}
+
+    ///// <summary>
+    ///// Uses reflection to dynamically invoke a method,
+    ///// throwing an exception if it is not
+    ///// implemented on the target object.
+    ///// </summary>
+    ///// <param name="method">
+    ///// Name of the method.
+    ///// </param>
+    ///// <param name="parameters">
+    ///// Parameters to pass to method.
+    ///// </param>
+    //public async Task CallMethodAsync(string method, params object[] parameters)
+    //{
+    //  try
+    //  {
+    //    await (Task)MethodCaller.CallMethod(this.Instance, method, parameters);
+    //  }
+    //  catch (InvalidCastException ex)
+    //  {
+    //    throw new NotSupportedException(
+    //      string.Format(Resources.TaskOfObjectException, this.Instance.GetType().Name + "." + method),
+    //      ex);
+    //  }
+    //}
+
     /// <summary>
     /// Invokes a method using the await keyword
     /// if the method returns Task,
@@ -120,13 +184,13 @@ namespace Csla.Reflection
       {
         await MethodCaller.CallMethodTryAsync(this.Instance, methodName);
       }
-      catch (CallMethodException)
+      catch (Csla.Reflection.CallMethodException)
       {
         throw;
       }
       catch (Exception ex)
       {
-        throw new CallMethodException(Instance.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, ex);
+        throw new Csla.Reflection.CallMethodException(Instance.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, ex);
       }
     }
 
@@ -145,45 +209,14 @@ namespace Csla.Reflection
       {
         await MethodCaller.CallMethodTryAsync(this.Instance, methodName, parameters);
       }
-      catch (CallMethodException)
+      catch (Csla.Reflection.CallMethodException)
       {
         throw;
       }
       catch (Exception ex)
       {
-        throw new CallMethodException(Instance.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, ex);
+        throw new Csla.Reflection.CallMethodException(Instance.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, ex);
       }
     }
-
-#if !NET40
-    /// <summary>
-    /// Invokes a method using the await keyword
-    /// if the method returns Task,
-    /// otherwise synchronously invokes the method.
-    /// </summary>
-    /// <param name="isSync">Is client calling this synchronously</param>
-    /// <param name="attributeType">Data portal operation attribute</param>
-    /// <param name="parameters">
-    /// Parameters to pass to method.
-    /// </param>
-    public async Task CallMethodTryAsyncDI(bool isSync, Type attributeType, params object[] parameters)
-    {
-      var method = ServiceProviderMethodCaller.FindDataPortalMethod(
-        Instance, attributeType, parameters);
-      try
-      {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method);
-        await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters);
-      }
-      catch (CallMethodException)
-      {
-        throw;
-      }
-      catch (Exception ex)
-      {
-        throw new CallMethodException(Instance.GetType().Name + "." + method.Name + " " + Resources.MethodCallFailed, ex);
-      }
-    }
-#endif
   }
 }

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="SafeDataReaderTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -40,8 +40,8 @@ namespace Csla.Test.SafeDataReader
         Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
       }
 
-    private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
-
+        //pull from ConfigurationManager
+      private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
 
         public void ClearDataBase()
         {
@@ -64,7 +64,6 @@ namespace Csla.Test.SafeDataReader
         }
 
         [TestMethod()]
-        [TestCategory("SkipWhenLiveUnitTesting")]
         public void CloseSafeDataReader()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
@@ -103,8 +102,7 @@ namespace Csla.Test.SafeDataReader
             }
         }
 
-        [TestMethod()]
-        
+    [TestMethod()]
         public void GetSchemaTable()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);

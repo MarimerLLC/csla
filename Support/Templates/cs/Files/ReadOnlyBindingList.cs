@@ -25,6 +25,9 @@ namespace Templates
       return DataPortal.Fetch<ReadOnlyBindingList>(filter);
     }
 
+    private ReadOnlyBindingList()
+    { /* require use of factory methods */ }
+
     #endregion
 
     #region Data Access

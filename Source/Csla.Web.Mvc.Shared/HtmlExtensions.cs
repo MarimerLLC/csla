@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="HtmlExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Html extension methods providing support for HTML rendering based on security permissions in an application.</summary>
 //-----------------------------------------------------------------------

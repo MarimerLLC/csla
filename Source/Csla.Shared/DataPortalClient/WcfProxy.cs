@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
@@ -97,19 +97,6 @@ namespace Csla.DataPortalClient
     public WcfProxy()
     {
       this.DataPortalUrl = WcfProxy.DefaultUrl;
-      this.Binding = WcfProxy.DefaultBinding;
-      this.EndPoint = WcfProxy.DefaultEndPoint;
-    }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
-    /// it to use the supplied URL and DefaultBinding
-    /// values.
-    /// </summary>
-    /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public WcfProxy(string dataPortalUrl)
-    {
-      this.DataPortalUrl = dataPortalUrl;
       this.Binding = WcfProxy.DefaultBinding;
       this.EndPoint = WcfProxy.DefaultEndPoint;
     }

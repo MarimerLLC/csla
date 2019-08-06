@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ClientContextTests.server.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -28,7 +28,6 @@ namespace Csla.Test.Silverlight.ApplicationContext
   {
 
     [TestMethod]
-    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ServerShouldReceiveClientContextValue()
     {
       var context = GetContext();
@@ -51,6 +50,36 @@ namespace Csla.Test.Silverlight.ApplicationContext
       context.Complete();
 
     }
+    //SB because we inside the same app domain, the context stays the same 
+    // in client and server threads.  So, this will always fail in local mode
+    //[TestMethod]
+    //public void ClientContextNotAffectedByChangeOnServer()
+    //{
+    //  var context = GetContext();
+
+    //  Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
+
+    //  var verifier = new ClientContextBOVerifier(false);
+
+    //  //This is what we are transferring
+    //  Csla.ApplicationContext.ClientContext["MSG"] = ContextMessageValues.INITIAL_VALUE;
+
+    //  verifier.Name = "justin";
+    //  verifier.Saved += (o, e) =>
+    //  {
+    //    //Save calls DataPortal_Update() on verifier - DataPortalUpdate() sets Csla.ApplicationContext.ClientContext["MSG"]
+    //    //to a value that is different than the one initialy set on the Client (here).  
+    //    //We have to varify that the Csla.ApplicationContext.ClientContext["MSG"] on this side did not change
+
+    //    var actual = (ClientContextBOVerifier)e.NewObject;
+    //    context.Assert.AreEqual(ContextMessageValues.INITIAL_VALUE, Csla.ApplicationContext.ClientContext["MSG"]);
+    //    context.Assert.Success();
+    //  };
+    //  verifier.BeginSave();
+
+    //  context.Complete();
+
+    //}
   }
 
 

@@ -1,7 +1,7 @@
 ﻿﻿//-----------------------------------------------------------------------
 // <copyright file="DecoratedRuleArgs.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Provides the DecoratedRuleArgs base class for CSLA 3.x rule engine</summary>
 //-----------------------------------------------------------------------

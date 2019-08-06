@@ -54,7 +54,7 @@
           <Type>Object</Type>
         </Object>
       </Declarations>
-      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(NameOf($IdProperty$))
+      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$)
 Public Property $PropertyName$() As $PropertyType$
     Get
         Return GetProperty($PropertyName$Property)

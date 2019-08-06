@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="MockEditableRoot.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -55,6 +55,22 @@ namespace Csla.Testing.Business.EditableRootTests
     public override string ToString()
     {
       return Id.ToString();
+    }
+
+    public static void CreateNew(EventHandler<DataPortalResult<MockEditableRoot>> completed)
+    {
+      Csla.DataPortal.BeginCreate<MockEditableRoot>(completed);
+    }
+
+    public static void Fetch(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
+    {
+      Csla.DataPortal.BeginFetch<MockEditableRoot>(id, completed);
+    }
+
+    public static void Delete(Guid id) { Delete(id, null); }
+    public static void Delete(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
+    {
+      Csla.DataPortal.BeginDelete<MockEditableRoot>(id, completed);
     }
   }
 }

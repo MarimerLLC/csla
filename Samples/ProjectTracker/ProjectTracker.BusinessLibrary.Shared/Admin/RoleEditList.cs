@@ -75,9 +75,24 @@ namespace ProjectTracker.Library
         RoleList.InvalidateCache();
       }
 
+#if !FULL_DOTNET && !NETSTANDARD2_0
+      protected override void AddNewCore()
+      {
+        var item = RoleEdit.NewRoleEdit();
+        Add(item);
+        OnAddedNew(item);
+      }
+#elif NETSTANDARD2_0
       protected override RoleEdit AddNewCore()
       {
-        RoleEdit item = DataPortal.CreateChild<RoleEdit>();
+        RoleEdit item = RoleEdit.NewRoleEdit();
+        Add(item);
+        return item;
+      }
+#else
+      protected override RoleEdit AddNewCore()
+      {
+        RoleEdit item = RoleEditManager.NewRoleEdit();
         Add(item);
         return item;
       }
@@ -127,6 +142,7 @@ namespace ProjectTracker.Library
           Child_Update();
         this.RaiseListChangedEvents = true;
       }
+#endif
     }
   }
 }

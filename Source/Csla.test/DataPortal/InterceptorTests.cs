@@ -155,11 +155,6 @@ namespace Csla.Test.DataPortal
       set { SetProperty(NameProperty, value); }
     }
 
-    private void DataPortal_Create(string name)
-    {
-      Fetch(name);
-    }
-
     private void DataPortal_Fetch(string name)
     {
       Fetch(name);

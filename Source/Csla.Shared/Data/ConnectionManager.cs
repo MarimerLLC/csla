@@ -1,8 +1,8 @@
-#if !NETSTANDARD2_0
+#if !NETFX_CORE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="ConnectionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: https://cslanet.com
+//     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Provides an automated way to reuse open</summary>
 //-----------------------------------------------------------------------
@@ -98,14 +98,18 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
+#if NETSTANDARD2_0
+        throw new NotSupportedException("isDatabaseName==true");
+#else
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
 
         var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
         if (string.IsNullOrEmpty(conn))
-          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+          throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
+#endif
       }
 
       ConnectionManager mgr = null;
@@ -141,7 +145,7 @@ namespace Csla.Data
       _connection = new System.Data.SqlClient.SqlConnection(connectionString);
       _connection.Open();
 #else
-      string provider = ConfigurationManager.AppSettings["CslaDbProvider"];
+      string provider = ConfigurationManager.AppSettings["dbProvider"];
       if (string.IsNullOrEmpty(provider))
         provider = "System.Data.SqlClient";
 

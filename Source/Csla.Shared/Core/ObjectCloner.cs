@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ObjectCloner.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This class provides an implementation of a deep</summary>
 //-----------------------------------------------------------------------

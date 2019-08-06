@@ -30,17 +30,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ProjectResourceEditCreator>(
         new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId }, callback);
     }
-#if ANDROID
-    /// <summary>
-    /// Creates a new ProjectResourceEdit object.
-    /// </summary>
-    public static async System.Threading.Tasks.Task<ProjectResourceEditCreator> GetProjectResourceEditCreatorAsync(int resourceId)
-    {
-      return await DataPortal.FetchAsync<ProjectResourceEditCreator>(resourceId);
-    }
-#endif
 
-#if FULL_DOTNET || NETSTANDARD2_0
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>
@@ -66,7 +56,6 @@ namespace ProjectTracker.Library
     {
       Result = DataPortal.FetchChild<ProjectResourceEdit>(criteria.ProjectId, criteria.ResourceId);
     }
-#endif
 
     [Serializable]
     public class ProjectResourceCriteria : CriteriaBase<ProjectResourceCriteria>

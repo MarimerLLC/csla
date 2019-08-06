@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Customer.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -209,12 +209,6 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    public static void GetCustomer(int customerID, EventHandler<DataPortalResult<Customer>> handler)
-    {
-      var dp = new DataPortal<Customer>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(customerID);
-    }
 
     internal static Customer GetCustomer(int customerID)
     {
@@ -273,21 +267,5 @@ namespace cslalighttest.CslaDataProvider
   [Serializable]
   public class CustomerWO_DP_XYZ : BusinessBase<CustomerWO_DP_XYZ>
   {
-    public static void GetCustomer(EventHandler<DataPortalResult<CustomerWO_DP_XYZ>> handler)
-    {
-      int customerID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<CustomerWO_DP_XYZ>();
-      dp.FetchCompleted += handler;
-      dp.BeginFetch(customerID);
-    }
-
-    public static void CreateCustomer(EventHandler<DataPortalResult<CustomerWO_DP_XYZ>> handler)
-    {
-      int customerID = (new Random()).Next(1, 10);
-      var dp = new DataPortal<CustomerWO_DP_XYZ>();
-      dp.CreateCompleted += handler;
-      dp.BeginCreate(customerID);
-    }
   }
-
 }

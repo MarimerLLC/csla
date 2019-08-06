@@ -15,18 +15,9 @@ namespace Csla.Analyzers
   public sealed class IsOperationMethodPublicMakeNonPublicCodeFix
     : CodeFixProvider
   {
-    public override ImmutableArray<string> FixableDiagnosticIds
-    {
-      get
-      {
-        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
-      }
-    }
+    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
 
-    public sealed override FixAllProvider GetFixAllProvider()
-    {
-      return WellKnownFixAllProviders.BatchFixer;
-    }
+    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -39,10 +30,10 @@ namespace Csla.Analyzers
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
-      IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
+      RegisterNewCodeFix(
         context, root, methodNode, SyntaxKind.PrivateKeyword,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, diagnostic);
-      IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
+      RegisterNewCodeFix(
         context, root, methodNode, SyntaxKind.InternalKeyword,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, diagnostic);
 
@@ -50,7 +41,7 @@ namespace Csla.Analyzers
 
       if (!isSealed)
       {
-        IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
+        RegisterNewCodeFix(
           context, root, methodNode, SyntaxKind.ProtectedKeyword,
           IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.ProtectedDescription, diagnostic);
       }

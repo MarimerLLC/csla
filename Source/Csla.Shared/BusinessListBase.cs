@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BusinessListBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
@@ -604,7 +604,6 @@ namespace Csla
 
       // we are coming up one edit level
       _editLevel -= 1;
-      if (_editLevel < 0) _editLevel = 0;
 
       // cascade the call to all child objects
       foreach (C child in this)
@@ -623,6 +622,8 @@ namespace Csla
         if (child.EditLevelAdded > _editLevel)
           DeletedList.RemoveAt(index);
       }
+      
+      if (_editLevel < 0) _editLevel = 0;
     }
 
     #endregion
@@ -1018,8 +1019,19 @@ namespace Csla
     }
 
     /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public async Task SaveAndMergeAsync()
+    {
+      new GraphMerger().MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
+    }
+
+    /// <summary>
     /// Starts an async operation to save the object to the database.
     /// </summary>
+    [Obsolete]
     public void BeginSave()
     {
       BeginSave(null, null);
@@ -1029,6 +1041,7 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public void BeginSave(object userState)
     {
       BeginSave(null, userState);
@@ -1040,6 +1053,7 @@ namespace Csla
     /// <param name="handler">
     /// Method called when the operation is complete.
     /// </param>
+    [Obsolete]
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(handler, null);
@@ -1052,6 +1066,7 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
+    [Obsolete]
     public async void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       Exception error = null;
@@ -1173,6 +1188,7 @@ namespace Csla
       return await SaveAsync();
     }
 
+    [Obsolete]
     void ISavable.BeginSave()
     {
       BeginSave();

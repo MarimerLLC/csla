@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="TransactionContextUserList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -14,7 +14,7 @@ namespace Csla.Test.Data
   [Serializable]
   public class TransactionContextUserList : BusinessBindingListBase<TransactionContextUserList, TransactionContextUser>
   {
-    public const string TestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString";
+    public const string TestDBConnection = nameof(WellKnownValues.DataPortalTestDatabase);
 
     protected override object AddNewCore()
     {
@@ -43,7 +43,7 @@ namespace Csla.Test.Data
       }
     }
 
-    protected void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       using (var manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(TestDBConnection, true))
       {

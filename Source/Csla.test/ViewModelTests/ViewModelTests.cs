@@ -57,5 +57,33 @@ namespace Csla.Test.ViewModelTests
       Assert.IsFalse(viewModel.CanSave);
       Assert.IsFalse(viewModel.CanDelete);
     }
+
+    [TestMethod]
+    public void ViewModelBaseDoSaveWorksWithMobileFormatter()
+    {
+      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      try
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+
+        var root = BasicModern.Root.NewRoot();
+
+        var viewModel = new TestViewModel<BasicModern.Root>();
+
+        viewModel.Model = root;
+        viewModel.Model.Name = "root";
+
+        var child = viewModel.Model.Children.AddNew();
+        child.Name = "child";
+
+        viewModel.Save();
+
+        Assert.IsNull(viewModel.Error);
+      } 
+      finally
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+      }
+    }
   }
 }

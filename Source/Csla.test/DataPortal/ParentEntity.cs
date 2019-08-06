@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ParentEntity.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>DO NOT USE in UI - use the factory method instead</summary>
 //-----------------------------------------------------------------------

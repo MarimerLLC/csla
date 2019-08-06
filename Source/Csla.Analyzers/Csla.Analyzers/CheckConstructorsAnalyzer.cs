@@ -12,29 +12,31 @@ namespace Csla.Analyzers
   public sealed class CheckConstructorsAnalyzer
     : DiagnosticAnalyzer
   {
-    private static DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = new DiagnosticDescriptor(
-      Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
-      PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
-      DiagnosticSeverity.Error, true);
-    private static DiagnosticDescriptor constructorHasParametersRule = new DiagnosticDescriptor(
-      Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
-      ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
-      DiagnosticSeverity.Warning, true);
+    private static readonly DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = 
+      new DiagnosticDescriptor(
+        Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
+        PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
+        DiagnosticSeverity.Error, true, 
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, nameof(CheckConstructorsAnalyzer)));
+    private static readonly DiagnosticDescriptor constructorHasParametersRule = 
+      new DiagnosticDescriptor(
+        Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
+        ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.ConstructorHasParameters, nameof(CheckConstructorsAnalyzer)));
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-    {
-      get
-      {
-        return ImmutableArray.Create(
-          CheckConstructorsAnalyzer.publicNoArgumentConstructorIsMissingRule,
-          CheckConstructorsAnalyzer.constructorHasParametersRule);
-      }
-    }
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+      ImmutableArray.Create(
+        publicNoArgumentConstructorIsMissingRule,
+        constructorHasParametersRule);
 
     public override void Initialize(AnalysisContext context)
     {
-      context.RegisterSyntaxNodeAction<SyntaxKind>(
-        CheckConstructorsAnalyzer.AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+      context.EnableConcurrentExecution();
+      context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
     }
 
     private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
@@ -61,8 +63,7 @@ namespace Csla.Analyzers
                 foreach (var location in constructor.Locations)
                 {
                   context.ReportDiagnostic(Diagnostic.Create(
-                    CheckConstructorsAnalyzer.constructorHasParametersRule,
-                    location));
+                    constructorHasParametersRule, location));
                 }
               }
             }
@@ -81,7 +82,7 @@ namespace Csla.Analyzers
           }.ToImmutableDictionary();
 
           context.ReportDiagnostic(Diagnostic.Create(
-            CheckConstructorsAnalyzer.publicNoArgumentConstructorIsMissingRule,
+            publicNoArgumentConstructorIsMissingRule,
             classNode.Identifier.GetLocation(), properties));
         }
       }

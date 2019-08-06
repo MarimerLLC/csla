@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="MobileFormatter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
@@ -131,18 +131,13 @@ namespace Csla.Serialization.Mobile
       else
       {
         var thisType = obj.GetType();
-        if (!IsSerializable(thisType))
+        if (!thisType.IsSerializable)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName));
-        var mobile = obj as IMobileObject;
-        if (mobile == null)
+        if (!(obj is IMobileObject mobile))
           throw new InvalidOperationException(
             string.Format(Resources.MustImplementIMobileObject,
-#if NETFX_CORE
-            thisType.Name()));
-#else
             thisType.Name));
-#endif
 
         if (!_serializationReferences.TryGetValue(mobile, out info))
         {
@@ -150,8 +145,7 @@ namespace Csla.Serialization.Mobile
           _serializationReferences.Add(mobile, info);
 
           info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
-
-#if !NET40 && !NET45 && !WINDOWS_UWP && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !PCL259
+#if !NET40 && !NET45
           if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var principal = (Security.CslaClaimsPrincipal)obj;
@@ -180,11 +174,6 @@ namespace Csla.Serialization.Mobile
 
     private Dictionary<IMobileObject, SerializationInfo> _serializationReferences =
       new Dictionary<IMobileObject, SerializationInfo>(new ReferenceComparer<IMobileObject>());
-
-    private static bool IsSerializable(Type objectType)
-    {
-      return objectType.IsSerializable();
-    }
 
 #endregion
 
@@ -258,7 +247,7 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
-#if !NET40 && !NET45 && !WINDOWS_UWP && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !PCL259
+#if !NET40 && !NET45
           if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var state = info.GetValue<byte[]>("s");
@@ -273,11 +262,7 @@ namespace Csla.Serialization.Mobile
           }
           else
           {
-#if (ANDROID || IOS) || NETFX_CORE
-            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
-#else
             IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
-#endif
 
             _deserializationReferences.Add(info.ReferenceId, mobile);
 
@@ -285,16 +270,12 @@ namespace Csla.Serialization.Mobile
             mobile.SetState(info);
           }
 #else
-#if (ANDROID || IOS) || NETFX_CORE
-          IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
-#else
-          IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
-#endif
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
 
-          _deserializationReferences.Add(info.ReferenceId, mobile);
+            _deserializationReferences.Add(info.ReferenceId, mobile);
 
-          ConvertEnumsFromIntegers(info);
-          mobile.SetState(info);
+            ConvertEnumsFromIntegers(info);
+            mobile.SetState(info);
 #endif
         }
       }

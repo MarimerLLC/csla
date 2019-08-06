@@ -43,7 +43,7 @@
       <Code Language="CSharp" Kind="type decl"><![CDATA[[Serializable()]
       private class $ClassName$ : CriteriaBase
       {
-        public static readonly PropertyInfo<$IdType$> $IdProperty$Property = RegisterProperty<$IdType$>(c => c.$IdProperty$);
+        public static readonly PropertyInfo<$IdType$> $IdProperty$Property = RegisterProperty<$IdType$>(nameof($IdProperty$));
         public $IdType$ $IdProperty$
         {
           get { return ReadProperty($IdProperty$Property); }

@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DataMapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Map data from a source into a target object</summary>
 //-----------------------------------------------------------------------

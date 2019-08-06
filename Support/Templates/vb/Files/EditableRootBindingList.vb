@@ -26,10 +26,6 @@ Public Class EditableRootBindingList
     Return DataPortal.Fetch(Of EditableRootBindingList)(id)
   End Function
 
-  ' Require use of factory methods 
-  Private Sub New()
-  End Sub
-
 #End Region
 
 #Region "Data Access"

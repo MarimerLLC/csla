@@ -68,5 +68,12 @@ namespace Csla.Server
     /// the data portal was invoked synchronously.
     /// </summary>
     public bool IsSync { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value containing the elapsed
+    /// runtime for this operation (only valid at end
+    /// of operation).
+    /// </summary>
+    public TimeSpan Runtime { get; set; }
   }
 }

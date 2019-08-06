@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ValidationResult.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Results of a validation operation.</summary>
 //-----------------------------------------------------------------------

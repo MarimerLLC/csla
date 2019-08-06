@@ -12,14 +12,14 @@ namespace Csla.Test.BasicModern
   [Serializable]
   public class Child : BusinessBase<Child>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
     public string Name
     {

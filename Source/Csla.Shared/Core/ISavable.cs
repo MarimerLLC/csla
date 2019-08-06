@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ISavable.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Specifies that the object can save</summary>
 //-----------------------------------------------------------------------
@@ -44,6 +44,7 @@ namespace Csla.Core
     /// Saves the object to the database asynchronously. The saved event will contain
     /// the new object when the save operation completes.
     /// </summary>
+    [Obsolete]
     void BeginSave();
     /// <summary>
     /// Saves the object to the database asynchronously. The saved event will contain
@@ -52,6 +53,7 @@ namespace Csla.Core
     /// <param name="userState">
     /// User state object.
     /// </param>
+    [Obsolete]
     void BeginSave(object userState);
     /// <summary>
     /// INTERNAL CSLA .NET USE ONLY.

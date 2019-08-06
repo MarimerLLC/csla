@@ -56,6 +56,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void BusinessRules_MustCascadeAsSpreadsheet_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // complex ruleset 
@@ -89,6 +90,7 @@ namespace Csla.Test.ValidationRules
 
 
     [TestMethod]
+    
     public void BusinessRules_MustCheckBothSums_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // check that the sum of Ba and Bb is always 100 (and error message on both properties)
@@ -113,6 +115,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    
     public void BusinessRules_MustRecalculateSumAfterCaclulateFraction_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // calculate sum of Ca, Cb, Cc and Cd to Ce

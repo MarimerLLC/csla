@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="RelationshipTypes.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>List of valid relationship types</summary>
 //-----------------------------------------------------------------------
@@ -25,6 +25,7 @@ namespace Csla
     /// Property is a reference to a child
     /// object contained by the parent.
     /// </summary>
+    [Obsolete]
     Child=0x1,
     /// <summary>
     /// Property is a reference to a lazy

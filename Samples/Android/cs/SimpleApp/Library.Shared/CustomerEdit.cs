@@ -12,14 +12,14 @@ namespace Library
   [Serializable]
   public class CustomerEdit : BusinessBase<CustomerEdit>
   {
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c =>c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c =>c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name);
     [Display(Description = "Customer name")]
     [Required(ErrorMessage = "Name required")]
     public string Name
@@ -28,7 +28,7 @@ namespace Library
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<string> StatusProperty = RegisterProperty<string>(c=>c.Status);
+    public static readonly PropertyInfo<string> StatusProperty = RegisterProperty<string>(c=>c.Status);
     public string Status
     {
       get { return GetProperty(StatusProperty); }
@@ -51,7 +51,7 @@ namespace Library
     /// </summary>
     private class StringOnlyLetters : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var ce = (CustomerEdit)context.Target;
         bool result = string.IsNullOrEmpty(ce.Name) ||
@@ -76,7 +76,7 @@ namespace Library
         InputProperties.Add(primaryProperty);
       }
 
-      protected async override void Execute(Csla.Rules.RuleContext context)
+      protected async override void Execute(Csla.Rules.IRuleContext context)
       {
         var tcs = new TaskCompletionSource<bool>();
         new Task(() =>

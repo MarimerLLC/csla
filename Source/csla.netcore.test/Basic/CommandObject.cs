@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="CommandObject.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -23,11 +23,13 @@ namespace Csla.Test.Basic
       return Csla.DataPortal.Execute(this);
     }
 
+    [Obsolete]
     public void ExecuteServerCodeAsunch(EventHandler<DataPortalResult<CommandObject>> handler)
     {
       Csla.DataPortal.BeginExecute<CommandObject>(this, handler);
     }
 
+    [Obsolete]
     public void ExecuteServerCodeAsunch(EventHandler<DataPortalResult<CommandObject>> handler, object userState)
     {
       Csla.DataPortal.BeginExecute<CommandObject>(this, handler, userState);

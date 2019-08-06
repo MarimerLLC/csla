@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Csla.Data.SqlClient</id>
+    <title>CSLA .NET - Microsoft.Data.SqlClient</title>
+    <tags>CSLA SqlClient</tags>
+    <version>4.6.3-Beta10</version>
+    <authors>Marimer LLC</authors>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the use of Microsoft.Data.SqlClient.
+
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the use of Microsoft.Data.SqlClient.
+    </summary>
+    <language>en-US</language>
+    <dependencies>     
+      <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <dependency id="Microsoft.Data.SqlClient" version="1.0.19128.1-Preview" />    
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET Core 2.0 -->
+    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.dll" target="lib\netstandard2.0" />
+    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.pdb" target="lib\netstandard2.0" />
+    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.xml" target="lib\netstandard2.0" />
+    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.deps.json" target="lib\netstandard2.0" />
+  </files>
+</package>

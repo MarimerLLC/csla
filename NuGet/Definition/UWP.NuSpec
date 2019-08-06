@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-UWP</id>
+    <id>Csla.Uwp</id>
     <title>CSLA .NET - UWP</title>
     <tags>CSLA UWP UI Windows10 UAP</tags>
     <version>..</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of UWP applications.
 
-CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
 Supports the creation of UWP applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+      <dependency id="Csla" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>

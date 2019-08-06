@@ -84,6 +84,15 @@ namespace Csla.Test.GraphMerge
           context.AddErrorResult("Name can not be 2");
       }
     }
+
+    private void Child_Insert()
+    { }
+
+    private void Child_Update()
+    { }
+
+    private void Child_DeleteSelf()
+    { }
   }
 
   [Serializable]
@@ -100,6 +109,11 @@ namespace Csla.Test.GraphMerge
     {
       Clear();
       DeletedList.Clear();
+    }
+
+    protected override void DataPortal_Update()
+    {
+      base.Child_Update();
     }
   }
 

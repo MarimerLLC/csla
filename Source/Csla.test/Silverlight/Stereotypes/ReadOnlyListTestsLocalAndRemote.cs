@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ReadOnlyListTestsLocalAndRemote.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -10,6 +10,7 @@ using Csla.Testing.Business.ReadOnlyTest;
 using System;
 using UnitDriven;
 using Csla.DataPortalClient;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -28,35 +29,21 @@ namespace cslalighttest.Stereotypes
  public class ReadOnlyListTestsLocalAndRemote : TestBase
   {
     [TestMethod]
-    public void ReadOnlyListFetchLocal()
+    public async Task ReadOnlyListFetchLocal()
     {
-      var context = GetContext();
-      ReadOnlyPersonList.Fetch((o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual("John Doe", e.Object[0].Name);
-        context.Assert.AreEqual(new DateTime(1982, 1, 1), e.Object[1].Birthdate);
-        context.Assert.AreEqual(2, e.Object.Count);
-        context.Assert.Success();
-      });
-      context.Complete();
+      var result = await Csla.DataPortal.FetchAsync<ReadOnlyPersonList>();
+      Assert.AreEqual("John Doe", result[0].Name);
+      Assert.AreEqual(new DateTime(1982, 1, 1), result[1].Birthdate);
+      Assert.AreEqual(2, result.Count);
     }
 
     [TestMethod]
-    public void ReadOnlyListFetchRemote()
+    public async Task ReadOnlyListFetchRemote()
     {
-      var context = GetContext();
-      ReadOnlyPersonList.Fetch((o, e) =>
-      {
-        context.Assert.IsNull(e.Error);
-        context.Assert.IsNotNull(e.Object);
-        context.Assert.AreEqual("John Doe", e.Object[0].Name);
-        context.Assert.AreEqual(new DateTime(1982, 1, 1), e.Object[1].Birthdate);
-        context.Assert.AreEqual(2, e.Object.Count);
-        context.Assert.Success();
-      });
-      context.Complete();
+      var result = await Csla.DataPortal.FetchAsync<ReadOnlyPersonList>();
+      Assert.AreEqual("John Doe", result[0].Name);
+      Assert.AreEqual(new DateTime(1982, 1, 1), result[1].Birthdate);
+      Assert.AreEqual(2, result.Count);
     }
   }
 }

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="SerializationTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Csla.Serialization;
 using Csla.Test.ValidationRules;
 using UnitDriven;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -232,23 +233,21 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod()]
-    public void TestValidationRulesAfterSerialization()
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task TestValidationRulesAfterSerialization()
     {
       UnitTestContext context = GetContext();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        HasRulesManager root = e.Object;
-        root.Name = "";
-        context.Assert.AreEqual(false, root.IsValid, "root should not start valid");
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      root.Name = "";
+      context.Assert.AreEqual(false, root.IsValid, "root should not start valid");
 
-        root = root.Clone();
-        context.Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
-        root.Name = "something";
-        context.Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
-        root = root.Clone();
-        context.Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
-        context.Assert.Success();
-      });
+      root = root.Clone();
+      context.Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
+      root.Name = "something";
+      context.Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
+      root = root.Clone();
+      context.Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
+      context.Assert.Success();
 
       context.Complete();
     }
@@ -392,7 +391,9 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       try
       {
@@ -403,7 +404,9 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
 
@@ -417,7 +420,9 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       try
       {
@@ -428,7 +433,9 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
     }
 
@@ -450,6 +457,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DCClone()
     {
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
@@ -470,15 +478,9 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    
     public void DCEditLevels()
     {
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
-        "NetDataContractSerializer";
-      Assert.AreEqual(
-        Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
-        Csla.ApplicationContext.SerializationFormatter,
-        "Formatter should be NetDataContractSerializer");
-
       DCRoot root = new DCRoot();
       root.BeginEdit();
       root.Data = 123;
@@ -511,6 +513,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    
     public void SerializeCommand()
     {
       var cmd = new TestCommand();
@@ -535,6 +538,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CommandOverDataPortal()
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";

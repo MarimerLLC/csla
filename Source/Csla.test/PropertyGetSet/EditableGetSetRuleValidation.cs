@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="EditableGetSetRuleValidation.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace Csla.Test.PropertyGetSet
 
     #region Properties
 
-    public static readonly PropertyInfo<System.String> _memberBackedIdProperty = RegisterProperty<System.String>(p => p.MemberBackedId, string.Empty, RelationshipTypes.PrivateField);
+    public static readonly PropertyInfo<System.String> _memberBackedIdProperty = RegisterProperty<System.String>(p => p.MemberBackedId, RelationshipTypes.PrivateField);
     private System.String _memberBackedId = _memberBackedIdProperty.DefaultValue;
     public System.String MemberBackedId
     {

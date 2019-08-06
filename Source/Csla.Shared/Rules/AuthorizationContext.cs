@@ -1,14 +1,11 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AuthorizationContext.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Context information provided to an authorization</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
 
 namespace Csla.Rules
@@ -17,7 +14,7 @@ namespace Csla.Rules
   /// Context information provided to an authorization
   /// rule when it is invoked.
   /// </summary>
-  public class AuthorizationContext
+  public class AuthorizationContext : IAuthorizationContext 
   {
     /// <summary>
     /// Gets the rule object.

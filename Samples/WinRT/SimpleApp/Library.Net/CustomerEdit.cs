@@ -48,7 +48,7 @@ namespace Library
 
     private class StringOnlyLetters : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var ce = (CustomerEdit)context.Target;
         bool result = string.IsNullOrEmpty(ce.Name) ||
@@ -70,7 +70,7 @@ namespace Library
         InputProperties = new List<Csla.Core.IPropertyInfo> { primaryProperty };
       }
 
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var bw = new System.ComponentModel.BackgroundWorker();
         bw.DoWork += (o, e) =>

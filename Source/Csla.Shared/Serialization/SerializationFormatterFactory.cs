@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="SerializationFormatterFactory.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Factory used to create the appropriate</summary>
 //-----------------------------------------------------------------------

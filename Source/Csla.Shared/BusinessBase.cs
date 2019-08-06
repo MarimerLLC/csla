@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="BusinessBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This is the base class from which most business objects</summary>
 //-----------------------------------------------------------------------
@@ -236,8 +236,33 @@ namespace Csla
     }
 
     /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public async Task SaveAndMergeAsync()
+    {
+      await SaveAndMergeAsync(false);
+    }
+
+    /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling SaveAndMergeAsync().
+    /// </param>
+    public async Task SaveAndMergeAsync(bool forceUpdate)
+    {
+      new GraphMerger().MergeGraph(this, await SaveAsync(forceUpdate));
+    }
+
+    /// <summary>
     /// Starts an async operation to save the object to the database.
     /// </summary>
+    [Obsolete]
     public void BeginSave()
     {
       BeginSave(null);
@@ -247,6 +272,7 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public void BeginSave(object userState)
     {
       BeginSave(false, null, userState);
@@ -258,6 +284,7 @@ namespace Csla
     /// <param name="handler">
     /// Method called when the operation is complete.
     /// </param>
+    [Obsolete]
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(false, handler, null);
@@ -274,6 +301,7 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     public async void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
       T result = default(T);
@@ -296,8 +324,7 @@ namespace Csla
 
       if (error != null)
         OnSaved(null, error, userState);
-      if (handler != null)
-        handler(this, new SavedEventArgs(result, error, userState));
+      handler?.Invoke(this, new SavedEventArgs(result, error, userState));
     }
 
     /// <summary>
@@ -312,6 +339,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
+    [Obsolete]
     public void BeginSave(bool forceUpdate)
     {
       this.BeginSave(forceUpdate, null);
@@ -333,6 +361,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
+    [Obsolete]
     public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
     {
       this.BeginSave(forceUpdate, handler, null);
@@ -352,11 +381,11 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
+    [Obsolete]
     public void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       this.BeginSave(false, handler, userState);
     }
-
 
     #endregion
 
@@ -371,8 +400,6 @@ namespace Csla
     {
       OnSaved(newObject, null, null);
     }
-
-#if !(ANDROID || IOS) && !NETFX_CORE
 
     object Csla.Core.ISavable.Save()
     {
@@ -420,12 +447,6 @@ namespace Csla
             System.Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
-#else
-    /// <summary>
-    /// Event raised when an object has been saved.
-    /// </summary>
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
-#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -449,20 +470,15 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-#if !(ANDROID || IOS) && !NETFX_CORE
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
-#else
-      if (Saved != null)
-        Saved(this, args);
-#endif
     }
 
     #endregion
 
-    #region  Register Properties
+    #region  Register Properties/Methods
 
     /// <summary>
     /// Indicates that the specified property belongs
@@ -487,13 +503,24 @@ namespace Csla
     /// to the business object type.
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
+    {
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+      return RegisterProperty<P>(reflectedPropertyInfo.Name);
     }
 
     /// <summary>
@@ -504,6 +531,7 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <returns></returns>
+    [Obsolete]
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
@@ -516,15 +544,39 @@ namespace Csla
     /// to the business object type.
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="relationship">Relationship with property value.</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
+    {
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="relationship">Relationship with
-    /// referenced object.</param>
+    /// <param name="relationship">Relationship with property value.</param>
     /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty<P>(reflectedPropertyInfo.Name, relationship);
+    }
 
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, string.Empty, relationship));
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
+    {
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
 
     /// <summary>
@@ -538,8 +590,7 @@ namespace Csla
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
+      return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
     }
 
     /// <summary>
@@ -549,14 +600,28 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <param name="relationship">Relationship with
-    /// referenced object.</param>
+    /// <param name="relationship">Relationship with property value.</param>
     /// <returns></returns>
+    [Obsolete]
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, RelationshipTypes relationship)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, relationship));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
+    {
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
 
     /// <summary>
@@ -571,8 +636,22 @@ namespace Csla
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue);
+    }
 
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <param name="relationship">Relationship with property value.</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    {
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
 
     /// <summary>
@@ -583,19 +662,23 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <param name="relationship">Relationship with
-    /// referenced object.</param>
+    /// <param name="relationship">Relationship with property value.</param>
     /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue, RelationshipTypes relationship)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship));
+      return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
 
-    #endregion
-
-    #region Register Methods
+    /// <summary>
+    /// Registers a method for use in Authorization.
+    /// </summary>
+    /// <param name="methodName">Method name from nameof()</param>
+    /// <returns></returns>
+    protected static MethodInfo RegisterMethod(string methodName)
+    {
+      return RegisterMethod(typeof(T), methodName);
+    }
 
     /// <summary>
     /// Registers a method for use in Authorization.
@@ -605,8 +688,7 @@ namespace Csla
     protected static MethodInfo RegisterMethod(Expression<Action<T>> methodLambdaExpression)
     {
       System.Reflection.MethodInfo reflectedMethodInfo = Reflect<T>.GetMethod(methodLambdaExpression);
-
-      return RegisterMethod(typeof(T), reflectedMethodInfo.Name);
+      return RegisterMethod(reflectedMethodInfo.Name);
     }
 
     #endregion

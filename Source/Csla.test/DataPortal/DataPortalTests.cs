@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DataPortalTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -27,11 +27,8 @@ namespace Csla.Test.DataPortal
 {
     [TestClass()]
     public class DataPortalTests
-    {
-        //pull from ConfigurationManager
-        private const string CONNECTION_STRING =
-            "Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True";
-
+    {   
+        private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
         public void ClearDataBase()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
@@ -130,6 +127,7 @@ namespace Csla.Test.DataPortal
 
 #if DEBUG
         [TestMethod()]
+        
         public void TestTransactionScopeUpdate()
         {
             Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
@@ -206,6 +204,7 @@ namespace Csla.Test.DataPortal
 #endif
 
         [TestMethod()]
+        
         public void StronglyTypedDataPortalMethods()
         {
             //test strongly-typed DataPortal_Fetch method
@@ -230,6 +229,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        
         public void EncapsulatedIsBusyFails()
         {
           try
@@ -245,6 +245,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        
         public void FactoryIsBusyFails()
         {
           try
@@ -260,6 +261,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod()]
+        
         public void DataPortalEvents()
         {
             Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
@@ -287,6 +289,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        
         public void DataPortalBrokerTests()
         {
           ApplicationContext.GlobalContext.Clear();
@@ -335,6 +338,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod]
+        
         public void CallDataPortalOverrides()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

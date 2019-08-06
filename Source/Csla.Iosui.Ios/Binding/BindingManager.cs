@@ -1,7 +1,7 @@
 ﻿﻿//-----------------------------------------------------------------------
 // <copyright file="BindingManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Provides the ability to bing properties on Axml controls to properties on CSLA objects.  Bindinds update normally when the control looses focus</summary>
 //-----------------------------------------------------------------------

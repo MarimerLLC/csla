@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DPMethodOverloadTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -26,6 +26,7 @@ namespace Csla.Test.IO
   public class DPMethodOverloadTests
   {
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateNoCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -38,6 +39,7 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -50,6 +52,7 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithOtherCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -62,6 +65,7 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNullCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -74,6 +78,7 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNoCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -86,6 +91,7 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -98,6 +104,7 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithOtherCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();

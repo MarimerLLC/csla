@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ObjectContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------

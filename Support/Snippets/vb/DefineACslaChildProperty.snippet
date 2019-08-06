@@ -29,7 +29,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(Function(p) p.$PropertyName$, Nothing, RelationshipTypes.Child)
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(NameOf($IdProperty$), Nothing, RelationshipTypes.Child)
   Public Property $PropertyName$() As $ChildType$
     Get
       Return GetProperty(Of $ChildType$)($PropertyName$Property)

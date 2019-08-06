@@ -1,18 +1,12 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-#if !NETFX_CORE && !PCL36 && !XAMARIN
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
-using Csla.Core;
 
 namespace Csla.Xaml
 {
@@ -21,7 +15,7 @@ namespace Csla.Xaml
   /// </summary>
   public class ApplicationContextManager : Csla.ApplicationContext.ApplicationContextManager
   {
-    private static IPrincipal _principal;
+    private static IPrincipal _principal = null;
 
     /// <summary>
     /// Gets the current principal.
@@ -29,21 +23,14 @@ namespace Csla.Xaml
     /// <returns></returns>
     public override IPrincipal GetUser()
     {
-      IPrincipal current;
-      if (System.Windows.Application.Current != null)
+      if (_principal == null)
       {
-        if (_principal == null)
-        {
-          if (ApplicationContext.AuthenticationType != "Windows")
-            _principal = new Csla.Security.UnauthenticatedPrincipal();
-          else
-            _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-        }
-        current = _principal;
+        if (ApplicationContext.AuthenticationType == "Windows")
+          SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
+        else
+          SetUser(new Csla.Security.UnauthenticatedPrincipal());
       }
-      else
-        current = Thread.CurrentPrincipal;
-      return current;
+      return _principal;
     }
 
     /// <summary>
@@ -52,10 +39,8 @@ namespace Csla.Xaml
     /// <param name="principal">Principal object.</param>
     public override void SetUser(IPrincipal principal)
     {
-      if (System.Windows.Application.Current != null)
-        _principal = principal;
+      _principal = principal;
       Thread.CurrentPrincipal = principal;
     }
   }
 }
-#endif

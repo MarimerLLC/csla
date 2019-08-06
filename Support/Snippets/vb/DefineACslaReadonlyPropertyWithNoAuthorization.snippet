@@ -43,7 +43,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$)
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(NameOf($IdProperty$))
 Public Property $PropertyName$() As $PropertyType$
     Get
         Return ReadProperty($PropertyName$Property)

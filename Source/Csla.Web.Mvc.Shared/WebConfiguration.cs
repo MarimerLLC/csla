@@ -2,75 +2,29 @@
 //-----------------------------------------------------------------------
 // <copyright file="WebConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
-// <summary>Extension methods for ASP.NET Core configuration</summary>
+// <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using Csla.Core;
-using Csla.Server;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.AspNetCore.Builder;
 
-namespace Csla.Web
+namespace Csla.Configuration
 {
   /// <summary>
-  /// Extension methods for ASP.NET Core configuration.
+  /// Implement extension methods for .NET Core configuration
   /// </summary>
-  public static class WebConfiguration
+  public static class WebConfigurationExtensions
   {
     /// <summary>
-    /// Configure CSLA .NET options for ASP.NET Core.
+    /// Adds CSLA to the application
     /// </summary>
-    /// <param name="services">ASP.NET services</param>
-    /// <param name="setupAction">Setup action</param>
-    /// <returns></returns>
-    public static IServiceCollection ConfigureCsla(this IServiceCollection services, Action<CslaOptions, IServiceProvider> setupAction = null)
+    /// <param name="app">ApplicationBuilder object</param>
+    public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
     {
-      services.AddSingleton<CslaOptions>((sp) =>
-      {
-        var options = new CslaOptions();
-        setupAction?.Invoke(options, sp);
-        return options;
-      });
-
-      return services;
-    }
-
-    /// <summary>
-    /// CSLA .NET application builder.
-    /// </summary>
-    /// <param name="appBuilder">Application builder</param>
-    /// <returns>Application builder</returns>
-    public static IApplicationBuilder UseCsla(this IApplicationBuilder appBuilder)
-    {
-      // grab the options
-      var options = appBuilder.ApplicationServices.GetRequiredService<CslaOptions>();
-
-      // configure csla according to options.
-      Csla.Server.FactoryDataPortal.FactoryLoader = options.ObjectFactoryLoader;
-      Csla.ApplicationContext.WebContextManager = options.WebContextManager ?? new ApplicationContextManager(appBuilder.ApplicationServices);
-
-      return appBuilder;
-    }
-
-    /// <summary>
-    /// CSLA .NET configuration options.
-    /// </summary>
-    public class CslaOptions
-    {
-      /// <summary>
-      /// Gets or sets the object factory loader.
-      /// </summary>
-      public IObjectFactoryLoader ObjectFactoryLoader { get; set; }
-
-      /// <summary>
-      /// Gets or sets the web application context manager.
-      /// </summary>
-      public IContextManager WebContextManager { get; set; }
-
+      Csla.ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
+      return app;
     }
   }
 }

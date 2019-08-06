@@ -129,7 +129,7 @@ namespace ProjectTracker.Library
 
     private class NoDuplicateResource : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
         foreach (var item in target.Resources)
@@ -146,7 +146,7 @@ namespace ProjectTracker.Library
 
     private class StartDateGTEndDate : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
 
@@ -157,6 +157,7 @@ namespace ProjectTracker.Library
       }
     }
 
+#if FULL_DOTNET
     public static void NewProject(EventHandler<DataPortalResult<ProjectEdit>> callback)
     {
       ProjectGetter.CreateNewProject((o, e) =>
@@ -189,6 +190,7 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginDelete<ProjectEdit>(id, callback);
     }
+#endif
 
     public async static System.Threading.Tasks.Task<ProjectEdit> NewProjectAsync()
     {
@@ -222,6 +224,7 @@ namespace ProjectTracker.Library
       cmd = DataPortal.Execute<ProjectExistsCommand>(cmd);
       return cmd.ProjectExists;
     }
+#endif
 
     [RunLocal]
     protected override void DataPortal_Create()
@@ -310,6 +313,5 @@ namespace ProjectTracker.Library
         dal.Delete(id);
       }
     }
-#endif
   }
 }

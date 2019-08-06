@@ -125,7 +125,7 @@ namespace AddonPropertyRules.Rules
     /// <param name="context">
     /// Rule context.
     /// </param>
-    protected override void Execute(RuleContext context)
+    protected override void Execute(IRuleContext context)
     {
       var value = (IComparable)context.InputPropertyValues[PrimaryProperty];
       var minResult = value.CompareTo(Min);

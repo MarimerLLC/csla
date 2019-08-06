@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BusinessListBaseTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -28,6 +28,7 @@ namespace Csla.Test.BusinessListBase
   public class BusinessListBaseTests
   {
     [TestMethod]
+    
     public void CreateList()
     {
       var obj = Csla.DataPortal.Create<RootList>();
@@ -52,6 +53,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
+    
     public void ChildAddNewCore()
     {
       bool childChanged = false;
@@ -69,6 +71,32 @@ namespace Csla.Test.BusinessListBase
       Assert.IsTrue(childChanged, "ChildChanged should be true");
       Assert.IsTrue(changed, "Collection changed should be true");
       Assert.AreEqual(child, obj.Children[0]);
+    }
+
+    [TestMethod]
+    public void AcceptChangesAndSaveAfterCloneUsingMobileFormatter()
+    {
+      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      try
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+
+        var rootList = Csla.DataPortal.Create<RootList>();
+        rootList.BeginEdit();
+        var child = rootList.AddNew();
+
+        rootList = rootList.Clone();
+
+        rootList.ApplyEdit();
+
+        Assert.IsTrue(rootList.IsDirty);
+        rootList = rootList.Save();
+        Assert.IsFalse(rootList.IsDirty);
+      }
+      finally
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+      }
     }
 
     [TestMethod]

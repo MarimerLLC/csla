@@ -75,12 +75,12 @@ namespace Csla.Test.DataPortal
 
   public class TestMethods
   {
-    public bool Method1(int id, [FromServices]ISpeak speaker)
+    public bool Method1(int id, [Inject]ISpeak speaker)
     {
       return speaker == null;
     }
 
-    public string GetSpeech(int id, [FromServices]ISpeak speaker)
+    public string GetSpeech(int id, [Inject]ISpeak speaker)
     {
       return speaker.Speak();
     }

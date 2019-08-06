@@ -373,6 +373,40 @@ namespace Csla.Test.Basic
       clone.ApplyEdit();
     }
 
+    [TestMethod]
+    public async Task ChildEditLevelDeleteClone()
+    {
+      var list = await Csla.DataPortal.CreateAsync<RootList>();
+      list.BeginEdit();
+      list.AddNew();
+      list.RemoveAt(0);
+      var clone = (RootList)((ICloneable)list).Clone();
+      clone.ApplyEdit();
+    }
+
+    [TestMethod]
+    public async Task UndoStateStack()
+    {
+      var obj = await Csla.DataPortal.CreateAsync<Root>();
+      obj.BeginEdit();
+      obj.Data = "1";
+      obj.BeginEdit();
+      obj.Data = "2";
+      Assert.AreEqual("2", obj.Data);
+      obj.CancelEdit();
+      Assert.AreEqual("1", obj.Data);
+      obj.BeginEdit();
+      obj.Data = "2";
+      Assert.AreEqual(2, obj.GetEditLevel());
+      var clone = obj.Clone();
+      Assert.AreEqual(2, clone.GetEditLevel());
+      Assert.AreEqual("2", clone.Data);
+      clone.CancelEdit();
+      Assert.AreEqual("1", clone.Data);
+      clone.CancelEdit();
+      Assert.AreEqual("", clone.Data);
+    }
+
     [TestCleanup]
     public void ClearContextsAfterEachTest()
     {
@@ -382,30 +416,30 @@ namespace Csla.Test.Basic
 
   public class FormSimulator
   {
-    private Core.BusinessBase _obj;
+    private readonly Core.BusinessBase _obj;
 
     public FormSimulator(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Obj_IsDirtyChanged);
       this._obj = obj;
     }
 
-    private void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void Obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     { }
   }
 
   [Serializable()]
   public class SerializableListener
   {
-    private Core.BusinessBase _obj;
+    private readonly Core.BusinessBase _obj;
 
     public SerializableListener(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Obj_IsDirtyChanged);
       this._obj = obj;
     }
 
-    public void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    public void Obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     { }
   }
 }

@@ -160,7 +160,21 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-          throw new TargetParameterCountException(targetType.FullName + ".[" + attributeType.Name + "]");
+      {
+        // look for params array
+        foreach (var item in candidates)
+        {
+          var lastParam = item.GetParameters().LastOrDefault();
+          if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) && 
+            lastParam.CustomAttributes != null &&
+            lastParam.CustomAttributes.Where(a => a.AttributeType.Equals(typeof(ParamArrayAttribute))).Count() > 0)
+          {
+            matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = 1 });
+          }
+        }
+      }
+      if (matches.Count == 0)
+        throw new TargetParameterCountException(targetType.FullName + ".[" + attributeType.Name + "]");
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -168,7 +182,7 @@ namespace Csla.Reflection
         // disambiguate if necessary, using a greedy algorithm
         // so more DI parameters are better
         foreach (var item in matches)
-          item.Score += item.MethodInfo.GetParameters().Count();
+          item.Score += GetDIParameters(item.MethodInfo).Count();
 
         var maxScore = int.MinValue;
         var maxCount = 0;
@@ -196,7 +210,18 @@ namespace Csla.Reflection
       var result = new List<ParameterInfo>();
       foreach (var item in method.GetParameters())
       {
-        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(FromServicesAttribute)) == 0)
+        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(InjectAttribute)) == 0)
+          result.Add(item);
+      }
+      return result.ToArray();
+    }
+
+    private static ParameterInfo[] GetDIParameters(System.Reflection.MethodInfo method)
+    {
+      var result = new List<ParameterInfo>();
+      foreach (var item in method.GetParameters())
+      {
+        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(InjectAttribute)) > 0)
           result.Add(item);
       }
       return result.ToArray();
@@ -224,14 +249,17 @@ namespace Csla.Reflection
 
       foreach (var item in methodParameters)
       {
-        if (item.CustomAttributes.Where(a => a.AttributeType == typeof(FromServicesAttribute)).Count() > 0)
+        if (item.CustomAttributes.Where(a => a.AttributeType == typeof(InjectAttribute)).Count() > 0)
         {
           if (service != null)
             plist[index] = service.GetService(item.ParameterType);
         }
         else
         {
-          plist[index] = parameters[criteriaIndex];
+          if (parameters == null || parameters.Length - 1 < criteriaIndex)
+            plist[index] = null;
+          else
+            plist[index] = parameters[criteriaIndex];
           criteriaIndex++;
         }
         index++;

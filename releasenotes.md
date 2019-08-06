@@ -12,13 +12,16 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Dependabot and NuGet dependencies
 
-* Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.1 in /Source
-* Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.3 in /Source
+* Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
+* Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.6 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform in /Source
-* Bump Xamarin.Forms from 3.4.0.1008975 to 4.0.0.425677 in /Source
+* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.618606 in /Source
 
 ### Data Portal 
 
+* [#1176](https://github.com/MarimerLLC/csla/issues/1176) Enable passing multiple parameters to root DP methods (i.e. `FetchAsync`) 🎉
+* [#787](https://github.com/MarimerLLC/csla/issues/787) Enable per-method dependency injection for DP_XYZ and Child_XYZ method params 🎉
+* [#1102](https://github.com/MarimerLLC/csla/issues/1102) Eliminate hard-coded DP_XYZ and Child_XYZ method names 🎉
 * [#1167](https://github.com/MarimerLLC/csla/issues/1167) Add `UpdateAllChildren` method to `FieldManager` to persist all child objects even if `IsDirty` is false
 * [#1164](https://github.com/MarimerLLC/csla/issues/1164) Fix issue where `LocalProxy` would lock on async calls from Windows Forms
 * [#1060](https://github.com/marimerllc/csla/issues/1060) Mark Silverlight-style data portal methods (e.g. `BeginFetch`, `BeginSave`) obsolete ⚠
@@ -31,6 +34,10 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Basic Usage
 
+* [#1194](https://github.com/MarimerLLC/csla/issues/1194),[#1196](https://github.com/MarimerLLC/csla/issues/1196) Pass criteria to authorization rules via new `IAuthorizationContext` interface 🛑
+* [#1212](https://github.com/MarimerLLC/csla/issues/1212) Fix issue with n-level undo and cloning
+* [#1191](https://github.com/MarimerLLC/csla/issues/1191) Fix edit level issue with business rules
+* [#1101](https://github.com/MarimerLLC/csla/issues/1101) Support `nameof` in `RegisterProperty`, replacing lambda expressions 🎉
 * [#409](https://github.com/marimerllc/csla/issues/409) Allow use of `async Task ExecuteAsync` business rule implementations via new `BusinessRuleAsync` type 🎉
 * [#1043](https://github.com/marimerllc/csla/issues/1043) Default null principal to an unauthenticated principal` (no longer need to manually set principal on app startup) 🎉
 * [#1080](https://github.com/marimerllc/csla/issues/1080) Fixed issues caused by using `MobileFormatter` for n-level undo in .NET Framework 
@@ -40,6 +47,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Analyzers
 
+* [#1100](https://github.com/MarimerLLC/csla/issues/1100) Ensure DP methods return void or Task
 * [#804](https://github.com/marimerllc/csla/issues/804) Update analyzers to modern project style and .NET Standard 1.3 (now requires Visual Studio 2017 or higher) ⚠
 * [#623](https://github.com/marimerllc/csla/issues/623) Fix issue where analyzer would incorrectly flag an issue with serializable attributes 🎉
 * [#925](https://github.com/marimerllc/csla/issues/925) Create analyzer to flag use of `new` keyword when creating domain objects (require use of data portal)
@@ -79,5 +87,6 @@ I want to extend special recognition to the following contributors to this relea
 * [@Hadronicus](https://github.com/Hadronicus) similarly has fixed an issue in 4.9 that's in 4.10 and 5.0
 * [@kellyethridge](https://github.com/kellyethridge) fixed a LocalProxy issue
 * [@skalpin](https://github.com/skalpin) helped review/update some of the docs
+* [@ajj7060](https://github.com/ajj7060) added features to authorization rules
 * [@dazinator](https://github.com/dazinator) and [@ajj7060](https://github.com/ajj7060) have been engaged in identifying issues and solutions
 * [@j055](https://github.com/j055) for data portal enhancements

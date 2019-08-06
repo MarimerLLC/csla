@@ -617,7 +617,7 @@ namespace Csla
     public static T CreateChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Create(typeof(T)));
+      return (T)(portal.Create(typeof(T), EmptyCriteria.Instance));
     }
 
     /// <summary>
@@ -637,6 +637,35 @@ namespace Csla
     }
 
     /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    public static async Task<T> CreateChildAsync<T>()
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.CreateAsync<T>(EmptyCriteria.Instance);
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    /// <param name="parameters">
+    /// Parameters passed to child create method.
+    /// </param>
+    public static async Task<T> CreateChildAsync<T>(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.CreateAsync<T>(parameters);
+    }
+
+    /// <summary>
     /// Creates and loads an existing
     /// child business object.
     /// </summary>
@@ -646,7 +675,7 @@ namespace Csla
     public static T FetchChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Fetch(typeof(T)));
+      return (T)(portal.Fetch(typeof(T), EmptyCriteria.Instance));
     }
 
     /// <summary>
@@ -663,6 +692,35 @@ namespace Csla
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       return (T)(portal.Fetch(typeof(T), parameters));
+    }
+
+    /// <summary>
+    /// Fetchs and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to Fetch.
+    /// </typeparam>
+    public static async Task<T> FetchChildAsync<T>()
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.FetchAsync<T>(EmptyCriteria.Instance);
+    }
+
+    /// <summary>
+    /// Fetchs and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to Fetch.
+    /// </typeparam>
+    /// <param name="parameters">
+    /// Parameters passed to child Fetch method.
+    /// </param>
+    public static async Task<T> FetchChildAsync<T>(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return await portal.FetchAsync<T>(parameters);
     }
 
     /// <summary>
@@ -692,6 +750,35 @@ namespace Csla
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       portal.Update(child, parameters);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public static async Task UpdateChildAsync(object child)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      await portal.UpdateAsync(child).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
+    public static async Task UpdateChildAsync(object child, params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
 
     private static DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;

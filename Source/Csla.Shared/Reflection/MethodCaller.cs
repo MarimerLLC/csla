@@ -53,7 +53,7 @@ namespace Csla.Reflection
 
     #region Dynamic Method Cache
 
-    private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
 
     private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
@@ -80,11 +80,6 @@ namespace Csla.Reflection
       return mh;
     }
 
-    private static DynamicMethodHandle GetCachedMethod(object obj, string method)
-    {
-      return GetCachedMethod(obj, method, false, null);
-    }
-
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, params object[] parameters)
     {
       return GetCachedMethod(obj, method, true, parameters);
@@ -93,8 +88,7 @@ namespace Csla.Reflection
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
       var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(hasParameters, parameters));
-      DynamicMethodHandle mh = null;
-      if (!_methodCache.TryGetValue(key, out mh))
+      if (!_methodCache.TryGetValue(key, out DynamicMethodHandle mh))
       {
         lock (_methodCache)
         {
@@ -113,7 +107,7 @@ namespace Csla.Reflection
 
     #region Dynamic Constructor Cache
 
-    private static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
+    private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
 
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
     {
@@ -226,8 +220,7 @@ namespace Csla.Reflection
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
     {
       var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
-      DynamicMemberHandle mh = null;
-      if (!_memberCache.TryGetValue(key, out mh))
+      if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
       {
         lock (_memberCache)
         {
@@ -248,8 +241,7 @@ namespace Csla.Reflection
     internal static DynamicMemberHandle GetCachedField(Type objectType, string fieldName)
     {
       var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
-      DynamicMemberHandle mh = null;
-      if (!_memberCache.TryGetValue(key, out mh))
+      if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
       {
         lock (_memberCache)
         {
@@ -498,7 +490,7 @@ namespace Csla.Reflection
           specialParamArray = true;
         if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(object[])))
           specialParamArray = true;
-        object[] par = null;
+        object[] par;
         if (infoParamsCount == 1 && specialParamArray)
         {
           par = new object[] { parameters };
@@ -515,14 +507,14 @@ namespace Csla.Reflection
           par = parameters;
         }
 
-        object result = null;
+        object result;
         try
         {
           result = info.Invoke(obj, par);
         }
         catch (Exception e)
         {
-          Exception inner = null;
+          Exception inner;
           if (e.InnerException == null)
             inner = e;
           else
@@ -545,7 +537,7 @@ namespace Csla.Reflection
       object result = null;
       var method = methodHandle.DynamicMethod;
 
-      object[] inParams = null;
+      object[] inParams;
       if (parameters == null)
         inParams = new object[] { null };
       else
@@ -640,9 +632,9 @@ namespace Csla.Reflection
 
     private static System.Reflection.MethodInfo GetMethod(Type objectType, string method, bool hasParameters, params object[] parameters)
     {
-      System.Reflection.MethodInfo result = null;
+      System.Reflection.MethodInfo result;
 
-      object[] inParams = null;
+      object[] inParams;
       if (!hasParameters)
         inParams = new object[] { };
       else if (parameters == null)
@@ -757,7 +749,7 @@ namespace Csla.Reflection
     /// </param>
     public static System.Reflection.MethodInfo FindMethod(Type objectType, string method, Type[] types)
     {
-      System.Reflection.MethodInfo info = null;
+      System.Reflection.MethodInfo info;
       do
       {
         // find for a strongly typed match
@@ -914,14 +906,14 @@ namespace Csla.Reflection
     /// <returns>The value of the property.</returns>
     public static object GetPropertyValue(object obj, PropertyInfo info)
     {
-      object result = null;
+      object result;
       try
       {
         result = info.GetValue(obj, null);
       }
       catch (Exception e)
       {
-        Exception inner = null;
+        Exception inner;
         if (e.InnerException == null)
           inner = e;
         else
@@ -939,14 +931,14 @@ namespace Csla.Reflection
     /// <returns>Any value returned from the method.</returns>
     public static object CallMethod(object obj, System.Reflection.MethodInfo info)
     {
-      object result = null;
+      object result;
       try
       {
         result = info.Invoke(obj, null);
       }
       catch (Exception e)
       {
-        Exception inner = null;
+        Exception inner;
         if (e.InnerException == null)
           inner = e;
         else
@@ -1147,7 +1139,7 @@ namespace Csla.Reflection
     public static object CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
     {
       var objectType = target.GetType();
-      object result = null;
+      object result;
       if (hasParameters)
       {
         var pTypes = GetParameterTypes(parameters);
@@ -1211,7 +1203,7 @@ namespace Csla.Reflection
       }
       catch (Exception ex)
       {
-        Exception inner = null;
+        Exception inner;
         if (ex.InnerException == null)
           inner = ex;
         else
@@ -1229,11 +1221,7 @@ namespace Csla.Reflection
     /// <param name="method">Name of the method.</param>
     public static System.Reflection.MethodInfo GetNonPublicMethod(Type objectType, string method)
     {
-
-      System.Reflection.MethodInfo result = null;
-
-      result = FindMethod(objectType, method, privateMethodFlags);
-
+      var result = FindMethod(objectType, method, privateMethodFlags);
       return result;
     }
 
@@ -1246,7 +1234,7 @@ namespace Csla.Reflection
     /// <param name="flags">Flag values.</param>
     public static System.Reflection.MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
     {
-      System.Reflection.MethodInfo info = null;
+      System.Reflection.MethodInfo info;
       do
       {
         // find for a strongly typed match

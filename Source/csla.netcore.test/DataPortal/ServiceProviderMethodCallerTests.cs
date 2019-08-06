@@ -180,6 +180,22 @@ namespace Csla.Test.DataPortal
       Assert.IsNotNull(method);
       Assert.AreEqual(1, method.GetParameters().Count());
     }
+
+    [TestMethod]
+    public void FindChildLegacyUpdate()
+    {
+      var obj = new BasicChild();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(UpdateChildAttribute), null);
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void FindChildParamsUpdate()
+    {
+      var obj = new ParamsChild();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(obj, typeof(UpdateChildAttribute), null);
+      Assert.IsNotNull(method);
+    }
   }
 
   [Serializable]
@@ -241,7 +257,7 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create([FromServices] ICloneable x) { }
+    private void Create([Inject] ICloneable x) { }
   }
 
   [Serializable]
@@ -251,7 +267,7 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x) { }
+    private void Create(int id, [Inject] ICloneable x) { }
   }
 
   [Serializable]
@@ -261,30 +277,30 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create(int id, string foo, [FromServices] ICloneable x) { }
+    private void Create(int id, string foo, [Inject] ICloneable x) { }
   }
 
   [Serializable]
   public class CriteriaCreateWithMultipleDI : BusinessBase<CriteriaCreateWithMultipleDI>
   {
     [Create]
-    private void Create(int id, [FromServices] ICloneable x) { }
+    private void Create(int id, [Inject] ICloneable x) { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, [FromServices] IAsyncResult y) { }
+    private void Create(int id, [Inject] ICloneable x, [Inject] IAsyncResult y) { }
   }
 
   [Serializable]
   public class CriteriaCreateWithMultipleAmbiguousDI : BusinessBase<CriteriaCreateWithMultipleAmbiguousDI>
   {
     [Create]
-    private void Create(int id, [FromServices] ICloneable x) { }
+    private void Create(int id, [Inject] ICloneable x) { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, [FromServices] IAsyncResult y) { }
+    private void Create(int id, [Inject] ICloneable x, [Inject] IAsyncResult y) { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, [FromServices] IFormattable y) { }
+    private void Create(int id, [Inject] ICloneable x, [Inject] IFormattable y) { }
   }
 
   [Serializable]
@@ -294,6 +310,24 @@ namespace Csla.Test.DataPortal
     private void Create() { }
 
     [Create]
-    private void Create(int id, [FromServices] ICloneable x, string foo) { }
+    private void Create(int id, [Inject] ICloneable x, string foo) { }
+  }
+
+  [Serializable]
+  public class BasicChild : BusinessBase<BasicChild>
+  {
+    private void Child_Update()
+    {
+      // nada
+    }
+  }
+
+  [Serializable]
+  public class ParamsChild : BusinessBase<ParamsChild>
+  {
+    private void Child_Update(params object[] parameters)
+    {
+      // nada
+    }
   }
 }

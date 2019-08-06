@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="IOTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -25,6 +25,7 @@ namespace Csla.Test.IO
     public class IOTests
     {
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void SaveNewRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -47,6 +48,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void SaveOldRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -68,6 +70,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void LoadRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -82,6 +85,7 @@ namespace Csla.Test.IO
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void DeleteNewRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -102,6 +106,7 @@ namespace Csla.Test.IO
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void DeleteOldRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -122,6 +127,7 @@ namespace Csla.Test.IO
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public void DeleteRootImmediate()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

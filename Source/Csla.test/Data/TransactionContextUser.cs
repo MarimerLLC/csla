@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="TransactionContextUser.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -65,7 +65,7 @@ namespace Csla.Test.Data
 
     protected void Child_DeleteSelf()
     {
-      using (TransactionManager<SqlConnection, SqlTransaction> manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager("Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString", true))
+      using (TransactionManager<SqlConnection, SqlTransaction> manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(nameof(WellKnownValues.DataPortalTestDatabase), true))
       {
         using (SqlCommand command = new SqlCommand("Delete From Table2 Where FirstName = '" + ReadProperty(firstNameProperty) + "' And LastName = '" + ReadProperty(lastNameProperty) + "' And SmallColumn = '" + ReadProperty(smallColumnProperty) + "'", manager.Transaction.Connection, manager.Transaction))
         {
@@ -76,7 +76,7 @@ namespace Csla.Test.Data
 
     protected void Child_Insert()
     {
-      using (TransactionManager<SqlConnection, SqlTransaction> manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager("Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString", true))
+      using (TransactionManager<SqlConnection, SqlTransaction> manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(nameof(WellKnownValues.DataPortalTestDatabase), true))
       {
         using (SqlCommand command = new SqlCommand("INSERT INTO Table2(FirstName, LastName, SmallColumn) VALUES('" + ReadProperty(firstNameProperty) + "', '" + ReadProperty(lastNameProperty) + "', '" + ReadProperty(smallColumnProperty) + "')", manager.Transaction.Connection, manager.Transaction))
         {

@@ -96,7 +96,7 @@ namespace ProjectTracker.Library
 
     private class NoDuplicateProject : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ResourceEdit)context.Target;
         foreach (var item in target.Assignments)
@@ -138,8 +138,6 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-#if FULL_DOTNET || NETSTANDARD2_0
-
     public static ResourceEdit NewResourceEdit()
     {
       return DataPortal.Create<ResourceEdit>();
@@ -162,8 +160,6 @@ namespace ProjectTracker.Library
       return cmd.ResourceExists;
     }
 
-#endif
-
     [RunLocal]
     protected override void DataPortal_Create()
     {
@@ -171,7 +167,6 @@ namespace ProjectTracker.Library
       base.DataPortal_Create();
     }
 
-#if FULL_DOTNET
     private void DataPortal_Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -246,6 +241,5 @@ namespace ProjectTracker.Library
         dal.Delete(id);
       }
     }
-#endif
   }
 }

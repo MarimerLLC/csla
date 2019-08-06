@@ -45,7 +45,6 @@ namespace ProjectTracker.Library
       });
     }
 
-#if FULL_DOTNET || NETSTANDARD2_0
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)
@@ -55,7 +54,6 @@ namespace ProjectTracker.Library
       if (criteria.GetRoles)
         RoleList = RoleList.GetCachedList();
     }
-#endif
 
     [Serializable]
     public class Criteria : CriteriaBase<Criteria>

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IDataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Interface defining the members of the data portal type</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,17 +13,20 @@ using System.Threading.Tasks;
 
 namespace Csla
 {
-  /// <summary>
-  /// Interface defining the members of the data portal type.
-  /// </summary>
-  /// <typeparam name="T"></typeparam>
-  public interface IDataPortal<T>
+    /// <summary>
+    /// Interface defining the members of the data portal type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IDataPortal<T>
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
     /// </summary>
-    Task<T> CreateAsync();
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    Task<T> CreateAsync(params object[] criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -24,20 +34,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> CreateAsync(object criteria);
-    /// <summary>
-    /// Starts an asynchronous data portal operation to
-    /// create a business object.
-    /// </summary>
-    Task<T> FetchAsync();
-    /// <summary>
-    /// Starts an asynchronous data portal operation to
-    /// create a business object.
-    /// </summary>
-    /// <param name="criteria">
-    /// Criteria describing the object to create.
-    /// </param>
-    Task<T> FetchAsync(object criteria);
+    Task<T> FetchAsync(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
@@ -55,8 +52,7 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    Task DeleteAsync(object criteria);
-#if (!ANDROID && !IOS && !NETFX_CORE) || NETSTANDARD
+    Task DeleteAsync(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -64,27 +60,14 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    T Create(object criteria);
-    /// <summary>
-    /// Called by a factory method in a business class to create 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
-    /// <returns>A new object, populated with default values.</returns>
-    T Create();
+    T Create(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    T Fetch(object criteria);
-    /// <summary>
-    /// Called by a factory method in a business class to retrieve
-    /// an object, which is loaded with values from the database.
-    /// </summary>
-    /// <returns>An object populated with values from the database.</returns>
-    T Fetch();
+    T Fetch(params object[] criteria);
     /// <summary>
     /// Called to execute a Command object on the server.
     /// </summary>
@@ -124,8 +107,7 @@ namespace Csla
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    void Delete(object criteria);
-#endif
+    void Delete(params object[] criteria);
     /// <summary>
     /// Gets a reference to the global context returned from
     /// the background thread and/or server.
@@ -149,12 +131,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> CreateCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to create a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
+    [Obsolete]
     void BeginCreate();
     /// <summary>
     /// Called by a factory method in a business class or
@@ -162,6 +146,7 @@ namespace Csla
     /// with default values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     void BeginCreate(object criteria);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -170,6 +155,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginCreate(object criteria, object userState);
     /// <summary>
     /// Event raised when the operation has completed.
@@ -189,12 +175,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> FetchCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to retrieve an existing object, which is loaded 
     /// with values from the database.
     /// </summary>
+    [Obsolete]
     void BeginFetch();
     /// <summary>
     /// Called by a factory method in a business class or
@@ -202,6 +190,7 @@ namespace Csla
     /// with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     void BeginFetch(object criteria);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -210,6 +199,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginFetch(object criteria, object userState);
     /// <summary>
     /// Event raised when the operation has completed.
@@ -229,12 +219,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> UpdateCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
+    [Obsolete]
     void BeginUpdate(T obj);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -242,6 +234,7 @@ namespace Csla
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginUpdate(T obj, object userState);
     /// <summary>
     /// Event raised when the operation has completed.
@@ -261,12 +254,14 @@ namespace Csla
     /// event will be raised on a background thread.
     /// </para>
     /// </remarks>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> DeleteCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
+    [Obsolete]
     void BeginDelete(object criteria);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -274,16 +269,19 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginDelete(object criteria, object userState);
     /// <summary>
     /// Event indicating an execute operation is complete.
     /// </summary>
+    [Obsolete]
     event EventHandler<DataPortalResult<T>> ExecuteCompleted;
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
+    [Obsolete]
     void BeginExecute(T command);
     /// <summary>
     /// Called by a factory method in a business class or
@@ -291,6 +289,7 @@ namespace Csla
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <param name="userState">User state data.</param>
+    [Obsolete]
     void BeginExecute(T command, object userState);
   }
 }

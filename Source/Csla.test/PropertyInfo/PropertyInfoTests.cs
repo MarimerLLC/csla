@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyInfoTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -50,6 +50,14 @@ namespace Csla.Test.PropertyInfo
     public void TestDefaultValue()
     {
       Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
+      Assert.AreEqual("x", PropertyInfoRoot.NewPropertyInfoRoot().NameDefaultValue);
+    }
+    
+    [TestMethod]
+    public void TestStringNullDefaultValue()
+    {
+      Assert.AreEqual(null, PropertyInfoRoot.StringNullDefaultValueProperty.DefaultValue);
+      Assert.AreEqual(null, PropertyInfoRoot.NewPropertyInfoRoot().StringNullDefaultValue);
     }
   }
 }

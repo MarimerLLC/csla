@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="GrandChildren.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -27,7 +27,6 @@ namespace Csla.Test.Basic
 
         internal static GrandChildren GetGrandChildren(IDataReader dr)
         {
-            //todo: load child data
             return null;
         }
 

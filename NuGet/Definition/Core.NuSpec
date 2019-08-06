@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-Core</id>
+    <id>Csla</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
     <version>4.6.3-Beta2</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
 
-CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
-Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
+Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native application models.
     </summary>
     <language>en-US</language>
     <dependencies>
@@ -40,6 +40,11 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.Runtime.Serialization.Formatters" version="4.3.0" />
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="System.Data.SqlClient" version="4.4.3" />
+        <dependency id="System.Buffers" version="4.5.0" />
+        <dependency id="Microsoft.Extensions.Configuration" version="2.1.1" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.1.1" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="2.1.1" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="2.1.1" />
       </group>
     </dependencies>
   </metadata>

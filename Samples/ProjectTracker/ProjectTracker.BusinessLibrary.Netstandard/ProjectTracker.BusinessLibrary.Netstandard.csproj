@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;FULL_DOTNET</DefineConstants>
   </PropertyGroup>
 
   <Import Project="..\ProjectTracker.BusinessLibrary.Shared\ProjectTracker.BusinessLibrary.projitems" Label="Shared" />
 
   <ItemGroup>
-    <PackageReference Include="CSLA-Core-NS" Version="4.7.200-R18062401" />
+    <PackageReference Include="CSLA-Core" Version="4.9.0" />
   </ItemGroup>
 
   <ItemGroup>

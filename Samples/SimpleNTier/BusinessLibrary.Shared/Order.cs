@@ -48,7 +48,7 @@ namespace BusinessLibrary
           IsAsync = true;
       }
 
-      protected override async void Execute(Csla.Rules.RuleContext context)
+      protected override async void Execute(Csla.Rules.IRuleContext context)
       {
         MyExpensiveCommand result = null;
         if (IsAsync)

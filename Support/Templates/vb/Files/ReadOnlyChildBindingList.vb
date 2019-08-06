@@ -22,10 +22,6 @@ Public Class ReadOnlyChildBindingList
     Return DataPortal.FetchChild(Of ReadOnlyChildBindingList)(childData)
   End Function
 
-  ' require use of factory methods 
-  Private Sub New()
-  End Sub
-
 #End Region
 
 #Region "Data Access"

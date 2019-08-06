@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
@@ -7,9 +6,8 @@ namespace Csla.Analyzers.Tests
   [TestClass]
   public sealed class FindSetOrLoadInvocationsWalkerTests
   {
-    private static async Task<FindSetOrLoadInvocationsWalker> GetWalker(string path)
+    private static async Task<FindSetOrLoadInvocationsWalker> GetWalker(string code)
     {
-      var code = File.ReadAllText(path);
       var document = TestHelpers.Create(code);
       var root = await document.GetSyntaxRootAsync();
       var model = await document.GetSemanticModelAsync();
@@ -21,64 +19,106 @@ namespace Csla.Analyzers.Tests
 
     public async Task WalkWhenContainingTypeIsNotBusinessBase()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsNotBusinessBase))}.cs");
+      var code = "public class A { }";
+      var walker = await GetWalker(code);
       Assert.IsNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.GetHashCode();
+}";
+      var walker = await GetWalker(code);
       Assert.IsNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetProperty()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetProperty))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.SetProperty(null, null);
+}";
+      var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetPropertyConvert()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetPropertyConvert))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.SetPropertyConvert<int, int>(null, 0);
+}";
+      var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadProperty()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadProperty))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.LoadProperty(null, null);
+}";
+      var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyAsync()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyAsync))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.LoadPropertyAsync<int>(null, null);
+}";
+      var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyConvert()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyConvert))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.LoadPropertyConvert<int, int>(null, 0);
+}";
+      var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
 
     [TestMethod]
     public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyMarkDirty()
     {
-      var walker = await FindSetOrLoadInvocationsWalkerTests.GetWalker(
-        $@"Targets\{nameof(FindSetOrLoadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyMarkDirty))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Go() => this.LoadPropertyMarkDirty(null, null);
+}";
+      var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
   }

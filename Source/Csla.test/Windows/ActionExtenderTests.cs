@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ReadWriteAuthorizationTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -33,6 +33,7 @@ namespace Csla.Test.Windows
   {
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestActionExtenderDefaultButtonState()
     {
       ApplicationContext.GlobalContext.Clear();
@@ -67,6 +68,7 @@ namespace Csla.Test.Windows
     }
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestActionExtenderChangeState()
     {
       ApplicationContext.GlobalContext.Clear();
@@ -100,6 +102,7 @@ namespace Csla.Test.Windows
     }
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestActionExtenderToolStripDefaultButtonState()
     {
       ApplicationContext.GlobalContext.Clear();
@@ -134,6 +137,7 @@ namespace Csla.Test.Windows
     }
 
     [TestMethod()]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestActionExtenderToolStripChangeState()
     {
       ApplicationContext.GlobalContext.Clear();

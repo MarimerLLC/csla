@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="SetAppSettingValueCmd.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -42,12 +42,6 @@ namespace  Csla.Testing.Business.DataPortal
     }
 
     protected SetAppSettingValueCmd() { }
-
-    public static void ExecuteCommand(string appSettingKey, string appSettingValue, EventHandler<DataPortalResult<SetAppSettingValueCmd>> handler)
-    {
-      var command = new SetAppSettingValueCmd(appSettingKey, appSettingValue);
-      Csla.DataPortal.BeginExecute<SetAppSettingValueCmd>(command, handler);
-    }
 
     protected override void DataPortal_Execute()
     {

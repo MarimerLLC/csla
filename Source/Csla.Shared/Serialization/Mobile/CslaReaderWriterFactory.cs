@@ -43,34 +43,6 @@ namespace Csla.Serialization.Mobile
       _readerType = readerType;
     }
 
-#if (ANDROID || IOS) || NETFX_CORE || NETSTANDARD2_0
-
-    /// <summary>
-    /// Get an instance of the writer that is used to write data to serialization stream
-    /// </summary>
-    /// <returns>Instance of the writer that is used to write data to serialization stream</returns>
-    public static ICslaWriter GetCslaWriter()
-    {
-      if (_writerType == null)
-      {
-        _writerType = typeof(CslaBinaryWriter);
-      }
-      return (ICslaWriter)Activator.CreateInstance(_writerType);
-    }
-
-    /// <summary>
-    /// Get an instance of the reader that is used to read data to serialization stream
-    /// </summary>
-    /// <returns>Instance of the reader that is used to read data to serialization stream</returns>
-    public static ICslaReader GetCslaReader()
-    {
-      if (_readerType == null)
-      {
-        _readerType = typeof(CslaBinaryReader);
-      }
-      return (ICslaReader)Activator.CreateInstance(_readerType);
-    }
-#else
     /// <summary>
     /// Get an instance of the writer that is used to write data to serialization stream
     /// </summary>
@@ -82,7 +54,7 @@ namespace Csla.Serialization.Mobile
         string writerType = Csla.Configuration.ConfigurationManager.AppSettings["CslaWriter"];
         if (string.IsNullOrEmpty(writerType))
         {
-          _writerType = typeof (CslaBinaryWriter);
+          _writerType = typeof(CslaBinaryWriter);
         }
         else
         {
@@ -112,6 +84,5 @@ namespace Csla.Serialization.Mobile
       }
       return (ICslaReader)Activator.CreateInstance(_readerType);
     }
-#endif
   }
 }

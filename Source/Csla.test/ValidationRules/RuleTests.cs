@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.DataPortalClient;
 using UnitDriven;
+using System.Threading.Tasks;
 
 namespace Csla.Test.ValidationRules
 {
@@ -13,38 +14,31 @@ namespace Csla.Test.ValidationRules
   public class RuleTests : TestBase
   {
     [TestMethod]
-    public void CleanupWhenAddBusinessRulesThrowsException()
+    public async Task CleanupWhenAddBusinessRulesThrowsException()
     {
       RootThrowsException.Counter = 0;
-      var context = GetContext();
 
       // AddBusinessRules throw an ArgumentException
       // In .NET the exception will occur serverside and returned i DatPortalEventArgs
-      RootThrowsException.NewRoot((o, e) =>
-                                    {
-                                      context.Assert.IsNotNull(e.Error);
-                                      context.Assert.IsTrue(typeof(DataPortalException) == e.Error.GetType());
-                                      context.Assert.IsTrue(typeof(ArgumentException) ==
-                                                            e.Error.InnerException.GetType());
-
-                                      context.Assert.Success();
-                                    });
-
-      context.Complete();
+      try
+      {
+        await Csla.DataPortal.CreateAsync<RootThrowsException>();
+      }
+      catch (DataPortalException ex)
+      {
+        Assert.IsTrue(ex.InnerException is ArgumentException);
+      }
 
       // should fail again as type rules should be cleaned up 
       // AddBusinessRules throw an ArgumentException
-      RootThrowsException.NewRoot((o, e) =>
-                                    {
-                                      context.Assert.IsNotNull(e.Error);
-                                      context.Assert.IsTrue(typeof(DataPortalException) == e.Error.GetType());
-                                      context.Assert.IsTrue(typeof(ArgumentException) ==
-                                                            e.Error.InnerException.GetType());
-
-                                      context.Assert.Success();
-                                    });
-
-      context.Complete();
+      try
+      {
+        await Csla.DataPortal.CreateAsync<RootThrowsException>();
+      }
+      catch (DataPortalException ex)
+      {
+        Assert.IsTrue(ex.InnerException is ArgumentException);
+      }
     }
   }
 }

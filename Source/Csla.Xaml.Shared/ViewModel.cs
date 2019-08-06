@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Base class used to create ViewModel objects,</summary>
 //-----------------------------------------------------------------------
@@ -37,7 +37,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void Save(object sender, ExecuteEventArgs e)
     {
-      BeginSave();
+      SaveAsync().RunSynchronously();
     }
 
     /// <summary>

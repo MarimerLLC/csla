@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="HasRulesManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -24,27 +24,6 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(NameProperty, value); }
     }
 
-    public static void NewHasRulesManager(EventHandler<DataPortalResult<HasRulesManager>> completed)
-    {
-      Csla.DataPortal.BeginCreate<HasRulesManager>(
-        new Criteria(),
-        completed);
-    }
-
-    public static void GetHasRulesManager(string name, EventHandler<DataPortalResult<HasRulesManager>> completed)
-    {
-      Csla.DataPortal.BeginFetch<HasRulesManager>(
-        new Criteria(name),
-        completed);
-    }
-
-    public static void DeleteHasRulesManager(string name)
-    {
-      Csla.DataPortal.BeginDelete<HasRulesManager>(
-        new Criteria(name),
-        (o, e) => { });
-    }
-
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
@@ -52,7 +31,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [Serializable()]
-    private class Criteria : CriteriaBase<Criteria>
+    public class Criteria : CriteriaBase<Criteria>
     {
       public string _name;
 

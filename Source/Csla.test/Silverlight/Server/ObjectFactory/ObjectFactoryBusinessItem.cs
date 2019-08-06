@@ -1,14 +1,11 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ObjectFactoryBusinessItem.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Silverlight;
-using Csla.Serialization;
-using Csla;
 using Csla.Server;
 
 namespace Csla.Testing.Business.ObjectFactory
@@ -48,42 +45,5 @@ namespace Csla.Testing.Business.ObjectFactory
         SetProperty(OperationResultProperty, value);
       }
     }
-
-
-    public static void GetObjectFactoryBusinessItem(string id, EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
-    {
-      DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch(id);
-    }
-
-    public static void GetObjectFactoryBusinessItem(EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
-    {
-      DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
-
-    public static void NewObjectFactoryBusinessItem(string id, EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
-    {
-      DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
-      dp.CreateCompleted += completed;
-      dp.BeginCreate(id);
-    }
-
-    public static void NewObjectFactoryBusinessItem(EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
-    {
-      DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
-      dp.CreateCompleted += completed;
-      dp.BeginCreate();
-    }
-
-    public static void DeleteObjectFactoryBusinessItem(string id, EventHandler<DataPortalResult<ObjectFactoryBusinessItem>> completed)
-    {
-      DataPortal<ObjectFactoryBusinessItem> dp = new DataPortal<ObjectFactoryBusinessItem>();
-      dp.DeleteCompleted += completed;
-      dp.BeginDelete(id);
-    }
-
   }
 }

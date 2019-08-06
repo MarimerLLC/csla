@@ -20,6 +20,72 @@ namespace Csla.Test.BasicModern
   public class BasicModernTests
   {
     [TestMethod]
+    public void EditLevelsWorkWithMobileFormatter()
+    {
+      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      try
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+
+        var root = Root.NewRoot();
+
+        var originalRootId = root.Id;
+
+        root.BeginEdit();
+        root.Id = originalRootId + 1;
+        root.CancelEdit();
+
+        Assert.AreEqual(originalRootId, root.Id);
+
+        root.BeginEdit();
+        root.Id = originalRootId + 1;
+        root.ApplyEdit();
+
+        Assert.AreEqual(originalRootId + 1, root.Id);
+      }
+      finally
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+      }
+    }
+
+    [TestMethod]
+    public void CloneWorkswithMobileFormatter()
+    {
+      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      try
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+
+        var original = Root.NewRoot();
+
+        original.Name = "Test Root";
+
+        var child = original.Children.AddNew();
+
+        child.Name = "TestChild";
+
+        var copy = original.Clone();
+
+        Assert.IsFalse(ReferenceEquals(original, copy));
+        Assert.AreEqual(original.Id, copy.Id);
+        Assert.AreEqual(original.IsDirty, copy.IsDirty);
+        Assert.AreEqual(original.IsSelfDirty, copy.IsSelfDirty);
+        
+        for(var i = 0; i < original.Children.Count; i++)
+        {
+          Assert.IsFalse(ReferenceEquals(original.Children[i], copy.Children[i]));
+          Assert.AreEqual(original.Children[i].Name, copy.Children[i].Name);
+          Assert.AreEqual(original.Children[i].IsDirty, copy.Children[i].IsDirty);
+        }
+      }
+      finally
+      {
+        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+      }
+    }
+
+    [TestMethod]
     public void CreateGraph()
     {
       var graph = Root.NewRoot();

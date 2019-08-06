@@ -25,102 +25,208 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Warning, ctorHasParametersDiagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, nameof(EvaluatePropertiesForSimplicityAnalyzer)),
+        ctorHasParametersDiagnostic.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
+      var code = "public class A { }";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasAbstractProperty()
     {
+      var code =
+@"using Csla;
+
+public abstract class A : BusinessBase<A>
+{
+  public abstract string Data { get; set; }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasAbstractProperty))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasStaticProperty()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public static string Data { get; set; }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasStaticProperty))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasGetterWithNoMethodCall()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public string Data { get; }
+
+  public string ExpressionData => string.Empty;
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithNoMethodCall))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public string Data { get { return this.GetProperty(); } }
+
+  public string GetProperty() => null;
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+  private string _x;
+
+  public string Data { get { _x = ""44""; return this.GetProperty(DataProperty); } }
+
+  public string GetX() { return _x; }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements))}.cs",
-        new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
+        code, new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression()
     {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression))}.cs",
-        new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+  public string Data { get { return ""x"" + this.GetProperty(DataProperty); } }
+
+  public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
+  public string ExpressionData => ""x"" + this.GetProperty(DataProperty);
+}";
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, 
+        new[] 
+        {
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+        });
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+  public string Data { get { return this.GetProperty(DataProperty); } }
+
+  public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
+  public string ExpressionData => this.GetProperty(DataProperty);
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasSetterWithNoMethodCall()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public string Data { set { } }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithNoMethodCall))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public string Data { set { this.SetProperty(); } }
+
+  public void SetProperty() { }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+  private string _x;
+
+  public string Data { get { return null; } set { _x = ""44""; this.SetProperty(DataProperty, value); } }
+
+  public string GetX() { return _x; }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements))}.cs",
-        new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
+        code, new[] 
+        {
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+        });
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+
+  public string Data
+  {
+    get { return null; }
+    set { this.SetProperty(DataProperty, value); }
+  }
+}";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
   }
 }

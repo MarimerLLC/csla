@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="CollectionTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -100,7 +100,7 @@ namespace Csla.Test.Basic
       MarkAsChild();
     }
 
-    private void Child_Create()
+    protected override void Child_Create()
     { }
 
     private void Child_Fetch(int id)

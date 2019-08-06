@@ -61,10 +61,6 @@ Public Class EditableChild
     Return DataPortal.FetchChild(Of EditableChild)(childData)
   End Function
 
-  Private Sub New()
-    'Require use of factory methods
-  End Sub
-
 #End Region
 
 #Region " Data Access "

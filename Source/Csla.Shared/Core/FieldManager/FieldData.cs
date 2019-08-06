@@ -1,13 +1,14 @@
 //-----------------------------------------------------------------------
 // <copyright file="FieldData.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Contains a field value and related metadata.</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core.FieldManager
 {
@@ -18,9 +19,16 @@ namespace Csla.Core.FieldManager
   [Serializable()]
   public class FieldData<T> : IFieldData<T>
   {
-    private string _name;
+    [NonSerialized]
+    [NotUndoable]
+    private readonly bool _isChild = typeof(T).IsAssignableFrom(typeof(IMobileObject));
     private T _data;
     private bool _isDirty;
+
+    /// <summary>
+    /// Creates a new instance of the object.
+    /// </summary>
+    public FieldData() { }
 
     /// <summary>
     /// Creates a new instance of the object.
@@ -30,19 +38,13 @@ namespace Csla.Core.FieldManager
     /// </param>
     public FieldData(string name)
     {
-      _name = name;
+      Name = name;
     }
 
     /// <summary>
     /// Gets the name of the field.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return _name;
-      }
-    }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets or sets the value of the field.
@@ -79,16 +81,10 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        ITrackStatus child = _data as ITrackStatus;
-        if (child != null)
-        {
+        if (_data is ITrackStatus child)
           return child.IsDeleted;
-
-        }
         else
-        {
           return false;
-        }
       }
     }
 
@@ -101,15 +97,10 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        ITrackStatus child = _data as ITrackStatus;
-        if (child != null)
-        {
+        if (_data is ITrackStatus child)
           return child.IsChild;
-        }
         else
-        {
           return false;
-        }
       }
     }
 
@@ -130,15 +121,10 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        ITrackStatus child = _data as ITrackStatus;
-        if (child != null)
-        {
+        if (_data is ITrackStatus child)
           return child.IsDirty;
-        }
         else
-        {
           return _isDirty;
-        }
       }
     }
 
@@ -154,15 +140,10 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        ITrackStatus child = _data as ITrackStatus;
-        if (child != null)
-        {
+        if (_data is ITrackStatus child)
           return child.IsNew;
-        }
         else
-        {
           return false;
-        }
       }
     }
 
@@ -184,19 +165,12 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        ITrackStatus child = _data as ITrackStatus;
-        if (child != null)
-        {
+        if (_data is ITrackStatus child)
           return child.IsValid;
-        }
         else
-        {
           return true;
-        }
       }
     }
-
-    #region INotifyBusy Members
 
     event BusyChangedEventHandler INotifyBusy.BusyChanged
     {
@@ -210,16 +184,13 @@ namespace Csla.Core.FieldManager
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
     public bool IsBusy
     {
       get
       {
         bool isBusy = false;
-        ITrackStatus child = _data as ITrackStatus;
-        if (child != null)
+        if (_data is ITrackStatus child)
           isBusy = child.IsBusy;
 
         return isBusy;
@@ -231,9 +202,15 @@ namespace Csla.Core.FieldManager
       get { return IsBusy; }
     }
 
-    #endregion
+    T IFieldData<T>.Value { get => _data; set => _data = value; }
 
-    #region INotifyUnhandledAsyncException Members
+    string IFieldData.Name => Name;
+
+    bool ITrackStatus.IsDirty => IsDirty;
+
+    bool ITrackStatus.IsSelfDirty => IsDirty;
+
+    bool INotifyBusy.IsBusy => false;
 
     [NotUndoable]
     [NonSerialized]
@@ -249,26 +226,55 @@ namespace Csla.Core.FieldManager
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
-    /// <summary>
-    /// Raises the UnhandledAsyncException event.
-    /// </summary>
-    /// <param name="error">Exception that occurred on the background thread.</param>
-    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    event EventHandler<ErrorEventArgs> INotifyUnhandledAsyncException.UnhandledAsyncException
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
-    /// <summary>
-    /// Raises the UnhandledAsyncException event.
-    /// </summary>
-    /// <param name="originalSender">Original source of the event.</param>
-    /// <param name="error">Exception that occurred on the background thread.</param>
-    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    void IFieldData.MarkClean()
     {
-      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+      MarkClean();
     }
 
-    #endregion
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      if (!_isChild)
+      {
+        info.AddValue("_name", Name);
+        info.AddValue("_data", _data);
+        info.AddValue("_isDirty", _isDirty);
+      }
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (_isChild)
+      {
+        info.AddValue("_name", Name);
+        SerializationInfo childInfo = formatter.SerializeObject((IMobileObject)_data);
+        info.AddChild(Name, childInfo.ReferenceId, _isDirty);
+      }
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      if (!_isChild)
+      {
+        Name = info.GetValue<string>("_name");
+        _data = info.GetValue<T>("_data");
+        _isDirty = info.GetValue<bool>("_isDirty");
+      }
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (_isChild)
+      {
+        Name = info.GetValue<string>("_name");
+        SerializationInfo.ChildData childData = info.Children[Name];
+        _data = (T)formatter.GetObject(childData.ReferenceId);
+      }
+    }
   }
 }

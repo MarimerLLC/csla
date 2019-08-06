@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="GlobalCOntextTests.server.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -26,6 +26,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
   public partial class GlobalContextTests : TestBase
   {
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void ServerShouldReceiveGlobalContextValue()
     {
       var context = GetContext();
@@ -51,6 +52,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void GlobalContextOnClientShouldBeAffectedByChangeOnServer()
     {
       var context = GetContext();

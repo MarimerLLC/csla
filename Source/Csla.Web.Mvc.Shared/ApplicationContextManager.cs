@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
@@ -70,7 +70,13 @@ namespace Csla.Web
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      return HttpContext?.User;
+      var result = HttpContext?.User;
+      if (result == null)
+      {
+        result = new Csla.Security.CslaClaimsPrincipal();
+        SetUser(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -131,6 +137,44 @@ namespace Csla.Web
     public void SetGlobalContext(ContextDictionary globalContext)
     {
       HttpContext.Items[_globalContextName] = globalContext;
+    }
+
+    /// <summary>
+    /// Gets the default IServiceProvider
+    /// </summary>
+    public IServiceProvider GetDefaultServiceProvider()
+    {
+      return HttpContext?.RequestServices;
+    }
+
+    /// <summary>
+    /// Sets the default IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
+    {
+      /* ignore value - we get the one from HttpContext */
+    }
+
+    /// <summary>
+    /// Gets the scoped IServiceProvider
+    /// </summary>
+    public IServiceProvider GetScopedServiceProvider()
+    {
+      IServiceProvider result;
+      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
+      if (result == null)
+        result = GetDefaultServiceProvider();
+      return result;
+    }
+
+    /// <summary>
+    /// Sets the scoped IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
+    {
+      Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
     }
   }
 }

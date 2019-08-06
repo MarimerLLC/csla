@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CustomerContact.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Implementation of a test business object using CSLA managed properties backed by</summary>
 //-----------------------------------------------------------------------
@@ -98,7 +98,7 @@ namespace cslalighttest.Serialization
 
     #region Properties
 
-    private static PropertyInfo<string> Property_FirstName = RegisterProperty<string>(c => c.FirstName, "First Name", RelationshipTypes.PrivateField);
+    private static PropertyInfo<string> Property_FirstName = RegisterProperty<string>(c => c.FirstName, "First Name", "", RelationshipTypes.PrivateField);
     private string _firstName = Property_FirstName.DefaultValue;
 
     /// <summary>
@@ -110,7 +110,7 @@ namespace cslalighttest.Serialization
       set { SetProperty(Property_FirstName, ref _firstName, value); }
     }
 
-    private static PropertyInfo<string> Property_LastName = RegisterProperty<string>(c => c.LastName, "Last Name", RelationshipTypes.PrivateField);
+    private static PropertyInfo<string> Property_LastName = RegisterProperty<string>(c => c.LastName, "Last Name", "", RelationshipTypes.PrivateField);
     private string _lastName = Property_LastName.DefaultValue;
 
     /// <summary>

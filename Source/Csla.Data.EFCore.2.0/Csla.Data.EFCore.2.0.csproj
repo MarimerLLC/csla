@@ -5,7 +5,7 @@
     <AssemblyName>Csla.Data.EntityFrameworkCore</AssemblyName>
     <RootNamespace>Csla.Data.EntityFrameworkCore</RootNamespace>
     <PackageId>Csla.Data.EntityFrameworkCore</PackageId>
-    <Version>4.8.100.0</Version>
+    <Version>5.0.0.0</Version>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
   </ItemGroup>
 
   <ItemGroup>

@@ -41,7 +41,7 @@ namespace Templates
 	//   get { return false; }
 	//}
 	
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       // TODO: Add actual rule code here. 
       //if (!access_condition)

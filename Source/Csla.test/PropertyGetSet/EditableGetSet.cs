@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="EditableGetSet.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -53,7 +53,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert(F04Property, ref _F04, value); }
     }
 
-    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(c => c.F05, "field 5", RelationshipTypes.PrivateField);
+    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(nameof(F05), "field 5", false, RelationshipTypes.PrivateField);
     private bool _f05 = F05Property.DefaultValue;
     public bool F05
     {
@@ -61,7 +61,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<bool>(F05Property, ref _f05, value); }
     }
 
-    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(c => c.F06, "field 6", RelationshipTypes.PrivateField);
+    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(c => c.F06, "field 6", null, RelationshipTypes.PrivateField);
     private object _F06 = string.Empty;
     public string F06
     {

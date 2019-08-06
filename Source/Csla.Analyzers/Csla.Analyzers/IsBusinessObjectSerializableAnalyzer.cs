@@ -11,23 +11,21 @@ namespace Csla.Analyzers
   public sealed class IsBusinessObjectSerializableAnalyzer
     : DiagnosticAnalyzer
   {
-    private static DiagnosticDescriptor makeSerializableRule = new DiagnosticDescriptor(
-      Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, IsBusinessObjectSerializableConstants.Title,
-      IsBusinessObjectSerializableConstants.Message, Constants.Categories.Usage,
-      DiagnosticSeverity.Error, true);
+    private static readonly DiagnosticDescriptor makeSerializableRule =
+      new DiagnosticDescriptor(
+        Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, IsBusinessObjectSerializableConstants.Title,
+        IsBusinessObjectSerializableConstants.Message, Constants.Categories.Usage,
+        DiagnosticSeverity.Error, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, nameof(IsBusinessObjectSerializableAnalyzer)));
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-    {
-      get
-      {
-        return ImmutableArray.Create(IsBusinessObjectSerializableAnalyzer.makeSerializableRule);
-      }
-    }
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(makeSerializableRule);
 
     public override void Initialize(AnalysisContext context)
     {
-      context.RegisterSyntaxNodeAction<SyntaxKind>(
-        IsBusinessObjectSerializableAnalyzer.AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+      context.EnableConcurrentExecution();
+      context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
     }
 
     private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
@@ -35,9 +33,9 @@ namespace Csla.Analyzers
       var classNode = (ClassDeclarationSyntax)context.Node;
       var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
 
-      if (classSymbol.IsMobileObject() && !classSymbol.IsSerializable())
+      if (classSymbol.IsMobileObject() && !classSymbol.IsSerializable)
       {
-        context.ReportDiagnostic(Diagnostic.Create(IsBusinessObjectSerializableAnalyzer.makeSerializableRule,
+        context.ReportDiagnostic(Diagnostic.Create(makeSerializableRule,
           classNode.Identifier.GetLocation()));
         return;
       }

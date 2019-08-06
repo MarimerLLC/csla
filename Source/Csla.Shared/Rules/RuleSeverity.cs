@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="RuleSeverity.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Values for validation rule severities.</summary>
 //-----------------------------------------------------------------------

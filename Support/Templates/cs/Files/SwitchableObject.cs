@@ -78,9 +78,6 @@ namespace Templates
       return DataPortal.FetchChild<SwitchableObject>(childData);
     }
 
-    private SwitchableObject()
-    { /* Require use of factory methods */ }
-
     #endregion
 
     #region Root Data Access

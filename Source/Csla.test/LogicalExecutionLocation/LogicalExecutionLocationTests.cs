@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="LogicalExecutionLocationTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -29,7 +29,11 @@ namespace Csla.Test.LogicalExecutionLocation
     {
       Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Client, Csla.ApplicationContext.LogicalExecutionLocation, "Should be client");
 
+#pragma warning disable CS0436 // Type conflicts with imported type
+#pragma warning disable CS0436 // Type conflicts with imported type
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase();
+#pragma warning restore CS0436 // Type conflicts with imported type
+#pragma warning restore CS0436 // Type conflicts with imported type
       Assert.AreEqual(item.Data,Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), "Should be server");
       Assert.AreEqual(item.NestedData, Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), "Nested should be server");
 
@@ -41,7 +45,11 @@ namespace Csla.Test.LogicalExecutionLocation
     public void TestRulesLogicalExecutionLocation()
     {
  
+#pragma warning disable CS0436 // Type conflicts with imported type
+#pragma warning disable CS0436 // Type conflicts with imported type
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase();
+#pragma warning restore CS0436 // Type conflicts with imported type
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       Assert.AreEqual(item.Rule, Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), "Should be server");
 

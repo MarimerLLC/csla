@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="InheritedLoadPropertySet.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -12,7 +12,9 @@ namespace Csla.Test.Silverlight.PropertyGetSet
   [Serializable]
   public class InheritedLoadPropertySet : AbstractGetSet<InheritedLoadPropertySet>
   {
+#pragma warning disable CS0414
     private static int _forceLoad;
+#pragma warning restore CS0414
 
     public InheritedLoadPropertySet()
     {
@@ -31,7 +33,7 @@ namespace Csla.Test.Silverlight.PropertyGetSet
       base.OnDeserialized(context);
     }
 
-    protected void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       LoadProperty(IdProperty, 1);
     }

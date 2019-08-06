@@ -1,13 +1,10 @@
-﻿using Csla.Analyzers;
-using Csla.Analyzers.Tests;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +28,13 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task VerifyGetFixesWhenUsingSystemExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenUsingSystemExists))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void DataPortal_Fetch() { }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());
@@ -51,14 +53,19 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, new[] { $"  [Serializable]{Environment.NewLine}    " });
+        tree, new[] { "[Serializable]" });
     }
 
     [TestMethod]
     public async Task VerifyGetFixesWhenUsingSystemDoesNotExists()
     {
-      var code = File.ReadAllText(
-        $@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenUsingSystemDoesNotExists))}.cs");
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void DataPortal_Fetch() { }
+}";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());
@@ -77,7 +84,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, new[] { $"using System;{Environment.NewLine}", $"  [Serializable]{Environment.NewLine}    " });
+        tree, new[] { "using System;", "[Serializable]" });
     }
   }
 }

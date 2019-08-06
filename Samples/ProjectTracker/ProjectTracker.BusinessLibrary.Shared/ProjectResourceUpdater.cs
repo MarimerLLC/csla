@@ -27,6 +27,7 @@ namespace ProjectTracker.Library
       cmd = DataPortal.Execute<ProjectResourceUpdater>(cmd);
       return cmd.ProjectResource;
     }
+#endif
 
     protected override void DataPortal_Execute()
     {
@@ -35,6 +36,5 @@ namespace ProjectTracker.Library
         DataPortal.UpdateChild(ProjectResource, ProjectId);
       }
     }
-#endif
   }
 }

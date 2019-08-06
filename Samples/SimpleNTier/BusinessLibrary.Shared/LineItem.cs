@@ -34,7 +34,7 @@ namespace BusinessLibrary
 
     private class ChangeIfNew : Csla.Rules.BusinessRule
     {
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (LineItem)context.Target;
         if (!target.IsNew)

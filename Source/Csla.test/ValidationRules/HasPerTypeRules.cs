@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="HasPerTypeRules.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This is needed because in Silverlight the tests cannot be run in separate AppDomains</summary>
 //-----------------------------------------------------------------------

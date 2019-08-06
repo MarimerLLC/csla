@@ -12,14 +12,14 @@ namespace Csla.Test.BasicModern
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
     public string Name
     {
@@ -27,7 +27,7 @@ namespace Csla.Test.BasicModern
       set { SetProperty(NameProperty, value); }
     }
 
-    public static readonly PropertyInfo<ChildList> ChildrenProperty = RegisterProperty<ChildList>(c => c.Children);
+    public static readonly PropertyInfo<ChildList> ChildrenProperty = RegisterProperty<ChildList>(nameof(Children));
     public ChildList Children
     {
       get { return GetProperty(ChildrenProperty); }
@@ -37,16 +37,6 @@ namespace Csla.Test.BasicModern
     public void MakeOld()
     {
       MarkOld();
-    }
-
-    public static void NewRoot(EventHandler<DataPortalResult<Root>> callback)
-    {
-      Csla.DataPortal.BeginCreate<Root>(callback);
-    }
-
-    public static void GetRoot(int id, EventHandler<DataPortalResult<Root>> callback)
-    {
-      Csla.DataPortal.BeginFetch<Root>(id, callback);
     }
 
     public static async Task<Root> NewRootAsync()
@@ -82,19 +72,16 @@ namespace Csla.Test.BasicModern
     
     private void DataPortal_Fetch(int id)
     {
-      // TODO: load values into object
       Children = Csla.DataPortal.CreateChild<ChildList>();
     }
 
     protected override void DataPortal_Insert()
     {
-      // TODO: insert object's data
       FieldManager.UpdateChildren();
     }
 
     protected override void DataPortal_Update()
     {
-      // TODO: update object's data
       FieldManager.UpdateChildren();
     }
 
@@ -105,7 +92,6 @@ namespace Csla.Test.BasicModern
 
     private void DataPortal_Delete(int id)
     {
-      // TODO: delete object's data
       FieldManager.UpdateChildren();
     }
   }

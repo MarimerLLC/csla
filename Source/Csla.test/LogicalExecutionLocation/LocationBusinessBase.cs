@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="LocationBusinessBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -14,7 +14,9 @@ using Csla.Serialization;
 namespace Csla.Test.LogicalExecutionLocation
 {
   [Serializable]
+#pragma warning disable CS0436 // Type conflicts with imported type
   public class LocationBusinessBase: BusinessBase<LocationBusinessBase>
+#pragma warning restore CS0436 // Type conflicts with imported type
   {
 
     protected static PropertyInfo<string> DataProperty = RegisterProperty<string>(new PropertyInfo<string>("Data"));
@@ -38,9 +40,13 @@ namespace Csla.Test.LogicalExecutionLocation
       set { SetProperty(RuleProperty, value); }
     }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
     public static LocationBusinessBase GetLocationBusinessBase()
+#pragma warning restore CS0436 // Type conflicts with imported type
     {
+#pragma warning disable CS0436 // Type conflicts with imported type
       return Csla.DataPortal.Fetch<LocationBusinessBase>();
+#pragma warning restore CS0436 // Type conflicts with imported type
     }
 
     protected override void AddBusinessRules()
@@ -52,7 +58,9 @@ namespace Csla.Test.LogicalExecutionLocation
     {
       protected override void Execute(Rules.IRuleContext context)
       {
+#pragma warning disable CS0436 // Type conflicts with imported type
         ((LocationBusinessBase)context.Target).Rule = Csla.ApplicationContext.LogicalExecutionLocation.ToString();
+#pragma warning restore CS0436 // Type conflicts with imported type
       }
     }
 
@@ -64,7 +72,9 @@ namespace Csla.Test.LogicalExecutionLocation
     protected void DataPortal_Fetch()
     {
       SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
+#pragma warning disable CS0436 // Type conflicts with imported type
       var nested = Csla.DataPortal.Fetch<LocationBusinessBase>(123);
+#pragma warning restore CS0436 // Type conflicts with imported type
       NestedData = nested.Data;
     }
 

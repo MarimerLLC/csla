@@ -103,14 +103,13 @@ namespace ProjectTracker.Library
         : base(primaryProperty)
       { }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         ((ProjectResourceEdit)context.Target).OnPropertyChanged("RoleName");
       }
     }
 
 
-#if FULL_DOTNET 
     private void Child_Create(int resourceId)
     {
       using (BypassPropertyChecks)
@@ -215,6 +214,5 @@ namespace ProjectTracker.Library
         }
       }
     }
-#endif
   }
 }

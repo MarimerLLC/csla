@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BasicNameValueList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -15,15 +15,6 @@ namespace cslalighttest.NameValueList
   [Serializable()]
   public class BasicNameValueList : NameValueListBase<Int32, string>
   {
-    public static void GetBasicNameValueList(EventHandler<DataPortalResult<BasicNameValueList>> completed)
-    {
-      DataPortal<BasicNameValueList> dp = new DataPortal<BasicNameValueList>();
-      dp.FetchCompleted += completed;
-      dp.BeginFetch();
-    }
-
-
-
     public static BasicNameValueList GetBasicNameValueList()
     {
       return DataPortal.Fetch<BasicNameValueList>();

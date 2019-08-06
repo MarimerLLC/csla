@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="MembershipIdentity.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Implements a .NET identity object that automatically</summary>
 //-----------------------------------------------------------------------
@@ -19,32 +19,20 @@ namespace Csla.Security
   /// Implements a .NET identity object that automatically
   /// authenticates against the ASP.NET membership provider.
   /// </summary>
-#if !(ANDROID || IOS) && !NETFX_CORE
   [Csla.Server.MobileFactory("Csla.Web.Security.IdentityWebFactory,Csla.Web")]
   [Csla.Server.ObjectFactory("Csla.Web.Security.IdentityAppFactory,Csla.Web")]
-#endif
   [Serializable]
   public class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity, ICheckRoles
   {
-    #region Constructor
-
     private static int _forceInit = 0;
 
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-#if (ANDROID || IOS) || NETFX_CORE
-    public MembershipIdentity()
-#else
     protected MembershipIdentity()
-#endif
     {
       _forceInit = _forceInit + 0;
     }
-
-    #endregion
-
-    #region OnDeserialized
 
     /// <summary>
     /// Method invoked when the object is deserialized.
@@ -56,36 +44,6 @@ namespace Csla.Security
       base.OnDeserialized(context);
     }
 
-    #endregion
-
-    #region Factory Methods
-
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Gets a MembershipIdentity object by loading the
-    /// object with membership data from the server.
-    /// </summary>
-    /// <param name="completed">Callback handler for async operation</param>
-    /// <param name="userName">Username to validate on server.</param>
-    /// <param name="password">Password to validate on server.</param>
-    public static void GetMembershipIdentity(string userName, string password, EventHandler<DataPortalResult<MembershipIdentity>> completed)
-    {
-      GetMembershipIdentity<MembershipIdentity>(userName, password, completed);
-    }
-
-    /// <summary>
-    /// Gets a MembershipIdentity object by loading the
-    /// object with membership data from the server.
-    /// </summary>
-    /// <typeparam name="T">Type of object (subclass) to retrieve</typeparam>
-    /// <param name="completed">Callback handler for async operation</param>
-    /// <param name="userName">Username to validate on server.</param>
-    /// <param name="password">Password to validate on server.</param>
-    public static void GetMembershipIdentity<T>(string userName, string password, EventHandler<DataPortalResult<T>> completed) where T : MembershipIdentity
-    {
-      DataPortal.BeginFetch<T>(new Criteria(userName, password, typeof(T)), completed);
-    }
-#else
     /// <summary>
     /// Authenticates the user's credentials against the ASP.NET
     /// membership provider.
@@ -100,11 +58,6 @@ namespace Csla.Security
     {
       return DataPortal.Fetch<T>(new Criteria(userName, password, typeof(T)));
     }
-#endif
-
-    #endregion
-
-    #region  IsInRole
 
     /// <summary>
     /// Gets or sets a list of roles for this user.
@@ -127,10 +80,6 @@ namespace Csla.Security
       else
         return false;
     }
-
-    #endregion
-
-    #region  IIdentity
 
     /// <summary>
     /// Gets the authentication type for this identity.
@@ -173,10 +122,6 @@ namespace Csla.Security
       protected set { LoadProperty(NameProperty, value); }
     }
 
-    #endregion
-
-    #region Custom Data
-
     /// <summary>
     /// Override this method in a subclass to load custom
     /// data beyond the automatically loaded values from
@@ -184,10 +129,6 @@ namespace Csla.Security
     /// </summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
     public virtual void LoadCustomData() { }
-
-    #endregion
-
-    #region Criteria
 
     /// <summary>
     /// Criteria object containing the user credentials
@@ -268,6 +209,5 @@ namespace Csla.Security
         MembershipIdentityType = info.GetValue<string>("MembershipIdentity.Criteria.MembershipIdentityType");
       }
     }
-    #endregion
   }
 }

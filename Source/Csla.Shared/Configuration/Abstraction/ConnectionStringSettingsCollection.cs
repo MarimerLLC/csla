@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD2_0
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="ConnectionStringSettingsCollection.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -17,4 +16,3 @@ namespace Csla.Configuration
   {
   }
 }
-#endif

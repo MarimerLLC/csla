@@ -489,6 +489,74 @@ namespace Csla.Test.Authorization
         Csla.ApplicationContext.DataPortalActivator = null;
       }
     }
+
+    [TestMethod]
+    public void PerTypeAuthCreateWithCriteria() {
+      Assert.IsTrue(
+        BusinessRules.HasPermission(
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
+
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          new[] { new object() }));
+
+    
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null));
+    }
+
+    [TestMethod]
+    public void PerTypeAuthFetchWithCriteria() 
+    {
+      Assert.IsTrue(
+        BusinessRules.HasPermission(
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
+
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          new[] { new object() }));
+
+    
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null));
+    }
+  
+    [TestMethod]
+    public void PerTypeAuthDeleteWithCriteria() 
+    {
+      Assert.IsTrue(
+        BusinessRules.HasPermission(
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
+
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          new[] { new object() }));
+
+    
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null));
+    }
   }
 
   public class PerTypeAuthDPActivator : Server.IDataPortalActivator

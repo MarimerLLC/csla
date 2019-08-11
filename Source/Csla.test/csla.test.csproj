@@ -102,7 +102,9 @@
     <Compile Include="AppContext\SimpleRoot.cs" />
     <Compile Include="AppContext\TestContext.cs" />
     <Compile Include="AppDomainTests\AppDomainTests.cs" />
+    <Compile Include="Authorization\AuthRuleExpectsCriteria.cs" />
     <Compile Include="Authorization\AuthTests.cs" />
+    <Compile Include="Authorization\PermissionRootWithCriteria.cs" />
     <Compile Include="Authorization\PermissionsRoot.cs" />
     <Compile Include="Authorization\PermissionsRoot2.cs" />
     <Compile Include="Authorization\PerTypeAuthClasses.cs" />

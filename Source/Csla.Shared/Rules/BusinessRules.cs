@@ -290,7 +290,20 @@ namespace Csla.Rules
     {
       objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, objectType, ApplicationContext.RuleSet);
+      return HasPermission(action, null, objectType, null, ApplicationContext.RuleSet);
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="criteria">The criteria object provided.</param>
+    public static bool HasPermission(AuthorizationActions action, Type objectType, object[] criteria)
+    {
+      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      // no object specified so must use RuleSet from ApplicationContext
+      return HasPermission(action, null, objectType, criteria, ApplicationContext.RuleSet);
     }
 
     /// <summary>
@@ -304,7 +317,7 @@ namespace Csla.Rules
     /// </returns>
     public static bool HasPermission(AuthorizationActions action, Type objectType, string ruleSet)
     {
-      return HasPermission(action, null, objectType, ruleSet);
+      return HasPermission(action, null, objectType, null, ruleSet);
     }
 
     /// <summary>
@@ -314,7 +327,7 @@ namespace Csla.Rules
     /// <param name="obj">Business object instance.</param>
     public static bool HasPermission(AuthorizationActions action, object obj)
     {
-      return HasPermission(action, obj, obj.GetType(), ApplicationContext.RuleSet);
+      return HasPermission(action, obj, obj.GetType(), null, ApplicationContext.RuleSet);
     }
 
     /// <summary>
@@ -328,10 +341,10 @@ namespace Csla.Rules
     /// </returns>
     public static bool HasPermission(AuthorizationActions action, object obj, string ruleSet)
     {
-      return HasPermission(action, obj, obj.GetType(), ruleSet);
+      return HasPermission(action, obj, obj.GetType(), null, ruleSet);
     }
 
-    private static bool HasPermission(AuthorizationActions action, object obj, Type objType, string ruleSet)
+    private static bool HasPermission(AuthorizationActions action, object obj, Type objType, object[] criteria, string ruleSet)
     {
 
       if (action == AuthorizationActions.ReadProperty ||
@@ -344,7 +357,7 @@ namespace Csla.Rules
         AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType };
+        var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType, Criteria = criteria };
         rule.Execute(context);
         result = context.HasPermission;
       }

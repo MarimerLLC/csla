@@ -8,7 +8,7 @@ namespace Csla.Analyzers.Extensions
     internal static bool IsObjectFactory(this ITypeSymbol @this)
     {
       return @this != null &&
-        ((@this.Name == CslaMemberConstants.Types.ObjectFactoryBase &&
+        ((@this.Name == CslaMemberConstants.Types.ObjectFactory &&
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
           @this.BaseType.IsObjectFactory());
     }
@@ -19,6 +19,14 @@ namespace Csla.Analyzers.Extensions
         ((@this.Name == CslaMemberConstants.Types.BusinessBase &&
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
           @this.BaseType.IsBusinessBase());
+    }
+
+    internal static bool IsDataPortalOperationAttribute(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.DataPortalOperationAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsDataPortalOperationAttribute());
     }
 
     internal static bool IsRunLocalAttribute(this ITypeSymbol @this)

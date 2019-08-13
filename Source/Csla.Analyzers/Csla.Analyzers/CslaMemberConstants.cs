@@ -34,6 +34,7 @@
       public const string ChildInsert = "Child_Insert";
       public const string ChildUpdate = "Child_Update";
       public const string ChildDeleteSelf = "Child_DeleteSelf";
+      public const string ChildExecute = "Child_Execute";
     }
 
     public static class Types

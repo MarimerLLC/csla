@@ -72,7 +72,8 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.ChildFetch ||
           @this.Name == CslaMemberConstants.Operations.ChildInsert ||
           @this.Name == CslaMemberConstants.Operations.ChildUpdate ||
-          @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf;
+          @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf ||
+          @this.Name == CslaMemberConstants.Operations.ChildExecute;
         var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalOperationAttribute());
         return new DataPortalOperationQualification(byNamingConvention, byAttribute);
       }

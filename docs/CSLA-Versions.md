@@ -4,12 +4,13 @@ CSLA version 5 supports
 
 * Runtimes
   * .NET Standard 2.0
-  * .NET Core 2.0+
-  * .NET Framework 4, 4.5, 4.6
+  * .NET Core 2.0 through 3.0
+  * .NET Framework 4.0 through 4.8
   * mono
   * UWP
 * Platform support
   * ASP.NET Core
+  * Blazor (and other .NET WebAssembly targets)
   * ASP.NET
   * Xamarin (iOS, Android, UWP, Mac, Linux)
   * Windows Forms, WPF
@@ -18,25 +19,13 @@ CSLA version 5 supports
    * Windows
    * Linux
    * Mac
-   * WebAssembly (e.g. Blazor, Uno Platform, etc.)
+   * WebAssembly
    * Others (via .NET Core and/or mono)
-   
-CSLA 4 version 4.5 supports 
-* .NET 4, 4.5
-* WinRT (Windows 8 Store apps)
-* Windows Phone 8
-* Silverlight 5.
 
-Older versions of CSLA .NET provide support for older versions of Microsoft .NET and Silverlight.
+Older versions of CSLA .NET provide support for older versions of Microsoft .NET, Silverlight, and other platforms.
 
 * [CSLA.NET releases](https://github.com/MarimerLLC/csla/releases)
 * [Older CSLA .NET downloads](http://www.cslanet.com/Download.html)
-
-## Unit Testing Business Domain Classes
-
-1.	Unit testing with CSLA was difficult until CSLA 4
-1.	Integration testing (with mock data) was easy and recommended prior to CSLA 4 (and really isn’t a bad solution even today, though unit testing is very practical now)
-1.	A number of the enhancements in v5 will simplify unit testing scenarios even further
 
 ## Upgrading
 

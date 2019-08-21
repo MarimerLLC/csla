@@ -166,10 +166,11 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public async Task CallMethodTryAsyncDI(bool isSync, Type attributeType, params object[] parameters)
+    public async Task CallMethodTryAsyncDI<T>(bool isSync, params object[] parameters)
+      where T : DataPortalOperationAttribute
     {
-      var method = ServiceProviderMethodCaller.FindDataPortalMethod(
-        Instance, attributeType, parameters);
+      var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(
+        Instance, parameters);
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method);

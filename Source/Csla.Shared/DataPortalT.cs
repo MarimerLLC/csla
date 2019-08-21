@@ -113,7 +113,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(CreateAttribute), GetCriteriaArray(criteria));
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, GetCriteriaArray(criteria));
         var proxy = GetDataPortalProxy(objectType, method.RunLocal());
 #endif
 
@@ -320,7 +320,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(FetchAttribute), GetCriteriaArray(criteria));
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, GetCriteriaArray(criteria));
         var proxy = GetDataPortalProxy(objectType, method.RunLocal());
 #endif
 
@@ -657,7 +657,7 @@ namespace Csla
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
-            method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(ExecuteAttribute), criteria);
+            method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, criteria);
           }
           else
           {
@@ -670,7 +670,7 @@ namespace Csla
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "delete",
                     objectType.Name));
-                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(DeleteSelfAttribute), criteria);
+                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria);
               }
               else if (bbase.IsNew)
               {
@@ -678,7 +678,7 @@ namespace Csla
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "create",
                     objectType.Name));
-                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(InsertAttribute), criteria);
+                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, criteria);
               }
               else
               {
@@ -686,12 +686,12 @@ namespace Csla
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "save",
                     objectType.Name));
-                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(UpdateAttribute), criteria);
+                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria);
               }
             }
             else
             {
-              method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(UpdateAttribute), criteria);
+              method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria);
             }
           }
           proxy = GetDataPortalProxy(objectType, method.RunLocal());
@@ -896,7 +896,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetDeleteMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod(objectType, typeof(DeleteAttribute), GetCriteriaArray(criteria));
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, GetCriteriaArray(criteria));
         var proxy = GetDataPortalProxy(objectType, method.RunLocal());
 #endif
 

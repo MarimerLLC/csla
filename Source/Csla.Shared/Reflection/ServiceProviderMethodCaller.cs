@@ -21,7 +21,8 @@ namespace Csla.Reflection
   /// </summary>
   public static class ServiceProviderMethodCaller
   {
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+    private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -31,13 +32,14 @@ namespace Csla.Reflection
     /// <param name="target">Object with methods</param>
     /// <param name="attributeType">Data portal operation attribute</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public static System.Reflection.MethodInfo FindDataPortalMethod(object target, Type attributeType, object[] criteria)
+    public static System.Reflection.MethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
+      where T : DataPortalOperationAttribute
     {
       if (target == null)
         throw new ArgumentNullException("target");
 
       var targetType = target.GetType();
-      return FindDataPortalMethod(targetType, attributeType, criteria);
+      return FindDataPortalMethod<T>(targetType, criteria);
     }
 
     /// <summary>
@@ -48,7 +50,8 @@ namespace Csla.Reflection
     /// <param name="targetType">Type of domain object</param>
     /// <param name="attributeType">Data portal operation attribute</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public static System.Reflection.MethodInfo FindDataPortalMethod(Type targetType, Type attributeType, object[] criteria)
+    public static System.Reflection.MethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria)
+      where T : DataPortalOperationAttribute
     {
       if (targetType == null)
         throw new ArgumentNullException("targetType");
@@ -61,16 +64,16 @@ namespace Csla.Reflection
         var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
         if (factoryType != null)
         {
-          if (attributeType == typeof(CreateAttribute))
-            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName).ToList();
-          else if (attributeType == typeof(FetchAttribute))
-            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName).ToList();
-          else if (attributeType == typeof(DeleteAttribute))
-            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName).ToList();
-          else if (attributeType == typeof(ExecuteAttribute))
-            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName).ToList();
+          if (typeof(T) == typeof(CreateAttribute))
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName).ToList();
+          else if (typeof(T) == typeof(FetchAttribute))
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName).ToList();
+          else if (typeof(T) == typeof(DeleteAttribute))
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName).ToList();
+          else if (typeof(T) == typeof(ExecuteAttribute))
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName).ToList();
           else
-            candidates = factoryType.GetMethods(_bindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName).ToList();
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName).ToList();
         }
       }
       else
@@ -79,14 +82,14 @@ namespace Csla.Reflection
         do
         {
           candidates.AddRange(tType.GetMethods(_bindingAttr).
-            Where(m => m.CustomAttributes.Count(a => a.AttributeType == attributeType) > 0).ToList());
+            Where(m => m.GetCustomAttributes<T>().Any()).ToList());
           tType = tType.BaseType;
         } while (tType != null);
 
         // if no attribute-based methods found, look for legacy methods
         if (candidates.Count == 0)
         {
-          var attributeName = attributeType.Name.Substring(0, attributeType.Name.IndexOf("Attribute"));
+          var attributeName = typeof(T).Name.Substring(0, typeof(T).Name.IndexOf("Attribute"));
           if (attributeName.Contains("Child"))
           {
             var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
@@ -94,7 +97,7 @@ namespace Csla.Reflection
             do
             {
               candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
-                m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
+                m => m.Name == methodName && !candidates.Any(c => c.ToString() == m.ToString())));
               tType = tType.BaseType;
             } while (tType != null);
           }
@@ -105,14 +108,14 @@ namespace Csla.Reflection
             do
             {
               candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
-                m => m.Name == methodName && candidates.Count(c => c.ToString() == m.ToString()) == 0));
+                m => m.Name == methodName && !candidates.Any(c => c.ToString() == m.ToString())));
               tType = tType.BaseType;
             } while (tType != null);
           }
         }
       }
       if (candidates.Count == 0)
-        throw new MissingMethodException($"{targetType.FullName}" + ".[" + attributeType.Name + "]");
+        throw new MissingMethodException($"{targetType.FullName}.[{typeof(T).Name}]");
       
       // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
@@ -125,7 +128,7 @@ namespace Csla.Reflection
         {
           int score = 0;
           var methodParams = GetCriteriaParameters(item);
-          if (methodParams.Count() >= criteriaLength)
+          if (methodParams.Length == criteriaLength)
           {
             var index = 0;
             foreach (var c in criteria)
@@ -140,8 +143,10 @@ namespace Csla.Reflection
               else
               {
                 if (c.GetType() == methodParams[index].ParameterType)
+                  score += 2;
+                else if (methodParams[index].ParameterType.IsAssignableFrom(c.GetType()))
                   score++;
-                else if (methodParams[index].ParameterType != typeof(object))
+                else
                   break;
               }
               index++;
@@ -155,7 +160,7 @@ namespace Csla.Reflection
       {
         foreach (var item in candidates)
         {
-          if (GetCriteriaParameters(item).Count() == 0)
+          if (GetCriteriaParameters(item).Length == 0)
             matches.Add(new ScoredMethodInfo { MethodInfo = item });
         }
       }
@@ -166,15 +171,14 @@ namespace Csla.Reflection
         {
           var lastParam = item.GetParameters().LastOrDefault();
           if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) && 
-            lastParam.CustomAttributes != null &&
-            lastParam.CustomAttributes.Where(a => a.AttributeType.Equals(typeof(ParamArrayAttribute))).Count() > 0)
+            lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
           {
             matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = 1 });
           }
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException(targetType.FullName + ".[" + attributeType.Name + "]");
+        throw new TargetParameterCountException($"{targetType.FullName}.[{typeof(T).Name}]");
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -182,7 +186,7 @@ namespace Csla.Reflection
         // disambiguate if necessary, using a greedy algorithm
         // so more DI parameters are better
         foreach (var item in matches)
-          item.Score += GetDIParameters(item.MethodInfo).Count();
+          item.Score += GetDIParameters(item.MethodInfo).Length;
 
         var maxScore = int.MinValue;
         var maxCount = 0;
@@ -200,7 +204,7 @@ namespace Csla.Reflection
           }
         }
         if (maxCount > 1)
-          throw new AmbiguousMatchException(targetType.FullName + ".[" + attributeType.Name + "]");
+          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeof(T).Name}]");
       }
       return result.MethodInfo;
     }
@@ -210,7 +214,7 @@ namespace Csla.Reflection
       var result = new List<ParameterInfo>();
       foreach (var item in method.GetParameters())
       {
-        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(InjectAttribute)) == 0)
+        if (!item.GetCustomAttributes<InjectAttribute>().Any())
           result.Add(item);
       }
       return result.ToArray();
@@ -221,7 +225,7 @@ namespace Csla.Reflection
       var result = new List<ParameterInfo>();
       foreach (var item in method.GetParameters())
       {
-        if (item.CustomAttributes.Count(a => a.AttributeType == typeof(InjectAttribute)) > 0)
+        if (item.GetCustomAttributes<InjectAttribute>().Any())
           result.Add(item);
       }
       return result.ToArray();
@@ -241,7 +245,7 @@ namespace Csla.Reflection
         throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
 
       var methodParameters = info.GetParameters();
-      var plist = new object[methodParameters.Count()];
+      var plist = new object[methodParameters.Length];
       int index = 0;
       int criteriaIndex = 0;
 
@@ -249,7 +253,7 @@ namespace Csla.Reflection
 
       foreach (var item in methodParameters)
       {
-        if (item.CustomAttributes.Where(a => a.AttributeType == typeof(InjectAttribute)).Count() > 0)
+        if (item.GetCustomAttributes<InjectAttribute>().Any())
         {
           if (service != null)
             plist[index] = service.GetService(item.ParameterType);

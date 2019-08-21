@@ -11,13 +11,14 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
-using Csla.GrpcChannel.Client;
+using Csla.Channels.Grpc.Client;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using Google.Protobuf;
 using Grpc.Net.Client;
+using Csla.DataPortalClient;
 
-namespace Csla.DataPortalClient
+namespace Csla.Channels.Grpc
 {
   /// <summary>
   /// Implements a data portal proxy to relay data portal
@@ -102,16 +103,16 @@ namespace Csla.DataPortalClient
       _grpcClient = null;
     }
 
-    private static GrpcPortal.GrpcPortalClient _grpcClient;
+    private static Client.GrpcPortal.GrpcPortalClient _grpcClient;
 
     /// <summary>
     /// Get gRPC client object used by data portal.
     /// </summary>
     /// <returns></returns>
-    protected virtual GrpcPortal.GrpcPortalClient GetGrpcClient()
+    protected virtual Client.GrpcPortal.GrpcPortalClient GetGrpcClient()
     {
       if (_grpcClient == null)
-        _grpcClient = GrpcClient.Create<GrpcPortal.GrpcPortalClient>(GetHttpClient());
+        _grpcClient = GrpcClient.Create<Client.GrpcPortal.GrpcPortalClient>(GetHttpClient());
       return _grpcClient;
     }
 
@@ -119,7 +120,7 @@ namespace Csla.DataPortalClient
     /// Set gRPC client object for use by data portal.
     /// </summary>
     /// <param name="client">gRPC client instance.</param>
-    public static void SetGrpcClient(GrpcPortal.GrpcPortalClient client)
+    public static void SetGrpcClient(Client.GrpcPortal.GrpcPortalClient client)
     {
       _grpcClient = client;
     }
@@ -136,9 +137,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
+    /// <param name="context">DataPortalContext object passed to the server.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {

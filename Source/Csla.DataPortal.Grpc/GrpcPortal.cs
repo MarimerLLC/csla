@@ -12,14 +12,14 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Core;
-using Csla.GrpcChannel.Server;
+using Csla.Channels.Grpc.Server;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using Csla.Server.Hosts.HttpChannel;
 using Google.Protobuf;
 using Grpc.Core;
 
-namespace Csla.DataPortal.GrpcChannel
+namespace Csla.Channels.Grpc
 {
   /// <summary>
   /// Exposes server-side DataPortal functionality
@@ -65,8 +65,8 @@ namespace Csla.DataPortal.GrpcChannel
       if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
       {
         var url = $"{route}?operation={operation}";
-        var proxy = new DataPortalClient.GrpcProxy(url);
-        var clientRequest = new Csla.GrpcChannel.Client.RequestMessage
+        var proxy = new GrpcProxy(url);
+        var clientRequest = new Client.RequestMessage
         {
           Body = request.Body,
           Operation = operation

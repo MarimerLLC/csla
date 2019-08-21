@@ -44,6 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\GprcChannel.proto" GrpcServices="Both" />
+    <Protobuf Include="Protos\GrpcChannel.proto" GrpcServices="Both" />
   </ItemGroup>
 </Project>

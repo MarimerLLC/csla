@@ -104,6 +104,10 @@ namespace Csla.DataPortalClient
 
     private static GrpcPortal.GrpcPortalClient _grpcClient;
 
+    /// <summary>
+    /// Get gRPC client object used by data portal.
+    /// </summary>
+    /// <returns></returns>
     protected virtual GrpcPortal.GrpcPortalClient GetGrpcClient()
     {
       if (_grpcClient == null)

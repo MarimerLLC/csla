@@ -23,7 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETSTANDARD2_0</DefineConstants>
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\Csla.DataPortal.GrpcChannel.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.1\Csla.DataPortal.GrpcChannel.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

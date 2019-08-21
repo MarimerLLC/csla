@@ -10,14 +10,9 @@
     <Snippet>
       <Declarations>
         <Literal>
-          <ID>ObjectType</ID>
-          <ToolTip>Replace with the business object type.</ToolTip>
-          <Default>BusinessType</Default>
-        </Literal>
-        <Literal>
           <ID>IdProperty</ID>
           <ToolTip>Replace with the Id property name.</ToolTip>
-          <Default>IdProperty</Default>
+          <Default>Id</Default>
         </Literal>
         <Literal>
           <ID>IdType</ID>
@@ -27,27 +22,32 @@
       </Declarations>
       <Code Language="CSharp">
   <![CDATA[
+[Fetch]
 private void DataPortal_Fetch($IdType$ id)
 {
   // TODO: load values into object
   $end$
 }
 
+[Insert]
 protected override void DataPortal_Insert()
 {
   // TODO: insert object's data
 }
 
+[Update]
 protected override void DataPortal_Update()
 {
   // TODO: update object's data
 }
 
+[DeleteSelf]
 protected override void DataPortal_DeleteSelf()
 {
   DataPortal_Delete(ReadProperty($IdProperty$Property));
 }
 
+[Delete]
 private void DataPortal_Delete($IdType$ id)
 {
   // TODO: delete object's data

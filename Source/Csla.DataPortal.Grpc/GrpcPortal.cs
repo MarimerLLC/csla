@@ -27,6 +27,12 @@ namespace Csla.DataPortal.GrpcChannel
   /// </summary>
   public class GrpcPortal : GrpcServer.GrpcServerBase
   {
+    /// <summary>
+    /// Handle inbound message.
+    /// </summary>
+    /// <param name="request">Request message</param>
+    /// <param name="context">Server call context</param>
+    /// <returns></returns>
     public override async Task<ResponseMessage> Invoke(RequestMessage request, ServerCallContext context)
     {
       var operation = request.Operation;
@@ -51,8 +57,9 @@ namespace Csla.DataPortal.GrpcChannel
     /// <summary>
     /// Entry point for routing tag based data portal operations.
     /// </summary>
-    /// <param name="operation">Name of the data portal operation to perform.</param>
+    /// <param name="operation">Name of the data portal operation to perform</param>
     /// <param name="routingTag">Routing tag from caller</param>
+    /// <param name="request">Request message</param>
     protected virtual async Task<ResponseMessage> RouteMessage(string operation, string routingTag, RequestMessage request)
     {
       if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")

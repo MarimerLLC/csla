@@ -12,10 +12,11 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Dependabot and NuGet dependencies
 
-* Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
+* Bump Microsoft.AspNetCore from 2.0.3 to 2.2.0 in /Source
+* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.673156 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.6 in /Source
+* Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform in /Source
-* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.618606 in /Source
 
 ### Data Portal 
 
@@ -75,7 +76,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#750](https://github.com/marimerllc/csla/issues/750) Updated editorconfig styles 
 * [#1004](https://github.com/marimerllc/csla/issues/1004) Update use of test database so data tests run on developer workstations
 
-You can see all the [closed work items in GitHub](https://github.com/MarimerLLC/csla/projects/5?card_filter_query=is%3Aissue).
+You can see all the [closed work items in GitHub](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F5+is%3Aclosed).
 
 ## Contributors
 

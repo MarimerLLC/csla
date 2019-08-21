@@ -10,13 +10,16 @@ namespace Csla.Analyzers.IntegrationTests
   public sealed class RunningChildrenLocally
     : BusinessBase<RunningChildrenLocally>
   {
+    [Fetch]
     [RunLocal]
     private void DataPortal_Fetch() { }
 
+    [FetchChild]
     [RunLocal]
     [Foo]
     private void Child_Fetch() { }
 
+    [UpdateChild]
     [RunLocal, Foo]
     private void Child_Update() { }
   }

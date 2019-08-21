@@ -6,6 +6,7 @@ namespace Csla.Analyzers.IntegrationTests
   public sealed class PublicOperation
     : BusinessBase<PublicOperation>
   {
+    [Fetch]
     public void DataPortal_Fetch() { }
   }
 }

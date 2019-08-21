@@ -41,6 +41,7 @@ namespace Csla.Analyzers.IntegrationTests
       private set { LoadProperty(ResourceNotPublicProperty, value); }
     }
 
+    [Execute]
     protected override void DataPortal_Execute() { }
   }
 }

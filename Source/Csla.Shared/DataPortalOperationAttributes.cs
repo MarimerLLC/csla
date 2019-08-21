@@ -26,12 +26,28 @@ namespace Csla
   { }
 
   /// <summary>
+  /// Base type for data portal root operation
+  /// attributes.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Method)]
+  public class DataPortalRootOperationAttribute : DataPortalOperationAttribute
+  { }
+
+  /// <summary>
+  /// Base type for data portal child operation
+  /// attributes.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Method)]
+  public class DataPortalChildOperationAttribute : DataPortalOperationAttribute
+  { }
+
+  /// <summary>
   /// Specifies a method used by the server-side
   /// data portal to initialize a new
   /// domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateAttribute : DataPortalOperationAttribute
+  public class CreateAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -40,7 +56,7 @@ namespace Csla
   /// the domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchAttribute : DataPortalOperationAttribute
+  public class FetchAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -49,7 +65,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertAttribute : DataPortalOperationAttribute
+  public class InsertAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -58,7 +74,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateAttribute : DataPortalOperationAttribute
+  public class UpdateAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -67,7 +83,7 @@ namespace Csla
   /// object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ExecuteAttribute : DataPortalOperationAttribute
+  public class ExecuteAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -76,7 +92,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteAttribute : DataPortalOperationAttribute
+  public class DeleteAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -85,7 +101,7 @@ namespace Csla
   /// during an explicit delete operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfAttribute : DataPortalOperationAttribute
+  public class DeleteSelfAttribute : DataPortalRootOperationAttribute
   { }
 
   /// <summary>
@@ -94,7 +110,7 @@ namespace Csla
   /// child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateChildAttribute : DataPortalOperationAttribute
+  public class CreateChildAttribute : DataPortalChildOperationAttribute
   { }
 
   /// <summary>
@@ -103,7 +119,7 @@ namespace Csla
   /// the child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchChildAttribute : DataPortalOperationAttribute
+  public class FetchChildAttribute : DataPortalChildOperationAttribute
   { }
 
   /// <summary>
@@ -112,7 +128,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertChildAttribute : DataPortalOperationAttribute
+  public class InsertChildAttribute : DataPortalChildOperationAttribute
   { }
 
   /// <summary>
@@ -121,7 +137,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateChildAttribute : DataPortalOperationAttribute
+  public class UpdateChildAttribute : DataPortalChildOperationAttribute
   { }
 
   /// <summary>
@@ -130,7 +146,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfChildAttribute : DataPortalOperationAttribute
+  public class DeleteSelfChildAttribute : DataPortalChildOperationAttribute
   { }
 
   /// <summary>
@@ -139,6 +155,6 @@ namespace Csla
   /// object during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ExecuteChildAttribute : DataPortalOperationAttribute
+  public class ExecuteChildAttribute : DataPortalChildOperationAttribute
   { }
 }

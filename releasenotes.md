@@ -1,4 +1,8 @@
-This is a pre-release of CSLA .NET version 5.0.0.
+# CSLA .NET version 5.0.0 pre-release
+
+CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
+
+## Change List
 
 This release contains numerous potential breaking changes so please pay attention to the ⚠ (possible) and 🛑 (likely) breaking symbols.
 
@@ -18,8 +22,9 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform in /Source
 
-### Data Portal 
+### Data Portal
 
+* [#1140](https://github.com/MarimerLLC/csla/issues/1140) Implement gRPC data portal (`Csla.Channels.Grpc`) 🎉
 * [#1176](https://github.com/MarimerLLC/csla/issues/1176) Enable passing multiple parameters to root DP methods (i.e. `FetchAsync`) 🎉
 * [#787](https://github.com/MarimerLLC/csla/issues/787) Enable per-method dependency injection for DP_XYZ and Child_XYZ method params 🎉
 * [#1102](https://github.com/MarimerLLC/csla/issues/1102) Eliminate hard-coded DP_XYZ and Child_XYZ method names 🎉
@@ -52,7 +57,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#804](https://github.com/marimerllc/csla/issues/804) Update analyzers to modern project style and .NET Standard 1.3 (now requires Visual Studio 2017 or higher) ⚠
 * [#623](https://github.com/marimerllc/csla/issues/623) Fix issue where analyzer would incorrectly flag an issue with serializable attributes 🎉
 * [#925](https://github.com/marimerllc/csla/issues/925) Create analyzer to flag use of `new` keyword when creating domain objects (require use of data portal)
-* [#1091](https://github.com/marimerllc/csla/issues/1091) Update/cleanup analyzer code. 
+* [#1091](https://github.com/marimerllc/csla/issues/1091) Update/cleanup analyzer code
 
 ### Xamarin
 
@@ -68,7 +73,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 * [#1115](https://github.com/marimerllc/csla/issues/1115)Remove private constructors from templates
 * [#968](https://github.com/marimerllc/csla/issues/968) Remove ApplicationContext.IsInRoleProvider property ⚠
-* [#1053](https://github.com/marimerllc/csla/issues/1053) Update nuspec files to use license element 
+* [#1053](https://github.com/marimerllc/csla/issues/1053) Update nuspec files to use license element
 * [#1070](https://github.com/marimerllc/csla/issues/1070) Remove unused legacy Silverlight test code and resolve SonarQube warning
 * [#1109](https://github.com/marimerllc/csla/issues/1109) Add `ContextManager` property to `CslaConfiguration` fluent API
 * [#1111](https://github.com/marimerllc/csla/issues/1111) Update website URL to `https://cslanet.com` in source files

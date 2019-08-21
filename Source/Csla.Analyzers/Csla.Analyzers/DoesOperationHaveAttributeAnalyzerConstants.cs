@@ -9,6 +9,6 @@
 
   public static class DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants
   {
-    public const string RemoveRunLocalDescription = "Add attribute";
+    public const string AddAttributeDescription = "Add attribute";
   }
 }

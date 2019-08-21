@@ -7,5 +7,9 @@ namespace Csla.Analyzers.IntegrationTests
     : BusinessBase<OperationsAndAttributes>
   {
     private void DataPortal_Fetch() { }
+    protected override void DataPortal_Update() { }
+
+    protected override void Child_Create() { }
+    private void Child_Execute() { }
   }
 }

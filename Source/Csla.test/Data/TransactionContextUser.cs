@@ -63,7 +63,7 @@ namespace Csla.Test.Data
       LoadProperty(smallColumnProperty, reader.GetString("SmallColumn"));
     }
 
-    protected void Child_DeleteSelf()
+    protected void Child_DeleteSelf(TransactionContextUserList parent)
     {
       using (TransactionManager<SqlConnection, SqlTransaction> manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(nameof(WellKnownValues.DataPortalTestDatabase), true))
       {
@@ -74,7 +74,7 @@ namespace Csla.Test.Data
       }
     }
 
-    protected void Child_Insert()
+    protected void Child_Insert(TransactionContextUserList parent)
     {
       using (TransactionManager<SqlConnection, SqlTransaction> manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(nameof(WellKnownValues.DataPortalTestDatabase), true))
       {

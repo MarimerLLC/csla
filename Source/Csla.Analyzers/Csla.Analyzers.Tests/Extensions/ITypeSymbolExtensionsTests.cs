@@ -321,6 +321,28 @@ public class A : CommandBase<A> { }";
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsStereotype());
     }
 
+    [TestMethod]
+    public async Task IsRunLocalAttribute()
+    {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A> 
+{ 
+  [RunLocal]
+  private void B() { }
+}";
+      Assert.IsTrue((await GetAttributeTypeSymbolAsync(code, "B")).IsRunLocalAttribute());
+    }
+
+    private async Task<ITypeSymbol> GetAttributeTypeSymbolAsync(string code, string methodName)
+    {
+      var (root, model) = await GetRootAndModel(code);
+      var methodSymbol = model.GetDeclaredSymbol(
+        root.DescendantNodes().OfType<MethodDeclarationSyntax>().First(_ => _.Identifier.Text == methodName));
+      return methodSymbol.GetAttributes().First().AttributeClass;
+    }
+
     private async Task<ITypeSymbol> GetTypeSymbolAsync(string code, string name)
     {
       var (root, model) = await GetRootAndModel(code);

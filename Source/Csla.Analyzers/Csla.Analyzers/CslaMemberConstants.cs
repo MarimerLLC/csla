@@ -37,6 +37,23 @@
       public const string ChildExecute = "Child_Execute";
     }
 
+    public static class OperationAttributes
+    {
+      public const string Create = nameof(Create);
+      public const string Fetch = nameof(Fetch);
+      public const string Insert = nameof(Insert);
+      public const string Update = nameof(Update);
+      public const string Delete = nameof(Delete);
+      public const string DeleteSelf = nameof(DeleteSelf);
+      public const string Execute = nameof(Execute);
+      public const string CreateChild = nameof(CreateChild);
+      public const string FetchChild = nameof(FetchChild);
+      public const string InsertChild = nameof(InsertChild);
+      public const string UpdateChild = nameof(UpdateChild);
+      public const string DeleteSelfChild = nameof(DeleteSelfChild);
+      public const string ExecuteChild = nameof(ExecuteChild);
+    }
+
     public static class Types
     {
       public const string BusinessBase = nameof(BusinessBase);

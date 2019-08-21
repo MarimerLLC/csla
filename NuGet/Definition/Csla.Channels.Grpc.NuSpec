@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>Csla.DataPortal.GrpcChannel</id>
+    <id>Csla.Channels.Grpc</id>
     <title>CSLA .NET - gRPC data portal channel</title>
     <tags>CSLA gRPC</tags>
     <version>4.6.3-Beta10</version>
@@ -29,6 +29,6 @@ Data portal channel using gRPC for transport.
   </metadata>
   <files>
     <!-- NetStandard Assembly -->
-    <file src="..\..\bin\Release\netstandard\netstandard2.1\**\Csla.DataPortal.GrpcChannel.*" target="lib\netstandard2.1" />
+    <file src="..\..\bin\Release\netstandard\netstandard2.1\**\Csla.Channels.Grpc.*" target="lib\netstandard2.1" />
   </files>
 </package>

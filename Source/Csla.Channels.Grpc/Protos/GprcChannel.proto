@@ -1,8 +1,8 @@
 ﻿syntax = "proto3";
 
-package Csla.Channels.Grpc.Client;
+package Csla.Channels.Grpc;
 
-service GrpcPortal {
+service GrpcService {
     rpc Invoke (RequestMessage) returns (ResponseMessage) {}
 }
 

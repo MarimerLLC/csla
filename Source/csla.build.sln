@@ -124,9 +124,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Data.SqlClient.Fx", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Data.SqlClient", "Csla.Data.SqlClient\Csla.Data.SqlClient.csproj", "{6945915B-DEF6-4F68-B9C4-E566EE2420CF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataPortalChannels", "DataPortalChannels", "{580424DE-C982-4E80-A948-EF42FC3AB110}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Channels", "Channels", "{580424DE-C982-4E80-A948-EF42FC3AB110}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Channels.Grpc", "Csla.DataPortal.Grpc\Csla.Channels.Grpc.csproj", "{4168DF8F-309C-4D2A-8838-79AA8C1BA140}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Channels.Grpc", "Csla.Channels.Grpc\Csla.Channels.Grpc.csproj", "{4168DF8F-309C-4D2A-8838-79AA8C1BA140}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

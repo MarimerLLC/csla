@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
-using Csla.Channels.Grpc.Client;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using Google.Protobuf;
@@ -103,16 +102,16 @@ namespace Csla.Channels.Grpc
       _grpcClient = null;
     }
 
-    private static Client.GrpcPortal.GrpcPortalClient _grpcClient;
+    private static GrpcService.GrpcServiceClient _grpcClient;
 
     /// <summary>
     /// Get gRPC client object used by data portal.
     /// </summary>
     /// <returns></returns>
-    protected virtual Client.GrpcPortal.GrpcPortalClient GetGrpcClient()
+    protected virtual GrpcService.GrpcServiceClient GetGrpcClient()
     {
       if (_grpcClient == null)
-        _grpcClient = GrpcClient.Create<Client.GrpcPortal.GrpcPortalClient>(GetHttpClient());
+        _grpcClient = GrpcClient.Create<GrpcService.GrpcServiceClient>(GetHttpClient());
       return _grpcClient;
     }
 
@@ -120,7 +119,7 @@ namespace Csla.Channels.Grpc
     /// Set gRPC client object for use by data portal.
     /// </summary>
     /// <param name="client">gRPC client instance.</param>
-    public static void SetGrpcClient(Client.GrpcPortal.GrpcPortalClient client)
+    public static void SetGrpcClient(GrpcService.GrpcServiceClient client)
     {
       _grpcClient = client;
     }

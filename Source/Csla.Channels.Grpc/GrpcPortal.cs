@@ -12,7 +12,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Core;
-using Csla.Channels.Grpc.Server;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using Csla.Server.Hosts.HttpChannel;
@@ -25,7 +24,7 @@ namespace Csla.Channels.Grpc
   /// Exposes server-side DataPortal functionality
   /// through gRPC.
   /// </summary>
-  public class GrpcPortal : GrpcServer.GrpcServerBase
+  public class GrpcPortal : Csla.Channels.Grpc.GrpcService.GrpcServiceBase
   {
     /// <summary>
     /// Handle inbound message.
@@ -66,7 +65,7 @@ namespace Csla.Channels.Grpc
       {
         var url = $"{route}?operation={operation}";
         var proxy = new GrpcProxy(url);
-        var clientRequest = new Client.RequestMessage
+        var clientRequest = new RequestMessage
         {
           Body = request.Body,
           Operation = operation

@@ -23,16 +23,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETSTANDARD2_0</DefineConstants>
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.1\Csla.DataPortal.GrpcChannel.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.1\Csla.Channels.Grpc.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Protos\Server.proto" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.9.0-rc1" />
@@ -48,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\Server.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\Client.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\GprcChannel.proto" GrpcServices="Both" />
   </ItemGroup>
 </Project>

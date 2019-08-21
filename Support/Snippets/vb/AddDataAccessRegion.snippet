@@ -43,30 +43,31 @@
           <Function />
         </Literal>
       </Declarations>
-      <Code Language="VB" Delimiter="$"><![CDATA[#Region " Data Access "
-
+      <Code Language="VB" Delimiter="$"><![CDATA[<Fetch> _
 Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of $ObjectType$, $IdType$))
   ' TODO: load values into object
   $end$
 End Sub
 
+<Insert> _
 Protected Overrides Sub DataPortal_Insert()
   ' TODO: insert object's data
 End Sub
 
+<Update> _
 Protected Overrides Sub DataPortal_Update()
   ' TODO: update object's data
 End Sub
 
+<DeleteSelf> _
 Protected Overrides Sub DataPortal_DeleteSelf()
   DataPortal_Delete(New SingleCriteria(Of $ObjectType$, $IdType$)(ReadProperty(Of $IdType$)($IdProperty$)))
 End Sub
 
+<Delete> _
 Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of $ObjectType$, $IdType$))
   ' TODO: delete object's data
-End Sub
-
-#End Region]]></Code>
+End Sub]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

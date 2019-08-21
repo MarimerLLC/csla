@@ -28,17 +28,7 @@
         </Literal>
       </Declarations>
       <Code Language="CSharp">
-  <![CDATA[public static void New$ClassName$(EventHandler<DataPortalResult<$ClassName$>> callback)
-{
-  DataPortal.BeginCreate<$ClassName$>(callback);
-}
-
-public static void Get$ClassName$($IdType$ $IdName$, EventHandler<DataPortalResult<$ClassName$>> callback)
-{
-  DataPortal.BeginFetch<$ClassName$>($IdName$, callback);
-}
-
-public static async Task<$ClassName$> New$ClassName$Async()
+  <![CDATA[public static async Task<$ClassName$> New$ClassName$Async()
 {
   return await DataPortal.CreateAsync<$ClassName$>();
 }
@@ -46,26 +36,7 @@ public static async Task<$ClassName$> New$ClassName$Async()
 public static async Task<$ClassName$> Get$ClassName$Async($IdType$ $IdName$)
 {
   return await DataPortal.FetchAsync<$ClassName$>($IdName$);
-}
-
-#if !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
-
-public static $ClassName$ New$ClassName$()
-{
-  return DataPortal.Create<$ClassName$>();
-}
-
-public static $ClassName$ Get$ClassName$($IdType$ $IdName$)
-{
-  return DataPortal.Fetch<$ClassName$>($IdName$);
-}
-
-public static void Delete$ClassName$($IdType$ $IdName$)
-{
-  DataPortal.Delete<$ClassName$>($IdName$);
-}
-
-#endif]]></Code>
+}]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

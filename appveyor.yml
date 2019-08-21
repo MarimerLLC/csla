@@ -1,0 +1,20 @@
+version: '{branch}.{build}'
+branches:
+  only:
+  - master
+image: Visual Studio 2019 Preview
+configuration: Release
+platform: Any CPU
+before_build:
+- cmd: nuget restore Source\csla.test.sln
+install:
+- cmd: choco install dotnetcore-sdk --pre
+build:
+  project: Source\csla.test.sln
+  verbosity: minimal
+test:
+  assemblies:
+    only:
+    - Csla.Test
+    - csla.netcore.test
+    - Csla.Validation.Test

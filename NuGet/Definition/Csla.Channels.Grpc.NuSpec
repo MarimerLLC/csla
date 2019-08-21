@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Csla.Channels.Grpc</id>
+    <title>CSLA .NET - gRPC data portal channel</title>
+    <tags>CSLA gRPC</tags>
+    <version>4.6.3-Beta10</version>
+    <authors>Marimer LLC</authors>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Data portal channel using gRPC for transport.
+
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Data portal channel using gRPC for transport.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="netstandard2.1">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Google.Protobuf" version="3.9.0-rc1" />
+        <dependency id="Grpc.Net.Client" version="0.1.22-pre2" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- NetStandard Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard2.1\**\Csla.Channels.Grpc.*" target="lib\netstandard2.1" />
+  </files>
+</package>

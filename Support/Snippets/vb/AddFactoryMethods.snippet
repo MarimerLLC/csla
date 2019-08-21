@@ -37,37 +37,13 @@
         </Literal>
       </Declarations>
       <Code Language="VB" Delimiter="$">
-  <![CDATA[Public Shared Sub New$ClassName$(callback As EventHandler(Of DataPortalResult(Of $ClassName$)))
-  DataPortal.BeginCreate(Of $ClassName$)(callback)
-End Sub
-
-Public Shared Sub Get$ClassName$($IdName$ As $IdType$, callback As EventHandler(Of DataPortalResult(Of $ClassName$)))
-  DataPortal.BeginFetch(Of $ClassName$)($IdName$, callback)
-End Sub
-
-Public Shared Async Function New$ClassName$() As Task(Of $ClassName$)
+  <![CDATA[Public Shared Async Function New$ClassName$() As Task(Of $ClassName$)
   Return Await DataPortal.CreateAsync(Of $ClassName$)()
 End Function
 
 Public Shared Async Function Get$ClassName$(ByVal $IdName$ As $IdType$) As Task(Of $ClassName$)
   Return Await DataPortal.FetchAsync(Of $ClassName$)($IdName$)
-End Function
-
-#If Not SILVERLIGHT And Not WINDOWS_PHONE And Not NETFX_CORE
-
-Public Shared Function New$ClassName$() As $ClassName$
-  Return DataPortal.Create(Of $ClassName$)()
-End Function
-
-Public Shared Function Get$ClassName$(ByVal $IdName$ As $IdType$) As $ClassName$
-  Return DataPortal.Fetch(Of $ClassName$)($IdName$)
-End Function
-
-Public Shared Sub Delete$ClassName$(ByVal $IdName$ As $IdType$)
-  DataPortal.Delete(Of $ClassName$)($IdName$)
-End Sub
-
-#End if]]></Code>
+End Function]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+package Csla.Channels.Grpc;
+
+service GrpcService {
+    rpc Invoke (RequestMessage) returns (ResponseMessage) {}
+}
+
+message RequestMessage {
+    bytes body = 1;
+    string operation = 2;
+}
+
+message ResponseMessage {
+    bytes body = 1;
+}

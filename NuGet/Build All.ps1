@@ -1,118 +1,6 @@
 ##
 ##	Create Modular CSLA NuGet based on UI Technology (Based on Discussions with Rocky & Jaans)
 ##  ==========================================================================================
-##  
-##  �CSLA .NET - Core� NuGet
-##  �	Contents:
-##      o	Csla.dll (.NET 4 and .NET 4.5)
-##      o	Csla.dll (WinRT - Windows Phone WinRT)
-##      o	Csla.dll (WinRT - Windows RT)
-##      o	Csla.dll (MonoAndroid - Xamarin Android)
-##      o	Csla.dll (MonoIos - Xamarin iOS Classic)
-##      o	Csla.dll (XamarinIos - Xamarin iOS Unified
-##  �	Dependencies
-##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
-##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
-##      o	(The rest has no dependencies on other NuPacks)
-##  
-##  �CSLA .NET - ASP.NET� NuGet
-##  �	Contents:
-##      o	Csla.Web.dll (.NET)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA .NET - ASP.NET MVC 4� NuGet
-##  �	Contents:
-##      o	Csla.Web.Mvc4.dll (.NET)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA .NET - ASP.NET MVC 5� NuGet
-##  �	Contents:
-##      o	Csla.Web.Mvc5.dll (.NET)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA .NET - Windows Forms� NuGet
-##  �	Contents:
-##      o	Csla.Windows.dll (.NET)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA .NET - Windows Phone WinRT� NuGet
-##  �	Contents:
-##      o	Csla.Xaml.dll (WinRT)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA .NET - Windows Runtime� NuGet
-##  �	Contents:
-##      o	Csla.Xaml.dll (WinRt)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##
-##  �CSLA .NET - WPF� NuGet
-##  �	Contents:
-##      o	Csla.Xaml.dll (.NET)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA .NET - MonoAndroid� NuGet
-##  �	Contents:
-##      o	Csla.Axml.dll (MonoAndroid)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##
-##  �CSLA .NET - Xamarin.iOS� NuGet
-##  �	Contents:
-##      o	Csla.Iosui.dll (Mono iOS UI)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##
-##  �CSLA Workflow� NuGet
-##  �	Contents:
-##      o	Csla.Workflow.dll (.NET)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##  
-##  �CSLA Templates� NuGet
-##  �	Contents:
-##      o	Snippets and Templates
-##  �	Dependencies
-##      o	None
-##  
-##  �CSLA .NET - Data EF4" NuGet
-##  �	Contents:
-##      o	Csla.Data.EF4.dll (WinRt)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##      o	�EntityFramework� (v4) NuGet
-##  
-##  �CSLA .NET - Data EF5" NuGet
-##  �	Contents:
-##      o	Csla.Data.EF5.dll (WinRt)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##      o	�EntityFramework� (v5) NuGet
-##  
-##  �CSLA .NET - Data EF6" NuGet
-##  �	Contents:
-##      o	Csla.Data.EF6.dll (WinRt)
-##  �	Dependencies
-##      o	�CSLA .NET - Core� NuGet
-##      o	�EntityFramework� (v6) NuGet
-##  
-##  �CSLA .NET - Legacy Validation� NuGet
-##  �	Contents:
-##      o	Csla.Validation.dll (.NET 4 and .NET 4.5)
-##      o	Csla.Validation.dll (WinRT - Windows Phone WinRT)
-##      o	Csla.Validation.dll (WinRT - Windows RT)
-##      o	Csla.Validation.dll (MonoAndroid - Xamarin Android)
-##      o	Csla.Validation.dll (XamarinIos - Xamarin iOS)
-##  �	Dependencies
-##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
-##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
-##      o	(The rest has no dependencies on other NuPacks)
 
 param( [System.String] $commandLineOptions )
 
@@ -153,7 +41,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "XamarinForms", "AspNetCore MVC", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Windows Forms", "UWP", "WPF", "MonoAndroid", "XamarinIos", "Data EF4", "Data EF5", "Data EF6", "Data SqlClient", "Data SqlClientFx", "Templates", "UpdateValidation", "Data EntityFrameworkCore")  
+    $packages = @("Core", "Csla.Channels.Grpc", "XamarinForms", "AspNetCore MVC", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Windows Forms", "UWP", "WPF", "MonoAndroid", "XamarinIos", "Data EF4", "Data EF5", "Data EF6", "Data SqlClient", "Data SqlClientFx", "Templates", "UpdateValidation", "Data EntityFrameworkCore")  
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

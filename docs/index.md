@@ -26,7 +26,7 @@ Contributing
 CSLA .NET is an open source project and we do accept contributions. Information for contributors and developers can be found here:
 
 * [Contribute to CSLA .NET](https://github.com/MarimerLLC/csla/blob/master/CONTRIBUTING.md)
-* [Developer information](Developer-information.md)
+* [Contributors](https://github.com/MarimerLLC/csla/graphs/contributors)
 
 External links
 --------------

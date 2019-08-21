@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers.Extensions
 {
@@ -31,30 +32,51 @@ namespace Csla.Analyzers.Extensions
             @this.Name == CslaMemberConstants.Properties.LoadPropertyConvert)));
     }
 
-    internal static bool IsDataPortalOperation(this IMethodSymbol @this)
+    internal static DataPortalOperationQualification IsDataPortalOperation(this IMethodSymbol @this)
     {
-      return @this != null &&
-        (@this.IsRootDataPortalOperation() || @this.IsChildDataPortalOperation());
+      return @this is null ? new DataPortalOperationQualification() :
+        @this.IsRootDataPortalOperation().Combine(@this.IsChildDataPortalOperation());
     }
 
-    internal static bool IsRootDataPortalOperation(this IMethodSymbol @this)
+    internal static DataPortalOperationQualification IsRootDataPortalOperation(this IMethodSymbol @this)
     {
-      return @this != null && (@this.Name == CslaMemberConstants.Operations.DataPortalCreate ||
-        @this.Name == CslaMemberConstants.Operations.DataPortalFetch ||
-        @this.Name == CslaMemberConstants.Operations.DataPortalInsert ||
-        @this.Name == CslaMemberConstants.Operations.DataPortalUpdate ||
-        @this.Name == CslaMemberConstants.Operations.DataPortalDelete ||
-        @this.Name == CslaMemberConstants.Operations.DataPortalDeleteSelf ||
-        @this.Name == CslaMemberConstants.Operations.DataPortalExecute);
+      if (@this is null)
+      {
+        return new DataPortalOperationQualification();
+      }
+      else
+      {
+        var byNamingConvention = 
+          @this.Name == CslaMemberConstants.Operations.DataPortalCreate ||
+          @this.Name == CslaMemberConstants.Operations.DataPortalFetch ||
+          @this.Name == CslaMemberConstants.Operations.DataPortalInsert ||
+          @this.Name == CslaMemberConstants.Operations.DataPortalUpdate ||
+          @this.Name == CslaMemberConstants.Operations.DataPortalDelete ||
+          @this.Name == CslaMemberConstants.Operations.DataPortalDeleteSelf ||
+          @this.Name == CslaMemberConstants.Operations.DataPortalExecute;
+        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalRootOperationAttribute());
+        return new DataPortalOperationQualification(byNamingConvention, byAttribute);
+      }
     }
 
-    internal static bool IsChildDataPortalOperation(this IMethodSymbol @this)
+    internal static DataPortalOperationQualification IsChildDataPortalOperation(this IMethodSymbol @this)
     {
-      return @this != null && (@this.Name == CslaMemberConstants.Operations.ChildCreate ||
-        @this.Name == CslaMemberConstants.Operations.ChildFetch ||
-        @this.Name == CslaMemberConstants.Operations.ChildInsert ||
-        @this.Name == CslaMemberConstants.Operations.ChildUpdate ||
-        @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf);
+      if (@this is null)
+      {
+        return new DataPortalOperationQualification();
+      }
+      else
+      {
+        var byNamingConvention =
+          @this.Name == CslaMemberConstants.Operations.ChildCreate ||
+          @this.Name == CslaMemberConstants.Operations.ChildFetch ||
+          @this.Name == CslaMemberConstants.Operations.ChildInsert ||
+          @this.Name == CslaMemberConstants.Operations.ChildUpdate ||
+          @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf ||
+          @this.Name == CslaMemberConstants.Operations.ChildExecute;
+        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalChildOperationAttribute());
+        return new DataPortalOperationQualification(byNamingConvention, byAttribute);
+      }
     }
   }
 }

@@ -1,3 +1,15 @@
+# Unit Testing
+
+## Unit Testing Business Domain Classes
+
+1.	Unit testing with CSLA was difficult until CSLA 4
+1.	Integration testing (with mock data) was easy and recommended prior to CSLA 4 (and really isn’t a bad solution even today, though unit testing is very practical now)
+1.	A number of the enhancements in v5 will simplify unit testing scenarios even further
+
+@jasonbock has written a nice blog post on how to use some of the features of CSLA 4 that support unit testing and mocking:
+
+* http://magenic.com/Blog/Post/43/Abstractions-in-CSLA
+
 ## Unit Testing User Serialization Exception
 
 When running your CSLA-based code in a unit test environment such as mstest or nunit you may encounter an unexpected serialization error in tests that set or use a custom security principal (e.g. you set `ApplicationContext.User` before or in the test).

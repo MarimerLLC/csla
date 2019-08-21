@@ -6,7 +6,6 @@
 // <summary>ConfigurationManager that abstracts underlying configuration</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections;
 using System.Collections.Specialized;
 
 namespace Csla.Configuration
@@ -17,11 +16,23 @@ namespace Csla.Configuration
   /// </summary>
   public static class ConfigurationManager
   {
-#if NETSTANDARD2_0
     private static NameValueCollection _settings = new NameValueCollection();
-#else
-    private static NameValueCollection _settings = System.Configuration.ConfigurationManager.AppSettings;
+
+    static ConfigurationManager()
+    {
+#if !NETSTANDARD2_0
+      try
+      {
+        _settings = System.Configuration.ConfigurationManager.AppSettings;
+        foreach (System.Configuration.ConnectionStringSettings item in System.Configuration.ConfigurationManager.ConnectionStrings)
+          ConnectionStrings.Add(item.Name, new ConnectionStringSettings(item));
+      }
+      catch (Exception ex)
+      {
+        throw new ConfigurationErrorsException(ex.Message, ex);
+      }
 #endif
+    }
 
     /// <summary>
     /// Gets or sets the app settings for the application's default settings.
@@ -39,30 +50,11 @@ namespace Csla.Configuration
       }
     }
 
-#if NETSTANDARD2_0
-    private static ConnectionStringSettingsCollection _connectionStrings = new ConnectionStringSettingsCollection();
-#else
-    private static System.Configuration.ConnectionStringSettingsCollection  _connectionStrings = System.Configuration.ConfigurationManager.ConnectionStrings;
-#endif
-
     /// <summary>
     /// Gets or sets the connection strings from the 
     /// application's default settings.
     /// </summary>
-#if NETSTANDARD2_0
-    public static ConnectionStringSettingsCollection ConnectionStrings
-#else
-    public static System.Configuration.ConnectionStringSettingsCollection ConnectionStrings
-#endif
-    {
-      get
-      {
-        return _connectionStrings;
-      }
-      set
-      {
-        _connectionStrings = value;
-      }
-    }
+    public static ConnectionStringSettingsCollection ConnectionStrings { get; set; }
+      = new ConnectionStringSettingsCollection();
   }
 }

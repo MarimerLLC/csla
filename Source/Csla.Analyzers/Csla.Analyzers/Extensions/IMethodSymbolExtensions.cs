@@ -54,7 +54,7 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.DataPortalDelete ||
           @this.Name == CslaMemberConstants.Operations.DataPortalDeleteSelf ||
           @this.Name == CslaMemberConstants.Operations.DataPortalExecute;
-        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalOperationAttribute());
+        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalRootOperationAttribute());
         return new DataPortalOperationQualification(byNamingConvention, byAttribute);
       }
     }
@@ -74,7 +74,7 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.ChildUpdate ||
           @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf ||
           @this.Name == CslaMemberConstants.Operations.ChildExecute;
-        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalOperationAttribute());
+        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalChildOperationAttribute());
         return new DataPortalOperationQualification(byNamingConvention, byAttribute);
       }
     }

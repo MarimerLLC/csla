@@ -29,6 +29,22 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsDataPortalOperationAttribute());
     }
 
+    internal static bool IsDataPortalRootOperationAttribute(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.DataPortalRootOperationAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsDataPortalRootOperationAttribute());
+    }
+
+    internal static bool IsDataPortalChildOperationAttribute(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.DataPortalChildOperationAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsDataPortalChildOperationAttribute());
+    }
+
     internal static bool IsRunLocalAttribute(this ITypeSymbol @this)
     {
       return @this != null &&

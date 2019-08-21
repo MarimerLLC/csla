@@ -42,7 +42,9 @@
       public const string BusinessBase = nameof(BusinessBase);
       public const string BusinessBindingListBase = nameof(BusinessBindingListBase);
       public const string BusinessListBase = nameof(BusinessListBase);
+      public const string DataPortalChildOperationAttribute = nameof(DataPortalChildOperationAttribute);
       public const string DataPortalOperationAttribute = nameof(DataPortalOperationAttribute);
+      public const string DataPortalRootOperationAttribute = nameof(DataPortalRootOperationAttribute);
       public const string DynamicListBase = nameof(DynamicListBase);
       public const string IBusinessObject = nameof(IBusinessObject);
       public const string IMobileObject = nameof(IMobileObject);

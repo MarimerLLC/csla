@@ -34,21 +34,25 @@
       public const string ChildInsert = "Child_Insert";
       public const string ChildUpdate = "Child_Update";
       public const string ChildDeleteSelf = "Child_DeleteSelf";
+      public const string ChildExecute = "Child_Execute";
     }
 
     public static class Types
     {
-      public const string BusinessBase = "BusinessBase";
-      public const string BusinessBindingListBase = "BusinessBindingListBase";
-      public const string BusinessListBase = "BusinessListBase";
-      public const string DynamicListBase = "DynamicListBase";
-      public const string IBusinessObject = "IBusinessObject";
-      public const string IMobileObject = "IMobileObject";
-      public const string IPropertyInfo = "IPropertyInfo";
-      public const string ManagedObjectBase = "ManagedObjectBase";
-      public const string ObjectFactoryBase = "ObjectFactory";
-      public const string ReadOnlyBase = "ReadOnlyBase";
-      public const string RunLocalAttribute = "RunLocalAttribute";
+      public const string BusinessBase = nameof(BusinessBase);
+      public const string BusinessBindingListBase = nameof(BusinessBindingListBase);
+      public const string BusinessListBase = nameof(BusinessListBase);
+      public const string DataPortalChildOperationAttribute = nameof(DataPortalChildOperationAttribute);
+      public const string DataPortalOperationAttribute = nameof(DataPortalOperationAttribute);
+      public const string DataPortalRootOperationAttribute = nameof(DataPortalRootOperationAttribute);
+      public const string DynamicListBase = nameof(DynamicListBase);
+      public const string IBusinessObject = nameof(IBusinessObject);
+      public const string IMobileObject = nameof(IMobileObject);
+      public const string IPropertyInfo = nameof(IPropertyInfo);
+      public const string ManagedObjectBase = nameof(ManagedObjectBase);
+      public const string ObjectFactory = nameof(ObjectFactory);
+      public const string ReadOnlyBase = nameof(ReadOnlyBase);
+      public const string RunLocalAttribute = nameof(RunLocalAttribute);
     }
 
     public const string AssemblyName = "Csla";

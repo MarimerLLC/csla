@@ -1,10 +1,8 @@
-using Csla.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Csla.Analyzers.Extensions.IMethodSymbolExtensions;
@@ -14,28 +12,57 @@ namespace Csla.Analyzers.Tests.Extensions
   [TestClass]
   public sealed class IMethodSymbolExtensionsTests
   {
-    private const string AMethodName = "AMethod";
+    private const string AMethod = nameof(AMethod);
+    private const string DP_Create = nameof(DP_Create);
+    private const string DP_Fetch = nameof(DP_Fetch);
+    private const string DP_Insert = nameof(DP_Insert);
+    private const string DP_Update = nameof(DP_Update);
+    private const string DP_Delete = nameof(DP_Delete);
+    private const string DP_DeleteSelf = nameof(DP_DeleteSelf);
+    private const string DP_Execute = nameof(DP_Execute);
+    private const string C_Create = nameof(C_Create);
+    private const string C_Fetch = nameof(C_Fetch);
+    private const string C_Insert = nameof(C_Insert);
+    private const string C_Update = nameof(C_Update);
+    private const string C_DeleteSelf = nameof(C_DeleteSelf);
+    private const string C_Execute = nameof(C_Execute);
 
-    private const string DataPortalOperationCode =
-@"namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
-{
+    private static readonly string DataPortalOperationCode =
+$@"namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
+{{
   public class DataPortalOperations
-  {
-    public void AMethod() { }
-    public void DataPortal_Create() { }
-    public void DataPortal_Fetch() { }
-    public void DataPortal_Insert() { }
-    public void DataPortal_Update() { }
-    public void DataPortal_Delete() { }
-    public void DataPortal_DeleteSelf() { }
-    public void DataPortal_Execute() { }
-    public void Child_Create() { }
-    public void Child_Fetch() { }
-    public void Child_Insert() { }
-    public void Child_Update() { }
-    public void Child_DeleteSelf() { }
-  }
-}";
+  {{
+    public void {AMethod} () {{ }}
+    
+    public void {CslaMemberConstants.Operations.DataPortalCreate}() {{ }}
+    public void {CslaMemberConstants.Operations.DataPortalFetch}() {{ }}
+    public void {CslaMemberConstants.Operations.DataPortalInsert}() {{ }}
+    public void {CslaMemberConstants.Operations.DataPortalUpdate}() {{ }}
+    public void {CslaMemberConstants.Operations.DataPortalDelete}() {{ }}
+    public void {CslaMemberConstants.Operations.DataPortalDeleteSelf}() {{ }}
+    public void {CslaMemberConstants.Operations.DataPortalExecute}() {{ }}
+    public void {CslaMemberConstants.Operations.ChildCreate}() {{ }}
+    public void {CslaMemberConstants.Operations.ChildFetch}() {{ }}
+    public void {CslaMemberConstants.Operations.ChildInsert}() {{ }}
+    public void {CslaMemberConstants.Operations.ChildUpdate}() {{ }}
+    public void {CslaMemberConstants.Operations.ChildDeleteSelf}() {{ }}
+    public void {CslaMemberConstants.Operations.ChildExecute}() {{ }}
+
+    [Create] public void {DP_Create}() {{ }}
+    [Fetch] public void {DP_Fetch}() {{ }}
+    [Insert] public void {DP_Insert}() {{ }}
+    [Update] public void {DP_Update}() {{ }}
+    [Delete] public void {DP_Delete}() {{ }}
+    [DeleteSelf] public void {DP_DeleteSelf}() {{ }}
+    [Execute] public void {DP_Execute}() {{ }}
+    [CreateChild] public void {C_Create}() {{ }}
+    [FetchChild] public void {C_Fetch}() {{ }}
+    [InsertChild] public void {C_Insert}() {{ }}
+    [UpdateChild] public void {C_Update}() {{ }}
+    [DeleteSelfChild] public void {C_DeleteSelf}() {{ }}
+    [ExecuteChild] public void {C_Execute}() {{ }}
+  }}
+}}";
     private const string PropertyInfoManagementCode =
 @"namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
 {
@@ -75,153 +102,153 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsPropertyInfoManagementMethodForMethodThatIsNotAPropertyInfoManagementMethod()
     {
       Assert.IsFalse((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, "Something", typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, "Something")).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForSetProperty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.SetProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.SetProperty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForSetPropertyConvert()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.SetPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.SetPropertyConvert)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForGetProperty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetProperty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForGetPropertyConvert()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetPropertyConvert)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetPropertyConvert, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.GetPropertyConvert)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLazyGetProperty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetProperty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLazyGetPropertyAsync()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetPropertyAsync, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetPropertyAsync)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetPropertyAsync, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyGetPropertyAsync)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLazyReadProperty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadProperty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLazyReadPropertyAsync()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadPropertyAsync, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadPropertyAsync)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadPropertyAsync, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LazyReadPropertyAsync)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLoadPropertyAsync()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyAsync, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyAsync)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyAsync, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyAsync)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLoadPropertyMarkDirty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyMarkDirty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyMarkDirty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyMarkDirty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyMarkDirty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForReadProperty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadProperty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadProperty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForReadPropertyConvert()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadPropertyConvert)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadPropertyConvert, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadPropertyConvert)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadPropertyConvert, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.ReadPropertyConvert)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLoadProperty()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadProperty, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadProperty, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadProperty)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadProperty, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadProperty)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
     public async Task IsPropertyInfoManagementMethodForLoadPropertyConvert()
     {
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyConvert, typeof(BusinessBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyConvert)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyConvert, typeof(ReadOnlyBase<>))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyConvert)).IsPropertyInfoManagementMethod());
 
       Assert.IsTrue((await GetMethodReferenceSymbolAsync(
-        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyConvert, typeof(ManagedObjectBase))).IsPropertyInfoManagementMethod());
+        PropertyInfoManagementCode, CslaMemberConstants.Properties.LoadPropertyConvert)).IsPropertyInfoManagementMethod());
     }
 
     [TestMethod]
@@ -239,17 +266,17 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task IsDataPortalOperationForMethodThatIsNotADataPortalOperation() => 
       Assert.IsFalse((await GetMethodSymbolAsync(
-        DataPortalOperationCode, AMethodName)).IsDataPortalOperation());
+        DataPortalOperationCode, AMethod)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForMethodThatIsNotADataPortalOperation() => 
       Assert.IsFalse((await GetMethodSymbolAsync(
-        DataPortalOperationCode, AMethodName)).IsRootDataPortalOperation());
+        DataPortalOperationCode, AMethod)).IsRootDataPortalOperation());
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForMethodThatIsNotADataPortalOperation() => 
       Assert.IsFalse((await GetMethodSymbolAsync(
-        DataPortalOperationCode, AMethodName)).IsChildDataPortalOperation());
+        DataPortalOperationCode, AMethod)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalCreate() => 
@@ -267,6 +294,21 @@ namespace Csla.Analyzers.Tests.Extensions
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalCreate)).IsChildDataPortalOperation());
 
     [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalCreateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Create)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalCreateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Create)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalCreateWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Create)).IsChildDataPortalOperation());
+
+    [TestMethod]
     public async Task IsDataPortalOperationForDataPortalFetch() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalFetch)).IsDataPortalOperation());
@@ -280,6 +322,21 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsChildDataPortalOperationForDataPortalFetch() => 
       Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalFetch)).IsChildDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalFetchWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Fetch)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalFetchWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Fetch)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalFetchWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Fetch)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalInsert() => 
@@ -297,6 +354,21 @@ namespace Csla.Analyzers.Tests.Extensions
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalInsert)).IsChildDataPortalOperation());
 
     [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalInsertWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Insert)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalInsertWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Insert)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalInsertWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Insert)).IsChildDataPortalOperation());
+
+    [TestMethod]
     public async Task IsDataPortalOperationForDataPortalUpdate() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalUpdate)).IsDataPortalOperation());
@@ -310,6 +382,21 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsChildDataPortalOperationForDataPortalUpdate() => 
       Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalUpdate)).IsChildDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalUpdateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Update)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalUpdateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Update)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalUpdateWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Update)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalDelete() => 
@@ -327,6 +414,21 @@ namespace Csla.Analyzers.Tests.Extensions
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDelete)).IsChildDataPortalOperation());
 
     [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalDeleteWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Delete)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalDeleteWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Delete)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalDeleteWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Delete)).IsChildDataPortalOperation());
+
+    [TestMethod]
     public async Task IsDataPortalOperationForDataPortalDeleteSelf() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDeleteSelf)).IsDataPortalOperation());
@@ -340,6 +442,21 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsChildDataPortalOperationForDataPortalDeleteSelf() => 
       Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDeleteSelf)).IsChildDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalDeleteSelfWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_DeleteSelf)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalDeleteSelfWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_DeleteSelf)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalDeleteSelfWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_DeleteSelf)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalExecute() => 
@@ -357,6 +474,21 @@ namespace Csla.Analyzers.Tests.Extensions
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalExecute)).IsChildDataPortalOperation());
 
     [TestMethod]
+    public async Task IsDataPortalOperationForDataPortalExecuteWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Execute)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForDataPortalExecuteWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Execute)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForDataPortalExecuteWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, DP_Execute)).IsChildDataPortalOperation());
+
+    [TestMethod]
     public async Task IsDataPortalOperationForChildCreate() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildCreate)).IsDataPortalOperation());
@@ -370,6 +502,21 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsChildDataPortalOperationForChildCreate() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildCreate)).IsChildDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsDataPortalOperationForChildCreateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Create)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForChildCreateWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Create)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForChildCreateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Create)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildFetch() => 
@@ -387,6 +534,21 @@ namespace Csla.Analyzers.Tests.Extensions
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildFetch)).IsChildDataPortalOperation());
 
     [TestMethod]
+    public async Task IsDataPortalOperationForChildFetchWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Fetch)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForChildFetchWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Fetch)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForChildFetchWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Fetch)).IsChildDataPortalOperation());
+
+    [TestMethod]
     public async Task IsDataPortalOperationForChildInsert() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildInsert)).IsDataPortalOperation());
@@ -400,6 +562,21 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsChildDataPortalOperationForChildInsert() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildInsert)).IsChildDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsDataPortalOperationForChildInsertWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Insert)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForChildInsertWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Insert)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForChildInsertWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Insert)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildUpdate() => 
@@ -417,6 +594,21 @@ namespace Csla.Analyzers.Tests.Extensions
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildUpdate)).IsChildDataPortalOperation());
 
     [TestMethod]
+    public async Task IsDataPortalOperationForChildUpdateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Update)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForChildUpdateWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Update)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForChildUpdateWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Update)).IsChildDataPortalOperation());
+
+    [TestMethod]
     public async Task IsDataPortalOperationForChildDeleteSelf() => 
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildDeleteSelf)).IsDataPortalOperation());
@@ -431,17 +623,49 @@ namespace Csla.Analyzers.Tests.Extensions
       Assert.IsTrue((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildDeleteSelf)).IsChildDataPortalOperation());
 
-    private static async Task<(SemanticModel, SyntaxNode)> ParseFileAsync(string code, params PortableExecutableReference[] references)
+    [TestMethod]
+    public async Task IsDataPortalOperationForChildExecute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, CslaMemberConstants.Operations.ChildExecute)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForChildExecute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, CslaMemberConstants.Operations.ChildExecute)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForChildExecute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, CslaMemberConstants.Operations.ChildExecute)).IsChildDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsDataPortalOperationForChildExecuteWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Execute)).IsDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForChildExecuteWithAttribute() =>
+      Assert.IsFalse((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Execute)).IsRootDataPortalOperation());
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForChildExecuteWithAttribute() =>
+      Assert.IsTrue((await GetMethodSymbolAsync(
+        DataPortalOperationCode, C_Execute)).IsChildDataPortalOperation());
+
+    private static async Task<(SemanticModel, SyntaxNode)> ParseFileAsync(string code)
     {
       var tree = CSharpSyntaxTree.ParseText(code);
-      var refs = new List<PortableExecutableReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) };
-      refs.AddRange(references);
-
       var compilation = CSharpCompilation.Create(
         Guid.NewGuid().ToString("N"),
         syntaxTrees: new[] { tree },
-        references: refs);
+        references: new[]
+        {
+          MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+          MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location)
+        });
 
+      //var diagnostics = compilation.GetDiagnostics();
       var model = compilation.GetSemanticModel(tree);
       return (compilation.GetSemanticModel(tree), await tree.GetRootAsync().ConfigureAwait(false));
     }
@@ -461,10 +685,9 @@ namespace Csla.Analyzers.Tests.Extensions
       return null;
     }
 
-    private async Task<IMethodSymbol> GetMethodReferenceSymbolAsync(string code, string name, Type type)
+    private async Task<IMethodSymbol> GetMethodReferenceSymbolAsync(string code, string name)
     {
-      var (model, root) = await ParseFileAsync(
-        code, MetadataReference.CreateFromFile(type.Assembly.Location));
+      var (model, root) = await ParseFileAsync(code);
 
       foreach (var invocation in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
       {

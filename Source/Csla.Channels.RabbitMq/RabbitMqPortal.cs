@@ -57,18 +57,19 @@ namespace Csla.Channels.RabbitMq
 
     private void InitializeRabbitMQ()
     {
-      Console.WriteLine($"Initializing {DataPortalUrl}");
-      DataPortalUri = new Uri(DataPortalUrl);
-      var url = DataPortalUri;
-      if (url.Scheme != "rabbitmq")
-        throw new UriFormatException("Scheme != rabbitmq://");
-      if (string.IsNullOrWhiteSpace(url.Host))
-        throw new UriFormatException("Host");
-      DataPortalQueueName = url.AbsolutePath.Substring(1);
-      if (string.IsNullOrWhiteSpace(DataPortalQueueName))
-        throw new UriFormatException("DataPortalQueueName");
       if (Connection == null)
       {
+        Console.WriteLine($"Initializing connection to {DataPortalUrl}");
+        DataPortalUri = new Uri(DataPortalUrl);
+        var url = DataPortalUri;
+        if (url.Scheme != "rabbitmq")
+          throw new UriFormatException("Scheme != rabbitmq://");
+        if (string.IsNullOrWhiteSpace(url.Host))
+          throw new UriFormatException("Host");
+        DataPortalQueueName = url.AbsolutePath.Substring(1);
+        if (string.IsNullOrWhiteSpace(DataPortalQueueName))
+          throw new UriFormatException("DataPortalQueueName");
+
         var factory = new ConnectionFactory() { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
@@ -139,14 +140,22 @@ namespace Csla.Channels.RabbitMq
       }
       catch (Exception ex)
       {
-        result = new HttpResponse { ErrorData = new HttpErrorInfo(ex) };
-        var response = MobileFormatter.Serialize(result);
-        SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
+        try
+        {
+          result = new HttpResponse { ErrorData = new HttpErrorInfo(ex) };
+          var response = MobileFormatter.Serialize(result);
+          SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
+        }
+        catch (Exception ex1)
+        {
+          Console.WriteLine($"## ERROR {ex1.Message}");
+        }
       }
     }
 
     private void SendMessage(string target, string correlationId, byte[] request)
     {
+      InitializeRabbitMQ();
       var props = Channel.CreateBasicProperties();
       props.CorrelationId = correlationId;
       Channel.BasicPublish(

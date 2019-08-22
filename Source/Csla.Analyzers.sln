@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Analyzers", "Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj", "{90324805-D023-4A43-8491-AF4EE7B5DFBD}"
 EndProject
@@ -9,12 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Analyzers.Tests", "Csl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Vsix", "Csla.Analyzers\Csla.Analyzers.Vsix\Csla.Analyzers.Vsix.csproj", "{50271129-612E-46FA-9F10-3F7C581ECA40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Net4.6", "Csla.Net4.6\Csla.Net4.6.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.NetStandard2.0", "Csla.NetStandard2.0\Csla.NetStandard2.0.csproj", "{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Mono Debug|Any CPU = Mono Debug|Any CPU
@@ -53,16 +50,16 @@ Global
 		{50271129-612E-46FA-9F10-3F7C581ECA40}.Release|Any CPU.Build.0 = Release|Any CPU
 		{50271129-612E-46FA-9F10-3F7C581ECA40}.Testing|Any CPU.ActiveCfg = Release|Any CPU
 		{50271129-612E-46FA-9F10-3F7C581ECA40}.Testing|Any CPU.Build.0 = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|Any CPU.ActiveCfg = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|Any CPU.Build.0 = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|Any CPU.ActiveCfg = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|Any CPU.Build.0 = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Any CPU.Build.0 = Testing|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
+		{F674CC1F-BEAA-49B8-B9A2-C3854D742FA5}.Testing|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

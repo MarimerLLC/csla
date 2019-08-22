@@ -40,7 +40,7 @@ namespace Csla.Analyzers
         foreach(var argument in methodSymbol.Parameters)
         {
           if (!argument.Type.IsPrimitive() &&
-            (argument.Type is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable))
+            argument.Type is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));

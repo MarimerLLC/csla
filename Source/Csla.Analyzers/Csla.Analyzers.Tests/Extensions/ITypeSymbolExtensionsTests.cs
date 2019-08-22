@@ -356,11 +356,11 @@ public class A : BusinessBase<A>
 
       var compilation = CSharpCompilation.Create(Guid.NewGuid().ToString("N"),
         syntaxTrees: new[] { tree },
-        references: new[]
+        references: AssemblyReferences.GetMetadataReferences(new[]
         {
-          MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-          MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location)
-        });
+          typeof(object).Assembly,
+          typeof(BusinessBase<>).Assembly
+        }));
 
       var model = compilation.GetSemanticModel(tree);
       var root = await tree.GetRootAsync().ConfigureAwait(false);

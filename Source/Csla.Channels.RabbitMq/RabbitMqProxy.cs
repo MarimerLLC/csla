@@ -85,9 +85,9 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     protected virtual void InitializeRabbitMQ()
     {
-      var url = new Uri(DataPortalUrl);
       if (Connection == null)
       {
+        var url = new Uri(DataPortalUrl);
         Console.WriteLine($"Initializing {DataPortalUrl}");
         if (url.Scheme != "rabbitmq")
           throw new UriFormatException("Scheme != rabbitmq://");
@@ -106,26 +106,12 @@ namespace Csla.Channels.RabbitMq
         if (userInfo.Length > 1)
           factory.Password = userInfo[1];
         Connection = factory.CreateConnection();
-        Connection.ConnectionShutdown += (s, e) =>
-        {
-          Connection?.Dispose();
-          Connection = null;
-          Channel = null;
-        };
-      }
-      if (Channel == null)
-      {
         Channel = Connection.CreateModel();
-        Channel.ModelShutdown += (s, e) =>
+        if (QueueListener == null)
         {
-          Channel?.Dispose();
-          Channel = null;
-        };
-      }
-      if (QueueListener == null)
-      {
-        QueueListener = ProxyListener.GetListener(url);
-        QueueListener.StartListening();
+          QueueListener = ProxyListener.GetListener(url);
+          QueueListener.StartListening();
+        }
       }
     }
 

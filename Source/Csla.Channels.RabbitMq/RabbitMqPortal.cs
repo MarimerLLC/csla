@@ -79,21 +79,7 @@ namespace Csla.Channels.RabbitMq
         if (userInfo.Length > 1)
           factory.Password = userInfo[1];
         Connection = factory.CreateConnection();
-        Connection.ConnectionShutdown += (s, e) =>
-        {
-          Connection?.Dispose();
-          Connection = null;
-          Channel = null;
-        };
-      }
-      if (Channel == null)
-      {
         Channel = Connection.CreateModel();
-        Channel.ModelShutdown += (s, e) =>
-        {
-          Channel?.Dispose();
-          Channel = null;
-        };
       }
     }
 

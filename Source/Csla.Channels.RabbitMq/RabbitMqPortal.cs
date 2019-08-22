@@ -26,10 +26,10 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Gets the URI for the data portal service.
     /// </summary>
-    public Uri DataPortalUrl { get; private set; }
+    public string DataPortalUrl { get; private set; }
     private IConnection Connection;
     private IModel Channel;
-
+    private string DataPortalQueueName;
     /// <summary>
     /// Gets or sets the timeout for network
     /// operations in seconds (default is 30 seconds).
@@ -39,21 +39,61 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
+    public RabbitMqPortal()
+    {
+      DataPortalUrl = ApplicationContext.DataPortalUrlString;
+    }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     /// <param name="dataPortalUrl">URI for the data portal</param>
-    public RabbitMqPortal(Uri dataPortalUrl)
+    public RabbitMqPortal(string dataPortalUrl)
     {
       DataPortalUrl = dataPortalUrl;
     }
 
-    private void Initialize()
+    private Uri DataPortalUri { get; set; }
+
+    private void InitializeRabbitMQ()
     {
+      Console.WriteLine($"Initializing {DataPortalUrl}");
+      DataPortalUri = new Uri(DataPortalUrl);
+      var url = DataPortalUri;
+      if (url.Scheme != "rabbitmq")
+        throw new UriFormatException("Scheme != rabbitmq://");
+      if (string.IsNullOrWhiteSpace(url.Host))
+        throw new UriFormatException("Host");
+      DataPortalQueueName = url.AbsolutePath.Substring(1);
+      if (string.IsNullOrWhiteSpace(DataPortalQueueName))
+        throw new UriFormatException("DataPortalQueueName");
       if (Connection == null)
       {
-        var factory = new ConnectionFactory() { HostName = DataPortalUrl.Host };
+        var factory = new ConnectionFactory() { HostName = url.Host };
+        if (url.Port < 0)
+          factory.Port = url.Port;
+        var userInfo = url.UserInfo.Split(':');
+        if (userInfo.Length > 0 && !string.IsNullOrWhiteSpace(userInfo[0]))
+          factory.UserName = userInfo[0];
+        if (userInfo.Length > 1)
+          factory.Password = userInfo[1];
         Connection = factory.CreateConnection();
+        Connection.ConnectionShutdown += (s, e) =>
+        {
+          Connection?.Dispose();
+          Connection = null;
+          Channel = null;
+        };
       }
       if (Channel == null)
+      {
         Channel = Connection.CreateModel();
+        Channel.ModelShutdown += (s, e) =>
+        {
+          Channel?.Dispose();
+          Channel = null;
+        };
+      }
     }
 
     /// <summary>
@@ -61,9 +101,9 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     public void StartListening()
     {
-      Initialize();
+      InitializeRabbitMQ();
       Channel.QueueDeclare(
-        queue: DataPortalUrl.Host, 
+        queue: DataPortalQueueName,
         durable: false, 
         exclusive: false, 
         autoDelete: false, 
@@ -72,9 +112,11 @@ namespace Csla.Channels.RabbitMq
       var consumer = new EventingBasicConsumer(Channel);
       consumer.Received += (model, ea) =>
       {
+        Console.WriteLine($"Received {ea.BasicProperties.Type} for {ea.BasicProperties.CorrelationId} from {ea.BasicProperties.ReplyTo}");
         InvokePortal(ea, ea.Body);
       };
-      Channel.BasicConsume(queue: DataPortalUrl.Host, autoAck: true, consumer: consumer);
+      Console.WriteLine($"Listening on queue {DataPortalQueueName}");
+      Channel.BasicConsume(queue: DataPortalQueueName, autoAck: true, consumer: consumer);
     }
 
     private async void InvokePortal(BasicDeliverEventArgs ea, byte[] requestData)
@@ -105,13 +147,6 @@ namespace Csla.Channels.RabbitMq
 
     private void SendMessage(string target, string correlationId, byte[] request)
     {
-      Channel.QueueDeclare(
-        queue: target,
-        durable: false,
-        exclusive: false,
-        autoDelete: false,
-        arguments: null);
-
       var props = Channel.CreateBasicProperties();
       props.CorrelationId = correlationId;
       Channel.BasicPublish(

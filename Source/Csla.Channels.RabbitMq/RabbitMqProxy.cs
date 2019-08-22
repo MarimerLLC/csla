@@ -68,15 +68,15 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     protected IModel Channel { get; set; }
     /// <summary>
-    /// Gets or sets the queue for inbound messages
-    /// and replies.
-    /// </summary>
-    protected QueueDeclareOk ReplyQueue { get; set; }
-    /// <summary>
     /// Gets or sets the name of the data portal
     /// service queue.
     /// </summary>
     protected string DataPortalQueueName { get; set; }
+    /// <summary>
+    /// Gets or sets the queue listener that handles
+    /// reply messages.
+    /// </summary>
+    private ProxyListener QueueListener { get; set; }
 
     /// <summary>
     /// Method responsible for creating the Connection,
@@ -85,6 +85,7 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     protected virtual void InitializeRabbitMQ()
     {
+      Console.WriteLine($"Initializing {DataPortalUrl}");
       var url = new Uri(DataPortalUrl);
       if (url.Scheme != "rabbitmq")
         throw new UriFormatException("Scheme != rabbitmq://");
@@ -93,13 +94,14 @@ namespace Csla.Channels.RabbitMq
       DataPortalQueueName = url.AbsolutePath.Substring(1);
       if (string.IsNullOrWhiteSpace(DataPortalQueueName))
         throw new UriFormatException("DataPortalQueueName");
+      Console.WriteLine($"Will send to queue {DataPortalQueueName}");
       if (Connection == null)
       {
         var factory = new ConnectionFactory() { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
         var userInfo = url.UserInfo.Split(':');
-        if (userInfo.Length > 0)
+        if (userInfo.Length > 0 && !string.IsNullOrWhiteSpace(userInfo[0]))
           factory.UserName = userInfo[0];
         if (userInfo.Length > 1)
           factory.Password = userInfo[1];
@@ -109,7 +111,6 @@ namespace Csla.Channels.RabbitMq
           Connection?.Dispose();
           Connection = null;
           Channel = null;
-          ReplyQueue = null;
         };
       }
       if (Channel == null)
@@ -119,27 +120,10 @@ namespace Csla.Channels.RabbitMq
         {
           Channel?.Dispose();
           Channel = null;
-          ReplyQueue = null;
         };
       }
-      if (ReplyQueue == null)
-      {
-        var query = url.Query.Substring(1).Split('&');
-        if (query.Length == 0 || !query[0].StartsWith("reply="))
-        {
-          ReplyQueue = Channel.QueueDeclare();
-        }
-        else
-        {
-          var split = query[0].Split('=');
-          ReplyQueue = Channel.QueueDeclare(
-            queue: split[1],
-            durable: false,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null);
-        }
-      }
+      QueueListener = ProxyListener.GetListener(url);
+      QueueListener.StartListening();
     }
 
     /// <summary>
@@ -211,8 +195,51 @@ namespace Csla.Channels.RabbitMq
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
       InitializeRabbitMQ();
-      throw new NotImplementedException();
+      DataPortalResult result;
+      try
+      {
+        var request = GetBaseCriteriaRequest();
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
+        if (!(criteria is IMobileObject))
+        {
+          criteria = new PrimitiveCriteria(criteria);
+        }
+        request.CriteriaData = MobileFormatter.Serialize(criteria);
+        request = ConvertRequest(request);
+
+        var serialized = MobileFormatter.Serialize(request);
+
+        serialized = await CallDataPortalServer(serialized, "fetch");
+
+        var response = (Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(obj, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      if (result.Error != null)
+        throw result.Error;
+      return result;
     }
 
     /// <summary>
@@ -226,8 +253,46 @@ namespace Csla.Channels.RabbitMq
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
       InitializeRabbitMQ();
-      throw new NotImplementedException();
+      DataPortalResult result;
+      try
+      {
+        var request = GetBaseUpdateCriteriaRequest();
+        request.ObjectData = MobileFormatter.Serialize(obj);
+        request = ConvertRequest(request);
+
+        var serialized = MobileFormatter.Serialize(request);
+
+        serialized = await CallDataPortalServer(serialized, "update");
+
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          var newobj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(newobj, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      if (result.Error != null)
+        throw result.Error;
+      return result;
     }
 
     /// <summary>
@@ -242,8 +307,51 @@ namespace Csla.Channels.RabbitMq
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
       InitializeRabbitMQ();
-      throw new NotImplementedException();
+      DataPortalResult result;
+      try
+      {
+        var request = GetBaseCriteriaRequest();
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
+        if (!(criteria is IMobileObject))
+        {
+          criteria = new PrimitiveCriteria(criteria);
+        }
+        request.CriteriaData = MobileFormatter.Serialize(criteria);
+        request = ConvertRequest(request);
+
+        var serialized = MobileFormatter.Serialize(request);
+
+        serialized = await CallDataPortalServer(serialized, "delete");
+
+        var response = (Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(obj, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      if (result.Error != null)
+        throw result.Error;
+      return result;
     }
 
     private async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation)
@@ -252,7 +360,7 @@ namespace Csla.Channels.RabbitMq
       var resetEvent = new Csla.Reflection.AsyncManualResetEvent();
       var wip = Wip.WorkInProgress.GetOrAdd(correlationId, new WipItem { ResetEvent = resetEvent });
 
-      SendMessage(ReplyQueue.QueueName, correlationId, operation, serialized);
+      SendMessage(QueueListener.ReplyQueue.QueueName, correlationId, operation, serialized);
 
       var timeout = Task.Delay(Timeout * 1000);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
@@ -263,13 +371,6 @@ namespace Csla.Channels.RabbitMq
 
     private void SendMessage(string sender, string correlationId, string operation, byte[] request)
     {
-      Channel.QueueDeclare(
-        queue: DataPortalQueueName,
-        durable: false,
-        exclusive: false,
-        autoDelete: false,
-        arguments: null);
-
       var props = Channel.CreateBasicProperties();
       if (!string.IsNullOrWhiteSpace(sender))
         props.ReplyTo = sender;
@@ -287,12 +388,12 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     public void Dispose()
     {
+      QueueListener?.Dispose();
       Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
       Channel = null;
       Connection = null;
-      ReplyQueue = null;
     }
 
     #region Conversions

@@ -42,7 +42,8 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasNamingConventionAndAttribute()
     {
-      var code = @"using Csla;
+      var code = 
+@"using Csla;
 
 public class A : BusinessBase<A>
 { 
@@ -56,12 +57,13 @@ public class A : BusinessBase<A>
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasAttribute()
     {
-      var code = @"using Csla;
+      var code = 
+@"using Csla;
 
 public class A : BusinessBase<A>
 { 
   [Fetch]
-  private void DP_Fetch() { }
+  private void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(
         code, Array.Empty<string>());
@@ -70,7 +72,8 @@ public class A : BusinessBase<A>
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasNamingConvention()
     {
-      var code = @"using Csla;
+      var code = 
+@"using Csla;
 
 public class A : BusinessBase<A>
 { 

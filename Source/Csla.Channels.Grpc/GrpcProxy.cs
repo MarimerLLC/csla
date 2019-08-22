@@ -32,26 +32,13 @@ namespace Csla.Channels.Grpc
     public int Timeout { get; set; }
 
     /// <summary>
-    /// Gets or sets the default URL address
-    /// for the data portal server.
-    /// </summary>
-    /// <remarks>
-    /// Deprecated: use ApplicationContext.DataPortalUrlString
-    /// </remarks>
-    public static string DefaultUrl
-    {
-      get { return ApplicationContext.DataPortalUrlString; }
-      set { ApplicationContext.DataPortalUrlString = value; }
-    }
-
-    /// <summary>
     /// Creates an instance of the object, initializing
     /// it to use the DefaultUrl 
     /// values.
     /// </summary>
     public GrpcProxy()
     {
-      this.DataPortalUrl = GrpcProxy.DefaultUrl;
+      this.DataPortalUrl = ApplicationContext.DataPortalUrlString;
     }
 
     /// <summary>

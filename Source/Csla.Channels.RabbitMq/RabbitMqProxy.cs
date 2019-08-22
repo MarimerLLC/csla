@@ -6,17 +6,13 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace Csla.Channels.RabbitMq
 {

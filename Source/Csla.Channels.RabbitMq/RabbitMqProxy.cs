@@ -85,18 +85,18 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     protected virtual void InitializeRabbitMQ()
     {
-      Console.WriteLine($"Initializing {DataPortalUrl}");
       var url = new Uri(DataPortalUrl);
-      if (url.Scheme != "rabbitmq")
-        throw new UriFormatException("Scheme != rabbitmq://");
-      if (string.IsNullOrWhiteSpace(url.Host))
-        throw new UriFormatException("Host");
-      DataPortalQueueName = url.AbsolutePath.Substring(1);
-      if (string.IsNullOrWhiteSpace(DataPortalQueueName))
-        throw new UriFormatException("DataPortalQueueName");
-      Console.WriteLine($"Will send to queue {DataPortalQueueName}");
       if (Connection == null)
       {
+        Console.WriteLine($"Initializing {DataPortalUrl}");
+        if (url.Scheme != "rabbitmq")
+          throw new UriFormatException("Scheme != rabbitmq://");
+        if (string.IsNullOrWhiteSpace(url.Host))
+          throw new UriFormatException("Host");
+        DataPortalQueueName = url.AbsolutePath.Substring(1);
+        if (string.IsNullOrWhiteSpace(DataPortalQueueName))
+          throw new UriFormatException("DataPortalQueueName");
+        Console.WriteLine($"Will send to queue {DataPortalQueueName}");
         var factory = new ConnectionFactory() { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
@@ -122,8 +122,11 @@ namespace Csla.Channels.RabbitMq
           Channel = null;
         };
       }
-      QueueListener = ProxyListener.GetListener(url);
-      QueueListener.StartListening();
+      if (QueueListener == null)
+      {
+        QueueListener = ProxyListener.GetListener(url);
+        QueueListener.StartListening();
+      }
     }
 
     /// <summary>

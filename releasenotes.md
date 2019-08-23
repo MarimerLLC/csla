@@ -24,6 +24,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Data Portal
 
+* [#1066](https://github.com/MarimerLLC/csla/issues/1066) Implement RabbitMQ data portal (`Csla.Channels.RabbitMq`) 🎉
 * [#1140](https://github.com/MarimerLLC/csla/issues/1140) Implement gRPC data portal (`Csla.Channels.Grpc`) 🎉
 * [#1176](https://github.com/MarimerLLC/csla/issues/1176) Enable passing multiple parameters to root DP methods (i.e. `FetchAsync`) 🎉
 * [#787](https://github.com/MarimerLLC/csla/issues/787) Enable per-method dependency injection for DP_XYZ and Child_XYZ method params 🎉

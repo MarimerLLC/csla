@@ -61,7 +61,8 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  private void DataPortal_Fetch() { }
+  [Fetch]
+  private void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, Array.Empty<string>());
@@ -75,7 +76,8 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  private void DataPortal_Fetch(int x) { }
+  [Fetch]
+  private void Fetch(int x) { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, Array.Empty<string>());
@@ -91,7 +93,8 @@ public class A { }
 
 public class B : BusinessBase<B>
 {
-  private void DataPortal_Fetch(A x) { }
+  [Fetch]
+  private void Fetch(A x) { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, new[] { Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments });
@@ -109,7 +112,8 @@ public class A { }
 
 public class B : BusinessBase<B>
 {
-  private void DataPortal_Fetch(A x) { }
+  [Fetch]
+  private void Fetch(A x) { }
 }
 ";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
@@ -124,7 +128,8 @@ public class B : BusinessBase<B>
 
 public class A : BusinessBase<A>
 {
-  private void Child_Fetch() { }
+  [FetchChild]
+  private void FetchChild() { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, Array.Empty<string>());
@@ -138,7 +143,8 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  private void Child_Fetch(int x) { }
+  [FetchChild]
+  private void FetchChild(int x) { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, Array.Empty<string>());
@@ -154,7 +160,8 @@ public class A { }
 
 public class B : BusinessBase<B>
 {
-  private void Child_Fetch(A x) { }
+  [FetchChild]
+  private void FetchChild(A x) { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, Array.Empty<string>());

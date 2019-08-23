@@ -33,7 +33,8 @@ namespace Csla.Analyzers.Tests
 
 public class A : BusinessBase<A>
 {
-  public string DataPortal_Fetch() { }
+  [Fetch]
+  public string Fetch() { }
 }";
 
       var document = TestHelpers.Create(code);
@@ -66,7 +67,8 @@ using System.Threading.Tasks;
 
 public class A : BusinessBase<A>
 {
-  public async string DataPortal_Fetch() { }
+  [Fetch]
+  public async string FetchAsync() { }
 }";
 
       var document = TestHelpers.Create(code);
@@ -98,7 +100,8 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  public async string DataPortal_Fetch() { }
+  [Fetch]
+  public async string FetchAsync() { }
 }";
 
       var document = TestHelpers.Create(code);

@@ -49,7 +49,8 @@ namespace Csla.Analyzers.Tests
       var code =
 @"public class A
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         code, Array.Empty<string>());
@@ -97,7 +98,8 @@ using System;
 [Serializable]
 public class A : BusinessBase<A>
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, 
         new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublic },
@@ -114,7 +116,8 @@ using System;
 [Serializable]
 public sealed class A : BusinessBase<A>
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, 
         new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublic },
@@ -125,12 +128,14 @@ public sealed class A : BusinessBase<A>
     public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface()
     {
       var code =
-@"using Csla.Core;
+@"using Csla;
+using Csla.Core;
 
 public interface A
   : IBusinessObject
 {
-  void DataPortal_Fetch();
+  [Fetch]
+  void Fetch();
 }";
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, 
         new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface });

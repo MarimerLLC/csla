@@ -28,7 +28,9 @@ namespace Csla.Analyzers.Tests.Extensions
     private const string C_Execute = nameof(C_Execute);
 
     private static readonly string DataPortalOperationCode =
-$@"namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
+$@"using Csla;
+
+namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
 {{
   public class DataPortalOperations
   {{
@@ -659,14 +661,13 @@ $@"namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
       var compilation = CSharpCompilation.Create(
         Guid.NewGuid().ToString("N"),
         syntaxTrees: new[] { tree },
-        references: new[]
+        references: AssemblyReferences.GetMetadataReferences(new[]
         {
-          MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-          MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location)
-        });
+          typeof(object).Assembly,
+          typeof(BusinessBase<>).Assembly,
+          typeof(Attribute).Assembly
+        }));
 
-      //var diagnostics = compilation.GetDiagnostics();
-      var model = compilation.GetSemanticModel(tree);
       return (compilation.GetSemanticModel(tree), await tree.GetRootAsync().ConfigureAwait(false));
     }
 

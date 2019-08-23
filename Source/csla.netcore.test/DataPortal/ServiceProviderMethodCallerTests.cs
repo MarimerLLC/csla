@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Csla;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,10 +43,27 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindMethodNullableCriteria()
+    {
+      var obj = new NullableCriteria();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, new object[] { 123 });
+      Assert.IsNotNull(method, "with int");
+      method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, new object[] { null });
+      Assert.IsNotNull(method, "with null");
+    }
+
+    [TestMethod]
+    public async Task FindMethodNullableCriteriaViaDataPortal()
+    {
+      var obj = await Csla.DataPortal.CreateAsync<NullableCriteria>(123);
+      obj = await Csla.DataPortal.CreateAsync<NullableCriteria>(null);
+    }
+
+    [TestMethod]
     public void FindMethodNoCriteriaNoDI()
     {
       var obj = new SimpleNoCriteriaCreate();
-      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, null);
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, new object[] { null });
       Assert.IsNotNull(method);
     }
 
@@ -355,5 +373,13 @@ namespace Csla.Test.DataPortal
     {
       // nada
     }
+  }
+
+  [Serializable]
+  public class NullableCriteria : BusinessBase<NullableCriteria>
+  {
+    [Create]
+    private void Create(int? c)
+    { }
   }
 }

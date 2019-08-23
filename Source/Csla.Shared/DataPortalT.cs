@@ -70,32 +70,6 @@ namespace Csla
       }
     }
 
-    internal static object GetCriteriaFromArray(params object[] criteria)
-    {
-      if (criteria == null)
-        return null;
-      else if (criteria.GetLength(0) == 0)
-        return EmptyCriteria;
-      else if (criteria.GetLength(0) == 1)
-        return criteria[0];
-      else
-        return new Core.MobileList<object>(criteria);
-    }
-
-    internal static object[] GetCriteriaArray(object criteria)
-    {
-      if (criteria == null)
-        return null;
-      else if (criteria == EmptyCriteria)
-        return new object[] { };
-      else if (criteria is object[] array)
-        return array;
-      else if (criteria is Core.MobileList<object> list)
-        return list.ToArray();
-      else
-        return new object[] { criteria };
-    }
-
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
       Server.DataPortalResult result = null;
@@ -104,7 +78,7 @@ namespace Csla
       {
         DataPortal.OnDataPortalInitInvoke(null);
 
-        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, objectType, GetCriteriaArray(criteria)))
+        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, objectType, DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "create",
@@ -113,7 +87,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, GetCriteriaArray(criteria));
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, DataPortal.GetCriteriaArray(criteria));
         var proxy = GetDataPortalProxy(objectType, method.RunLocal());
 #endif
 
@@ -168,7 +142,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public T Create(params object[] criteria)
     {
-      return (T)Create(typeof(T), GetCriteriaFromArray(criteria));
+      return (T)Create(typeof(T), DataPortal.GetCriteriaFromArray(criteria));
     }
 
     internal static object Create(Type objectType, object criteria)
@@ -195,12 +169,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public async Task<T> CreateAsync(params object[] criteria)
     {
-      if (criteria == null || criteria.GetLength(0) == 0)
-        return (T)await DoCreateAsync(typeof(T), EmptyCriteria, false);
-      else if (criteria.GetLength(0) == 1)
-        return (T)await DoCreateAsync(typeof(T), criteria[0], false);
-      else
-        return (T)await DoCreateAsync(typeof(T), new Core.MobileList<object>(criteria), false);
+      return (T)await DoCreateAsync(typeof(T), DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     /// <summary>
@@ -310,7 +279,7 @@ namespace Csla
       {
         DataPortal.OnDataPortalInitInvoke(null);
 
-        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, objectType, GetCriteriaArray(criteria)))
+        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, objectType, DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "get",
@@ -320,7 +289,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, GetCriteriaArray(criteria));
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, DataPortal.GetCriteriaArray(criteria));
         var proxy = GetDataPortalProxy(objectType, method.RunLocal());
 #endif
 
@@ -424,7 +393,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public T Fetch(params object[] criteria)
     {
-      return (T)Fetch(typeof(T), GetCriteriaFromArray(criteria));
+      return (T)Fetch(typeof(T), DataPortal.GetCriteriaFromArray(criteria));
     }
 
     internal static object Fetch(Type objectType, object criteria)
@@ -451,12 +420,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public async Task<T> FetchAsync(params object[] criteria)
     {
-      if (criteria == null || criteria.GetLength(0) == 0)
-        return (T)await DoFetchAsync(typeof(T), EmptyCriteria, false);
-      else if (criteria.GetLength(0) == 1)
-        return (T)await DoFetchAsync(typeof(T), criteria[0], false);
-      else
-        return (T)await DoFetchAsync(typeof(T), new Core.MobileList<object>(criteria), false);
+      return (T)await DoFetchAsync(typeof(T), DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     /// <summary>
@@ -649,7 +613,7 @@ namespace Csla
         else
         {
           System.Reflection.MethodInfo method;
-          var criteria = GetCriteriaArray(EmptyCriteria);
+          var criteria = DataPortal.GetCriteriaArray(EmptyCriteria);
           if (obj is Core.ICommandObject)
           {
             operation = DataPortalOperations.Execute;
@@ -887,7 +851,7 @@ namespace Csla
       {
         DataPortal.OnDataPortalInitInvoke(null);
 
-        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, objectType, GetCriteriaArray(criteria)))
+        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, objectType, DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "delete",
             objectType.Name));
@@ -896,7 +860,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetDeleteMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, GetCriteriaArray(criteria));
+        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, DataPortal.GetCriteriaArray(criteria));
         var proxy = GetDataPortalProxy(objectType, method.RunLocal());
 #endif
 
@@ -998,7 +962,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public void Delete(params object[] criteria)
     {
-      Delete(typeof(T), GetCriteriaFromArray(criteria));
+      Delete(typeof(T), DataPortal.GetCriteriaFromArray(criteria));
     }
 
     internal static void Delete(Type objectType, object criteria)
@@ -1066,12 +1030,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public async Task DeleteAsync(params object[] criteria)
     {
-      if (criteria == null || criteria.GetLength(0) == 0)
-        await DoDeleteAsync(typeof(T), EmptyCriteria, false);
-      else if (criteria.GetLength(0) == 1)
-        await DoDeleteAsync(typeof(T), criteria[0], false);
-      else
-        await DoDeleteAsync(typeof(T), new Core.MobileList<object>(criteria), false);
+      await DoDeleteAsync(typeof(T), DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     /// <summary>

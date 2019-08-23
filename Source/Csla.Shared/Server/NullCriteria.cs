@@ -1,25 +1,25 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="NullCriteria.cs" company="Marimer LLC">
+// <copyright file="EmptyCriteria.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Null criteria used by the data portal as a</summary>
+// <summary>Empty criteria used by the data portal as a</summary>
 //-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Server
 {
   /// <summary>
-  /// Null criteria used by the data portal as a
+  /// Empty criteria used by the data portal as a
   /// placeholder for a create/fetch request that
-  /// has a single null criteria parameter.
+  /// has no criteria.
   /// </summary>
   [Serializable]
-  public class NullCriteria : Csla.Core.MobileObject
+  public class EmptyCriteria : Csla.Core.MobileObject
   {
     /// <summary>
-    /// Gets an instance of NullCriteria
+    /// Gets an instance of EmptyCriteria
     /// </summary>
-    public static NullCriteria Instance { get; } = new NullCriteria();
+    public static EmptyCriteria Instance { get; } = new EmptyCriteria();
   }
 }

@@ -873,5 +873,35 @@ namespace Csla
     [Obsolete("Proxies no longer cached")]
     public static void ReleaseProxy()
     { }
+
+    internal static object GetCriteriaFromArray(params object[] criteria)
+    {
+      if (criteria == null)
+        return null;
+      else if (criteria.GetLength(0) == 0)
+        return EmptyCriteria.Instance;
+      else if (criteria.GetLength(0) == 1 && criteria[0] == null)
+        return NullCriteria.Instance;
+      else if (criteria.GetLength(0) == 1)
+        return criteria[0];
+      else
+        return new Core.MobileList<object>(criteria);
+    }
+
+    internal static object[] GetCriteriaArray(object criteria)
+    {
+      if (criteria == null)
+        return null;
+      else if (criteria == EmptyCriteria.Instance)
+        return new object[] { };
+      else if (criteria == NullCriteria.Instance)
+        return new object[] { null };
+      else if (criteria is object[] array)
+        return array;
+      else if (criteria is Core.MobileList<object> list)
+        return list.ToArray();
+      else
+        return new object[] { criteria };
+    }
   }
 }

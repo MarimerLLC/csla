@@ -111,7 +111,7 @@ namespace Csla.Server
     private async Task InvokeOperationAsync<T>(object criteria, bool isSync)
       where T : DataPortalOperationAttribute
     {
-      object[] parameters = DataPortal<object>.GetCriteriaArray(criteria);
+      object[] parameters = Csla.DataPortal.GetCriteriaArray(criteria);
       await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
     }
 #endif

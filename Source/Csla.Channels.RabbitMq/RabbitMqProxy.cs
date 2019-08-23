@@ -1,42 +1,32 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="GrpcProxy.cs" company="Marimer LLC">
+// <copyright file="RabbitMqProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
+using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-using Google.Protobuf;
-using Grpc.Net.Client;
-using Csla.DataPortalClient;
+using RabbitMQ.Client;
 
-namespace Csla.Channels.Grpc
+namespace Csla.Channels.RabbitMq
 {
   /// <summary>
   /// Implements a data portal proxy to relay data portal
-  /// calls to a remote application server by using gRPC.
+  /// calls to a remote application server by using RabbitMQ.
   /// </summary>
-  public class GrpcProxy : IDataPortalProxy
+  public class RabbitMqProxy : IDataPortalProxy, IDisposable
   {
     /// <summary>
-    /// Gets or sets the HttpClient timeout
-    /// in milliseconds (0 uses default HttpClient timeout).
-    /// </summary>
-    public int Timeout { get; set; }
-
-    /// <summary>
     /// Creates an instance of the object, initializing
-    /// it to use the DefaultUrl 
-    /// values.
+    /// it to use the DefaultUrl value.
     /// </summary>
-    public GrpcProxy()
+    public RabbitMqProxy()
     {
       this.DataPortalUrl = ApplicationContext.DataPortalUrlString;
     }
@@ -45,77 +35,85 @@ namespace Csla.Channels.Grpc
     /// Creates an instance of the object, initializing
     /// it to use the supplied URL.
     /// </summary>
-    /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public GrpcProxy(string dataPortalUrl)
+    /// <param name="dataPortalUrl">RabbitMQ service URL</param>
+    public RabbitMqProxy(string dataPortalUrl)
     {
       this.DataPortalUrl = dataPortalUrl;
     }
 
     /// <summary>
-    /// Gets the URL address for the data portal server
-    /// used by this proxy instance.
+    /// Gets the URL address for the RabbitMQ
+    /// service used by the data portal.
     /// </summary>
     public string DataPortalUrl { get; protected set; }
-
-    private static HttpClient _httpClient;
-
-    /// <summary>
-    /// Gets an HttpClient object for use 
-    /// by the gRPC client.
-    /// </summary>
-    protected virtual HttpClient GetHttpClient()
-    {
-      if (_httpClient == null)
-      {
-        _httpClient = new HttpClient
-        {
-          BaseAddress = new Uri(DataPortalUrl)
-        };
-        if (this.Timeout > 0)
-        {
-          _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
-        }
-      }
-      return _httpClient;
-    }
-
-    /// <summary>
-    /// Set HttpClient object for use by the gRPC client.
-    /// </summary>
-    /// <param name="client">HttpClient instance.</param>
-    public static void SetHttpClient(HttpClient client)
-    {
-      _httpClient = client;
-      _grpcClient = null;
-    }
-
-    private static GrpcService.GrpcServiceClient _grpcClient;
-
-    /// <summary>
-    /// Get gRPC client object used by data portal.
-    /// </summary>
-    /// <returns></returns>
-    protected virtual GrpcService.GrpcServiceClient GetGrpcClient()
-    {
-      if (_grpcClient == null)
-        _grpcClient = GrpcClient.Create<GrpcService.GrpcServiceClient>(GetHttpClient());
-      return _grpcClient;
-    }
-
-    /// <summary>
-    /// Set gRPC client object for use by data portal.
-    /// </summary>
-    /// <param name="client">gRPC client instance.</param>
-    public static void SetGrpcClient(GrpcService.GrpcServiceClient client)
-    {
-      _grpcClient = client;
-    }
 
     /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
     /// </summary>
     public bool IsServerRemote => true;
+
+    /// <summary>
+    /// Gets or sets the timeout for network
+    /// operations in seconds (default is 30 seconds).
+    /// </summary>
+    public int Timeout { get; set; } = 30;
+
+    /// <summary>
+    /// Gets or sets the connection to the RabbitMQ service.
+    /// </summary>
+    protected IConnection Connection { get; set; }
+    /// <summary>
+    /// Gets or sets the channel (model) for RabbitMQ.
+    /// </summary>
+    protected IModel Channel { get; set; }
+    /// <summary>
+    /// Gets or sets the name of the data portal
+    /// service queue.
+    /// </summary>
+    protected string DataPortalQueueName { get; set; }
+    /// <summary>
+    /// Gets or sets the queue listener that handles
+    /// reply messages.
+    /// </summary>
+    private ProxyListener QueueListener { get; set; }
+
+    /// <summary>
+    /// Method responsible for creating the Connection,
+    /// Channel, ReplyQueue, and DataPortalQueueName values
+    /// used for bi-directional communication.
+    /// </summary>
+    protected virtual void InitializeRabbitMQ()
+    {
+      if (Connection == null)
+      {
+        var url = new Uri(DataPortalUrl);
+        Console.WriteLine($"Initializing {DataPortalUrl}");
+        if (url.Scheme != "rabbitmq")
+          throw new UriFormatException("Scheme != rabbitmq://");
+        if (string.IsNullOrWhiteSpace(url.Host))
+          throw new UriFormatException("Host");
+        DataPortalQueueName = url.AbsolutePath.Substring(1);
+        if (string.IsNullOrWhiteSpace(DataPortalQueueName))
+          throw new UriFormatException("DataPortalQueueName");
+        Console.WriteLine($"Will send to queue {DataPortalQueueName}");
+        var factory = new ConnectionFactory() { HostName = url.Host };
+        if (url.Port < 0)
+          factory.Port = url.Port;
+        var userInfo = url.UserInfo.Split(':');
+        if (userInfo.Length > 0 && !string.IsNullOrWhiteSpace(userInfo[0]))
+          factory.UserName = userInfo[0];
+        if (userInfo.Length > 1)
+          factory.Password = userInfo[1];
+        Connection = factory.CreateConnection();
+        Channel = Connection.CreateModel();
+        if (QueueListener == null)
+        {
+          QueueListener = ProxyListener.GetListener(url);
+          QueueListener.StartListening();
+        }
+      }
+    }
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -127,6 +125,10 @@ namespace Csla.Channels.Grpc
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
+      InitializeRabbitMQ();
       DataPortalResult result;
       try
       {
@@ -141,9 +143,9 @@ namespace Csla.Channels.Grpc
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "create");
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -182,6 +184,10 @@ namespace Csla.Channels.Grpc
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
+      InitializeRabbitMQ();
       DataPortalResult result;
       try
       {
@@ -196,9 +202,9 @@ namespace Csla.Channels.Grpc
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "fetch");
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -236,6 +242,10 @@ namespace Csla.Channels.Grpc
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
+      InitializeRabbitMQ();
       DataPortalResult result;
       try
       {
@@ -245,7 +255,7 @@ namespace Csla.Channels.Grpc
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync);
+        serialized = await CallDataPortalServer(serialized, "update");
 
         var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
@@ -286,10 +296,13 @@ namespace Csla.Channels.Grpc
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
+
+      InitializeRabbitMQ();
       DataPortalResult result;
       try
       {
-
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
@@ -301,14 +314,15 @@ namespace Csla.Channels.Grpc
 
         var serialized = MobileFormatter.Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "delete");
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
         {
-          result = new DataPortalResult(null, null, globalContext);
+          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(obj, null, globalContext);
         }
         else if (response != null && response.ErrorData != null)
         {
@@ -329,43 +343,49 @@ namespace Csla.Channels.Grpc
       return result;
     }
 
-    private async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    private async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation)
     {
-      ByteString outbound = ByteString.CopyFrom(serialized);
-      var request = new RequestMessage
-      {
-        Body = outbound,
-        Operation = CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)
-      };
-      ResponseMessage response;
-      if (isSync)
-        response = GetGrpcClient().Invoke(request);
-      else
-        response = await GetGrpcClient().InvokeAsync(request);
-      return response.Body.ToByteArray();
+      var correlationId = Guid.NewGuid().ToString();
+      var resetEvent = new Csla.Reflection.AsyncManualResetEvent();
+      var wip = Wip.WorkInProgress.GetOrAdd(correlationId, new WipItem { ResetEvent = resetEvent });
+
+      SendMessage(QueueListener.ReplyQueue.QueueName, correlationId, operation, serialized);
+
+      var timeout = Task.Delay(Timeout * 1000);
+      if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
+        throw new TimeoutException();
+
+      return wip.Response;
     }
 
-    internal async Task<ResponseMessage> RouteMessage(RequestMessage request)
+    private void SendMessage(string sender, string correlationId, string operation, byte[] request)
     {
-      return await GetGrpcClient().InvokeAsync(request);
+      var props = Channel.CreateBasicProperties();
+      if (!string.IsNullOrWhiteSpace(sender))
+        props.ReplyTo = sender;
+      props.CorrelationId = correlationId;
+      props.Type = operation;
+      Channel.BasicPublish(
+        exchange: "",
+        routingKey: DataPortalQueueName,
+        basicProperties: props,
+        body: request);
     }
 
-    private string CreateOperationTag(string operatation, string versionToken, string routingToken)
+    /// <summary>
+    /// Dispose this object and its resources.
+    /// </summary>
+    public void Dispose()
     {
-      if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
-        return $"{operatation}/{routingToken}-{versionToken}";
-      else
-        return operatation;
+      QueueListener?.Dispose();
+      Connection?.Close();
+      Channel?.Dispose();
+      Connection?.Dispose();
+      Channel = null;
+      Connection = null;
     }
 
-    private string GetRoutingToken(Type objectType)
-    {
-      string result = null;
-      var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
-      if (list.Count() > 0)
-        result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
-      return result;
-    }
+    #region Conversions
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -397,14 +417,18 @@ namespace Csla.Channels.Grpc
       return response;
     }
 
+    #endregion
+
     #region Criteria
 
     private Csla.Server.Hosts.HttpChannel.CriteriaRequest GetBaseCriteriaRequest()
     {
-      var request = new Csla.Server.Hosts.HttpChannel.CriteriaRequest();
-      request.CriteriaData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      var request = new Csla.Server.Hosts.HttpChannel.CriteriaRequest
+      {
+        CriteriaData = null,
+        ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext),
+        GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext)
+      };
       if (ApplicationContext.AuthenticationType == "Windows")
       {
         request.Principal = MobileFormatter.Serialize(null);
@@ -420,10 +444,12 @@ namespace Csla.Channels.Grpc
 
     private Csla.Server.Hosts.HttpChannel.UpdateRequest GetBaseUpdateCriteriaRequest()
     {
-      var request = new Csla.Server.Hosts.HttpChannel.UpdateRequest();
-      request.ObjectData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      var request = new Csla.Server.Hosts.HttpChannel.UpdateRequest
+      {
+        ObjectData = null,
+        ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext),
+        GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext)
+      };
       if (ApplicationContext.AuthenticationType == "Windows")
       {
         request.Principal = MobileFormatter.Serialize(null);

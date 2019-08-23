@@ -335,6 +335,42 @@ public class A : BusinessBase<A>
       Assert.IsTrue((await GetAttributeTypeSymbolAsync(code, "B")).IsRunLocalAttribute());
     }
 
+    [TestMethod]
+    public async Task IsArgumentInjectableWithAttribute()
+    {
+      var code =
+@"using Csla;
+
+public class A
+{ 
+  private void B([Inject] int b) { }
+}";
+      Assert.IsTrue((await GetArgumentAttributeTypeSymbolAsync(code, "B")).IsInjectable());
+    }
+
+    [TestMethod]
+    public async Task IsArgumentInjectableWithoutAttribute()
+    {
+      var code =
+@"using System;
+
+public class CAttribute : Attribute { }
+
+public class A
+{ 
+  private void B([C] int b) { }
+}";
+      Assert.IsFalse((await GetArgumentAttributeTypeSymbolAsync(code, "B")).IsInjectable());
+    }
+
+    private async Task<ITypeSymbol> GetArgumentAttributeTypeSymbolAsync(string code, string methodName)
+    {
+      var (root, model) = await GetRootAndModel(code);
+      var methodSymbol = model.GetDeclaredSymbol(
+        root.DescendantNodes().OfType<MethodDeclarationSyntax>().First(_ => _.Identifier.Text == methodName));
+      return methodSymbol.Parameters[0].GetAttributes().First().AttributeClass;
+    }
+
     private async Task<ITypeSymbol> GetAttributeTypeSymbolAsync(string code, string methodName)
     {
       var (root, model) = await GetRootAndModel(code);

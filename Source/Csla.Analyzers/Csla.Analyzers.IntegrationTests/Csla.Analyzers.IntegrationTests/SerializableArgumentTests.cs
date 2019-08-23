@@ -17,6 +17,9 @@ namespace Csla.Analyzers.IntegrationTests
     [Fetch]
     private void Fetch(NonSerializedObject x) { }
 
+    [Fetch]
+    private void FetchWithInject([Inject] NonSerializedObject x) { }
+
     [FetchChild]
     private void FetchChild(int x) { }
 

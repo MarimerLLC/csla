@@ -65,6 +65,7 @@
       public const string DynamicListBase = nameof(DynamicListBase);
       public const string IBusinessObject = nameof(IBusinessObject);
       public const string IMobileObject = nameof(IMobileObject);
+      public const string InjectAttribute = nameof(InjectAttribute);
       public const string IPropertyInfo = nameof(IPropertyInfo);
       public const string ManagedObjectBase = nameof(ManagedObjectBase);
       public const string ObjectFactory = nameof(ObjectFactory);

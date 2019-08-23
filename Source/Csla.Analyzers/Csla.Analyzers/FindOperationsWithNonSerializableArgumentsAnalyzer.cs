@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Csla.Analyzers
 {
@@ -39,7 +40,7 @@ namespace Csla.Analyzers
       {
         foreach(var argument in methodSymbol.Parameters)
         {
-          if (!argument.Type.IsPrimitive() &&
+          if (!argument.Type.IsPrimitive() && !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
             argument.Type is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable)
           {
             context.ReportDiagnostic(Diagnostic.Create(

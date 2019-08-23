@@ -51,6 +51,8 @@ namespace Csla.Channels.RabbitMq
       return _instance;
     }
 
+    private bool IsNamedReplyQueue { get; set; }
+
     /// <summary>
     /// Method responsible for creating the Connection,
     /// Channel, ReplyQueue, and DataPortalQueueName values
@@ -67,20 +69,7 @@ namespace Csla.Channels.RabbitMq
       if (userInfo.Length > 1)
         factory.Password = userInfo[1];
       Connection = factory.CreateConnection();
-      Connection.ConnectionShutdown += (s, e) =>
-      {
-        Connection?.Dispose();
-        Connection = null;
-        Channel = null;
-        ReplyQueue = null;
-      };
       Channel = Connection.CreateModel();
-      Channel.ModelShutdown += (s, e) =>
-      {
-        Channel?.Dispose();
-        Channel = null;
-        ReplyQueue = null;
-      };
       string[] query;
       if (string.IsNullOrWhiteSpace(QueueUri.Query))
         query = new string[] { };
@@ -88,10 +77,12 @@ namespace Csla.Channels.RabbitMq
         query = QueueUri.Query.Substring(1).Split('&');
       if (query.Length == 0 || !query[0].StartsWith("reply="))
       {
+        IsNamedReplyQueue = false;
         ReplyQueue = Channel.QueueDeclare();
       }
       else
       {
+        IsNamedReplyQueue = true;
         var split = query[0].Split('=');
         ReplyQueue = Channel.QueueDeclare(
           queue: split[1],
@@ -102,19 +93,47 @@ namespace Csla.Channels.RabbitMq
       }
     }
 
+    private volatile bool IsListening;
+    private object ListeningLock = new object();
+
     public void StartListening()
     {
+      if (IsListening) return;
+      lock (ListeningLock)
+      {
+        if (IsListening) return;
+        IsListening = true;
+      }
+
       InitializeRabbitMQ();
 
       var consumer = new EventingBasicConsumer(Channel);
       consumer.Received += (model, ea) =>
       {
         Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
-        var correlationId = ea.BasicProperties.CorrelationId;
-        if (Wip.WorkInProgress.TryRemove(correlationId, out WipItem item))
+        if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem item))
         {
           item.Response = ea.Body;
           item.ResetEvent.Set();
+        }
+        else
+        {
+          // reply doesn't match any WIP item on this machine, but
+          // if we're using a named reply queue there could be other
+          // listeners; if so requeue the message up to 9 times
+          if (IsNamedReplyQueue && ea.BasicProperties.Priority < 9)
+          {
+            ea.BasicProperties.Priority++;
+            Channel.BasicPublish(
+              exchange: "",
+              routingKey: ReplyQueue.QueueName,
+              basicProperties: ea.BasicProperties,
+              body: ea.Body);
+          }
+          else
+          {
+            Console.WriteLine($"## WARN Undeliverable reply for {ea.BasicProperties.CorrelationId} (discarded by {Environment.MachineName})");
+          }
         }
       };
       Console.WriteLine($"Listening on queue {ReplyQueue.QueueName}");
@@ -126,6 +145,7 @@ namespace Csla.Channels.RabbitMq
       Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
+      IsListening = false;
     }
   }
 }

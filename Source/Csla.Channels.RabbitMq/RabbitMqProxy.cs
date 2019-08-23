@@ -85,18 +85,18 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     protected virtual void InitializeRabbitMQ()
     {
-      Console.WriteLine($"Initializing {DataPortalUrl}");
-      var url = new Uri(DataPortalUrl);
-      if (url.Scheme != "rabbitmq")
-        throw new UriFormatException("Scheme != rabbitmq://");
-      if (string.IsNullOrWhiteSpace(url.Host))
-        throw new UriFormatException("Host");
-      DataPortalQueueName = url.AbsolutePath.Substring(1);
-      if (string.IsNullOrWhiteSpace(DataPortalQueueName))
-        throw new UriFormatException("DataPortalQueueName");
-      Console.WriteLine($"Will send to queue {DataPortalQueueName}");
       if (Connection == null)
       {
+        var url = new Uri(DataPortalUrl);
+        Console.WriteLine($"Initializing {DataPortalUrl}");
+        if (url.Scheme != "rabbitmq")
+          throw new UriFormatException("Scheme != rabbitmq://");
+        if (string.IsNullOrWhiteSpace(url.Host))
+          throw new UriFormatException("Host");
+        DataPortalQueueName = url.AbsolutePath.Substring(1);
+        if (string.IsNullOrWhiteSpace(DataPortalQueueName))
+          throw new UriFormatException("DataPortalQueueName");
+        Console.WriteLine($"Will send to queue {DataPortalQueueName}");
         var factory = new ConnectionFactory() { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
@@ -106,24 +106,13 @@ namespace Csla.Channels.RabbitMq
         if (userInfo.Length > 1)
           factory.Password = userInfo[1];
         Connection = factory.CreateConnection();
-        Connection.ConnectionShutdown += (s, e) =>
-        {
-          Connection?.Dispose();
-          Connection = null;
-          Channel = null;
-        };
-      }
-      if (Channel == null)
-      {
         Channel = Connection.CreateModel();
-        Channel.ModelShutdown += (s, e) =>
+        if (QueueListener == null)
         {
-          Channel?.Dispose();
-          Channel = null;
-        };
+          QueueListener = ProxyListener.GetListener(url);
+          QueueListener.StartListening();
+        }
       }
-      QueueListener = ProxyListener.GetListener(url);
-      QueueListener.StartListening();
     }
 
     /// <summary>

@@ -33,7 +33,8 @@ namespace Csla.Analyzers.Tests
 
 public class A : BusinessBase<A>
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -64,7 +65,8 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();

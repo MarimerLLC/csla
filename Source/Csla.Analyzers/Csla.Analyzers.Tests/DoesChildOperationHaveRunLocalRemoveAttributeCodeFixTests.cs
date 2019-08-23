@@ -34,7 +34,8 @@ namespace Csla.Analyzers.Tests
 public class A : BusinessBase<A>
 {
   [RunLocal]
-  private void Child_Fetch() { }
+  [FetchChild]
+  private void FetchChild() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -68,8 +69,8 @@ public sealed class FooAttribute : Attribute { }
 
 public class A : BusinessBase<A>
 {
-  [RunLocal, Foo]
-  private void Child_Fetch() { }
+  [RunLocal, Foo, FetchChild]
+  private void FetchChild() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();

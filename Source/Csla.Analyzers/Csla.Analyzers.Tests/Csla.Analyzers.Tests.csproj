@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>netcoreapp2.2;net461</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Csla.Net4.6\Csla.Net4.6.csproj" />
+    <ProjectReference Include="..\..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
     <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers.csproj" />
   </ItemGroup>
 

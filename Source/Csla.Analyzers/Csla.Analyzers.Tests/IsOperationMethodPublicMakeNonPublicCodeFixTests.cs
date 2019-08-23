@@ -35,7 +35,8 @@ using System;
 [Serializable]
 public class A : BusinessBase<A>
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -73,7 +74,8 @@ using System;
 [Serializable]
 public sealed class A : BusinessBase<A>
 {
-  public void DataPortal_Fetch() { }
+  [Fetch]
+  public void Fetch() { }
 }";
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();

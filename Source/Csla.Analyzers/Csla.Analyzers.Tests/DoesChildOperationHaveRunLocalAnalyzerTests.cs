@@ -42,12 +42,14 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndRootOperationHasRunLocal()
     {
-      var code = @"using Csla;
+      var code = 
+@"using Csla;
 
 public class A : BusinessBase<A>
 { 
   [RunLocal]
-  private void DataPortal_Fetch() { }
+  [Fetch]
+  private void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
         code, Array.Empty<string>());
@@ -56,11 +58,13 @@ public class A : BusinessBase<A>
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndChildOperationDoesNotHaveRunLocal()
     {
-      var code = @"using Csla;
+      var code = 
+@"using Csla;
 
 public class A : BusinessBase<A>
 { 
-  private void Child_Fetch() { }
+  [FetchChild]
+  private void FetchChild() { }
 }";
       await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
         code, Array.Empty<string>());
@@ -69,12 +73,14 @@ public class A : BusinessBase<A>
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndChildOperationHasRunLocal()
     {
-      var code = @"using Csla;
+      var code = 
+@"using Csla;
 
 public class A : BusinessBase<A>
 { 
   [RunLocal]
-  private void Child_Fetch() { }
+  [FetchChild]
+  private void FetchChild() { }
 }";
       await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
         code, new[] { Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal });

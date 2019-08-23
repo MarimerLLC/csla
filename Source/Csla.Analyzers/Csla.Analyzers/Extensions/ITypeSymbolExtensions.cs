@@ -21,6 +21,14 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsBusinessBase());
     }
 
+    internal static bool IsInjectable(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.InjectAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsInjectable());
+    }
+
     internal static bool IsDataPortalOperationAttribute(this ITypeSymbol @this)
     {
       return @this != null &&

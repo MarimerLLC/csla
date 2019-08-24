@@ -387,7 +387,8 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task UndoStateStack()
     {
-      var obj = await Csla.DataPortal.CreateAsync<Root>();
+      var obj = await Csla.DataPortal.CreateAsync<Root>(new Root.Criteria(""));
+      Assert.AreEqual("", obj.Data);
       obj.BeginEdit();
       obj.Data = "1";
       obj.BeginEdit();

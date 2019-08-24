@@ -117,6 +117,7 @@ namespace Csla.Test.DataBinding
     #region "Data Access"
 
     [RunLocal()]
+    [Create]
     protected override void DataPortal_Create()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -125,6 +126,7 @@ namespace Csla.Test.DataBinding
       Console.WriteLine("DataPortal_Create");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Console.WriteLine("DataPortal_Fetch");
@@ -133,6 +135,7 @@ namespace Csla.Test.DataBinding
       BusinessRules.CheckRules();
     }
 
+    [Insert]
     protected override void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -140,6 +143,7 @@ namespace Csla.Test.DataBinding
       Console.WriteLine("DataPortal_Insert");
     }
 
+    [Update]
     protected override void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
@@ -147,6 +151,7 @@ namespace Csla.Test.DataBinding
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Updated");
     }
 
+    [DeleteSelf]
     protected override void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
@@ -154,6 +159,7 @@ namespace Csla.Test.DataBinding
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted Self");
     }
 
+    [Delete]
     protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");

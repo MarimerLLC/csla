@@ -27,6 +27,7 @@ namespace Csla.Test.BasicModern
       set { SetProperty(NameProperty, value); }
     }
 
+    [CreateChild]
     private void Child_Create(int id, string name)
     {
       using (BypassPropertyChecks)
@@ -36,6 +37,7 @@ namespace Csla.Test.BasicModern
       }
     }
 
+    [FetchChild]
     private void Child_Fetch(int id, string name)
     {
       using (BypassPropertyChecks)
@@ -45,12 +47,15 @@ namespace Csla.Test.BasicModern
       }
     }
 
+    [InsertChild]
     private void Child_Insert()
     { }
 
+    [UpdateChild]
     private void Child_Update()
     { }
 
+    [DeleteSelfChild]
     private void Child_DeleteSelf()
     { }
   }

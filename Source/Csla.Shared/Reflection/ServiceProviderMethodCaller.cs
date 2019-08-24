@@ -56,6 +56,7 @@ namespace Csla.Reflection
       if (targetType == null)
         throw new ArgumentNullException("targetType");
 
+      var typeOfT = typeof(T);
       var candidates = new List<System.Reflection.MethodInfo>();
 
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
@@ -64,13 +65,13 @@ namespace Csla.Reflection
         var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
         if (factoryType != null)
         {
-          if (typeof(T) == typeof(CreateAttribute))
+          if (typeOfT == typeof(CreateAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName).ToList();
-          else if (typeof(T) == typeof(FetchAttribute))
+          else if (typeOfT == typeof(FetchAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName).ToList();
-          else if (typeof(T) == typeof(DeleteAttribute))
+          else if (typeOfT == typeof(DeleteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName).ToList();
-          else if (typeof(T) == typeof(ExecuteAttribute))
+          else if (typeOfT == typeof(ExecuteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName).ToList();
           else
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName).ToList();
@@ -89,7 +90,7 @@ namespace Csla.Reflection
         // if no attribute-based methods found, look for legacy methods
         if (candidates.Count == 0)
         {
-          var attributeName = typeof(T).Name.Substring(0, typeof(T).Name.IndexOf("Attribute"));
+          var attributeName = typeOfT.Name.Substring(0, typeOfT.Name.IndexOf("Attribute"));
           if (attributeName.Contains("Child"))
           {
             var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
@@ -115,7 +116,7 @@ namespace Csla.Reflection
         }
       }
       if (candidates.Count == 0)
-        throw new MissingMethodException($"{targetType.FullName}.[{typeof(T).Name}]");
+        throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name}]");
       
       // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
@@ -178,7 +179,7 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException($"{targetType.FullName}.[{typeof(T).Name}]");
+        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name}]");
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -204,7 +205,7 @@ namespace Csla.Reflection
           }
         }
         if (maxCount > 1)
-          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeof(T).Name}]");
+          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name}]");
       }
       return result.MethodInfo;
     }

@@ -83,139 +83,30 @@ namespace Csla.Analyzers.Tests.Extensions
       Assert.IsTrue(byAttribute, nameof(byAttribute));
     }
 
-    [TestMethod]
-    public void CombineFalseAndFalseWithFalseAndTrue()
+    [DataRow(false, false, false, false, false, false)]
+    [DataRow(false, false, false, true, false, true)]
+    [DataRow(false, false, true, false, true, false)]
+    [DataRow(false, false, true, true, true, true)]
+    [DataRow(false, true, false, false, false, true)]
+    [DataRow(false, true, false, true, false, true)]
+    [DataRow(false, true, true, false, true, true)]
+    [DataRow(false, true, true, true, true, true)]
+    [DataRow(true, false, false, false, true, false)]
+    [DataRow(true, false, false, true, true, true)]
+    [DataRow(true, false, true, false, true, false)]
+    [DataRow(true, false, true, true, true, true)]
+    [DataRow(true, true, false, false, true, true)]
+    [DataRow(true, true, false, true, true, true)]
+    [DataRow(true, true, true, false, true, true)]
+    [DataRow(true, true, true, true, true, true)]
+    [DataTestMethod]
+    public void Combine(bool firstByNamingConvention, bool firstByAttribute, bool secondByNamingConvention, bool secondByAttribute,
+      bool expectedByNamingConvention, bool expectedByAttribute)
     {
-      var qualification = new DataPortalOperationQualification(false, false).Combine(
-        new DataPortalOperationQualification(false, true));
-      Assert.IsFalse(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineFalseAndFalseWithTrueAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(false, false).Combine(
-        new DataPortalOperationQualification(true, false));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsFalse(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineFalseAndFalseWithTrueAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(false, false).Combine(
-        new DataPortalOperationQualification(true, true));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineFalseAndTrueWithFalseAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(false, true).Combine(
-        new DataPortalOperationQualification(false, false));
-      Assert.IsFalse(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineFalseAndTrueWithFalseAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(false, true).Combine(
-        new DataPortalOperationQualification(false, true));
-      Assert.IsFalse(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineFalseAndTrueWithTrueAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(false, true).Combine(
-        new DataPortalOperationQualification(true, false));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineFalseAndTrueWithTrueAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(false, true).Combine(
-        new DataPortalOperationQualification(true, true));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndFalseWithFalseAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(true, false).Combine(
-        new DataPortalOperationQualification(false, false));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsFalse(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndFalseWithFalseAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(true, false).Combine(
-        new DataPortalOperationQualification(false, true));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndFalseWithTrueAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(true, false).Combine(
-        new DataPortalOperationQualification(true, false));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsFalse(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndFalseWithTrueAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(true, false).Combine(
-        new DataPortalOperationQualification(true, true));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndTrueWithFalseAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(true, true).Combine(
-        new DataPortalOperationQualification(false, false));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndTrueWithFalseAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(true, true).Combine(
-        new DataPortalOperationQualification(false, true));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndTrueWithTrueAndFalse()
-    {
-      var qualification = new DataPortalOperationQualification(true, true).Combine(
-        new DataPortalOperationQualification(true, false));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
-    }
-
-    [TestMethod]
-    public void CombineTrueAndTrueWithTrueAndTrue()
-    {
-      var qualification = new DataPortalOperationQualification(true, true).Combine(
-        new DataPortalOperationQualification(true, true));
-      Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
-      Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
+      var qualification = new DataPortalOperationQualification(firstByNamingConvention, firstByAttribute).Combine(
+        new DataPortalOperationQualification(secondByNamingConvention, secondByAttribute));
+      Assert.AreEqual(expectedByNamingConvention, qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
+      Assert.AreEqual(expectedByAttribute, qualification.ByAttribute, nameof(qualification.ByAttribute));
     }
   }
 }

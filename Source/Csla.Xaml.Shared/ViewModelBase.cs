@@ -17,6 +17,9 @@ using System.Windows;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
+#if WINDOWS_UWP
+using Windows.UI.Xaml;
+#endif
 
 #if ANDROID
 namespace Csla.Axml
@@ -47,7 +50,7 @@ namespace Csla.Xaml
       SetPropertiesAtObjectLevel();
     }
 
-    #region Obsolete Code
+#region Obsolete Code
 
     /// <summary>
     /// Method used to perform async initialization of the
@@ -199,18 +202,22 @@ namespace Csla.Xaml
     [Obsolete("Use RefreshAsync", false)]
     protected virtual void DoRefresh(string factoryMethod)
     {
+#if NET40 || NET45
+      DoRefresh(factoryMethod, new object[] { });
+#else
       DoRefresh(factoryMethod, Array.Empty<object>());
+#endif
     }
 #endif
 
-    /// <summary>
-    /// Creates or retrieves a new instance of the 
-    /// Model by invoking a static factory method.
-    /// </summary>
-    /// <param name="factoryMethod">Static factory method action.</param>
-    /// <example>BeginRefresh(BusinessList.BeginGetList)</example>
-    /// <example>BeginRefresh(handler => BusinessList.BeginGetList(handler))</example>
-    /// <example>BeginRefresh(handler => BusinessList.BeginGetList(id, handler))</example>
+      /// <summary>
+      /// Creates or retrieves a new instance of the 
+      /// Model by invoking a static factory method.
+      /// </summary>
+      /// <param name="factoryMethod">Static factory method action.</param>
+      /// <example>BeginRefresh(BusinessList.BeginGetList)</example>
+      /// <example>BeginRefresh(handler => BusinessList.BeginGetList(handler))</example>
+      /// <example>BeginRefresh(handler => BusinessList.BeginGetList(id, handler))</example>
     [Obsolete("Use RefreshAsync", false)]
     protected virtual void BeginRefresh(Action<EventHandler<DataPortalResult<T>>> factoryMethod)
     {
@@ -270,7 +277,11 @@ namespace Csla.Xaml
     [Obsolete("Use RefreshAsync", false)]
     protected virtual void BeginRefresh(string factoryMethod)
     {
+#if NET40 || NET45
+      BeginRefresh(factoryMethod, new object[] { });
+#else
       BeginRefresh(factoryMethod, Array.Empty<object>());
+#endif
     }
 
     private Delegate CreateHandler(Type objectType)
@@ -441,7 +452,7 @@ namespace Csla.Xaml
 
     #endregion
 
-#if ANDROID || IOS || XAMARIN
+#if ANDROID || IOS || XAMARIN || WINDOWS_UWP
     private T _model;
     /// <summary>
     /// Gets or sets the Model object.

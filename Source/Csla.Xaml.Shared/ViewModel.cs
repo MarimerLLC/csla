@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
+﻿#if !XAMARIN && !WINDOWS_UWP
 //-----------------------------------------------------------------------
 // <copyright file="ViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -29,8 +29,6 @@ namespace Csla.Xaml
   /// <typeparam name="T">Type of the Model object.</typeparam>
   public abstract class ViewModel<T> : ViewModelBase<T>
   {
-#region Verbs
-
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
@@ -79,8 +77,6 @@ namespace Csla.Xaml
     {
       DoDelete();
     }
-
-#endregion
   }
 }
 #endif

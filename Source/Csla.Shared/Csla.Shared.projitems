@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\Fluent\ICslaConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ICslaBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindingList.cs" />

@@ -15,7 +15,7 @@ namespace Csla.Windows
   /// <summary>
   /// ApplicationContextManager for Windows Forms applications
   /// </summary>
-  public class ApplicationContextManager : Csla.ApplicationContext.ApplicationContextManager
+  public class ApplicationContextManager : Csla.Core.ApplicationContextManager
   {
     private static IPrincipal _principal;
 

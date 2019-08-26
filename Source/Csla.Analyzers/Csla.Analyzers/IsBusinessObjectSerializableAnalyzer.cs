@@ -37,7 +37,6 @@ namespace Csla.Analyzers
       {
         context.ReportDiagnostic(Diagnostic.Create(makeSerializableRule,
           classNode.Identifier.GetLocation()));
-        return;
       }
     }
   }

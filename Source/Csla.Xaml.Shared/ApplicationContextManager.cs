@@ -13,7 +13,7 @@ namespace Csla.Xaml
   /// <summary>
   /// ApplicationContextManager for WPF applications
   /// </summary>
-  public class ApplicationContextManager : Csla.ApplicationContext.ApplicationContextManager
+  public class ApplicationContextManager : Csla.Core.ApplicationContextManager
   {
     private static IPrincipal _principal = null;
 

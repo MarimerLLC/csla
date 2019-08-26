@@ -132,6 +132,16 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Sets the scoped IServiceProvider for the current context.
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public ICslaConfiguration ScopedServiceProvider(IServiceProvider serviceProvider)
+    {
+      ApplicationContext.ScopedServiceProvider = serviceProvider;
+      return this;
+    }
+
+    /// <summary>
     /// Resets any ApplicationContext settings so they 
     /// re-read their configuration from AppSettings
     /// on next use.

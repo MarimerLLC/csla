@@ -62,7 +62,7 @@ namespace Csla
     /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    public static T Create<T>(object criteria)
+    public static T Create<T>(params object[] criteria)
     {
       var dp = new DataPortal<T>();
       return dp.Create(criteria);
@@ -202,7 +202,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    public static async Task<T> CreateAsync<T>(object criteria)
+    public static async Task<T> CreateAsync<T>(params object[] criteria)
     {
       DataPortal<T> dp = new DataPortal<T>();
       return await dp.CreateAsync(criteria);
@@ -215,7 +215,7 @@ namespace Csla
     /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    public static T Fetch<T>(object criteria)
+    public static T Fetch<T>(params object[] criteria)
     {
       var dp = new DataPortal<T>();
       return dp.Fetch(criteria);
@@ -347,7 +347,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to fetch.
     /// </param>
-    public static async Task<T> FetchAsync<T>(object criteria)
+    public static async Task<T> FetchAsync<T>(params object[] criteria)
       where T : IMobileObject
     {
       var dp = new DataPortal<T>();
@@ -442,7 +442,7 @@ namespace Csla
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public static void Delete<T>(object criteria)
+    public static void Delete<T>(params object[] criteria)
     {
       var dp = new DataPortal<T>();
       dp.Delete(criteria);
@@ -510,7 +510,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to delete.
     /// </param>
-    public static async Task DeleteAsync<T>(object criteria)
+    public static async Task DeleteAsync<T>(params object[] criteria)
       where T : IMobileObject
     {
       var dp = new DataPortal<T>();

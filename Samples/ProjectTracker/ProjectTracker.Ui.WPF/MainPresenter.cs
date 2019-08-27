@@ -11,9 +11,9 @@ namespace WpfUI
 {
   public class MainPresenter : DependencyObject, INotifyPropertyChanged
   {
-    DispatcherTimer _closeTimer = new DispatcherTimer();
-    DateTime _errorClose = DateTime.MaxValue;
-    DateTime _statusClose = DateTime.MaxValue;
+    private readonly DispatcherTimer _closeTimer = new DispatcherTimer();
+    private DateTime _errorClose = DateTime.MaxValue;
+    private DateTime _statusClose = DateTime.MaxValue;
 
     public MainPresenter()
     {
@@ -25,7 +25,7 @@ namespace WpfUI
       if (!DesignMode)
         _closeTimer.Start();
 
-      var presenter = (IPresenter)Bxf.Shell.Instance;
+      var presenter = (IPresenter)Shell.Instance;
 
       LoadRoleListCache();
 
@@ -67,7 +67,7 @@ namespace WpfUI
             case "Status":
               _statusClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
               if (view.Model != null)
-                AppBusy = ((Bxf.Status)view.Model).IsBusy;
+                AppBusy = ((Status)view.Model).IsBusy;
               else
                 AppBusy = false;
               StatusContent = view.ViewInstance;

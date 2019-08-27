@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace WpfUI.ViewModels
 {
@@ -52,22 +53,18 @@ namespace WpfUI.ViewModels
       set 
       { 
         _selectedResource = value; 
-        OnPropertyChanged("SelectedResource");
+        OnPropertyChanged(nameof(SelectedResource));
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         CreateProjectResource();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       }
     }
 
-    public void CreateProjectResource()
+    public async Task CreateProjectResource()
     {
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Creating new resource..."});
-      ProjectTracker.Library.ProjectResourceEditCreator.GetProjectResourceEditCreator(SelectedResource.Id, (o, e) =>
-        {
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
-          if (e.Error != null)
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Data error");
-          else
-            Model = e.Object.Result;
-        });
+      var result = await ProjectTracker.Library.ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(SelectedResource.Id);
+      Model = result.Result;
     }
 
     public void Save()

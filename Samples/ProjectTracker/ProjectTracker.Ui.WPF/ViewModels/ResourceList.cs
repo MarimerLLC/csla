@@ -11,7 +11,7 @@ namespace WpfUI.ViewModels
   {
     public ResourceList()
     {
-      RefreshAsync<ProjectTracker.Library.ResourceList>(
+      var task = RefreshAsync<ProjectTracker.Library.ResourceList>(
         async () => await ProjectTracker.Library.ResourceList.GetResourceListAsync());
     }
 

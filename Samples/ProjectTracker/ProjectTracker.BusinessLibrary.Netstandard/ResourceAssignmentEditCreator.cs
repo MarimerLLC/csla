@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -13,9 +14,9 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResultProperty, value); }
     }
 
-    public static void GetResourceAssignmentEditCreator(int projectId, EventHandler<DataPortalResult<ResourceAssignmentEditCreator>> callback)
+    public static async Task<ResourceAssignmentEditCreator> GetResourceAssignmentEditCreatorAsync(int projectId)
     {
-      DataPortal.BeginFetch<ResourceAssignmentEditCreator>(projectId, callback);
+      return await DataPortal.FetchAsync<ResourceAssignmentEditCreator>(projectId);
     }
 
     public static ResourceAssignmentEditCreator GetResourceAssignmentEditCreator(int projectId)
@@ -23,6 +24,7 @@ namespace ProjectTracker.Library
       return DataPortal.Fetch<ResourceAssignmentEditCreator>(projectId);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(int projectId)
     {
       Result = DataPortal.CreateChild<ResourceAssignmentEdit>(projectId);

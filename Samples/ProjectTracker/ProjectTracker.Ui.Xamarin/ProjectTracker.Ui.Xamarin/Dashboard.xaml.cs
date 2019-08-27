@@ -16,10 +16,10 @@ namespace XamarinFormsUi
       InitializeComponent();
     }
 
-    public async Task InitAsync()
+    public Task InitAsync()
     {
-      var vm = await new ViewModels.DashboardViewModel().InitAsync();
-      BindingContext = vm;
+      BindingContext = new ViewModels.DashboardViewModel();
+      return Task.CompletedTask;
     }
 
     private async void ShowProjectList(object sender, EventArgs e)

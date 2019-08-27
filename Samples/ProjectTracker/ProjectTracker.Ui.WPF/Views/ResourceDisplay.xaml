@@ -17,7 +17,7 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <TextBlock Grid.Row="0" Text="Resource detail" FontSize="14" Foreground="Cornsilk" />
-    <Grid Grid.Row="1" Name="grid1" DataContext="{Binding Path=Model.Resource}">
+    <Grid Grid.Row="1" Name="grid1" DataContext="{Binding Path=Model}">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition Width="Auto" />
@@ -31,7 +31,7 @@
     </Grid>
     <StackPanel Grid.Row="2">
       <TextBlock Text="Assignments:" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
-      <ListBox ItemsSource="{Binding Path=Model.Resource.Assignments}" Name="AssignmentsListBox"
+      <ListBox ItemsSource="{Binding Path=Model.Assignments}" Name="AssignmentsListBox"
                Margin="3"
                SelectedItem="{Binding Path=SelectedAssignment, Mode=TwoWay}">
         <ListBox.ItemTemplate>

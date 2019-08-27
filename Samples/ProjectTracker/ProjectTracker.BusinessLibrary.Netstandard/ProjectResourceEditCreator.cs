@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -16,19 +17,17 @@ namespace ProjectTracker.Library
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>
-    public static void GetProjectResourceEditCreator(int resourceId, EventHandler<DataPortalResult<ProjectResourceEditCreator>> callback)
+    public static async Task<ProjectResourceEditCreator> GetProjectResourceEditCreatorAsync(int resourceId)
     {
-      DataPortal.BeginFetch<ProjectResourceEditCreator>(resourceId, callback);
+      return await DataPortal.FetchAsync<ProjectResourceEditCreator>(resourceId);
     }
 
     /// <summary>
     /// Gets an existing ProjectResourceEdit object.
     /// </summary>
-    public static void GetProjectResourceEditCreator(int projectId, int resourceId, 
-      EventHandler<DataPortalResult<ProjectResourceEditCreator>> callback)
+    public static async Task<ProjectResourceEditCreator> GetProjectResourceEditCreatorAsync(int projectId, int resourceId)
     {
-      DataPortal.BeginFetch<ProjectResourceEditCreator>(
-        new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId }, callback);
+      return await DataPortal.FetchAsync<ProjectResourceEditCreator>(projectId, resourceId);
     }
 
     /// <summary>
@@ -44,35 +43,19 @@ namespace ProjectTracker.Library
     /// </summary>
     public static ProjectResourceEditCreator GetProjectResourceEditCreator(int projectId, int resourceId)
     {
-      return DataPortal.Fetch<ProjectResourceEditCreator>(new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId });
+      return DataPortal.Fetch<ProjectResourceEditCreator>(projectId, resourceId);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(int resourceId)
     {
       Result = DataPortal.CreateChild<ProjectResourceEdit>(resourceId);
     }
 
-    private void DataPortal_Fetch(ProjectResourceCriteria criteria)
+    [Fetch]
+    private void DataPortal_Fetch(int projectId, int resourceId)
     {
-      Result = DataPortal.FetchChild<ProjectResourceEdit>(criteria.ProjectId, criteria.ResourceId);
-    }
-
-    [Serializable]
-    public class ProjectResourceCriteria : CriteriaBase<ProjectResourceCriteria>
-    {
-      public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
-      public int ProjectId
-      {
-        get { return ReadProperty(ProjectIdProperty); }
-        set { LoadProperty(ProjectIdProperty, value); }
-      }
-
-      public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
-      public int ResourceId
-      {
-        get { return ReadProperty(ResourceIdProperty); }
-        set { LoadProperty(ResourceIdProperty, value); }
-      }
+      Result = DataPortal.FetchChild<ProjectResourceEdit>(projectId, resourceId);
     }
   }
 }

@@ -9,7 +9,8 @@ namespace WpfUI.ViewModels
   {
     public ProjectList()
     {
-      BeginRefresh(ProjectTracker.Library.ProjectList.GetProjectList);
+      var task = RefreshAsync<ProjectTracker.Library.ProjectList>(async () =>
+        await ProjectTracker.Library.ProjectList.GetProjectListAsync());
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)
@@ -17,7 +18,7 @@ namespace WpfUI.ViewModels
       base.OnModelChanged(oldValue, newValue);
       if (newValue != null)
         newValue.CollectionChanged += (sender, args) => OnPropertyChanged("ItemList");
-      OnPropertyChanged("ItemList");
+      OnPropertyChanged(nameof(ItemList));
     }
 
     public ObservableCollection<ProjectInfo> ItemList
@@ -37,7 +38,7 @@ namespace WpfUI.ViewModels
       get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectTracker.Library.ProjectEdit)); }
     }
 
-    public void AddItem()
+    public static void AddItem()
     {
       Bxf.Shell.Instance.ShowView(
         typeof(Views.ProjectEdit).AssemblyQualifiedName,

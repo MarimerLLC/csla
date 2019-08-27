@@ -2,19 +2,20 @@
 
 namespace WpfUI.ViewModels
 {
-  public class ProjectDisplay : ViewModel<ProjectTracker.Library.ProjectGetter>
+  public class ProjectDisplay : ViewModel<ProjectTracker.Library.ProjectEdit>
   {
     public ProjectDisplay(int id)
     {
       ManageObjectLifetime = false;
-      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(id, callback));
+      var task = RefreshAsync<ProjectTracker.Library.ProjectEdit>(async () =>
+        await ProjectTracker.Library.ProjectGetter.GetExistingProject(id));
     }
 
     private ProjectTracker.Library.ProjectResourceEdit _resource;
     public ProjectTracker.Library.ProjectResourceEdit SelectedResource
     {
       get { return _resource; }
-      set { _resource = value; OnPropertyChanged("SelectedResource"); }
+      set { _resource = value; OnPropertyChanged(nameof(SelectedResource)); }
     }
 
     public void ShowResource()

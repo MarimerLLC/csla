@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -20,57 +21,28 @@ namespace ProjectTracker.Library
       private set { LoadProperty(RoleListProperty, value); }
     }
 
-    public static void CreateNewResource(EventHandler<DataPortalResult<ResourceGetter>> callback)
+    public static async Task<ResourceEdit> CreateNewResource()
     {
-      DataPortal.BeginFetch<ResourceGetter>(new Criteria { ResourceId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
-      {
-        if (e.Error == null)
-        {
-          if (!RoleList.IsCached)
-            RoleList.SetCache(e.Object.RoleList);
-        }
-        callback(o, e);
-      });
+      return await GetExistingResource(-1);
     }
 
-    public static void GetExistingResource(int resourceId, EventHandler<DataPortalResult<ResourceGetter>> callback)
+    public static async Task<ResourceEdit> GetExistingResource(int resourceId)
     {
-      DataPortal.BeginFetch<ResourceGetter>(new Criteria { ResourceId = resourceId, GetRoles = !RoleList.IsCached }, (o, e) =>
-      {
-        if (e.Error != null)
-          throw e.Error;
-        if (!RoleList.IsCached)
-          RoleList.SetCache(e.Object.RoleList);
-        callback(o, e);
-      });
+      var result = await DataPortal.FetchAsync<ResourceGetter>(resourceId, !RoleList.IsCached);
+      if (!RoleList.IsCached)
+        RoleList.SetCache(result.RoleList);
+      return result.Resource;
     }
 
-    private void DataPortal_Fetch(Criteria criteria)
+    [Fetch]
+    private void Fetch(int resourceId, bool getRoles)
     {
-      if (criteria.ResourceId == -1)
+      if (resourceId == -1)
         Resource = ResourceEdit.NewResourceEdit();
       else
-        Resource = ResourceEdit.GetResourceEdit(criteria.ResourceId);
-      if (criteria.GetRoles)
+        Resource = ResourceEdit.GetResourceEdit(resourceId);
+      if (getRoles)
         RoleList = RoleList.GetCachedList();
-    }
-
-    [Serializable]
-    public class Criteria : CriteriaBase<Criteria>
-    {
-      public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
-      public int ResourceId
-      {
-        get { return ReadProperty(ResourceIdProperty); }
-        set { LoadProperty(ResourceIdProperty, value); }
-      }
-
-      public static readonly PropertyInfo<bool> GetRolesProperty = RegisterProperty<bool>(c => c.GetRoles);
-      public bool GetRoles
-      {
-        get { return ReadProperty(GetRolesProperty); }
-        set { LoadProperty(GetRolesProperty, value); }
-      }
     }
   }
 }

@@ -6,7 +6,7 @@ namespace WpfUI.ViewModels
   {
     public RoleListEdit()
     {
-      RefreshAsync<ProjectTracker.Library.Admin.RoleEditList>(
+      var task = RefreshAsync<ProjectTracker.Library.Admin.RoleEditList>(
         async () => await ProjectTracker.Library.Admin.RoleEditList.GetRolesAsync());
     }
   }

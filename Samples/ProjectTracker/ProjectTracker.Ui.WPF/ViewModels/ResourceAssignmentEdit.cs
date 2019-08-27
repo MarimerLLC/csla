@@ -52,22 +52,16 @@ namespace WpfUI.ViewModels
       set
       {
         _selectedProject = value;
-        OnPropertyChanged("SelectedProject");
+        OnPropertyChanged(nameof(SelectedProject));
         CreateAssignment();
       }
     }
 
-    public void CreateAssignment()
+    public async void CreateAssignment()
     {
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Creating new assignment..." });
-      ProjectTracker.Library.ResourceAssignmentEditCreator.GetResourceAssignmentEditCreator(SelectedProject.Id, (o, e) =>
-        {
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
-          if (e.Error != null)
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Data error");
-          else
-            Model = e.Object.Result;
-        });
+      var result = await ProjectTracker.Library.ResourceAssignmentEditCreator.GetResourceAssignmentEditCreatorAsync(SelectedProject.Id);
+      Model = result.Result;
     }
 
     public void Save()

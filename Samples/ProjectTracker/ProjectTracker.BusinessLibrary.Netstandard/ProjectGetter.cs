@@ -7,72 +7,42 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectGetter : ReadOnlyBase<ProjectGetter>
   {
-    public static readonly PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(c => c.Project);
+    public static readonly PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(nameof(Project));
     public ProjectEdit Project
     {
       get { return GetProperty(ProjectProperty); }
       private set { LoadProperty(ProjectProperty, value); }
     }
 
-    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(c => c.RoleList);
+    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(nameof(RoleList));
     public RoleList RoleList
     {
       get { return GetProperty(RoleListProperty); }
       private set { LoadProperty(RoleListProperty, value); }
     }
 
-#if FULL_DOTNET
-    public static void CreateNewProject(EventHandler<DataPortalResult<ProjectGetter>> callback)
+    public static async Task<ProjectEdit> CreateNewProject()
     {
-      DataPortal.BeginFetch<ProjectGetter>(new Criteria { ProjectId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
-      {
-        if (e.Error != null)
-          throw e.Error;
-        if (!RoleList.IsCached)
-          RoleList.SetCache(e.Object.RoleList);
-        callback(o, e);
-      });
+      return await GetExistingProject(-1);
     }
 
-    public static void GetExistingProject(int projectId, EventHandler<DataPortalResult<ProjectGetter>> callback)
+    public static async Task<ProjectEdit> GetExistingProject(int projectId)
     {
-      DataPortal.BeginFetch<ProjectGetter>(new Criteria { ProjectId = projectId, GetRoles = !RoleList.IsCached }, (o, e) =>
-      {
-        if (e.Error != null)
-          throw e.Error;
-        if (!RoleList.IsCached)
-          RoleList.SetCache(e.Object.RoleList);
-        callback(o, e);
-      });
+      var result = await DataPortal.FetchAsync<ProjectGetter>(projectId, !RoleList.IsCached);
+      if (!RoleList.IsCached)
+        RoleList.SetCache(result.RoleList);
+      return result.Project;
     }
-#endif
 
-    private async Task DataPortal_Fetch(Criteria criteria)
+    [Fetch]
+    private async Task Fetch(int projectId, bool getRoles)
     {
-      if (criteria.ProjectId == -1)
+      if (projectId == -1)
         Project = await ProjectEdit.NewProjectAsync();
       else
-        Project = await ProjectEdit.GetProjectAsync(criteria.ProjectId);
-      if (criteria.GetRoles)
+        Project = await ProjectEdit.GetProjectAsync(projectId);
+      if (getRoles)
         RoleList = RoleList.GetCachedList();
-    }
-
-    [Serializable]
-    public class Criteria : CriteriaBase<Criteria>
-    {
-      public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
-      public int ProjectId
-      {
-        get { return ReadProperty(ProjectIdProperty); }
-        set { LoadProperty(ProjectIdProperty, value); }
-      }
-
-      public static readonly PropertyInfo<bool> GetRolesProperty = RegisterProperty<bool>(c => c.GetRoles);
-      public bool GetRoles
-      {
-        get { return ReadProperty(GetRolesProperty); }
-        set { LoadProperty(GetRolesProperty, value); }
-      }
     }
   }
 }

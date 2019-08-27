@@ -70,6 +70,7 @@ namespace Csla.Test.Basic
       return Csla.DataPortal.Fetch<TestCollection>();
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       Add(Csla.DataPortal.FetchChild<TestItem>(123));
@@ -100,9 +101,11 @@ namespace Csla.Test.Basic
       MarkAsChild();
     }
 
+    [CreateChild]
     protected override void Child_Create()
     { }
 
+    [FetchChild]
     private void Child_Fetch(int id)
     {
       LoadProperty(IdProperty, id);

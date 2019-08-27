@@ -53,6 +53,7 @@ namespace Csla.Test.DataBinding
       return Csla.DataPortal.Fetch<ChildEntityList>(new Criteria());
     }
 
+    [Fetch]
     protected override void DataPortal_Fetch(object criteria)
     {
       for (int i = 0; i < 10; i++)

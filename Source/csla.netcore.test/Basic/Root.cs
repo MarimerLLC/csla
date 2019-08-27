@@ -36,7 +36,7 @@ namespace Csla.Test.Basic
     }
 
     [Serializable()]
-    private class Criteria
+    public class Criteria
     {
       public string _data;
 
@@ -71,6 +71,7 @@ namespace Csla.Test.Basic
       //prevent direct creation
     }
 
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -83,6 +84,7 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -95,6 +97,7 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
     }
 
+    [Insert]
     protected override void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext.Add("clientcontext",
@@ -109,17 +112,20 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
     }
 
+    [Update]
     protected override void DataPortal_Update()
     {
       //we would update here
       Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
     }
 
+    [DeleteSelf]
     protected override void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
     }
 
+    [Delete]
     protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");

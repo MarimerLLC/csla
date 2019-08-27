@@ -69,6 +69,7 @@ namespace Csla.Test.Basic
             //prevent direct creation
         }
 
+        [Create]
         private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
@@ -76,6 +77,7 @@ namespace Csla.Test.Basic
             Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
         }
 
+        [Fetch]
         protected void DataPortal_Fetch(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
@@ -84,6 +86,7 @@ namespace Csla.Test.Basic
             Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
         }
 
+        [Update]
         protected override void DataPortal_Update()
         {
             if (IsDeleted)
@@ -108,6 +111,7 @@ namespace Csla.Test.Basic
             }
         }
 
+        [Delete]
         protected void DataPortal_Delete(object Criteria)
         {
             //we would delete here

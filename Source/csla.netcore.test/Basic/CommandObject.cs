@@ -44,6 +44,7 @@ namespace Csla.Test.Basic
       }
     }
 
+    [Execute]
     protected override void DataPortal_Execute()
     {
       lock (locker)

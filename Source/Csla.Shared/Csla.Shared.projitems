@@ -279,6 +279,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DefaultDataPortalActivator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\NullCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\EmptyCriteria.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\FactoryDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\GenericBusinessException.cs" />

@@ -1,18 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace PTWin
 {
   static class Program
   {
-    /// <summary>
-    /// Service provider for app
-    /// </summary>
-    public static ServiceProvider ServiceProvider { get; private set; }
-
     /// <summary>
     /// The main entry point for the application.
     /// </summary>
@@ -22,14 +15,19 @@ namespace PTWin
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
 
+      // basically a Windows Forms "app builder" implementation
       var serviceCollection = new ServiceCollection();
-      serviceCollection.AddScoped((c) => Startup.LoadConfiguration());
-      var startup = ActivatorUtilities.CreateInstance<Startup>(serviceCollection.BuildServiceProvider(), Array.Empty<object>());
+      serviceCollection.AddScoped((c) => 
+        Startup.LoadAppConfiguration(Array.Empty<string>()));
+      var startup = ActivatorUtilities.CreateInstance<Startup>(
+        serviceCollection.BuildServiceProvider(), Array.Empty<object>());
       startup.ConfigureServices(serviceCollection);
-      ServiceProvider = serviceCollection.BuildServiceProvider();
+      var provider = serviceCollection.BuildServiceProvider();
       startup.Configure();
 
-      Application.Run(ActivatorUtilities.CreateInstance<MainForm>(ServiceProvider, Array.Empty<object>()));
+      // run the start form, creating it with DI support
+      Application.Run(
+        ActivatorUtilities.CreateInstance<MainForm>(provider, Array.Empty<object>()));
     }
   }
 }

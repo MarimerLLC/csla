@@ -43,21 +43,10 @@ namespace PTWin
       if (DocumentCount == 0)
         DocumentsToolStripDropDownButton.Enabled = false;
 
-      DataPortal.DataPortalInvokeComplete += (a) =>
-      {
-        var ex = a.Exception;
-      };
-
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       // initialize cache of role list
-      try
-      {
-        //await RoleList.CacheListAsync();
-        var obj = await DataPortal.FetchAsync<Dashboard>();
-      }
-      catch (Exception ex)
-      {
-        throw;
-      }
+      RoleList.CacheListAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     }
 
     #region Projects

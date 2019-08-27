@@ -11,26 +11,48 @@ namespace PTWin
 {
   public class Startup
   {
-    public IConfiguration Configuration { get; }
-
-    public static IConfiguration LoadConfiguration()
+    /// <summary>
+    /// Load app configuration via ConfigurationBuilder
+    /// </summary>
+    /// <returns>App configuration</returns>
+    public static IConfiguration LoadAppConfiguration(string[] args)
     {
       return new ConfigurationBuilder().AddInMemoryCollection().Build();
     }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
+    /// <summary>
+    /// Creates instance of type, 
+    /// getting services via DI
+    /// </summary>
+    /// <param name="config">App configuration</param>
+    public Startup(IConfiguration config)
+    {
+      Configuration = config;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    /// <summary>
+    /// This method gets called by the runtime. 
+    /// Use this method to add services to the container.
+    /// </summary>
+    /// <param name="services">Service collection</param>
     public void ConfigureServices(IServiceCollection services)
     {
     }
 
-    // This method gets called by the runtime. Use this method to configure the app.
+    /// <summary>
+    /// This method gets called by the runtime. 
+    /// Use this method to configure the app.
+    /// </summary>
     public void Configure()
     {
       CslaConfiguration.Configure().
         PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Windows).
         DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/");
 
-      //http://ptrackerserver.azurewebsites.net/api/dataportal"
+      // Azure data portal URL
+      // http://ptrackerserver.azurewebsites.net/api/dataportal"
     }
   }
 }

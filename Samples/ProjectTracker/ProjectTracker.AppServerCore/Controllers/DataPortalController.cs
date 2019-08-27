@@ -14,14 +14,7 @@ namespace ProjectTracker.AppServerHost.Controllers
     [HttpPost]
     public override Task PostAsync([FromQuery] string operation)
     {
-      try
-      {
-        return base.PostAsync(operation);
-      }
-      catch (Exception ex)
-      {
-        throw;
-      }
+      return base.PostAsync(operation);
     }
 
     // Implementing a GET is totally optional, but is nice

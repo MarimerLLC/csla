@@ -14,18 +14,12 @@ namespace XamarinFormsUi.ViewModels
     public ICommand SaveItemCommand { get; private set; }
     public ICommand AssignResourceCommand { get; private set; }
 
-    private int ProjectId { get; set; }
-
     public ProjectEdit(int projectId)
     {
       SaveItemCommand = new Command(async () => await SaveAsync());
       AssignResourceCommand = new Command(() => { });
-      ProjectId = projectId;
-    }
-
-    protected override async Task<ProjectTracker.Library.ProjectEdit> DoInitAsync()
-    {
-      return await ProjectTracker.Library.ProjectEdit.GetProjectAsync(ProjectId);
+      var task = RefreshAsync<ProjectTracker.Library.ProjectEdit>(async () =>
+        await ProjectTracker.Library.ProjectEdit.GetProjectAsync(projectId));
     }
   }
 }

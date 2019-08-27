@@ -30,7 +30,6 @@ namespace Csla.Reflection
     /// values from an IServiceProvider
     /// </summary>
     /// <param name="target">Object with methods</param>
-    /// <param name="attributeType">Data portal operation attribute</param>
     /// <param name="criteria">Data portal criteria values</param>
     public static System.Reflection.MethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
       where T : DataPortalOperationAttribute
@@ -48,7 +47,6 @@ namespace Csla.Reflection
     /// values from an IServiceProvider
     /// </summary>
     /// <param name="targetType">Type of domain object</param>
-    /// <param name="attributeType">Data portal operation attribute</param>
     /// <param name="criteria">Data portal criteria values</param>
     public static System.Reflection.MethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria)
       where T : DataPortalOperationAttribute

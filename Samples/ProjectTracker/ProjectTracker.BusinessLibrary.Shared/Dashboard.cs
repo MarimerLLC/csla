@@ -27,13 +27,6 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResourceCountProperty, value); }
     }
 
-
-    public static void GetDashboard(
-      EventHandler<DataPortalResult<Dashboard>> callback)
-    {
-      DataPortal.BeginFetch<Dashboard>(callback);
-    }
-
     public async static System.Threading.Tasks.Task<Dashboard> GetDashboardAsync()
     {
       return await DataPortal.FetchAsync<Dashboard>();
@@ -44,6 +37,7 @@ namespace ProjectTracker.Library
       return DataPortal.Fetch<Dashboard>();
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

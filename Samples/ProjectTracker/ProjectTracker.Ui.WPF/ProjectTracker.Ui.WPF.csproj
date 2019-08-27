@@ -40,11 +40,11 @@
       <HintPath>..\packages\BXF.1.2.0.0\lib\net46\Bxf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Csla, Version=4.9.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.9.0\lib\net461\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=5.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\Csla.5.0.0-R19082602\lib\net461\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Xaml, Version=4.9.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-WPF.4.9.0\lib\net461\Csla.Xaml.dll</HintPath>
+    <Reference Include="Csla.Xaml, Version=5.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\Csla.Wpf.5.0.0-R19082602\lib\net461\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -171,12 +171,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Net\ProjectTracker.BusinessLibrary.Net.csproj">
-      <Project>{4eb86750-17f4-4ad6-a63a-c56cb7836b6b}</Project>
-      <Name>ProjectTracker.BusinessLibrary.Net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -243,7 +237,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.9.0\analyzers\c#\Csla.Analyzers.dll" />
+    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj">
+      <Project>{e3d685a7-13e0-4b98-8628-cbcc3942908d}</Project>
+      <Name>ProjectTracker.BusinessLibrary.Netstandard</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Csla.5.0.0-R19082602\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

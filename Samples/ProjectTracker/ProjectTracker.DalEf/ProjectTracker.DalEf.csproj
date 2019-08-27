@@ -56,8 +56,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.9.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.9.0\lib\net461\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=5.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\Csla.5.0.0-R19082602\lib\net461\Csla.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -123,17 +123,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Net\ProjectTracker.BusinessLibrary.Net.csproj">
-      <Project>{4eb86750-17f4-4ad6-a63a-c56cb7836b6b}</Project>
-      <Name>ProjectTracker.BusinessLibrary.Net</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
       <Project>{677EFBD4-1565-4D5D-A022-C2A85078DB64}</Project>
       <Name>ProjectTracker.Dal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.9.0\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\Csla.5.0.0-R19082602\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

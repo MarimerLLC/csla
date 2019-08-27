@@ -10,10 +10,8 @@
     <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;FULL_DOTNET</DefineConstants>
   </PropertyGroup>
 
-  <Import Project="..\ProjectTracker.BusinessLibrary.Shared\ProjectTracker.BusinessLibrary.projitems" Label="Shared" />
-
   <ItemGroup>
-    <PackageReference Include="CSLA-Core" Version="4.9.0" />
+    <PackageReference Include="Csla" Version="5.0.0-R19082602" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla;
 
 namespace WpfUI.ViewModels
 {
@@ -9,7 +10,8 @@ namespace WpfUI.ViewModels
   {
     public Dashboard()
     {
-      BeginRefresh(ProjectTracker.Library.Dashboard.GetDashboard);
+      RefreshAsync<ProjectTracker.Library.Dashboard>(
+        async () => await DataPortal.CreateAsync<ProjectTracker.Library.Dashboard>());
     }
   }
 }

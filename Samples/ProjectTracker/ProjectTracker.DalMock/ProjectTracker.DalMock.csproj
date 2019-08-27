@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSLA-Core" Version="4.9.0" />
+    <PackageReference Include="Csla" Version="5.0.0-R19082602" />
   </ItemGroup>
 
   <ItemGroup>

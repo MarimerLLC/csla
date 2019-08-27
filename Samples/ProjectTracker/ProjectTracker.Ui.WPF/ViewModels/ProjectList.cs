@@ -84,22 +84,20 @@ namespace WpfUI.ViewModels
           "Main");
       }
 
-      public void RemoveItem()
+      public async void RemoveItem()
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
-        ProjectTracker.Library.ProjectEdit.DeleteProject(Model.Id, (o, e) =>
+        try
         {
-          if (e.Error != null)
-          {
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-          }
-          else
-          {
-            Parent.Model.RemoveChild(Model.Id);
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-          }
-        });
+          await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(Model.Id);
+          Parent.Model.RemoveChild(Model.Id);
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
+        }
+        catch (Exception ex)
+        {
+          Bxf.Shell.Instance.ShowError(ex.Message, "Failed to delete item");
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+        }
       }
     }
   }

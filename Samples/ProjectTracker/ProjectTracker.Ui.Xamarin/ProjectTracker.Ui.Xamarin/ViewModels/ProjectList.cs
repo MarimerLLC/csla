@@ -87,18 +87,10 @@ namespace XamarinFormsUi.ViewModels
         await App.NavigateTo(typeof(Views.ProjectEdit), 1);
       }
 
-      public void RemoveItem()
+      public async void RemoveItem()
       {
-        ProjectTracker.Library.ProjectEdit.DeleteProject(Model.Id, (o, e) =>
-        {
-          if (e.Error != null)
-          {
-          }
-          else
-          {
-            Parent.Model.RemoveChild(Model.Id);
-          }
-        });
+        await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(Model.Id);
+        Parent.Model.RemoveChild(Model.Id);
       }
     }
   }

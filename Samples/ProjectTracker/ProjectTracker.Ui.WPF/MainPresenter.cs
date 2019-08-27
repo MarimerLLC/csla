@@ -1,9 +1,11 @@
 ﻿using System;
-using Bxf;
-using System.Windows;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Bxf;
+using Csla;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WpfUI
 {
@@ -15,7 +17,8 @@ namespace WpfUI
 
     public MainPresenter()
     {
-      DesignMode = System.ComponentModel.DesignerProperties.GetIsInDesignMode(this);
+      DesignMode = DesignerProperties.GetIsInDesignMode(this);
+      DoStartup();
 
       _closeTimer.Tick += new EventHandler(CloseTimer_Tick);
       _closeTimer.Interval = new TimeSpan(1000);
@@ -23,6 +26,9 @@ namespace WpfUI
         _closeTimer.Start();
 
       var presenter = (IPresenter)Bxf.Shell.Instance;
+
+      LoadRoleListCache();
+
       presenter.OnShowError += (message, title) =>
         {
           Shell.Instance.ShowView(
@@ -86,6 +92,34 @@ namespace WpfUI
       ShowMenu();
 
       Shell.Instance.ShowStatus(new Status { Text = "Ready" });
+    }
+
+    private void LoadRoleListCache()
+    {
+      try
+      {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        ProjectTracker.Library.RoleList.CacheListAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      }
+      catch (DataPortalException ex)
+      {
+        Shell.Instance.ShowError(ex.Message, "Retrieve RoleList");
+      }
+    }
+
+    private void DoStartup()
+    {
+      // basically a WPF "app builder" implementation
+      var serviceCollection = new ServiceCollection();
+      serviceCollection.AddScoped((c) =>
+        Startup.LoadAppConfiguration(Array.Empty<string>()));
+      var startup = ActivatorUtilities.CreateInstance<Startup>(
+        serviceCollection.BuildServiceProvider(), Array.Empty<object>());
+      startup.ConfigureServices(serviceCollection);
+      ProjectTracker.Ui.WPF.App.ServiceProvider =
+        serviceCollection.BuildServiceProvider();
+      startup.Configure();
     }
 
     public static void ShowMenu()

@@ -1,18 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
+﻿using System.Linq;
 using System.Collections.ObjectModel;
-using ProjectTracker.Library;
-using System.Threading.Tasks;
 
 namespace UwpUI.ViewModels
 {
   public class ProjectList : ViewModel<ProjectTracker.Library.ProjectList>
   {
-    protected override async Task<ProjectTracker.Library.ProjectList> DoInitAsync()
+    public ProjectList()
     {
-      Model = await ProjectTracker.Library.ProjectList.GetProjectListAsync();
-      return Model;
+      var task = RefreshAsync<ProjectTracker.Library.ProjectList>(async () =>
+        await ProjectTracker.Library.ProjectList.GetProjectListAsync());
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)
@@ -74,18 +70,10 @@ namespace UwpUI.ViewModels
         App.NavigateTo(typeof(Views.ProjectEdit), 1);
       }
 
-      public void RemoveItem()
+      public async void RemoveItem()
       {
-        ProjectTracker.Library.ProjectEdit.DeleteProject(Model.Id, (o, e) =>
-        {
-          if (e.Error != null)
-          {
-          }
-          else
-          {
-            Parent.Model.RemoveChild(Model.Id);
-          }
-        });
+        await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(Model.Id);
+        Parent.Model.RemoveChild(Model.Id);
       }
     }
   }

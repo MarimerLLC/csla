@@ -28,7 +28,7 @@ namespace PTWin
       get { return _main; }
     }
 
-    private async void MainForm_Load(object sender, EventArgs e)
+    private void MainForm_Load(object sender, EventArgs e)
     {
       if (Csla.ApplicationContext.AuthenticationType == "Windows")
       {
@@ -43,10 +43,8 @@ namespace PTWin
       if (DocumentCount == 0)
         DocumentsToolStripDropDownButton.Enabled = false;
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       // initialize cache of role list
-      RoleList.CacheListAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      var task = RoleList.CacheListAsync();
     }
 
     #region Projects

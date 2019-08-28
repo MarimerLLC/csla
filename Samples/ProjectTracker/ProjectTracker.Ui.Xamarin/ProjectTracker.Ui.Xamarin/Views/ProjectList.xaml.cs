@@ -13,11 +13,7 @@ namespace XamarinFormsUi.Views
     public ProjectList()
     {
       InitializeComponent();
-    }
-
-    public async Task InitAsync()
-    {
-      BindingContext = await new ViewModels.ProjectList().InitAsync();
+      BindingContext = new ViewModels.ProjectList();
     }
 
     public void EditItem(object sender, EventArgs e)

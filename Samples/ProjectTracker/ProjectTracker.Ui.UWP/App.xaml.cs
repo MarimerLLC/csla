@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.Extensions.DependencyInjection;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace UwpUI
@@ -60,19 +50,22 @@ namespace UwpUI
       }
 #endif
 
-      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      //Csla.ApplicationContext.DataPortalUrlString = "http://localhost:11170/api/DataPortal/PostAsync"; // MVC 5 and Web API
-      Csla.ApplicationContext.DataPortalUrlString = "http://ptrackerserver.azurewebsites.net/api/DataPortal/PostAsync";
-
-      //Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
-      //Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:11170/WcfMobilePortal.svc";
-
       Frame rootFrame = Window.Current.Content as Frame;
 
       // Do not repeat app initialization when the Window already has content,
       // just ensure that the window is active
       if (rootFrame == null)
       {
+        // basically a UWP "app builder" implementation
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddScoped((c) =>
+          Startup.LoadAppConfiguration(Array.Empty<string>()));
+        var startup = ActivatorUtilities.CreateInstance<Startup>(
+          serviceCollection.BuildServiceProvider(), Array.Empty<object>());
+        startup.ConfigureServices(serviceCollection);
+        var provider = serviceCollection.BuildServiceProvider();
+        startup.Configure();
+
         // Create a Frame to act as the navigation context and navigate to the first page
         rootFrame = new Frame();
 
@@ -88,10 +81,9 @@ namespace UwpUI
       }
 
       ProjectTracker.Library.Security.PTPrincipal.Logout();
-
       await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
-      await ProjectTracker.Library.RoleList.CacheListAsync();
+      var task = ProjectTracker.Library.RoleList.CacheListAsync();
 
       if (rootFrame.Content == null)
       {

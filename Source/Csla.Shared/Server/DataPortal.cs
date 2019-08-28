@@ -740,12 +740,10 @@ namespace Csla.Server
       var clength = 0;
       if (criteria != null)
         clength = criteria.GetLength(0);
-      if (criteria == null)
-        return null;
+      if (criteria == null || (clength == 1 && criteria[0] == null))
+        return NullCriteria.Instance;
       else if (clength == 0)
         return EmptyCriteria.Instance;
-      else if (clength == 1 && criteria[0] == null)
-        return NullCriteria.Instance;
       else if (clength == 1)
         return criteria[0];
       else

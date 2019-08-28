@@ -162,7 +162,6 @@ namespace Csla.Reflection
     /// otherwise synchronously invokes the method.
     /// </summary>
     /// <param name="isSync">Is client calling this synchronously</param>
-    /// <param name="attributeType">Data portal operation attribute</param>
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>

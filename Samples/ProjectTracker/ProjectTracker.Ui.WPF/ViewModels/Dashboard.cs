@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading.Tasks;
+using Csla;
 
 namespace WpfUI.ViewModels
 {
@@ -9,7 +7,8 @@ namespace WpfUI.ViewModels
   {
     public Dashboard()
     {
-      BeginRefresh(ProjectTracker.Library.Dashboard.GetDashboard);
+      var task = RefreshAsync<ProjectTracker.Library.Dashboard>(async () =>
+        await ProjectTracker.Library.Dashboard.GetDashboardAsync());
     }
   }
 }

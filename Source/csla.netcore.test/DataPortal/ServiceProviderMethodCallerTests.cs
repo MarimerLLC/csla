@@ -53,10 +53,17 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public async Task FindMethodNullableCriteriaViaDataPortal()
+    public async Task FindMethodNullableCriteriaWithValueViaDataPortal()
     {
       var obj = await Csla.DataPortal.CreateAsync<NullableCriteria>(123);
-      obj = await Csla.DataPortal.CreateAsync<NullableCriteria>(null);
+      Assert.IsNotNull(obj);
+    }
+
+    [TestMethod]
+    public async Task FindMethodNullableCriteriaWithNullViaDataPortal()
+    {
+      var obj = await Csla.DataPortal.CreateAsync<NullableCriteria>(null);
+      Assert.IsNotNull(obj);
     }
 
     [TestMethod]

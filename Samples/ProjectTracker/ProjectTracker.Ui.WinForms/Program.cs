@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PTWin
 {
@@ -12,11 +12,22 @@ namespace PTWin
     [STAThread]
     static void Main()
     {
-      Csla.ApplicationContext.ContextManager = new ApplicationContextManager();
-
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new MainForm());
+
+      // basically a Windows Forms "app builder" implementation
+      var serviceCollection = new ServiceCollection();
+      serviceCollection.AddScoped((c) => 
+        Startup.LoadAppConfiguration(Array.Empty<string>()));
+      var startup = ActivatorUtilities.CreateInstance<Startup>(
+        serviceCollection.BuildServiceProvider(), Array.Empty<object>());
+      startup.ConfigureServices(serviceCollection);
+      var provider = serviceCollection.BuildServiceProvider();
+      startup.Configure();
+
+      // run the start form, creating it with DI support
+      Application.Run(
+        ActivatorUtilities.CreateInstance<MainForm>(provider, Array.Empty<object>()));
     }
   }
 }

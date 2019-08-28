@@ -10,23 +10,24 @@ namespace WpfUI.ViewModels
   /// <summary>
   /// Manages the ProjectEdit operation
   /// </summary>
-  public class ProjectGetter : ViewModel<ProjectTracker.Library.ProjectGetter>
+  public class ProjectGetter : ViewModel<ProjectTracker.Library.ProjectEdit>
   {
     public ProjectGetter()
     {
-      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.CreateNewProject(callback));
+      var task = RefreshAsync<ProjectTracker.Library.ProjectEdit>(async () =>
+        await ProjectTracker.Library.ProjectGetter.CreateNewProject());
     }
     
     public ProjectGetter(ProjectTracker.Library.ProjectInfo info)
     {
-      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(info.Id, callback));
+      var task = RefreshAsync<ProjectTracker.Library.ProjectEdit>(async () =>
+        await ProjectTracker.Library.ProjectGetter.GetExistingProject(info.Id));
     }
 
-    protected override void OnModelChanged(ProjectTracker.Library.ProjectGetter oldValue, ProjectTracker.Library.ProjectGetter newValue)
+    protected override void OnModelChanged(ProjectTracker.Library.ProjectEdit oldValue, ProjectTracker.Library.ProjectEdit newValue)
     {
       base.OnModelChanged(oldValue, newValue);
-      OnPropertyChanged("RoleList");
-      OnPropertyChanged("ProjectEditViewModel");
+      OnPropertyChanged(nameof(ProjectEditViewModel));
     }
 
     public List<ProjectEdit> ProjectEditViewModel
@@ -36,19 +37,13 @@ namespace WpfUI.ViewModels
         if (Model == null)
           return null;
         else
-          return new List<ProjectEdit> { new ProjectEdit(this, Model.Project) };
+          return new List<ProjectEdit> { new ProjectEdit(this, Model) };
       }
     }
 
     public ProjectTracker.Library.RoleList RoleList
     {
-      get
-      {
-        if (Model == null)
-          return null;
-        else
-          return Model.RoleList;
-      }
+      get => ProjectTracker.Library.RoleList.GetCachedList();
     }
 
     /// <summary>
@@ -68,14 +63,14 @@ namespace WpfUI.ViewModels
       public UserControl ChildEditContent
       {
         get { return _childEditContent; }
-        set { _childEditContent = value; OnPropertyChanged("ChildEditContent"); }
+        set { _childEditContent = value; OnPropertyChanged(nameof(ChildEditContent)); }
       }
 
       protected override void OnModelChanged(ProjectTracker.Library.ProjectEdit oldValue, ProjectTracker.Library.ProjectEdit newValue)
       {
         base.OnModelChanged(oldValue, newValue);
-        Model.Resources.CollectionChanged += (o, e) => OnPropertyChanged("ProjectResourceList");
-        OnPropertyChanged("ProjectResourceList");
+        Model.Resources.CollectionChanged += (o, e) => OnPropertyChanged(nameof(ProjectResourceList));
+        OnPropertyChanged(nameof(ProjectResourceList));
       }
 
       public ObservableCollection<ProjectResourceDisplay> ProjectResourceList

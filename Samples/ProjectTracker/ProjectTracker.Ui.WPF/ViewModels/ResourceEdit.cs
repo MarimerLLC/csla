@@ -10,23 +10,24 @@ namespace WpfUI.ViewModels
   /// <summary>
   /// Manages the ProjectEdit operation
   /// </summary>
-  public class ResourceGetter : ViewModel<ProjectTracker.Library.ResourceGetter>
+  public class ResourceGetter : ViewModel<ProjectTracker.Library.ResourceEdit>
   {
     public ResourceGetter()
     {
-      BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.CreateNewResource(callback));
+      var task = RefreshAsync<ProjectTracker.Library.ResourceEdit>(async () =>
+        await ProjectTracker.Library.ResourceGetter.CreateNewResource());
     }
     
     public ResourceGetter(ProjectTracker.Library.ResourceInfo info)
     {
-      BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.GetExistingResource(info.Id, callback));
+      var task = RefreshAsync<ProjectTracker.Library.ResourceEdit>(async () =>
+        await ProjectTracker.Library.ResourceGetter.GetExistingResource(info.Id));
     }
 
-    protected override void OnModelChanged(ProjectTracker.Library.ResourceGetter oldValue, ProjectTracker.Library.ResourceGetter newValue)
+    protected override void OnModelChanged(ProjectTracker.Library.ResourceEdit oldValue, ProjectTracker.Library.ResourceEdit newValue)
     {
       base.OnModelChanged(oldValue, newValue);
-      OnPropertyChanged("RoleList");
-      OnPropertyChanged("ResourceEditViewModel");
+      OnPropertyChanged(nameof(ResourceEditViewModel));
     }
 
     public List<ResourceEdit> ResourceEditViewModel
@@ -36,18 +37,7 @@ namespace WpfUI.ViewModels
         if (Model == null)
           return null;
         else
-          return new List<ResourceEdit> { new ResourceEdit(this, Model.Resource) };
-      }
-    }
-
-    public ProjectTracker.Library.RoleList RoleList
-    {
-      get
-      {
-        if (Model == null)
-          return null;
-        else
-          return Model.RoleList;
+          return new List<ResourceEdit> { new ResourceEdit(this, Model) };
       }
     }
 
@@ -68,14 +58,14 @@ namespace WpfUI.ViewModels
       public UserControl ChildEditContent
       {
         get { return _childEditContent; }
-        set { _childEditContent = value; OnPropertyChanged("ChildEditContent"); }
+        set { _childEditContent = value; OnPropertyChanged(nameof(ChildEditContent)); }
       }
 
       protected override void OnModelChanged(ProjectTracker.Library.ResourceEdit oldValue, ProjectTracker.Library.ResourceEdit newValue)
       {
         base.OnModelChanged(oldValue, newValue);
-        Model.Assignments.CollectionChanged += (o, e) => OnPropertyChanged("AssignmentList");
-        OnPropertyChanged("AssignmentList");
+        Model.Assignments.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AssignmentList));
+        OnPropertyChanged(nameof(AssignmentList));
       }
 
       public ObservableCollection<AssignmentDisplay> AssignmentList

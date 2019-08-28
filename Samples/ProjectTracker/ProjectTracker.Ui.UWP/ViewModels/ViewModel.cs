@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Csla.Xaml;
 using Windows.UI.Popups;
 
@@ -6,13 +7,28 @@ namespace UwpUI.ViewModels
 {
   public abstract class ViewModel<T> : ViewModelBase<T>
   {
-    protected async override void OnError(Exception error)
+    protected override async Task<T> RefreshAsync<F>(Func<Task<T>> factory)
     {
-      base.OnError(error);
-      string message = error.Message;
-      if (error.InnerException != null)
-        message = error.InnerException.Message;
-      //await new MessageDialog(message, $"Data error { typeof(T) }").ShowAsync();
+      T result = default;
+      try
+      {
+        result = await base.RefreshAsync<F>(factory);
+      }
+      catch (Exception ex)
+      {
+        string message;
+        if (ex is Csla.DataPortalException be)
+        {
+          if (be.BusinessException != null)
+            message = be.BusinessException.Message;
+          else
+            message = be.Message;
+        }
+        else
+          message = ex.Message;
+        await new MessageDialog(message).ShowAsync();
+      }
+      return result;
     }
   }
 }

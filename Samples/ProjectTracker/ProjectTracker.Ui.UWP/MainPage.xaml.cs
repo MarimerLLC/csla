@@ -36,10 +36,10 @@ namespace UwpUI
       base.OnNavigatedTo(e);
     }
 
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-      var vm = await new ViewModels.DashboardViewModel().InitAsync();
-      this.DataContext = vm;
+      var vm = new ViewModels.DashboardViewModel();
+      DataContext = vm;
     }
 
     private void ShowProjectList(object sender, RoutedEventArgs e)

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.ObjectModel;
+using ProjectTracker.Library;
+using System.Threading.Tasks;
+using Csla;
 
 namespace WpfUI.ViewModels
 {
@@ -8,15 +11,16 @@ namespace WpfUI.ViewModels
   {
     public ResourceList()
     {
-      BeginRefresh(ProjectTracker.Library.ResourceList.GetResourceList);
+      var task = RefreshAsync<ProjectTracker.Library.ResourceList>(
+        async () => await ProjectTracker.Library.ResourceList.GetResourceListAsync());
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ResourceList oldValue, ProjectTracker.Library.ResourceList newValue)
     {
       base.OnModelChanged(oldValue, newValue);
       if (newValue != null)
-        newValue.CollectionChanged += (sender, args) => OnPropertyChanged("ItemList");
-      OnPropertyChanged("ItemList");
+        newValue.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(ItemList));
+      OnPropertyChanged(nameof(ItemList));
     }
 
     public ObservableCollection<ResourceInfo> ItemList
@@ -33,7 +37,8 @@ namespace WpfUI.ViewModels
 
     public bool CanAdd
     {
-      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectTracker.Library.ResourceEdit)); }
+      get { return Csla.Rules.BusinessRules.HasPermission(
+        Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectTracker.Library.ResourceEdit)); }
     }
 
     public void AddItem()
@@ -83,35 +88,31 @@ namespace WpfUI.ViewModels
           "Main");
       }
 
-      public void RemoveItem()
+      public async void RemoveItem()
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Getting item to delete..." });
-        ProjectTracker.Library.ResourceEdit.GetResourceEdit(Model.Id, (o, e) =>
+        try
         {
-          if (e.Error != null)
+          var obj = await ResourceEdit.GetResourceEditAsync(Model.Id);
+          obj.Delete();
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
+          try
           {
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+            obj = await obj.SaveAsync();
+            Parent.Model.RemoveChild(Model.Id);
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
           }
-          else
-          {
-            e.Object.Delete();
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
-            e.Object.BeginSave((s, a) =>
-            {
-              if (a.Error != null)
-              {
-                Bxf.Shell.Instance.ShowError(a.Error.Message, "Failed to delete item");
-                Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-              }
-              else
-              {
-                Parent.Model.RemoveChild(Model.Id);
-                Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-              }
-            });
+          catch (Exception ex)
+          { 
+              Bxf.Shell.Instance.ShowError(ex.Message, "Failed to delete item");
+              Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
           }
-        });
+        }
+        catch (Exception ex)
+        {
+          Bxf.Shell.Instance.ShowError(ex.Message, "Failed to delete item");
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+        }
       }
     }
   }

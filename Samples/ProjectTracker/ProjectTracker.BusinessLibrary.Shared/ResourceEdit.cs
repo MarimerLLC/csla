@@ -71,17 +71,17 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, "ProjectManager"));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, Security.Roles.ProjectManager));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, Security.Roles.ProjectManager));
       BusinessRules.AddRule(new NoDuplicateProject { PrimaryProperty = AssignmentsProperty });
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static void AddObjectAuthorizationRules()
     {
-      Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "ProjectManager"));
-      Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
-      Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
+      Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, Security.Roles.ProjectManager));
+      Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, Security.Roles.ProjectManager));
+      Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, Security.Roles.ProjectManager, Security.Roles.Administrator));
     }
 
     protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
@@ -123,19 +123,9 @@ namespace ProjectTracker.Library
 
     public static async Task<bool> ExistsAsync(int id)
     {
-      var cmd = new ResourceExistsCommand(id);
+      var cmd = await DataPortal.CreateAsync<ResourceExistsCommand>(id);
       cmd = await DataPortal.ExecuteAsync(cmd);
       return cmd.ResourceExists;
-    }
-
-    public static void NewResourceEdit(EventHandler<DataPortalResult<ResourceEdit>> callback)
-    {
-      DataPortal.BeginCreate<ResourceEdit>(callback);
-    }
-
-    public static void GetResourceEdit(int id, EventHandler<DataPortalResult<ResourceEdit>> callback)
-    {
-      DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
     public static ResourceEdit NewResourceEdit()
@@ -153,13 +143,6 @@ namespace ProjectTracker.Library
       DataPortal.Delete<ResourceEdit>(id);
     }
 
-    public static bool Exists(int id)
-    {
-      var cmd = new ResourceExistsCommand(id);
-      cmd = DataPortal.Execute(cmd);
-      return cmd.ResourceExists;
-    }
-
     [RunLocal]
     protected override void DataPortal_Create()
     {
@@ -167,7 +150,8 @@ namespace ProjectTracker.Library
       base.DataPortal_Create();
     }
 
-    private void DataPortal_Fetch(int id)
+    [Fetch]
+    private void Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -184,7 +168,8 @@ namespace ProjectTracker.Library
       }
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    private void Insert()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -204,7 +189,8 @@ namespace ProjectTracker.Library
       }
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    private void Update()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -225,13 +211,15 @@ namespace ProjectTracker.Library
       }
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    private void DeleteSelf()
     {
       using (BypassPropertyChecks)
-        DataPortal_Delete(this.Id);
+        Delete(this.Id);
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+    private void Delete(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {

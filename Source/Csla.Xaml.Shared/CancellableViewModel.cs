@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
+﻿#if !XAMARIN && !WINDOWS_UWP
 //-----------------------------------------------------------------------
 // <copyright file="CancellableViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -17,6 +17,7 @@ namespace Csla.Xaml
   /// ViewModel without multithreading (concurrency) bugs.
   /// </summary>
   /// <typeparam name="T"></typeparam>
+  [Obsolete("Use ViewModelBase.RefreshAsync", false)]
   public abstract class CancellableViewModel<T> : ViewModel<T>
   {
     private CslaOperation<T> _lastOperation;
@@ -43,6 +44,7 @@ namespace Csla.Xaml
     /// <example>BeginRefresh(BusinessList.BeginGetList)</example>
     /// <example>BeginRefresh(handler => BusinessList.BeginGetList(handler))</example>
     /// <example>BeginRefresh(handler => BusinessList.BeginGetList(id, handler))</example>
+    [Obsolete("Use RefreshAsync", false)]
     protected new void BeginRefresh(Action<EventHandler<DataPortalResult<T>>> factoryMethod)
     {
       ExecuteOperation(operation => operation.Execute(factoryMethod));
@@ -54,6 +56,7 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="factoryMethod">Name of the static factory method.</param>
     /// <param name="factoryParameters">Factory method parameters.</param>
+    [Obsolete("Use RefreshAsync", false)]
     protected override void BeginRefresh(string factoryMethod, params object[] factoryParameters)
     {
       ExecuteOperation(operation => operation.Execute(factoryMethod, factoryParameters));
@@ -62,6 +65,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Cancel refresh operation.
     /// </summary>
+    [Obsolete("Use RefreshAsync", false)]
     public virtual void CancelRefresh()
     {
       _nextOperationExecutor = null;

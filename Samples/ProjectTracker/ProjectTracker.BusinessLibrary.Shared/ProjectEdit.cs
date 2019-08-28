@@ -3,6 +3,7 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace ProjectTracker.Library
 {
@@ -69,7 +70,7 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
-      RegisterProperty<ProjectResources>(p => p.Resources, RelationshipTypes.Child);
+      RegisterProperty<ProjectResources>(p => p.Resources);
     public ProjectResources Resources
     {
       get { return GetProperty(ResourcesProperty); }
@@ -99,9 +100,9 @@ namespace ProjectTracker.Library
           Csla.Rules.AuthorizationActions.WriteProperty, 
           NameProperty, 
           "ProjectManager"));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, StartedProperty, "ProjectManager"));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, EndedProperty, "ProjectManager"));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, DescriptionProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, StartedProperty, Security.Roles.ProjectManager));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, EndedProperty, Security.Roles.ProjectManager));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, DescriptionProperty, Security.Roles.ProjectManager));
       BusinessRules.AddRule(new NoDuplicateResource { PrimaryProperty = ResourcesProperty });
     }
 
@@ -113,8 +114,8 @@ namespace ProjectTracker.Library
         new Csla.Rules.CommonRules.IsInRole(
           Csla.Rules.AuthorizationActions.CreateObject, 
           "ProjectManager"));
-      Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
-      Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
+      Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, Security.Roles.ProjectManager));
+      Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, Security.Roles.ProjectManager, Security.Roles.Administrator));
     }
 
     protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
@@ -157,52 +158,16 @@ namespace ProjectTracker.Library
       }
     }
 
-#if FULL_DOTNET
-    public static void NewProject(EventHandler<DataPortalResult<ProjectEdit>> callback)
-    {
-      ProjectGetter.CreateNewProject((o, e) =>
-      {
-        callback(o, new DataPortalResult<ProjectEdit>(e.Object.Project, e.Error, null));
-      });
-    }
-
-    public static void GetProject(int id, EventHandler<DataPortalResult<ProjectEdit>> callback)
-    {
-      ProjectGetter.GetExistingProject(id, (o, e) =>
-        {
-          callback(o, new DataPortalResult<ProjectEdit>(e.Object.Project, e.Error, null));
-        });
-    }
-
-    public static void Exists(int id, Action<bool> result)
-    {
-      var cmd = new ProjectExistsCommand(id);
-      DataPortal.BeginExecute<ProjectExistsCommand>(cmd, (o, e) =>
-      {
-        if (e.Error != null)
-          throw e.Error;
-        else
-          result(e.Object.ProjectExists);
-      });
-    }
-
-    public static void DeleteProject(int id, EventHandler<DataPortalResult<ProjectEdit>> callback)
-    {
-      DataPortal.BeginDelete<ProjectEdit>(id, callback);
-    }
-#endif
-
-    public async static System.Threading.Tasks.Task<ProjectEdit> NewProjectAsync()
+    public async static Task<ProjectEdit> NewProjectAsync()
     {
       return await DataPortal.CreateAsync<ProjectEdit>();
     }
 
-    public async static System.Threading.Tasks.Task<ProjectEdit> GetProjectAsync(int id)
+    public async static Task<ProjectEdit> GetProjectAsync(int id)
     {
       return await DataPortal.FetchAsync<ProjectEdit>(id);
     }
 
-#if FULL_DOTNET 
     public static ProjectEdit NewProject()
     {
       return DataPortal.Create<ProjectEdit>();
@@ -218,13 +183,12 @@ namespace ProjectTracker.Library
       DataPortal.Delete<ProjectEdit>(id);
     }
 
-    public static bool Exists(int id)
+    public static async Task<bool> ExistsAsync(int id)
     {
-      var cmd = new ProjectExistsCommand(id);
-      cmd = DataPortal.Execute<ProjectExistsCommand>(cmd);
+      var cmd = await DataPortal.CreateAsync<ProjectExistsCommand>(id);
+      cmd = await DataPortal.ExecuteAsync(cmd);
       return cmd.ProjectExists;
     }
-#endif
 
     [RunLocal]
     protected override void DataPortal_Create()

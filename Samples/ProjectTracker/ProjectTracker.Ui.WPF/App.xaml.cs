@@ -13,5 +13,6 @@ namespace ProjectTracker.Ui.WPF
   /// </summary>
   public partial class App : Application
   {
+    public static IServiceProvider ServiceProvider { get; set; }
   }
 }

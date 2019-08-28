@@ -14,26 +14,21 @@ namespace WpfUI.ViewModels
       base.DoCancel();
     }
 
-    public void Save()
+    public async void Save()
     {
       if (Model != null)
       {
         if (Model.IsSavable)
         {
           Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
-          base.BeginSave();
+          await SaveAsync();
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = true, Text = "Saved..." });
         }
         else
         {
           Bxf.Shell.Instance.ShowError("Object can not be saved", "Save error");
         }
       }
-    }
-
-    protected override void OnSaved()
-    {
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = true, Text = "Saved..." });
-      base.OnSaved();
     }
   }
 }

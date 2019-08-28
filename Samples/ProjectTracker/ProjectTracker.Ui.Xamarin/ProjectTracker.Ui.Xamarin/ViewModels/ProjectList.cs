@@ -10,26 +10,18 @@ namespace XamarinFormsUi.ViewModels
 {
   public class ProjectList : ViewModel<ProjectTracker.Library.ProjectList>
   {
-    protected override async Task<ProjectTracker.Library.ProjectList> DoInitAsync()
+    public ProjectList()
     {
-      ProjectTracker.Library.ProjectList obj = null;
-      try
-      {
-        obj = await ProjectTracker.Library.ProjectList.GetProjectListAsync();
-      }
-      catch (Exception ex)
-      {
-        var x = ex;
-      }
-      return obj;
+      var task = RefreshAsync<ProjectTracker.Library.ProjectList>(async () =>
+        await ProjectTracker.Library.ProjectList.GetProjectListAsync());
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)
     {
       base.OnModelChanged(oldValue, newValue);
       if (newValue != null)
-        newValue.CollectionChanged += (sender, args) => OnPropertyChanged("ItemList");
-      OnPropertyChanged("ItemList");
+        newValue.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(ItemList));
+      OnPropertyChanged(nameof(ItemList));
     }
 
     internal async void EditItem(ProjectTracker.Library.ProjectInfo item)
@@ -87,18 +79,10 @@ namespace XamarinFormsUi.ViewModels
         await App.NavigateTo(typeof(Views.ProjectEdit), 1);
       }
 
-      public void RemoveItem()
+      public async void RemoveItem()
       {
-        ProjectTracker.Library.ProjectEdit.DeleteProject(Model.Id, (o, e) =>
-        {
-          if (e.Error != null)
-          {
-          }
-          else
-          {
-            Parent.Model.RemoveChild(Model.Id);
-          }
-        });
+        await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(Model.Id);
+        Parent.Model.RemoveChild(Model.Id);
       }
     }
   }

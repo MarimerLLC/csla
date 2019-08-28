@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using ProjectTracker.Library;
 using Csla.Security;
+using Csla.Configuration;
+using Csla;
 
 namespace PTWin
 {
@@ -26,7 +28,7 @@ namespace PTWin
       get { return _main; }
     }
 
-    private async void MainForm_Load(object sender, EventArgs e)
+    private void MainForm_Load(object sender, EventArgs e)
     {
       if (Csla.ApplicationContext.AuthenticationType == "Windows")
       {
@@ -42,7 +44,7 @@ namespace PTWin
         DocumentsToolStripDropDownButton.Enabled = false;
 
       // initialize cache of role list
-      await RoleList.CacheListAsync();
+      var task = RoleList.CacheListAsync();
     }
 
     #region Projects
@@ -111,7 +113,7 @@ namespace PTWin
       }
     }
 
-    private void DeleteProjectToolStripMenuItem_Click(object sender, EventArgs e)
+    private async void DeleteProjectToolStripMenuItem_Click(object sender, EventArgs e)
     {
       ProjectSelect dlg = new ProjectSelect();
       dlg.Text = "Delete Project";
@@ -128,7 +130,7 @@ namespace PTWin
           {
             try
             {
-              ProjectTracker.Library.ProjectEdit.DeleteProject(projectId);
+              await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(projectId);
             }
             catch (Csla.DataPortalException ex)
             {

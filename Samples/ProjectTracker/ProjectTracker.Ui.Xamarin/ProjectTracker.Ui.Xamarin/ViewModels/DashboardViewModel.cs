@@ -1,24 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XamarinFormsUi.ViewModels
+﻿namespace XamarinFormsUi.ViewModels
 {
   public class DashboardViewModel : ViewModel<ProjectTracker.Library.Dashboard>
   {
-    protected override async Task<ProjectTracker.Library.Dashboard> DoInitAsync()
+    public DashboardViewModel()
     {
-      try
-      { 
-      Model = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
-      }
-      catch (Exception ex)
-      {
-        var x = ex;
-      }
-      return Model;
+      var task = RefreshAsync<ProjectTracker.Library.Dashboard>(async () => 
+        await ProjectTracker.Library.Dashboard.GetDashboardAsync());
     }
   }
 }

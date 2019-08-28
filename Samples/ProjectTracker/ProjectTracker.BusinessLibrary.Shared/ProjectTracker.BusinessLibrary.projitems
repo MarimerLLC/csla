@@ -36,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RoleList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\PTIdentity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\PTPrincipal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\Roles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValidRole.cs" />
   </ItemGroup>
 </Project>

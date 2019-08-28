@@ -35,9 +35,9 @@ namespace UwpUI.Views
       base.OnNavigatedTo(e);
     }
 
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-      var vm = await new ViewModels.ProjectEdit(ProjectId).InitAsync();
+      var vm = new ViewModels.ProjectEdit(ProjectId);
       DataContext = vm;
     }
   }

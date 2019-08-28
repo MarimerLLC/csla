@@ -43,7 +43,8 @@ namespace ProjectTracker.AppServerCore
       app.UseHttpsRedirection();
       app.UseMvc();
 
-      Csla.Configuration.ConfigurationManager.AppSettings["DalManagerType"] = "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
+      Csla.Configuration.ConfigurationManager.AppSettings["DalManagerType"] = 
+        "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
     }
   }
 }

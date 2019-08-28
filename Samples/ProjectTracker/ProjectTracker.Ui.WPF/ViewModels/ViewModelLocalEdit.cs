@@ -14,35 +14,30 @@ namespace WpfUI.ViewModels
       base.DoCancel();
     }
 
-    public void Save()
+    public async void Save()
     {
-      Bxf.Shell.Instance.ShowStatus(new Status { IsBusy = true, Text = "Saving..." });
-      base.BeginSave();
-    }
-
-    protected override void OnSaved()
-    {
-      Bxf.Shell.Instance.ShowStatus(new Status { IsOk = true, Text = "Saved..." });
-      base.OnSaved();
-    }
-
-    protected override void OnError(Exception error)
-    {
-      Bxf.Shell.Instance.ShowStatus(new Status { IsOk = false });
-      string message = null;
-      var be = error as Csla.DataPortalException;
-      if (be != null)
+      Shell.Instance.ShowStatus(new Status { IsBusy = true, Text = "Saving..." });
+      try
       {
-        if (be.BusinessException != null)
-          message = be.BusinessException.Message;
-        else
-          message = be.Message;
+        await SaveAsync();
+        Shell.Instance.ShowStatus(new Status { IsOk = true, Text = "Saved..." });
       }
-      else
-        message = error.Message;
+      catch (Exception ex)
+      {
+        Shell.Instance.ShowStatus(new Status { IsOk = false });
+        string message;
+        if (ex is Csla.DataPortalException be)
+        {
+          if (be.BusinessException != null)
+            message = be.BusinessException.Message;
+          else
+            message = be.Message;
+        }
+        else
+          message = ex.Message;
 
-      Bxf.Shell.Instance.ShowError(message, "Error");
-      base.OnError(error);
+        Shell.Instance.ShowError(message, "Error");
+      }
     }
   }
 }

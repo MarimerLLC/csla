@@ -1,0 +1,2 @@
+MainPackage=C:\src\rdl\csla\Samples\ProjectTracker\ProjectTracker.Ui.UWP\bin\x86\Debug\ProjectTracker.Ui.UWP_1.0.0.0_x86_Debug.appx
+SymbolPackage=C:\src\rdl\csla\Samples\ProjectTracker\ProjectTracker.Ui.UWP\obj\x86\Debug\Symbols\ProjectTracker.Ui.UWP_1.0.0.0_x86_Debug.appxsym

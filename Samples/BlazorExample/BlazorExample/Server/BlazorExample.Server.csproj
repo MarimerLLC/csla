@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
     <ProjectReference Include="..\Client\BlazorExample.Client.csproj" />
     <ProjectReference Include="..\Shared\BlazorExample.Shared.csproj" />
   </ItemGroup>

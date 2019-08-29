@@ -47,19 +47,22 @@ namespace Csla.Analyzers
     {
       var newRoot = AddAttribute(
         root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
-      
+
+      var description = IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription;
+
       if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
       {
         newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
           SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
             IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
+        description = IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription;
       }
 
       context.RegisterCodeFix(
         CodeAction.Create(
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription,
+          description,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription), diagnostic);
+          description), diagnostic);
     }
   }
 }

@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
 using System.Collections.Generic;
+using Csla.Analyzers.Extensions;
 
 namespace Csla.Analyzers
 {
@@ -63,11 +64,22 @@ namespace Csla.Analyzers
       Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
     {
       var newRoot = AddAttribute(root, methodNode, nameAttributeMap[methodNode.Identifier.ValueText]);
+
+      var description = DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription;
+
+      if (!root.HasUsing(DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.CslaNamespace))
+      {
+        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
+            DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.CslaNamespace)));
+        description = DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription;
+      }
+
       context.RegisterCodeFix(
         CodeAction.Create(
-          DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+          description,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription), diagnostic);
+          description), diagnostic);
     }
   }
 }

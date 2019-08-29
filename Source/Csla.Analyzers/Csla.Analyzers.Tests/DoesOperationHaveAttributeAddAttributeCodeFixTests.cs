@@ -25,12 +25,118 @@ namespace Csla.Analyzers.Tests
         nameof(Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute));
     }
 
-    private static async Task VerifyGetFixes(string operationName, string attributeName)
+    [DataRow(CslaMemberConstants.Operations.DataPortalCreate,
+        CslaMemberConstants.OperationAttributes.Create, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription, 
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalCreateAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalCreate,
+        CslaMemberConstants.OperationAttributes.Create, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalCreateAndDoesNotHaveUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalFetch,
+        CslaMemberConstants.OperationAttributes.Fetch, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalFetchAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalFetch,
+        CslaMemberConstants.OperationAttributes.Fetch, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalFetchAndDoesNotHaveUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalInsert,
+        CslaMemberConstants.OperationAttributes.Insert, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalInsertAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalInsert,
+        CslaMemberConstants.OperationAttributes.Insert, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalInsertAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalUpdate,
+        CslaMemberConstants.OperationAttributes.Update, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalUpdateAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalUpdate,
+        CslaMemberConstants.OperationAttributes.Update, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalUpdateAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalDelete,
+        CslaMemberConstants.OperationAttributes.Delete, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalDeleteAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalDelete,
+        CslaMemberConstants.OperationAttributes.Delete, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalDeleteAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalDeleteSelf,
+        CslaMemberConstants.OperationAttributes.DeleteSelf, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalDeleteSelfAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalDeleteSelf,
+        CslaMemberConstants.OperationAttributes.DeleteSelf, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalDeleteSelfAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalExecute,
+        CslaMemberConstants.OperationAttributes.Execute, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalExecuteAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.DataPortalExecute,
+        CslaMemberConstants.OperationAttributes.Execute, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDataPortalExecuteAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildCreate,
+        CslaMemberConstants.OperationAttributes.CreateChild, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsCreateChildAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildCreate,
+        CslaMemberConstants.OperationAttributes.CreateChild, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsCreateChildAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildFetch,
+        CslaMemberConstants.OperationAttributes.FetchChild, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsFetchChildAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildFetch,
+        CslaMemberConstants.OperationAttributes.FetchChild, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsFetchChildAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildInsert,
+        CslaMemberConstants.OperationAttributes.InsertChild, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsInsertChildAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildInsert,
+        CslaMemberConstants.OperationAttributes.InsertChild, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsInsertChildAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildUpdate,
+        CslaMemberConstants.OperationAttributes.UpdateChild, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsUpdateChildAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildUpdate,
+        CslaMemberConstants.OperationAttributes.UpdateChild, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsUpdateChildAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildDeleteSelf,
+        CslaMemberConstants.OperationAttributes.DeleteSelfChild, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDeleteSelfChildAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildDeleteSelf,
+        CslaMemberConstants.OperationAttributes.DeleteSelfChild, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsDeleteSelfChildAndDoesNotHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildExecute,
+        CslaMemberConstants.OperationAttributes.ExecuteChild, true,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsExecuteChildAndHasUsing")]
+    [DataRow(CslaMemberConstants.Operations.ChildExecute,
+        CslaMemberConstants.OperationAttributes.ExecuteChild, false,
+        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription,
+      DisplayName = "VerifyGetFixesWhenOperationIsExecuteChildAndDoesNotHasUsing")]
+    [DataTestMethod]
+    public async Task VerifyGetFixes(string operationName, string attributeName, bool includeUsingCsla,
+      string expectedDescription)
     {
       var code =
-$@"using Csla;
+$@"{(includeUsingCsla ? "using Csla;" : string.Empty)}
 
-public class A : BusinessBase<A>
+public class A : Csla.BusinessBase<A>
 {{
   private void {operationName}() {{ }}
 }}";
@@ -50,74 +156,12 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
+      var expectedTexts = includeUsingCsla ?
+        new[] { $"[{attributeName}]" } :
+        new[] { "using Csla;", $"[{attributeName}]" };
+
       await TestHelpers.VerifyActionAsync(actions,
-        DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeDescription, document,
-        tree, new[] { $"[{attributeName}]" });
+        expectedDescription, document, tree, expectedTexts);
     }
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalCreate() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalCreate,
-        CslaMemberConstants.OperationAttributes.Create);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalFetch() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalFetch,
-        CslaMemberConstants.OperationAttributes.Fetch);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalInsert() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalInsert,
-        CslaMemberConstants.OperationAttributes.Insert);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalUpdate() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalUpdate,
-        CslaMemberConstants.OperationAttributes.Update);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalDelete() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalDelete,
-        CslaMemberConstants.OperationAttributes.Delete);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalDeleteSelf() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalDeleteSelf,
-        CslaMemberConstants.OperationAttributes.DeleteSelf);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsDataPortalExecute() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.DataPortalExecute,
-        CslaMemberConstants.OperationAttributes.Execute);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsChildCreate() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.ChildCreate,
-        CslaMemberConstants.OperationAttributes.CreateChild);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsChildFetch() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.ChildFetch,
-        CslaMemberConstants.OperationAttributes.FetchChild);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsChildInsert() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.ChildInsert,
-        CslaMemberConstants.OperationAttributes.InsertChild);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsChildUpdate() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.ChildUpdate,
-        CslaMemberConstants.OperationAttributes.UpdateChild);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsChildDeleteSelf() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.ChildDeleteSelf,
-        CslaMemberConstants.OperationAttributes.DeleteSelfChild);
-
-    [TestMethod]
-    public async Task VerifyGetFixesWhenOperationIsChildExecute() =>
-      await VerifyGetFixes(CslaMemberConstants.Operations.ChildExecute,
-        CslaMemberConstants.OperationAttributes.ExecuteChild);
   }
 }

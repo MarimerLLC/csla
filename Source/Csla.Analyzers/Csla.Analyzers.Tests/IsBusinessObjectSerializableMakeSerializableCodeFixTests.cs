@@ -30,6 +30,7 @@ namespace Csla.Analyzers.Tests
     {
       var code =
 @"using Csla;
+using System;
 
 public class A : BusinessBase<A>
 {
@@ -53,7 +54,7 @@ public class A : BusinessBase<A>
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
       await TestHelpers.VerifyActionAsync(actions,
-        IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
+        IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription, document,
         tree, new[] { "[Serializable]" });
     }
 

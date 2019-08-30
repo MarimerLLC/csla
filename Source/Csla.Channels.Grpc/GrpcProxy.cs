@@ -52,6 +52,29 @@ namespace Csla.Channels.Grpc
     }
 
     /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the supplied HttpClient object.
+    /// </summary>
+    /// <param name="httpClient">HttpClient instance</param>
+    public GrpcProxy(HttpClient httpClient)
+    {
+      this.DataPortalUrl = HttpProxy.DefaultUrl;
+      _httpClient = httpClient;
+    }
+
+    /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the supplied HttpClient object and URL.
+    /// </summary>
+    /// <param name="httpClient">HttpClient instance</param>
+    /// <param name="dataPortalUrl">Server endpoint URL</param>
+    public GrpcProxy(HttpClient httpClient, string dataPortalUrl)
+    {
+      _httpClient = httpClient;
+      DataPortalUrl = dataPortalUrl;
+    }
+
+    /// <summary>
     /// Gets the URL address for the data portal server
     /// used by this proxy instance.
     /// </summary>

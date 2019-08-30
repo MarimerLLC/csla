@@ -17,7 +17,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaSecurityConfiguration Security(this ICslaConfiguration config)
     {
-      return new CslaSecurityConfiguration(config);
+      return new CslaSecurityConfiguration();
     }
   }
 
@@ -26,21 +26,14 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaSecurityConfiguration
   {
-    private ICslaConfiguration RootConfiguration { get; set; }
-
-    internal CslaSecurityConfiguration(ICslaConfiguration root)
-    {
-      RootConfiguration = root;
-    }
-
     /// <summary>
     /// Sets the max size of the PrincipalCache cache.
     /// </summary>
     /// <param name="size">Max cache size</param>
-    public ICslaConfiguration PrincipalCacheMaxCacheSize(int size)
+    public CslaSecurityConfiguration PrincipalCacheMaxCacheSize(int size)
     {
       ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] = size.ToString();
-      return RootConfiguration;
+      return this;
     }
   }
 }

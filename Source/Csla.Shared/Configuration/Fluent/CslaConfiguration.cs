@@ -13,18 +13,33 @@ using System.Text;
 namespace Csla.Configuration
 {
   /// <summary>
+  /// Extension method for CslaDataPortalConfiguration
+  /// </summary>
+  public static class CslaConfigurationExtension
+  {
+    /// <summary>
+    /// Extension method for CslaDataPortalConfiguration
+    /// </summary>
+    public static CslaConfiguration Configure(this ICslaConfiguration config)
+    {
+      return new CslaConfiguration();
+    }
+  }
+
+  /// <summary>
   /// Use this type to configure the settings for CSLA .NET.
   /// </summary>
   public class CslaConfiguration : ICslaConfiguration
   {
     /// <summary>
-    /// Gets a configuration instance.
+    /// Gets an instance of the configuration root type.
     /// </summary>
-    public static ICslaConfiguration Configure()
+    public static CslaConfiguration Configure()
     {
       return new CslaConfiguration();
     }
 
+#if !NETSTANDARD2_0
     /// <summary>
     /// Sets the web context manager.
     /// </summary>
@@ -34,11 +49,12 @@ namespace Csla.Configuration
     /// Only need to set for non-default WebContextManager.
     /// </remarks>
     /// <returns></returns>
-    public ICslaConfiguration WebContextManager(IContextManager contextManager)
+    public CslaConfiguration WebContextManager(IContextManager contextManager)
     {
       ApplicationContext.WebContextManager = contextManager;
       return this;
     }
+#endif
 
     /// <summary>
     /// Sets the context manager.
@@ -48,10 +64,24 @@ namespace Csla.Configuration
     /// ContextManager normally defaults to the correct value. Override for
     /// non-standard or custom behaviors.
     /// </returns>
-    public ICslaConfiguration ContextManager(IContextManager contextManager)
+    public CslaConfiguration ContextManager(IContextManager contextManager)
     {
       ApplicationContext.ContextManager = contextManager;
       return this;
+    }
+
+    /// <summary>
+    /// Sets the context manager type.
+    /// </summary>
+    /// <param name="contextManager">Context manager type.</param>
+    /// <returns>
+    /// ContextManager normally defaults to the correct value. Override for
+    /// non-standard or custom behaviors.
+    /// </returns>
+    public CslaConfiguration ContextManager(Type contextManagerType)
+    {
+      ContextManager((IContextManager)Activator.CreateInstance(contextManagerType));
+      return this;;
     }
 
     /// <summary>
@@ -60,10 +90,10 @@ namespace Csla.Configuration
     /// System.Linq.Expressions (true, default).
     /// </summary>
     /// <param name="value">Value</param>
-    public ICslaConfiguration UseReflectionFallback(bool value)
+    public CslaConfiguration UseReflectionFallback(bool value)
     {
       ApplicationContext.UseReflectionFallback = value;
-      return this;
+      return this;;
     }
 
     /// <summary>
@@ -71,10 +101,10 @@ namespace Csla.Configuration
     /// raise PropertyChanged events.
     /// </summary>
     /// <param name="mode">Property changed mode</param>
-    public ICslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
+    public CslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
     {
       ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = mode.ToString();
-      return this;
+      return this;;
     }
 
     /// <summary>
@@ -92,53 +122,53 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public ICslaConfiguration VersionRoutingTag(string version)
+    public CslaConfiguration VersionRoutingTag(string version)
     {
       if (!string.IsNullOrWhiteSpace(version))
         if (version.Contains("-") || version.Contains("/"))
           throw new ArgumentException("VersionRoutingTag");
       ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = version;
-      return this;
+      return this;;
     }
 
     /// <summary>
     /// Sets the RuleSet name to use for static HasPermission calls.
     /// </summary>
     /// <param name="ruleSet">The rule set.</param>
-    public ICslaConfiguration RuleSet(string ruleSet)
+    public CslaConfiguration RuleSet(string ruleSet)
     {
       ApplicationContext.RuleSet = ruleSet;
-      return this;
+      return this;;
     }
 
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
     /// <param name="typeName">Factory type name</param>
-    public ICslaConfiguration PropertyInfoFactory(string typeName)
+    public CslaConfiguration PropertyInfoFactory(string typeName)
     {
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
-      return this;
+      return this;;
     }
 
     /// <summary>
     /// Sets the default IServiceProvider for the application.
     /// </summary>
     /// <param name="serviceProvider">IServiceProvider instance</param>
-    public ICslaConfiguration DefaultServiceProvider(IServiceProvider serviceProvider)
+    public CslaConfiguration DefaultServiceProvider(IServiceProvider serviceProvider)
     {
       ApplicationContext.DefaultServiceProvider = serviceProvider;
-      return this;
+      return this;;
     }
 
     /// <summary>
     /// Sets the scoped IServiceProvider for the current context.
     /// </summary>
     /// <param name="serviceProvider">IServiceProvider instance</param>
-    public ICslaConfiguration ScopedServiceProvider(IServiceProvider serviceProvider)
+    public CslaConfiguration ScopedServiceProvider(IServiceProvider serviceProvider)
     {
       ApplicationContext.ScopedServiceProvider = serviceProvider;
-      return this;
+      return this;;
     }
 
     /// <summary>
@@ -147,10 +177,10 @@ namespace Csla.Configuration
     /// on next use.
     /// </summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public ICslaConfiguration SettingsChanged()
+    public CslaConfiguration SettingsChanged()
     {
       ApplicationContext.SettingsChanged();
-      return this;
+      return this;;
     }
   }
 }

@@ -51,7 +51,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Sets teh current user principal.
+    /// Sets the current user principal.
     /// </summary>
     /// <param name="principal">User principal value</param>
     public virtual void SetUser(IPrincipal principal)

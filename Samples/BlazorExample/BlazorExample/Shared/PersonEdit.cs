@@ -22,43 +22,51 @@ namespace BlazorExample.Shared
       set { SetProperty(NameProperty, value); }
     }
 
+    private static int lastId;
+
     [Create]
-    private void Create(int id, string name)
+    private void Create()
+    {
+      Id = lastId++;
+    }
+
+    [Create]
+    private void Create(string name)
     {
       using (BypassPropertyChecks)
       {
-        Id = id;
+        Id = lastId++;
         Name = name;
       }
     }
 
     [Fetch]
-    private void Csla_Fetch(int id)
+    private void Fetch(int id)
     {
       // TODO: load values into object
 
     }
 
     [Insert]
-    private void Csla_Insert()
+    private void Insert()
     {
       // TODO: insert object's data
     }
 
     [Update]
-    private void Csla_Update()
+    private void Update()
     {
       // TODO: update object's data
     }
 
     [DeleteSelf]
-    private void Csla_DeleteSelf()
+    private void DeleteSelf()
     {
-      Csla_Delete(ReadProperty(IdProperty));
+      Delete(ReadProperty(IdProperty));
     }
 
     [Delete]
-    private void Csla_Delete(int id)
+    private void Delete(int id)
     {
       // TODO: delete object's data
     }

@@ -136,7 +136,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerResourceAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerRoutingTagAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManagerT.cs" />

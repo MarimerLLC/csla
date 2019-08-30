@@ -22,7 +22,8 @@ namespace Csla.Configuration
     /// <param name="services">ServiceCollection object</param>
     public static ICslaBuilder AddCsla(this IServiceCollection services)
     {
-      services.AddSingleton<IDataPortalFactory, DataPortalFactory>();
+      ApplicationContext.SetServiceCollection(services);
+      services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
       return new CslaBuilder();
     }
 

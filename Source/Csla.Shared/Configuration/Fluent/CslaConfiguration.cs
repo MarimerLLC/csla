@@ -81,7 +81,7 @@ namespace Csla.Configuration
     public CslaConfiguration ContextManager(Type contextManagerType)
     {
       ContextManager((IContextManager)Activator.CreateInstance(contextManagerType));
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace Csla.Configuration
     public CslaConfiguration UseReflectionFallback(bool value)
     {
       ApplicationContext.UseReflectionFallback = value;
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace Csla.Configuration
     public CslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
     {
       ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = mode.ToString();
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ namespace Csla.Configuration
         if (version.Contains("-") || version.Contains("/"))
           throw new ArgumentException("VersionRoutingTag");
       ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = version;
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ namespace Csla.Configuration
     public CslaConfiguration RuleSet(string ruleSet)
     {
       ApplicationContext.RuleSet = ruleSet;
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -148,17 +148,7 @@ namespace Csla.Configuration
     public CslaConfiguration PropertyInfoFactory(string typeName)
     {
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
-      return this;;
-    }
-
-    /// <summary>
-    /// Sets the default IServiceProvider for the application.
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public CslaConfiguration DefaultServiceProvider(IServiceProvider serviceProvider)
-    {
-      ApplicationContext.DefaultServiceProvider = serviceProvider;
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -168,7 +158,7 @@ namespace Csla.Configuration
     public CslaConfiguration ScopedServiceProvider(IServiceProvider serviceProvider)
     {
       ApplicationContext.ScopedServiceProvider = serviceProvider;
-      return this;;
+      return this;
     }
 
     /// <summary>
@@ -180,7 +170,7 @@ namespace Csla.Configuration
     public CslaConfiguration SettingsChanged()
     {
       ApplicationContext.SettingsChanged();
-      return this;;
+      return this;
     }
   }
 }

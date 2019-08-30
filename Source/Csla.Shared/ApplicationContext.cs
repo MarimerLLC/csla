@@ -12,6 +12,7 @@ using System.Web;
 #endif
 using Csla.Core;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla
 {
@@ -816,12 +817,29 @@ namespace Csla
 
     #region ServiceProvider
 
+    private static IServiceCollection _serviceCollection;
+
+    internal static void SetServiceCollection(IServiceCollection serviceCollection)
+    {
+      _serviceCollection = serviceCollection;
+    }
+
     /// <summary>
     /// Sets the default service provider for this application.
     /// </summary>
     public static IServiceProvider DefaultServiceProvider
     {
-      internal get => _contextManager.GetDefaultServiceProvider();
+      internal get
+      {
+        var result = _contextManager.GetDefaultServiceProvider();
+        if (result == null && _serviceCollection != null)
+        {
+          result = _serviceCollection.BuildServiceProvider();
+          _serviceCollection = null;
+          DefaultServiceProvider = result;
+        }
+        return result;
+      }
       set => _contextManager.SetDefaultServiceProvider(value);
     }
 
@@ -830,7 +848,16 @@ namespace Csla
     /// </summary>
     public static IServiceProvider ScopedServiceProvider
     {
-      internal get => _contextManager.GetScopedServiceProvider();
+      internal get
+      {
+        var result = _contextManager.GetScopedServiceProvider();
+        if (result == null)
+        {
+          result = DefaultServiceProvider;
+          ScopedServiceProvider = result;
+        }
+        return result;
+      }
       set => _contextManager.SetScopedServiceProvider(value);
     }
 

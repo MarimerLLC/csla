@@ -264,32 +264,39 @@ namespace Csla.Reflection
         throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
 
       var methodParameters = info.GetParameters();
-      var plist = new object[methodParameters.Length];
-      int index = 0;
-      int criteriaIndex = 0;
+      object[] plist;
 
-#if !NET40 && !NET45
-      var service = ApplicationContext.ScopedServiceProvider;
-#endif
-
-      foreach (var item in methodParameters)
+      if (methodParameters.Length == 1 && methodParameters[0].ParameterType.Equals(typeof(object[])))
       {
-        if (item.GetCustomAttributes<InjectAttribute>().Any())
-        {
+        plist = new object[] { parameters };
+      }
+      else
+      {
+        plist = new object[methodParameters.Length];
+        int index = 0;
+        int criteriaIndex = 0;
 #if !NET40 && !NET45
-          if (service != null)
-            plist[index] = service.GetService(item.ParameterType);
+        var service = ApplicationContext.ScopedServiceProvider;
 #endif
-        }
-        else
+        foreach (var item in methodParameters)
         {
-          if (parameters == null || parameters.Length - 1 < criteriaIndex)
-            plist[index] = null;
+          if (item.GetCustomAttributes<InjectAttribute>().Any())
+          {
+#if !NET40 && !NET45
+            if (service != null)
+              plist[index] = service.GetService(item.ParameterType);
+#endif
+          }
           else
-            plist[index] = parameters[criteriaIndex];
-          criteriaIndex++;
+          {
+            if (parameters == null || parameters.Length - 1 < criteriaIndex)
+              plist[index] = null;
+            else
+              plist[index] = parameters[criteriaIndex];
+            criteriaIndex++;
+          }
+          index++;
         }
-        index++;
       }
 
       var isAsyncTask = (info.ReturnType == typeof(Task));

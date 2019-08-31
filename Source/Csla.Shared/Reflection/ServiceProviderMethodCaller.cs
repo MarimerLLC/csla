@@ -248,14 +248,20 @@ namespace Csla.Reflection
       int index = 0;
       int criteriaIndex = 0;
 
+#if !NET40 && !NET45
       IServiceProvider service = ApplicationContext.ScopedServiceProvider;
+#endif
 
       foreach (var item in methodParameters)
       {
         if (item.GetCustomAttributes<InjectAttribute>().Any())
         {
+#if !NET40 && !NET45
           if (service != null)
             plist[index] = service.GetService(item.ParameterType);
+#else
+          throw new NotSupportedException("InjectAttribute");
+#endif
         }
         else
         {

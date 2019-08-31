@@ -34,6 +34,7 @@ namespace Csla.DataPortalClient
         if (DataPortalTypeProxyDescriptors.TryGetValue(GetTypeKey(objectType), out DataPortalProxyDescriptor descriptor))
         {
           var type = Type.GetType(descriptor.ProxyTypeName);
+#if !NET40 && !NET45
           if (ApplicationContext.ScopedServiceProvider != null)
           {
             var httpClient = ApplicationContext.ScopedServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
@@ -46,6 +47,9 @@ namespace Csla.DataPortalClient
           {
             return (IDataPortalProxy)MethodCaller.CreateInstance(type, descriptor.DataPortalUrl);
           }
+#else
+          return (IDataPortalProxy)Activator.CreateInstance(type, descriptor.DataPortalUrl);
+#endif
         }
       }
 
@@ -57,6 +61,7 @@ namespace Csla.DataPortalClient
         else
           _proxyType = Type.GetType(proxyTypeName, true, true);
       }
+#if !NET40 && !NET45
       if (ApplicationContext.ScopedServiceProvider != null)
       {
         var httpClient = ApplicationContext.ScopedServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
@@ -69,6 +74,9 @@ namespace Csla.DataPortalClient
       {
         return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType);
       }
+#else
+      return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType);
+#endif
     }
 
     /// <summary>

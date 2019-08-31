@@ -73,7 +73,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the context manager type.
     /// </summary>
-    /// <param name="contextManager">Context manager type.</param>
+    /// <param name="contextManagerType">Context manager type.</param>
     /// <returns>
     /// ContextManager normally defaults to the correct value. Override for
     /// non-standard or custom behaviors.
@@ -151,6 +151,7 @@ namespace Csla.Configuration
       return this;
     }
 
+#if !NET40 && !NET45
     /// <summary>
     /// Sets the scoped IServiceProvider for the current context.
     /// </summary>
@@ -160,6 +161,7 @@ namespace Csla.Configuration
       ApplicationContext.ScopedServiceProvider = serviceProvider;
       return this;
     }
+#endif
 
     /// <summary>
     /// Resets any ApplicationContext settings so they 

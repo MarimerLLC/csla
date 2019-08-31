@@ -73,10 +73,8 @@ namespace Csla.Server
 
     private async Task<object> Create(System.Type objectType, bool hasParameters, params object[] parameters)
     {
-      var criteria = DataPortal.GetCriteriaFromArray(parameters);
-
       DataPortalTarget obj = null;
-      var eventArgs = new DataPortalEventArgs(null, objectType, criteria, DataPortalOperations.Create);
+      var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
       try
       {
         obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
@@ -84,6 +82,7 @@ namespace Csla.Server
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkNew();
+        var criteria = DataPortal.GetCriteriaFromArray(parameters);
         await obj.CreateChildAsync(criteria).ConfigureAwait(false);
         obj.OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
@@ -170,8 +169,6 @@ namespace Csla.Server
 
     private async Task<object> Fetch(Type objectType, bool hasParameters, params object[] parameters)
     {
-      var criteria = DataPortal.GetCriteriaFromArray(parameters);
-
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
       try
@@ -183,6 +180,7 @@ namespace Csla.Server
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkOld();
+        var criteria = DataPortal.GetCriteriaFromArray(parameters);
         await obj.FetchChildAsync(criteria).ConfigureAwait(false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
@@ -318,7 +316,6 @@ namespace Csla.Server
         return;
       }
 
-      var criteria = DataPortal.GetCriteriaFromArray(parameters);
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
       DataPortalTarget lb = new DataPortalTarget(obj);
@@ -328,6 +325,7 @@ namespace Csla.Server
       {
         lb.Child_OnDataPortalInvoke(
           new DataPortalEventArgs(null, objectType, obj, operation));
+        var criteria = DataPortal.GetCriteriaFromArray(parameters);
         await lb.UpdateChildAsync(criteria).ConfigureAwait(false);
         lb.Child_OnDataPortalInvokeComplete(
             new DataPortalEventArgs(null, objectType, obj, operation));

@@ -34,26 +34,28 @@ namespace csla.netcore.test.Configuration
         .RuleSet(null)
         .UseReflectionFallback(true);
       ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      new Csla.Configuration.CslaConfiguration()
-        .DataPortal().AuthenticationType(null)
-        .DataPortal().AutoCloneOnUpdate(true)
-        .DataPortal().ActivatorType(null)
-        .DataPortal().Activator(null)
-        .DataPortal().ProxyFactoryType(null)
-        .DataPortal().DataPortalReturnObjectOnException(false)
-        .DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.LocalProxy).AssemblyQualifiedName, null)
-        .DataPortal().ExceptionInspectorType(null)
-        .DataPortal().FactoryLoaderType(null)
-        .DataPortal().InterceptorType(null)
-        .DataPortal().ServerAuthorizationProviderType(null);
+      CslaConfiguration.Configure()
+        .DataPortal()
+          .AuthenticationType(null)
+          .AutoCloneOnUpdate(true)
+          .ActivatorType(null)
+          .Activator(null)
+          .ProxyFactoryType(null)
+          .DataPortalReturnObjectOnException(false)
+          .DefaultProxy(typeof(Csla.DataPortalClient.LocalProxy).AssemblyQualifiedName, null)
+          .ExceptionInspectorType(null)
+          .FactoryLoaderType(null)
+          .InterceptorType(null)
+          .ServerAuthorizationProviderType(null);
       ApplicationContext.DataPortalProxyFactory = string.Empty;
-      new CslaConfiguration()
-        .Data().DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.ReadCommitted)
-        .Data().DefaultTransactionTimeoutInSeconds(90);
-      new CslaConfiguration()
+      CslaConfiguration.Configure()
+        .Data().
+          DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.ReadCommitted).
+          DefaultTransactionTimeoutInSeconds(90);
+      CslaConfiguration.Configure()
         .Security().PrincipalCacheMaxCacheSize(10);
       ConfigurationManager.AppSettings.Clear();
-      new CslaConfiguration()
+      CslaConfiguration.Configure()
         .SettingsChanged();
     }
 
@@ -76,18 +78,19 @@ namespace csla.netcore.test.Configuration
     [TestMethod]
     public void FluentConfigDataPortal()
     {
-      new Csla.Configuration.CslaConfiguration()
-        .DataPortal().AuthenticationType("custom")
-        .DataPortal().AutoCloneOnUpdate(false)
-        .DataPortal().ActivatorType(typeof(TestActivator).AssemblyQualifiedName)
-        .DataPortal().ProxyFactoryType("abc")
-        .DataPortal().DataPortalReturnObjectOnException(true)
-        .DataPortal().DefaultProxy("abc", "def")
-        .DataPortal().ExceptionInspectorType("abc")
-        .DataPortal().FactoryLoaderType("abc")
-        .DataPortal().InterceptorType("abc")
-        .DataPortal().ServerAuthorizationProviderType("abc")
-        .SettingsChanged();
+      CslaConfiguration.Configure()
+        .DataPortal()
+          .AuthenticationType("custom")
+          .AutoCloneOnUpdate(false)
+          .ActivatorType(typeof(TestActivator).AssemblyQualifiedName)
+          .ProxyFactoryType("abc")
+          .DataPortalReturnObjectOnException(true)
+          .DefaultProxy("abc", "def")
+          .ExceptionInspectorType("abc")
+          .FactoryLoaderType("abc")
+          .InterceptorType("abc")
+          .ServerAuthorizationProviderType("abc");
+      CslaConfiguration.Configure().SettingsChanged();
 
       Assert.AreEqual("custom", Csla.ApplicationContext.AuthenticationType, "AuthenticationType");
       Assert.AreEqual(false, Csla.ApplicationContext.AutoCloneOnUpdate, "AutoCloneOnUpdate");
@@ -154,9 +157,10 @@ namespace csla.netcore.test.Configuration
     [TestMethod]
     public void FluentConfigData()
     {
-      new CslaConfiguration()
-        .Data().DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.RepeatableRead)
-        .Data().DefaultTransactionTimeoutInSeconds(123);
+      CslaConfiguration.Configure()
+        .Data()
+          .DefaultTransactionIsolationLevel(Csla.TransactionIsolationLevel.RepeatableRead)
+          .DefaultTransactionTimeoutInSeconds(123);
 
       Assert.AreEqual(Csla.TransactionIsolationLevel.RepeatableRead, Csla.ApplicationContext.DefaultTransactionIsolationLevel, "DefaultTransactionIsolationLevel");
       Assert.AreEqual(123, Csla.ApplicationContext.DefaultTransactionTimeoutInSeconds, "DefaultTransactionTimeoutInSeconds");

@@ -24,7 +24,7 @@
       </tr>
       <tr>
         <td>Name</td>
-        <td>@person.Name</td>
+        <td><input @bind-value="person.Name" @bind-value:event="oninput" /></td>
       </tr>
       <tr>
         <td>IsNew</td>
@@ -32,7 +32,8 @@
       </tr>
     </tbody>
   </table>
-  <button onclick="@SavePerson()">Save Person</button>
+  <p>@person.Name</p>
+  <button @onclick="SavePerson">Save Person</button>
 }
 
 @code {
@@ -48,19 +49,27 @@
     catch (Exception ex)
     {
       errorText = ex.ToString();
+      Console.WriteLine(ex.ToString());
     }
+  }
+
+  private void Foo() 
+  {
+    Console.WriteLine($"Foo entered");
   }
 
   private async Task SavePerson()
   {
     try
     {
-      await person.SaveAndMergeAsync();
+      Console.WriteLine($"New name to be saved {person.Name}");
+      person = await person.SaveAsync();
     }
     catch (Exception ex)
     {
       errorText = ex.ToString();
+      Console.WriteLine(ex.ToString());
     }
-    StateHasChanged();
+    //StateHasChanged();
   }
 }

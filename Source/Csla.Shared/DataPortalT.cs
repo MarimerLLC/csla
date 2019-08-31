@@ -499,8 +499,7 @@ namespace Csla
           }
           else
           {
-            var bbase = obj as Core.BusinessBase;
-            if (bbase != null)
+            if (obj is Core.BusinessBase bbase)
             {
               if (bbase.IsDeleted)
               {
@@ -623,8 +622,7 @@ namespace Csla
           }
           else
           {
-            var bbase = obj as Core.BusinessBase;
-            if (bbase != null)
+            if (obj is Core.BusinessBase bbase)
             {
               if (bbase.IsDeleted)
               {

@@ -617,7 +617,7 @@ namespace Csla
     public static T CreateChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Create(typeof(T), EmptyCriteria.Instance));
+      return (T)(portal.Create(typeof(T)));
     }
 
     /// <summary>
@@ -646,7 +646,7 @@ namespace Csla
     public static async Task<T> CreateChildAsync<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.CreateAsync<T>(EmptyCriteria.Instance);
+      return await portal.CreateAsync<T>();
     }
 
     /// <summary>
@@ -675,7 +675,7 @@ namespace Csla
     public static T FetchChild<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return (T)(portal.Fetch(typeof(T), EmptyCriteria.Instance));
+      return (T)(portal.Fetch(typeof(T)));
     }
 
     /// <summary>
@@ -704,7 +704,7 @@ namespace Csla
     public static async Task<T> FetchChildAsync<T>()
     {
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
-      return await portal.FetchAsync<T>(EmptyCriteria.Instance);
+      return await portal.FetchAsync<T>();
     }
 
     /// <summary>

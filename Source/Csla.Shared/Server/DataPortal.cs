@@ -768,14 +768,22 @@ namespace Csla.Server
       if (criteria == null)
         return null;
       else if (criteria is EmptyCriteria)
+#if NET40 || NET45
+        return new object[] { };
+#else
         return Array.Empty<object>();
+#endif
       else if (criteria is NullCriteria)
         return new object[] { null };
       else if (criteria is object[] array)
       {
         var clength = array.GetLength(0);
         if (clength == 1 && array[0] is EmptyCriteria)
+#if NET40 || NET45
+          return new object[] { };
+#else
           return Array.Empty<object>();
+#endif
         else
           return array;
       }

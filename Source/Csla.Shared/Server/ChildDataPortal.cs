@@ -21,7 +21,7 @@ namespace Csla.Server
     /// Create a new business object.
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
-    public object Create(System.Type objectType)
+    public object Create(Type objectType)
     {
       try
       { 
@@ -40,7 +40,7 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public object Create(System.Type objectType, params object[] parameters)
+    public object Create(Type objectType, params object[] parameters)
     {
       try
       { 
@@ -57,7 +57,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> CreateAsync<T>()
     {
-      return (T) await Create(typeof(T), false, EmptyCriteria.Instance).ConfigureAwait(false);
+      return (T) await Create(typeof(T), false).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ namespace Csla.Server
       return (T)await Create(typeof(T), true, parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> Create(System.Type objectType, bool hasParameters, params object[] parameters)
+    private async Task<object> Create(Type objectType, bool hasParameters, params object[] parameters)
     {
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
@@ -82,8 +82,7 @@ namespace Csla.Server
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkNew();
-        var criteria = DataPortal.GetCriteriaFromArray(parameters);
-        await obj.CreateChildAsync(criteria).ConfigureAwait(false);
+        await obj.CreateChildAsync(parameters).ConfigureAwait(false);
         obj.OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
@@ -153,7 +152,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> FetchAsync<T>()
     {
-      return (T)await Fetch(typeof(T), false, EmptyCriteria.Instance).ConfigureAwait(false);
+      return (T)await Fetch(typeof(T), false).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -180,8 +179,7 @@ namespace Csla.Server
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkOld();
-        var criteria = DataPortal.GetCriteriaFromArray(parameters);
-        await obj.FetchChildAsync(criteria).ConfigureAwait(false);
+        await obj.FetchChildAsync(parameters).ConfigureAwait(false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
       }
@@ -325,8 +323,7 @@ namespace Csla.Server
       {
         lb.Child_OnDataPortalInvoke(
           new DataPortalEventArgs(null, objectType, obj, operation));
-        var criteria = DataPortal.GetCriteriaFromArray(parameters);
-        await lb.UpdateChildAsync(criteria).ConfigureAwait(false);
+        await lb.UpdateChildAsync(parameters).ConfigureAwait(false);
         lb.Child_OnDataPortalInvokeComplete(
             new DataPortalEventArgs(null, objectType, obj, operation));
       }

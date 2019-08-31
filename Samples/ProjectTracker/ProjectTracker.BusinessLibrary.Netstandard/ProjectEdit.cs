@@ -261,7 +261,7 @@ namespace ProjectTracker.Library
           dal.Update(item);
           TimeStamp = item.LastChanged;
         }
-        FieldManager.UpdateChildren(this);
+        FieldManager.UpdateChildren(this.Id);
       }
     }
 

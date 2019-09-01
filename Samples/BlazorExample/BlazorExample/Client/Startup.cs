@@ -10,6 +10,7 @@ namespace BlazorExample.Client
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddCsla();
+      services.AddTransient(typeof(Csla.Blazor.ViewModel<>), typeof(Csla.Blazor.ViewModel<>));
     }
 
     public void Configure(IComponentsApplicationBuilder app)

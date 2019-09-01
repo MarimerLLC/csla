@@ -1,14 +1,20 @@
-﻿@page "/editperson"
+﻿@page "/EditPerson"
+@page "/EditPerson/{id}"
 @using BlazorExample.Shared
-@inject Csla.IDataPortal<PersonEdit> dataportal
+@inject Csla.Blazor.ViewModel<PersonEdit> vm
 
 <h1>Edit Person</h1>
 
 <p>This component demonstrates editing a BusinessBase-derived object.</p>
 
-<p style="background-color:red;color:white">@errorText</p>
+<p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+<p style="background-color:red;color:white">@ErrorText</p>
 
-@if (person != null)
+@if (vm.Model == null)
+{
+  <p>Loading Person...</p>
+}
+else
 {
   <table class="table">
     <thead>
@@ -20,56 +26,45 @@
     <tbody>
       <tr>
         <td>Id</td>
-        <td>@person.Id</td>
+        <td>@vm.Model.Id</td>
       </tr>
       <tr>
         <td>Name</td>
-        <td><input @bind-value="person.Name" @bind-value:event="oninput" /></td>
+        <td>
+          <div>
+            <input @bind-value="vm.Model.Name" @bind-value:event="oninput" /><br />
+            <span style="background-color:red;color:white">@vm.GetErrorText(nameof(vm.Model.Name))</span>
+            <span style="background-color:yellow;color:black">@vm.GetWarnText(nameof(vm.Model.Name))</span>
+            <span style="background-color:blue;color:white">@vm.GetInfoText(nameof(vm.Model.Name))</span>
+          </div>
+        </td>
       </tr>
       <tr>
         <td>IsNew</td>
-        <td>@person.IsNew</td>
+        <td>@vm.Model.IsNew</td>
       </tr>
     </tbody>
   </table>
-  <p>@person.Name</p>
-  <button @onclick="SavePerson">Save Person</button>
+  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+  <br />
+  <button @onclick="Refresh">Refresh data</button>
 }
 
 @code {
-  PersonEdit person;
-  string errorText;
+  [Parameter]
+  public string id { get; set; }
+  string ErrorText;
 
   protected override async Task OnInitializedAsync()
   {
-    try
-    {
-      person = await dataportal.CreateAsync("Arnold");
-    }
-    catch (Exception ex)
-    {
-      errorText = ex.ToString();
-      Console.WriteLine(ex.ToString());
-    }
+    if (string.IsNullOrWhiteSpace(id))
+      await vm.RefreshAsync();
+    else
+      await vm.RefreshAsync(int.Parse(id));
   }
 
-  private void Foo() 
+  private async Task Refresh()
   {
-    Console.WriteLine($"Foo entered");
-  }
-
-  private async Task SavePerson()
-  {
-    try
-    {
-      Console.WriteLine($"New name to be saved {person.Name}");
-      person = await person.SaveAsync();
-    }
-    catch (Exception ex)
-    {
-      errorText = ex.ToString();
-      Console.WriteLine(ex.ToString());
-    }
-    //StateHasChanged();
+    await vm.RefreshAsync(vm.Model.Id);
   }
 }

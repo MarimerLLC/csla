@@ -13,11 +13,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "..\..\Source
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.NetStandard2.0", "..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj", "{6BCFF277-51B1-4F6F-956F-EF33B385ACE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Blazor", "..\..\Source\Csla.Blazor\Csla.Blazor.csproj", "{FB98D763-484E-4CF7-A4E0-A704E05C96CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor", "..\..\Source\Csla.Blazor\Csla.Blazor.csproj", "{FB98D763-484E-4CF7-A4E0-A704E05C96CF}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Web.Mvc.Shared", "..\..\Source\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.shproj", "{BB7A0DB4-F7F4-4632-B6AE-1EDCDD758F16}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore.Mvc2.NetStandard2.0", "..\..\Source\Csla.AspNetCore.Mvc2.NetStandard2.0\Csla.AspNetCore.Mvc2.NetStandard2.0.csproj", "{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{4452EC16-40CE-42C7-BE6F-B2B6033E1170}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -53,6 +55,10 @@ Global
 		{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

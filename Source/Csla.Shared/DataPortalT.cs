@@ -23,8 +23,6 @@ namespace Csla
   /// </typeparam>
   public class DataPortal<T> : IDataPortal<T>
   {
-    internal static Csla.Server.EmptyCriteria EmptyCriteria = Server.EmptyCriteria.Instance;
-
     /// <summary>
     /// Gets a reference to the global context returned from
     /// the background thread and/or server.
@@ -228,7 +226,7 @@ namespace Csla
     [Obsolete]
     public void BeginCreate()
     {
-      BeginCreate(EmptyCriteria);
+      BeginCreate(Server.EmptyCriteria.Instance);
     }
 
     /// <summary>
@@ -431,7 +429,7 @@ namespace Csla
     [Obsolete]
     public void BeginFetch()
     {
-      BeginFetch(EmptyCriteria);
+      BeginFetch(Server.EmptyCriteria.Instance);
     }
 
     /// <summary>
@@ -501,8 +499,7 @@ namespace Csla
           }
           else
           {
-            var bbase = obj as Core.BusinessBase;
-            if (bbase != null)
+            if (obj is Core.BusinessBase bbase)
             {
               if (bbase.IsDeleted)
               {
@@ -613,7 +610,7 @@ namespace Csla
         else
         {
           System.Reflection.MethodInfo method;
-          var criteria = Server.DataPortal.GetCriteriaArray(EmptyCriteria);
+          var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
           if (obj is Core.ICommandObject)
           {
             operation = DataPortalOperations.Execute;
@@ -625,8 +622,7 @@ namespace Csla
           }
           else
           {
-            var bbase = obj as Core.BusinessBase;
-            if (bbase != null)
+            if (obj is Core.BusinessBase bbase)
             {
               if (bbase.IsDeleted)
               {

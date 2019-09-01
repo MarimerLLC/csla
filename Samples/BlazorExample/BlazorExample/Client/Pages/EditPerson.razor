@@ -1,0 +1,75 @@
+﻿@page "/editperson"
+@using BlazorExample.Shared
+@inject Csla.IDataPortal<PersonEdit> dataportal
+
+<h1>Edit Person</h1>
+
+<p>This component demonstrates editing a BusinessBase-derived object.</p>
+
+<p style="background-color:red;color:white">@errorText</p>
+
+@if (person != null)
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Id</td>
+        <td>@person.Id</td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td><input @bind-value="person.Name" @bind-value:event="oninput" /></td>
+      </tr>
+      <tr>
+        <td>IsNew</td>
+        <td>@person.IsNew</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>@person.Name</p>
+  <button @onclick="SavePerson">Save Person</button>
+}
+
+@code {
+  PersonEdit person;
+  string errorText;
+
+  protected override async Task OnInitializedAsync()
+  {
+    try
+    {
+      person = await dataportal.CreateAsync("Arnold");
+    }
+    catch (Exception ex)
+    {
+      errorText = ex.ToString();
+      Console.WriteLine(ex.ToString());
+    }
+  }
+
+  private void Foo() 
+  {
+    Console.WriteLine($"Foo entered");
+  }
+
+  private async Task SavePerson()
+  {
+    try
+    {
+      Console.WriteLine($"New name to be saved {person.Name}");
+      person = await person.SaveAsync();
+    }
+    catch (Exception ex)
+    {
+      errorText = ex.ToString();
+      Console.WriteLine(ex.ToString());
+    }
+    //StateHasChanged();
+  }
+}

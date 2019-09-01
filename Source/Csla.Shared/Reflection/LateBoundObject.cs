@@ -173,7 +173,7 @@ namespace Csla.Reflection
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method);
-        await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters);
+        await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters).ConfigureAwait(false);
       }
       catch (CallMethodException)
       {

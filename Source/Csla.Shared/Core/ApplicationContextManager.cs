@@ -51,7 +51,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Sets teh current user principal.
+    /// Sets the current user principal.
     /// </summary>
     /// <param name="principal">User principal value</param>
     public virtual void SetUser(IPrincipal principal)
@@ -170,11 +170,7 @@ namespace Csla.Core
     /// </summary>
     public IServiceProvider GetScopedServiceProvider()
     {
-      IServiceProvider result = null;
-      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
-      if (result == null)
-        result = GetDefaultServiceProvider();
-      return result;
+      return (IServiceProvider)ApplicationContext.LocalContext["__ssp"];
     }
 
     /// <summary>

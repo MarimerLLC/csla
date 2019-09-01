@@ -17,7 +17,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaDataConfiguration Data(this ICslaConfiguration config)
     {
-      return new CslaDataConfiguration(config);
+      return new CslaDataConfiguration();
     }
   }
 
@@ -27,31 +27,24 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaDataConfiguration
   {
-    private ICslaConfiguration RootConfiguration { get; set; }
-
-    internal CslaDataConfiguration(ICslaConfiguration root)
-    {
-      RootConfiguration = root;
-    }
-
     /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
     /// <param name="level">The default transaction isolation level</param>
-    public ICslaConfiguration DefaultTransactionIsolationLevel(TransactionIsolationLevel level)
+    public CslaDataConfiguration DefaultTransactionIsolationLevel(TransactionIsolationLevel level)
     {
       ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = level.ToString();
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
     /// Sets the default transaction timeout in seconds.
     /// </summary>
     /// <param name="seconds">The default transaction timeout in seconds</param>
-    public ICslaConfiguration DefaultTransactionTimeoutInSeconds(int seconds)
+    public CslaDataConfiguration DefaultTransactionTimeoutInSeconds(int seconds)
     {
       ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = seconds.ToString();
-      return RootConfiguration;
+      return this;
     }
 
 #if !NET40 && !NET45
@@ -60,10 +53,10 @@ namespace Csla.Configuration
     /// used to create new TransactionScope objects.
     /// </summary>
     /// <param name="asyncFlowOption">Async flow option</param>
-    public ICslaConfiguration DefaultTransactionAsyncFlowOption(System.Transactions.TransactionScopeAsyncFlowOption asyncFlowOption)
+    public CslaDataConfiguration DefaultTransactionAsyncFlowOption(System.Transactions.TransactionScopeAsyncFlowOption asyncFlowOption)
     {
       ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = asyncFlowOption.ToString();
-      return RootConfiguration;
+      return this;
     }
 #endif
   }

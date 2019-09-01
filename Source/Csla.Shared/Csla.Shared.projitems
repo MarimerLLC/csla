@@ -110,14 +110,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\UndoableHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\UndoException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CriteriaBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\DisplayAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\RangeAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\RegularExpressionAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\RequiredAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\StringLengthAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnnotations\ValidationResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyFactory.cs" />
@@ -136,7 +128,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerResourceAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalServerRoutingTagAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataPortalFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ConnectionManagerT.cs" />

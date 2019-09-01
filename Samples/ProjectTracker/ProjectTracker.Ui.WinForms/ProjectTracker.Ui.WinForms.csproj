@@ -64,10 +64,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=5.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.5.0.0-R19082801\lib\net461\Csla.dll</HintPath>
+      <HintPath>..\packages\Csla.5.0.0-R19083102\lib\net461\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.Windows.Forms.5.0.0-R19082801\lib\net461\Csla.Windows.dll</HintPath>
+      <HintPath>..\packages\Csla.Windows.Forms.5.0.0-R19083102\lib\net461\Csla.Windows.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
@@ -252,7 +252,7 @@
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Csla.5.0.0-R19082801\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\Csla.5.0.0-R19083102\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

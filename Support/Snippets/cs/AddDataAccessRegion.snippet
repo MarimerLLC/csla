@@ -4,7 +4,7 @@
     <Header>
       <Title>Insert data access region</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Insert CSLA .NET data access region.</Description>
+      <Description>Insert CSLA .NET server-side dataportal methods.</Description>
       <Shortcut>csladata</Shortcut>
     </Header>
     <Snippet>
@@ -22,37 +22,43 @@
       </Declarations>
       <Code Language="CSharp">
   <![CDATA[
-[Fetch]
-private void DataPortal_Fetch($IdType$ id)
+[Create]
+private void Create()
 {
-  // TODO: load values into object
-  $end$
+  // TODO: initialize object values
+  base.DataPortal_Create();
+}
+
+[Fetch]
+private void Fetch($IdType$ id)
+{
+  // TODO: call DAL to load values into object
 }
 
 [Insert]
-protected override void DataPortal_Insert()
+private void Insert()
 {
-  // TODO: insert object's data
+  // TODO: call DAL to insert object's data
 }
 
 [Update]
-protected override void DataPortal_Update()
+private void Update()
 {
-  // TODO: update object's data
+  // TODO: call DAL to update object's data
 }
 
 [DeleteSelf]
-protected override void DataPortal_DeleteSelf()
+private void DeleteSelf()
 {
-  DataPortal_Delete(ReadProperty($IdProperty$Property));
+  Delete(ReadProperty($IdProperty$Property));
 }
 
 [Delete]
-private void DataPortal_Delete($IdType$ id)
+private void Delete($IdType$ id)
 {
-  // TODO: delete object's data
+  // TODO: call DAL to delete object's data
 }
-    ]]></Code>
+]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

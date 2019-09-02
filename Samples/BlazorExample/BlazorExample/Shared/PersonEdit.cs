@@ -29,21 +29,7 @@ namespace BlazorExample.Shared
     {
       base.AddBusinessRules();
       BusinessRules.AddRule(new InfoText(NameProperty, "Person name (required)"));
-    }
-
-    public class InfoText : BusinessRule
-    {
-      public string Text { get; set; }
-      public InfoText(Csla.Core.IPropertyInfo primaryProperty, string text)
-      {
-        PrimaryProperty = primaryProperty;
-        Text = text;
-      }
-
-      protected override void Execute(IRuleContext context)
-      {
-        context.AddInformationResult(Text);
-      }
+      BusinessRules.AddRule(new CheckCase(NameProperty));
     }
 
     [Create]

@@ -8,7 +8,6 @@
 <p>This component demonstrates editing a BusinessBase-derived object.</p>
 
 <p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
-<p style="background-color:red;color:white">@ErrorText</p>
 
 @if (vm.Model == null)
 {
@@ -43,17 +42,18 @@ else
         <td>IsNew</td>
         <td>@vm.Model.IsNew</td>
       </tr>
+      <tr>
+        <td>IsSavable</td>
+        <td>@vm.Model.IsSavable</td>
+      </tr>
     </tbody>
   </table>
   <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
-  <br />
-  <button @onclick="Refresh">Refresh data</button>
 }
 
 @code {
   [Parameter]
   public string id { get; set; }
-  string ErrorText;
 
   protected override async Task OnInitializedAsync()
   {
@@ -61,10 +61,5 @@ else
       await vm.RefreshAsync();
     else
       await vm.RefreshAsync(int.Parse(id));
-  }
-
-  private async Task Refresh()
-  {
-    await vm.RefreshAsync(vm.Model.Id);
   }
 }

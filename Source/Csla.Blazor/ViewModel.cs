@@ -6,10 +6,8 @@
 // <summary>Base type for creating your own viewmodel</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Csla.Rules;
 
@@ -19,7 +17,6 @@ namespace Csla.Blazor
   /// Base type for creating your own viewmodel.
   /// </summary>
   public class ViewModel<T>
-    where T : Core.ISavable
   {
     private readonly IDataPortal<T> _dataPortal = new DataPortal<T>();
 
@@ -54,7 +51,7 @@ namespace Csla.Blazor
 
     public async Task SaveAsync()
     {
-      if (Model is Core.BusinessBase obj && !obj.IsSavable)
+      if (Model is Core.ITrackStatus obj && !obj.IsSavable)
       {
         ViewModelErrorText = ModelErrorText;
         return;
@@ -72,14 +69,13 @@ namespace Csla.Blazor
 
     protected virtual async Task<T> DoSaveAsync()
     {
-      var result = (T)await Model.SaveAsync();
-      if (Model is Core.IEditableBusinessObject editable)
+      if (Model is Core.ISavable savable)
       {
-        new Core.GraphMerger().MergeGraph(editable, (Core.IEditableBusinessObject)result);
-      }
-      else
-      {
-        Model = result;
+        var result = (T)await savable.SaveAsync();
+        if (Model is Core.IEditableBusinessObject editable)
+          new Core.GraphMerger().MergeGraph(editable, (Core.IEditableBusinessObject)result);
+        else
+          Model = result;
       }
       return Model;
     }
@@ -152,6 +148,50 @@ namespace Csla.Blazor
         }
       }
       return result;
+    }
+
+    public bool CanRead(string propertyName)
+    {
+      if (Model is Security.IAuthorizeReadWrite obj)
+        return obj.CanReadProperty(propertyName);
+      else
+        return true;
+    }
+
+    public bool CanWrite(string propertyName)
+    {
+      if (Model is Security.IAuthorizeReadWrite obj)
+        return obj.CanWriteProperty(propertyName);
+      else
+        return true;
+    }
+
+    public bool IsBusy(string propertyName)
+    {
+      if (Model is Core.BusinessBase obj)
+        return obj.IsPropertyBusy(propertyName);
+      else
+        return false;
+    }
+
+    public static bool CanCreateObject()
+    {
+      return BusinessRules.HasPermission(AuthorizationActions.CreateObject, typeof(T));
+    }
+
+    public static bool CanGetObject()
+    {
+      return BusinessRules.HasPermission(AuthorizationActions.GetObject, typeof(T));
+    }
+
+    public static bool CanEditObject()
+    {
+      return BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(T));
+    }
+
+    public static bool CanDeleteObject()
+    {
+      return BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(T));
     }
   }
 }

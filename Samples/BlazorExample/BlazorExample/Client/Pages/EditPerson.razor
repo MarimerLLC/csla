@@ -2,6 +2,7 @@
 @page "/EditPerson/{id}"
 @using BlazorExample.Shared
 @inject Csla.Blazor.ViewModel<PersonEdit> vm
+@inject IUriHelper UriHelper
 
 <h1>Edit Person</h1>
 
@@ -15,8 +16,10 @@
 }
 else
 {
-  <p><a href="listpersons">List of people</a><br/>
-  <a href="editperson">Add person</a></p>
+  <p>
+    <a href="listpersons">List of people</a><br />
+    <a href="editperson">Add person</a>
+  </p>
   <table class="table">
     <thead>
       <tr>
@@ -35,8 +38,8 @@ else
           <div>
             <input @bind-value="vm.Model.Name" @bind-value:event="oninput" /><br />
             <span style="background-color:red;color:white">@vm.GetErrorText(nameof(vm.Model.Name))</span>
-            <span style="background-color:yellow;color:black">@vm.GetWarnText(nameof(vm.Model.Name))</span>
-            <span style="background-color:blue;color:white">@vm.GetInfoText(nameof(vm.Model.Name))</span>
+            <span style="background-color:yellow;color:black">@vm.GetWarningText(nameof(vm.Model.Name))</span>
+            <span style="background-color:blue;color:white">@vm.GetInformationText(nameof(vm.Model.Name))</span>
           </div>
         </td>
       </tr>
@@ -59,6 +62,8 @@ else
 
   protected override async Task OnInitializedAsync()
   {
+    vm.Saved += () => UriHelper.NavigateTo("listpersons");
+
     if (string.IsNullOrWhiteSpace(id))
       await vm.RefreshAsync();
     else

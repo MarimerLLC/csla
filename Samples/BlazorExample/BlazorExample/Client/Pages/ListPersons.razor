@@ -1,5 +1,6 @@
 ﻿@page "/ListPersons"
 @using BlazorExample.Shared
+@inject Csla.Blazor.ViewModel<PersonList> vm
 
 <h1>List of People</h1>
 
@@ -7,10 +8,16 @@
 
 @if (vm.Model == null)
 {
-  <p>Loading Person...</p>
+  <p>Loading List...</p>
+  <p>
+    <a href="editperson">Add person</a>
+  </p>
 }
 else
 {
+  <p>
+    <a href="editperson">Add person</a>
+  </p>
   <table class="table">
     <thead>
       <tr>
@@ -31,11 +38,8 @@ else
 }
 
 @code {
-  ViewModels.PersonListViewModel vm;
-
   protected override async Task OnInitializedAsync()
   {
-    vm = new ViewModels.PersonListViewModel();
     await vm.RefreshAsync();
   }
 }

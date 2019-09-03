@@ -1,4 +1,10 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Default context manager for the user property</summary>
+//-----------------------------------------------------------------------
 using System.Security.Principal;
 
 namespace Csla.Blazor
@@ -11,6 +17,9 @@ namespace Csla.Blazor
   {
     private static IPrincipal _principal;
 
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
     public ApplicationContextManager()
     {
       DataPortalClient.HttpProxy.UseTextSerialization = true;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Csla;
+using Csla.Rules;
 
 namespace BlazorExample.Shared
 {
@@ -16,59 +18,74 @@ namespace BlazorExample.Shared
     }
 
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    [Required]
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static int lastId;
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new InfoText(NameProperty, "Person name (required)"));
+      BusinessRules.AddRule(new CheckCase(NameProperty));
+    }
 
     [Create]
     private void Create()
     {
-      Id = lastId++;
-    }
-
-    [Create]
-    private void Create(string name)
-    {
-      using (BypassPropertyChecks)
-      {
-        Id = lastId++;
-        Name = name;
-      }
+      Id = -1;
+      base.DataPortal_Create();
     }
 
     [Fetch]
-    private void Fetch(int id)
+    private void Fetch(int id, [Inject]DataAccess.IPersonDal dal)
     {
-      // TODO: load values into object
-
+      var data = dal.Get(id);
+      using (BypassPropertyChecks)
+        Csla.Data.DataMapper.Map(data, this);
+      BusinessRules.CheckRules();
     }
 
     [Insert]
-    private void Insert()
+    private void Insert([Inject]DataAccess.IPersonDal dal)
     {
-      // TODO: insert object's data
+      using (BypassPropertyChecks)
+      {
+        var data = new DataAccess.PersonEntity
+        {
+          Name = Name
+        };
+        var result = dal.Insert(data);
+        Id = result.Id;
+      }
     }
 
     [Update]
-    private void Update()
+    private void Update([Inject]DataAccess.IPersonDal dal)
     {
-      // TODO: update object's data
+      using (BypassPropertyChecks)
+      {
+        var data = new DataAccess.PersonEntity
+        {
+          Id = Id,
+          Name = Name
+        };
+        dal.Update(data);
+      }
     }
 
     [DeleteSelf]
-    private void DeleteSelf()
+    private void DeleteSelf([Inject]DataAccess.IPersonDal dal)
     {
-      Delete(ReadProperty(IdProperty));
+      Delete(ReadProperty(IdProperty), dal);
     }
 
     [Delete]
-    private void Delete(int id)
+    private void Delete(int id, [Inject]DataAccess.IPersonDal dal)
     {
-      // TODO: delete object's data
+      dal.Delete(id);
     }
 
   }

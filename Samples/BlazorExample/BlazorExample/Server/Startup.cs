@@ -1,3 +1,4 @@
+using Csla.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -20,6 +21,9 @@ namespace BlazorExample.Server
         opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                   new[] { "application/octet-stream" });
       });
+
+      services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
+      services.AddCsla();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Csla.Windows</AssemblyName>

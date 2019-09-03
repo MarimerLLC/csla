@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using BusinessLibrary;
 using Csla;
 using Csla.Configuration;
@@ -32,6 +33,16 @@ namespace UnoExample
 
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
+      await RefreshData();
+    }
+
+    private async void Refresh(object sender, RoutedEventArgs e)
+    {
+      await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
       this.InfoText.Text = "Loading ...";
       try
       {
@@ -43,6 +54,19 @@ namespace UnoExample
       {
         OutputText.Text = ex.ToString();
       }
+    }
+
+    private async void NewPerson(object sender, RoutedEventArgs e)
+    {
+      var rootFrame = Window.Current.Content as Frame;
+      rootFrame.Navigate(typeof(EditPerson));
+    }
+
+    private async void EditPerson(object sender, RoutedEventArgs e)
+    {
+      var id = (int)((Button)sender).Tag;
+      var rootFrame = Window.Current.Content as Frame;
+      rootFrame.Navigate(typeof(EditPerson), id);
     }
   }
 }

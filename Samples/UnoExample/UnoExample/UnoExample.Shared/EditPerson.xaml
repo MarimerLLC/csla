@@ -1,0 +1,47 @@
+﻿<Page
+    x:Class="UnoExample.EditPerson"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnoExample.Shared"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+      <TextBlock Margin="10" FontSize="48" FontWeight="Bold" Text="Edit person"/>
+    </Grid>
+    <Grid Grid.Row="1">
+      <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <TextBlock Text="Id:" FontWeight="Bold" Width="150" />
+          <TextBlock Text="{Binding Id, Mode=OneWay}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <TextBlock Text="Name:" FontWeight="Bold" Width="150" />
+          <TextBox Text="{Binding Name, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <Button Margin="10" Content="Save person" Click="SavePerson"/>
+          <Button Margin="10" Content="List of people" Click="ListPeople"/>
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+    <Grid Grid.Row="2">
+      <Rectangle Fill="Yellow" />
+      <TextBlock x:Name="InfoText" Margin="5" FontSize="14" Foreground="Black" />
+    </Grid>
+    <Grid Grid.Row="3">
+      <Rectangle Fill="Red" />
+      <TextBlock x:Name="OutputText" Margin="5" FontSize="14" Foreground="White" />
+    </Grid>
+  </Grid>
+</Page>

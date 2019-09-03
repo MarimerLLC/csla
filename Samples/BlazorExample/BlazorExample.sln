@@ -19,7 +19,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Web.Mvc.Shared", "..\.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore.Mvc2.NetStandard2.0", "..\..\Source\Csla.AspNetCore.Mvc2.NetStandard2.0\Csla.AspNetCore.Mvc2.NetStandard2.0.csproj", "{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{4452EC16-40CE-42C7-BE6F-B2B6033E1170}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "BlazorExample\DataAccess\DataAccess.csproj", "{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -55,10 +55,10 @@ Global
 		{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4452EC16-40CE-42C7-BE6F-B2B6033E1170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

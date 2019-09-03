@@ -17,7 +17,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaSerializationConfiguration Serialization(this ICslaConfiguration config)
     {
-      return new CslaSerializationConfiguration(config);
+      return new CslaSerializationConfiguration();
     }
   }
 
@@ -26,13 +26,6 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaSerializationConfiguration
   {
-    private ICslaConfiguration RootConfiguration { get; set; }
-
-    internal CslaSerializationConfiguration(ICslaConfiguration root)
-    {
-      RootConfiguration = root;
-    }
-
     /// <summary>
     /// Sets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
@@ -40,10 +33,10 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="formatterName">Formatter name (one of MobileFormatter, 
     /// BinaryFormatter, NetDataContractSerializer, or type name)</param>
-    public ICslaConfiguration SerializationFormatter(string formatterName)
+    public CslaSerializationConfiguration SerializationFormatter(string formatterName)
     {
       ConfigurationManager.AppSettings["CslaSerializationFormatter"] = formatterName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -51,10 +44,10 @@ namespace Csla.Configuration
     /// serialization stream in MobileFormatter.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration MobileWriter(string typeName)
+    public CslaSerializationConfiguration MobileWriter(string typeName)
     {
       ConfigurationManager.AppSettings["CslaWriter"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -62,10 +55,10 @@ namespace Csla.Configuration
     /// serialization stream in MobileFormatter.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration MobileReader(string typeName)
+    public CslaSerializationConfiguration MobileReader(string typeName)
     {
       ConfigurationManager.AppSettings["CslaReader"] = typeName;
-      return RootConfiguration;
+      return this;
     }
   }
 }

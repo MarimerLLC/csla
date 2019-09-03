@@ -114,7 +114,7 @@ namespace Csla.Reflection
         }
       }
       if (candidates.Count == 0)
-        throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name}]");
+        throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}].{GetCriteriaTypeNames(criteria)}");
       
       // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
@@ -177,7 +177,7 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name}]");
+        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}].{GetCriteriaTypeNames(criteria)}");
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -203,9 +203,29 @@ namespace Csla.Reflection
           }
         }
         if (maxCount > 1)
-          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name}]");
+          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}].{GetCriteriaTypeNames(criteria)}");
       }
       return result.MethodInfo;
+    }
+
+    private static string GetCriteriaTypeNames(object[] criteria)
+    {
+      var result = new System.Text.StringBuilder();
+      result.Append("(");
+      bool first = true;
+      foreach (var item in criteria)
+      {
+        if (first)
+          first = false;
+        else
+          result.Append(",");
+        if (item == null)
+          result.Append("null");
+        else
+          result.Append(item.GetType().Name);
+      }
+      result.Append(")");
+      return result.ToString();
     }
 
     private static ParameterInfo[] GetCriteriaParameters(System.Reflection.MethodInfo method)
@@ -244,28 +264,39 @@ namespace Csla.Reflection
         throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
 
       var methodParameters = info.GetParameters();
-      var plist = new object[methodParameters.Length];
-      int index = 0;
-      int criteriaIndex = 0;
+      object[] plist;
 
-      IServiceProvider service = ApplicationContext.ScopedServiceProvider;
-
-      foreach (var item in methodParameters)
+      if (methodParameters.Length == 1 && methodParameters[0].ParameterType.Equals(typeof(object[])))
       {
-        if (item.GetCustomAttributes<InjectAttribute>().Any())
+        plist = new object[] { parameters };
+      }
+      else
+      {
+        plist = new object[methodParameters.Length];
+        int index = 0;
+        int criteriaIndex = 0;
+#if !NET40 && !NET45
+        var service = ApplicationContext.ScopedServiceProvider;
+#endif
+        foreach (var item in methodParameters)
         {
-          if (service != null)
-            plist[index] = service.GetService(item.ParameterType);
-        }
-        else
-        {
-          if (parameters == null || parameters.Length - 1 < criteriaIndex)
-            plist[index] = null;
+          if (item.GetCustomAttributes<InjectAttribute>().Any())
+          {
+#if !NET40 && !NET45
+            if (service != null)
+              plist[index] = service.GetService(item.ParameterType);
+#endif
+          }
           else
-            plist[index] = parameters[criteriaIndex];
-          criteriaIndex++;
+          {
+            if (parameters == null || parameters.Length - 1 < criteriaIndex)
+              plist[index] = null;
+            else
+              plist[index] = parameters[criteriaIndex];
+            criteriaIndex++;
+          }
+          index++;
         }
-        index++;
       }
 
       var isAsyncTask = (info.ReturnType == typeof(Task));
@@ -274,12 +305,12 @@ namespace Csla.Reflection
       {
         if (isAsyncTask)
         {
-          await (Task)info.Invoke(obj, plist);
+          await ((Task)info.Invoke(obj, plist)).ConfigureAwait(false);
           return null;
         }
         else if (isAsyncTaskObject)
         {
-          return await (Task<object>)info.Invoke(obj, plist);
+          return await ((Task<object>)info.Invoke(obj, plist)).ConfigureAwait(false);
         }
         else
         {

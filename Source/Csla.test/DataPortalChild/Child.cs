@@ -65,7 +65,7 @@ namespace Csla.Test.DataPortalChild
       _status = "Fetched";
     }
 
-    protected void Child_Insert()
+    protected void Child_Insert(Root parent)
     {
       _status = "Inserted";
       if (this.Parent is ChildList)
@@ -78,7 +78,7 @@ namespace Csla.Test.DataPortalChild
       }
     }
 
-    protected void Child_Update()
+    protected void Child_Update(Root parent)
     {
       _status = "Updated";
       if (this.Parent is ChildList)
@@ -91,7 +91,7 @@ namespace Csla.Test.DataPortalChild
       }
     }
 
-    protected void Child_DeleteSelf()
+    protected void Child_DeleteSelf(Root parent)
     {
       _status = "Deleted";
     }

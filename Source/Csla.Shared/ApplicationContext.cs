@@ -12,6 +12,9 @@ using System.Web;
 #endif
 using Csla.Core;
 using Csla.Configuration;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla
 {
@@ -21,7 +24,7 @@ namespace Csla
   /// </summary>
   public static class ApplicationContext
   { 
-    #region Context Manager
+#region Context Manager
 
     private static IContextManager _contextManager;
 
@@ -103,9 +106,9 @@ namespace Csla
       set { _contextManager = value; }
     }
 
-    #endregion
+#endregion
 
-    #region User
+#region User
 
     /// <summary>
     /// Get or set the current <see cref="IPrincipal" />
@@ -123,9 +126,9 @@ namespace Csla
       set { ContextManager.SetUser(value); }
     }
 
-    #endregion
+#endregion
 
-    #region LocalContext
+#region LocalContext
 
     /// <summary>
     /// Returns the application-specific context data that
@@ -154,9 +157,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Client/Global Context
+#region Client/Global Context
 
     private static object _syncContext = new object();
 
@@ -242,9 +245,9 @@ namespace Csla
       ContextManager.SetLocalContext(null);
     }
 
-    #endregion
+#endregion
 
-    #region Settings
+#region Settings
 
     /// <summary>
     /// Gets or sets a value indicating whether the app
@@ -769,7 +772,7 @@ namespace Csla
 
 #endregion
 
-    #region Logical Execution Location
+#region Logical Execution Location
     /// <summary>
     /// Enum representing the logical execution location
     /// The setting is set to server when server is execting
@@ -812,16 +815,34 @@ namespace Csla
     {
       LocalContext["__logicalExecutionLocation"] = location;
     }
-    #endregion
+#endregion
 
-    #region ServiceProvider
+#region ServiceProvider
+
+#if !NET40 && !NET45
+    private static IServiceCollection _serviceCollection;
+
+    internal static void SetServiceCollection(IServiceCollection serviceCollection)
+    {
+      _serviceCollection = serviceCollection;
+    }
 
     /// <summary>
     /// Sets the default service provider for this application.
     /// </summary>
     public static IServiceProvider DefaultServiceProvider
     {
-      internal get => _contextManager.GetDefaultServiceProvider();
+      internal get
+      {
+        var result = _contextManager.GetDefaultServiceProvider();
+        if (result == null && _serviceCollection != null)
+        {
+          result = _serviceCollection.BuildServiceProvider();
+          _serviceCollection = null;
+          DefaultServiceProvider = result;
+        }
+        return result;
+      }
       set => _contextManager.SetDefaultServiceProvider(value);
     }
 
@@ -830,10 +851,20 @@ namespace Csla
     /// </summary>
     public static IServiceProvider ScopedServiceProvider
     {
-      internal get => _contextManager.GetScopedServiceProvider();
+      internal get
+      {
+        var result = _contextManager.GetScopedServiceProvider();
+        if (result == null)
+        {
+          result = DefaultServiceProvider;
+          ScopedServiceProvider = result;
+        }
+        return result;
+      }
       set => _contextManager.SetScopedServiceProvider(value);
     }
+#endif
 
-    #endregion
+#endregion
   }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Csla.Blazor</id>
+    <title>CSLA .NET - Blazor UI support</title>
+    <tags>CSLA Blazor aspnetcore</tags>
+    <version>4.6.3-Beta10</version>
+    <authors>Marimer LLC</authors>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Provides UI support for Blazor.
+
+CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Provides UI support for Blazor.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="netstandard2.1">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- NetStandard Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.Blazor.*" target="lib\netstandard2.0" />
+  </files>
+</package>

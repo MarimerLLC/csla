@@ -51,12 +51,12 @@ namespace Csla.Test.DataPortalChild
 
     protected override void DataPortal_Insert()
     {
-      FieldManager.UpdateChildren();
+      FieldManager.UpdateChildren(this);
     }
 
     protected override void DataPortal_Update()
     {
-      FieldManager.UpdateChildren();
+      FieldManager.UpdateChildren(this);
     }
   }
 }

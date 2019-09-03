@@ -197,6 +197,16 @@ namespace Csla.Reflection
     }
 
     /// <summary>
+    /// Creates an object.
+    /// </summary>
+    /// <param name="objectType">Type of object to create</param>
+    /// <param name="parameters">Parameters for constructor</param>
+    public static object CreateInstance(Type objectType, params object[] parameters)
+    {
+      return Activator.CreateInstance(objectType, parameters);
+    }
+
+    /// <summary>
     /// Creates an instance of a generic type
     /// using its default constructor.
     /// </summary>

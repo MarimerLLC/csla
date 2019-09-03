@@ -20,7 +20,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaDataPortalConfiguration DataPortal(this ICslaConfiguration config)
     {
-      return new CslaDataPortalConfiguration(config);
+      return new CslaDataPortalConfiguration();
     }
   }
 
@@ -30,23 +30,16 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaDataPortalConfiguration
   {
-    private ICslaConfiguration RootConfiguration { get; set; }
-
-    internal CslaDataPortalConfiguration(ICslaConfiguration root)
-    {
-      RootConfiguration = root;
-    }
-
     /// <summary>
     /// Configure the default data portal proxy type and URL.
     /// </summary>
     /// <param name="type">Type of data portal proxy</param>
     /// <param name="defaultUrl">Default server URL</param>
     /// <returns></returns>
-    public ICslaConfiguration DefaultProxy(Type type, string defaultUrl)
+    public CslaDataPortalConfiguration DefaultProxy(Type type, string defaultUrl)
     {
       DefaultProxy(type.AssemblyQualifiedName, defaultUrl);
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -55,11 +48,11 @@ namespace Csla.Configuration
     /// <param name="typeName">Assembly qualified type name</param>
     /// <param name="defaultUrl">Default server URL</param>
     /// <returns></returns>
-    public ICslaConfiguration DefaultProxy(string typeName, string defaultUrl)
+    public CslaDataPortalConfiguration DefaultProxy(string typeName, string defaultUrl)
     {
       ConfigurationManager.AppSettings["CslaDataPortalProxy"] = typeName;
       ConfigurationManager.AppSettings["CslaDataPortalUrl"] = defaultUrl;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -68,7 +61,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="descriptors">Data portal type/resource to proxy mapping</param>
     /// <returns></returns>
-    public ICslaConfiguration ProxyDescriptors(List<Tuple<string, string, string>> descriptors)
+    public CslaDataPortalConfiguration ProxyDescriptors(List<Tuple<string, string, string>> descriptors)
     {
       DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors?.Clear();
 
@@ -95,7 +88,7 @@ namespace Csla.Configuration
           }
         }
       }
-      return RootConfiguration;
+      return this;
     }
 
     ///<summary>
@@ -105,30 +98,30 @@ namespace Csla.Configuration
     /// communicating with the data portal server.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration ProxyFactoryType(string typeName)
+    public CslaDataPortalConfiguration ProxyFactoryType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
     /// Sets the type of the IDataPortalActivator provider.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration ActivatorType(string typeName)
+    public CslaDataPortalConfiguration ActivatorType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDataPortalActivator"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
     /// Sets an instance of the IDataPortalActivator provider.
     /// </summary>
     /// <param name="activator">Activator instance</param>
-    public ICslaConfiguration Activator(Server.IDataPortalActivator activator)
+    public CslaDataPortalConfiguration Activator(Server.IDataPortalActivator activator)
     {
       ApplicationContext.DataPortalActivator = activator;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -136,10 +129,10 @@ namespace Csla.Configuration
     /// CSLA .NET framework.
     /// </summary>
     /// <param name="typeName">Authentication type value (defaults to 'Csla')</param>
-    public ICslaConfiguration AuthenticationType(string typeName)
+    public CslaDataPortalConfiguration AuthenticationType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaAuthentication"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -147,10 +140,10 @@ namespace Csla.Configuration
     /// authorization. Type must implement IAuthorizeDataPortal.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration ServerAuthorizationProviderType(string typeName)
+    public CslaDataPortalConfiguration ServerAuthorizationProviderType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaAuthorizationProvider"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -160,10 +153,10 @@ namespace Csla.Configuration
     /// IInterceptDataPortal.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration InterceptorType(string typeName)
+    public CslaDataPortalConfiguration InterceptorType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDataPortalInterceptor"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -171,10 +164,10 @@ namespace Csla.Configuration
     /// Type must implement IDataPortalExceptionInspector.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration ExceptionInspectorType(string typeName)
+    public CslaDataPortalConfiguration ExceptionInspectorType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -184,10 +177,10 @@ namespace Csla.Configuration
     /// IObjectFactoryLoader.
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public ICslaConfiguration FactoryLoaderType(string typeName)
+    public CslaDataPortalConfiguration FactoryLoaderType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaObjectFactoryLoader"] = typeName;
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -196,10 +189,10 @@ namespace Csla.Configuration
     /// method when using a local data portal configuration.
     /// </summary>
     /// <param name="value">Value (defaults to true)</param>
-    public ICslaConfiguration AutoCloneOnUpdate(bool value)
+    public CslaDataPortalConfiguration AutoCloneOnUpdate(bool value)
     {
       ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString();
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -208,10 +201,10 @@ namespace Csla.Configuration
     /// the client as part of the DataPortalException.
     /// </summary>
     /// <param name="value">Value (default is false)</param>
-    public ICslaConfiguration DataPortalReturnObjectOnException(bool value)
+    public CslaDataPortalConfiguration DataPortalReturnObjectOnException(bool value)
     {
       ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -220,11 +213,11 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
     /// <returns></returns>
-    public ICslaConfiguration DashboardType(string typeName)
+    public CslaDataPortalConfiguration DashboardType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDashboardType"] = typeName;
       Csla.Server.Dashboard.DashboardFactory.Reset();
-      return RootConfiguration;
+      return this;
     }
 
     /// <summary>
@@ -236,10 +229,10 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="flow">True to flow context</param>
     /// <returns></returns>
-    public ICslaConfiguration FlowSynchronizationContext(bool flow)
+    public CslaDataPortalConfiguration FlowSynchronizationContext(bool flow)
     {
       ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] = flow.ToString().ToLower();
-      return RootConfiguration;
+      return this;
     }
   }
 }

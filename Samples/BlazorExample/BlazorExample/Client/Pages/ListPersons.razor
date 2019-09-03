@@ -1,0 +1,45 @@
+﻿@page "/ListPersons"
+@using BlazorExample.Shared
+@inject Csla.Blazor.ViewModel<PersonList> vm
+
+<h1>List of People</h1>
+
+<p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+  <p>Loading List...</p>
+  <p>
+    <a href="editperson">Add person</a>
+  </p>
+}
+else
+{
+  <p>
+    <a href="editperson">Add person</a>
+  </p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var item in vm.Model)
+      {
+        <tr>
+          <td>@item.Name</td>
+          <td><a href="editperson/@item.Id">Edit</a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@code {
+  protected override async Task OnInitializedAsync()
+  {
+    await vm.RefreshAsync();
+  }
+}

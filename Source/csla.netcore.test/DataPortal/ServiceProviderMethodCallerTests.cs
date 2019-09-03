@@ -230,6 +230,19 @@ namespace Csla.Test.DataPortal
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateChildAttribute>(obj, null);
       Assert.IsNotNull(method);
     }
+
+    [TestMethod]
+    public void FindChildIntUpdate()
+    {
+      var obj = new ModernChild();
+      object[] paramsArray = Server.DataPortal.GetCriteriaArray(123);
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateChildAttribute>(obj, paramsArray);
+      Assert.IsNotNull(method);
+
+      var dp = new Csla.Server.ChildDataPortal();
+      dp.Update(obj, 42);
+      Assert.AreEqual(42, obj.Id);
+    }
   }
 
   [Serializable]
@@ -379,6 +392,25 @@ namespace Csla.Test.DataPortal
     private void Child_Update(params object[] parameters)
     {
       // nada
+    }
+  }
+
+  [Serializable]
+  public class ModernChild : BusinessBase<ModernChild>
+  {
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    [UpdateChild]
+    [InsertChild]
+    private void UpdateOrInsert(int id)
+    {
+      using (BypassPropertyChecks)
+        Id = id;
     }
   }
 

@@ -20,8 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\Csla.AspNetCore.Mvc2.NetStandard2.0\Csla.AspNetCore.Mvc2.NetStandard2.0.csproj" />
     <ProjectReference Include="..\..\..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
-    <ProjectReference Include="..\..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Client\BlazorExample.Client.csproj" />
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Shared\BlazorExample.Shared.csproj" />
   </ItemGroup>
 

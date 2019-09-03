@@ -19,7 +19,7 @@ namespace BlazorExample.Shared
       var ideal = text.Substring(0, 1).ToUpper();
       ideal += text.Substring(1).ToLower();
       if (text != ideal)
-        context.AddWarningResult("Check value format");
+        context.AddWarningResult("Check capitalization");
     }
   }
 }

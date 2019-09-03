@@ -19,7 +19,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Web.Mvc.Shared", "..\.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore.Mvc2.NetStandard2.0", "..\..\Source\Csla.AspNetCore.Mvc2.NetStandard2.0\Csla.AspNetCore.Mvc2.NetStandard2.0.csproj", "{1E43A31D-5FF8-4EF9-80BE-9C58448FC96B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{4452EC16-40CE-42C7-BE6F-B2B6033E1170}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{4452EC16-40CE-42C7-BE6F-B2B6033E1170}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

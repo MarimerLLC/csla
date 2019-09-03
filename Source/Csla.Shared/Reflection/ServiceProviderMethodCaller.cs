@@ -114,7 +114,7 @@ namespace Csla.Reflection
         }
       }
       if (candidates.Count == 0)
-        throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}].{GetCriteriaTypeNames(criteria)}");
+        throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
       
       // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
@@ -177,7 +177,7 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}].{GetCriteriaTypeNames(criteria)}");
+        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -203,7 +203,7 @@ namespace Csla.Reflection
           }
         }
         if (maxCount > 1)
-          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}].{GetCriteriaTypeNames(criteria)}");
+          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
       }
       return result.MethodInfo;
     }

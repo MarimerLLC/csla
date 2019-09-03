@@ -60,6 +60,10 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#925](https://github.com/marimerllc/csla/issues/925) Create analyzer to flag use of `new` keyword when creating domain objects (require use of data portal)
 * [#1091](https://github.com/marimerllc/csla/issues/1091) Update/cleanup analyzer code
 
+### Blazor
+
+* [#1142](https://github.com/marimerllc/csla/issues/1142) Add UI helper support for client-side Blazor and WebAssembly 🎉
+
 ### Xamarin
 
 * [#1010](https://github.com/marimerllc/csla/issues/1010) Fix issue where `ApplicationContext.User` wasn't persisted during async operations

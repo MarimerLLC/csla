@@ -93,6 +93,7 @@ You can see all the [closed work items in GitHub](https://github.com/MarimerLLC/
 I want to extend special recognition to the following contributors to this release:
 
 * [@JasonBock](https://github.com/JasonBock) has put a lot of work into the analyzers - fixing long-standing issues, and creating some cool new analyzers as well - really nice!
+* [@GillesBer](https://github.com/GillesBer) ported the Windows Forms and WPF satellite projects for use in .NET Core 3
 * [@itgoran](https://github.com/itgoran) has been helping ensure the tests all work
 * [@oatsoda](https://github.com/oatsoda) has been fixing some issues encountered in 4.9 - resulting in fixes 5.0
 * [@Hadronicus](https://github.com/Hadronicus) similarly has fixed an issue in 4.9 that's in 4.10 and 5.0

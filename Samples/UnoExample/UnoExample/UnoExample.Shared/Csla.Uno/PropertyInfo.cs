@@ -46,7 +46,7 @@ namespace Csla.Xaml
         _loading = false;
         UpdateState();
       };
-#if !NETFX_CORE
+#if ZZZ
       DataContextChanged += (o, e) =>
       {
         SetSource();
@@ -66,7 +66,7 @@ namespace Csla.Xaml
     /// <value>The binding path.</value>
     protected string BindingPath { get; set; }
 
-#if !NETFX_CORE
+#if ZZZ
     private Binding _propertyBinding;
 
     /// <summary>
@@ -248,23 +248,28 @@ namespace Csla.Xaml
     /// the binding expression for that property.</returns>
     protected virtual BindingExpression ParseRelativeBinding(BindingExpression sourceBinding)
     {
+#if NETFX_CORE
       if (sourceBinding != null
         && sourceBinding.ParentBinding.RelativeSource != null
         && sourceBinding.ParentBinding.RelativeSource.Mode == RelativeSourceMode.TemplatedParent
         && sourceBinding.DataItem is FrameworkElement)
       {
         var control = (FrameworkElement)sourceBinding.DataItem;
+#else
+      if (sourceBinding != null
+        && sourceBinding.ParentBinding.RelativeSource != null
+        && sourceBinding.ParentBinding.RelativeSource.Mode == RelativeSourceMode.TemplatedParent
+        && sourceBinding.DataContext is FrameworkElement)
+      {
+        var control = (FrameworkElement)sourceBinding.DataContext;
+#endif
         var path = sourceBinding.ParentBinding.Path.Path;
 
         var type = control.GetType();
         FieldInfo fi = null;
         while (type != null)
         {
-#if NETFX_CORE
           fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
-#else
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
-#endif
 
           if (fi != null)
           {
@@ -273,11 +278,7 @@ namespace Csla.Xaml
           }
           else
           {
-#if NETFX_CORE
             type = type.GetTypeInfo().BaseType;
-#else
-            type = type.BaseType;
-#endif
           }
         }
 
@@ -295,7 +296,11 @@ namespace Csla.Xaml
       var binding = GetBindingExpression(PropertyProperty);
       if (binding != null)
       {
+#if NETFX_CORE
         SetSource(binding.DataItem);
+#else
+        SetSource(binding.DataContext);
+#endif
       }
     }
 
@@ -434,9 +439,9 @@ namespace Csla.Xaml
     }
 #endif
 
-    #region State properties
+        #region State properties
 
-    private void HandleSourceEvents(object old, object source)
+        private void HandleSourceEvents(object old, object source)
     {
       if (!ReferenceEquals(old, source))
       {
@@ -514,6 +519,7 @@ namespace Csla.Xaml
       {
         if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
           MethodCaller.CallPropertySetter(Source, BindingPath, value);
+        OnPropertyChanged(nameof(Value));
       }
     }
 
@@ -589,47 +595,62 @@ namespace Csla.Xaml
         if (value != _isValid)
         {
           _isValid = value;
-          OnPropertyChanged("IsValid");
+          OnPropertyChanged(nameof(IsValid));
         }
       }
     }
 
-    private RuleSeverity _worst;
-    /// <summary>
-    /// Gets a value indicating the worst
-    /// severity of all broken rules
-    /// for this property (if IsValid is
-    /// false).
-    /// </summary>
-    [Category("Property Status")]
-    public RuleSeverity RuleSeverity
-    {
-      get { return _worst; }
-      private set
-      {
-        if (value != _worst)
-        {
-          _worst = value;
-          OnPropertyChanged("RuleSeverity");
-        }
-      }
-    }
-
-    private string _ruleDescription = string.Empty;
+    private string _errorText = string.Empty;
     /// <summary>
     /// Gets the description of the most severe
     /// broken rule for this property.
     /// </summary>
     [Category("Property Status")]
-    public string RuleDescription
+    public string ErrorText
     {
-      get { return _ruleDescription; }
+      get { return _errorText; }
       private set
       {
-        if (value != _ruleDescription)
+        if (value != _errorText)
         {
-          _ruleDescription = value;
-          OnPropertyChanged("RuleDescription");
+          _errorText = value;
+          OnPropertyChanged(nameof(ErrorText));
+        }
+      }
+    }
+
+    private string _infoText = string.Empty;
+    /// <summary>
+    /// Gets any information text for this property.
+    /// </summary>
+    [Category("Property Status")]
+    public string InformationText
+    {
+      get { return _infoText; }
+      private set
+      {
+        if (value != _infoText)
+        {
+          _infoText = value;
+          OnPropertyChanged(nameof(InformationText));
+        }
+      }
+    }
+
+    private string _warnText = string.Empty;
+    /// <summary>
+    /// Gets any warning text for this property.
+    /// </summary>
+    [Category("Property Status")]
+    public string WarningText
+    {
+      get { return _warnText; }
+      private set
+      {
+        if (value != _warnText)
+        {
+          _warnText = value;
+          OnPropertyChanged(nameof(WarningText));
         }
       }
     }
@@ -651,7 +672,7 @@ namespace Csla.Xaml
         if (!ReferenceEquals(_customTag, value))
         {
           _customTag = value;
-          OnPropertyChanged("CustomTag");
+          OnPropertyChanged(nameof(CustomTag));
         }
       }
     }
@@ -672,19 +693,23 @@ namespace Csla.Xaml
         IsValid = false;
         IsBusy = false;
         BrokenRules.Clear();
-        RuleDescription = string.Empty;
+        ErrorText = string.Empty;
+        InformationText = string.Empty;
+        WarningText = string.Empty;
+        Value = string.Empty;
       }
       else
       {
-        var iarw = Source as Csla.Security.IAuthorizeReadWrite;
-        if (iarw != null)
+        if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
+          Value = MethodCaller.CallPropertyGetter(Source, BindingPath);
+
+        if (Source is Csla.Security.IAuthorizeReadWrite iarw)
         {
           CanWrite = iarw.CanWriteProperty(BindingPath);
           CanRead = iarw.CanReadProperty(BindingPath);
         }
 
-        BusinessBase businessObject = Source as BusinessBase;
-        if (businessObject != null)
+        if (Source is BusinessBase businessObject)
         {
           var allRules = (from r in businessObject.BrokenRulesCollection
                           where r.Property == BindingPath
@@ -703,31 +728,31 @@ namespace Csla.Xaml
           foreach (var rule in addRules)
             BrokenRules.Add(rule);
 
-          IsValid = BrokenRules.Count == 0;
+          IsValid = !BrokenRules.Where(r => r.Severity == RuleSeverity.Error).Any();
+          ErrorText = string.Empty;
+          InformationText = string.Empty;
+          WarningText = string.Empty;
 
-          if (!IsValid)
-          {
-            BrokenRule worst = (from r in BrokenRules
-                                orderby r.Severity
-                                select r).FirstOrDefault();
-
-            if (worst != null)
-            {
-              RuleSeverity = worst.Severity;
-              RuleDescription = worst.Description;
-            }
-            else
-              RuleDescription = string.Empty;
-          }
-          else
-            RuleDescription = string.Empty;
+          ErrorText = ListToString(BrokenRules.Where(r => r.Severity == RuleSeverity.Error).Select(r => r.Description));
+          WarningText = ListToString(BrokenRules.Where(r => r.Severity == RuleSeverity.Warning).Select(r => r.Description));
+          InformationText = ListToString(BrokenRules.Where(r => r.Severity == RuleSeverity.Information).Select(r => r.Description));
         }
         else
         {
           BrokenRules.Clear();
-          RuleDescription = string.Empty;
+          ErrorText = string.Empty;
+          InformationText = string.Empty;
+          WarningText = string.Empty;
         }
       }
+    }
+
+    private static string ListToString(IEnumerable<string> text)
+    {
+      var result = "";
+      foreach (var item in text)
+        result += $"{item},";
+      return result;
     }
 
     #endregion

@@ -33,6 +33,11 @@ namespace UnoExample
     {
       if (e.Parameter != null)
         PersonId = (int)e.Parameter;
+#if !NETFX_CORE
+      // the Loaded event doesn't raise in mobile, so this 
+      // is a workaround to get that code to run
+      Page_Loaded(this, null);
+#endif
     }
 
     public int PersonId { get; set; } = -1;

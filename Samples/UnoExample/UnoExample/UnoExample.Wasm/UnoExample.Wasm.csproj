@@ -40,6 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
     <ProjectReference Include="..\BusinessLibrary\BusinessLibrary.csproj" />
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
   </ItemGroup>
   <Import Project="..\UnoExample.Shared\UnoExample.Shared.projitems" Label="Shared" Condition="Exists('..\UnoExample.Shared\UnoExample.Shared.projitems')" />
 </Project>

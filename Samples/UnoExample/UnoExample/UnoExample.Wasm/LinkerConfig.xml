@@ -9,4 +9,5 @@
 
   <assembly fullname="Csla" />
   <assembly fullname="BusinessLibrary" />
+  <assembly fullname="DataAccess" />
 </linker>

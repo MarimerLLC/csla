@@ -28,9 +28,15 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10">
           <TextBlock Text="Name:" FontWeight="Bold" Width="150" />
-          <TextBox Text="{Binding Name, Mode=TwoWay}" />
-          <!--<csla:PropertyInfo x:Name="NameInfo" Property="{Binding Name, Mode=TwoWay}" />-->
-          <!--<TextBlock Text="{Binding ElementName=NameInfo, Path=Value}" />-->
+          <StackPanel>
+            <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <csla:PropertyInfo x:Name="NameInfo" Property="{Binding Name, Mode=TwoWay}" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=Value}" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=IsValid}" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=InformationText}" Foreground="Blue" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=WarningText}" Foreground="DarkOrange" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=ErrorText}" Foreground="Red" />
+          </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10">
           <Button Margin="10" Content="Save person" Click="SavePerson"/>

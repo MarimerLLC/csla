@@ -36,7 +36,7 @@ namespace BusinessLibrary
     private void Create()
     {
       Id = -1;
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     [Fetch]

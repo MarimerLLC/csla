@@ -31,7 +31,7 @@ namespace UnoExample
       this.InitializeComponent();
     }
 
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
       await RefreshData();
     }

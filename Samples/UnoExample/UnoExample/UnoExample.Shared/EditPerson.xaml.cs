@@ -29,21 +29,13 @@ namespace UnoExample
       this.InitializeComponent();
     }
 
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    public int PersonId { get; set; } = -1;
+
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
       if (e.Parameter != null)
         PersonId = (int)e.Parameter;
-#if !NETFX_CORE
-      // the Loaded event doesn't raise in mobile, so this 
-      // is a workaround to get that code to run
-      Page_Loaded(this, null);
-#endif
-    }
 
-    public int PersonId { get; set; } = -1;
-
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
-    {
       PersonEdit person;
       this.InfoText.Text = "Loading ...";
       if (PersonId > -1)

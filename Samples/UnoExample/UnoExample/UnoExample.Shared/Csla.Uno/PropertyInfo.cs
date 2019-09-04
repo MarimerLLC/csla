@@ -752,7 +752,10 @@ namespace Csla.Xaml
       var result = "";
       foreach (var item in text)
         result += $"{item},";
-      return result;
+      if (result.Length > 0)
+        return result.Substring(0, result.Length - 1);
+      else
+        return result;
     }
 
     #endregion

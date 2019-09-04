@@ -7,7 +7,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Grid>
@@ -45,8 +44,8 @@
       </StackPanel>
     </Grid>
     <Grid Grid.Row="2">
-      <Rectangle Fill="Yellow" />
-      <TextBlock x:Name="InfoText" Margin="5" FontSize="14" Foreground="Black" />
+      <Rectangle Fill="Blue" />
+      <TextBlock x:Name="InfoText" Margin="5" FontSize="14" Foreground="White" />
     </Grid>
     <Grid Grid.Row="3">
       <Rectangle Fill="Red" />

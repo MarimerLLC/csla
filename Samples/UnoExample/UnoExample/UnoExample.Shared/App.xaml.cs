@@ -36,18 +36,22 @@ namespace UnoExample
       this.InitializeComponent();
       this.Suspending += OnSuspending;
 
+#if __WASM__
+      Csla.DataPortalClient.HttpProxy.UseTextSerialization = true;
+#endif
+
+      // INVOKE APPSERVER
       //string appserverUrl = "http://localhost:60223/api/dataportal";
       //if (Csla.DataPortalClient.HttpProxy.UseTextSerialization)
       //  appserverUrl += "Text";
-
       //CslaConfiguration.Configure().
       //  ContextManager(new Csla.Xaml.ApplicationContextManager()).
       //  DataPortal().
       //    DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), appserverUrl);
 
+      // USE LOCAL IN-PROC "APPSERVER"
       CslaConfiguration.Configure().
         ContextManager(new Csla.Xaml.ApplicationContextManager());
-
       var services = new ServiceCollection();
       services.AddCsla();
       services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));

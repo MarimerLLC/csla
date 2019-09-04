@@ -43,8 +43,8 @@
       </StackPanel>
     </Grid>
     <Grid Grid.Row="3">
-      <Rectangle Fill="Yellow" />
-      <TextBlock x:Name="InfoText" Margin="5" FontSize="14" Foreground="Black" />
+      <Rectangle Fill="Blue" />
+      <TextBlock x:Name="InfoText" Margin="5" FontSize="14" Foreground="White" />
     </Grid>
     <Grid Grid.Row="4">
       <Rectangle Fill="Red" />

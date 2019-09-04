@@ -24,6 +24,12 @@ Supports the creation of Windows Forms applications.
     </dependencies>
   </metadata>
   <files>
+     <!-- netcoreapp3.0 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.dll*" target="lib\netcoreapp3.0" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.pdb*" target="lib\netcoreapp3.0" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.resources.dll*" target="lib\netcoreapp3.0" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.resources.pdb*" target="lib\netcoreapp3.0" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.xml*" target="lib\netcoreapp3.0" />
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.dll*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.pdb*" target="lib\net40" />

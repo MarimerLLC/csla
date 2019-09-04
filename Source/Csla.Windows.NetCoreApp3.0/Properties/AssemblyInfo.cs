@@ -9,24 +9,24 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following
+// General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for NetStandard")]
-[assembly: AssemblyDescription("CSLA .NET Framework (NetStandard 2.0)")]
+[assembly: AssemblyTitle("CSLA .NET for NetCoreApp3.0")]
+[assembly: AssemblyDescription("CSLA .NET Windows Forms (NetCoreApp3.0)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
 [assembly: AssemblyCopyright("Copyright © 2010-18 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible
-// to COM components.  If you need to access a type in this assembly from
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b04b5ed0-8f76-44a0-af36-a8b91dc4a9ad")]
+[assembly: Guid("F2C331C0-91E9-4540-A4CC-1B0B2BF01567")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
 

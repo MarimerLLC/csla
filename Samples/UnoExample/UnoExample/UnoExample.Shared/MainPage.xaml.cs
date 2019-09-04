@@ -56,13 +56,13 @@ namespace UnoExample
       }
     }
 
-    private async void NewPerson(object sender, RoutedEventArgs e)
+    private void NewPerson(object sender, RoutedEventArgs e)
     {
       var rootFrame = Window.Current.Content as Frame;
       rootFrame.Navigate(typeof(EditPerson));
     }
 
-    private async void EditPerson(object sender, RoutedEventArgs e)
+    private void EditPerson(object sender, RoutedEventArgs e)
     {
       var id = (int)((Button)sender).Tag;
       var rootFrame = Window.Current.Content as Frame;

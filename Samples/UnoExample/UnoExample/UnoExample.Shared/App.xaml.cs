@@ -1,4 +1,5 @@
 ﻿using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,13 +36,21 @@ namespace UnoExample
       this.InitializeComponent();
       this.Suspending += OnSuspending;
 
-      string appserverUrl = "http://localhost:60223/api/dataportal";
-      if (Csla.DataPortalClient.HttpProxy.UseTextSerialization)
-        appserverUrl += "Text";
+      //string appserverUrl = "http://localhost:60223/api/dataportal";
+      //if (Csla.DataPortalClient.HttpProxy.UseTextSerialization)
+      //  appserverUrl += "Text";
+
+      //CslaConfiguration.Configure().
+      //  ContextManager(new Csla.Xaml.ApplicationContextManager()).
+      //  DataPortal().
+      //    DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), appserverUrl);
 
       CslaConfiguration.Configure().
-        DataPortal().
-          DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), appserverUrl);
+        ContextManager(new Csla.Xaml.ApplicationContextManager());
+
+      var services = new ServiceCollection();
+      services.AddCsla();
+      services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
     }
 
     /// <summary>
@@ -68,17 +77,21 @@ namespace UnoExample
 
         rootFrame.NavigationFailed += OnNavigationFailed;
 
+#if !__WASM__ && !__MOBILE__
         if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
         {
           //TODO: Load state from previously suspended application
         }
+#endif
 
         // Place the frame in the current Window
         Windows.UI.Xaml.Window.Current.Content = rootFrame;
       }
 
+#if !__WASM__ && !__MOBILE__
       if (e.PrelaunchActivated == false)
       {
+#endif
         if (rootFrame.Content == null)
         {
           // When the navigation stack isn't restored navigate to the first page,
@@ -88,7 +101,9 @@ namespace UnoExample
         }
         // Ensure the current window is active
         Windows.UI.Xaml.Window.Current.Activate();
+#if !__WASM__ && !__MOBILE__
       }
+#endif
     }
 
     /// <summary>
@@ -110,9 +125,11 @@ namespace UnoExample
     /// <param name="e">Details about the suspend request.</param>
     private void OnSuspending(object sender, SuspendingEventArgs e)
     {
+#if !__WASM__ && !__MOBILE__
       var deferral = e.SuspendingOperation.GetDeferral();
       //TODO: Save application state and stop any background activity
       deferral.Complete();
+#endif
     }
 
 

@@ -18,6 +18,27 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ApplicationContextManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\BrokenRulesSeverityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\BusyAnimation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\CancellableViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\CslaDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\CslaDataProviderCommandManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\DataDecoratorBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ErrorDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ErrorEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ExecuteEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\IdentityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\IErrorDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\InvokeMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\IsNotConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\IViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ObjectStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\PropertyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\PropertyStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\TriggerAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EditPerson.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

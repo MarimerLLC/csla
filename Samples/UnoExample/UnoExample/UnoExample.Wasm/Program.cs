@@ -10,9 +10,6 @@ namespace UnoExample.Wasm
 
     static int Main(string[] args)
     {
-      CslaConfiguration.Configure().
-        ContextManager(new Csla.Uno.ApplicationContextManager());
-
       Windows.UI.Xaml.Application.Start(_ => _app = new App());
 
       return 0;

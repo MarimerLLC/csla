@@ -6,14 +6,7 @@
 // <summary>Defines a CSLA .NET viewmodel</summary>
 //-----------------------------------------------------------------------
 
-
-#if ANDROID
-namespace Csla.Axml
-#elif IOS
-namespace Csla.Iosui
-#else
 namespace Csla.Xaml
-#endif
 {
   /// <summary>
   /// Defines a CSLA .NET viewmodel

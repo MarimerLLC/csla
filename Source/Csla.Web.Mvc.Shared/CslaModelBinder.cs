@@ -19,7 +19,7 @@ namespace Csla.Web.Mvc
   /// Model binder for use with CSLA .NET editable business
   /// objects.
   /// </summary>
-  public class CslaModelBinder : Csla.Server.ObjectFactory, IModelBinder
+  public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
     /// Creates a model binder wth an instance creator for root objects.
@@ -59,11 +59,11 @@ namespace Csla.Web.Mvc
       if (result == null)
         return;
 
-      if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom(bindingContext.ModelType))
+      if (typeof(Core.IEditableCollection).IsAssignableFrom(bindingContext.ModelType))
       {
         BindBusinessListBase(bindingContext, result);
       }
-      else if (typeof(Csla.Core.IEditableBusinessObject).IsAssignableFrom(bindingContext.ModelType))
+      else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(bindingContext.ModelType))
       {
         BindBusinessBase(bindingContext, result);
       }
@@ -78,10 +78,14 @@ namespace Csla.Web.Mvc
 
     private void BindBusinessBase(ModelBindingContext bindingContext, object result)
     {
-      var properties = Csla.Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(bindingContext.ModelType);
+      var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(bindingContext.ModelType);
       foreach (var item in properties)
       {
-        var index = $"{bindingContext.ModelName}.{item.Name}";
+        string index;
+        if (string.IsNullOrEmpty(bindingContext.ModelName))
+          index = $"{item.Name}";
+        else
+          index = $"{bindingContext.ModelName}.{item.Name}";
         BindSingleProperty(bindingContext, result, item, index);
       }
     }
@@ -89,8 +93,8 @@ namespace Csla.Web.Mvc
     private void BindBusinessListBase(ModelBindingContext bindingContext, object result)
     {
       var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
-      var childType = Csla.Utilities.GetChildItemType(bindingContext.ModelType);
-      var properties = Csla.Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
+      var childType = Utilities.GetChildItemType(bindingContext.ModelType);
+      var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
       var list = (IList)result;
 
       var itemCount = formKeys.Count() / properties.Count();
@@ -137,16 +141,16 @@ namespace Csla.Web.Mvc
           try
           {
             if (item.Type.Equals(typeof(string)))
-              Csla.Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
+              Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
             else
-              Csla.Reflection.MethodCaller.CallPropertySetter(result, item.Name, Csla.Utilities.CoerceValue(item.Type, value.GetType(), null, value));
+              Reflection.MethodCaller.CallPropertySetter(result, item.Name, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
           }
           catch
           {
             if (item.Type.Equals(typeof(string)))
               LoadProperty(result, item, value);
             else
-              LoadProperty(result, item, Csla.Utilities.CoerceValue(item.Type, value.GetType(), null, value));
+              LoadProperty(result, item, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
           }
         }
       }
@@ -186,13 +190,13 @@ namespace Csla.Web.Mvc
     internal static Task<object> CreateInstance(Type type)
     {
       var tcs = new TaskCompletionSource<object>();
-      tcs.SetResult(Csla.Reflection.MethodCaller.CreateInstance(type));
+      tcs.SetResult(Reflection.MethodCaller.CreateInstance(type));
       return tcs.Task;
     }
 
     internal static object CreateChild(IList parent, Type type, Dictionary<string, string> values)
     {
-      return Csla.Reflection.MethodCaller.CreateInstance(type);
+      return Reflection.MethodCaller.CreateInstance(type);
     }
 
     private readonly Func<Type, Task<object>> _instanceCreator;
@@ -204,9 +208,9 @@ namespace Csla.Web.Mvc
     /// <param name="context">Model binder provider context.</param>
     public IModelBinder GetBinder(ModelBinderProviderContext context)
     {
-      if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType))
+      if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType))
         return new CslaModelBinder(_instanceCreator, _childCreator);
-      if (typeof(Csla.IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
+      if (typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
         return new CslaModelBinder(_instanceCreator);
       return null;
     }
@@ -220,7 +224,7 @@ using System.Web.Mvc;
 using System.ComponentModel;
 using System.Collections;
 
-namespace Csla.Web.Mvc
+namespace Web.Mvc
 {
   /// <summary>
   /// Model binder for use with CSLA .NET editable business
@@ -247,10 +251,10 @@ namespace Csla.Web.Mvc
     /// <returns>Bound object</returns>
     public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
     {
-      if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
+      if (typeof(Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
         return BindCslaCollection(controllerContext, bindingContext);
 
-      var suppress = bindingContext.Model as Csla.Core.ICheckRules;
+      var suppress = bindingContext.Model as Core.ICheckRules;
       if (suppress != null)
         suppress.SuppressRuleChecking();
       var result = base.BindModel(controllerContext, bindingContext);
@@ -275,7 +279,7 @@ namespace Csla.Web.Mvc
         if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))
           continue;      //no value to update skip
         var elementModel = collection[currIdx];
-        var suppress = elementModel as Csla.Core.ICheckRules;
+        var suppress = elementModel as Core.ICheckRules;
         if (suppress != null)
           suppress.SuppressRuleChecking();
         var elementContext = new ModelBindingContext()
@@ -325,12 +329,12 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     protected override void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext)
     {
-      var obj = bindingContext.Model as Csla.Core.BusinessBase;
+      var obj = bindingContext.Model as Core.BusinessBase;
       if (obj != null)
       {
         if (this._checkRulesOnModelUpdated)
         {
-          var suppress = obj as Csla.Core.ICheckRules;
+          var suppress = obj as Core.ICheckRules;
           if (suppress != null)
           {
             suppress.ResumeRuleChecking();
@@ -338,7 +342,7 @@ namespace Csla.Web.Mvc
           }
         }
         var errors = from r in obj.BrokenRulesCollection
-                     where r.Severity == Csla.Rules.RuleSeverity.Error
+                     where r.Severity == Rules.RuleSeverity.Error
                      select r;
         foreach (var item in errors)
         {
@@ -370,7 +374,7 @@ namespace Csla.Web.Mvc
     /// <param name="value">Value</param>
     protected override void OnPropertyValidated(ControllerContext controllerContext, ModelBindingContext bindingContext, System.ComponentModel.PropertyDescriptor propertyDescriptor, object value)
     {
-      if (!(bindingContext.Model is Csla.Core.BusinessBase))
+      if (!(bindingContext.Model is Core.BusinessBase))
         base.OnPropertyValidated(controllerContext, bindingContext, propertyDescriptor, value);
     }
   }

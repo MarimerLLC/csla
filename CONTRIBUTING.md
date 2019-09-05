@@ -5,7 +5,7 @@ CSLA .NET is developed and maintained by a [global development team](https://git
 ## Getting started
 
 * Make sure you have a [GitHub account](https://github.com/signup/free)
-* We have a doc with step-by-step instructions on [how to use git and GitHub to contribute](https://github.com/MarimerLLC/csla/blob/master/docs/csla-github-flow.md) to CSLA .NET
+* We have a doc with step-by-step instructions on [how to use git and GitHub to contribute](https://github.com/MarimerLLC/csla/blob/master/docs/dev/csla-github-flow.md) to CSLA .NET
 * Download, print, sign, scan, and return the [contributor agreement document](https://github.com/MarimerLLC/csla/blob/master/Support/Contributions/CSLA%20Contributor%20Agreement.pdf).
 * Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/master/CODE_OF_CONDUCT.md)
 * Review and follow the [Coding standards](https://github.com/MarimerLLC/csla/blob/master/docs/dev/Coding-standards.md) we use to maintain consistent code in the framework

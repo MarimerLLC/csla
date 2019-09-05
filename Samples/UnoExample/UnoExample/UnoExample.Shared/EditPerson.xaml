@@ -1,0 +1,55 @@
+﻿<Page
+    x:Class="UnoExample.EditPerson"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnoExample.Shared"
+    xmlns:csla="using:Csla.Xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+      <TextBlock Margin="10" FontSize="48" FontWeight="Bold" Text="Edit person"/>
+    </Grid>
+    <Grid Grid.Row="1">
+      <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <TextBlock Text="Id:" FontWeight="Bold" Width="150" />
+          <TextBlock Text="{Binding Id, Mode=OneWay}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <TextBlock Text="Name:" FontWeight="Bold" Width="150" />
+          <StackPanel>
+            <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <csla:PropertyInfo x:Name="NameInfo" Property="{Binding Name, Mode=TwoWay}" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=Value}" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=IsValid}" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=InformationText}" Foreground="Blue" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=WarningText}" Foreground="DarkOrange" />
+            <TextBlock Text="{Binding ElementName=NameInfo, Path=ErrorText}" Foreground="Red" />
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <Button Margin="10" Content="Save person" Click="SavePerson"/>
+          <Button Margin="10" Content="List of people" Click="ListPeople"/>
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+    <Grid Grid.Row="2">
+      <Rectangle Fill="Blue" />
+      <TextBlock x:Name="InfoText" Margin="5" FontSize="14" Foreground="White" />
+    </Grid>
+    <Grid Grid.Row="3">
+      <Rectangle Fill="Red" />
+      <TextBlock x:Name="OutputText" Margin="5" FontSize="14" Foreground="White" />
+    </Grid>
+  </Grid>
+</Page>

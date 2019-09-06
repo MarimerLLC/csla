@@ -21,9 +21,19 @@ Supports the creation of WPF applications.
     <language>en-US</language>
     <dependencies>
       <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <group targetFramework="netcoreapp3.0">
+        <dependency id="Microsoft.NETCore.App" version="3.0.0" />
+        <dependency id="Microsoft.WindowsDesktop.App.WPF" version="3.0.0" />
+      </group>
     </dependencies>
   </metadata>
   <files>
+     <!-- netcoreapp3.0 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.dll*" target="lib\netcoreapp3.0" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.pdb*" target="lib\netcoreapp3.0" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.resources.dll*" target="lib\netcoreapp3.0" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.resources.pdb*" target="lib\netcoreapp3.0" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.xml*" target="lib\netcoreapp3.0" />
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.dll*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.pdb*" target="lib\net40" />

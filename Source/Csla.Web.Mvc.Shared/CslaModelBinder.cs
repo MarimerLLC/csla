@@ -224,7 +224,7 @@ using System.Web.Mvc;
 using System.ComponentModel;
 using System.Collections;
 
-namespace Web.Mvc
+namespace Csla.Web.Mvc
 {
   /// <summary>
   /// Model binder for use with CSLA .NET editable business

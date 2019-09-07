@@ -30,6 +30,7 @@ namespace BusinessLibrary
       base.AddBusinessRules();
       BusinessRules.AddRule(new InfoText(NameProperty, "Person name (required)"));
       BusinessRules.AddRule(new CheckCase(NameProperty));
+      BusinessRules.AddRule(new NoZAllowed(NameProperty));
     }
 
     [Create]

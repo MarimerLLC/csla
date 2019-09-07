@@ -39,8 +39,10 @@ namespace CslaMvcExample.Controllers
     {
       try
       {
-        await SaveObjectAsync<PersonEdit>(person, false);
-        return RedirectToAction(nameof(Index));
+        if (await SaveObjectAsync<PersonEdit>(person, true))
+          return RedirectToAction(nameof(Index));
+        else
+          return View(person);
       }
       catch
       {
@@ -63,8 +65,10 @@ namespace CslaMvcExample.Controllers
       try
       {
         LoadProperty(person, PersonEdit.IdProperty, id);
-        await SaveObjectAsync<PersonEdit>(person, true);
-        return RedirectToAction(nameof(Index));
+        if (await SaveObjectAsync<PersonEdit>(person, true))
+          return RedirectToAction(nameof(Index));
+        else
+          return View(person);
       }
       catch
       {

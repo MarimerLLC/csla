@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 #if NETSTANDARD1_6 || NETSTANDARD2_0
 using System.Threading.Tasks;
+using Csla.Core;
+using Csla.Rules;
 using Microsoft.AspNetCore.Mvc;
 #else
 using System.Web.Mvc;
@@ -61,8 +63,18 @@ namespace Csla.Web.Mvc
       {
         ViewData.Model = item;
         updateModel?.Invoke(item);
+        if (item is BusinessBase bb && !bb.IsValid)
+        {
+          AddBrokenRuleInfo(item, null);
+          return false;
+        }
         ViewData.Model = await item.SaveAsync(forceUpdate);
         return true;
+      }
+      catch (ValidationException ex)
+      {
+        AddBrokenRuleInfo(item, ex.Message);
+        return false;
       }
       catch (DataPortalException ex)
       {
@@ -76,6 +88,24 @@ namespace Csla.Web.Mvc
       {
         ModelState.AddModelError(string.Empty, ex.Message);
         return false;
+      }
+    }
+
+    private void AddBrokenRuleInfo<T>(T item, string defaultText) where T : class, ISavable
+    {
+      if (item is BusinessBase bb)
+      {
+        foreach (var rule in bb.BrokenRulesCollection)
+        {
+          if (string.IsNullOrEmpty(rule.Property))
+            ModelState.AddModelError(string.Empty, rule.Description);
+          else
+            ModelState.AddModelError(rule.Property, rule.Description);
+        }
+      }
+      else
+      {
+        ModelState.AddModelError(string.Empty, defaultText);
       }
     }
 #else

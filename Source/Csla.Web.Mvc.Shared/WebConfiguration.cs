@@ -6,8 +6,6 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 
 namespace Csla.Configuration
@@ -18,12 +16,12 @@ namespace Csla.Configuration
   public static class WebConfigurationExtensions
   {
     /// <summary>
-    /// Adds CSLA to the application
+    /// Configures the application to use CSLA .NET
     /// </summary>
     /// <param name="app">ApplicationBuilder object</param>
     public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
     {
-      Csla.ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
+      ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
       return app;
     }
   }

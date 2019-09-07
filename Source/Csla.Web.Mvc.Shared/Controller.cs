@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 #if NETSTANDARD1_6 || NETSTANDARD2_0
+using System.Threading.Tasks;
+using Csla.Core;
+using Csla.Rules;
 using Microsoft.AspNetCore.Mvc;
 #else
 using System.Web.Mvc;
@@ -22,11 +25,12 @@ namespace Csla.Web.Mvc
   /// in an ASP.NET MVC web site.
   /// </summary>
 #if NETSTANDARD1_6 || NETSTANDARD2_0
-  public class MyController : Microsoft.AspNetCore.Mvc.Controller
+  public class Controller : Microsoft.AspNetCore.Mvc.Controller
 #else
   public class Controller : System.Web.Mvc.Controller
 #endif
   {
+#if NETSTANDARD2_0
     /// <summary>
     /// Performs a Save() operation on an
     /// editable business object, with appropriate
@@ -36,7 +40,86 @@ namespace Csla.Web.Mvc
     /// <param name="item">The business object to insert.</param>
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
-    protected bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
+    protected async Task<bool> SaveObjectAsync<T>(T item, bool forceUpdate) 
+      where T : class, Core.ISavable
+    {
+      return await SaveObjectAsync(item, null, forceUpdate);
+    }
+
+    /// <summary>
+    /// Performs a Save() operation on an
+    /// editable business object, with appropriate
+    /// validation and exception handling.
+    /// </summary>
+    /// <typeparam name="T">Type of business object.</typeparam>
+    /// <param name="item">The business object to insert.</param>
+    /// <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
+    /// <param name="forceUpdate">true to force Save() to be an update.</param>
+    /// <returns>true the Save() succeeds, false if not.</returns>
+    protected virtual async Task<bool> SaveObjectAsync<T>(T item, Action<T> updateModel, bool forceUpdate) 
+      where T : class, Core.ISavable
+    {
+      try
+      {
+        ViewData.Model = item;
+        updateModel?.Invoke(item);
+        if (item is BusinessBase bb && !bb.IsValid)
+        {
+          AddBrokenRuleInfo(item, null);
+          return false;
+        }
+        ViewData.Model = await item.SaveAsync(forceUpdate);
+        return true;
+      }
+      catch (ValidationException ex)
+      {
+        AddBrokenRuleInfo(item, ex.Message);
+        return false;
+      }
+      catch (DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          ModelState.AddModelError(string.Empty, ex.BusinessException.Message);
+        else
+          ModelState.AddModelError(string.Empty, ex.Message);
+        return false;
+      }
+      catch (Exception ex)
+      {
+        ModelState.AddModelError(string.Empty, ex.Message);
+        return false;
+      }
+    }
+
+    private void AddBrokenRuleInfo<T>(T item, string defaultText) where T : class, ISavable
+    {
+      if (item is BusinessBase bb)
+      {
+        foreach (var rule in bb.BrokenRulesCollection)
+        {
+          if (string.IsNullOrEmpty(rule.Property))
+            ModelState.AddModelError(string.Empty, rule.Description);
+          else
+            ModelState.AddModelError(rule.Property, rule.Description);
+        }
+      }
+      else
+      {
+        ModelState.AddModelError(string.Empty, defaultText);
+      }
+    }
+#else
+    /// <summary>
+    /// Performs a Save() operation on an
+    /// editable business object, with appropriate
+    /// validation and exception handling.
+    /// </summary>
+    /// <typeparam name="T">Type of business object.</typeparam>
+    /// <param name="item">The business object to insert.</param>
+    /// <param name="forceUpdate">true to force Save() to be an update.</param>
+    /// <returns>true the Save() succeeds, false if not.</returns>
+    protected bool SaveObject<T>(T item, bool forceUpdate) 
+      where T : class, Core.ISavable
     {
       return SaveObject(item,
         null,
@@ -53,33 +136,35 @@ namespace Csla.Web.Mvc
     /// <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
-    protected virtual bool SaveObject<T>(T item, Action<T> updateModel, bool forceUpdate) where T : class, Csla.Core.ISavable
+    protected virtual bool SaveObject<T>(T item, Action<T> updateModel, bool forceUpdate) 
+      where T : class, Core.ISavable
     {
       try
       {
         ViewData.Model = item;
         updateModel?.Invoke(item);
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD1_6
         ViewData.Model = item.SaveAsync(forceUpdate).Result;
 #else
         ViewData.Model = item.Save(forceUpdate);
 #endif
         return true;
       }
-      catch (Csla.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         if (ex.BusinessException != null)
-          ModelState.AddModelError("", ex.BusinessException.Message);
+          ModelState.AddModelError(string.Empty, ex.BusinessException.Message);
         else
-          ModelState.AddModelError("", ex.Message);
+          ModelState.AddModelError(string.Empty, ex.Message);
         return false;
       }
       catch (Exception ex)
       {
-        ModelState.AddModelError("", ex.Message);
+        ModelState.AddModelError(string.Empty, ex.Message);
         return false;
       }
     }
+#endif
 
     /// <summary>
     /// Loads a property's managed field with the 
@@ -107,7 +192,7 @@ namespace Csla.Web.Mvc
       new ObjectManager().LoadProperty(obj, propertyInfo, newValue);
     }
 
-    private class ObjectManager : Csla.Server.ObjectFactory
+    private class ObjectManager : Server.ObjectFactory
     {
       public new void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
       {

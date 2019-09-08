@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace Csla.Blazor
 {
-	public static class EditContextCslaExtensions
-	{
+  public static class EditContextCslaExtensions
+  {
     /// <summary>
     /// Adds validation support to the <see cref="EditContext"/> for objects implementing ICheckRules.
     /// </summary>

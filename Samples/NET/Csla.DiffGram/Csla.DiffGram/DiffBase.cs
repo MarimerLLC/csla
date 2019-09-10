@@ -16,8 +16,6 @@ namespace Csla.DiffGram
     IExportData
     where T : DiffBase<T>
   {
-    #region IExportData Members
-
     List<Csla.DiffGram.IExportData> Csla.DiffGram.IExportData.GetChildren()
     {
       var result = new List<IExportData>();
@@ -80,7 +78,5 @@ namespace Csla.DiffGram
     /// </param>
     protected virtual void ImportFrom(DataItem dto)
     { }
-
-    #endregion
   }
 }

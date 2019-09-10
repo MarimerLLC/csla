@@ -10,7 +10,8 @@ namespace Test.Library
   [Serializable]
   public class LineItems : DiffListBase<LineItems, LineItemEdit>
   {
-    private void Child_Fetch(int id)
+    [FetchChild]
+    private void Fetch(int id)
     {
       for (int line = 0; line < 10; line++)
         Add(DataPortal.FetchChild<LineItemEdit>(id, line));

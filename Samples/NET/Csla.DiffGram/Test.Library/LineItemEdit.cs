@@ -10,21 +10,22 @@ namespace Test.Library
   [Serializable]
   public class LineItemEdit : DiffBase<LineItemEdit>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
-    public static readonly PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
+    public static readonly PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(nameof(ProductName));
     public string ProductName
     {
-      get { return GetProperty(ProductNameProperty); }
-      set { SetProperty(ProductNameProperty, value); }
+      get => GetProperty(ProductNameProperty);
+      set => SetProperty(ProductNameProperty, value);
     }
 
-    private void Child_Fetch(int id, int line)
+    [FetchChild]
+    private void Fetch(int id, int line)
     {
       using (BypassPropertyChecks)
       {

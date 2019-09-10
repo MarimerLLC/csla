@@ -43,7 +43,7 @@ namespace Csla.Test.DataPortalChild
 
     protected override void Child_Update(params object[] p)
     {
-      base.Child_Update();
+      base.Child_Update(p);
       _status = "Updated";
     }
   }

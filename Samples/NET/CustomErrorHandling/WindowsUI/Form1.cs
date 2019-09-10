@@ -14,7 +14,7 @@ namespace WindowsUI
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      this.cslaActionExtender1.ResetActionBehaviors(BusinessLibrary.Order.NewOrder());
+      this.cslaActionExtender1.ResetActionBehaviors(DataPortal.Create<Order>());
     }
 
     private void button1_Click(object sender, EventArgs e)
@@ -22,11 +22,14 @@ namespace WindowsUI
       try
       {
         // Delete method will always throw a non-serializable exception
-        Order.Delete(101);
+        DataPortal.Delete<Order>(101);
       }
       catch (DataPortalException ex)
       {
-        MessageBox.Show(ex.BusinessException.ToString(), "Server error:" + ex.BusinessException.Message);
+        if (ex.BusinessException != null)
+          MessageBox.Show(ex.BusinessException.ToString(), "Server error:" + ex.BusinessException.Message);
+        else
+          MessageBox.Show(ex.ToString(), "Server error:" + ex.Message);
       }
       catch (Exception ex)
       {
@@ -39,11 +42,14 @@ namespace WindowsUI
       try
       {
         // Delete method will always throw a non-serializable exception
-        Order.Delete(202);
+        DataPortal.Delete<Order>(202);
       }
       catch (DataPortalException ex)
       {
-        MessageBox.Show(ex.BusinessException.ToString(), "Server error:" + ex.BusinessException.Message);
+        if (ex.BusinessException != null)
+          MessageBox.Show(ex.BusinessException.ToString(), "Server error:" + ex.BusinessException.Message);
+        else
+          MessageBox.Show(ex.ToString(), "Server error:" + ex.Message);
       }
       catch (Exception ex)
       {
@@ -55,7 +61,7 @@ namespace WindowsUI
     {
       try
       {
-        var order = Order.GetOrder(1);
+        var order = DataPortal.Fetch<Order>(1);
       }
       catch (DataPortalException ex)
       {

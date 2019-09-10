@@ -19,13 +19,6 @@ namespace DataAccess
       return obj;
     }
 
-    //public Order Fetch(SingleCriteria<Order, int> criteria)
-    //{
-    //    var obj = (Order)Activator.CreateInstance(typeof(Order), true);
-    //    MarkOld(obj);
-    //    return obj;
-    //}
-
     public Order Update(Order obj)
     {
       if (obj.IsDeleted)
@@ -52,9 +45,9 @@ namespace DataAccess
       return obj;
     }
 
-    public void Delete(SingleCriteria<Order, int> criteria)
+    public void Delete(int criteria)
     {
-      if (criteria.Value == 202)
+      if (criteria == 202)
         throw new ServerOnlyException("This Exception is only available on the Server side");
       else
         throw new MyNonSerializableException("This exception is not serializable");

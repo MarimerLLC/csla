@@ -20,8 +20,17 @@ Supports the creation of WPF applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <group targetFramework="net40">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net45">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net46">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
       <group targetFramework="netcoreapp3.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.NETCore.App" version="3.0.0" />
         <dependency id="Microsoft.WindowsDesktop.App.WPF" version="3.0.0" />
       </group>

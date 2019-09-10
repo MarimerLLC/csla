@@ -11,79 +11,63 @@ namespace BusinessRuleDemo
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    #region Business Methods
-
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-
-    [Required] // Data Annotations rule for Required field
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    [Required]
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
-    public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
-
+    public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(nameof(Num1));
     public int Num1
     {
-      get { return GetProperty(Num1Property); }
-      set { SetProperty(Num1Property, value); }
+      get => GetProperty(Num1Property);
+      set => SetProperty(Num1Property, value);
     }
 
-
-    public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(c => c.Num2);
-
+    public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(nameof(Num2));
     [Range(1, 6000)]
     public int Num2
     {
-      get { return GetProperty(Num2Property); }
-      set { SetProperty(Num2Property, value); }
+      get => GetProperty(Num2Property);
+      set => SetProperty(Num2Property, value);
     }
 
-    public static readonly PropertyInfo<int> SumProperty = RegisterProperty<int>(c => c.Sum);
-
+    public static readonly PropertyInfo<int> SumProperty = RegisterProperty<int>(nameof(Sum));
     public int Sum
     {
-      get { return GetProperty(SumProperty); }
-      set { SetProperty(SumProperty, value); }
+      get => GetProperty(SumProperty);
+      set => SetProperty(SumProperty, value);
     }
 
-    public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
-
+    public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country));
     public string Country
     {
-      get { return GetProperty(CountryProperty); }
-      set { SetProperty(CountryProperty, value); }
+      get => GetProperty(CountryProperty);
+      set => SetProperty(CountryProperty, value);
     }
 
-    public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(c => c.State);
-
+    public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
     public string State
     {
-      get { return GetProperty(StateProperty); }
-      set { SetProperty(StateProperty, value); }
+      get => GetProperty(StateProperty);
+      set => SetProperty(StateProperty, value);
     }
 
-    public static readonly PropertyInfo<string> StateNameProperty = RegisterProperty<string>(c => c.StateName);
-
+    public static readonly PropertyInfo<string> StateNameProperty = RegisterProperty<string>(nameof(StateName));
     public string StateName
     {
-      get { return GetProperty(StateNameProperty); }
-      set { SetProperty(StateNameProperty, value); }
+      get => GetProperty(StateNameProperty);
+      set => SetProperty(StateNameProperty, value);
     }
 
-    public static readonly PropertyInfo<string> AdditionalInfoForUSProperty =
-      RegisterProperty<string>(c => c.AdditionalInfoForUS);
-
+    public static readonly PropertyInfo<string> AdditionalInfoForUSProperty = RegisterProperty<string>(nameof(AdditionalInfoForUS));
     public string AdditionalInfoForUS
     {
-      get { return GetProperty(AdditionalInfoForUSProperty); }
-      set { SetProperty(AdditionalInfoForUSProperty, value); }
+      get => GetProperty(AdditionalInfoForUSProperty);
+      set => SetProperty(AdditionalInfoForUSProperty, value);
     }
-
-    #endregion
-
-    #region Validation Rules
 
     protected override void AddBusinessRules()
     {
@@ -119,21 +103,7 @@ namespace BusinessRuleDemo
 
       BusinessRules.AddRule(new SetStateName(StateProperty, StateNameProperty));
     }
-
-    #endregion
-
-    #region Factory Methods
-
-    public static Root NewEditableRoot()
-    {
-      return DataPortal.Create<Root>();
-    }
-
-    public Root()
-    {
-      /* Require use of factory methods */
-    }
-
+    
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       base.OnDeserialized(context);
@@ -146,9 +116,8 @@ namespace BusinessRuleDemo
       Debug.Print(e.ChildObject.ToString(), e.ListChangedArgs);
     }
 
-    #endregion
-
-    protected override void DataPortal_Create()
+    [Create]
+    private void Create()
     {
       using (BypassPropertyChecks)
       {
@@ -156,7 +125,6 @@ namespace BusinessRuleDemo
         Num2 = 6001;
         Country = "UZ";
       }
-
       BusinessRules.CheckRules();
     }
   }

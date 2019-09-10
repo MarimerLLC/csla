@@ -4,7 +4,7 @@ using Csla.Rules;
 
 namespace BusinessRuleDemo
 {
-  public class OnlyForUS : Csla.Rules.AuthorizationRule
+  public class OnlyForUS : AuthorizationRule
   {
 
     private IMemberInfo CountryField { get; set; }
@@ -20,7 +20,7 @@ namespace BusinessRuleDemo
 	  CacheResult = false;
     }
 
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       var country = (string)MethodCaller.CallPropertyGetter(context.Target, CountryField.Name);
       context.HasPermission = country.Equals(CountryNVL.UnitedStates);

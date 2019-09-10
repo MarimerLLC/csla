@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Linq;
 using Csla;
 using Csla.Core;
@@ -26,7 +25,7 @@ namespace BusinessRuleDemo
     protected override void Execute(IRuleContext context)
     {
       var stateId = (string)context.InputPropertyValues[PrimaryProperty];
-      var state = StatesNVL.GetNameValueList().Where(p => p.Key == stateId).FirstOrDefault();
+      var state = DataPortal.Fetch<StatesNVL>().Where(p => p.Key == stateId).FirstOrDefault();
       context.AddOutValue(StateName, state == null ? "Unknown state" : state.Value);
     }
   }

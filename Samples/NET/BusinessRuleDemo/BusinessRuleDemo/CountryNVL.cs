@@ -9,30 +9,8 @@ namespace BusinessRuleDemo
   {
     public const string UnitedStates = "US";
 
-    #region Factory Methods
-
-    private static CountryNVL _list;
-
-    public static CountryNVL GetNameValueList()
-    {
-      if (_list == null)
-        _list = DataPortal.Fetch<CountryNVL>();
-      return _list;
-    }
-
-    public static void InvalidateCache()
-    {
-      _list = null;
-    }
-
-    public CountryNVL()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region Data Access
-
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     {
       RaiseListChangedEvents = false;
       IsReadOnly = false;
@@ -51,7 +29,5 @@ namespace BusinessRuleDemo
       IsReadOnly = true;
       RaiseListChangedEvents = true;
     }
-
-    #endregion
   }
 }

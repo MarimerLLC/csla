@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Csla;
 using Csla.Core;
 
 namespace BusinessRuleDemo
@@ -9,9 +10,9 @@ namespace BusinessRuleDemo
     {
       InitializeComponent();
 
-      var root = Root.NewEditableRoot();
-      statesNVLBindingSource.DataSource = StatesNVL.GetNameValueList();
-      countryNVLBindingSource.DataSource = CountryNVL.GetNameValueList();
+      var root = DataPortal.Create<Root>();
+      statesNVLBindingSource.DataSource = DataPortal.Fetch<StatesNVL>();
+      countryNVLBindingSource.DataSource = DataPortal.Fetch<CountryNVL>();
       rootBindingSource.DataSource = root;
     }
 

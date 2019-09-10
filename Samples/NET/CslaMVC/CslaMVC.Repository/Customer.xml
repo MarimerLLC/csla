@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Customers>
-  <Customer CustomerNo="1" Name="Fred Flintstone" GroupNo="0" City="Bedrock" State="IL" Zipcode="00001"/>
-  <Customer CustomerNo="2" Name="Barney Rubble" GroupNo="0" City="Bedrock" State="IL" Zipcode="00001"/>
-  <Customer CustomerNo="3" Name="Wilma Flintstone" GroupNo="1" City="Bedrock" State="IL" Zipcode="00001"/>
-  <Customer CustomerNo="4" Name="Betty Rubble" GroupNo="1" City="Bedrock" State="IL" Zipcode="00001"/>
-</Customers>

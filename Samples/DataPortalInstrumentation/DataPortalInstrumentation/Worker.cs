@@ -9,36 +9,40 @@ namespace DataPortalInstrumentation
   [Serializable]
   public class Worker : BusinessBase<Worker>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-
-    private void DataPortal_Fetch(int id)
+    [Fetch]
+    private void Fetch(int id)
     {
       // TODO: load values into object
       System.Threading.Thread.Sleep(300);
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    private void Insert()
     {
       // TODO: insert object's data
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    private void Update()
     {
       // TODO: update object's data
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    private void DeleteSelf()
     {
-      DataPortal_Delete(ReadProperty(IdProperty));
+      Delete(ReadProperty(IdProperty));
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+    private void Delete(int id)
     {
       // TODO: delete object's data
     }

@@ -82,7 +82,7 @@ namespace Csla.Rules
 #else
       System.Reflection.MethodInfo method;
       method = type.GetMethods().Where(
-        m => m.CustomAttributes.Where(
+        m => m.IsStatic && m.CustomAttributes.Where(
         a => a.AttributeType == typeof(ObjectAuthorizationRulesAttribute)).Any()).
         FirstOrDefault();
       if (method == null)

@@ -1,1 +1,0 @@
-Wrong implementation of IDataPortalProxy (old version)

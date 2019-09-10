@@ -1,3 +1,0 @@
-How to use the ASPNETDB.MDF using local DB?
-
-Where is the connection string?

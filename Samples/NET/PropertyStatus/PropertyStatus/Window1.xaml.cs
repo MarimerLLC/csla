@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Csla;
 
 namespace PropertyStatus
 {
@@ -26,7 +27,7 @@ namespace PropertyStatus
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-      Blah ex = new Blah();
+      Blah ex = DataPortal.Fetch<Blah>();
       ex.Data = "example...";
       DataContext = ex;
     }

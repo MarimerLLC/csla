@@ -11,65 +11,32 @@ using System.Threading;
 namespace PropertyStatus
 {
   [Serializable]
-  public class Blah : BusinessBase
+  public class Blah : BusinessBase<Blah>
   {
-    public static readonly PropertyInfo<string> DataProperty = RegisterProperty(
-      typeof(Blah),
-      new PropertyInfo<string>("Data"));
-    
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new DoAsyncRule(DataProperty));
+      BusinessRules.AddRule(new AsyncRule(DataProperty));
     }
 
-    private class DoAsyncRule : Csla.Rules.BusinessRule
-    {
-      public DoAsyncRule(Csla.Core.IPropertyInfo primaryProperty)
-        : base(primaryProperty)
-      {
-        InputProperties = new List<IPropertyInfo> { PrimaryProperty };
-        IsAsync = true;
-      }
-
-      protected override void Execute(Csla.Rules.IRuleContext context)
-      {
-        BackgroundWorker worker = new BackgroundWorker();
-        worker.DoWork += (o, e) => Thread.Sleep(3000);
-        worker.RunWorkerCompleted += (o, e) =>
-        {
-          string val = (string)context.InputPropertyValues[PrimaryProperty];
-          if (val == "Error")
-          {
-            context.AddErrorResult("Invalid data!");
-          }
-          else if (val == "Warning")
-          {
-            context.AddWarningResult("This might not be a great idea!");
-          }
-          else if (val == "Information")
-          {
-            context.AddInformationResult("Just an FYI!");
-          }
-          context.Complete();
-        };
-        worker.RunWorkerAsync();
-      }
-    }
+    [Fetch]
+    private void Fetch()
+    { }
   }
 
   public class BlahCollection : ObservableCollection<Blah>
   {
     public BlahCollection()
     {
-      Add(new Blah { Data = "one" });
-      Add(new Blah { Data = "two" });
-      Add(new Blah { Data = "three" });
+      Add(DataPortal.Create<Blah>("one"));
+      Add(DataPortal.Create<Blah>("two"));
+      Add(DataPortal.Create<Blah>("three"));
     }
   }
 }

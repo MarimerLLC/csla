@@ -20,7 +20,6 @@ namespace BlazorExample.Client
 
       CslaConfiguration.Configure().
         ContextManager(typeof(Csla.Blazor.ApplicationContextManager)).
-        //DefaultServiceProvider(services.BuildServiceProvider()).
         DataPortal().
           DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "/api/DataPortal");
     }

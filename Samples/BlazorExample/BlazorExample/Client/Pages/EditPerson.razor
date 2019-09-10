@@ -2,7 +2,7 @@
 @page "/EditPerson/{id}"
 @using BlazorExample.Shared
 @inject Csla.Blazor.ViewModel<PersonEdit> vm
-@inject IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 
 <h1>Edit Person</h1>
 
@@ -62,7 +62,7 @@ else
 
   protected override async Task OnInitializedAsync()
   {
-    vm.Saved += () => UriHelper.NavigateTo("listpersons");
+    vm.Saved += () => NavigationManager.NavigateTo("listpersons");
 
     if (string.IsNullOrWhiteSpace(id))
       await vm.RefreshAsync();

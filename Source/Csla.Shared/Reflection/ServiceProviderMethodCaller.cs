@@ -48,7 +48,8 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="targetType">Type of domain object</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public static System.Reflection.MethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria)
+    /// <param name="throwOnError">Throw exceptions on error</param>
+    public static System.Reflection.MethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria, bool throwOnError = true)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)
@@ -114,8 +115,13 @@ namespace Csla.Reflection
         }
       }
       if (candidates.Count == 0)
-        throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
-      
+      {
+        if (throwOnError)
+          throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+        else
+          return null;
+      }
+
       // scan candidate methods for matching criteria parameters
       int criteriaLength = 0;
       if (criteria != null)
@@ -177,7 +183,12 @@ namespace Csla.Reflection
         }
       }
       if (matches.Count == 0)
-        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+      {
+        if (throwOnError)
+          throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+        else
+          return null;
+      }
 
       var result = matches[0];
       if (matches.Count > 1)
@@ -203,7 +214,12 @@ namespace Csla.Reflection
           }
         }
         if (maxCount > 1)
-          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+        {
+          if (throwOnError)
+            throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+          else
+            return null;
+        }
       }
       return result.MethodInfo;
     }

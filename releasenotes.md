@@ -51,6 +51,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#974](https://github.com/marimerllc/csla/issues/974) Rename DbProvider config key to CslaDbProvider 🛑
 * [#963](https://github.com/marimerllc/csla/issues/963) Mark `RelationshipTypes.Child` as Obsolete ⚠
 * [#1117](https://github.com/marimerllc/csla/issues/1117) Fix issue where string properties would ignore explicit null default value
+* [#1209](https://github.com/marimerllc/csla/issues/1209) Add `ObjectAuthorizationRules` attribute so `AddObjectAuthorizationRules` is no longer a "magic name" method 🎉
 
 ### Analyzers
 

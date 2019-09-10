@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19239.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19249.1" />
   </ItemGroup>
 
   <ItemGroup>

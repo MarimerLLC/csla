@@ -22,22 +22,17 @@ namespace WindowsApplication2
       set { SetProperty<string>(NameProperty, value); }
     }
 
-    protected override object GetIdValue()
-    {
-      return ReadProperty<int>(IdProperty);
-    }
-
     private static int _lastId;
 
-    public Grandchild()
+    [CreateChild]
+    private void Create()
     {
       LoadProperty<int>(IdProperty, System.Threading.Interlocked.Increment(ref _lastId));
-      MarkAsChild();
     }
 
     public void DumpEditLevels(StringBuilder sb)
     {
-      sb.AppendFormat("        {0} {1}: {2} {3}\r", this.GetType().Name, this.GetIdValue().ToString(), this.EditLevel, this.BindingEdit);
+      sb.AppendFormat("        {0} {1}: {2} {3}\r", this.GetType().Name, this.Id, this.EditLevel, this.BindingEdit);
     }
   }
 }

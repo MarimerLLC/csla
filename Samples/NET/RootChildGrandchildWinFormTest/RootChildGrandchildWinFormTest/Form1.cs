@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Csla;
 
 namespace WindowsApplication2
 {
@@ -22,7 +23,7 @@ namespace WindowsApplication2
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      Root root = new Root();
+      Root root = DataPortal.Create<Root>();
       Child child;
       child = root.RealChildren.AddNew();
       child.Grandchildren.AddNew();

@@ -1,11 +1,11 @@
-﻿#if !NETSTANDARD && !NETSTANDARD2_0
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="HasPermissionAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
+#if !NETSTANDARD && !NETSTANDARD2_0
 using System;
 using System.Web;
 using System.Web.Mvc;

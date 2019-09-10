@@ -6,31 +6,19 @@ namespace Templates
   [Serializable]
   public class ReadOnlyRoot : ReadOnlyBase<ReadOnlyRoot>
   {
-    #region Business Methods
-
-    // TODO: add your own fields, properties and methods
-    // use snippets to create your properties
-
-    // example with private backing field
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id, RelationshipTypes.PrivateField);
-    private int _Id = IdProperty.DefaultValue;
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
-      get { return GetProperty(IdProperty, _Id); }
-      private set { _Id = value); }
+      get { return GetProperty(IdProperty); }
+      private set { LoadProperty(IdProperty, value); }
     }
 
-    // example with managed backing field
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     public string Name
     {
       get { return GetProperty(NameProperty); }
       private set { LoadProperty(NameProperty, value); }
     }
-	
-    #endregion
-
-    #region Business Rules
 
     protected override void AddBusinessRules()
     {
@@ -44,24 +32,10 @@ namespace Templates
       //BusinessRules.AddRule(...);
     }
 
-    #endregion
-
-    #region Factory Methods
-
-    public static ReadOnlyRoot GetReadOnlyRoot(int id)
+    [Fetch]
+    private void Fetch(int id)
     {
-      return DataPortal.Fetch<ReadOnlyRoot>(id);
+      // TODO: call DAL to load values into object
     }
-
-    #endregion
-
-    #region Data Access
-
-    private void DataPortal_Fetch(int criteria)
-    {
-      // TODO: load values
-    }
-
-    #endregion
   }
 }

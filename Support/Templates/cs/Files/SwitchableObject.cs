@@ -6,30 +6,20 @@ namespace Templates
   [Serializable]
   public class SwitchableObject : BusinessBase<SwitchableObject>
   {
-    #region Business Methods
-
     // TODO: add your own fields, properties and methods
-
-    // example with private backing field
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id, RelationshipTypes.PrivateField);
-    private int _Id = IdProperty.DefaultValue;
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
-      get { return GetProperty(IdProperty, _Id); }
-      set { SetProperty(IdProperty, ref _Id, value); }
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
     }
 
-    // example with managed backing field
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
-
-    #endregion
-
-    #region Business Rules
 
     protected override void AddBusinessRules()
     {
@@ -45,111 +35,78 @@ namespace Templates
       //BusinessRules.AddRule(...);
     }
 
-    #endregion
-
-    #region Root Factory Methods
-
-    public static SwitchableObject NewSwitchableObject()
-    {
-      return DataPortal.Create<SwitchableObject>();
-    }
-
-    public static SwitchableObject GetSwitchableObject(int id)
-    {
-      return DataPortal.Fetch<SwitchableObject>(id);
-    }
-
-    public static void DeleteSwitchableObject(int id)
-    {
-      DataPortal.Delete<SwitchableObject>(id);
-    }
-
-    #endregion
-
-    #region Child Factory Methods
-
-    internal static SwitchableObject NewSwitchableChild()
-    {
-      return DataPortal.CreateChild<SwitchableObject>();
-    }
-
-    internal static SwitchableObject GetSwitchableChild(object childData)
-    {
-      return DataPortal.FetchChild<SwitchableObject>(childData);
-    }
-
-    #endregion
-
-    #region Root Data Access
-
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+    private void Create()
     {
       // TODO: load default values
-      // omit this override if you have no defaults to set
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
-    private void DataPortal_Fetch(int criteria)
+    [Fetch]
+    private void Fetch(int id)
     {
       // TODO: load values
     }
 
+    [Insert]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
+    private void Insert()
     {
       // TODO: insert values
     }
 
+    [Update]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Update()
+    private void Update()
     {
       // TODO: update values
     }
 
+    [DeleteSelf]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_DeleteSelf()
+    private void DeleteSelf()
     {
-      DataPortal_Delete(this.Id);
+      Delete(this.Id);
     }
 
+    [Delete]
     [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(int criteria)
+    private void Delete(int id)
     {
       // TODO: delete values
     }
 
-    #endregion
-
-    #region Child Data Access
-
-    protected override void Child_Create()
+    [CreateChild]
+    private void CreateChild()
     {
       // TODO: load default values
       // omit this override if you have no defaults to set
-      base.Child_Create();
+      BusinessRules.CheckRules();
     }
 
-    private void Child_Fetch(object childData)
+    [FetchChild]
+    private void FetchChild(object childData)
     {
       // TODO: load values
     }
 
-    private void Child_Insert(object parent)
+    [InsertChild]
+    private void InsertChild(object parent)
     {
       // TODO: insert values
     }
 
-    private void Child_Update(object parent)
+    [UpdateChild]
+    private void UpdateChild(object parent)
     {
       // TODO: update values
     }
 
-    private void Child_DeleteSelf(object parent)
+    [DeleteSelf]
+    private void DeleteSelfChild(object parent)
     {
       // TODO: delete values
     }
-
-    #endregion
   }
 }

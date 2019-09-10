@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +25,20 @@ namespace Csla.Configuration
     {
       ApplicationContext.SetServiceCollection(services);
       services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
+      return new CslaBuilder();
+    }
+
+    /// <summary>
+    /// Add CSLA .NET services for use by the application.
+    /// </summary>
+    /// <param name="services">ServiceCollection object</param>
+    /// <param name="config">Implement to configure CSLA .NET</param>
+    public static ICslaBuilder AddCsla(
+      this IServiceCollection services, Action<CslaConfiguration> config)
+    {
+      ApplicationContext.SetServiceCollection(services);
+      services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
+      config?.Invoke(CslaConfiguration.Configure());
       return new CslaBuilder();
     }
 

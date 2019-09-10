@@ -56,8 +56,7 @@ namespace Csla.Rules
               mgr.InitializingPerType = true;
 
               // invoke method to add auth roles
-              const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
-              System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
+              System.Reflection.MethodInfo method = FindObjectAuthorizationRulesMethod(type);
               if (method != null)
                 method.Invoke(null, null);
               mgr.InitializedPerType = true;
@@ -75,17 +74,32 @@ namespace Csla.Rules
           }
     }
 
+    private static System.Reflection.MethodInfo FindObjectAuthorizationRulesMethod(Type type)
+    {
+#if NET40
+        const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+        return type.GetMethod("AddObjectAuthorizationRules", flags);
+#else
+      System.Reflection.MethodInfo method;
+      method = type.GetMethods().Where(
+        m => m.IsStatic && m.CustomAttributes.Where(
+        a => a.AttributeType == typeof(ObjectAuthorizationRulesAttribute)).Any()).
+        FirstOrDefault();
+      if (method == null)
+      {
+        const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+        method = type.GetMethod("AddObjectAuthorizationRules", flags);
+      }
+      return method;
+#endif
+    }
+
     private static bool RulesExistForType(Type type)
     {
       lock (_perTypeRules)
       {
         // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
-#if !(ANDROID || IOS) && !NETFX_CORE
         return _perTypeRules.Value.Count(value => value.Key.Type == type) > 1;
-#else
-
-        return (_perTypeRules.Count(value => value.Key.Type == type)) > 1;
-#endif
       }
 
     }
@@ -96,20 +110,12 @@ namespace Csla.Rules
       {
 
         // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
-#if !(ANDROID || IOS) && !NETFX_CORE
         var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
         foreach (var key in typeRules)
         {
           AuthorizationRuleManager manager;
           _perTypeRules.Value.TryRemove(key.Key, out manager);
         }
-#else
-        var typeRules = _perTypeRules.Where(value => value.Key.Type == type).ToArray();
-        foreach (var key in typeRules)
-        {
-          _perTypeRules.Remove(key.Key);
-        }
-#endif
       }
     }
 

@@ -8,18 +8,12 @@ namespace Templates
   public class DynamicRootBindingList :
     DynamicBindingListBase<DynamicRoot>
   {
-    #region Business Methods
-
     protected override object AddNewCore()
     {
-      DynamicRoot item = DynamicRoot.NewDynamicRoot();
+      DynamicRoot item = DataPortal.Create<DynamicRoot>();
       Add(item);
       return item;
     }
-
-    #endregion
-
-    #region  Authorization Rules
 
     private static void AddObjectAuthorizationRules()
     {
@@ -28,39 +22,15 @@ namespace Templates
       //AuthorizationRules.AllowEdit(typeof(DynamicRootBindingList), "Role");
     }
 
-    #endregion
-
-    #region  Factory Methods
-
-    public static DynamicRootBindingList NewDynamicRootBindingList()
-    {
-      return DataPortal.Create<DynamicRootBindingList>();
-    }
-
-    public static DynamicRootBindingList GetDynamicRootBindingList()
-    {
-      return DataPortal.Fetch<DynamicRootBindingList>();
-    }
-
-    public DynamicRootBindingList()
-    {
-      AllowNew = true;
-    }
-
-    #endregion
-
-    #region  Data Access
-
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     {
       // TODO: load values
       RaiseListChangedEvents = false;
       object listData = null;
       foreach (var item in (List<object>)listData)
-        Add(DynamicRoot.GetDynamicRoot(item));
+        Add(DataPortal.Fetch<DynamicRoot>(item));
       RaiseListChangedEvents = true;
     }
-
-    #endregion
   }
 }

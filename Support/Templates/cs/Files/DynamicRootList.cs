@@ -8,18 +8,12 @@ namespace Templates
   public class DynamicRootList :
     DynamicListBase<DynamicRoot>
   {
-    #region Business Methods
-
     protected override DynamicRoot AddNewCore()
     {
-      DynamicRoot item = DynamicRoot.NewDynamicRoot();
+      DynamicRoot item = DataPortal.Create<DynamicRoot>();
       Add(item);
       return item;
     }
-
-    #endregion
-
-    #region  Authorization Rules
 
     private static void AddObjectAuthorizationRules()
     {
@@ -28,39 +22,15 @@ namespace Templates
       //AuthorizationRules.AllowEdit(typeof(DynamicRootList), "Role");
     }
 
-    #endregion
-
-    #region  Factory Methods
-
-    public static DynamicRootList NewDynamicRootList()
-    {
-      return DataPortal.Create<DynamicRootList>();
-    }
-
-    public static DynamicRootList GetDynamicRootList()
-    {
-      return DataPortal.Fetch<DynamicRootList>();
-    }
-
-    public DynamicRootList()
-    {
-      AllowNew = true;
-    }
-
-    #endregion
-
-    #region  Data Access
-
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     {
       // TODO: load values
       RaiseListChangedEvents = false;
       object listData = null;
       foreach (var item in (List<object>)listData)
-        Add(DynamicRoot.GetDynamicRoot(item));
+        Add(DataPortal.Fetch<DynamicRoot>(item));
       RaiseListChangedEvents = true;
     }
-
-    #endregion
   }
 }

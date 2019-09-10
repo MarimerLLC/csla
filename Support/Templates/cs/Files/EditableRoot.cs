@@ -6,30 +6,19 @@ namespace Templates
   [Serializable]
   public class EditableRoot : BusinessBase<EditableRoot>
   {
-    #region Business Methods
-
-    // TODO: add your own fields, properties and methods
-
-    // example with private backing field
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id, RelationshipTypes.PrivateField);
-    private int _Id = IdProperty.DefaultValue;
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
-      get { return GetProperty(IdProperty, _Id); }
-      set { SetProperty(IdProperty, ref _Id, value); }
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
     }
 
-    // example with managed backing field
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
-
-    #endregion
-
-    #region Business Rules
 
     protected override void AddBusinessRules()
     {
@@ -45,66 +34,48 @@ namespace Templates
       //BusinessRules.AddRule(...);
     }
 
-    #endregion
-
-    #region Factory Methods
-
-    public static EditableRoot NewEditableRoot()
-    {
-      return DataPortal.Create<EditableRoot>();
-    }
-
-    public static EditableRoot GetEditableRoot(int id)
-    {
-      return DataPortal.Fetch<EditableRoot>(id);
-    }
-
-    public static void DeleteEditableRoot(int id)
-    {
-      DataPortal.Delete<EditableRoot>(id);
-    }
-
-    #endregion
-
-    #region Data Access
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+    private void Create()
     {
       // TODO: load default values
       // omit this override if you have no defaults to set
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
-    private void DataPortal_Fetch(int criteria)
+    [Fetch]
+    private void Fetch(int id)
     {
       // TODO: load values
     }
 
+    [Insert]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
+    private void Insert()
     {
       // TODO: insert values
     }
 
+    [Update]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Update()
+    private void Update()
     {
       // TODO: update values
     }
 
+    [DeleteSelf]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_DeleteSelf()
+    private void DeleteSelf()
     {
-      DataPortal_Delete(this.Id);
+      Delete(this.Id);
     }
 
+    [Delete]
     [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(int criteria)
+    private void Delete(int id)
     {
       // TODO: delete values
     }
-
-    #endregion
   }
 }

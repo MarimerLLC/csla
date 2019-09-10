@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DataAccess
 {
   public class PersonDal : IPersonDal
   {
-    private static readonly List<PersonEntity> _personTable = new List<PersonEntity>();
-    private static int lastId = 0;
+    private static readonly List<PersonEntity> _personTable = new List<PersonEntity>
+    {
+      new PersonEntity { Id = 1, Name = "Andy"},
+      new PersonEntity { Id = 3, Name = "Buzz"}
+    };
 
     public bool Delete(int id)
     {
       var person = _personTable.Where(p => p.Id == id).FirstOrDefault();
       if (person != null)
       {
-        _personTable.Remove(person);
+        lock (_personTable)
+          _personTable.Remove(person);
         return true;
       }
       else
@@ -49,16 +52,23 @@ namespace DataAccess
     {
       if (Exists(person.Id))
         throw new InvalidOperationException($"Key exists {person.Id}");
-      person.Id = ++lastId;
-      _personTable.Add(person);
+      lock (_personTable)
+      {
+        int lastId = _personTable.Max(m => m.Id);
+        person.Id = ++lastId;
+        _personTable.Add(person);
+      }
       return person;
     }
 
     public PersonEntity Update(PersonEntity person)
     {
-      var old = Get(person.Id);
-      old.Name = person.Name;
-      return old;
+      lock (_personTable)
+      {
+        var old = Get(person.Id);
+        old.Name = person.Name;
+        return old;
+      }
     }
   }
 }

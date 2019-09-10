@@ -24,7 +24,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(NameOf($IdProperty$), Nothing, New SmartDate())
+      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(NameOf($PropertyName$), Nothing, New SmartDate())
 Public Property $PropertyName$() As String
     Get
         Return GetPropertyConvert(Of SmartDate, String)($PropertyName$Property)

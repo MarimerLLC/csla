@@ -1,37 +1,26 @@
-<Serializable()> _
+<Serializable()>
 Public Class EditableRoot
   Inherits BusinessBase(Of EditableRoot)
 
-#Region " Business Methods "
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(NameOf(Id))
+  Public Property Id() As Integer
+    Get
+      Return GetProperty(IdProperty)
+    End Get
+    Set(ByVal value As Integer)
+      SetProperty(IdProperty, value)
+    End Set
+  End Property
 
-  ' TODO: add your own fields, properties and methods
-
-	' example with private backing field
-	Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id, RelationshipTypes.PrivateField)
-	Private _Id As Integer = IdProperty.DefaultValue
-	Public Property Id() As Integer
-		Get
-			Return GetProperty(IdProperty, _Id)
-		End Get
-		Set
-			SetProperty(IdProperty, _Id, value)
-		End Set
-	End Property
-
-	' example with managed backing field
-	Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
-	Public Property Name() As String
-		Get
-			Return GetProperty(NameProperty)
-		End Get
-		Set
-			SetProperty(NameProperty, value)
-		End Set
-	End Property
-
-#End Region
-
-#Region " Business Rules "
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(NameOf(Name))
+  Public Property Name() As String
+    Get
+      Return GetProperty(NameProperty)
+    End Get
+    Set(ByVal value As String)
+      SetProperty(NameProperty, value)
+    End Set
+  End Property
 
   Protected Overrides Sub AddBusinessRules()
     'call base class implementation to add data annotation rules to BusinessRules 
@@ -47,56 +36,40 @@ Public Class EditableRoot
     'BusinessRules.AddRule(...)
   End Sub
 
-#End Region
-
-#Region " Factory Methods "
-
-  Public Shared Function NewEditableRoot() As EditableRoot
-    Return DataPortal.Create(Of EditableRoot)()
-  End Function
-
-  Public Shared Function GetEditableRoot(ByVal id As Integer) As EditableRoot
-    Return DataPortal.Fetch(Of EditableRoot)(id)
-  End Function
-
-  Public Shared Sub DeleteEditableRoot(ByVal id As Integer)
-    DataPortal.Delete(Of EditableRoot)(id)
-  End Sub
-
-#End Region
-
-#Region " Data Access "
-
-  <RunLocal()> _
-  Protected Overrides Sub DataPortal_Create()
+  <Create>
+  <RunLocal()>
+  Private Sub Create()
     ' TODO: load default values
     ' omit this override if you have no defaults to set
-    MyBase.DataPortal_Create()
+    BusinessRules.CheckRules()
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Integer)
+  <Fetch>
+  Private Sub Fetch(ByVal id As Integer)
     ' load values
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
-  Protected Overrides Sub DataPortal_Insert()
+  <Insert>
+  <Transactional(TransactionalTypes.TransactionScope)>
+  Private Sub Insert()
     ' TODO: insert values
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
-  Protected Overrides Sub DataPortal_Update()
+  <Update>
+  <Transactional(TransactionalTypes.TransactionScope)>
+  Private Sub Update()
     ' TODO: update values
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
-  Protected Overrides Sub DataPortal_DeleteSelf()
-    DataPortal_Delete(Id)
+  <DeleteSelf>
+  <Transactional(TransactionalTypes.TransactionScope)>
+  Private Sub DeleteSelf()
+    Delete(Id)
   End Sub
 
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As Integer)
+  <Delete>
+  Private Shadows Sub Delete(ByVal id As Integer)
     ' TODO: delete values
   End Sub
-
-#End Region
 
 End Class

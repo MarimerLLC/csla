@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD2_0
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="WebConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -7,7 +6,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using System;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Builder;
 
 namespace Csla.Configuration
 {
@@ -20,10 +19,11 @@ namespace Csla.Configuration
     /// Configures the application to use CSLA .NET
     /// </summary>
     /// <param name="app">ApplicationBuilder object</param>
-    public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
+    public static IComponentsApplicationBuilder UseCsla(this IComponentsApplicationBuilder app)
     {
-      ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
-      return app;
+      CslaConfiguration.Configure().
+       ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
+     return app;
     }
 
     /// <summary>
@@ -31,13 +31,13 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="app">ApplicationBuilder object</param>
     /// <param name="config">Implement to configure CSLA .NET</param>
-    public static IApplicationBuilder UseCsla(
-      this IApplicationBuilder app, Action<CslaConfiguration> config)
+    public static IComponentsApplicationBuilder UseCsla(
+      this IComponentsApplicationBuilder app, Action<CslaConfiguration> config)
     {
-      ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
+      CslaConfiguration.Configure().
+       ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
       config?.Invoke(CslaConfiguration.Configure());
       return app;
     }
   }
 }
-#endif

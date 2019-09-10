@@ -164,6 +164,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MethodInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NameValueListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NotUndoableAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectAuthorizationRulesAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyLoadException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBase.cs" />

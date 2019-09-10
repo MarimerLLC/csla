@@ -1,4 +1,4 @@
-﻿#if !XAMARIN && !WINDOWS_UWP
+﻿#if !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="ViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -33,9 +33,19 @@ namespace Csla.Xaml
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
+    [Obsolete("Use SaveAsync", true)]
     public virtual void Save(object sender, ExecuteEventArgs e)
     {
       SaveAsync().RunSynchronously();
+    }
+
+    /// <summary>
+    /// Saves the Model, first committing changes
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    public virtual async void SaveAsync(object sender, ExecuteEventArgs e)
+    {
+      await SaveAsync();
     }
 
     /// <summary>

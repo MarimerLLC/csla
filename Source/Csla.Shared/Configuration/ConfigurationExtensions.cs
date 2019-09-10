@@ -49,7 +49,7 @@ namespace Csla.Configuration
     /// <param name="config">Configuration object</param>
     public static IConfiguration ConfigureCsla(this IConfiguration config)
     {
-      config.Bind("csla", CslaConfiguration.Configure());
+      config.Bind("csla", new CslaConfigurationOptions());
       return config;
     }
   }

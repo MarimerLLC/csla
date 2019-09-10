@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
+using Csla.Configuration;
 
 namespace CustomActivator
 {
@@ -10,8 +11,10 @@ namespace CustomActivator
   {
     static void Main(string[] args)
     {
-      Csla.Server.DataPortal.InterceptorType = typeof(CustomIntercepter);
-      Csla.ApplicationContext.DataPortalActivator = new CustomActivator();
+      CslaConfiguration.Configure()
+        .DataPortal()
+        .Activator(new CustomActivator())
+        .InterceptorType(typeof(CustomIntercepter));
 
       var obj = DataPortal.Fetch<ITestItem>("Rocky");
       Console.WriteLine(obj.Name);
@@ -19,7 +22,7 @@ namespace CustomActivator
     }
   }
 
-  public interface ITestItem : Csla.IBusinessBase
+  public interface ITestItem : IBusinessBase
   {
     string Name { get; set; }
   }
@@ -27,23 +30,19 @@ namespace CustomActivator
   [Serializable]
   public class TestItem : BusinessBase<TestItem>, ITestItem
   {
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
-    public TestItem()
-    {
-      
-    }
-
-    private void DataPortal_Fetch(string id)
+    [Fetch]
+    private void Fetch(string name)
     {
       using (BypassPropertyChecks)
       {
-        this.Name = id;
+        Name = name;
       }
     }
   }
@@ -65,9 +64,8 @@ namespace CustomActivator
   {
     public object CreateInstance(Type requestedType)
     {
-      Console.WriteLine("CreateInstance of " + requestedType.Name);
-      requestedType = typeof(TestItem);
-      return Activator.CreateInstance(requestedType);
+      Console.WriteLine($"CreateInstance of {requestedType.Name}");
+      return Activator.CreateInstance(ResolveType(requestedType));
     }
 
     public void InitializeInstance(object obj)
@@ -78,6 +76,15 @@ namespace CustomActivator
     public void FinalizeInstance(object obj)
     {
       Console.WriteLine("FinalizeInstance");
+    }
+
+    public Type ResolveType(Type requestedType)
+    {
+      Console.WriteLine($"ResolveType {requestedType.FullName} on {ApplicationContext.LogicalExecutionLocation}");
+      if (requestedType.Equals(typeof(ITestItem)))
+        return typeof(TestItem);
+      else
+        return requestedType;
     }
   }
 }

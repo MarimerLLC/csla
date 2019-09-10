@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
+using System;
 using Microsoft.AspNetCore.Builder;
 
 namespace Csla.Configuration
@@ -22,6 +23,19 @@ namespace Csla.Configuration
     public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
     {
       ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
+      return app;
+    }
+
+    /// <summary>
+    /// Configures the application to use CSLA .NET
+    /// </summary>
+    /// <param name="app">ApplicationBuilder object</param>
+    /// <param name="config">Implement to configure CSLA .NET</param>
+    public static IApplicationBuilder UseCsla(
+      this IApplicationBuilder app, Action<CslaConfiguration> config)
+    {
+      ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
+      config?.Invoke(CslaConfiguration.Configure());
       return app;
     }
   }

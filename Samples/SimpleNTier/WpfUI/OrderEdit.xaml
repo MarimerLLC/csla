@@ -82,7 +82,7 @@
         <Button Content="cancel" x:Name="CancelButton" IsEnabled="{Binding CanCancel}" Margin="3" Style="{StaticResource CslaButtonStyle}" />
         <Button Content="save" x:Name="SaveButton" IsEnabled="{Binding CanSave}" Margin="3" Style="{StaticResource CslaButtonStyle}" />
 
-        <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="Save"/>
+        <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="SaveAsync"/>
         <csla:TriggerAction TargetControl="{Binding ElementName=CancelButton}" MethodName="Cancel"/>
       </StackPanel>
 

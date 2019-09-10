@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)LineItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LineItems.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MyExpensiveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyExpensiveRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Order.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OrderInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OrderList.cs" />

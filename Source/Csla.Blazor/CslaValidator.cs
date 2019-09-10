@@ -14,9 +14,15 @@ namespace Csla.Blazor
   public class CslaValidator : ComponentBase
   {
     
+    /// <summary>
+    /// Gets or sets the current edit context for the component
+    /// </summary>
     [CascadingParameter]
     public EditContext CurrentEditContext { get; set; }
 
+    /// <summary>
+    /// Override to do work after initialization
+    /// </summary>
     protected override void OnInitialized()
     {
       // Check that the EditContext parameter has been made available

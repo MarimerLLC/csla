@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace Csla.Blazor
 {
+  /// <summary>
+  /// Implements extension methods for edit context.
+  /// </summary>
   public static class EditContextCslaExtensions
   {
     /// <summary>

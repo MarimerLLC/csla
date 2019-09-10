@@ -14,6 +14,7 @@ CSLA .NET is developed and maintained by a [global development team](https://git
   * This online course on [contributing to OSS projects on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
   * This excellent blog post on [Being a good open source citizen](https://hackernoon.com/being-a-good-open-source-citizen-9060d0ab9732#.4owk5884d)
   * Information on the [CSLA git flow](https://github.com/MarimerLLC/csla/blob/master/docs/dev/csla-github-flow.md) used on this project
+
 ## Making Changes
 
 * Follow the [CSLA git flow](https://github.com/MarimerLLC/csla/blob/master/docs/dev/csla-github-flow.md) used on this project
@@ -23,14 +24,14 @@ CSLA .NET is developed and maintained by a [global development team](https://git
 ## Submitting Changes
 
 * Print, sign, and email the [contributor agreement](https://github.com/MarimerLLC/csla/blob/master/Support/Contributions/CSLA%20Contributor%20Agreement.pdf?raw=true) document to Marimer LLC (rocky at lhotka dot net)
- * We will not accept large changes without a signed contributor agreement, but we may accept small edits to the existing codebase
- * By submitting a change, large or small, you grant ownership of the code and related IP to Marimer LLC, and you certify that you have the right to transfer such ownership
+  * We will not accept large changes without a signed contributor agreement, but we may accept small edits to the existing codebase
+  * By submitting a change, large or small, you grant ownership of the code and related IP to Marimer LLC, and you certify that you have the right to transfer such ownership
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request (PR) to the repository in the Marimer LLC organization.
   * Make sure the issue number (e.g. #999) is in the _description_ (not title) of the PR so GitHub can automatically link the PR to the issue
   * Submitting a PR will trigger a CI build; make sure the CI build passes with your changes and new unit tests
 
-# Additional Resources
+## Additional Resources
 
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)

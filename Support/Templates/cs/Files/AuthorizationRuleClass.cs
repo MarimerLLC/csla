@@ -3,7 +3,7 @@ using Csla.Rules;
 
 namespace Templates
 {
-  public class AuthorizationRuleClass : Csla.Rules.AuthorizationRule
+  public class AuthorizationRuleClass : AuthorizationRule
   {
     // TODO: Add additional parameters to your rule to the constructor
     /// <summary>
@@ -18,7 +18,6 @@ namespace Templates
 
     }
 
-
     // TODO: Add additional parameters to your rule to the constructor
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthorizationRuleClass"/> class.
@@ -31,16 +30,6 @@ namespace Templates
 
     }
 
-	// TODO: Uncomment this property if rule result is not static. 
-	/// <summary>
-	///   Notify RuelEngine that the result of this AuthzRule can not be cached. 
-	///   Default is true so AuthzRules will only run once.
-	/// </summary>
-	//public override bool CacheResult
-	//{
-	//   get { return false; }
-	//}
-	
     protected override void Execute(IAuthorizationContext context)
     {
       // TODO: Add actual rule code here. 

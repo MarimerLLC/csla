@@ -6,18 +6,12 @@ namespace Templates
   [Serializable]
   public class CommandObject : CommandBase<CommandObject>
   {
-    #region Authorization Methods
-
     public static bool CanExecuteCommand()
     {
       // TODO: customize to check user role
       //return Csla.ApplicationContext.User.IsInRole("Role");
       return true;
     }
-
-    #endregion
-
-    #region Factory Methods
 
     public static bool Execute()
     {
@@ -31,11 +25,9 @@ namespace Templates
       return cmd.Result;
     }
 
-    #endregion
-
     #region Client-side Code
 
-    public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(p => p.Result);
+    public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(nameof(Result));
     public bool Result
     {
       get { return ReadProperty(ResultProperty); }
@@ -58,11 +50,12 @@ namespace Templates
 
     #region Server-side Code
 
-    protected override void DataPortal_Execute()
+    [Execute]
+    private void ExecuteCommand()
     {
       // TODO: implement code to run on server
       // and set result value(s)
-      _result = true;
+      Result = true;
     }
 
     #endregion

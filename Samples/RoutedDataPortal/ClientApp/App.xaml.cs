@@ -16,7 +16,7 @@ namespace ClientApp
   {
     public App()
     {
-      new CslaConfiguration()
+      CslaConfiguration.Configure()
         .DataPortal().DefaultProxy(typeof(CustomProxy), "");
 
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();

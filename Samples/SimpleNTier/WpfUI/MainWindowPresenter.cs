@@ -38,12 +38,12 @@ namespace WpfUI
       }
     }
 
-    private async void Init()
+    private void Init()
     {
       Shell.Instance.ShowView(
         typeof(OrderEdit).AssemblyQualifiedName,
         "orderVmViewSource",
-        await new OrderVm().InitAsync(),
+        new OrderVm(),
         "Main");
     }
 

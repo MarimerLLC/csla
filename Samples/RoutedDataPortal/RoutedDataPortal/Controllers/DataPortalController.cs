@@ -14,8 +14,8 @@ namespace RoutedDataPortal.Controllers
   {
     public DataPortalController()
     {
-      VersionRoutes["v1"] = "http://appserver1/api/DataPortal";
-      VersionRoutes["v2"] = "http://appserver2/api/DataPortal";
+      RoutingTagUrls["v1"] = "http://appserver1/api/DataPortal";
+      RoutingTagUrls["v2"] = "http://appserver2/api/DataPortal";
       Csla.ApplicationContext.LocalContext.Add("dpv", "v0");
     }
 

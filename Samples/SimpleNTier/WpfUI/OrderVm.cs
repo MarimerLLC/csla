@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Csla;
 using Csla.Xaml;
 
 namespace WpfUI
@@ -10,20 +8,18 @@ namespace WpfUI
   {
     public OrderVm()
     {
-      //DoRefresh(BusinessLibrary.Order.NewOrder);
-      //DoRefresh(() => BusinessLibrary.Order.GetOrder(441));
-      //BeginRefresh(BusinessLibrary.Order.NewOrder);
-      //BeginRefresh(callback => BusinessLibrary.Order.GetOrder(441, callback));
-    }
-
-    protected async override System.Threading.Tasks.Task<BusinessLibrary.Order> DoInitAsync()
-    {
-      return await BusinessLibrary.Order.GetOrderAsync(441);
-    }
-
-    protected override void OnError(Exception error)
-    {
-      Bxf.Shell.Instance.ShowError(error.Message, "Error");
+      var t = RefreshAsync<BusinessLibrary.Order>(async () =>
+      {
+        try
+        {
+          return await DataPortal.FetchAsync<BusinessLibrary.Order>(441);
+        }
+        catch (Exception ex)
+        {
+          Bxf.Shell.Instance.ShowError(ex.Message, "Error");
+          return null;
+        }
+      });
     }
   }
 }

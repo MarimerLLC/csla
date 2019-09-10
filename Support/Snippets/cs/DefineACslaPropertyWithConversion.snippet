@@ -46,8 +46,8 @@
       <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ManagedFieldType$> $PropertyName$Property = RegisterProperty<$ManagedFieldType$>(nameof($PropertyName$));
 public $PropertyType$ $PropertyName$
 {
-  get { return GetPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property); }
-  set { SetPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property, value); }
+  get => GetPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property);
+  set => SetPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property, value);
 }$end$]]></Code>
     </Snippet>
   </CodeSnippet>

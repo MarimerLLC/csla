@@ -32,19 +32,8 @@
       <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(nameof($PropertyName$), RelationshipTypes.LazyLoad);
 public $ChildType$ $PropertyName$
 {
-  get 
-  { 
-    if (!FieldManager.FieldExists($PropertyName$Property)) 
-    { 
-       $PropertyName$ = $ChildType$.Get(); 
-    } 
-    return GetProperty($PropertyName$Property); 
-  } 
-  private set 
-  {  
-    LoadProperty($PropertyName$Property, value); 
-    OnPropertyChanged($PropertyName$Property); 
-  } 
+  get => LazyGetProperty(($PropertyName$Property, () => DataPortal.FetchChild<($PropertyName$>());
+  private set => SetProperty($PropertyName$Property, value);
 }$end$]]></Code>
     </Snippet>
   </CodeSnippet>

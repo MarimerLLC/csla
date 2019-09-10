@@ -2,8 +2,6 @@
 Public Class CommandObject
   Inherits CommandBase(Of CommandObject)
 
-#Region " Authorization Rules "
-
   Public Shared Function CanExecuteCommand() As Boolean
 
     'TODO: customize to check user role
@@ -12,13 +10,22 @@ Public Class CommandObject
 
   End Function
 
-#End Region
+  Public Shared Function Execute() As Boolean
+    If Not CanExecuteCommand() Then
+      Throw New System.Security.SecurityException("Not authorized to execute command")
+    End If
+    Dim cmd As New CommandObject()
+    cmd.BeforeServer()
+    cmd = DataPortal.Execute(Of CommandObject)(cmd)
+    cmd.AfterServer()
+    Return cmd.Result
+  End Function
 
 #Region " Client-side Code "
 
-  Public Shared ReadOnly ResultProperty As PropertyInfo(Of Boolean) = RegisterProperty(Of Boolean)(Function(p) p.Result)
+  Public Shared ReadOnly ResultProperty As PropertyInfo(Of Boolean) = RegisterProperty(Of Boolean)(NameOf(Result))
   Public Property Result() As Boolean
-	Get
+    Get
       Return ReadProperty(ResultProperty)
     End Get
     Private Set
@@ -39,28 +46,14 @@ Public Class CommandObject
 
 #End Region
 
-#Region " Factory Methods "
-
-  Public Shared Function Execute() As Boolean
-    If Not CanExecuteCommand() Then
-      Throw New System.Security.SecurityException("Not authorized to execute command")
-    End If
-    Dim cmd As New CommandObject()
-    cmd.BeforeServer()
-    cmd = DataPortal.Execute(Of CommandObject)(cmd)
-    cmd.AfterServer()
-    Return cmd.Result
-  End Function
-
-#End Region
-
 #Region " Server-side Code "
 
-  Protected Overrides Sub DataPortal_Execute()
+  <Execute>
+  Private Sub ExecuteCommand()
 
     ' TODO: implement code to run on server
     ' here - and set result value(s)
-    _result = True
+    Result = True
 
   End Sub
 

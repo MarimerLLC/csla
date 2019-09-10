@@ -28,7 +28,7 @@ Public Class BusinessRuleClass
     ' TODO: Asyncronous rules 
     ' If rule is async make sure that ALL excution paths call context.Complete
 
-
+    Dim brokencondition As Boolean
     ' TODO: Add actual rule code here. 
     If brokencondition Then
       context.AddErrorResult("Broken rule message")

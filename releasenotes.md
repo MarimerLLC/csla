@@ -20,7 +20,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.673156 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.6 in /Source
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
-* Bump Microsoft.NETCore.UniversalWindowsPlatform in /Source
+* Bump Microsoft.NETCore.UniversalWindowsPlatform to 6.2.9 in /Source
 
 ### Data Portal
 
@@ -60,19 +60,36 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#925](https://github.com/marimerllc/csla/issues/925) Create analyzer to flag use of `new` keyword when creating domain objects (require use of data portal)
 * [#1091](https://github.com/marimerllc/csla/issues/1091) Update/cleanup analyzer code
 
-### Blazor
+### Blazor and WebAssembly
 
+* [#1283](https://github.com/marimerllc/csla/issues/1283) Add Blazor validation component
 * [#1142](https://github.com/marimerllc/csla/issues/1142) Add UI helper support for client-side Blazor and WebAssembly 🎉
+* [#1270](https://github.com/marimerllc/csla/issues/1270) Add `UnoExample` sample
 
 ### Xamarin
 
 * [#1010](https://github.com/marimerllc/csla/issues/1010) Fix issue where `ApplicationContext.User` wasn't persisted during async operations
+* [#1168](https://github.com/MarimerLLC/csla/issues/1168) Mark old-style viewmodel async methods as obsolete and modernize class overall 🛑
 
 ### Data Access
 
 * [#1138](https://github.com/marimerllc/csla/issues/1138) Fix NETfx-NS2 conflict with `TransactionTypes` enum
 * [#1150](https://github.com/marimerllc/csla/issues/1150) Add support for `Microsoft.Data.SqlClient` via new `Csla.Data.SqlClient` package 🎉
 * [#981](https://github.com/marimerllc/csla/issues/981) Move support for `System.Data.SqlClient` into new `Csla.Data.SqlClient.Fx` package - it is no longer in the core of CSLA 🛑
+
+### ASP.NET Core
+
+* [#905](https://github.com/MarimerLLC/csla/issues/905) Add support for ASP.NET Core MVC validation mechanism
+* [#649](https://github.com/MarimerLLC/csla/issues/649) Implement CSLA permission requirement handler
+
+### WPF
+
+* [#1235](https://github.com/MarimerLLC/csla/issues/1235) Bring `Csla.Xaml` for WPF forward to .NET Core 3
+* [#1168](https://github.com/MarimerLLC/csla/issues/1168) Mark old-style viewmodel async methods as obsolete and modernize class overall 🛑
+
+### Windows Forms
+
+* [#1234](https://github.com/MarimerLLC/csla/issues/1234) Bring `Csla.Windows` forward to .NET Core 3
 
 ### Technical Debt
 
@@ -83,7 +100,7 @@ Some changes were made to address common issues people face using CSLA. I've tri
 * [#1109](https://github.com/marimerllc/csla/issues/1109) Add `ContextManager` property to `CslaConfiguration` fluent API
 * [#1111](https://github.com/marimerllc/csla/issues/1111) Update website URL to `https://cslanet.com` in source files
 * [#1119](https://github.com/marimerllc/csla/issues/1119) Update bootstrap version in ProjectTracker to resolve security warning
-* [#750](https://github.com/marimerllc/csla/issues/750) Updated editorconfig styles 
+* [#750](https://github.com/marimerllc/csla/issues/750) Updated editorconfig styles
 * [#1004](https://github.com/marimerllc/csla/issues/1004) Update use of test database so data tests run on developer workstations
 
 You can see all the [closed work items in GitHub](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F5+is%3Aclosed).
@@ -102,3 +119,4 @@ I want to extend special recognition to the following contributors to this relea
 * [@ajj7060](https://github.com/ajj7060) added features to authorization rules
 * [@dazinator](https://github.com/dazinator) and [@ajj7060](https://github.com/ajj7060) have been engaged in identifying issues and solutions
 * [@j055](https://github.com/j055) for data portal enhancements
+* [@TheCakeMonster](https://github.com/TheCakeMonster) for help building out Blazor support

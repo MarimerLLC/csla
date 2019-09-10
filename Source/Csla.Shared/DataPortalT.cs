@@ -1106,7 +1106,10 @@ namespace Csla
 #if !NET40
     private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, System.Reflection.MethodInfo method)
     {
-      return GetDataPortalProxy(objectType, method.RunLocal());
+      if (method != null)
+        return GetDataPortalProxy(objectType, method.RunLocal());
+      else
+        return GetDataPortalProxy(objectType, false);
     }
 #endif
 

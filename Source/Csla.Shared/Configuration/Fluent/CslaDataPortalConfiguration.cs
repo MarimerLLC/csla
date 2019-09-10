@@ -92,6 +92,19 @@ namespace Csla.Configuration
     }
 
     ///<summary>
+    /// Sets the type for the data portal proxy factory 
+    /// object to be used to get 
+    /// the DataPortalProxy instance to use when
+    /// communicating with the data portal server.
+    /// </summary>
+    /// <param name="type">Proxy factory type</param>
+    public CslaDataPortalConfiguration ProxyFactoryType(Type type)
+    {
+      ProxyFactoryType(type.AssemblyQualifiedName);
+      return this;
+    }
+
+    ///<summary>
     /// Sets the full type name (or 'Default') of
     /// the data portal proxy factory object to be used to get 
     /// the DataPortalProxy instance to use when
@@ -101,6 +114,16 @@ namespace Csla.Configuration
     public CslaDataPortalConfiguration ProxyFactoryType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = typeName;
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the type of the IDataPortalActivator provider.
+    /// </summary>
+    /// <param name="type">Activator type</param>
+    public CslaDataPortalConfiguration ActivatorType(Type type)
+    {
+      ActivatorType(type.AssemblyQualifiedName);
       return this;
     }
 
@@ -139,6 +162,17 @@ namespace Csla.Configuration
     /// Sets the type name to be used for server-side data portal
     /// authorization. Type must implement IAuthorizeDataPortal.
     /// </summary>
+    /// <param name="type">Authorization provider type</param>
+    public CslaDataPortalConfiguration ServerAuthorizationProviderType(Type type)
+    {
+      ServerAuthorizationProviderType(type.AssemblyQualifiedName);
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the type name to be used for server-side data portal
+    /// authorization. Type must implement IAuthorizeDataPortal.
+    /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
     public CslaDataPortalConfiguration ServerAuthorizationProviderType(string typeName)
     {
@@ -160,6 +194,30 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Sets the type of interceptor invoked
+    /// by the data portal for pre- and post-processing
+    /// of each data portal invocation. Type must implement
+    /// IInterceptDataPortal.
+    /// </summary>
+    /// <param name="type">Interceptor type</param>
+    public CslaDataPortalConfiguration InterceptorType(Type type)
+    {
+      InterceptorType(type.AssemblyQualifiedName);
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the type of the ExceptionInspector class.
+    /// Type must implement IDataPortalExceptionInspector.
+    /// </summary>
+    /// <param name="type">Inspector type</param>
+    public CslaDataPortalConfiguration ExceptionInspectorType(Type type)
+    {
+      ExceptionInspectorType(type.AssemblyQualifiedName);
+      return this;
+    }
+
+    /// <summary>
     /// Sets the type name of the ExceptionInspector class.
     /// Type must implement IDataPortalExceptionInspector.
     /// </summary>
@@ -167,6 +225,19 @@ namespace Csla.Configuration
     public CslaDataPortalConfiguration ExceptionInspectorType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"] = typeName;
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the type of the factor loader used to create
+    /// server-side instances of business object factories when using
+    /// the FactoryDataPortal model. Type must implement
+    /// IObjectFactoryLoader.
+    /// </summary>
+    /// <param name="type">Factory loader type</param>
+    public CslaDataPortalConfiguration FactoryLoaderType(Type type)
+    {
+      FactoryLoaderType(type.AssemblyQualifiedName);
       return this;
     }
 
@@ -204,6 +275,18 @@ namespace Csla.Configuration
     public CslaDataPortalConfiguration DataPortalReturnObjectOnException(bool value)
     {
       ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the assembly qualified type name of the dashboard, or
+    /// 'Dashboard' for default, or 'NullDashboard' for the null dashboard.
+    /// </summary>
+    /// <param name="type">Dashboard type</param>
+    /// <returns></returns>
+    public CslaDataPortalConfiguration DashboardType(Type type)
+    {
+      DashboardType(type.AssemblyQualifiedName);
       return this;
     }
 

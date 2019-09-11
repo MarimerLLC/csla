@@ -38,15 +38,15 @@ namespace csla.netcore.test.Configuration
         .DataPortal()
           .AuthenticationType(null)
           .AutoCloneOnUpdate(true)
-          .ActivatorType(null)
+          .ActivatorType("")
           .Activator(null)
-          .ProxyFactoryType(null)
+          .ProxyFactoryType("")
           .DataPortalReturnObjectOnException(false)
           .DefaultProxy(typeof(Csla.DataPortalClient.LocalProxy).AssemblyQualifiedName, null)
-          .ExceptionInspectorType(null)
-          .FactoryLoaderType(null)
-          .InterceptorType(null)
-          .ServerAuthorizationProviderType(null);
+          .ExceptionInspectorType("")
+          .FactoryLoaderType("")
+          .InterceptorType("")
+          .ServerAuthorizationProviderType("");
       ApplicationContext.DataPortalProxyFactory = string.Empty;
       CslaConfiguration.Configure()
         .Data().

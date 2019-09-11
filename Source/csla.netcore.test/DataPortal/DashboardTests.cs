@@ -30,13 +30,13 @@ namespace csla.netcore.test.DataPortal
     [TestCleanup]
     public void TestCleanup()
     {
-      new CslaConfiguration().DataPortal().DashboardType(null);
+      new CslaConfiguration().DataPortal().DashboardType("");
     }
 
     [TestMethod]
     public void DashboardDefaultIsNullDashboard()
     {
-      new CslaConfiguration().DataPortal().DashboardType(null);
+      new CslaConfiguration().DataPortal().DashboardType("");
       var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
       Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
     }

@@ -16,8 +16,10 @@ And then, suppose you had a framework that helped you create those behavior-base
 1. Cross-platform, running unchanged anywhere you can run .NET code
 1. Able to access an understandable, but extremely flexible and powerful, rules engine where you can implement all your validation, business, algorithmic, and authorization rules in a totally reusable manner
 1. Standardized, so devs can use code snippets or code generators to become highly productive, and training costs are radically reduced
-1. Fully data binding enabled, with the differences in data binding between Windows Forms, WPF, UWP, ASP.NET, Xamarin, and other platforms abstracted away so devs don't have to worry about it - data binding just works, everywhere
+1. Fully data binding enabled, with the differences in data binding between Blazor, ASP.NET, Xamarin, Windows Forms, WPF, UWP, and other platforms abstracted away so devs don't have to worry about it - data binding just works, everywhere
 1. Persistence-enabled, whether the data access layer is local on the client device, or remote on an app server via http, WCF, or any other network technology - again, differences are abstracted so devs can focus on business issues, not low-level "plumbing code"
 1. Totally neutral in terms of data access technology: devs can use ADO.NET, Entity Framework, Dapper, or any other technology that's appropriate to access SQL Server, Oracle, your legacy AS/400, Excel files, web services, or combinations of all these and more
 
 This is CSLA .NET: the framework that brings business logic to the same level as the UI and data access.
+
+CSLA .NET: A home for your business logic.

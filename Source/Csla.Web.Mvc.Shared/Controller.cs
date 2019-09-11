@@ -95,7 +95,9 @@ namespace Csla.Web.Mvc
     {
       if (item is BusinessBase bb)
       {
-        foreach (var rule in bb.BrokenRulesCollection)
+        var errors = bb.BrokenRulesCollection.
+          Where(r => r.Severity == RuleSeverity.Error);
+        foreach (var rule in errors)
         {
           if (string.IsNullOrEmpty(rule.Property))
             ModelState.AddModelError(string.Empty, rule.Description);

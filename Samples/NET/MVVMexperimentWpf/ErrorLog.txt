@@ -1,6 +1,0 @@
-Behaviour error:
-When clicking on Refresh button, raises exception
-System.ArgumentException occurred
-  Message=Could not find method named 'Load' on object of type 'DataListViewModel' that matches the expected signature.
-  Source=<Cannot evaluate the exception source>
-

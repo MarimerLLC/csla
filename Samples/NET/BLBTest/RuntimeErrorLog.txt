@@ -1,4 +1,0 @@
-Runtime error:
-
-When clicking on toolbar "Cancel" button, raises exception:
-Csla.Core.UndoException: Edit level mismatch in CopyState

@@ -1,6 +1,0 @@
-Rolodex.WPF project
-
-'PropertyStatus' does not contain a definition for 'TargetControl' (the class changed?)
-- CslaComboBox
-- CslaDatePicker
-- CslaTextBox

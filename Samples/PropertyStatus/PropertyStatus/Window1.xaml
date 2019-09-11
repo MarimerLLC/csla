@@ -1,0 +1,28 @@
+﻿<Window x:Class="PropertyStatus.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cc="clr-namespace:PropertyStatus"
+        xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+        Title="Window1" Height="250" Width="300"
+        Loaded="Window_Loaded" FontSize="16">
+  <StackPanel>
+    <TextBlock Text="To get an invalid state enter the values 'Error', 'Warning' or 'Information' and click Save"
+                   TextWrapping="Wrap" Margin="10,0" />
+    <TextBox x:Name="txtData" Text="{Binding Path=Data, Mode=TwoWay}" IsEnabled="{Binding ElementName=dataPropertyStatus, Path=CanWrite}" Margin="10" />
+    <StackPanel Orientation="Horizontal" Margin="10,0">
+
+      <TextBlock Text="Default:" Margin="2,2,2,2"  />
+      <csla:PropertyStatus Name="dataPropertyStatus" 
+                                 Property="{Binding Data}"
+                                 Margin="2,2,2,2" />
+    </StackPanel>
+    <!--StackPanel Orientation="Horizontal">
+            <TextBlock Text="Custom:" Margin="2,2,2,2" />
+            <csla:PropertyStatus Width="Auto"
+                                 Property="{Binding Path=Data}"
+                                 Margin="2,2,2,2"
+                                 Style="{DynamicResource AdvancedPropertyStatusTemplate}" />
+        </StackPanel-->
+    <Button Click="Button_Click" Margin="100,20,100,0">Save</Button>
+  </StackPanel>
+</Window>

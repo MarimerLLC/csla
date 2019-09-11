@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Csla.Rules;
 using RuleTutorial.Testing.Common;
+using Csla;
 
 namespace CustomAuthzRules.Test
 {
@@ -22,7 +23,7 @@ namespace CustomAuthzRules.Test
       [TestInitialize]
       public void Setup()
       {
-        Root = new TestRoot();
+        Root = DataPortal.Create<TestRoot>();
         var rule = new OnlyForUS(AuthorizationActions.WriteProperty, TestRoot.NameProperty, TestRoot.CountryProperty);
         InitializeTest(rule, Root, typeof(TestRoot));
       }

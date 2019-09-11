@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System;
 using System.Collections.Generic;
 
 using AsyncLookupRule.Commands;
@@ -64,24 +65,20 @@ namespace AsyncLookupRule.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override void Execute(IRuleContext context)
+    protected override async void Execute(IRuleContext context)
     {
-      var id = (int) context.InputPropertyValues[PrimaryProperty];
+      var id = (int)context.InputPropertyValues[PrimaryProperty];
 
-      // uses the async methods in DataPortal to perform data access on a background thread. 
-      LookupCustomerCommand.BeginExecute(id, (o, e) =>
-                                               {
-                                                 if (e.Error != null)
-                                                 {
-                                                   context.AddErrorResult(e.Error.ToString());
-                                                 }
-                                                 else
-                                                 {
-                                                   context.AddOutValue(NameProperty, e.Object.Name);
-                                                 }
-
-                                                 context.Complete();
-                                               });
+      try
+      {
+        var cmd = await LookupCustomerCommand.ExecuteAsync(id);
+        context.AddOutValue(NameProperty, cmd.Name);
+      }
+      catch (Exception ex)
+      {
+        context.AddErrorResult(ex.Message);
+      }
+      context.Complete();
     }
   }
 }

@@ -48,7 +48,7 @@ namespace CustomAuthzRules.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override void Execute(AuthorizationContext context)
+    protected override void Execute(IAuthorizationContext context)
     {
       var value = (string) ReadProperty(context.Target, CountryProperty);
 

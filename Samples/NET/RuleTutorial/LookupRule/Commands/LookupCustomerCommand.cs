@@ -48,7 +48,9 @@ namespace LookupRule.Commands
       set { LoadProperty(NameProperty, value); }
     }
 
-    #region Factory Methods
+    [Create]
+    private void Create()
+    { }
 
     /// <summary>
     /// Sync lookup of customer name
@@ -60,31 +62,11 @@ namespace LookupRule.Commands
     /// </returns>
     public static LookupCustomerCommand Execute(int customerId)
     {
-      var cmd = new LookupCustomerCommand();
+      var cmd = DataPortal.Create<LookupCustomerCommand>();
       cmd.CustomerId = customerId;
       cmd = DataPortal.Execute<LookupCustomerCommand>(cmd);
       return cmd;
     }
-
-    /// <summary>
-    /// Async lookup of customer name
-    /// </summary>
-    /// <param name="customerId">
-    /// The customer id.
-    /// </param>
-    /// <param name="callback">
-    /// The callback function to execute when async call is completed.
-    /// </param>
-    public static void BeginExecute(int customerId, EventHandler<DataPortalResult<LookupCustomerCommand>> callback)
-    {
-      var cmd = new LookupCustomerCommand();
-      cmd.CustomerId = customerId;
-      DataPortal.BeginExecute<LookupCustomerCommand>(cmd, callback);
-    }
-
-    #endregion
-
-    #region Server-side Code
 
     /// <summary>
     /// The data portal_ execute.
@@ -97,7 +79,5 @@ namespace LookupRule.Commands
       // simulate llokup and set customer name  
       this.Name = string.Format("Name ({0})", this.CustomerId);
     }
-
-    #endregion
   }
 }

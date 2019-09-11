@@ -14,6 +14,7 @@ using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
 using Csla.Server;
+using System.Threading.Tasks;
 
 namespace RuleTutorial.Testing.Common
 {
@@ -54,7 +55,7 @@ namespace RuleTutorial.Testing.Common
           RuleContext.InputPropertyValues.Add(item, Accessor.ReadProperty(RuleContext.Target,  item));
       }
 
-      RuleContext.Rule.Execute(RuleContext);
+      var t = ExecuteRule(RuleContext.Rule, RuleContext);
       if (RuleContext.Rule.IsAsync)
       {
         if (!_ruleContextCompleteWaitHandle.WaitOne(30000)) throw new Exception("Async BusinessRule timeout.");
@@ -75,11 +76,19 @@ namespace RuleTutorial.Testing.Common
         RuleContext.InputPropertyValues.Add(inputPropertyValue.Key, inputPropertyValue.Value);
       }
 
-      RuleContext.Rule.Execute(RuleContext);
+      var t = ExecuteRule(RuleContext.Rule, RuleContext);
       if (RuleContext.Rule.IsAsync)
       {
         if (!_ruleContextCompleteWaitHandle.WaitOne(30000)) throw new Exception("Async BusinessRule timeout.");
       }
+    }
+
+    private async Task ExecuteRule(IBusinessRuleBase rule, RuleContext context)
+    {
+      if (rule is IBusinessRule sr)
+        sr.Execute(context);
+      else if (rule is IBusinessRuleAsync ar)
+        await ar.ExecuteAsync(context);
     }
 
     /// <summary>

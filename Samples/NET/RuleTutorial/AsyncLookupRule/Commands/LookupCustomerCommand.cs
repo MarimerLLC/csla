@@ -9,7 +9,7 @@
 
 
 using System;
-
+using System.Threading.Tasks;
 using Csla;
 
 namespace AsyncLookupRule.Commands
@@ -48,7 +48,9 @@ namespace AsyncLookupRule.Commands
       set { LoadProperty(NameProperty, value); }
     }
 
-    #region Factory Methods
+    [Create]
+    private void Create()
+    { }
 
     /// <summary>
     /// Sync lookup of customer name
@@ -60,44 +62,37 @@ namespace AsyncLookupRule.Commands
     /// </returns>
     public static LookupCustomerCommand Execute(int customerId)
     {
-      var cmd = new LookupCustomerCommand();
+      var cmd = DataPortal.Create<LookupCustomerCommand>();
       cmd.CustomerId = customerId;
-      cmd = DataPortal.Execute<LookupCustomerCommand>(cmd);
-      return cmd;
+      return DataPortal.Execute(cmd);
     }
 
     /// <summary>
-    /// Async lookup of customer name
+    /// Sync lookup of customer name
     /// </summary>
     /// <param name="customerId">
     /// The customer id.
     /// </param>
-    /// <param name="callback">
-    /// The callback function to execute when async call is completed.
-    /// </param>
-    public static void BeginExecute(int customerId, EventHandler<DataPortalResult<LookupCustomerCommand>> callback)
+    /// <returns>
+    /// </returns>
+    public static async Task<LookupCustomerCommand> ExecuteAsync(int customerId)
     {
-      var cmd = new LookupCustomerCommand();
+      var cmd = DataPortal.Create<LookupCustomerCommand>();
       cmd.CustomerId = customerId;
-      DataPortal.BeginExecute<LookupCustomerCommand>(cmd, callback);
+      return await DataPortal.ExecuteAsync(cmd);
     }
-
-    #endregion
-
-    #region Server-side Code
 
     /// <summary>
     /// The data portal_ execute.
     /// </summary>
-    protected override void DataPortal_Execute()
+    [Execute]
+    private async Task ExecuteCommand()
     {
       // wait for 500 ms
-      System.Threading.Thread.Sleep(50);
+      await Task.Delay(50);
 
       // simulate llokup and set customer name  
       this.Name = string.Format("Name ({0})", this.CustomerId);
     }
-
-    #endregion
   }
 }

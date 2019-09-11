@@ -1,5 +1,6 @@
-﻿﻿//-----------------------------------------------------------------------
-// <copyright file="ObjectRule.cs" company="Marimer LLC">
+﻿#if !NET40 && !NET45
+//-----------------------------------------------------------------------
+// <copyright file="ObjectRuleAsync.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -14,12 +15,12 @@ namespace Csla.Rules
   /// <summary>
   /// Base class for object level rules.
   /// </summary>
-  public abstract class ObjectRule : BusinessRule
+  public abstract class ObjectRuleAsync : BusinessRuleAsync
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObjectRule"/> class.
     /// </summary>
-    protected ObjectRule()
+    protected ObjectRuleAsync()
     { }
 
     /// <summary>
@@ -65,3 +66,4 @@ namespace Csla.Rules
     }
   }
 }
+#endif

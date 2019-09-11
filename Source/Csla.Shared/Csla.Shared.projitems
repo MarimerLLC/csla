@@ -205,7 +205,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IHostRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\IRuleContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\ObjectRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\ObjectRuleAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\PropertyRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rules\PropertyRuleAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rules\RuleSeverity.cs" />

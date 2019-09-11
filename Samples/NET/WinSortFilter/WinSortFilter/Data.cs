@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Csla;
 
 namespace WinSortFilter
@@ -9,24 +7,34 @@ namespace WinSortFilter
   [Serializable]
   public class Data : BusinessBase<Data>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
-    protected override void Child_Create()
+    private static int _lastId;
+
+    [CreateChild]
+    private void Create()
     {
-      base.DataPortal_Create();
-      MarkAsChild();
+      Id = --_lastId;
+    }
+
+    [CreateChild]
+    private void Create(int id, string name)
+    {
+      Id = id;
+      Name = name;
+      BusinessRules.CheckRules();
     }
   }
 }

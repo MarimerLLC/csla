@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Csla;
 
 namespace WinSortFilter
 {
@@ -18,12 +19,12 @@ namespace WinSortFilter
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      var list = new DataList();
-      list.Add(new Data { Id = 213, Name = "abc" });
-      list.Add(new Data { Id = 113, Name = "qwe" });
-      list.Add(new Data { Id = 413, Name = "zcx" });
-      list.Add(new Data { Id = 233, Name = "abc" });
-      list.Add(new Data { Id = 215, Name = "ler" });
+      var list = DataPortal.Create<DataList>();
+      list.Add(DataPortal.CreateChild<Data>(213, "abc"));
+      list.Add(DataPortal.CreateChild<Data>(113, "qwe"));
+      list.Add(DataPortal.CreateChild<Data>(413, "zcx"));
+      list.Add(DataPortal.CreateChild<Data>(233, "abc"));
+      list.Add(DataPortal.CreateChild<Data>(215, "ler"));
 
       this.dataListBindingSource.DataSource = list;
 
@@ -31,7 +32,7 @@ namespace WinSortFilter
 
       var filtered = new Csla.FilteredBindingList<Data>(list);
       this.filteredBindingSource.DataSource = filtered;
-      //filtered.ApplyFilter("Name", "abc");
+      filtered.ApplyFilter("Name", "abc");
     }
 
     private void dataListBindingNavigator_RefreshItems(object sender, EventArgs e)

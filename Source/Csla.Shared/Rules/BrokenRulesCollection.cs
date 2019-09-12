@@ -373,6 +373,35 @@ namespace Csla.Rules
       return result.ToString();
     }
 
+    /// <summary>
+    /// Returns the text of all broken rule descriptions
+    /// for a specific severity and property.
+    /// </summary>
+    /// <param name="separator">
+    /// String to place between each broken rule description.
+    /// </param>
+    /// <param name="severity">The severity of rules to
+    /// include in the result.</param>
+    /// <param name="propertyName">Property name</param>
+    /// <returns>The text of all broken rule descriptions
+    /// matching the specified severtiy.</returns>
+    public string ToString(string separator, RuleSeverity severity, string propertyName)
+    {
+      System.Text.StringBuilder result = new System.Text.StringBuilder();
+      bool first = true;
+      foreach (BrokenRule item in this.Where(r => r.Property == propertyName))
+      {
+        if (item.Severity == severity)
+        {
+          if (first)
+            first = false;
+          else
+            result.Append(separator);
+          result.Append(item.Description);
+        }
+      }
+      return result.ToString();
+    }
 
     /// <summary>
     /// Returns a string array containing all broken

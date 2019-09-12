@@ -19,6 +19,14 @@ namespace Csla.Web.Mvc
   /// </summary>
   public static class HtmlExtensions
   {
+    /// <summary>
+    /// Gets the validation information messages
+    /// for a property.
+    /// </summary>
+    /// <typeparam name="T">Model type</typeparam>
+    /// <param name="htmlHelper">IHtmlHelper instance</param>
+    /// <param name="expression">Model property</param>
+    /// <returns></returns>
     public static HtmlString InformationFor<T>(
       this IHtmlHelper<T> htmlHelper,
       System.Linq.Expressions.Expression<Func<T, object>> expression)
@@ -28,15 +36,49 @@ namespace Csla.Web.Mvc
       System.Reflection.PropertyInfo reflectedPropertyInfo = Csla.Reflection.Reflect<T>.GetProperty(expression);
       var propertyName = reflectedPropertyInfo.Name;
       if (model is Csla.Core.BusinessBase bb)
-      {
-        var info = bb.BrokenRulesCollection.Where(r => r.Severity == Rules.RuleSeverity.Information);
-        foreach (var item in info)
-        {
-          result += item.Description + ",";
-        }
-        if (result.Length > 1)
-          result = result.Substring(0, result.Length - 2);
-      }
+        result = bb.BrokenRulesCollection.ToString(",", Rules.RuleSeverity.Information, propertyName);
+      return new HtmlString(result);
+    }
+
+    /// <summary>
+    /// Gets the validation warning messages
+    /// for a property.
+    /// </summary>
+    /// <typeparam name="T">Model type</typeparam>
+    /// <param name="htmlHelper">IHtmlHelper instance</param>
+    /// <param name="expression">Model property</param>
+    /// <returns></returns>
+    public static HtmlString WarningFor<T>(
+      this IHtmlHelper<T> htmlHelper,
+      System.Linq.Expressions.Expression<Func<T, object>> expression)
+    {
+      var result = string.Empty;
+      var model = htmlHelper.ViewData.Model;
+      System.Reflection.PropertyInfo reflectedPropertyInfo = Csla.Reflection.Reflect<T>.GetProperty(expression);
+      var propertyName = reflectedPropertyInfo.Name;
+      if (model is Csla.Core.BusinessBase bb)
+        result = bb.BrokenRulesCollection.ToString(",", Rules.RuleSeverity.Warning, propertyName);
+      return new HtmlString(result);
+    }
+
+    /// <summary>
+    /// Gets the validation error messages
+    /// for a property.
+    /// </summary>
+    /// <typeparam name="T">Model type</typeparam>
+    /// <param name="htmlHelper">IHtmlHelper instance</param>
+    /// <param name="expression">Model property</param>
+    /// <returns></returns>
+    public static HtmlString ErrorFor<T>(
+      this IHtmlHelper<T> htmlHelper,
+      System.Linq.Expressions.Expression<Func<T, object>> expression)
+    {
+      var result = string.Empty;
+      var model = htmlHelper.ViewData.Model;
+      System.Reflection.PropertyInfo reflectedPropertyInfo = Csla.Reflection.Reflect<T>.GetProperty(expression);
+      var propertyName = reflectedPropertyInfo.Name;
+      if (model is Csla.Core.BusinessBase bb)
+        result = bb.BrokenRulesCollection.ToString(",", Rules.RuleSeverity.Error, propertyName);
       return new HtmlString(result);
     }
 
@@ -205,7 +247,7 @@ namespace Csla.Web.Mvc
                                     this IHtmlHelper htmlHelper,
                                     Csla.Rules.AuthorizationActions action,
                                     Type objectType,
-                                    Func<HtmlHelper, HtmlString> grantedAction)
+                                    Func<IHtmlHelper, HtmlString> grantedAction)
     {
       if (Csla.Rules.BusinessRules.HasPermission(action, objectType))
         return grantedAction.Invoke(htmlHelper);
@@ -228,8 +270,8 @@ namespace Csla.Web.Mvc
                                     Csla.Rules.AuthorizationActions action,
                                     object target,
                                     Csla.Core.IMemberInfo member,
-                                    Func<HtmlHelper, HtmlString> grantedAction,
-                                    Func<HtmlHelper, HtmlString> denieddAction)
+                                    Func<IHtmlHelper, HtmlString> grantedAction,
+                                    Func<IHtmlHelper, HtmlString> denieddAction)
     {
       var instance = target as Csla.Security.IAuthorizeReadWrite;
       if (instance == null) return denieddAction.Invoke(htmlHelper);

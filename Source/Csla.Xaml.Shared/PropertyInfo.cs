@@ -564,6 +564,58 @@ namespace Csla.Xaml
 
     #endregion
 
+    #region Error/Warn/Info Text
+
+    /// <summary>
+    /// Gets the validation error messages for a
+    /// property on the Model
+    /// </summary>
+    /// <returns></returns>
+    public string ErrorText
+    {
+      get
+      {
+        var result = string.Empty;
+        if (Source is Core.BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
+          result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Error, BindingPath);
+        return result;
+      }
+    }
+
+    /// <summary>
+    /// Gets the validation warning messages for a
+    /// property on the Model
+    /// </summary>
+    /// <returns></returns>
+    public string WarningText
+    {
+      get
+      {
+        var result = string.Empty;
+        if (Source is Core.BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
+          result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Warning, BindingPath);
+        return result;
+      }
+    }
+
+    /// <summary>
+    /// Gets the validation information messages for a
+    /// property on the Model
+    /// </summary>
+    /// <returns></returns>
+    public string InformationText
+    {
+      get
+      {
+        var result = string.Empty;
+        if (Source is Core.BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
+          result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Information, BindingPath);
+        return result;
+      }
+    }
+
+    #endregion
+
     #region State properties
 
     /// <summary>

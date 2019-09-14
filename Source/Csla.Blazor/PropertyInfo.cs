@@ -57,7 +57,6 @@ namespace Csla.Blazor
     /// Gets the validation error messages for a
     /// property on the Model
     /// </summary>
-    /// <param name="propertyName">Property name</param>
     /// <returns></returns>
     public string ErrorText
     {
@@ -74,7 +73,6 @@ namespace Csla.Blazor
     /// Gets the validation warning messages for a
     /// property on the Model
     /// </summary>
-    /// <param name="propertyName">Property name</param>
     /// <returns></returns>
     public string WarningText
     {
@@ -91,7 +89,6 @@ namespace Csla.Blazor
     /// Gets the validation information messages for a
     /// property on the Model
     /// </summary>
-    /// <param name="propertyName">Property name</param>
     /// <returns></returns>
     public string InformationText
     {
@@ -108,7 +105,6 @@ namespace Csla.Blazor
     /// Gets a value indicating whether the current user
     /// is authorized to read the property on the Model
     /// </summary>
-    /// <param name="propertyName">Property name</param>
     /// <returns></returns>
     public bool CanRead
     {
@@ -125,7 +121,6 @@ namespace Csla.Blazor
     /// Gets a value indicating whether the current user
     /// is authorized to change the property on the Model
     /// </summary>
-    /// <param name="propertyName">Property name</param>
     /// <returns></returns>
     public bool CanWrite
     {
@@ -142,7 +137,6 @@ namespace Csla.Blazor
     /// Gets a value indicating whether the property 
     /// on the Model is busy
     /// </summary>
-    /// <param name="propertyName">Property name</param>
     /// <returns></returns>
     public bool IsBusy
     {

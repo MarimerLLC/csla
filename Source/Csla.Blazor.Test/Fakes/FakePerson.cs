@@ -9,10 +9,10 @@ namespace Csla.Blazor.Test.Fakes
   [Serializable()]
   public class FakePerson : BusinessBase<FakePerson>
   {
-    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
-    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
-    public static PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(c => c.HomeTelephone);
-    public static PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(c => c.MobileTelephone);
+    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
+    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
+    public static PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
+    public static PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
 
     #region Properties 
 
@@ -67,10 +67,11 @@ namespace Csla.Blazor.Test.Fakes
     #region Data Access
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+    private void Create()
     {
       // Trigger object checks
-      CheckObjectRules();
+      BusinessRules.CheckRules();
     }
 
     #endregion

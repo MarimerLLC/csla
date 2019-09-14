@@ -131,6 +131,13 @@ namespace Csla.Blazor
 
     private readonly Dictionary<string, PropertyInfo> _info = new Dictionary<string, PropertyInfo>();
 
+    /// <summary>
+    /// Get a PropertyInfo object for a property
+    /// of the Model. PropertyInfo provides access
+    /// to the metastate of the property.
+    /// </summary>
+    /// <param name="propertyName">Property name</param>
+    /// <returns></returns>
     public PropertyInfo GetPropertyInfo(string propertyName)
     {
       if (!_info.TryGetValue(propertyName, out PropertyInfo info))

@@ -1,4 +1,5 @@
 ﻿using BusinessLibrary;
+using Csla.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace ClientApp
       try
       {
         CustomProxy.ServerUrl = url;
-        Csla.DataPortalClient.HttpProxy.ApplicationVersion = version;
+        CslaConfiguration.Configure().VersionRoutingTag(version);
 
         var obj = await Csla.DataPortal.FetchAsync<TestClass>();
         WriteLine($"Created from {obj.CreatedFrom}");

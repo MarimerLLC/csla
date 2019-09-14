@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Base class used to create object level rule</summary>
 //-----------------------------------------------------------------------
- using System;
+using System;
 using Csla.Core;
 using Csla.Properties;
 

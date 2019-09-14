@@ -2,40 +2,29 @@ Imports System
 Imports Csla
 Imports Csla.Security
 
-<Serializable()> _
+<Serializable()>
 Public Class ReadOnlyChild
   Inherits ReadOnlyBase(Of ReadOnlyChild)
 
-#Region "Business Methods"
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(NameOf(Id))
+  Public Property Id() As Integer
+    Get
+      Return GetProperty(IdProperty)
+    End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(IdProperty, value)
+    End Set
+  End Property
 
-  ' TODO: add your own fields, properties and methods 
-
-	' example with private backing field
-	Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id, RelationshipTypes.PrivateField)
-	Private _Id As Integer = IdProperty.DefaultValue
-	Public Property Id() As Integer
-		Get
-			Return GetProperty(IdProperty, _Id)
-		End Get
-		Private Set
-			_id = value
-		End Set
-	End Property
-
-	' example with managed backing field
-	Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
-	Public Property Name() As String
-		Get
-			Return GetProperty(NameProperty)
-		End Get
-		private Set
-			LoadProperty(NameProperty, value)
-		End Set
-	End Property
-
-#End Region
-
-#Region " Business Rules "
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(NameOf(Name))
+  Public Property Name() As String
+    Get
+      Return GetProperty(NameProperty)
+    End Get
+    Private Set(ByVal value As String)
+      LoadProperty(NameProperty, value)
+    End Set
+  End Property
 
   Protected Overrides Sub AddBusinessRules()
 
@@ -49,21 +38,9 @@ Public Class ReadOnlyChild
     'BusinessRules.AddRule(...)
   End Sub
 
-#End Region
-
-#Region "Factory Methods"
-
-  Friend Shared Function GetReadOnlyChild(ByVal childData As Object) As ReadOnlyChild
-    Return DataPortal.FetchChild(Of ReadOnlyChild)(childData)
-  End Function
-
-#End Region
-
-#Region "Data Access"
-
-  Private Sub Child_Fetch(ByVal childData As Object)
+  <FetchChild>
+  Private Sub Fetch(ByVal childData As Object)
     ' TODO: load values from childData 
   End Sub
 
-#End Region
 End Class

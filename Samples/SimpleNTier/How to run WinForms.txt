@@ -1,13 +1,5 @@
-1. Build the solution
-First of all, build the solution (CTRL+SHIT+B) or else the server folder will be missing 
-the Data Access Layer (DAL) assembly.
-
-2. Set WindowsUI as Startup Project.
-
-3. Start the Application Server
-Debug with F5 to start the application server (WcfHost).
-After it's started, you can break the debug and run normally with CTRL F5.
-
-Note - This project uses a local application server at http://localhost:21647
-and MobilePortal.svc service for MobileProxy proxy.
-(have a look at WindowsUI App.config)
+1. Do a Rebuild of the entire solution
+2. Right-click on the solution in Solution Explorer
+   1. Choose Set Startup Projects
+   2. Set everything to None, except DataPortalServer and WindowsUI
+3. Press F5 or ctl-F5 to run

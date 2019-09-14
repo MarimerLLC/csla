@@ -8,34 +8,13 @@ namespace Templates
   public class EditableChildBindingList :
     BusinessBindingListBase<EditableChildBindingList, EditableChild>
   {
-    #region Factory Methods
-
-    internal static EditableChildBindingList NewEditableChildBindingList()
-    {
-      return DataPortal.CreateChild<EditableChildBindingList>();
-    }
-
-    internal static EditableChildBindingList GetEditableChildBindingList(
-      object childData)
-    {
-      return DataPortal.FetchChild<EditableChildBindingList>(childData);
-    }
-
-    private EditableChildBindingList()
-    { }
-
-    #endregion
-
-    #region Data Access
-
-    private void Child_Fetch(object childData)
+    [FetchChild]
+    private void Fetch(object childData)
     {
       RaiseListChangedEvents = false;
       foreach (var child in (IList<object>)childData)
-        this.Add(EditableChild.GetEditableChild(child));
+        this.Add(DataPortal.FetchChild<EditableChild>(child));
       RaiseListChangedEvents = true;
     }
-
-    #endregion
   }
 }

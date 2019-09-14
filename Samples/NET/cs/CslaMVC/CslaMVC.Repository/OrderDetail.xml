@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<OrderDetails>
-  <OrderDetail OrderDetailId="BB1C7803-D983-4B8D-8ADA-80D835D243CC" OrderId="D0F05EC4-0353-486A-B7A1-CEBF2395600D" LineNo="1" Item="bat" Price="10" Qty="1" Discount="0"/>
-  <OrderDetail OrderDetailId="DEDB1669-46F1-47B4-BDCF-DC86F2F4738F" OrderId="D0F05EC4-0353-486A-B7A1-CEBF2395600D" LineNo="2" Item="ball" Price="2" Qty="10" Discount="0"/>
-  <OrderDetail OrderDetailId="52F29E16-0AB4-4FCB-BEF9-F35AE2FC32BB" OrderId="D0F05EC4-0353-486A-B7A1-CEBF2395600D" LineNo="3" Item="glove" Price="25" Qty="1" Discount="0"/>
-</OrderDetails>

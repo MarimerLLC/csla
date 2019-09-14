@@ -1,1 +1,0 @@
-Silverlight project to be ported to WPF or Xamarin Forms.

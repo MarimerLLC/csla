@@ -43,7 +43,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(NameOf($IdProperty$), Nothing, New $PropertyType$())
+      <Code Language="csharp" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(NameOf($PropertyName$), Nothing, New $PropertyType$())
 Public Property $PropertyName$() As $FieldType$
     Get
         Return GetPropertyConvert(Of $PropertyType$, $FieldType$)($PropertyName$Property)

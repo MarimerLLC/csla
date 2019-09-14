@@ -1,0 +1,5 @@
+1. Rebuild the solution
+2. Right-click on the solution in Solution Explorer
+   1. Select Set Startup Projects
+   2. Run multiple projects, starting AppServer and WindowsUI
+3. Press F5 or ctl-F5 to run the solution

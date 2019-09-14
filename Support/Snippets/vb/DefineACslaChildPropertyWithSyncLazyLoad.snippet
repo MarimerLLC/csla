@@ -29,7 +29,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(NameOf($IdProperty$), RelationshipTypes.Child)
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(NameOf($PropertyName$))
   Public Property $PropertyName$() As $ChildType$
     Get
       If Not FieldManager.FieldExists($PropertyName$Property) Then 

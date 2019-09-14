@@ -7,14 +7,14 @@ namespace BusinessLibrary
   [Serializable]
   public class MyExpensiveCommand : CommandBase<MyExpensiveCommand>
   {
-    public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(c => c.Result);
+    public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(nameof(Result));
     public bool Result
     {
       get { return ReadProperty(ResultProperty); }
       private set { LoadProperty(ResultProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> ResultTextProperty = RegisterProperty<string>(c => c.ResultText);
+    public static readonly PropertyInfo<string> ResultTextProperty = RegisterProperty<string>(nameof(ResultText));
     public string ResultText
     {
       get { return ReadProperty(ResultTextProperty); }
@@ -23,18 +23,21 @@ namespace BusinessLibrary
 
     public static async Task<MyExpensiveCommand> DoCommandAsync()
     {
-      var cmd = new MyExpensiveCommand();
-      cmd = await DataPortal.ExecuteAsync<MyExpensiveCommand>(cmd);
-      return cmd;
+      var cmd = DataPortal.Create<MyExpensiveCommand>();
+      return await DataPortal.ExecuteAsync(cmd);
     }
 
-#if !MOBILE
-    protected override void DataPortal_Execute()
+    [Create]
+    [RunLocal]
+    private void Create()
+    { }
+
+    [Execute]
+    private void Execute()
     {
       System.Threading.Thread.Sleep(5000);
       ResultText = "We're all good";
       Result = true;
     }
-#endif
   }
 }

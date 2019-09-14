@@ -1,3 +1,0 @@
-This is a test only solution.
-Use Test Explorer:
-Menu Test => Run => All Tests

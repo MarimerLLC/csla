@@ -5043,101 +5043,101 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 			public static int[] ActionBarLayout = new int[] {
 					16842931};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ActionBarLayout_android_layout_gravity = 0;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ActionBar_background = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ActionBar_backgroundSplit = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int ActionBar_backgroundStacked = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int ActionBar_contentInsetEnd = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int ActionBar_contentInsetEndWithActions = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int ActionBar_contentInsetLeft = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int ActionBar_contentInsetRight = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int ActionBar_contentInsetStart = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int ActionBar_contentInsetStartWithNavigation = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int ActionBar_customNavigationLayout = 9;
 			
-			// aapt resource value: 0x10
-			public const int ActionBar_displayOptions = 16;
+			// aapt resource value: 10
+			public const int ActionBar_displayOptions = 10;
 			
-			// aapt resource value: 0x11
-			public const int ActionBar_divider = 17;
+			// aapt resource value: 11
+			public const int ActionBar_divider = 11;
 			
-			// aapt resource value: 0x12
-			public const int ActionBar_elevation = 18;
+			// aapt resource value: 12
+			public const int ActionBar_elevation = 12;
 			
-			// aapt resource value: 0x13
-			public const int ActionBar_height = 19;
+			// aapt resource value: 13
+			public const int ActionBar_height = 13;
 			
-			// aapt resource value: 0x14
-			public const int ActionBar_hideOnContentScroll = 20;
+			// aapt resource value: 14
+			public const int ActionBar_hideOnContentScroll = 14;
 			
-			// aapt resource value: 0x15
-			public const int ActionBar_homeAsUpIndicator = 21;
+			// aapt resource value: 15
+			public const int ActionBar_homeAsUpIndicator = 15;
 			
-			// aapt resource value: 0x16
-			public const int ActionBar_homeLayout = 22;
+			// aapt resource value: 16
+			public const int ActionBar_homeLayout = 16;
 			
-			// aapt resource value: 0x17
-			public const int ActionBar_icon = 23;
+			// aapt resource value: 17
+			public const int ActionBar_icon = 17;
 			
-			// aapt resource value: 0x18
-			public const int ActionBar_indeterminateProgressStyle = 24;
+			// aapt resource value: 18
+			public const int ActionBar_indeterminateProgressStyle = 18;
 			
-			// aapt resource value: 0x19
-			public const int ActionBar_itemPadding = 25;
+			// aapt resource value: 19
+			public const int ActionBar_itemPadding = 19;
 			
-			// aapt resource value: 0x20
-			public const int ActionBar_logo = 32;
+			// aapt resource value: 20
+			public const int ActionBar_logo = 20;
 			
-			// aapt resource value: 0x21
-			public const int ActionBar_navigationMode = 33;
+			// aapt resource value: 21
+			public const int ActionBar_navigationMode = 21;
 			
-			// aapt resource value: 0x22
-			public const int ActionBar_popupTheme = 34;
+			// aapt resource value: 22
+			public const int ActionBar_popupTheme = 22;
 			
-			// aapt resource value: 0x23
-			public const int ActionBar_progressBarPadding = 35;
+			// aapt resource value: 23
+			public const int ActionBar_progressBarPadding = 23;
 			
-			// aapt resource value: 0x24
-			public const int ActionBar_progressBarStyle = 36;
+			// aapt resource value: 24
+			public const int ActionBar_progressBarStyle = 24;
 			
-			// aapt resource value: 0x25
-			public const int ActionBar_subtitle = 37;
+			// aapt resource value: 25
+			public const int ActionBar_subtitle = 25;
 			
-			// aapt resource value: 0x26
-			public const int ActionBar_subtitleTextStyle = 38;
+			// aapt resource value: 26
+			public const int ActionBar_subtitleTextStyle = 26;
 			
-			// aapt resource value: 0x27
-			public const int ActionBar_title = 39;
+			// aapt resource value: 27
+			public const int ActionBar_title = 27;
 			
-			// aapt resource value: 0x28
-			public const int ActionBar_titleTextStyle = 40;
+			// aapt resource value: 28
+			public const int ActionBar_titleTextStyle = 28;
 			
 			// aapt resource value: { 0x101013F }
 			public static int[] ActionMenuItemView = new int[] {
 					16843071};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ActionMenuItemView_android_minWidth = 0;
 			
 			// aapt resource value: { 0xFFFFFFFF }
@@ -5153,22 +5153,22 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903308,
 					2130903362};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ActionMode_background = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ActionMode_backgroundSplit = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int ActionMode_closeItemLayout = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int ActionMode_height = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int ActionMode_subtitleTextStyle = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int ActionMode_titleTextStyle = 5;
 			
 			// aapt resource value: { 0x7F030082,0x7F03009C }
@@ -5176,10 +5176,10 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903170,
 					2130903196};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ActivityChooserView_expandActivityOverflowButtonDrawable = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ActivityChooserView_initialActivityCount = 1;
 			
 			// aapt resource value: { 0x10100F2,0x7F030040,0x7F0300B3,0x7F0300B4,0x7F0300CE,0x7F0300F9,0x7F0300FA }
@@ -5192,25 +5192,25 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903289,
 					2130903290};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AlertDialog_android_layout = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AlertDialog_buttonPanelSideLayout = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int AlertDialog_listItemLayout = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int AlertDialog_listLayout = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int AlertDialog_multiChoiceItemLayout = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int AlertDialog_showTitle = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int AlertDialog_singleChoiceItemLayout = 6;
 			
 			// aapt resource value: { 0x10100D4,0x7F03007F,0x7F030083 }
@@ -5224,19 +5224,19 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903299,
 					2130903300};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppBarLayoutStates_state_collapsed = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppBarLayoutStates_state_collapsible = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppBarLayout_android_background = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppBarLayout_elevation = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int AppBarLayout_expanded = 2;
 			
 			// aapt resource value: { 0x7F0300AF,0x7F0300B0 }
@@ -5244,10 +5244,10 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903215,
 					2130903216};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppBarLayout_Layout_layout_scrollFlags = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppBarLayout_Layout_layout_scrollInterpolator = 1;
 			
 			// aapt resource value: { 0x1010119,0x7F030100,0x7F030136,0x7F030137 }
@@ -5257,16 +5257,16 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903350,
 					2130903351};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppCompatImageView_android_src = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppCompatImageView_srcCompat = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int AppCompatImageView_tint = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int AppCompatImageView_tintMode = 3;
 			
 			// aapt resource value: { 0x1010142,0x7F030133,0x7F030134,0x7F030135 }
@@ -5276,16 +5276,16 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903348,
 					2130903349};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppCompatSeekBar_android_thumb = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppCompatSeekBar_tickMark = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int AppCompatSeekBar_tickMarkTint = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int AppCompatSeekBar_tickMarkTintMode = 3;
 			
 			// aapt resource value: { 0x1010034,0x101016D,0x101016E,0x101016F,0x1010170,0x1010392,0x1010393 }
@@ -5298,25 +5298,25 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843666,
 					16843667};
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int AppCompatTextHelper_android_drawableBottom = 2;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int AppCompatTextHelper_android_drawableEnd = 6;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int AppCompatTextHelper_android_drawableLeft = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int AppCompatTextHelper_android_drawableRight = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int AppCompatTextHelper_android_drawableStart = 5;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppCompatTextHelper_android_drawableTop = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppCompatTextHelper_android_textAppearance = 0;
 			
 			// aapt resource value: { 0x1010034,0x7F030122 }
@@ -5324,10 +5324,10 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16842804,
 					2130903330};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppCompatTextView_android_textAppearance = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppCompatTextView_textAllCaps = 1;
 			
 			// aapt resource value: { 0x1010057,0x10100AE,0x7F030000,0x7F030001,0x7F030002,0x7F030003,0x7F030004,0x7F030005,0x7F030006,0x7F030007,0x7F030008,0x7F030009,0x7F03000A,0x7F03000B,0x7F03000C,0x7F03000E,0x7F03000F,0x7F030010,0x7F030011,0x7F030012,0x7F030013,0x7F030014,0x7F030015,0x7F030016,0x7F030017,0x7F030018,0x7F030019,0x7F03001A,0x7F03001B,0x7F03001C,0x7F03001D,0x7F03001E,0x7F030021,0x7F030022,0x7F030023,0x7F030024,0x7F030025,0x7F03002A,0x7F030037,0x7F03003A,0x7F03003B,0x7F03003C,0x7F03003D,0x7F03003E,0x7F030041,0x7F030042,0x7F03004B,0x7F03004C,0x7F030054,0x7F030055,0x7F030056,0x7F030057,0x7F030058,0x7F030059,0x7F03005A,0x7F03005B,0x7F03005C,0x7F03006A,0x7F030071,0x7F030072,0x7F030075,0x7F030077,0x7F03007A,0x7F03007B,0x7F03007C,0x7F03007D,0x7F03007E,0x7F030096,0x7F03009A,0x7F0300B1,0x7F0300B2,0x7F0300B5,0x7F0300B6,0x7F0300B7,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F0300BB,0x7F0300D7,0x7F0300D8,0x7F0300D9,0x7F0300DF,0x7F0300E1,0x7F0300E8,0x7F0300E9,0x7F0300EA,0x7F0300EB,0x7F0300F2,0x7F0300F3,0x7F0300F4,0x7F0300F5,0x7F0300FD,0x7F0300FE,0x7F030110,0x7F030123,0x7F030124,0x7F030125,0x7F030126,0x7F030127,0x7F030128,0x7F030129,0x7F03012A,0x7F03012B,0x7F03012D,0x7F030144,0x7F030145,0x7F03014B,0x7F03014C,0x7F03014D,0x7F03014E,0x7F03014F,0x7F030150,0x7F030151,0x7F030152,0x7F030153,0x7F030154 }
@@ -5449,353 +5449,353 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903379,
 					2130903380};
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int AppCompatTheme_actionBarDivider = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int AppCompatTheme_actionBarItemBackground = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int AppCompatTheme_actionBarPopupTheme = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int AppCompatTheme_actionBarSize = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int AppCompatTheme_actionBarSplitStyle = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int AppCompatTheme_actionBarStyle = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int AppCompatTheme_actionBarTabBarStyle = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int AppCompatTheme_actionBarTabStyle = 9;
 			
-			// aapt resource value: 0x10
-			public const int AppCompatTheme_actionBarTabTextStyle = 16;
+			// aapt resource value: 10
+			public const int AppCompatTheme_actionBarTabTextStyle = 10;
 			
-			// aapt resource value: 0x11
-			public const int AppCompatTheme_actionBarTheme = 17;
+			// aapt resource value: 11
+			public const int AppCompatTheme_actionBarTheme = 11;
 			
-			// aapt resource value: 0x12
-			public const int AppCompatTheme_actionBarWidgetTheme = 18;
+			// aapt resource value: 12
+			public const int AppCompatTheme_actionBarWidgetTheme = 12;
 			
-			// aapt resource value: 0x13
-			public const int AppCompatTheme_actionButtonStyle = 19;
+			// aapt resource value: 13
+			public const int AppCompatTheme_actionButtonStyle = 13;
 			
-			// aapt resource value: 0x14
-			public const int AppCompatTheme_actionDropDownStyle = 20;
+			// aapt resource value: 14
+			public const int AppCompatTheme_actionDropDownStyle = 14;
 			
-			// aapt resource value: 0x15
-			public const int AppCompatTheme_actionMenuTextAppearance = 21;
+			// aapt resource value: 15
+			public const int AppCompatTheme_actionMenuTextAppearance = 15;
 			
-			// aapt resource value: 0x16
-			public const int AppCompatTheme_actionMenuTextColor = 22;
+			// aapt resource value: 16
+			public const int AppCompatTheme_actionMenuTextColor = 16;
 			
-			// aapt resource value: 0x17
-			public const int AppCompatTheme_actionModeBackground = 23;
+			// aapt resource value: 17
+			public const int AppCompatTheme_actionModeBackground = 17;
 			
-			// aapt resource value: 0x18
-			public const int AppCompatTheme_actionModeCloseButtonStyle = 24;
+			// aapt resource value: 18
+			public const int AppCompatTheme_actionModeCloseButtonStyle = 18;
 			
-			// aapt resource value: 0x19
-			public const int AppCompatTheme_actionModeCloseDrawable = 25;
+			// aapt resource value: 19
+			public const int AppCompatTheme_actionModeCloseDrawable = 19;
 			
-			// aapt resource value: 0x20
-			public const int AppCompatTheme_actionModeCopyDrawable = 32;
+			// aapt resource value: 20
+			public const int AppCompatTheme_actionModeCopyDrawable = 20;
 			
-			// aapt resource value: 0x21
-			public const int AppCompatTheme_actionModeCutDrawable = 33;
+			// aapt resource value: 21
+			public const int AppCompatTheme_actionModeCutDrawable = 21;
 			
-			// aapt resource value: 0x22
-			public const int AppCompatTheme_actionModeFindDrawable = 34;
+			// aapt resource value: 22
+			public const int AppCompatTheme_actionModeFindDrawable = 22;
 			
-			// aapt resource value: 0x23
-			public const int AppCompatTheme_actionModePasteDrawable = 35;
+			// aapt resource value: 23
+			public const int AppCompatTheme_actionModePasteDrawable = 23;
 			
-			// aapt resource value: 0x24
-			public const int AppCompatTheme_actionModePopupWindowStyle = 36;
+			// aapt resource value: 24
+			public const int AppCompatTheme_actionModePopupWindowStyle = 24;
 			
-			// aapt resource value: 0x25
-			public const int AppCompatTheme_actionModeSelectAllDrawable = 37;
+			// aapt resource value: 25
+			public const int AppCompatTheme_actionModeSelectAllDrawable = 25;
 			
-			// aapt resource value: 0x26
-			public const int AppCompatTheme_actionModeShareDrawable = 38;
+			// aapt resource value: 26
+			public const int AppCompatTheme_actionModeShareDrawable = 26;
 			
-			// aapt resource value: 0x27
-			public const int AppCompatTheme_actionModeSplitBackground = 39;
+			// aapt resource value: 27
+			public const int AppCompatTheme_actionModeSplitBackground = 27;
 			
-			// aapt resource value: 0x28
-			public const int AppCompatTheme_actionModeStyle = 40;
+			// aapt resource value: 28
+			public const int AppCompatTheme_actionModeStyle = 28;
 			
-			// aapt resource value: 0x29
-			public const int AppCompatTheme_actionModeWebSearchDrawable = 41;
+			// aapt resource value: 29
+			public const int AppCompatTheme_actionModeWebSearchDrawable = 29;
 			
-			// aapt resource value: 0x30
-			public const int AppCompatTheme_actionOverflowButtonStyle = 48;
+			// aapt resource value: 30
+			public const int AppCompatTheme_actionOverflowButtonStyle = 30;
 			
-			// aapt resource value: 0x31
-			public const int AppCompatTheme_actionOverflowMenuStyle = 49;
+			// aapt resource value: 31
+			public const int AppCompatTheme_actionOverflowMenuStyle = 31;
 			
-			// aapt resource value: 0x32
-			public const int AppCompatTheme_activityChooserViewStyle = 50;
+			// aapt resource value: 32
+			public const int AppCompatTheme_activityChooserViewStyle = 32;
 			
-			// aapt resource value: 0x33
-			public const int AppCompatTheme_alertDialogButtonGroupStyle = 51;
+			// aapt resource value: 33
+			public const int AppCompatTheme_alertDialogButtonGroupStyle = 33;
 			
-			// aapt resource value: 0x34
-			public const int AppCompatTheme_alertDialogCenterButtons = 52;
+			// aapt resource value: 34
+			public const int AppCompatTheme_alertDialogCenterButtons = 34;
 			
-			// aapt resource value: 0x35
-			public const int AppCompatTheme_alertDialogStyle = 53;
+			// aapt resource value: 35
+			public const int AppCompatTheme_alertDialogStyle = 35;
 			
-			// aapt resource value: 0x36
-			public const int AppCompatTheme_alertDialogTheme = 54;
+			// aapt resource value: 36
+			public const int AppCompatTheme_alertDialogTheme = 36;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int AppCompatTheme_android_windowAnimationStyle = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int AppCompatTheme_android_windowIsFloating = 0;
 			
-			// aapt resource value: 0x37
-			public const int AppCompatTheme_autoCompleteTextViewStyle = 55;
+			// aapt resource value: 37
+			public const int AppCompatTheme_autoCompleteTextViewStyle = 37;
 			
-			// aapt resource value: 0x38
-			public const int AppCompatTheme_borderlessButtonStyle = 56;
+			// aapt resource value: 38
+			public const int AppCompatTheme_borderlessButtonStyle = 38;
 			
-			// aapt resource value: 0x39
-			public const int AppCompatTheme_buttonBarButtonStyle = 57;
+			// aapt resource value: 39
+			public const int AppCompatTheme_buttonBarButtonStyle = 39;
 			
-			// aapt resource value: 0x40
-			public const int AppCompatTheme_buttonBarNegativeButtonStyle = 64;
+			// aapt resource value: 40
+			public const int AppCompatTheme_buttonBarNegativeButtonStyle = 40;
 			
-			// aapt resource value: 0x41
-			public const int AppCompatTheme_buttonBarNeutralButtonStyle = 65;
+			// aapt resource value: 41
+			public const int AppCompatTheme_buttonBarNeutralButtonStyle = 41;
 			
-			// aapt resource value: 0x42
-			public const int AppCompatTheme_buttonBarPositiveButtonStyle = 66;
+			// aapt resource value: 42
+			public const int AppCompatTheme_buttonBarPositiveButtonStyle = 42;
 			
-			// aapt resource value: 0x43
-			public const int AppCompatTheme_buttonBarStyle = 67;
+			// aapt resource value: 43
+			public const int AppCompatTheme_buttonBarStyle = 43;
 			
-			// aapt resource value: 0x44
-			public const int AppCompatTheme_buttonStyle = 68;
+			// aapt resource value: 44
+			public const int AppCompatTheme_buttonStyle = 44;
 			
-			// aapt resource value: 0x45
-			public const int AppCompatTheme_buttonStyleSmall = 69;
+			// aapt resource value: 45
+			public const int AppCompatTheme_buttonStyleSmall = 45;
 			
-			// aapt resource value: 0x46
-			public const int AppCompatTheme_checkboxStyle = 70;
+			// aapt resource value: 46
+			public const int AppCompatTheme_checkboxStyle = 46;
 			
-			// aapt resource value: 0x47
-			public const int AppCompatTheme_checkedTextViewStyle = 71;
+			// aapt resource value: 47
+			public const int AppCompatTheme_checkedTextViewStyle = 47;
 			
-			// aapt resource value: 0x48
-			public const int AppCompatTheme_colorAccent = 72;
+			// aapt resource value: 48
+			public const int AppCompatTheme_colorAccent = 48;
 			
-			// aapt resource value: 0x49
-			public const int AppCompatTheme_colorBackgroundFloating = 73;
+			// aapt resource value: 49
+			public const int AppCompatTheme_colorBackgroundFloating = 49;
 			
-			// aapt resource value: 0x50
-			public const int AppCompatTheme_colorButtonNormal = 80;
+			// aapt resource value: 50
+			public const int AppCompatTheme_colorButtonNormal = 50;
 			
-			// aapt resource value: 0x51
-			public const int AppCompatTheme_colorControlActivated = 81;
+			// aapt resource value: 51
+			public const int AppCompatTheme_colorControlActivated = 51;
 			
-			// aapt resource value: 0x52
-			public const int AppCompatTheme_colorControlHighlight = 82;
+			// aapt resource value: 52
+			public const int AppCompatTheme_colorControlHighlight = 52;
 			
-			// aapt resource value: 0x53
-			public const int AppCompatTheme_colorControlNormal = 83;
+			// aapt resource value: 53
+			public const int AppCompatTheme_colorControlNormal = 53;
 			
-			// aapt resource value: 0x54
-			public const int AppCompatTheme_colorPrimary = 84;
+			// aapt resource value: 54
+			public const int AppCompatTheme_colorPrimary = 54;
 			
-			// aapt resource value: 0x55
-			public const int AppCompatTheme_colorPrimaryDark = 85;
+			// aapt resource value: 55
+			public const int AppCompatTheme_colorPrimaryDark = 55;
 			
-			// aapt resource value: 0x56
-			public const int AppCompatTheme_colorSwitchThumbNormal = 86;
+			// aapt resource value: 56
+			public const int AppCompatTheme_colorSwitchThumbNormal = 56;
 			
-			// aapt resource value: 0x57
-			public const int AppCompatTheme_controlBackground = 87;
+			// aapt resource value: 57
+			public const int AppCompatTheme_controlBackground = 57;
 			
-			// aapt resource value: 0x58
-			public const int AppCompatTheme_dialogPreferredPadding = 88;
+			// aapt resource value: 58
+			public const int AppCompatTheme_dialogPreferredPadding = 58;
 			
-			// aapt resource value: 0x59
-			public const int AppCompatTheme_dialogTheme = 89;
+			// aapt resource value: 59
+			public const int AppCompatTheme_dialogTheme = 59;
 			
-			// aapt resource value: 0x60
-			public const int AppCompatTheme_dividerHorizontal = 96;
+			// aapt resource value: 60
+			public const int AppCompatTheme_dividerHorizontal = 60;
 			
-			// aapt resource value: 0x61
-			public const int AppCompatTheme_dividerVertical = 97;
+			// aapt resource value: 61
+			public const int AppCompatTheme_dividerVertical = 61;
 			
-			// aapt resource value: 0x63
-			public const int AppCompatTheme_dropdownListPreferredItemHeight = 99;
+			// aapt resource value: 63
+			public const int AppCompatTheme_dropdownListPreferredItemHeight = 63;
 			
-			// aapt resource value: 0x62
-			public const int AppCompatTheme_dropDownListViewStyle = 98;
+			// aapt resource value: 62
+			public const int AppCompatTheme_dropDownListViewStyle = 62;
 			
-			// aapt resource value: 0x64
-			public const int AppCompatTheme_editTextBackground = 100;
+			// aapt resource value: 64
+			public const int AppCompatTheme_editTextBackground = 64;
 			
-			// aapt resource value: 0x65
-			public const int AppCompatTheme_editTextColor = 101;
+			// aapt resource value: 65
+			public const int AppCompatTheme_editTextColor = 65;
 			
-			// aapt resource value: 0x66
-			public const int AppCompatTheme_editTextStyle = 102;
+			// aapt resource value: 66
+			public const int AppCompatTheme_editTextStyle = 66;
 			
-			// aapt resource value: 0x67
-			public const int AppCompatTheme_homeAsUpIndicator = 103;
+			// aapt resource value: 67
+			public const int AppCompatTheme_homeAsUpIndicator = 67;
 			
-			// aapt resource value: 0x68
-			public const int AppCompatTheme_imageButtonStyle = 104;
+			// aapt resource value: 68
+			public const int AppCompatTheme_imageButtonStyle = 68;
 			
-			// aapt resource value: 0x69
-			public const int AppCompatTheme_listChoiceBackgroundIndicator = 105;
+			// aapt resource value: 69
+			public const int AppCompatTheme_listChoiceBackgroundIndicator = 69;
 			
-			// aapt resource value: 0x70
-			public const int AppCompatTheme_listDividerAlertDialog = 112;
+			// aapt resource value: 70
+			public const int AppCompatTheme_listDividerAlertDialog = 70;
 			
-			// aapt resource value: 0x71
-			public const int AppCompatTheme_listMenuViewStyle = 113;
+			// aapt resource value: 71
+			public const int AppCompatTheme_listMenuViewStyle = 71;
 			
-			// aapt resource value: 0x72
-			public const int AppCompatTheme_listPopupWindowStyle = 114;
+			// aapt resource value: 72
+			public const int AppCompatTheme_listPopupWindowStyle = 72;
 			
-			// aapt resource value: 0x73
-			public const int AppCompatTheme_listPreferredItemHeight = 115;
+			// aapt resource value: 73
+			public const int AppCompatTheme_listPreferredItemHeight = 73;
 			
-			// aapt resource value: 0x74
-			public const int AppCompatTheme_listPreferredItemHeightLarge = 116;
+			// aapt resource value: 74
+			public const int AppCompatTheme_listPreferredItemHeightLarge = 74;
 			
-			// aapt resource value: 0x75
-			public const int AppCompatTheme_listPreferredItemHeightSmall = 117;
+			// aapt resource value: 75
+			public const int AppCompatTheme_listPreferredItemHeightSmall = 75;
 			
-			// aapt resource value: 0x76
-			public const int AppCompatTheme_listPreferredItemPaddingLeft = 118;
+			// aapt resource value: 76
+			public const int AppCompatTheme_listPreferredItemPaddingLeft = 76;
 			
-			// aapt resource value: 0x77
-			public const int AppCompatTheme_listPreferredItemPaddingRight = 119;
+			// aapt resource value: 77
+			public const int AppCompatTheme_listPreferredItemPaddingRight = 77;
 			
-			// aapt resource value: 0x78
-			public const int AppCompatTheme_panelBackground = 120;
+			// aapt resource value: 78
+			public const int AppCompatTheme_panelBackground = 78;
 			
-			// aapt resource value: 0x79
-			public const int AppCompatTheme_panelMenuListTheme = 121;
+			// aapt resource value: 79
+			public const int AppCompatTheme_panelMenuListTheme = 79;
 			
-			// aapt resource value: 0x80
-			public const int AppCompatTheme_panelMenuListWidth = 128;
+			// aapt resource value: 80
+			public const int AppCompatTheme_panelMenuListWidth = 80;
 			
-			// aapt resource value: 0x81
-			public const int AppCompatTheme_popupMenuStyle = 129;
+			// aapt resource value: 81
+			public const int AppCompatTheme_popupMenuStyle = 81;
 			
-			// aapt resource value: 0x82
-			public const int AppCompatTheme_popupWindowStyle = 130;
+			// aapt resource value: 82
+			public const int AppCompatTheme_popupWindowStyle = 82;
 			
-			// aapt resource value: 0x83
-			public const int AppCompatTheme_radioButtonStyle = 131;
+			// aapt resource value: 83
+			public const int AppCompatTheme_radioButtonStyle = 83;
 			
-			// aapt resource value: 0x84
-			public const int AppCompatTheme_ratingBarStyle = 132;
+			// aapt resource value: 84
+			public const int AppCompatTheme_ratingBarStyle = 84;
 			
-			// aapt resource value: 0x85
-			public const int AppCompatTheme_ratingBarStyleIndicator = 133;
+			// aapt resource value: 85
+			public const int AppCompatTheme_ratingBarStyleIndicator = 85;
 			
-			// aapt resource value: 0x86
-			public const int AppCompatTheme_ratingBarStyleSmall = 134;
+			// aapt resource value: 86
+			public const int AppCompatTheme_ratingBarStyleSmall = 86;
 			
-			// aapt resource value: 0x87
-			public const int AppCompatTheme_searchViewStyle = 135;
+			// aapt resource value: 87
+			public const int AppCompatTheme_searchViewStyle = 87;
 			
-			// aapt resource value: 0x88
-			public const int AppCompatTheme_seekBarStyle = 136;
+			// aapt resource value: 88
+			public const int AppCompatTheme_seekBarStyle = 88;
 			
-			// aapt resource value: 0x89
-			public const int AppCompatTheme_selectableItemBackground = 137;
+			// aapt resource value: 89
+			public const int AppCompatTheme_selectableItemBackground = 89;
 			
-			// aapt resource value: 0x90
-			public const int AppCompatTheme_selectableItemBackgroundBorderless = 144;
+			// aapt resource value: 90
+			public const int AppCompatTheme_selectableItemBackgroundBorderless = 90;
 			
-			// aapt resource value: 0x91
-			public const int AppCompatTheme_spinnerDropDownItemStyle = 145;
+			// aapt resource value: 91
+			public const int AppCompatTheme_spinnerDropDownItemStyle = 91;
 			
-			// aapt resource value: 0x92
-			public const int AppCompatTheme_spinnerStyle = 146;
+			// aapt resource value: 92
+			public const int AppCompatTheme_spinnerStyle = 92;
 			
-			// aapt resource value: 0x93
-			public const int AppCompatTheme_switchStyle = 147;
+			// aapt resource value: 93
+			public const int AppCompatTheme_switchStyle = 93;
 			
-			// aapt resource value: 0x94
-			public const int AppCompatTheme_textAppearanceLargePopupMenu = 148;
+			// aapt resource value: 94
+			public const int AppCompatTheme_textAppearanceLargePopupMenu = 94;
 			
-			// aapt resource value: 0x95
-			public const int AppCompatTheme_textAppearanceListItem = 149;
+			// aapt resource value: 95
+			public const int AppCompatTheme_textAppearanceListItem = 95;
 			
-			// aapt resource value: 0x96
-			public const int AppCompatTheme_textAppearanceListItemSecondary = 150;
+			// aapt resource value: 96
+			public const int AppCompatTheme_textAppearanceListItemSecondary = 96;
 			
-			// aapt resource value: 0x97
-			public const int AppCompatTheme_textAppearanceListItemSmall = 151;
+			// aapt resource value: 97
+			public const int AppCompatTheme_textAppearanceListItemSmall = 97;
 			
-			// aapt resource value: 0x98
-			public const int AppCompatTheme_textAppearancePopupMenuHeader = 152;
+			// aapt resource value: 98
+			public const int AppCompatTheme_textAppearancePopupMenuHeader = 98;
 			
-			// aapt resource value: 0x99
-			public const int AppCompatTheme_textAppearanceSearchResultSubtitle = 153;
+			// aapt resource value: 99
+			public const int AppCompatTheme_textAppearanceSearchResultSubtitle = 99;
 			
-			// aapt resource value: 0x100
-			public const int AppCompatTheme_textAppearanceSearchResultTitle = 256;
+			// aapt resource value: 100
+			public const int AppCompatTheme_textAppearanceSearchResultTitle = 100;
 			
-			// aapt resource value: 0x101
-			public const int AppCompatTheme_textAppearanceSmallPopupMenu = 257;
+			// aapt resource value: 101
+			public const int AppCompatTheme_textAppearanceSmallPopupMenu = 101;
 			
-			// aapt resource value: 0x102
-			public const int AppCompatTheme_textColorAlertDialogListItem = 258;
+			// aapt resource value: 102
+			public const int AppCompatTheme_textColorAlertDialogListItem = 102;
 			
-			// aapt resource value: 0x103
-			public const int AppCompatTheme_textColorSearchUrl = 259;
+			// aapt resource value: 103
+			public const int AppCompatTheme_textColorSearchUrl = 103;
 			
-			// aapt resource value: 0x104
-			public const int AppCompatTheme_toolbarNavigationButtonStyle = 260;
+			// aapt resource value: 104
+			public const int AppCompatTheme_toolbarNavigationButtonStyle = 104;
 			
-			// aapt resource value: 0x105
-			public const int AppCompatTheme_toolbarStyle = 261;
+			// aapt resource value: 105
+			public const int AppCompatTheme_toolbarStyle = 105;
 			
-			// aapt resource value: 0x106
-			public const int AppCompatTheme_windowActionBar = 262;
+			// aapt resource value: 106
+			public const int AppCompatTheme_windowActionBar = 106;
 			
-			// aapt resource value: 0x107
-			public const int AppCompatTheme_windowActionBarOverlay = 263;
+			// aapt resource value: 107
+			public const int AppCompatTheme_windowActionBarOverlay = 107;
 			
-			// aapt resource value: 0x108
-			public const int AppCompatTheme_windowActionModeOverlay = 264;
+			// aapt resource value: 108
+			public const int AppCompatTheme_windowActionModeOverlay = 108;
 			
-			// aapt resource value: 0x109
-			public const int AppCompatTheme_windowFixedHeightMajor = 265;
+			// aapt resource value: 109
+			public const int AppCompatTheme_windowFixedHeightMajor = 109;
 			
-			// aapt resource value: 0x110
-			public const int AppCompatTheme_windowFixedHeightMinor = 272;
+			// aapt resource value: 110
+			public const int AppCompatTheme_windowFixedHeightMinor = 110;
 			
-			// aapt resource value: 0x111
-			public const int AppCompatTheme_windowFixedWidthMajor = 273;
+			// aapt resource value: 111
+			public const int AppCompatTheme_windowFixedWidthMajor = 111;
 			
-			// aapt resource value: 0x112
-			public const int AppCompatTheme_windowFixedWidthMinor = 274;
+			// aapt resource value: 112
+			public const int AppCompatTheme_windowFixedWidthMinor = 112;
 			
-			// aapt resource value: 0x113
-			public const int AppCompatTheme_windowMinWidthMajor = 275;
+			// aapt resource value: 113
+			public const int AppCompatTheme_windowMinWidthMajor = 113;
 			
-			// aapt resource value: 0x114
-			public const int AppCompatTheme_windowMinWidthMinor = 276;
+			// aapt resource value: 114
+			public const int AppCompatTheme_windowMinWidthMinor = 114;
 			
-			// aapt resource value: 0x115
-			public const int AppCompatTheme_windowNoTitle = 277;
+			// aapt resource value: 115
+			public const int AppCompatTheme_windowNoTitle = 115;
 			
 			// aapt resource value: { 0x7F03007F,0x7F03009F,0x7F0300A0,0x7F0300A3,0x7F0300CD }
 			public static int[] BottomNavigationView = new int[] {
@@ -5805,19 +5805,19 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903203,
 					2130903245};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int BottomNavigationView_elevation = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int BottomNavigationView_itemBackground = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int BottomNavigationView_itemIconTint = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int BottomNavigationView_itemTextColor = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int BottomNavigationView_menu = 4;
 			
 			// aapt resource value: { 0x7F030032,0x7F030034,0x7F030035 }
@@ -5826,20 +5826,20 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903092,
 					2130903093};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int BottomSheetBehavior_Layout_behavior_hideable = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int BottomSheetBehavior_Layout_behavior_peekHeight = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int BottomSheetBehavior_Layout_behavior_skipCollapsed = 2;
 			
 			// aapt resource value: { 0x7F030026 }
 			public static int[] ButtonBarLayout = new int[] {
 					2130903078};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ButtonBarLayout_allowStacking = 0;
 			
 			// aapt resource value: { 0x101013F,0x1010140,0x7F030045,0x7F030046,0x7F030047,0x7F030048,0x7F030049,0x7F03004A,0x7F030064,0x7F030065,0x7F030066,0x7F030067,0x7F030068 }
@@ -5858,44 +5858,44 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903143,
 					2130903144};
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int CardView_android_minHeight = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int CardView_android_minWidth = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int CardView_cardBackgroundColor = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int CardView_cardCornerRadius = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int CardView_cardElevation = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int CardView_cardMaxElevation = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int CardView_cardPreventCornerOverlap = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int CardView_cardUseCompatPadding = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int CardView_contentPadding = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int CardView_contentPaddingBottom = 9;
 			
-			// aapt resource value: 0x10
-			public const int CardView_contentPaddingLeft = 16;
+			// aapt resource value: 10
+			public const int CardView_contentPaddingLeft = 10;
 			
-			// aapt resource value: 0x11
-			public const int CardView_contentPaddingRight = 17;
+			// aapt resource value: 11
+			public const int CardView_contentPaddingRight = 11;
 			
-			// aapt resource value: 0x12
-			public const int CardView_contentPaddingTop = 18;
+			// aapt resource value: 12
+			public const int CardView_contentPaddingTop = 12;
 			
 			// aapt resource value: { 0x7F030051,0x7F030052,0x7F030069,0x7F030084,0x7F030085,0x7F030086,0x7F030087,0x7F030088,0x7F030089,0x7F03008A,0x7F0300EE,0x7F0300EF,0x7F030106,0x7F030138,0x7F030139,0x7F030143 }
 			public static int[] CollapsingToolbarLayout = new int[] {
@@ -5916,34 +5916,34 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903353,
 					2130903363};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int CollapsingToolbarLayout_collapsedTitleGravity = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int CollapsingToolbarLayout_collapsedTitleTextAppearance = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int CollapsingToolbarLayout_contentScrim = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int CollapsingToolbarLayout_expandedTitleGravity = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int CollapsingToolbarLayout_expandedTitleMargin = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int CollapsingToolbarLayout_expandedTitleMarginBottom = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int CollapsingToolbarLayout_expandedTitleMarginEnd = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int CollapsingToolbarLayout_expandedTitleMarginStart = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int CollapsingToolbarLayout_expandedTitleMarginTop = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int CollapsingToolbarLayout_expandedTitleTextAppearance = 9;
 			
 			// aapt resource value: { 0x7F0300AA,0x7F0300AB }
@@ -5951,29 +5951,29 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903210,
 					2130903211};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int CollapsingToolbarLayout_Layout_layout_collapseMode = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int CollapsingToolbarLayout_Layout_layout_collapseParallaxMultiplier = 1;
 			
-			// aapt resource value: 0x10
-			public const int CollapsingToolbarLayout_scrimAnimationDuration = 16;
+			// aapt resource value: 10
+			public const int CollapsingToolbarLayout_scrimAnimationDuration = 10;
 			
-			// aapt resource value: 0x11
-			public const int CollapsingToolbarLayout_scrimVisibleHeightTrigger = 17;
+			// aapt resource value: 11
+			public const int CollapsingToolbarLayout_scrimVisibleHeightTrigger = 11;
 			
-			// aapt resource value: 0x12
-			public const int CollapsingToolbarLayout_statusBarScrim = 18;
+			// aapt resource value: 12
+			public const int CollapsingToolbarLayout_statusBarScrim = 12;
 			
-			// aapt resource value: 0x13
-			public const int CollapsingToolbarLayout_title = 19;
+			// aapt resource value: 13
+			public const int CollapsingToolbarLayout_title = 13;
 			
-			// aapt resource value: 0x14
-			public const int CollapsingToolbarLayout_titleEnabled = 20;
+			// aapt resource value: 14
+			public const int CollapsingToolbarLayout_titleEnabled = 14;
 			
-			// aapt resource value: 0x15
-			public const int CollapsingToolbarLayout_toolbarId = 21;
+			// aapt resource value: 15
+			public const int CollapsingToolbarLayout_toolbarId = 15;
 			
 			// aapt resource value: { 0x10101A5,0x101031F,0x7F030027 }
 			public static int[] ColorStateListItem = new int[] {
@@ -5981,13 +5981,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843551,
 					2130903079};
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int ColorStateListItem_alpha = 2;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ColorStateListItem_android_alpha = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ColorStateListItem_android_color = 0;
 			
 			// aapt resource value: { 0x1010107,0x7F030043,0x7F030044 }
@@ -5996,13 +5996,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903107,
 					2130903108};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int CompoundButton_android_button = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int CompoundButton_buttonTint = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int CompoundButton_buttonTintMode = 2;
 			
 			// aapt resource value: { 0x7F0300A4,0x7F030105 }
@@ -6010,7 +6010,7 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903204,
 					2130903301};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int CoordinatorLayout_keylines = 0;
 			
 			// aapt resource value: { 0x10100B3,0x7F0300A7,0x7F0300A8,0x7F0300A9,0x7F0300AC,0x7F0300AD,0x7F0300AE }
@@ -6023,28 +6023,28 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903213,
 					2130903214};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int CoordinatorLayout_Layout_android_layout_gravity = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int CoordinatorLayout_Layout_layout_anchor = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int CoordinatorLayout_Layout_layout_anchorGravity = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int CoordinatorLayout_Layout_layout_behavior = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int CoordinatorLayout_Layout_layout_dodgeInsetEdges = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int CoordinatorLayout_Layout_layout_insetEdge = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int CoordinatorLayout_Layout_layout_keyline = 6;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int CoordinatorLayout_statusBarBackground = 1;
 			
 			// aapt resource value: { 0x7F030038,0x7F030039,0x7F03012C }
@@ -6053,13 +6053,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903097,
 					2130903340};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int DesignTheme_bottomSheetDialogTheme = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int DesignTheme_bottomSheetStyle = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int DesignTheme_textColorError = 2;
 			
 			// aapt resource value: { 0x7F030028,0x7F030029,0x7F030030,0x7F030053,0x7F030078,0x7F03008E,0x7F0300FC,0x7F03012F }
@@ -6073,28 +6073,28 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903292,
 					2130903343};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int DrawerArrowToggle_arrowHeadLength = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int DrawerArrowToggle_arrowShaftLength = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int DrawerArrowToggle_barLength = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int DrawerArrowToggle_color = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int DrawerArrowToggle_drawableSize = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int DrawerArrowToggle_gapBetweenBars = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int DrawerArrowToggle_spinBars = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int DrawerArrowToggle_thickness = 7;
 			
 			// aapt resource value: { 0x7F03002E,0x7F03002F,0x7F030036,0x7F03007F,0x7F03008C,0x7F0300E3,0x7F0300ED,0x7F030149 }
@@ -6108,35 +6108,35 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903277,
 					2130903369};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int FloatingActionButton_backgroundTint = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int FloatingActionButton_backgroundTintMode = 1;
 			
 			// aapt resource value: { 0x7F030031 }
 			public static int[] FloatingActionButton_Behavior_Layout = new int[] {
 					2130903089};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int FloatingActionButton_Behavior_Layout_behavior_autoHide = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int FloatingActionButton_borderWidth = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int FloatingActionButton_elevation = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int FloatingActionButton_fabSize = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int FloatingActionButton_pressedTranslationZ = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int FloatingActionButton_rippleColor = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int FloatingActionButton_useCompatPadding = 7;
 			
 			// aapt resource value: { 0x1010109,0x1010200,0x7F03008D }
@@ -6145,13 +6145,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843264,
 					2130903181};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ForegroundLinearLayout_android_foreground = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ForegroundLinearLayout_android_foregroundGravity = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int ForegroundLinearLayout_foregroundInsidePadding = 2;
 			
 			// aapt resource value: { 0x10100AF,0x10100C4,0x1010126,0x1010127,0x1010128,0x7F030074,0x7F030076,0x7F0300C0,0x7F0300F7 }
@@ -6166,25 +6166,25 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903232,
 					2130903287};
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int LinearLayoutCompat_android_baselineAligned = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int LinearLayoutCompat_android_baselineAlignedChildIndex = 3;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int LinearLayoutCompat_android_gravity = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int LinearLayoutCompat_android_orientation = 1;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int LinearLayoutCompat_android_weightSum = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int LinearLayoutCompat_divider = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int LinearLayoutCompat_dividerPadding = 6;
 			
 			// aapt resource value: { 0x10100B3,0x10100F4,0x10100F5,0x1010181 }
@@ -6194,22 +6194,22 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16842997,
 					16843137};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int LinearLayoutCompat_Layout_android_layout_gravity = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int LinearLayoutCompat_Layout_android_layout_height = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int LinearLayoutCompat_Layout_android_layout_weight = 3;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int LinearLayoutCompat_Layout_android_layout_width = 1;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int LinearLayoutCompat_measureWithLargestChild = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int LinearLayoutCompat_showDividers = 8;
 			
 			// aapt resource value: { 0x10102AC,0x10102AD }
@@ -6217,10 +6217,10 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843436,
 					16843437};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ListPopupWindow_android_dropDownHorizontalOffset = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ListPopupWindow_android_dropDownVerticalOffset = 1;
 			
 			// aapt resource value: { 0x101013F,0x1010140,0x7F030043,0x7F03008B }
@@ -6230,16 +6230,16 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903107,
 					2130903179};
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int MediaRouteButton_android_minHeight = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int MediaRouteButton_android_minWidth = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int MediaRouteButton_buttonTint = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int MediaRouteButton_externalRouteEnabledDrawable = 3;
 			
 			// aapt resource value: { 0x101000E,0x10100D0,0x1010194,0x10101DE,0x10101DF,0x10101E0 }
@@ -6251,22 +6251,22 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843231,
 					16843232};
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int MenuGroup_android_checkableBehavior = 5;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int MenuGroup_android_enabled = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int MenuGroup_android_id = 1;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int MenuGroup_android_menuCategory = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int MenuGroup_android_orderInCategory = 4;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int MenuGroup_android_visible = 2;
 			
 			// aapt resource value: { 0x1010002,0x101000E,0x10100D0,0x1010106,0x1010194,0x10101DE,0x10101DF,0x10101E1,0x10101E2,0x10101E3,0x10101E4,0x10101E5,0x101026F,0x7F03000D,0x7F03001F,0x7F030020,0x7F0300F6 }
@@ -6289,56 +6289,56 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903072,
 					2130903286};
 			
-			// aapt resource value: 0x13
-			public const int MenuItem_actionLayout = 19;
+			// aapt resource value: 13
+			public const int MenuItem_actionLayout = 13;
 			
-			// aapt resource value: 0x14
-			public const int MenuItem_actionProviderClass = 20;
+			// aapt resource value: 14
+			public const int MenuItem_actionProviderClass = 14;
 			
-			// aapt resource value: 0x15
-			public const int MenuItem_actionViewClass = 21;
+			// aapt resource value: 15
+			public const int MenuItem_actionViewClass = 15;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int MenuItem_android_alphabeticShortcut = 9;
 			
-			// aapt resource value: 0x11
-			public const int MenuItem_android_checkable = 17;
+			// aapt resource value: 11
+			public const int MenuItem_android_checkable = 11;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int MenuItem_android_checked = 3;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int MenuItem_android_enabled = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int MenuItem_android_icon = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int MenuItem_android_id = 2;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int MenuItem_android_menuCategory = 5;
 			
-			// aapt resource value: 0x10
-			public const int MenuItem_android_numericShortcut = 16;
+			// aapt resource value: 10
+			public const int MenuItem_android_numericShortcut = 10;
 			
-			// aapt resource value: 0x12
-			public const int MenuItem_android_onClick = 18;
+			// aapt resource value: 12
+			public const int MenuItem_android_onClick = 12;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int MenuItem_android_orderInCategory = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int MenuItem_android_title = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int MenuItem_android_titleCondensed = 8;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int MenuItem_android_visible = 4;
 			
-			// aapt resource value: 0x16
-			public const int MenuItem_showAsAction = 22;
+			// aapt resource value: 16
+			public const int MenuItem_showAsAction = 16;
 			
 			// aapt resource value: { 0x10100AE,0x101012C,0x101012D,0x101012E,0x101012F,0x1010130,0x1010131,0x7F0300E2,0x7F030107 }
 			public static int[] MenuView = new int[] {
@@ -6352,31 +6352,31 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903266,
 					2130903303};
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int MenuView_android_headerBackground = 4;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int MenuView_android_horizontalDivider = 2;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int MenuView_android_itemBackground = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int MenuView_android_itemIconDisabledAlpha = 6;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int MenuView_android_itemTextAppearance = 1;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int MenuView_android_verticalDivider = 3;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int MenuView_android_windowAnimationStyle = 0;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int MenuView_preserveIconSpacing = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int MenuView_subMenuArrow = 8;
 			
 			// aapt resource value: { 0x10100D4,0x10100DD,0x101011F,0x7F03007F,0x7F030090,0x7F03009F,0x7F0300A0,0x7F0300A2,0x7F0300A3,0x7F0300CD }
@@ -6392,34 +6392,34 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903203,
 					2130903245};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int NavigationView_android_background = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int NavigationView_android_fitsSystemWindows = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int NavigationView_android_maxWidth = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int NavigationView_elevation = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int NavigationView_headerLayout = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int NavigationView_itemBackground = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int NavigationView_itemIconTint = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int NavigationView_itemTextAppearance = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int NavigationView_itemTextColor = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int NavigationView_menu = 9;
 			
 			// aapt resource value: { 0x1010176,0x10102C9,0x7F0300D2 }
@@ -6432,16 +6432,16 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 			public static int[] PopupWindowBackgroundState = new int[] {
 					2130903298};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int PopupWindowBackgroundState_state_above_anchor = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int PopupWindow_android_popupAnimationStyle = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int PopupWindow_android_popupBackground = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int PopupWindow_overlapAnchor = 2;
 			
 			// aapt resource value: { 0x7F0300D3,0x7F0300D6 }
@@ -6449,10 +6449,10 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903251,
 					2130903254};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int RecycleListView_paddingBottomNoButtons = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int RecycleListView_paddingTopNoTitle = 1;
 			
 			// aapt resource value: { 0x10100C4,0x10100F1,0x7F0300A6,0x7F0300EC,0x7F0300FB,0x7F030101 }
@@ -6464,36 +6464,36 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903291,
 					2130903297};
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int RecyclerView_android_descendantFocusability = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int RecyclerView_android_orientation = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int RecyclerView_layoutManager = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int RecyclerView_reverseLayout = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int RecyclerView_spanCount = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int RecyclerView_stackFromEnd = 5;
 			
 			// aapt resource value: { 0x7F03009D }
 			public static int[] ScrimInsetsFrameLayout = new int[] {
 					2130903197};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ScrimInsetsFrameLayout_insetForeground = 0;
 			
 			// aapt resource value: { 0x7F030033 }
 			public static int[] ScrollingViewBehavior_Layout = new int[] {
 					2130903091};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ScrollingViewBehavior_Layout_behavior_overlapTop = 0;
 			
 			// aapt resource value: { 0x10100DA,0x101011F,0x1010220,0x1010264,0x7F03004D,0x7F03005D,0x7F030070,0x7F03008F,0x7F030099,0x7F0300A5,0x7F0300E6,0x7F0300E7,0x7F0300F0,0x7F0300F1,0x7F030108,0x7F03010D,0x7F03014A }
@@ -6516,56 +6516,56 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903309,
 					2130903370};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int SearchView_android_focusable = 0;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int SearchView_android_imeOptions = 3;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int SearchView_android_inputType = 2;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int SearchView_android_maxWidth = 1;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int SearchView_closeIcon = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int SearchView_commitIcon = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int SearchView_defaultQueryHint = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int SearchView_goIcon = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int SearchView_iconifiedByDefault = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int SearchView_layout = 9;
 			
-			// aapt resource value: 0x10
-			public const int SearchView_queryBackground = 16;
+			// aapt resource value: 10
+			public const int SearchView_queryBackground = 10;
 			
-			// aapt resource value: 0x11
-			public const int SearchView_queryHint = 17;
+			// aapt resource value: 11
+			public const int SearchView_queryHint = 11;
 			
-			// aapt resource value: 0x12
-			public const int SearchView_searchHintIcon = 18;
+			// aapt resource value: 12
+			public const int SearchView_searchHintIcon = 12;
 			
-			// aapt resource value: 0x13
-			public const int SearchView_searchIcon = 19;
+			// aapt resource value: 13
+			public const int SearchView_searchIcon = 13;
 			
-			// aapt resource value: 0x14
-			public const int SearchView_submitBackground = 20;
+			// aapt resource value: 14
+			public const int SearchView_submitBackground = 14;
 			
-			// aapt resource value: 0x15
-			public const int SearchView_suggestionRowLayout = 21;
+			// aapt resource value: 15
+			public const int SearchView_suggestionRowLayout = 15;
 			
-			// aapt resource value: 0x16
-			public const int SearchView_voiceIcon = 22;
+			// aapt resource value: 16
+			public const int SearchView_voiceIcon = 16;
 			
 			// aapt resource value: { 0x101011F,0x7F03007F,0x7F0300BE }
 			public static int[] SnackbarLayout = new int[] {
@@ -6573,13 +6573,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903167,
 					2130903230};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int SnackbarLayout_android_maxWidth = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int SnackbarLayout_elevation = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int SnackbarLayout_maxActionInlineWidth = 2;
 			
 			// aapt resource value: { 0x10100B2,0x1010176,0x101017B,0x1010262,0x7F0300E0 }
@@ -6590,19 +6590,19 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843362,
 					2130903264};
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int Spinner_android_dropDownWidth = 3;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int Spinner_android_entries = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int Spinner_android_popupBackground = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int Spinner_android_prompt = 2;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int Spinner_popupTheme = 4;
 			
 			// aapt resource value: { 0x1010124,0x1010125,0x1010142,0x7F0300F8,0x7F0300FF,0x7F03010E,0x7F03010F,0x7F030111,0x7F030130,0x7F030131,0x7F030132,0x7F030146,0x7F030147,0x7F030148 }
@@ -6622,47 +6622,47 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903367,
 					2130903368};
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int SwitchCompat_android_textOff = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int SwitchCompat_android_textOn = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int SwitchCompat_android_thumb = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int SwitchCompat_showText = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int SwitchCompat_splitTrack = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int SwitchCompat_switchMinWidth = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int SwitchCompat_switchPadding = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int SwitchCompat_switchTextAppearance = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int SwitchCompat_thumbTextPadding = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int SwitchCompat_thumbTint = 9;
 			
-			// aapt resource value: 0x10
-			public const int SwitchCompat_thumbTintMode = 16;
+			// aapt resource value: 10
+			public const int SwitchCompat_thumbTintMode = 10;
 			
-			// aapt resource value: 0x11
-			public const int SwitchCompat_track = 17;
+			// aapt resource value: 11
+			public const int SwitchCompat_track = 11;
 			
-			// aapt resource value: 0x12
-			public const int SwitchCompat_trackTint = 18;
+			// aapt resource value: 12
+			public const int SwitchCompat_trackTint = 12;
 			
-			// aapt resource value: 0x13
-			public const int SwitchCompat_trackTintMode = 19;
+			// aapt resource value: 13
+			public const int SwitchCompat_trackTintMode = 13;
 			
 			// aapt resource value: { 0x1010002,0x10100F2,0x101014F }
 			public static int[] TabItem = new int[] {
@@ -6670,13 +6670,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16842994,
 					16843087};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int TabItem_android_icon = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int TabItem_android_layout = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int TabItem_android_text = 2;
 			
 			// aapt resource value: { 0x7F030112,0x7F030113,0x7F030114,0x7F030115,0x7F030116,0x7F030117,0x7F030118,0x7F030119,0x7F03011A,0x7F03011B,0x7F03011C,0x7F03011D,0x7F03011E,0x7F03011F,0x7F030120,0x7F030121 }
@@ -6698,53 +6698,53 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903328,
 					2130903329};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int TabLayout_tabBackground = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int TabLayout_tabContentStart = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int TabLayout_tabGravity = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int TabLayout_tabIndicatorColor = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int TabLayout_tabIndicatorHeight = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int TabLayout_tabMaxWidth = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int TabLayout_tabMinWidth = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int TabLayout_tabMode = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int TabLayout_tabPadding = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int TabLayout_tabPaddingBottom = 9;
 			
-			// aapt resource value: 0x10
-			public const int TabLayout_tabPaddingEnd = 16;
+			// aapt resource value: 10
+			public const int TabLayout_tabPaddingEnd = 10;
 			
-			// aapt resource value: 0x11
-			public const int TabLayout_tabPaddingStart = 17;
+			// aapt resource value: 11
+			public const int TabLayout_tabPaddingStart = 11;
 			
-			// aapt resource value: 0x12
-			public const int TabLayout_tabPaddingTop = 18;
+			// aapt resource value: 12
+			public const int TabLayout_tabPaddingTop = 12;
 			
-			// aapt resource value: 0x13
-			public const int TabLayout_tabSelectedTextColor = 19;
+			// aapt resource value: 13
+			public const int TabLayout_tabSelectedTextColor = 13;
 			
-			// aapt resource value: 0x14
-			public const int TabLayout_tabTextAppearance = 20;
+			// aapt resource value: 14
+			public const int TabLayout_tabTextAppearance = 14;
 			
-			// aapt resource value: 0x15
-			public const int TabLayout_tabTextColor = 21;
+			// aapt resource value: 15
+			public const int TabLayout_tabTextColor = 15;
 			
 			// aapt resource value: { 0x1010095,0x1010096,0x1010097,0x1010098,0x101009A,0x1010161,0x1010162,0x1010163,0x1010164,0x7F030122 }
 			public static int[] TextAppearance = new int[] {
@@ -6759,34 +6759,34 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16843108,
 					2130903330};
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int TextAppearance_android_shadowColor = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int TextAppearance_android_shadowDx = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int TextAppearance_android_shadowDy = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int TextAppearance_android_shadowRadius = 8;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int TextAppearance_android_textColor = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int TextAppearance_android_textColorHint = 4;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int TextAppearance_android_textSize = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int TextAppearance_android_textStyle = 2;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int TextAppearance_android_typeface = 1;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int TextAppearance_textAllCaps = 9;
 			
 			// aapt resource value: { 0x101009A,0x1010150,0x7F03006B,0x7F03006C,0x7F03006D,0x7F03006E,0x7F030080,0x7F030081,0x7F030093,0x7F030094,0x7F030095,0x7F0300DA,0x7F0300DB,0x7F0300DC,0x7F0300DD,0x7F0300DE }
@@ -6808,53 +6808,53 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903261,
 					2130903262};
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int TextInputLayout_android_hint = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int TextInputLayout_android_textColorHint = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int TextInputLayout_counterEnabled = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int TextInputLayout_counterMaxLength = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int TextInputLayout_counterOverflowTextAppearance = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int TextInputLayout_counterTextAppearance = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int TextInputLayout_errorEnabled = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int TextInputLayout_errorTextAppearance = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int TextInputLayout_hintAnimationEnabled = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int TextInputLayout_hintEnabled = 9;
 			
-			// aapt resource value: 0x10
-			public const int TextInputLayout_hintTextAppearance = 16;
+			// aapt resource value: 10
+			public const int TextInputLayout_hintTextAppearance = 10;
 			
-			// aapt resource value: 0x11
-			public const int TextInputLayout_passwordToggleContentDescription = 17;
+			// aapt resource value: 11
+			public const int TextInputLayout_passwordToggleContentDescription = 11;
 			
-			// aapt resource value: 0x12
-			public const int TextInputLayout_passwordToggleDrawable = 18;
+			// aapt resource value: 12
+			public const int TextInputLayout_passwordToggleDrawable = 12;
 			
-			// aapt resource value: 0x13
-			public const int TextInputLayout_passwordToggleEnabled = 19;
+			// aapt resource value: 13
+			public const int TextInputLayout_passwordToggleEnabled = 13;
 			
-			// aapt resource value: 0x14
-			public const int TextInputLayout_passwordToggleTint = 20;
+			// aapt resource value: 14
+			public const int TextInputLayout_passwordToggleTint = 14;
 			
-			// aapt resource value: 0x15
-			public const int TextInputLayout_passwordToggleTintMode = 21;
+			// aapt resource value: 15
+			public const int TextInputLayout_passwordToggleTintMode = 15;
 			
 			// aapt resource value: { 0x10100AF,0x1010140,0x7F03003F,0x7F03004F,0x7F030050,0x7F03005E,0x7F03005F,0x7F030060,0x7F030061,0x7F030062,0x7F030063,0x7F0300BC,0x7F0300BD,0x7F0300BF,0x7F0300CF,0x7F0300D0,0x7F0300E0,0x7F030109,0x7F03010A,0x7F03010B,0x7F030138,0x7F03013A,0x7F03013B,0x7F03013C,0x7F03013D,0x7F03013E,0x7F03013F,0x7F030140,0x7F030141 }
 			public static int[] Toolbar = new int[] {
@@ -6888,92 +6888,92 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903360,
 					2130903361};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int Toolbar_android_gravity = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int Toolbar_android_minHeight = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int Toolbar_buttonGravity = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int Toolbar_collapseContentDescription = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int Toolbar_collapseIcon = 4;
 			
-			// aapt resource value: 0x5
+			// aapt resource value: 5
 			public const int Toolbar_contentInsetEnd = 5;
 			
-			// aapt resource value: 0x6
+			// aapt resource value: 6
 			public const int Toolbar_contentInsetEndWithActions = 6;
 			
-			// aapt resource value: 0x7
+			// aapt resource value: 7
 			public const int Toolbar_contentInsetLeft = 7;
 			
-			// aapt resource value: 0x8
+			// aapt resource value: 8
 			public const int Toolbar_contentInsetRight = 8;
 			
-			// aapt resource value: 0x9
+			// aapt resource value: 9
 			public const int Toolbar_contentInsetStart = 9;
 			
-			// aapt resource value: 0x10
-			public const int Toolbar_contentInsetStartWithNavigation = 16;
+			// aapt resource value: 10
+			public const int Toolbar_contentInsetStartWithNavigation = 10;
 			
-			// aapt resource value: 0x11
-			public const int Toolbar_logo = 17;
+			// aapt resource value: 11
+			public const int Toolbar_logo = 11;
 			
-			// aapt resource value: 0x12
-			public const int Toolbar_logoDescription = 18;
+			// aapt resource value: 12
+			public const int Toolbar_logoDescription = 12;
 			
-			// aapt resource value: 0x13
-			public const int Toolbar_maxButtonHeight = 19;
+			// aapt resource value: 13
+			public const int Toolbar_maxButtonHeight = 13;
 			
-			// aapt resource value: 0x14
-			public const int Toolbar_navigationContentDescription = 20;
+			// aapt resource value: 14
+			public const int Toolbar_navigationContentDescription = 14;
 			
-			// aapt resource value: 0x15
-			public const int Toolbar_navigationIcon = 21;
+			// aapt resource value: 15
+			public const int Toolbar_navigationIcon = 15;
 			
-			// aapt resource value: 0x16
-			public const int Toolbar_popupTheme = 22;
+			// aapt resource value: 16
+			public const int Toolbar_popupTheme = 16;
 			
-			// aapt resource value: 0x17
-			public const int Toolbar_subtitle = 23;
+			// aapt resource value: 17
+			public const int Toolbar_subtitle = 17;
 			
-			// aapt resource value: 0x18
-			public const int Toolbar_subtitleTextAppearance = 24;
+			// aapt resource value: 18
+			public const int Toolbar_subtitleTextAppearance = 18;
 			
-			// aapt resource value: 0x19
-			public const int Toolbar_subtitleTextColor = 25;
+			// aapt resource value: 19
+			public const int Toolbar_subtitleTextColor = 19;
 			
-			// aapt resource value: 0x20
-			public const int Toolbar_title = 32;
+			// aapt resource value: 20
+			public const int Toolbar_title = 20;
 			
-			// aapt resource value: 0x21
-			public const int Toolbar_titleMargin = 33;
+			// aapt resource value: 21
+			public const int Toolbar_titleMargin = 21;
 			
-			// aapt resource value: 0x22
-			public const int Toolbar_titleMarginBottom = 34;
+			// aapt resource value: 22
+			public const int Toolbar_titleMarginBottom = 22;
 			
-			// aapt resource value: 0x23
-			public const int Toolbar_titleMarginEnd = 35;
+			// aapt resource value: 23
+			public const int Toolbar_titleMarginEnd = 23;
 			
-			// aapt resource value: 0x26
-			public const int Toolbar_titleMargins = 38;
+			// aapt resource value: 26
+			public const int Toolbar_titleMargins = 26;
 			
-			// aapt resource value: 0x24
-			public const int Toolbar_titleMarginStart = 36;
+			// aapt resource value: 24
+			public const int Toolbar_titleMarginStart = 24;
 			
-			// aapt resource value: 0x25
-			public const int Toolbar_titleMarginTop = 37;
+			// aapt resource value: 25
+			public const int Toolbar_titleMarginTop = 25;
 			
-			// aapt resource value: 0x27
-			public const int Toolbar_titleTextAppearance = 39;
+			// aapt resource value: 27
+			public const int Toolbar_titleTextAppearance = 27;
 			
-			// aapt resource value: 0x28
-			public const int Toolbar_titleTextColor = 40;
+			// aapt resource value: 28
+			public const int Toolbar_titleTextColor = 28;
 			
 			// aapt resource value: { 0x1010000,0x10100DA,0x7F0300D4,0x7F0300D5,0x7F03012E }
 			public static int[] View = new int[] {
@@ -6989,13 +6989,13 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					2130903086,
 					2130903087};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ViewBackgroundHelper_android_background = 0;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ViewBackgroundHelper_backgroundTint = 1;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int ViewBackgroundHelper_backgroundTintMode = 2;
 			
 			// aapt resource value: { 0x10100D0,0x10100F2,0x10100F3 }
@@ -7004,28 +7004,28 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 					16842994,
 					16842995};
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int ViewStubCompat_android_id = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int ViewStubCompat_android_inflatedId = 2;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int ViewStubCompat_android_layout = 1;
 			
-			// aapt resource value: 0x1
+			// aapt resource value: 1
 			public const int View_android_focusable = 1;
 			
-			// aapt resource value: 0x0
+			// aapt resource value: 0
 			public const int View_android_theme = 0;
 			
-			// aapt resource value: 0x2
+			// aapt resource value: 2
 			public const int View_paddingEnd = 2;
 			
-			// aapt resource value: 0x3
+			// aapt resource value: 3
 			public const int View_paddingStart = 3;
 			
-			// aapt resource value: 0x4
+			// aapt resource value: 4
 			public const int View_theme = 4;
 			
 			static Styleable()

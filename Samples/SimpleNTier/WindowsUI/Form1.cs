@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Csla;
+using Csla.Configuration;
 
 namespace WindowsUI
 {
@@ -15,6 +17,9 @@ namespace WindowsUI
     {
       InitializeComponent();
 
+      CslaConfiguration.Configure()
+        .DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "https://localhost:44332/api/dataportal");
+
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
     }
 
@@ -22,8 +27,7 @@ namespace WindowsUI
     {
       try
       {
-        //var obj = await BusinessLibrary.Order.NewOrderAsync();
-        var obj = await BusinessLibrary.Order.GetOrderAsync(441);
+        var obj = await DataPortal.FetchAsync<BusinessLibrary.Order>(441);
         cslaActionExtender1.ResetActionBehaviors(obj);
       }
       catch (Exception ex)

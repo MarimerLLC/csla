@@ -6,8 +6,6 @@ namespace Templates
   [Serializable]
   public class NameValueList : NameValueListBase<int, string>
   {
-    #region Factory Methods
-
     private static NameValueList _list;
 
     public static NameValueList GetNameValueList()
@@ -22,11 +20,8 @@ namespace Templates
       _list = null;
     }
 
-    #endregion
-
-    #region Data Access
-
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     {
       RaiseListChangedEvents = false;
       IsReadOnly = false;
@@ -38,7 +33,5 @@ namespace Templates
       IsReadOnly = true;
       RaiseListChangedEvents = true;
     }
-
-    #endregion
   }
 }

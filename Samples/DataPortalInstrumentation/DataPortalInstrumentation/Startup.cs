@@ -35,8 +35,7 @@ namespace DataPortalInstrumentation
 
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-      services.ConfigureCsla();
-      services.AddCsla();
+      services.AddCsla((c) => c.DataPortal().DashboardType("Dashboard"));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,7 +56,6 @@ namespace DataPortalInstrumentation
       app.UseMvc();
 
       app.UseCsla();
-      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
     }
   }
 }

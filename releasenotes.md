@@ -17,13 +17,14 @@ Some changes were made to address common issues people face using CSLA. I've tri
 ### Dependabot and NuGet dependencies
 
 * Bump Microsoft.AspNetCore from 2.0.3 to 2.2.0 in /Source
-* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.673156 in /Source
+* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.778463 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.6 in /Source
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform to 6.2.9 in /Source
 
 ### Data Portal
 
+* [#1293](https://github.com/MarimerLLC/csla/issues/1293) Fix issue where `ObjectFactory` wasn't working correctly with remote data portal
 * [#1066](https://github.com/MarimerLLC/csla/issues/1066) Implement RabbitMQ data portal (`Csla.Channels.RabbitMq`) 🎉
 * [#1140](https://github.com/MarimerLLC/csla/issues/1140) Implement gRPC data portal (`Csla.Channels.Grpc`) 🎉
 * [#1176](https://github.com/MarimerLLC/csla/issues/1176) Enable passing multiple parameters to root DP methods (i.e. `FetchAsync`) 🎉
@@ -69,6 +70,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Xamarin
 
+* [#1291](https://github.com/marimerllc/csla/issues/1291) Obsolete `Save` method in favor of `SaveAsync` 🛑
+* [#1304](https://github.com/marimerllc/csla/issues/1304) Add properties to get info/warn/error text from `PropertyInfo`
 * [#1010](https://github.com/marimerllc/csla/issues/1010) Fix issue where `ApplicationContext.User` wasn't persisted during async operations
 * [#1168](https://github.com/MarimerLLC/csla/issues/1168) Mark old-style viewmodel async methods as obsolete and modernize class overall 🛑
 
@@ -85,6 +88,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### WPF
 
+* [#1291](https://github.com/marimerllc/csla/issues/1291) Obsolete `Save` method in favor of `SaveAsync` 🛑
+* [#1304](https://github.com/marimerllc/csla/issues/1304) Add properties to get info/warn/error text from `PropertyInfo`
 * [#1235](https://github.com/MarimerLLC/csla/issues/1235) Bring `Csla.Xaml` for WPF forward to .NET Core 3
 * [#1168](https://github.com/MarimerLLC/csla/issues/1168) Mark old-style viewmodel async methods as obsolete and modernize class overall 🛑
 
@@ -94,7 +99,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Technical Debt
 
-* [#1115](https://github.com/marimerllc/csla/issues/1115)Remove private constructors from templates
+* [#1288](https://github.com/marimerllc/csla/issues/1288) Updated `/Samples` for CSLA 5
+* [#1115](https://github.com/marimerllc/csla/issues/1115) Remove private constructors from templates
 * [#968](https://github.com/marimerllc/csla/issues/968) Remove ApplicationContext.IsInRoleProvider property ⚠
 * [#1053](https://github.com/marimerllc/csla/issues/1053) Update nuspec files to use license element
 * [#1070](https://github.com/marimerllc/csla/issues/1070) Remove unused legacy Silverlight test code and resolve SonarQube warning

@@ -119,15 +119,6 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
-    /// Set HttpClient object for use by data portal.
-    /// </summary>
-    /// <param name="client">HttpClient instance.</param>
-    public static void SetHttpClient(HttpClient client)
-    {
-      _httpClient = client;
-    }
-
-    /// <summary>
     /// Gets an WebClient object for use in
     /// communication with the server.
     /// </summary>

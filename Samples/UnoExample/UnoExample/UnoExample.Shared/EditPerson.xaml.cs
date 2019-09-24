@@ -51,7 +51,7 @@ namespace UnoExample
       try
       {
         var person = (PersonEdit)DataContext;
-        await person.SaveAsync();
+        person = await person.SaveAsync();
         var rootFrame = Window.Current.Content as Frame;
         rootFrame.Navigate(typeof(MainPage));
       }

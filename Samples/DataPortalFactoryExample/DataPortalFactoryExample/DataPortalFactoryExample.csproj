@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+    <PackageReference Include="Csla" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

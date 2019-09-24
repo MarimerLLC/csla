@@ -10,6 +10,7 @@ namespace DataPortalFactoryExample
     {
       var obj = await DataPortal.CreateAsync<PersonEdit>();
       Console.WriteLine($"Person {obj.Name}");
+      Console.ReadLine();
     }
   }
 }

@@ -88,6 +88,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### ASP.NET Core
 
+🛑 ASP.NET Core 2.2 projects often rely on the `Microsoft.AspNetCore.App` metapackage. You can not use this metapackage with CSLA 5, because the metapackage prevents the use of .NET Core 3.0 dependencies. The easiest workaround is to switch to the `Microsoft.AspNetCore.All` metapackage, though other options exist. 🛑
+
 * [#905](https://github.com/MarimerLLC/csla/issues/905) Add support for ASP.NET Core MVC validation mechanism
 * [#649](https://github.com/MarimerLLC/csla/issues/649) Implement CSLA permission requirement handler
 

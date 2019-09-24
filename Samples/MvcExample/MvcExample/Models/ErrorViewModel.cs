@@ -1,6 +1,6 @@
 using System;
 
-namespace CslaMvcExample.Models
+namespace MvcExample.Models
 {
   public class ErrorViewModel
   {

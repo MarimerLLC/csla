@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Csla .NET Support classes for EF6 (server)")]
 [assembly: AssemblyDescription("CSLA .NET Entity Framework 6")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Marrimer LLC")]
+[assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("Csla.Data.EF6")]
 [assembly: AssemblyCopyright("Copyright © 2010-18 Marimer LLC")]
 [assembly: AssemblyTrademark("")]

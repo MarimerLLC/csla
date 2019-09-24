@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET Support classes for EF4 (server)")]
-[assembly: AssemblyDescription("CSLA .NET Entity Framework 4")]
+[assembly: AssemblyTitle("Csla .NET Support classes for EFCore 3")]
+[assembly: AssemblyDescription("CSLA .NET Entity Framework Core 3")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
-[assembly: AssemblyProduct("Csla.Data.EF4")]
+[assembly: AssemblyProduct("Csla.Data.EFCore3")]
 [assembly: AssemblyCopyright("Copyright © 2010-18 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ee1b7d74-2bc6-4bb0-b1f0-3491d354cb7e")]
+[assembly: Guid("11b64b3b-e639-4f05-8633-511cdca7d7a9")]
 
 // Version information for an assembly consists of the following four values:
 //

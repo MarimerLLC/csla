@@ -16,11 +16,16 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Dependabot and NuGet dependencies
 
+* Bump appropriate dependencies for .NET Core 3.0
 * Bump Microsoft.AspNetCore from 2.0.3 to 2.2.0 in /Source
-* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.778463 in /Source
+* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.815419 in /Source
+* Add  Microsoft.EntityFrameworkCore from 3.0.0 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.6 in /Source
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform to 6.2.9 in /Source
+* Bump System.Data.SqlClient to 4.7.0 in /Source
+* Bump System.Principal.Windows from 4.5.1 to 4.6.0 in /Source
+* Bump System.Security.AccessControl from 4.5.9 to 4.6.0 in /Source
 
 ### Data Portal
 

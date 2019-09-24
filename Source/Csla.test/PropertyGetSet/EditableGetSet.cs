@@ -69,11 +69,11 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert<object, string>(F06Property, ref _F06, value); }
     }
 
-    private static Csla.PropertyInfo<string> ManagedStringFieldProperty = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("ManagedStringField"));
+    public static readonly PropertyInfo<string> ManagedStringFieldProperty = RegisterProperty<string>(nameof(ManagedStringField));
     public string ManagedStringField
     {
-      get { return GetProperty<string>(ManagedStringFieldProperty); }
-      set { SetProperty<string>(ManagedStringFieldProperty, value); }
+      get => GetProperty(ManagedStringFieldProperty);
+      set => SetProperty(ManagedStringFieldProperty, value);
     }
 
     public bool ManagedStringFieldDirty

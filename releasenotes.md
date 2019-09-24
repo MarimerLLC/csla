@@ -1,4 +1,4 @@
-# CSLA .NET version 5.0.0 pre-release
+# CSLA .NET version 5.0.0 release
 
 CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
 

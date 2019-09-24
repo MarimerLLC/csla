@@ -265,8 +265,7 @@ namespace Csla.Core.FieldManager
     internal void SetFieldData<P>(IPropertyInfo prop, P value)
     {
       var field = GetOrCreateFieldData(prop);
-      var fd = field as IFieldData<P>;
-      if (fd != null)
+      if (field is IFieldData<P> fd)
         fd.Value = value;
       else
         field.Value = value;

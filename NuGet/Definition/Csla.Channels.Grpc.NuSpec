@@ -22,8 +22,8 @@ Data portal channel using gRPC for transport.
     <dependencies>
       <group targetFramework="netstandard2.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Google.Protobuf" version="3.9.0-rc1" />
-        <dependency id="Grpc.Net.Client" version="0.1.22-pre2" />
+        <dependency id="Google.Protobuf" version="3.9.2" />
+        <dependency id="Grpc.Net.Client" version="2.23.2" />
       </group>
     </dependencies>
   </metadata>

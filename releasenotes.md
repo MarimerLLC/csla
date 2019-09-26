@@ -1,3 +1,14 @@
+# CSLA .NET version 5.0.1 release
+
+CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
+
+## Change List
+
+* [#1336](https://github.com/marimerllc/csla/issues/1336) Target `Microsoft.Extensions.*` 2.x versions, not 3.0 versions
+* [#1337](https://github.com/marimerllc/csla/issues/1337) Fix issue with WPF depedendencies in .NET Core 3
+
+---
+
 # CSLA .NET version 5.0.0 release
 
 CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).

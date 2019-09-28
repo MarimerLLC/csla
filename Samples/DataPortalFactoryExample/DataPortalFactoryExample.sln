@@ -3,16 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalFactoryExample", "DataPortalFactoryExample\DataPortalFactoryExample.csproj", "{B6D1FD9F-FDAA-494F-A546-AFFBD269BC75}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "..\..\Source\Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.NetStandard2.0", "..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj", "{44EF47D9-26B9-4DA2-A442-5A807FDE5BA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataPortalFactoryExample", "DataPortalFactoryExample\DataPortalFactoryExample.csproj", "{B6D1FD9F-FDAA-494F-A546-AFFBD269BC75}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\..\Source\Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -22,10 +15,6 @@ Global
 		{B6D1FD9F-FDAA-494F-A546-AFFBD269BC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6D1FD9F-FDAA-494F-A546-AFFBD269BC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6D1FD9F-FDAA-494F-A546-AFFBD269BC75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44EF47D9-26B9-4DA2-A442-5A807FDE5BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44EF47D9-26B9-4DA2-A442-5A807FDE5BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44EF47D9-26B9-4DA2-A442-5A807FDE5BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44EF47D9-26B9-4DA2-A442-5A807FDE5BA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

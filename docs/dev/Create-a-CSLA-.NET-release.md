@@ -4,13 +4,15 @@ You must have:
 
 1. PC
  1. Windows 10
- 1. Visual Studio 2017 with the latest updates
+ 1. .NET Core 3 SDK
+ 1. Visual Studio 2019 with the latest updates
   1. Xamarin
   1. UWP SDK
+  1. Blazor templates
 
 Semantic Versioning
 -------------------
-CSLA .NET, starting with version 4.9.0, is following the [semantic versioning (semver)](https://semver.org/) guidelines. Version numbers should follow the semver guidance from that point forward.
+CSLA .NET, starting with version 4.9.0, follows the [semantic versioning (semver)](https://semver.org/) guidelines. Version numbers should follow the semver guidance from that point forward.
 
 NuGet release
 -------------

@@ -20,12 +20,20 @@ Supports the use of Entity Framework Core.
     </summary>
     <language>en-US</language>
     <dependencies>     
-      <dependency id="Csla" version="[4.6.3-Beta10]" />
-      <dependency id="Microsoft.EntityFrameworkCore" version="2.0.2" />    
+      <group targetFramework="netstandard2.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="2.2.6" />
+      </group>
+      <group targetFramework="netstandard2.1">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="3.0.0" />
+      </group>
     </dependencies>
   </metadata>
   <files>
     <!-- .NET Core 2.0 -->
     <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.EntityFrameworkCore.*" target="lib\netstandard2.0" />
+    <!-- .NET Core 3.0 -->
+    <file src="..\..\Bin\Release\netstandard\netstandard2.1\**\Csla.Data.EntityFrameworkCore.*" target="lib\netstandard2.1" />
   </files>
 </package>

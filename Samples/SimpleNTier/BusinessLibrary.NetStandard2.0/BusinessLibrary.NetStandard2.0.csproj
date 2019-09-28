@@ -9,7 +9,7 @@
   <Import Project="..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
-    <PackageReference Include="Csla" Version="5.0.0-R19091004" />
+    <PackageReference Include="Csla" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,15 @@
-# CSLA .NET version 5.0.0 pre-release
+# CSLA .NET version 5.0.1 release
+
+CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
+
+## Change List
+
+* [#1336](https://github.com/marimerllc/csla/issues/1336) Target `Microsoft.Extensions.*` 2.x versions, not 3.0 versions
+* [#1337](https://github.com/marimerllc/csla/issues/1337) Fix issue with WPF depedendencies in .NET Core 3
+
+---
+
+# CSLA .NET version 5.0.0 release
 
 CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
 
@@ -16,14 +27,20 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Dependabot and NuGet dependencies
 
+* Bump appropriate dependencies for .NET Core 3.0
 * Bump Microsoft.AspNetCore from 2.0.3 to 2.2.0 in /Source
-* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.673156 in /Source
+* Bump Xamarin.Forms from 3.4.0.1008975 to 4.1.0.815419 in /Source
+* Add  Microsoft.EntityFrameworkCore from 3.0.0 in /Source
 * Bump Microsoft.EntityFrameworkCore from 2.2.0 to 2.2.6 in /Source
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.6.3 to 2.9.4 in /Source
 * Bump Microsoft.NETCore.UniversalWindowsPlatform to 6.2.9 in /Source
+* Bump System.Data.SqlClient to 4.7.0 in /Source
+* Bump System.Principal.Windows from 4.5.1 to 4.6.0 in /Source
+* Bump System.Security.AccessControl from 4.5.9 to 4.6.0 in /Source
 
 ### Data Portal
 
+* [#1293](https://github.com/MarimerLLC/csla/issues/1293) Fix issue where `ObjectFactory` wasn't working correctly with remote data portal
 * [#1066](https://github.com/MarimerLLC/csla/issues/1066) Implement RabbitMQ data portal (`Csla.Channels.RabbitMq`) 🎉
 * [#1140](https://github.com/MarimerLLC/csla/issues/1140) Implement gRPC data portal (`Csla.Channels.Grpc`) 🎉
 * [#1176](https://github.com/MarimerLLC/csla/issues/1176) Enable passing multiple parameters to root DP methods (i.e. `FetchAsync`) 🎉
@@ -69,6 +86,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Xamarin
 
+* [#1291](https://github.com/marimerllc/csla/issues/1291) Obsolete `Save` method in favor of `SaveAsync` 🛑
+* [#1304](https://github.com/marimerllc/csla/issues/1304) Add properties to get info/warn/error text from `PropertyInfo`
 * [#1010](https://github.com/marimerllc/csla/issues/1010) Fix issue where `ApplicationContext.User` wasn't persisted during async operations
 * [#1168](https://github.com/MarimerLLC/csla/issues/1168) Mark old-style viewmodel async methods as obsolete and modernize class overall 🛑
 
@@ -80,11 +99,15 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### ASP.NET Core
 
+🛑 ASP.NET Core 2.2 projects often rely on the `Microsoft.AspNetCore.App` metapackage. You can not use this metapackage with CSLA 5, because the metapackage prevents the use of .NET Core 3.0 dependencies. The easiest workaround is to switch to the `Microsoft.AspNetCore.All` metapackage, though other options exist. 🛑
+
 * [#905](https://github.com/MarimerLLC/csla/issues/905) Add support for ASP.NET Core MVC validation mechanism
 * [#649](https://github.com/MarimerLLC/csla/issues/649) Implement CSLA permission requirement handler
 
 ### WPF
 
+* [#1291](https://github.com/marimerllc/csla/issues/1291) Obsolete `Save` method in favor of `SaveAsync` 🛑
+* [#1304](https://github.com/marimerllc/csla/issues/1304) Add properties to get info/warn/error text from `PropertyInfo`
 * [#1235](https://github.com/MarimerLLC/csla/issues/1235) Bring `Csla.Xaml` for WPF forward to .NET Core 3
 * [#1168](https://github.com/MarimerLLC/csla/issues/1168) Mark old-style viewmodel async methods as obsolete and modernize class overall 🛑
 
@@ -94,7 +117,8 @@ Some changes were made to address common issues people face using CSLA. I've tri
 
 ### Technical Debt
 
-* [#1115](https://github.com/marimerllc/csla/issues/1115)Remove private constructors from templates
+* [#1288](https://github.com/marimerllc/csla/issues/1288) Updated `/Samples` for CSLA 5
+* [#1115](https://github.com/marimerllc/csla/issues/1115) Remove private constructors from templates
 * [#968](https://github.com/marimerllc/csla/issues/968) Remove ApplicationContext.IsInRoleProvider property ⚠
 * [#1053](https://github.com/marimerllc/csla/issues/1053) Update nuspec files to use license element
 * [#1070](https://github.com/marimerllc/csla/issues/1070) Remove unused legacy Silverlight test code and resolve SonarQube warning

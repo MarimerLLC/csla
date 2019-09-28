@@ -8,7 +8,7 @@ platform: Any CPU
 before_build:
 - cmd: nuget restore Source\csla.test.sln
 install:
-- cmd: choco install dotnetcore-sdk --pre
+- cmd: choco install dotnetcore-sdk
 build:
   project: Source\csla.test.sln
   verbosity: minimal

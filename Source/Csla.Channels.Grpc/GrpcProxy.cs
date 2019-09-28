@@ -37,9 +37,8 @@ namespace Csla.Channels.Grpc
     /// values.
     /// </summary>
     public GrpcProxy()
-    {
-      this.DataPortalUrl = ApplicationContext.DataPortalUrlString;
-    }
+      : this(null, ApplicationContext.DataPortalUrlString)
+    { }
 
     /// <summary>
     /// Creates an instance of the object, initializing
@@ -47,30 +46,27 @@ namespace Csla.Channels.Grpc
     /// </summary>
     /// <param name="dataPortalUrl">Server endpoint URL</param>
     public GrpcProxy(string dataPortalUrl)
-    {
-      this.DataPortalUrl = dataPortalUrl;
-    }
+      : this(null, dataPortalUrl)
+    { }
 
     /// <summary>
     /// Creates an instance of the object, initializing
-    /// it to use the supplied HttpClient object.
+    /// it to use the supplied GrpcChannel object.
     /// </summary>
-    /// <param name="httpClient">HttpClient instance</param>
-    public GrpcProxy(HttpClient httpClient)
-    {
-      this.DataPortalUrl = HttpProxy.DefaultUrl;
-      _httpClient = httpClient;
-    }
+    /// <param name="channel">GrpcChannel instance</param>
+    public GrpcProxy(GrpcChannel channel)
+      : this(channel, ApplicationContext.DataPortalUrlString)
+    { }
 
     /// <summary>
     /// Creates an instance of the object, initializing
-    /// it to use the supplied HttpClient object and URL.
+    /// it to use the supplied GrpcChannel object and URL.
     /// </summary>
-    /// <param name="httpClient">HttpClient instance</param>
+    /// <param name="channel">GrpcChannel instance</param>
     /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public GrpcProxy(HttpClient httpClient, string dataPortalUrl)
+    public GrpcProxy(GrpcChannel channel, string dataPortalUrl)
     {
-      _httpClient = httpClient;
+      _channel = channel;
       DataPortalUrl = dataPortalUrl;
     }
 
@@ -80,39 +76,34 @@ namespace Csla.Channels.Grpc
     /// </summary>
     public string DataPortalUrl { get; protected set; }
 
-    private static HttpClient _httpClient;
+    private GrpcChannel _channel;
+    private static GrpcChannel _defaultChannel;
 
     /// <summary>
-    /// Gets an HttpClient object for use 
-    /// by the gRPC client.
+    /// Gets the GrpcChannel used by the gRPC client.
     /// </summary>
-    protected virtual HttpClient GetHttpClient()
+    /// <returns></returns>
+    protected virtual GrpcChannel GetChannel()
     {
-      if (_httpClient == null)
+      if (_channel == null)
       {
-        _httpClient = new HttpClient
-        {
-          BaseAddress = new Uri(DataPortalUrl)
-        };
-        if (this.Timeout > 0)
-        {
-          _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
-        }
+        if (_defaultChannel == null)
+          _defaultChannel = GrpcChannel.ForAddress(DataPortalUrl);
+        _channel = _defaultChannel;
       }
-      return _httpClient;
+      return _channel;
     }
 
     /// <summary>
-    /// Set HttpClient object for use by the gRPC client.
+    /// Sets the GrpcChannel used by gRPC clients.
     /// </summary>
-    /// <param name="client">HttpClient instance.</param>
-    public static void SetHttpClient(HttpClient client)
+    /// <param name="channel">GrpcChannel instance</param>
+    protected static void SetChannel(GrpcChannel channel)
     {
-      _httpClient = client;
-      _grpcClient = null;
+      _defaultChannel = channel;
     }
 
-    private static GrpcService.GrpcServiceClient _grpcClient;
+    private GrpcService.GrpcServiceClient _grpcClient;
 
     /// <summary>
     /// Get gRPC client object used by data portal.
@@ -121,17 +112,8 @@ namespace Csla.Channels.Grpc
     protected virtual GrpcService.GrpcServiceClient GetGrpcClient()
     {
       if (_grpcClient == null)
-        _grpcClient = GrpcClient.Create<GrpcService.GrpcServiceClient>(GetHttpClient());
+        _grpcClient = new GrpcService.GrpcServiceClient(GetChannel());
       return _grpcClient;
-    }
-
-    /// <summary>
-    /// Set gRPC client object for use by data portal.
-    /// </summary>
-    /// <param name="client">gRPC client instance.</param>
-    public static void SetGrpcClient(GrpcService.GrpcServiceClient client)
-    {
-      _grpcClient = client;
     }
 
     /// <summary>

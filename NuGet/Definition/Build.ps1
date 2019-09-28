@@ -45,6 +45,10 @@ function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
             {
                 $dependency.SetAttributeValue( "version", "[$version]" )
             }
+            if ( $idAttribute.Value -eq "Csla.AspNet" )
+            {
+                $dependency.SetAttributeValue( "version", "[$version]" )
+            }
             if ( $idAttribute.Value -eq "CSLA-Core" )
             {
                 $dependency.SetAttributeValue( "version", "[$version]" )

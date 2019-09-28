@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("CSLA .NET Support classes for EF4 (server)")]
 [assembly: AssemblyDescription("CSLA .NET Entity Framework 4")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Marrimer LLC")]
+[assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("Csla.Data.EF4")]
 [assembly: AssemblyCopyright("Copyright © 2010-18 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("5.0.0.0")]
-[assembly: AssemblyFileVersion("5.0.0.0")]
+[assembly: AssemblyVersion("5.0.1.0")]
+[assembly: AssemblyFileVersion("5.0.1.0")]

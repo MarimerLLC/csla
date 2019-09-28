@@ -202,7 +202,7 @@ namespace Csla.Core.FieldManager
       get { return IsBusy; }
     }
 
-    T IFieldData<T>.Value { get => _data; set => _data = value; }
+    T IFieldData<T>.Value { get => Value; set => Value = value; }
 
     string IFieldData.Name => Name;
 

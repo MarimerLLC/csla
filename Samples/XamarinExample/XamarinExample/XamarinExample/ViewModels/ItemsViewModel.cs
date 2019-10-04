@@ -25,7 +25,7 @@ namespace XamarinExample.ViewModels
       {
         await ExecuteLoadItemsCommand();
       });
-      MessagingCenter.Subscribe<EditItemPage, PersonEdit>(this, "EditItem", async (obj, item) =>
+      MessagingCenter.Subscribe<ItemEditViewModel, PersonEdit>(this, "EditItem", async (obj, item) =>
       {
         await ExecuteLoadItemsCommand();
       });

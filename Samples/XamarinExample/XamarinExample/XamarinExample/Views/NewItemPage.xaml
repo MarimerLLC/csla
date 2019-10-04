@@ -8,9 +8,9 @@
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Cancel" Clicked="Cancel_Clicked" />
-        <ToolbarItem Text="Save" Clicked="Save_Clicked" />
-    </ContentPage.ToolbarItems>
+    <ToolbarItem Text="Cancel" Command="{Binding CancelCommand}" />
+    <ToolbarItem Text="Save" Command="{Binding SaveCommand}" />
+  </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15" BindingContext="{Binding Model}">

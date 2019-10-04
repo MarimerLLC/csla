@@ -15,27 +15,11 @@ namespace XamarinExample.Views
   [DesignTimeVisible(false)]
   public partial class NewItemPage : ContentPage
   {
-    private ItemEditViewModel viewmodel;
-
     public NewItemPage()
     {
       InitializeComponent();
 
-      BindingContext = viewmodel = new ItemEditViewModel();
-    }
-
-    async void Save_Clicked(object sender, EventArgs e)
-    {
-      if (!viewmodel.CanSave)
-        return;
-      await viewmodel.Model.SaveAndMergeAsync();
-      MessagingCenter.Send(this, "AddItem", viewmodel.Model);
-      await Navigation.PopModalAsync();
-    }
-
-    async void Cancel_Clicked(object sender, EventArgs e)
-    {
-      await Navigation.PopModalAsync();
+      BindingContext = new ItemEditViewModel();
     }
   }
 }

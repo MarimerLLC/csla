@@ -1,0 +1,36 @@
+﻿@page
+@model RazorPagesExample.Pages.People.CreateModel
+@{
+  ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>PersonEdit</h4>
+<hr />
+<div class="row">
+  <div class="col-md-4">
+    <form asp-action="Create">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div class="form-group">
+        <label asp-for="Item.Name" class="control-label"></label>
+        <input asp-for="Item.Name" class="form-control" />
+        <span asp-validation-for="Item.Name" class="text-danger"></span>
+        <span class="text-danger">@Model.ErrorFor(Model.Item, "Name")</span>
+        <span class="text-warning">@Model.WarningFor(Model.Item, "Name")</span>
+        <span class="text-info">@Model.InformationFor(Model.Item, "Name")</span>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+      </div>
+    </form>
+  </div>
+</div>
+
+<div>
+  <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

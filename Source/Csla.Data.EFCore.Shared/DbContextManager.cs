@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ObjectContextManager.cs" company="Marimer LLC">
+// <copyright file="DbContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -36,7 +36,7 @@ namespace Csla.Data.EntityFrameworkCore
     private string _label;
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the     /// specified database.
+    /// Gets the DbContextManager object for the     /// specified database.
     /// </summary>
 
     public static DbContextManager<C> GetManager()
@@ -45,7 +45,7 @@ namespace Csla.Data.EntityFrameworkCore
     }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">Database name as shown in the config file.</param>
@@ -53,9 +53,9 @@ namespace Csla.Data.EntityFrameworkCore
     {
       return GetManager(database, "default");
     }
-   
+
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">
@@ -146,6 +146,17 @@ namespace Csla.Data.EntityFrameworkCore
     /// managing.
     /// </summary>
     public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Dispose object, dereferencing or
+    /// disposing the context it is
+    /// managing.
+    /// </summary>
+    protected virtual void Dispose(bool p)
     {
       DeRef();
     }

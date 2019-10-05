@@ -18,6 +18,10 @@ namespace XamarinExample.Views
       InitializeComponent();
 
       BindingContext = vm;
+
+      //ErrorText.Text = NameInfo.ErrorText;
+      //WarnText.Text = NameInfo.WarningText;
+      //InfoText.Text = NameInfo.InformationText;
     }
   }
 }

@@ -29,27 +29,18 @@ namespace XamarinExample.Views
 
     async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
     {
-      var item = args.SelectedItem as PersonInfo;
-      if (item == null)
-        return;
-
-      await Navigation.PushModalAsync(
-        new NavigationPage(new EditItemPage(new ItemEditViewModel(item.Id))));
-
-      // Manually deselect item.
+      await viewModel.EditItemAsync(args.SelectedItem as PersonInfo);
       ItemsListView.SelectedItem = null;
     }
 
     async void AddItem_Clicked(object sender, EventArgs e)
     {
-      await Navigation.PushModalAsync(
-        new NavigationPage(new NewItemPage()));
+      await viewModel.AddItemAsync();
     }
 
     protected override void OnAppearing()
     {
       base.OnAppearing();
-
       if (viewModel.Model == null || viewModel.Model.Count == 0)
         viewModel.LoadItemsCommand.Execute(null);
     }

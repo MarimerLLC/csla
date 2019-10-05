@@ -11,29 +11,35 @@ namespace XamarinExample.ViewModels
   public class ItemEditViewModel : ViewModel<PersonEdit>
   {
     public ItemEditViewModel()
-    {
-      Model = DataPortal.Create<PersonEdit>();
-    }
+      : this(-1)
+    { }
 
     public ItemEditViewModel(int id)
     {
-      var t = RefreshAsync<PersonEdit>(
-        () => DataPortal.FetchAsync<PersonEdit>(id));
+      Initialize();
+      if (id == -1)
+        RefreshAsync<PersonEdit>(() => DataPortal.CreateAsync<PersonEdit>());
+      else
+        RefreshAsync<PersonEdit>(() => DataPortal.FetchAsync<PersonEdit>(id));
     }
 
     protected override void Initialize()
     {
       Title = "Edit item";
-      var Navigation = App.Current.MainPage.Navigation;
       CancelCommand =
         new Command(async () => await Navigation.PopModalAsync());
       SaveCommand =
         new Command(async () =>
         {
-          if (!CanSave)
+          if (CanSave)
+          {
+            await Model.SaveAndMergeAsync();
+            MessagingCenter.Send(this, "EditItem", Model);
+          }
+          else if (!IsDirty)
+          {
             return;
-          await Model.SaveAndMergeAsync();
-          MessagingCenter.Send(this, "EditItem", Model);
+          }
           await Navigation.PopModalAsync();
         });
     }

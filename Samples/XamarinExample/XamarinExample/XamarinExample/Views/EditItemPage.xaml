@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
              mc:Ignorable="d"
              x:Class="XamarinExample.Views.EditItemPage"
              Title="{Binding Title}">
@@ -13,9 +14,14 @@
   </ContentPage.ToolbarItems>
 
   <ContentPage.Content>
-    <StackLayout Spacing="20" Padding="15" BindingContext="{Binding Model}">
+    <StackLayout Spacing="20" Padding="15">
       <Label Text="Text" FontSize="Medium" />
-      <Entry Text="{Binding Name}" d:Text="Name" FontSize="Small" />
+      <Entry Text="{Binding Model.Name}" d:Text="Name" FontSize="Small" 
+             ReturnType="Done" ReturnCommand="{Binding SaveCommand}" />
+      <csla:PropertyInfo x:Name="NameInfo" Path="Model.Name" />
+      <Label x:Name="ErrorText" BindingContext="{x:Reference NameInfo}" Text="{Binding ErrorText, Mode=OneWay}" TextColor="White" BackgroundColor="Red" />
+      <Label x:Name="WarnText" BindingContext="{x:Reference NameInfo}" Text="{Binding WarningText}" TextColor="Black" BackgroundColor="Yellow" />
+      <Label x:Name="InfoText" BindingContext="{x:Reference NameInfo}" Text="{Binding InformationText}" TextColor="White" BackgroundColor="Blue" /> 
     </StackLayout>
   </ContentPage.Content>
 </ContentPage>

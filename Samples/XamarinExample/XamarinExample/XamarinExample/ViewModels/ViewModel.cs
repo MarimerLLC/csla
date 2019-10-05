@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Csla.Xaml;
+using Xamarin.Forms;
 
 namespace XamarinExample.ViewModels
 {
@@ -17,6 +18,13 @@ namespace XamarinExample.ViewModels
     {
       get { return title; }
       set { title = value; OnPropertyChanged(nameof(Title)); }
+    }
+
+    private static INavigation _navigation = App.Current.MainPage.Navigation;
+    protected INavigation Navigation
+    {
+      get => _navigation;
+      set => _navigation = value;
     }
 
     protected virtual void Initialize()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BusinessLibrary;
@@ -21,16 +20,24 @@ namespace XamarinExample.ViewModels
       LoadItemsCommand = 
         new Command(async () => await ExecuteLoadItemsCommand());
 
-      MessagingCenter.Subscribe<NewItemPage, PersonEdit>(this, "AddItem", async (obj, item) =>
-      {
-        await ExecuteLoadItemsCommand();
-      });
       MessagingCenter.Subscribe<ItemEditViewModel, PersonEdit>(this, "EditItem", async (obj, item) =>
       {
         await ExecuteLoadItemsCommand();
       });
+    }
 
-      //LoadItemsCommand.Execute(null);
+    public async Task EditItemAsync(PersonInfo item)
+    {
+      if (item == null)
+        return;
+      await Navigation.PushModalAsync(
+        new NavigationPage(new EditItemPage(new ItemEditViewModel(item.Id))));
+    }
+
+    public async Task AddItemAsync()
+    {
+      await Navigation.PushModalAsync(
+        new NavigationPage(new EditItemPage(new ItemEditViewModel())));
     }
 
     async Task ExecuteLoadItemsCommand()
@@ -41,7 +48,6 @@ namespace XamarinExample.ViewModels
       {
         await RefreshAsync<PersonList>(
           () => DataPortal.FetchAsync<PersonList>());
-        //OnPropertyChanged(nameof(Model));
       }
       catch (Exception ex)
       {

@@ -36,7 +36,7 @@ namespace XamarinExample.ViewModels
             await Model.SaveAndMergeAsync();
             MessagingCenter.Send(this, "EditItem", Model);
           }
-          else if (!IsDirty)
+          else if (IsDirty)
           {
             return;
           }

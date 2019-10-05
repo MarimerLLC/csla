@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ObjectContextManager.cs" company="Marimer LLC">
+// <copyright file="DbContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -40,7 +40,7 @@ namespace Csla.Data.EF4
     private string ContextLabel { get; set; }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the     /// specified database.
+    /// Gets the DbContextManager object for the     /// specified database.
     /// </summary>
 
     public static DbContextManager<C> GetManager()
@@ -49,7 +49,7 @@ namespace Csla.Data.EF4
     }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">Database name as shown in the config file.</param>
@@ -59,7 +59,7 @@ namespace Csla.Data.EF4
     }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">Database name as shown in the config file.</param>
@@ -70,7 +70,7 @@ namespace Csla.Data.EF4
     }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">Database name as shown in the config file.</param>
@@ -82,7 +82,7 @@ namespace Csla.Data.EF4
 
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">
@@ -113,7 +113,7 @@ namespace Csla.Data.EF4
     }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="context">
@@ -125,7 +125,7 @@ namespace Csla.Data.EF4
     }
 
     /// <summary>
-    /// Gets the ObjectContextManager object for the 
+    /// Gets the DbContextManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="context">

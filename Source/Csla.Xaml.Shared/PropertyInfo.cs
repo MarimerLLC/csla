@@ -844,6 +844,10 @@ namespace Csla.Xaml
             }
             else
               RuleDescription = string.Empty;
+
+            OnPropertyChanged(nameof(ErrorText));
+            OnPropertyChanged(nameof(WarningText));
+            OnPropertyChanged(nameof(InformationText));
           }
           else
             RuleDescription = string.Empty;

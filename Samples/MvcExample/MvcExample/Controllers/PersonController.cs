@@ -39,7 +39,7 @@ namespace CslaMvcExample.Controllers
     {
       try
       {
-        if (await SaveObjectAsync<PersonEdit>(person, true))
+        if (await SaveObjectAsync<PersonEdit>(person, false))
           return RedirectToAction(nameof(Index));
         else
           return View(person);

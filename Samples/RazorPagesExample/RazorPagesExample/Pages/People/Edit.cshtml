@@ -22,9 +22,9 @@
         <input asp-for="Item.Id" hidden />
         <input asp-for="Item.Name" class="form-control" />
         <span asp-validation-for="Item.Name" class="text-danger"></span>
-        <span class="text-danger">@Model.ErrorFor(Model.Item, "Name")</span>
-        <span class="text-warning">@Model.WarningFor(Model.Item, "Name")</span>
-        <span class="text-info">@Model.InformationFor(Model.Item, "Name")</span>
+        <span class="text-danger">@Model.GetPropertyInfo("Name").ErrorText</span>
+        <span class="text-warning">@Model.GetPropertyInfo("Name").WarningText</span>
+        <span class="text-info">@Model.GetPropertyInfo("Name").InformationText</span>
       </div>
       <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />

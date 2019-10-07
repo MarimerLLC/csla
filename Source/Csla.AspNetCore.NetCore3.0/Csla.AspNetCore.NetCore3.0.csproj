@@ -26,6 +26,10 @@
     <DefineConstants>TRACE;NETCORE3_0</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;NETCORE3_0</DefineConstants>
+  </PropertyGroup>
+
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
 
   <ItemGroup>

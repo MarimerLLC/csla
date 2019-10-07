@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BusinessLibrary;
 using Csla;
-using Csla.Web.Shared.RazorPages;
+using Csla.AspNetCore.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RazorPagesExample.Pages.People

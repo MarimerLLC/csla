@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id=-1}"
 @model RazorPagesExample.Pages.People.EditModel
 @using Csla.Web.Mvc
 @{
@@ -21,7 +21,7 @@
         <label asp-for="Item.Name" class="control-label"></label>
         <input asp-for="Item.Id" hidden />
         <input asp-for="Item.Name" class="form-control" />
-        <span asp-validation-for="Item.Name" class="text-danger"></span>
+        @*<span asp-validation-for="Item.Name" class="text-danger"></span>*@
         <span class="text-danger">@Model.GetPropertyInfo("Name").ErrorText</span>
         <span class="text-warning">@Model.GetPropertyInfo("Name").WarningText</span>
         <span class="text-info">@Model.GetPropertyInfo("Name").InformationText</span>
@@ -34,7 +34,7 @@
 </div>
 
 <div>
-  <a asp-action="Index">Back to List</a>
+  <a href="/People/Index">Back to List</a>
 </div>
 
 @section Scripts {

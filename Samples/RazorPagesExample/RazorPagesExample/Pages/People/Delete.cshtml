@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id}"
 @model RazorPagesExample.Pages.People.DeleteModel
 @{
   ViewData["Title"] = "Delete";
@@ -27,6 +27,6 @@
 
   <form asp-action="Delete">
     <input type="submit" value="Delete" class="btn btn-danger" /> |
-    <a asp-action="Index">Back to List</a>
+    <a href="/People/Index">Back to List</a>
   </form>
 </div>

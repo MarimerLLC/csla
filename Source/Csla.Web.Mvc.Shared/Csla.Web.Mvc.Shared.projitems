@@ -18,6 +18,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)HtmlExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IModelCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RazorPages\PageModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RazorPages\PropertyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortalController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />

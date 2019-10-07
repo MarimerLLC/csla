@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0
+﻿#if NETSTANDARD2_0 || NETCORE3_0
 //-----------------------------------------------------------------------
 // <copyright file="WebConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

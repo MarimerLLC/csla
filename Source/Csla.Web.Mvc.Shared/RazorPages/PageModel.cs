@@ -16,7 +16,7 @@ using System.Linq;
 using Csla.Core;
 using System.Threading.Tasks;
 
-namespace Csla.Web.Shared.RazorPages
+namespace Csla.AspNetCore.RazorPages
 {
   /// <summary>
   /// Custom PageModel for CSLA .NET
@@ -33,8 +33,9 @@ namespace Csla.Web.Shared.RazorPages
     /// <summary>
     /// Save the Item
     /// </summary>
+    /// <param name="forceUpdate">Indicates whether an update operation should be forced.</param>
     /// <returns>Redirection based on success or failure</returns>
-    public async Task<ActionResult> SaveAsync()
+    public async Task<ActionResult> SaveAsync(bool forceUpdate = false)
     {
       try
       {
@@ -42,7 +43,7 @@ namespace Csla.Web.Shared.RazorPages
           AddBrokenRuleInfo(Item, null);
         if (ModelState.IsValid)
         {
-          Item = (T) await Item.SaveAsync(true);
+          Item = (T) await Item.SaveAsync(forceUpdate);
           return RedirectToPage("/People/Index");
         }
       }

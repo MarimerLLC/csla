@@ -13,7 +13,7 @@ using System.ComponentModel;
 using System.Text;
 using Csla.Rules;
 
-namespace Csla.Web.Shared.RazorPages
+namespace Csla.AspNetCore.RazorPages
 {
   /// <summary>
   /// Exposes metastate for a property.

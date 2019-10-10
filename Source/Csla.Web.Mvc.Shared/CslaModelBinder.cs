@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Model binder for use with CSLA .NET editable business objects.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCORE3_0
 using System;
 using System.Collections;
 using System.Collections.Generic;

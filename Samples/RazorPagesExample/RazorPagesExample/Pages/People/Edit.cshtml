@@ -1,0 +1,42 @@
+﻿@page "{id=-1}"
+@model RazorPagesExample.Pages.People.EditModel
+@using Csla.Web.Mvc
+@{
+  ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>PersonEdit</h4>
+<hr />
+<div class="row">
+  <div class="col-md-4">
+    <form asp-action="Edit">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div class="form-group">
+        <label asp-for="Item.Id" class="control-label"></label>
+        @Html.DisplayFor(model => model.Item.Id)
+      </div>
+      <div class="form-group">
+        <label asp-for="Item.Name" class="control-label"></label>
+        <input asp-for="Item.Id" hidden />
+        <input asp-for="Item.Name" class="form-control" />
+        <span csla-errors-for="Item.Name" class="text-danger"></span>
+        <span csla-warnings-for="Item.Name" class="text-warning"></span>
+        <span csla-information-for="Item.Name" class="text-info"></span>
+        @*<span asp-validation-for="Item.Name" class="text-danger"></span>*@
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+      </div>
+    </form>
+  </div>
+</div>
+
+<div>
+  <a href="/People/Index">Back to List</a>
+</div>
+
+@section Scripts {
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

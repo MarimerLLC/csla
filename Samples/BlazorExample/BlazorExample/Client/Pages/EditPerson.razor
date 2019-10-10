@@ -37,9 +37,10 @@ else
         <td>
           <div>
             <input @bind-value="vm.Model.Name" @bind-value:event="oninput" /><br />
-            <span style="background-color:red;color:white">@vm.GetPropertyInfo(nameof(vm.Model.Name)).ErrorText</span>
-            <span style="background-color:yellow;color:black">@vm.GetPropertyInfo(nameof(vm.Model.Name)).WarningText</span>
-            <span style="background-color:blue;color:white">@vm.GetPropertyInfo(nameof(vm.Model.Name)).InformationText</span>
+            <span csla-error-for="Model.Name">foo</span>
+            <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Name)).ErrorText</span>
+            <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Name)).WarningText</span>
+            <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Name)).InformationText</span>
           </div>
         </td>
       </tr>

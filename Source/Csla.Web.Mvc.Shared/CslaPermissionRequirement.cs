@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCORE3_0
 using System;
 using System.Threading.Tasks;
 using Csla.Rules;

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6aafe6b9-5874-4040-a074-7e9fc8bb2890</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Csla.AspNetCore</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RazorPages\PageModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mvc\TagHelpers\CslaErrorsTagHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mvc\TagHelpers\CslaInformationTagHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mvc\TagHelpers\CslaWarningsTagHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Mvc\" />
+  </ItemGroup>
+</Project>

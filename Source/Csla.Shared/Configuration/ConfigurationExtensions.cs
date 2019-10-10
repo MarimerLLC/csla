@@ -7,6 +7,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,9 +24,7 @@ namespace Csla.Configuration
     /// <param name="services">ServiceCollection object</param>
     public static ICslaBuilder AddCsla(this IServiceCollection services)
     {
-      ApplicationContext.SetServiceCollection(services);
-      services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
-      return new CslaBuilder();
+      return AddCsla(services, null);
     }
 
     /// <summary>
@@ -33,13 +32,23 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="config">Implement to configure CSLA .NET</param>
-    public static ICslaBuilder AddCsla(
-      this IServiceCollection services, Action<CslaConfiguration> config)
+    public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> config)
     {
       ApplicationContext.SetServiceCollection(services);
       services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
+      CreateWebContextManager(services);
       config?.Invoke(CslaConfiguration.Configure());
       return new CslaBuilder();
+    }
+
+    private static void CreateWebContextManager(IServiceCollection services)
+    {
+      var webManagerType = Type.GetType("Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore");
+      if (webManagerType != null)
+      {
+        ApplicationContext.WebContextManager = 
+          (IContextManager)Activator.CreateInstance(webManagerType, services.BuildServiceProvider());
+      }
     }
 
     /// <summary>

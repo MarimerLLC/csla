@@ -42,23 +42,14 @@ namespace Csla
       _VersionRoutingTag = null;
     }
 
-  private static IContextManager _webContextManager;
-#if !NETSTANDARD2_0
-    private static Type _webManagerType;
-#endif
+    private static IContextManager _webContextManager;
+    private static readonly Type _webManagerType;
 
     static ApplicationContext()
     {
       Type _contextManagerType = null;
-
-#if !NETSTANDARD2_0
-      _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
-      if (_webManagerType != null)
-        WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
-
       if (_contextManagerType == null)
         _contextManagerType = Type.GetType("Csla.Windows.ApplicationContextManager, Csla.Windows");
-#endif
 
       if (_contextManagerType == null)
         _contextManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
@@ -68,6 +59,13 @@ namespace Csla
 
       if (_contextManager == null)
         _contextManager = new ApplicationContextManager();
+
+      if (_webManagerType == null)
+      {
+        _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
+        if (_webManagerType != null)
+          WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
+      }
     }
 
     /// <summary>
@@ -161,7 +159,7 @@ namespace Csla
 
 #region Client/Global Context
 
-    private static object _syncContext = new object();
+    private static readonly object _syncContext = new object();
 
     /// <summary>
     /// Returns the application-specific context data provided

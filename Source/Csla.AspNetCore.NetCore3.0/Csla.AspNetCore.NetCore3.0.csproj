@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>Csla.AspNetCore.Mvc</AssemblyName>
+    <AssemblyName>Csla.AspNetCore</AssemblyName>
     <RootNamespace>Csla.AspNetCore</RootNamespace>
-    <PackageId>Csla.AspNetCore.Mvc</PackageId>
+    <PackageId>Csla.AspNetCore</PackageId>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET</Product>
@@ -31,6 +31,8 @@
   </PropertyGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
+
+  <Import Project="..\Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

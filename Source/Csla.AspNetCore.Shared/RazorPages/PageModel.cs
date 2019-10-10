@@ -5,10 +5,9 @@
 // </copyright>
 // <summary>Custom PageModel for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-#if NETCOREAPP3_0
+#if !BLAZOR
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Csla.Rules;

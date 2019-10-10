@@ -1,11 +1,11 @@
-﻿#if NETSTANDARD2_0 || NETCORE3_0
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
+#if !BLAZOR
 using Csla.Core;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
-namespace Csla.Web
+namespace Csla.AspNetCore
 {
   /// <summary>
   /// Application context manager that uses HttpContextAccessor when 
@@ -46,10 +46,13 @@ namespace Csla.Web
       get
       {
         HttpContext result = null;
-        var httpContextAccessor = (IHttpContextAccessor)_serviceProvider.GetService(typeof(IHttpContextAccessor));
-        if (httpContextAccessor != null)
+        if (_serviceProvider != null)
         {
-          result = httpContextAccessor.HttpContext;
+          var httpContextAccessor = (IHttpContextAccessor)_serviceProvider.GetService(typeof(IHttpContextAccessor));
+          if (httpContextAccessor != null)
+          {
+            result = httpContextAccessor.HttpContext;
+          }
         }
         return result;
       }

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Exposes metastate for a property</summary>
 //-----------------------------------------------------------------------
-#if NETCOREAPP3_0
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ using System.ComponentModel;
 using System.Text;
 using Csla.Rules;
 
-namespace Csla.AspNetCore.RazorPages
+namespace Csla.AspNetCore
 {
   /// <summary>
   /// Exposes metastate for a property.
@@ -161,4 +160,3 @@ namespace Csla.AspNetCore.RazorPages
     }
   }
 }
-#endif

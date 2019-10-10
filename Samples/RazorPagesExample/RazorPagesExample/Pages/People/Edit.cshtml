@@ -21,10 +21,10 @@
         <label asp-for="Item.Name" class="control-label"></label>
         <input asp-for="Item.Id" hidden />
         <input asp-for="Item.Name" class="form-control" />
+        <span csla-errors-for="Item.Name" class="text-danger"></span>
+        <span csla-warnings-for="Item.Name" class="text-warning"></span>
+        <span csla-information-for="Item.Name" class="text-info"></span>
         @*<span asp-validation-for="Item.Name" class="text-danger"></span>*@
-        <span class="text-danger">@Model.GetPropertyInfo("Name").ErrorText</span>
-        <span class="text-warning">@Model.GetPropertyInfo("Name").WarningText</span>
-        <span class="text-info">@Model.GetPropertyInfo("Name").InformationText</span>
       </div>
       <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />

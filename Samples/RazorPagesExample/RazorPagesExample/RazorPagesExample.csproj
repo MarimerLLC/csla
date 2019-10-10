@@ -5,7 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19100702" />
+    <Compile Remove="TagHelpers\**" />
+    <Content Remove="TagHelpers\**" />
+    <EmbeddedResource Remove="TagHelpers\**" />
+    <None Remove="TagHelpers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19100907" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
   </ItemGroup>

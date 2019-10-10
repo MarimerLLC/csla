@@ -36,19 +36,8 @@ namespace Csla.Configuration
     {
       ApplicationContext.SetServiceCollection(services);
       services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
-      CreateWebContextManager(services);
       config?.Invoke(CslaConfiguration.Configure());
       return new CslaBuilder();
-    }
-
-    private static void CreateWebContextManager(IServiceCollection services)
-    {
-      var webManagerType = Type.GetType("Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore");
-      if (webManagerType != null)
-      {
-        ApplicationContext.WebContextManager = 
-          (IContextManager)Activator.CreateInstance(webManagerType, services.BuildServiceProvider());
-      }
     }
 
     /// <summary>

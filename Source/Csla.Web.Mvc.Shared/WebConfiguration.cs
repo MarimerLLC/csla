@@ -22,8 +22,7 @@ namespace Csla.Configuration
     /// <param name="app">ApplicationBuilder object</param>
     public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
     {
-      ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
-      return app;
+      return UseCsla(app, null);
     }
 
     /// <summary>
@@ -35,6 +34,8 @@ namespace Csla.Configuration
       this IApplicationBuilder app, Action<CslaConfiguration> config)
     {
       ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
+      ApplicationContext.WebContextManager = 
+        new Csla.AspNetCore.ApplicationContextManager(app.ApplicationServices);
       config?.Invoke(CslaConfiguration.Configure());
       return app;
     }

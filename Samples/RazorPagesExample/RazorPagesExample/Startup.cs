@@ -32,7 +32,7 @@ namespace RazorPagesExample
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       if (env.IsDevelopment())
       {
@@ -57,11 +57,8 @@ namespace RazorPagesExample
         endpoints.MapRazorPages();
       });
 
-      var c = Csla.ApplicationContext.WebContextManager;
-
-      var httpContextAccessor = (Microsoft.AspNetCore.Http.IHttpContextAccessor)serviceProvider.GetService(typeof(Microsoft.AspNetCore.Http.IHttpContextAccessor));
-
       app.UseCsla();
+      Configuration.ConfigureCsla();
     }
   }
 }

@@ -2,6 +2,7 @@ using Csla.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
@@ -15,6 +16,12 @@ namespace BlazorExample.Server
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
+      // If using Kestrel:
+      services.Configure<KestrelServerOptions>(options =>
+      {
+        options.AllowSynchronousIO = true;
+      });
+
       services.AddMvc().AddNewtonsoftJson();
       services.AddResponseCompression(opts =>
       {

@@ -1,0 +1,45 @@
+﻿@page "/login"
+
+@inject CurrentUserService CurrentUserService
+
+<h1>Login</h1>
+
+<AuthorizeView>
+  <Authorized>
+    <p>You are logged in.</p>
+    <span></span>
+    <button class="btn btn-primary" @onclick="HandleLogout">Logout</button>
+  </Authorized>
+  <NotAuthorized>
+    <button class="btn btn-primary" @onclick="HandleLogin">Login</button>
+  </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+  [CascadingParameter]
+  public Task<AuthenticationState> AuthState { get; set; }
+
+  public void HandleLogin()
+  {
+    Console.WriteLine("logging in");
+    var claims = new Claim[]
+    {
+        new Claim(ClaimTypes.Name, "Test User"),
+        new Claim(ClaimTypes.Role, "Admin"),
+    };
+
+    var identity = new ClaimsIdentity(claims, "Test", ClaimTypes.Name, ClaimTypes.Role);
+
+    CurrentUserService.CurrentUser = new System.Security.Claims.ClaimsPrincipal(identity);
+    StateHasChanged();
+    Console.WriteLine("logged in");
+  }
+
+  public void HandleLogout()
+  {
+    var identity = new ClaimsIdentity();
+    CurrentUserService.CurrentUser = new System.Security.Claims.ClaimsPrincipal(identity);
+    StateHasChanged();
+  }
+}

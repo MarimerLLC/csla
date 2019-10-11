@@ -16,12 +16,6 @@ namespace BlazorExample.Server
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-      // If using Kestrel:
-      services.Configure<KestrelServerOptions>(options =>
-      {
-        options.AllowSynchronousIO = true;
-      });
-
       services.AddMvc().AddNewtonsoftJson();
       services.AddResponseCompression(opts =>
       {

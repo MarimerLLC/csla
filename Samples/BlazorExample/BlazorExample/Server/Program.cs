@@ -15,7 +15,7 @@ namespace BlazorExample.Server
         WebHost.CreateDefaultBuilder(args)
             .ConfigureKestrel(o =>
             {
-              o.AllowSynchronousIO = false;
+              o.AllowSynchronousIO = true;
             })
             .UseConfiguration(new ConfigurationBuilder()
                 .AddCommandLine(args)

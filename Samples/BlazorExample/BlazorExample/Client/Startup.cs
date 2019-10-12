@@ -34,7 +34,8 @@ namespace BlazorExample.Client
 
     private void AuthStateProvider_AuthenticationStateChanged(System.Threading.Tasks.Task<AuthenticationState> task)
     {
-      Csla.ApplicationContext.User = task.Result.User;
+      var cslaPrincipal = new Csla.Security.CslaClaimsPrincipal(task.Result.User);
+      ApplicationContext.User = cslaPrincipal;
     }
   }
 }

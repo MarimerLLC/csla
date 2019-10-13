@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCORE3_0
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Rules;
@@ -24,13 +24,13 @@ namespace Csla.Web.Mvc
   /// Provides methods that respond to HTTP requests
   /// in an ASP.NET MVC web site.
   /// </summary>
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCORE3_0
   public class Controller : Microsoft.AspNetCore.Mvc.Controller
 #else
   public class Controller : System.Web.Mvc.Controller
 #endif
   {
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCORE3_0
     /// <summary>
     /// Performs a Save() operation on an
     /// editable business object, with appropriate

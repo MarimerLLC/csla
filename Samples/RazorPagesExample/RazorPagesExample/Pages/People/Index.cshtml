@@ -1,0 +1,42 @@
+﻿@page
+@model RazorPagesExample.Pages.ListPeopleModel
+@{
+  ViewData["Title"] = "People";
+}
+
+<h1>ListPeople</h1>
+
+
+<p>
+  <a href="/People/Edit">Create New</a>
+</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>
+        @Html.DisplayNameFor(model => model.PersonList[0].Id)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.PersonList[0].Name)
+      </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model.PersonList)
+    {
+      <tr>
+        <td>
+          @Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+          <a href="/People/Edit/@item.Id">Edit</a>
+          <a href="/People/Delete/@item.Id">Delete</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -10,14 +10,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Blazor" Version="5.0.0" />
+    <PackageReference Include="Csla.Blazor" Version="5.1.0-R19101002" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview9.19424.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.0.0-preview9.19424.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.0.0" />
+
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\BlazorExample.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Components\" />
   </ItemGroup>
 
 </Project>

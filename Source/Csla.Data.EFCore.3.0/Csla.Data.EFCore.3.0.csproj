@@ -5,7 +5,7 @@
     <AssemblyName>Csla.Data.EntityFrameworkCore</AssemblyName>
     <RootNamespace>Csla.Data.EntityFrameworkCore</RootNamespace>
     <PackageId>Csla.Data.EntityFrameworkCore</PackageId>
-    <Version>5.0.1.0</Version>
+    <Version>5.1.0.0</Version>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -19,7 +19,7 @@
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla.Data.EFCore.2.0\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Csla.NetStandard2.0\CslaKey.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
@@ -35,5 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
   </ItemGroup>
+
+  <Import Project="..\Csla.Data.EFCore.Shared\Csla.Data.EFCore.Shared.projitems" Label="Shared" />
 
 </Project>

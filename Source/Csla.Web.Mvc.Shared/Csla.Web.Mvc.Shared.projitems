@@ -9,7 +9,6 @@
     <Import_RootNamespace>Csla.Web.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinder.cs" />

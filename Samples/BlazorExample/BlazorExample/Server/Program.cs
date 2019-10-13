@@ -13,6 +13,10 @@ namespace BlazorExample.Server
 
     public static IWebHost BuildWebHost(string[] args) =>
         WebHost.CreateDefaultBuilder(args)
+            .ConfigureKestrel(o =>
+            {
+              o.AllowSynchronousIO = true;
+            })
             .UseConfiguration(new ConfigurationBuilder()
                 .AddCommandLine(args)
                 .Build())

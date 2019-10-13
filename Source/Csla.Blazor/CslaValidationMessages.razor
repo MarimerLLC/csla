@@ -1,0 +1,27 @@
+﻿@namespace Csla.Blazor
+@inherits CslaValidationMessageBase
+
+  <div id="@WrapperId" class="@WrapperClass">
+    @if (_validationInitiated)
+    {
+      <div class="@ErrorWrapperClass">
+        @foreach (string message in GetErrorMessages())
+        {
+          <div class="@ErrorClass">@message</div>
+        }
+      </div>
+      <div class="@WarningWrapperClass">
+        @foreach (string message in GetWarningMessages())
+        {
+          <div class="@WarningClass">@message</div>
+        }
+      </div>
+      <div class="@InformationWrapperClass">
+        @foreach (string message in GetInfoMessages())
+        {
+          <div class="@InfoClass">@message</div>
+        }
+      </div>
+    }
+  </div>
+

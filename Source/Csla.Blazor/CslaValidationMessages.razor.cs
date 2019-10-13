@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Csla.Blazor
 {
-	public class BusinessRulesValidationMessageBase : ComponentBase, IDisposable
+	public class CslaValidationMessageBase : ComponentBase, IDisposable
 	{
 
 		protected bool _validationInitiated = false;
@@ -18,12 +18,16 @@ namespace Csla.Blazor
 		private EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
 
 		[Parameter] public string PropertyName { get; set; }
-		[Parameter] public string WrapperClass { get; set; } = "validation-messages";
+    [Parameter] public string WrapperId { get; set; } = "wrapper";
+    [Parameter] public string WrapperClass { get; set; } = "validation-messages";
 		[Parameter] public string ErrorClass { get; set; } = "text-danger";
 		[Parameter] public string WarningClass { get; set; } = "text-warning";
 		[Parameter] public string InfoClass { get; set; } = "text-info";
+    [Parameter] public string ErrorWrapperClass { get; set; } = "error-messages";
+    [Parameter] public string WarningWrapperClass { get; set; } = "warning-messages";
+    [Parameter] public string InformationWrapperClass { get; set; } = "information-messages";
 
-		[CascadingParameter] protected EditContext CurrentEditContext { get; set; }
+    [CascadingParameter] protected EditContext CurrentEditContext { get; set; }
 
 		#region Event Handlers
 		
@@ -124,8 +128,8 @@ namespace Csla.Blazor
 			objectUnderTest = CurrentEditContext.Model as ICheckRules;
 			if (objectUnderTest == null)
 			{
-				throw new ArgumentException("Model is not available, or does not implement ICheckRules");
-			}
+        throw new ArgumentException("Model");
+      }
 
 			// Iterate through the broken rules to find the subset we want
 			foreach (BrokenRule rule in objectUnderTest.GetBrokenRules())

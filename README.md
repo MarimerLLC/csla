@@ -20,6 +20,12 @@ More information about CSLA .NET is available from the following sources:
 * [CSLA .NET forum](https://github.com/marimerllc/cslaforum) 
 * [CSLA .NET training videos and ebooks](https://github.com/MarimerLLC/csla/blob/master/docs/Books-and-videos.md)
 
+Patron
+------
+CSLA .NET would not exist in its current form without generous support from
+
+[![Magenic](docs/images/magenic-logo.png)](https://magenic.com)
+
 License
 -------
 CSLA .NET is copyright Marimer LLC.

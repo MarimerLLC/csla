@@ -13,7 +13,7 @@ namespace Csla.Configuration
   /// <summary>
   /// Implement extension methods for .NET Core configuration
   /// </summary>
-  public static class WebConfigurationExtensions
+  public static class BlazorConfigurationExtensions
   {
     /// <summary>
     /// Configures the application to use CSLA .NET
@@ -21,9 +21,7 @@ namespace Csla.Configuration
     /// <param name="app">ApplicationBuilder object</param>
     public static IComponentsApplicationBuilder UseCsla(this IComponentsApplicationBuilder app)
     {
-      CslaConfiguration.Configure().
-       ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
-     return app;
+      return UseCsla(app, null);
     }
 
     /// <summary>
@@ -35,7 +33,7 @@ namespace Csla.Configuration
       this IComponentsApplicationBuilder app, Action<CslaConfiguration> config)
     {
       CslaConfiguration.Configure().
-       ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
+        ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
       config?.Invoke(CslaConfiguration.Configure());
       return app;
     }

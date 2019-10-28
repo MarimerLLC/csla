@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Csla.AspNetCore</AssemblyName>
+    <RootNamespace>Csla.AspNetCore</RootNamespace>
+    <PackageId>Csla.AspNetCore</PackageId>
+    <Authors>Marimer LLC</Authors>
+    <Company>Marimer LLC</Company>
+    <Product>CSLA .NET</Product>
+    <Description>CSLA .NET support for AspNetCore 3.1</Description>
+    <Copyright>Copyright © 2010-18 Marimer LLC</Copyright>
+    <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <AssemblyVersion>5.1.0.0</AssemblyVersion>
+    <FileVersion>5.1.0.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Csla.NetStandard2.0\CslaKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
+  </PropertyGroup>
+
+  <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
+
+  <Import Project="..\Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+  </ItemGroup>
+
+</Project>

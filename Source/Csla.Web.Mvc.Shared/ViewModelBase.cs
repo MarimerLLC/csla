@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD && !NETSTANDARD2_0 && !NETCORE3_0
+﻿#if !NETSTANDARD && !NETSTANDARD2_0 && !NETCORE3_0 && !NETCORE3_1
 //-----------------------------------------------------------------------
 // <copyright file="ViewModelBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

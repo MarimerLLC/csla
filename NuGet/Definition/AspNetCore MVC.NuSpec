@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Csla.AspNetCore</id>
-    <title>CSLA .NET - AspNetCore MVC</title>
+    <title>CSLA .NET - AspNetCore</title>
     <tags>CSLA AspNetCore</tags>
     <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
@@ -27,12 +27,17 @@ Supports the creation of AspNetCore applications.
       <group targetFramework="netcoreapp3.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
+      <group targetFramework="netcoreapp3.1">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
     </dependencies>
   </metadata>
   <files>
     <!-- NetStandard Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.AspNetCore.*" target="lib\netstandard2.0" />
-    <!-- NetCore3 Assembly -->
+    <!-- NetCore3.0 Assembly -->
     <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.AspNetCore.*" target="lib\netcoreapp3.0" />
+    <!-- NetCore3.1 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.AspNetCore.*" target="lib\netcoreapp3.1" />
   </files>
 </package>

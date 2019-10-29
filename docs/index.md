@@ -3,6 +3,7 @@
 Basic information
 -----------------
 * [What is CSLA .NET?](What-is-CSLA-.NET.md)
+* [Sponsor CSLA .NET](https://github.com/sponsors/rockfordlhotka)
 * [CSLA .NET overview whitepaper](https://github.com/MarimerLLC/csla/raw/master/Support/magenic-white-paper-overview-of-csla.pdf)
 * [CSLA .NET home page](http://www.cslanet.com)
 * [Testimonials and Usage](Testimonials-and-Usage.md)

@@ -15,6 +15,9 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Generic;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Server
 {
@@ -62,9 +65,20 @@ namespace Csla.Server
     protected DataPortal(Type authProviderType)
     {
       if (null == authProviderType)
-        throw new ArgumentNullException("authProviderType", Resources.CslaAuthenticationProviderNotSet);
+        throw new ArgumentNullException(nameof(authProviderType), Resources.CslaAuthenticationProviderNotSet);
       if (!typeof(IAuthorizeDataPortal).IsAssignableFrom(authProviderType))
-        throw new ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType");
+        throw new ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, nameof(authProviderType));
+
+#if !NET40 && !NET45
+      if (ApplicationContext.DefaultServiceProvider != null)
+      {
+        if (ReferenceEquals(ApplicationContext.DefaultServiceProvider, ApplicationContext.ScopedServiceProvider))
+        {
+          ApplicationContext.ScopedServiceProvider = 
+            ApplicationContext.DefaultServiceProvider.CreateScope().ServiceProvider;
+        }
+      }
+#endif
 
       //only construct the type if it was not constructed already
       if (null == _authorizer)

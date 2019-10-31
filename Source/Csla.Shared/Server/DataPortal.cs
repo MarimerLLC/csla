@@ -600,6 +600,14 @@ namespace Csla.Server
 
       if (_interceptor != null)
         _interceptor.Complete(e);
+
+#if !NET40 && !NET45
+      if (ApplicationContext.ServiceProviderScope != null)
+      {
+        ApplicationContext.ServiceProviderScope.Dispose();
+        ApplicationContext.ServiceProviderScope = null;
+      }
+#endif
     }
 
     internal void Initialize(InterceptArgs e)
@@ -611,9 +619,9 @@ namespace Csla.Server
         _interceptor.Initialize(e);
     }
 
-    #endregion
+#endregion
 
-    #region Context
+#region Context
 
     ApplicationContext.LogicalExecutionLocations _oldLocation;
 
@@ -635,7 +643,7 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if !PCL46  && !PCL259// rely on NuGet bait-and-switch for actual implementation
+#if !PCL46 && !PCL259// rely on NuGet bait-and-switch for actual implementation
 #if NETCORE
       System.Globalization.CultureInfo.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture); 
@@ -697,7 +705,7 @@ namespace Csla.Server
 
 #endregion
 
-    #region Authorize
+#region Authorize
 
     private static object _syncRoot = new object();
     private static IAuthorizeDataPortal _authorizer = null;
@@ -737,7 +745,7 @@ namespace Csla.Server
       { /* default is to allow all requests */ }
     }
 
-    #endregion
+#endregion
 
     internal static DataPortalException NewDataPortalException(string message, Exception innerException, object businessObject)
     {

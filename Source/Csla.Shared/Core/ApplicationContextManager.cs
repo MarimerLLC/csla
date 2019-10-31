@@ -9,6 +9,9 @@ using System;
 using System.Security.Principal;
 using System.Threading;
 using Csla;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Core
 {
@@ -181,5 +184,29 @@ namespace Csla.Core
     {
       Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
     }
+
+#if !NET40 && !NET45
+    /// <summary>
+    /// Gets the service provider scope
+    /// </summary>
+    /// <returns></returns>
+#pragma warning disable CS3002 // Return type is not CLS-compliant
+    public IServiceScope GetServiceProviderScope()
+#pragma warning restore CS3002 // Return type is not CLS-compliant
+    {
+      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+    }
+
+    /// <summary>
+    /// Sets the service provider scope
+    /// </summary>
+    /// <param name="scope">IServiceScope instance</param>
+#pragma warning disable CS3001 // Argument type is not CLS-compliant
+    public void SetServiceProviderScope(IServiceScope scope)
+#pragma warning restore CS3001 // Argument type is not CLS-compliant
+    {
+      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+    }
+#endif
   }
 }

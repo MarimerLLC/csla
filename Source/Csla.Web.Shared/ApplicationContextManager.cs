@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using Csla.Core;
 using System.Web;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Web
 {
@@ -149,5 +152,25 @@ namespace Csla.Web
     {
       Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
     }
+
+#if !NET40 && !NET45
+    /// <summary>
+    /// Gets the service provider scope
+    /// </summary>
+    /// <returns></returns>
+    public IServiceScope GetServiceProviderScope()
+    {
+      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+    }
+
+    /// <summary>
+    /// Sets the service provider scope
+    /// </summary>
+    /// <param name="scope">IServiceScope instance</param>
+    public void SetServiceProviderScope(IServiceScope scope)
+    {
+      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+    }
+#endif
   }
 }

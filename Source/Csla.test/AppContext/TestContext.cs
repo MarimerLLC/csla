@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using Csla.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Test.AppContext
 {
@@ -113,6 +114,24 @@ namespace Csla.Test.AppContext
     public void SetScopedServiceProvider(IServiceProvider serviceProvider)
     {
       Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
+    }
+
+    /// <summary>
+    /// Gets the service provider scope
+    /// </summary>
+    /// <returns></returns>
+    public IServiceScope GetServiceProviderScope()
+    {
+      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+    }
+
+    /// <summary>
+    /// Sets the service provider scope
+    /// </summary>
+    /// <param name="scope">IServiceScope instance</param>
+    public void SetServiceProviderScope(IServiceScope scope)
+    {
+      Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }
   }
 }

@@ -6,27 +6,26 @@
 // <summary>Class containing the default implementation for</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Properties;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Server
 {
   /// <summary>
   /// Class containing the default implementation for
-  /// the FactoryLoader delegate used by the
-  /// Silverlight data portal host.
+  /// the FactoryLoader delegate used by the data portal host.
   /// </summary>
   public class ObjectFactoryLoader : IObjectFactoryLoader
   {
     /// <summary>
-    /// Gets the type of the factory.
+    /// Gets the type of the object factory.
     /// </summary>
     /// <param name="factoryName">
-    /// Type assembly qualified type name for the 
-    /// object factory class as
-    /// provided from the ObjectFactory attribute
+    /// Assembly qualified type name for the 
+    /// object factory class as provided from 
+    /// the ObjectFactory attribute
     /// on the business object.
     /// </param>
     public Type GetFactoryType(string factoryName)
@@ -39,9 +38,9 @@ namespace Csla.Server
     /// object for use by the data portal.
     /// </summary>
     /// <param name="factoryName">
-    /// Type assembly qualified type name for the 
-    /// object factory class as
-    /// provided from the ObjectFactory attribute
+    /// Assembly qualified type name for the 
+    /// object factory class as provided from 
+    /// the ObjectFactory attribute
     /// on the business object.
     /// </param>
     /// <returns>
@@ -50,10 +49,15 @@ namespace Csla.Server
     /// </returns>
     public object GetFactory(string factoryName)
     {
-      var ft = Type.GetType(factoryName);
+      var ft = GetFactoryType(factoryName);
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
+#if !NET40 && !NET45
+      var provider = ApplicationContext.ScopedServiceProvider;
+      if (provider != null)
+        return ActivatorUtilities.CreateInstance(provider, ft);
+#endif
       return Activator.CreateInstance(ft);
     }
   }

@@ -6,6 +6,9 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -153,12 +156,14 @@ namespace Csla.Configuration
 
 #if !NET40 && !NET45
     /// <summary>
-    /// Sets the scoped IServiceProvider for the current context.
+    /// Sets the IServiceProvider scope for the current context.
     /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public CslaConfiguration ScopedServiceProvider(IServiceProvider serviceProvider)
+    /// <param name="scope">IServiceScope instance</param>
+#pragma warning disable CS3001 // Argument type is not CLS-compliant
+    public CslaConfiguration ServiceProviderScope(IServiceScope scope)
+#pragma warning restore CS3001 // Argument type is not CLS-compliant
     {
-      ApplicationContext.ScopedServiceProvider = serviceProvider;
+      ApplicationContext.ServiceProviderScope = scope;
       return this;
     }
 #endif

@@ -813,7 +813,7 @@ namespace Csla
     {
       LocalContext["__logicalExecutionLocation"] = location;
     }
-#endregion
+    #endregion
 
 #region ServiceProvider
 
@@ -845,21 +845,37 @@ namespace Csla
     }
 
     /// <summary>
-    /// Sets the service provider scoped for this application context.
+    /// Sets the service provider scope for this application context.
     /// </summary>
-    public static IServiceProvider ScopedServiceProvider
+#pragma warning disable CS3003 // Type is not CLS-compliant
+    public static IServiceScope ServiceProviderScope
+#pragma warning restore CS3003 // Type is not CLS-compliant
     {
       internal get
       {
-        var result = _contextManager.GetScopedServiceProvider();
-        if (result == null)
+        var result = _contextManager.GetServiceProviderScope();
+        if (result == null && DefaultServiceProvider != null)
         {
-          result = DefaultServiceProvider;
-          ScopedServiceProvider = result;
+          result = DefaultServiceProvider.CreateScope();
+          ServiceProviderScope = result;
         }
         return result;
       }
-      set => _contextManager.SetScopedServiceProvider(value);
+      set => _contextManager.SetServiceProviderScope(value);
+    }
+
+    /// <summary>
+    /// Gets the service provider scoped for this application context.
+    /// </summary>
+    internal static IServiceProvider ScopedServiceProvider
+    {
+      get
+      {
+        if (ServiceProviderScope != null)
+          return ServiceProviderScope.ServiceProvider;
+        else
+          return null;
+      }
     }
 #endif
 

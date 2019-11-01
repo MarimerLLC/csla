@@ -8,6 +8,7 @@
 #if !BLAZOR
 using Csla.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -160,24 +161,21 @@ namespace Csla.AspNetCore
     }
 
     /// <summary>
-    /// Gets the scoped IServiceProvider
+    /// Gets the service provider scope
     /// </summary>
-    public IServiceProvider GetScopedServiceProvider()
+    /// <returns></returns>
+    public IServiceScope GetServiceProviderScope()
     {
-      IServiceProvider result;
-      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
-      if (result == null)
-        result = GetDefaultServiceProvider();
-      return result;
+      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
     }
 
     /// <summary>
-    /// Sets the scoped IServiceProvider
+    /// Sets the service provider scope
     /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
+    /// <param name="scope">IServiceScope instance</param>
+    public void SetServiceProviderScope(IServiceScope scope)
     {
-      Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
+      Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }
   }
 }

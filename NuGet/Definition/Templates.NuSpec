@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Installs code snippets and item templates to assist in creating CSLA business objects.
@@ -28,5 +28,7 @@ Code snippets and templates that supports the creation of CSLA business objects.
     <file src="..\..\Support\Snippets\vb\*.snippet" target="tools\Snippets\vb" />
     <file src="..\..\Support\TemplateInstaller\CslaTemplates\ItemTemplates\CSharp\Csla4\*.zip" target="tools\Templates\cs" />
     <file src="..\..\Support\TemplateInstaller\CslaTemplates\ItemTemplates\VisualBasic\Csla4\*.zip" target="tools\Templates\vb" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

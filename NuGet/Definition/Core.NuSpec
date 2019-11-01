@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
@@ -77,5 +77,7 @@ Supports the creation of Class Library projects containing business domain class
     <!-- CSLA Analyzers -->
     <file src="..\..\bin\Release\netstandard\netstandard1.3\Csla.Analyzers.*" target="analyzers\c#" />
     <file src="..\..\bin\Release\netstandard\netstandard1.3\tools\*.ps1" target="tools\" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

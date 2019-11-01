@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the use of Entity Framework Core.
@@ -35,5 +35,7 @@ Supports the use of Entity Framework Core.
     <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.EntityFrameworkCore.*" target="lib\netstandard2.0" />
     <!-- .NET Core 3.0 -->
     <file src="..\..\Bin\Release\netstandard\netstandard2.1\**\Csla.Data.EntityFrameworkCore.*" target="lib\netstandard2.1" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

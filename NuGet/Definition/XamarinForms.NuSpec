@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Xamarin.Forms applications for iOS, Android, and Windows.
@@ -26,5 +26,7 @@ Supports the creation of Xamarin.Forms applications.
   <files>
     <!-- Xamarin.Forms Csla.Xaml -->
     <file src="..\..\Bin\Release\Xamarin\netstandard2.0\**\Csla.Xaml.*" target="lib\netstandard2.0"/>
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

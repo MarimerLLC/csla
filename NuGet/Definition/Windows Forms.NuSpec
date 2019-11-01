@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Windows Forms applications.
@@ -50,5 +50,7 @@ Supports the creation of Windows Forms applications.
     <file src="..\..\Bin\Release\NET46\**\Csla.Windows.xml*" target="lib\net461" />
     <!-- Source Files for Symbol Server -->
     <!-- <file src="..\..\Source\**\Csla.Windows*\**\*.cs" target="src" /> -->
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

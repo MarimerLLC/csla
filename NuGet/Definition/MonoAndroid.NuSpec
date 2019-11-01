@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Xamarin Android applications.
@@ -26,5 +26,7 @@ Supports the creation of Xamarin Android applications.
   <files>
     <!-- Xamarin Android Client -->
     <file src="..\..\Bin\Release\Android\**\Csla.Axml." target="lib\MonoAndroid10" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

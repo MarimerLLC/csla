@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the use of System.Data.SqlClient.
@@ -27,5 +27,7 @@ Supports the use of System.Data.SqlClient.
   <files>
     <!-- .NET Core 2.0 -->
     <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.Fx.*" target="lib\netstandard2.0" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

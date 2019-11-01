@@ -20,8 +20,15 @@ Highlights:
 
 ### Razor and MVC
 
-* [#1368](https://github.com/MarimerLLC/csla/issues/1368) Add netcoreapp3.0 project for ASP.NET Core 3
+* [#1389](https://github.com/MarimerLLC/csla/issues/1389) Add netcoreapp3.1 project for ASP.NET Core 3.1
+* [#1368](https://github.com/MarimerLLC/csla/issues/1368) Add netcoreapp3.0 project for ASP.NET Core 3.0
 * [#1367](https://github.com/MarimerLLC/csla/issues/1367) Add Razor tag helpers for validation (error/warn/info) text
+
+### Data Portal
+
+* [#1387](https://github.com/MarimerLLC/csla/issues/1387) Improve exception messages from HttpProxy
+* [#1386](https://github.com/MarimerLLC/csla/issues/1386) Auto-create scoped DI service provider on data portal server
+* [#1332](https://github.com/MarimerLLC/csla/issues/1332) Factory data portal needs to support DI (via constructor injection)
 
 ### Analyzers
 
@@ -40,9 +47,9 @@ Highlights:
 ### Dependabot and NuGet dependencies
 
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
-* Bump Xamarin.Forms from 4.2.0.815419 to 4.2.0.848062
-* Bump Google.Protobuf from 3.9.2 to 3.10.0
-* Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.6
+* Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
+* Bump Google.Protobuf from 3.9.2 to 3.10.1
+* Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors
 

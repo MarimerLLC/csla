@@ -132,27 +132,6 @@ namespace Csla.Web
       Csla.ApplicationContext.LocalContext["__dsp"] = serviceProvider;
     }
 
-    /// <summary>
-    /// Gets the scoped IServiceProvider
-    /// </summary>
-    public IServiceProvider GetScopedServiceProvider()
-    {
-      IServiceProvider result;
-      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
-      if (result == null)
-        result = GetDefaultServiceProvider();
-      return result;
-    }
-
-    /// <summary>
-    /// Sets the scoped IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
-    {
-      Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
-    }
-
 #if !NET40 && !NET45
     /// <summary>
     /// Gets the service provider scope

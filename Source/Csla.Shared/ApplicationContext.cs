@@ -815,7 +815,7 @@ namespace Csla
     }
     #endregion
 
-    #region ServiceProvider
+#region ServiceProvider
 
 #if !NET40 && !NET45
     private static IServiceCollection _serviceCollection;
@@ -845,8 +845,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Sets the service provider scope for this application context,
-    /// and sets the ScopedServiceProvider value accordingly.
+    /// Sets the service provider scope for this application context.
     /// </summary>
 #pragma warning disable CS3003 // Type is not CLS-compliant
     public static IServiceScope ServiceProviderScope
@@ -855,39 +854,31 @@ namespace Csla
       internal get
       {
         var result = _contextManager.GetServiceProviderScope();
-        if (result == null)
+        if (result == null && DefaultServiceProvider != null)
         {
           result = DefaultServiceProvider.CreateScope();
-          ScopedServiceProvider = result.ServiceProvider;
+          ServiceProviderScope = result;
         }
         return result;
       }
-      set
-      {
-        _contextManager.SetServiceProviderScope(value);
-        ScopedServiceProvider = value.ServiceProvider;
-      }
+      set => _contextManager.SetServiceProviderScope(value);
     }
 
     /// <summary>
-    /// Sets the service provider scoped for this application context.
+    /// Gets the service provider scoped for this application context.
     /// </summary>
-    public static IServiceProvider ScopedServiceProvider
+    internal static IServiceProvider ScopedServiceProvider
     {
-      internal get
+      get
       {
-        var result = _contextManager.GetScopedServiceProvider();
-        if (result == null)
-        {
-          result = DefaultServiceProvider;
-          ScopedServiceProvider = result;
-        }
-        return result;
+        if (ServiceProviderScope != null)
+          return ServiceProviderScope.ServiceProvider;
+        else
+          return null;
       }
-      set => _contextManager.SetScopedServiceProvider(value);
     }
 #endif
 
-    #endregion
+#endregion
   }
 }

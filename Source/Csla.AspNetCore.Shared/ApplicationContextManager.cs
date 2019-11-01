@@ -161,27 +161,6 @@ namespace Csla.AspNetCore
     }
 
     /// <summary>
-    /// Gets the scoped IServiceProvider
-    /// </summary>
-    public IServiceProvider GetScopedServiceProvider()
-    {
-      IServiceProvider result;
-      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__ssp"];
-      if (result == null)
-        result = GetDefaultServiceProvider();
-      return result;
-    }
-
-    /// <summary>
-    /// Sets the scoped IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public void SetScopedServiceProvider(IServiceProvider serviceProvider)
-    {
-      Csla.ApplicationContext.LocalContext["__ssp"] = serviceProvider;
-    }
-
-    /// <summary>
     /// Gets the service provider scope
     /// </summary>
     /// <returns></returns>

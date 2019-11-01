@@ -62,9 +62,10 @@ namespace Csla.DataPortalClient
           _proxyType = Type.GetType(proxyTypeName, true, true);
       }
 #if !NET40 && !NET45
-      if (ApplicationContext.ScopedServiceProvider != null)
+      var provider = ApplicationContext.ScopedServiceProvider;
+      if (provider != null)
       {
-        var httpClient = ApplicationContext.ScopedServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
+        var httpClient = provider.GetService(typeof(System.Net.Http.HttpClient));
         if (httpClient == null)
           return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType);
         else

@@ -85,14 +85,5 @@ namespace Csla.Core
     void SetServiceProviderScope(IServiceScope scope);
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
 #endif
-    /// <summary>
-    /// Gets the scoped IServiceProvider
-    /// </summary>
-    IServiceProvider GetScopedServiceProvider();
-    /// <summary>
-    /// Sets the scoped IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    void SetScopedServiceProvider(IServiceProvider serviceProvider);
   }
 }

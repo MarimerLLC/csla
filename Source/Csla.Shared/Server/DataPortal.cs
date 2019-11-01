@@ -74,8 +74,8 @@ namespace Csla.Server
       {
         if (ReferenceEquals(ApplicationContext.DefaultServiceProvider, ApplicationContext.ScopedServiceProvider))
         {
-          ApplicationContext.ScopedServiceProvider = 
-            ApplicationContext.DefaultServiceProvider.CreateScope().ServiceProvider;
+          ApplicationContext.ServiceProviderScope = 
+            ApplicationContext.DefaultServiceProvider.CreateScope();
         }
       }
 #endif
@@ -602,10 +602,11 @@ namespace Csla.Server
         _interceptor.Complete(e);
 
 #if !NET40 && !NET45
-      if (ApplicationContext.ServiceProviderScope != null)
+      var scope = ApplicationContext.ServiceProviderScope;
+      if (scope != null)
       {
-        ApplicationContext.ServiceProviderScope.Dispose();
         ApplicationContext.ServiceProviderScope = null;
+        scope.Dispose();
       }
 #endif
     }

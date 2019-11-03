@@ -463,4 +463,13 @@
   <data name="UnableToLoadDataPortalProxyFactory" xml:space="preserve">
     <value>Unable to load DataPortalProxyFactory {0}</value>
   </data>
+  <data name="CascadingEditContextRequiredException" xml:space="preserve">
+    <value>{0} requires a cascading parameter of type {1}. For example, you can use {0} inside an EditForm.</value>
+  </data>
+  <data name="ParameterRequiredException" xml:space="preserve">
+    <value>{0} requires a value for the {1} parameter.</value>
+  </data>
+  <data name="InterfaceNotImplementedException" xml:space="preserve">
+    <value>{0} does not implement required interface {1}</value>
+  </data>
 </root>

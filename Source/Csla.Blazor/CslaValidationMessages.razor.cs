@@ -9,28 +9,66 @@ using System.Threading.Tasks;
 
 namespace Csla.Blazor
 {
+  /// <summary>
+  /// Validation message base type
+  /// </summary>
 	public class CslaValidationMessageBase : ComponentBase, IDisposable
 	{
 
+    /// <summary>
+    /// Value indicating whether validation is initiated
+    /// </summary>
 		protected bool _validationInitiated = false;
 		private EditContext _previousEditContext;
 		private EventHandler<FieldChangedEventArgs> _fieldChangedHandler;
 		private EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
 
+    /// <summary>
+    /// Gets or sets the property name
+    /// </summary>
 		[Parameter] public string PropertyName { get; set; }
+    /// <summary>
+    /// Gets or sets the wrapper id
+    /// </summary>
     [Parameter] public string WrapperId { get; set; } = "wrapper";
+    /// <summary>
+    /// Gets or sets the wrapper class
+    /// </summary>
     [Parameter] public string WrapperClass { get; set; } = "validation-messages";
+    /// <summary>
+    /// Gets or sets the error class
+    /// </summary>
 		[Parameter] public string ErrorClass { get; set; } = "text-danger";
+    /// <summary>
+    /// Gets or sets the warning class
+    /// </summary>
 		[Parameter] public string WarningClass { get; set; } = "text-warning";
+    /// <summary>
+    /// Gets or sets the info class
+    /// </summary>
 		[Parameter] public string InfoClass { get; set; } = "text-info";
+    /// <summary>
+    /// Gets or sets the error wrapper class
+    /// </summary>
     [Parameter] public string ErrorWrapperClass { get; set; } = "error-messages";
+    /// <summary>
+    /// Gets or sets the warning wrapper class
+    /// </summary>
     [Parameter] public string WarningWrapperClass { get; set; } = "warning-messages";
-    [Parameter] public string InformationWrapperClass { get; set; } = "information-messages";
-
+    /// <summary>
+    /// Gets or sets the info wrapper class
+    /// </summary>
+    [Parameter] public string InfoWrapperClass { get; set; } = "information-messages";
+    /// <summary>
+    /// Gets or sets the current edit context
+    /// </summary>
     [CascadingParameter] protected EditContext CurrentEditContext { get; set; }
 
 		#region Event Handlers
 		
+    /// <summary>
+    /// On initialized method
+    /// </summary>
 		protected override void OnInitialized()
 		{
 			// Initialise event handler delegates for use in capturing state changes
@@ -38,6 +76,9 @@ namespace Csla.Blazor
 			_validationStateChangedHandler = (sender, eventArgs) => OnValidationStateChanged(sender, eventArgs);
 		}
 
+    /// <summary>
+    /// On parameters set method
+    /// </summary>
 		protected override void OnParametersSet()
 		{
 			// Check that the required parameters have been provided
@@ -66,6 +107,11 @@ namespace Csla.Blazor
 			}
 		}
 
+    /// <summary>
+    /// On field changed method
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="eventArgs"></param>
 		protected void OnFieldChanged(object sender, FieldChangedEventArgs eventArgs)
 		{
 			if (eventArgs.FieldIdentifier.FieldName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase))
@@ -75,6 +121,11 @@ namespace Csla.Blazor
 			}
 		}
 
+    /// <summary>
+    /// On validation state changed method
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="eventArgs"></param>
 		protected void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs eventArgs)
 		{
 			IEnumerable<string> messages;
@@ -92,6 +143,9 @@ namespace Csla.Blazor
 			StateHasChanged();
 		}
 
+    /// <summary>
+    /// Detatch previous event handlers
+    /// </summary>
 		protected void DetachPreviousEventHandlers()
 		{
 			if (_previousEditContext != null)
@@ -106,16 +160,28 @@ namespace Csla.Blazor
 
 		#region Message Retrieval
 
+    /// <summary>
+    /// Get error messages
+    /// </summary>
+    /// <returns></returns>
 		protected IEnumerable<string> GetErrorMessages()
 		{
 			return GetBrokenRuleMessages(PropertyName, RuleSeverity.Error);
 		}
 
+    /// <summary>
+    /// Get warning messages
+    /// </summary>
+    /// <returns></returns>
 		protected IEnumerable<string> GetWarningMessages()
 		{
 			return GetBrokenRuleMessages(PropertyName, RuleSeverity.Warning);
 		}
 
+    /// <summary>
+    /// Get info messages
+    /// </summary>
+    /// <returns></returns>
 		protected IEnumerable<string> GetInfoMessages()
 		{
 			return GetBrokenRuleMessages(PropertyName, RuleSeverity.Information);
@@ -156,17 +222,25 @@ namespace Csla.Blazor
 
 		#region IDisposable Interface
 
-		void IDisposable.Dispose()
+    /// <summary>
+    /// Dispose the object
+    /// </summary>
+		public void Dispose()
 		{
-			DetachPreviousEventHandlers();
-			Dispose(disposing: true);
+			Dispose(true);
 		}
 
+    /// <summary>
+    /// Dispose the object
+    /// </summary>
+    /// <param name="disposing">Disposing</param>
 		protected virtual void Dispose(bool disposing)
 		{
-		}
+      if (disposing)
+        DetachPreviousEventHandlers();
+    }
 
-		#endregion
+    #endregion
 
-	}
+  }
 }

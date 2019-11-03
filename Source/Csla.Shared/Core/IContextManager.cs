@@ -7,6 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Core
 {
@@ -67,14 +70,20 @@ namespace Csla.Core
     /// </summary>
     /// <param name="serviceProvider">IServiceProvider instance</param>
     void SetDefaultServiceProvider(IServiceProvider serviceProvider);
+#if !NET40 && !NET45
     /// <summary>
-    /// Gets the scoped IServiceProvider
+    /// Gets the service provider scope
     /// </summary>
-    IServiceProvider GetScopedServiceProvider();
+#pragma warning disable CS3002 // Return type is not CLS-compliant
+    IServiceScope GetServiceProviderScope();
+#pragma warning restore CS3002 // Return type is not CLS-compliant
     /// <summary>
-    /// Sets the scoped IServiceProvider
+    /// Sets the service provider scope
     /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    void SetScopedServiceProvider(IServiceProvider serviceProvider);
+    /// <param name="scope">IServiceScope instance</param>
+#pragma warning disable CS3001 // Argument type is not CLS-compliant
+    void SetServiceProviderScope(IServiceScope scope);
+#pragma warning restore CS3001 // Argument type is not CLS-compliant
+#endif
   }
 }

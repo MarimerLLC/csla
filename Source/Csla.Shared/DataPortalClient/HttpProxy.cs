@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -408,7 +409,7 @@ namespace Csla.DataPortalClient
     private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
     {
       HttpClient client = GetHttpClient();
-      HttpRequestMessage httpRequest = null;
+      HttpRequestMessage httpRequest;
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post, 
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
@@ -417,9 +418,9 @@ namespace Csla.DataPortalClient
       else
         httpRequest.Content = new ByteArrayContent(serialized);
       var httpResponse = await client.SendAsync(httpRequest);
-      httpResponse.EnsureSuccessStatusCode();
+      await VerifyResponseSuccess(httpResponse);
       if (UseTextSerialization)
-        serialized = System.Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync());
+        serialized = Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync());
       else
         serialized = await httpResponse.Content.ReadAsByteArrayAsync();
       return serialized;
@@ -440,6 +441,24 @@ namespace Csla.DataPortalClient
         serialized = result;
       }
       return serialized;
+    }
+
+    private static async Task VerifyResponseSuccess(HttpResponseMessage httpResponse)
+    {
+      if (!httpResponse.IsSuccessStatusCode)
+      {
+        var message = new StringBuilder();
+        message.Append(httpResponse.StatusCode);
+        message.Append(": ");
+        message.Append(httpResponse.ReasonPhrase);
+        var content = await httpResponse.Content.ReadAsStringAsync();
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+          message.AppendLine();
+          message.Append(content);
+        }
+        throw new HttpRequestException(message.ToString());
+      }
     }
 
     private string CreateOperationTag(string operatation, string versionToken, string routingToken)

@@ -15,6 +15,9 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Generic;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Server
 {
@@ -62,9 +65,20 @@ namespace Csla.Server
     protected DataPortal(Type authProviderType)
     {
       if (null == authProviderType)
-        throw new ArgumentNullException("authProviderType", Resources.CslaAuthenticationProviderNotSet);
+        throw new ArgumentNullException(nameof(authProviderType), Resources.CslaAuthenticationProviderNotSet);
       if (!typeof(IAuthorizeDataPortal).IsAssignableFrom(authProviderType))
-        throw new ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType");
+        throw new ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, nameof(authProviderType));
+
+#if !NET40 && !NET45
+      if (ApplicationContext.DefaultServiceProvider != null)
+      {
+        if (ReferenceEquals(ApplicationContext.DefaultServiceProvider, ApplicationContext.ScopedServiceProvider))
+        {
+          ApplicationContext.ServiceProviderScope = 
+            ApplicationContext.DefaultServiceProvider.CreateScope();
+        }
+      }
+#endif
 
       //only construct the type if it was not constructed already
       if (null == _authorizer)
@@ -586,6 +600,15 @@ namespace Csla.Server
 
       if (_interceptor != null)
         _interceptor.Complete(e);
+
+#if !NET40 && !NET45
+      var scope = ApplicationContext.ServiceProviderScope;
+      if (scope != null)
+      {
+        ApplicationContext.ServiceProviderScope = null;
+        scope.Dispose();
+      }
+#endif
     }
 
     internal void Initialize(InterceptArgs e)
@@ -597,9 +620,9 @@ namespace Csla.Server
         _interceptor.Initialize(e);
     }
 
-    #endregion
+#endregion
 
-    #region Context
+#region Context
 
     ApplicationContext.LogicalExecutionLocations _oldLocation;
 
@@ -621,7 +644,7 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if !PCL46  && !PCL259// rely on NuGet bait-and-switch for actual implementation
+#if !PCL46 && !PCL259// rely on NuGet bait-and-switch for actual implementation
 #if NETCORE
       System.Globalization.CultureInfo.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture); 
@@ -683,7 +706,7 @@ namespace Csla.Server
 
 #endregion
 
-    #region Authorize
+#region Authorize
 
     private static object _syncRoot = new object();
     private static IAuthorizeDataPortal _authorizer = null;
@@ -723,7 +746,7 @@ namespace Csla.Server
       { /* default is to allow all requests */ }
     }
 
-    #endregion
+#endregion
 
     internal static DataPortalException NewDataPortalException(string message, Exception innerException, object businessObject)
     {

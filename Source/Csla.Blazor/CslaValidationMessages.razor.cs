@@ -84,15 +84,17 @@ namespace Csla.Blazor
 			// Check that the required parameters have been provided
 			if (CurrentEditContext == null)
 			{
-				throw new InvalidOperationException($"{GetType()} requires a cascading parameter " +
-					$"of type {nameof(EditContext)}. For example, you can use {GetType()} inside " +
-					$"an {nameof(EditForm)}.");
-			}
+				throw new InvalidOperationException(
+          string.Format(Csla.Properties.Resources.CascadingEditContextRequiredException,
+          nameof(CslaValidationMessages), nameof(EditContext)));
 
-			if (string.IsNullOrWhiteSpace(PropertyName))
+      }
+
+      if (string.IsNullOrWhiteSpace(PropertyName))
 			{
-				throw new InvalidOperationException($"{GetType()} requires a value for the " +
-					$"{nameof(PropertyName)} parameter.");
+				throw new InvalidOperationException(
+          string.Format(Csla.Properties.Resources.ParameterRequiredException, 
+          nameof(CslaValidationMessages), nameof(PropertyName)));
 			}
 
 			// Wire up handling of the state change events we need event

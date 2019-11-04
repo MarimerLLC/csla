@@ -240,6 +240,16 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("CannotSerializeCollectionsNotOfIMobileObject", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Component requires a cascading parameter of type EditContext. For example, you can use component inside an EditForm.
+        /// </summary>
+        public static string CascadingEditContextRequiredException
+        {
+            get {
+                return ResourceManager.GetString("CascadingEditContextRequiredException", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Changing an element is an invalid operation.
@@ -512,6 +522,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} does not implement required interface {1}.
+        /// </summary>
+        public static string InterfaceNotImplementedException {
+            get {
+                return ResourceManager.GetString("InterfaceNotImplementedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List item must be marked as a child object.
         /// </summary>
         public static string ListItemNotAChildException {
@@ -742,6 +761,16 @@ namespace Csla.Properties {
         public static string ObjectTypeCouldNotBeLoaded {
             get {
                 return ResourceManager.GetString("ObjectTypeCouldNotBeLoaded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Conponent requires a value for the PropertyName parameter.
+        /// </summary>
+        public static string ParameterRequiredException
+        {
+            get {
+                return ResourceManager.GetString("ParameterRequiredException", resourceCulture);
             }
         }
         

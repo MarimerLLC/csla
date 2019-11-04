@@ -29,9 +29,9 @@ namespace Csla.Blazor
       if (CurrentEditContext == null)
       {
         // No cascading parameter is available; we are probably not inside an EditForm component
-        throw new InvalidOperationException($"{nameof(CslaValidator)} requires a cascading " +
-          $"parameter of type {nameof(EditContext)}. For example, you can use {nameof(CslaValidator)} " +
-          $"inside an EditForm.");
+        throw new InvalidOperationException(
+          string.Format(Csla.Properties.Resources.CascadingEditContextRequiredException,
+          nameof(CslaValidator), nameof(EditContext)));
       }
 
       // Wire up validation to the context we have been provided

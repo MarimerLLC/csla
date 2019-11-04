@@ -1248,6 +1248,38 @@ namespace Csla.Properties
         return GetResourceString();
       }
     }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string CascadingEditContextRequiredException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string ParameterRequiredException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string InterfaceNotImplementedException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
   }
 }
 #endif

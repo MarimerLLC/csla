@@ -44,15 +44,21 @@ namespace Csla.Blazor
     /// <param name="messages">The validation message store to be updated during validation</param>
     private static void ValidateModel(EditContext editContext, ValidationMessageStore messages)
     {
-      ICheckRules model = editContext.Model as ICheckRules;
+      ICheckRules model;
 
       // Get access to the model via the required interface
       model = editContext.Model as ICheckRules;
 
       // Check if the model was provided, and correctly cast
+      if (editContext.Model == null)
+      {
+        throw new ArgumentNullException(nameof(editContext.Model));
+      }
       if (model == null)
       {
-        throw new ArgumentException("Model is null, or does not implement ICheckRules!");
+        throw new ArgumentException(
+          string.Format(Csla.Properties.Resources.InterfaceNotImplementedException, 
+          nameof(editContext.Model), nameof(ICheckRules)));
       }
 
       // Transfer results to the ValidationMessageStore

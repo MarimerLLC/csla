@@ -19,7 +19,7 @@ namespace Csla.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -237,6 +237,15 @@ namespace Csla.Properties {
         public static string CannotSerializeCollectionsNotOfIMobileObject {
             get {
                 return ResourceManager.GetString("CannotSerializeCollectionsNotOfIMobileObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} requires a cascading parameter of type {1}. For example, you can use {0} inside an EditForm..
+        /// </summary>
+        public static string CascadingEditContextRequiredException {
+            get {
+                return ResourceManager.GetString("CascadingEditContextRequiredException", resourceCulture);
             }
         }
         
@@ -511,6 +520,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} does not implement required interface {1}.
+        /// </summary>
+        public static string InterfaceNotImplementedException {
+            get {
+                return ResourceManager.GetString("InterfaceNotImplementedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List item must be marked as a child object.
         /// </summary>
         public static string ListItemNotAChildException {
@@ -741,6 +759,15 @@ namespace Csla.Properties {
         public static string ObjectTypeCouldNotBeLoaded {
             get {
                 return ResourceManager.GetString("ObjectTypeCouldNotBeLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} requires a value for the {1} parameter..
+        /// </summary>
+        public static string ParameterRequiredException {
+            get {
+                return ResourceManager.GetString("ParameterRequiredException", resourceCulture);
             }
         }
         

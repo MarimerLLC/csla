@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Xamarin.Forms" Version="5.0.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.815419" />
+    <PackageReference Include="Csla.Xamarin.Forms" Version="5.1.0-R19110101" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.936621-pre1" />
   </ItemGroup>
 
   <ItemGroup>

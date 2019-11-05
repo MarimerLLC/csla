@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports legacy CSLA .NET 3.8 style validation and business rules in newer versions of CSLA .NET.
@@ -55,5 +55,7 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.dll*" target="lib\Xamarin.iOS10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.pdb*" target="lib\Xamarin.iOS10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.xml*" target="lib\Xamarin.iOS10" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

@@ -8,7 +8,7 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <icon>images/csla.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Provides UI support for Blazor.
@@ -29,5 +29,7 @@ Provides UI support for Blazor.
   <files>
     <!-- NetStandard Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.Blazor.*" target="lib\netstandard2.0" />
+    <!-- icon -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

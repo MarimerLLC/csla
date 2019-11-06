@@ -1,0 +1,43 @@
+﻿@page "/projects"
+@inject Csla.Blazor.ViewModel<ProjectTracker.Library.ProjectList> vm
+
+<h1>Projects</h1>
+
+<p class="text-danger">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+  <p>Loading...</p>
+}
+else
+{
+  <p>
+    <a href="projectedit">Add project</a>
+  </p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var item in vm.Model)
+      {
+        <tr>
+          <td>@item.Id</td>
+          <td>@item.Name</td>
+          <td><a href="projectedit/@item.Id">Edit</a> | Delete</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@code {
+  protected override async Task OnInitializedAsync()
+  {
+    await vm.RefreshAsync();
+  }
+}

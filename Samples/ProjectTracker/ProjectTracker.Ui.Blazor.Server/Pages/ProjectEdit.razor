@@ -1,0 +1,118 @@
+﻿@page "/projectedit"
+@page "/projectedit/{id}"
+@inject Csla.Blazor.ViewModel<ProjectTracker.Library.ProjectEdit> vm
+@inject NavigationManager NavigationManager
+
+<h1>Edit Project</h1>
+
+<p class="text-danger">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+  <p>Loading Person...</p>
+}
+else
+{
+  <p>
+    <a href="projects">Project list</a>
+    <br /><a href="projectedit">Add project</a>
+  </p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (vm.Model.CanReadProperty(nameof(vm.Model.Id)))
+      {
+        <tr>
+          <td>Id</td>
+          <td>@vm.Model.Id</td>
+        </tr>
+      }
+      @if (vm.Model.CanReadProperty(nameof(vm.Model.Name)))
+      {
+        <tr>
+          <td>Name</td>
+          <td>
+            <div>
+              <input @bind-value="vm.Model.Name" @bind-value:event="oninput"
+                     disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Name)))" /><br />
+              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Name)).ErrorText</span>
+              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Name)).WarningText</span>
+              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Name)).InformationText</span>
+            </div>
+          </td>
+        </tr>
+      }
+      @if (vm.Model.CanReadProperty(nameof(vm.Model.Description)))
+      {
+        <tr>
+          <td>Description</td>
+          <td>
+            <div>
+              <textarea @bind="@vm.Model.Description" rows="5"
+                        disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Description)))" /><br />
+              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Description)).ErrorText</span>
+              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Description)).WarningText</span>
+              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Description)).InformationText</span>
+            </div>
+          </td>
+        </tr>
+      }
+      @if (vm.Model.CanReadProperty(nameof(vm.Model.Started)))
+      {
+        <tr>
+          <td>Start Date</td>
+          <td>
+            <div>
+              <input @bind-value="vm.Model.Started" @bind-value:event="oninput"
+                     disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Started)))"
+                     format-value="MM/dd/yyyy" /><br />
+              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Started)).ErrorText</span>
+              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Started)).WarningText</span>
+              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Started)).InformationText</span>
+            </div>
+          </td>
+        </tr>
+      }
+      @if (vm.Model.CanReadProperty(nameof(vm.Model.Ended)))
+      {
+        <tr>
+          <td>End Date</td>
+          <td>
+            <div>
+              <input @bind-value="vm.Model.Ended" @bind-value:event="oninput"
+                     disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Ended)))"
+                     format-value="MM/dd/yyyy" /><br />
+              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Ended)).ErrorText</span>
+              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Ended)).WarningText</span>
+              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Ended)).InformationText</span>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+}
+
+@code {
+  [Parameter]
+  public string id { get; set; }
+
+  protected override void OnInitialized()
+  {
+    vm.Saved += () => NavigationManager.NavigateTo("projects");
+  }
+
+  protected override async Task OnParametersSetAsync()
+  {
+    if (string.IsNullOrWhiteSpace(id))
+      await vm.RefreshAsync();
+    else
+      await vm.RefreshAsync(int.Parse(id));
+  }
+}

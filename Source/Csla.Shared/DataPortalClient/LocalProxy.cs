@@ -43,7 +43,11 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+#if NET40
+          return await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync));
+#else
           return await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
+#endif
         else
           return await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
             CancellationToken.None,
@@ -71,7 +75,11 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+#if NET40
+          return await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync));
+#else
           return await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
+#endif
         else
           return await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
             CancellationToken.None,
@@ -98,7 +106,11 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+#if NET40
+          return await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync));
+#else
           return await Task.Run(() => this._portal.Update(obj, context, isSync));
+#endif
         else
           return await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
             CancellationToken.None,
@@ -126,7 +138,11 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+#if NET40
+          return await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync));
+#else
           return await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
+#endif
         else
           return await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
             CancellationToken.None,

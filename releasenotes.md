@@ -41,6 +41,8 @@ Highlights:
 
 ### Bug fixes
 
+* [#1400](https://github.com/MarimerLLC/csla/issues/1400) Fix issue with `ApplicationContext` and `LocalProxy`
+* [#1402](https://github.com/MarimerLLC/csla/issues/1402) Fix issue building CSLA in debug mode
 * [#1369](https://github.com/MarimerLLC/csla/issues/1369) Fix issues with `ApplicationContext` in netcore 3
 * [#1360](https://github.com/MarimerLLC/csla/issues/1360) Fix issue with `DbContext` in .NET Core 3
 
@@ -49,6 +51,7 @@ Highlights:
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
 * Bump Google.Protobuf from 3.9.2 to 3.10.1
+* Bump Grpc.Tools from 2.24.0 to 2.25.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors
@@ -57,6 +60,7 @@ Highlights:
 * [@TheCakeMonster](https://github.com/TheCakeMonster) lots of help with Blazor implementation
 * [@JasonBock](https://github.com/JasonBock) lots of work with the analyzers
 * [@skeeler88](https://github.com/skeeler88) bug fixes
+* [@bradtwurst](https://github.com/bradtwurst) bug fixes
 
 ---
 

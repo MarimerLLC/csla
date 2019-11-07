@@ -22,7 +22,6 @@ namespace Csla.DataPortalClient
   public class LocalProxy : DataPortalClient.IDataPortalProxy
   {
     private Server.IDataPortalServer _portal = new Server.DataPortal();
-    private readonly TaskFactory _taskFactory = new TaskFactory(new CslaTaskScheduler());
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -44,9 +43,9 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await await this._taskFactory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync));
+          return await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
         else
-          return await await this._taskFactory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
+          return await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
@@ -72,9 +71,9 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await await this._taskFactory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync));
+          return await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
         else
-          return await await this._taskFactory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
+          return await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
@@ -99,9 +98,9 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await await this._taskFactory.StartNew(() => this._portal.Update(obj, context, isSync));
+          return await Task.Run(() => this._portal.Update(obj, context, isSync));
         else
-          return await await this._taskFactory.StartNew(() => this._portal.Update(obj, context, isSync),
+          return await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
@@ -127,9 +126,9 @@ namespace Csla.DataPortalClient
       else
       {
         if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await await this._taskFactory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync));
+          return await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
         else
-          return await await this._taskFactory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
+          return await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
@@ -143,7 +142,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     public bool IsServerRemote
     {
-      get { return false; }
+      get { return true; }
     }
 
     /// <summary>

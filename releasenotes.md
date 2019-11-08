@@ -51,7 +51,7 @@ Highlights:
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
 * Bump Google.Protobuf from 3.9.2 to 3.10.1
-* Bump Grpc.Tools from 2.24.0 to 2.25.0
+* Bump Grpc.Net.Client from 2.24.0 to 2.25.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors

@@ -6,12 +6,12 @@ using Csla.Security;
 namespace ProjectTracker.Library.Security
 {
   [Serializable]
-  public class PTPrincipal : CslaPrincipal
+  public class PTPrincipal : CslaClaimsPrincipal
   {
     public PTPrincipal()
     { }
 
-    protected PTPrincipal(IIdentity identity)
+    protected PTPrincipal(ICslaIdentity identity)
       : base(identity)
     { }
 
@@ -40,7 +40,7 @@ namespace ProjectTracker.Library.Security
       return SetPrincipal(identity);
     }
 
-    private static bool SetPrincipal(IIdentity identity)
+    private static bool SetPrincipal(ICslaIdentity identity)
     {
       if (identity.IsAuthenticated)
       {

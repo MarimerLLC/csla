@@ -1,0 +1,34 @@
+﻿<div>
+  <input @bind-value="DateAsString" @bind-value:event="oninput"
+         disabled="@(!Property.CanWrite)"
+         format-value="MM/dd/yyyy" /><br />
+  <span class="text-danger">@Property.ErrorText</span>
+  <span class="text-warning">@Property.WarningText</span>
+  <span class="text-info">@Property.InformationText</span>
+</div>
+
+@code {
+  [Parameter]
+  public Csla.Blazor.PropertyInfo<DateTime> Property { get; set; }
+
+  private Csla.SmartDate DateValue;
+
+  private string DateAsString
+  {
+    get
+    {
+      DateValue = Property.Value;
+      return DateValue.Text;
+    }
+    set
+    {
+      DateValue.Text = value;
+      Property.Value = DateValue.Date;
+    }
+  }
+
+  protected override void OnInitialized()
+  {
+    DateValue.FormatString = "MM/dd/yyyy";
+  }
+}

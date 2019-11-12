@@ -32,65 +32,39 @@ else
           <td>@vm.Model.Id</td>
         </tr>
       }
-      @if (vm.Model.CanReadProperty(nameof(vm.Model.Name)))
+      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).CanRead)
       {
         <tr>
           <td>Name</td>
           <td>
-            <div>
-              <input @bind-value="vm.Model.Name" @bind-value:event="oninput"
-                     disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Name)))" /><br />
-              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Name)).ErrorText</span>
-              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Name)).WarningText</span>
-              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Name)).InformationText</span>
-            </div>
+            <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)))" />
           </td>
         </tr>
       }
-      @if (vm.Model.CanReadProperty(nameof(vm.Model.Description)))
+      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Description)).CanRead)
       {
         <tr>
           <td>Description</td>
           <td>
-            <div>
-              <textarea @bind="@vm.Model.Description" rows="5"
-                        disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Description)))" /><br />
-              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Description)).ErrorText</span>
-              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Description)).WarningText</span>
-              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Description)).InformationText</span>
-            </div>
+            <textarea rows="5" Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Description)))" />
           </td>
         </tr>
       }
-      @if (vm.Model.CanReadProperty(nameof(vm.Model.Started)))
+      @if (vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Started)).CanRead)
       {
         <tr>
           <td>Start Date</td>
           <td>
-            <div>
-              <input @bind-value="vm.Model.Started" @bind-value:event="oninput"
-                     disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Started)))"
-                     format-value="MM/dd/yyyy" /><br />
-              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Started)).ErrorText</span>
-              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Started)).WarningText</span>
-              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Started)).InformationText</span>
-            </div>
+            <DateInput Property="@(vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Started)))" />
           </td>
         </tr>
       }
-      @if (vm.Model.CanReadProperty(nameof(vm.Model.Ended)))
+      @if (vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Ended)).CanRead)
       {
         <tr>
           <td>End Date</td>
           <td>
-            <div>
-              <input @bind-value="vm.Model.Ended" @bind-value:event="oninput"
-                     disabled="@(!vm.Model.CanWriteProperty(nameof(vm.Model.Ended)))"
-                     format-value="MM/dd/yyyy" /><br />
-              <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Ended)).ErrorText</span>
-              <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Ended)).WarningText</span>
-              <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Ended)).InformationText</span>
-            </div>
+            <DateInput Property="@(vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Ended)))" />
           </td>
         </tr>
       }

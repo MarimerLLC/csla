@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using Microsoft.AspNetCore.Components.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
@@ -15,6 +16,17 @@ namespace Csla.Configuration
   /// </summary>
   public static class BlazorConfigurationExtensions
   {
+    /// <summary>
+    /// Configures services to provide CSLA Blazor support
+    /// </summary>
+    /// <param name="builder">ICslaBuilder instance</param>
+    /// <returns></returns>
+    public static ICslaBuilder WithBlazorSupport(this ICslaBuilder builder)
+    {
+      builder.Services.AddTransient(typeof(Csla.Blazor.ViewModel<>), typeof(Csla.Blazor.ViewModel<>));
+      return builder;
+    }
+
     /// <summary>
     /// Configures the application to use CSLA .NET
     /// </summary>

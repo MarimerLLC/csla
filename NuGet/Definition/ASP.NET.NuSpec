@@ -8,7 +8,8 @@
     <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
-    <icon>images/csla.png</icon>
+    <icon>images\csla.png</icon>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of ASP.NET Web Forms applications, and is required for any ASP.NET hosted application model.

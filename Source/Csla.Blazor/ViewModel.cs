@@ -129,23 +129,29 @@ namespace Csla.Blazor
     /// </summary>
     public T Model { get; set; }
 
-    private readonly Dictionary<string, PropertyInfo> _info = new Dictionary<string, PropertyInfo>();
+    private readonly Dictionary<string, object> _info = new Dictionary<string, object>();
 
     /// <summary>
     /// Get a PropertyInfo object for a property
     /// of the Model. PropertyInfo provides access
     /// to the metastate of the property.
     /// </summary>
+    /// <typeparam name="P">Property type</typeparam>
     /// <param name="propertyName">Property name</param>
     /// <returns></returns>
-    public PropertyInfo GetPropertyInfo(string propertyName)
+    public PropertyInfo<P> GetPropertyInfo<P>(string propertyName)
     {
-      if (!_info.TryGetValue(propertyName, out PropertyInfo info))
+      PropertyInfo<P> result;
+      if (_info.TryGetValue(propertyName, out object temp))
       {
-        info = new PropertyInfo(Model, propertyName);
-        _info.Add(propertyName, info);
+        result = (PropertyInfo<P>)temp;
       }
-      return info;
+      else
+      {
+        result = new PropertyInfo<P>(Model, propertyName);
+        _info.Add(propertyName, result);
+      }
+      return result;
     }
 
     /// <summary>

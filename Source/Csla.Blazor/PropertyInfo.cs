@@ -5,11 +5,7 @@
 // </copyright>
 // <summary>Exposes metastate for a property</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using Csla.Rules;
 
 namespace Csla.Blazor
@@ -17,10 +13,17 @@ namespace Csla.Blazor
   /// <summary>
   /// Exposes metastate for a property.
   /// </summary>
-  public class PropertyInfo : INotifyPropertyChanged
+  /// <typeparam name="P">Property type</typeparam>
+  public class PropertyInfo<P> : INotifyPropertyChanged
   {
-    private object Model { get; }
-    private string PropertyName { get; }
+    /// <summary>
+    /// Gets the model
+    /// </summary>
+    protected object Model { get; }
+    /// <summary>
+    /// Gets the property name
+    /// </summary>
+    protected string PropertyName { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -51,6 +54,22 @@ namespace Csla.Blazor
     {
       foreach (var item in this.GetType().GetProperties())
         OnPropertyChanged(item.Name);
+    }
+
+    /// <summary>
+    /// Gets or sets the value of the property
+    /// </summary>
+    public P Value
+    {
+      get
+      {
+        var result = Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
+        if (result != null)
+          return (P)result;
+        else
+          return default(P);
+      }
+      set => Csla.Utilities.CallByName(Model, PropertyName, CallType.Set, value);
     }
 
     /// <summary>

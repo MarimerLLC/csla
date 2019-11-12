@@ -3,3 +3,10 @@
 <h1>Project Tracker</h1>
 
 Welcome to the project tracker sample app.
+
+@code {
+  protected override void OnInitialized()
+  {
+    ProjectTracker.Library.Security.PTPrincipal.Login("manager", "manager");
+  }
+}

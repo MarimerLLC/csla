@@ -123,6 +123,12 @@ namespace Csla.Channels.Grpc
     public bool IsServerRemote => true;
 
     /// <summary>
+    /// Gets a value indicating whether the data portal
+    /// is hosted on a remote server.
+    /// </summary>
+    public bool HonorAutoCloneOnUpdate => false;
+
+    /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
     /// new business object.
     /// </summary>

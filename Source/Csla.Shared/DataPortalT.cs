@@ -665,7 +665,7 @@ namespace Csla
 
         try
         {
-          if (!proxy.IsServerRemote && ApplicationContext.AutoCloneOnUpdate)
+          if (proxy.HonorAutoCloneOnUpdate && ApplicationContext.AutoCloneOnUpdate)
           {
             // when using local data portal, automatically
             // clone original object before saving

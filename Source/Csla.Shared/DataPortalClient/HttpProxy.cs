@@ -96,6 +96,15 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
+    /// Get a value indicating whether the AutoCloneOnUpdate
+    /// setting should apply to this data portal proxy.
+    /// </summary>
+    public bool HonorAutoCloneOnUpdate
+    {
+      get { return false; }
+    }
+
+    /// <summary>
     /// Gets the URL address for the data portal server
     /// used by this proxy instance.
     /// </summary>

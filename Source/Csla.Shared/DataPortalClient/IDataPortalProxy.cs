@@ -20,6 +20,11 @@ namespace Csla.DataPortalClient
     /// a remote data portal server, or run the "server-side"
     /// data portal in the caller's process and AppDomain.
     /// </summary>
-    bool IsServerRemote { get;}
+    bool IsServerRemote { get; }
+    /// <summary>
+    /// Get a value indicating whether the AutoCloneOnUpdate
+    /// setting should apply to this data portal proxy.
+    /// </summary>
+    bool HonorAutoCloneOnUpdate { get; }
   }
 }

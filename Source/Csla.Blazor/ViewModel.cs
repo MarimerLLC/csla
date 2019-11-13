@@ -25,6 +25,32 @@ namespace Csla.Blazor
     /// Event raised after Model has been saved
     /// </summary>
     public event Action Saved;
+    /// <summary>
+    /// Event raised when Model is changing
+    /// </summary>
+    public event Action<T, T> ModelChanging;
+    /// <summary>
+    /// Event raised when Model has changed
+    /// </summary>
+    public event Action ModelChanged;
+
+    /// <summary>
+    /// Raises the ModelChanging event
+    /// </summary>
+    /// <param name="oldValue">Old Model value</param>
+    /// <param name="newValue">New Model value</param>
+    protected virtual void OnModelChanging(T oldValue, T newValue)
+    {
+      ModelChanging?.Invoke(oldValue, newValue);
+    }
+
+    /// <summary>
+    /// Raises the ModelChanged event
+    /// </summary>
+    protected virtual void OnModelChanged()
+    {
+      ModelChanged?.Invoke();
+    }
 
     /// <summary>
     /// Creates an instance of the type
@@ -49,13 +75,13 @@ namespace Csla.Blazor
       {
         Model = default;
         ViewModelErrorText = ex.BusinessException.Message;
-        Console.WriteLine(ex.ToString());
+        Console.Error.WriteLine(ex.ToString());
       }
       catch (Exception ex)
       {
         Model = default;
         ViewModelErrorText = ex.Message;
-        Console.WriteLine(ex.ToString());
+        Console.Error.WriteLine(ex.ToString());
       }
       return Model;
     }
@@ -103,7 +129,7 @@ namespace Csla.Blazor
       catch (Exception ex)
       {
         ViewModelErrorText = ex.Message;
-        Console.WriteLine(ex.ToString());
+        Console.Error.WriteLine(ex.ToString());
       }
     }
 
@@ -124,10 +150,22 @@ namespace Csla.Blazor
       return Model;
     }
 
+    private T _model;
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model { get; set; }
+    public T Model 
+    {
+      get => _model;
+      set
+      {
+        if (!ReferenceEquals(_model, value))
+        {
+          OnModelChanging(_model, value);
+          _model = value;
+        }
+      }
+    }
 
     private readonly Dictionary<string, object> _info = new Dictionary<string, object>();
 

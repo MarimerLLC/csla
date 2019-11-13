@@ -54,6 +54,12 @@ namespace Csla.Channels.RabbitMq
     public bool IsServerRemote => true;
 
     /// <summary>
+    /// Gets a value indicating whether the data portal
+    /// is hosted on a remote server.
+    /// </summary>
+    public bool HonorAutoCloneOnUpdate => false;
+
+    /// <summary>
     /// Gets or sets the timeout for network
     /// operations in seconds (default is 30 seconds).
     /// </summary>

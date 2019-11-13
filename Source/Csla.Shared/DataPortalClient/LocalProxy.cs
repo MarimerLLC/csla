@@ -162,6 +162,15 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
+    /// Get a value indicating whether the AutoCloneOnUpdate
+    /// setting should apply to this data portal proxy.
+    /// </summary>
+    public bool HonorAutoCloneOnUpdate
+    {
+      get { return true; }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether any
     /// synchronization context should be flowed to
     /// child tasks. Setting this to true may restrict

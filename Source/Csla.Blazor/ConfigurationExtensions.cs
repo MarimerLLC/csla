@@ -17,11 +17,24 @@ namespace Csla.Configuration
   public static class BlazorConfigurationExtensions
   {
     /// <summary>
-    /// Configures services to provide CSLA Blazor support
+    /// Configures services to provide CSLA Blazor server support
     /// </summary>
     /// <param name="builder">ICslaBuilder instance</param>
     /// <returns></returns>
-    public static ICslaBuilder WithBlazorSupport(this ICslaBuilder builder)
+    public static ICslaBuilder WithBlazorServerSupport(this ICslaBuilder builder)
+    {
+      CslaConfiguration.Configure().DataPortal().AuthenticationType("Windows");
+      builder.Services.AddTransient(typeof(Csla.Blazor.ViewModel<>), typeof(Csla.Blazor.ViewModel<>));
+      return builder;
+    }
+
+    /// <summary>
+    /// Configures services to provide CSLA Blazor 
+    /// WebAssembly client support
+    /// </summary>
+    /// <param name="builder">ICslaBuilder instance</param>
+    /// <returns></returns>
+    public static ICslaBuilder WithBlazorClientSupport(this ICslaBuilder builder)
     {
       builder.Services.AddTransient(typeof(Csla.Blazor.ViewModel<>), typeof(Csla.Blazor.ViewModel<>));
       return builder;

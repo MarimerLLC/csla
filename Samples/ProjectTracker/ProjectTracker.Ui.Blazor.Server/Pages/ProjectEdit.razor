@@ -7,16 +7,12 @@
 
 <p class="text-danger">@vm.ViewModelErrorText</p>
 
-@if (vm.Model == null)
+<p>
+  <a href="projects">Project list</a>
+</p>
+
+@if (vm.Model != null)
 {
-  <p>Loading Person...</p>
-}
-else
-{
-  <p>
-    <a href="projects">Project list</a>
-    <br /><a href="projectedit">Add project</a>
-  </p>
   <table class="table">
     <thead>
       <tr>
@@ -50,21 +46,21 @@ else
           </td>
         </tr>
       }
-      @if (vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Started)).CanRead)
+      @if (vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)).CanRead)
       {
         <tr>
           <td>Start Date</td>
           <td>
-            <DateInput Property="@(vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Started)))" />
+            <DateInput Property="@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)))" />
           </td>
         </tr>
       }
-      @if (vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Ended)).CanRead)
+      @if (vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)).CanRead)
       {
         <tr>
           <td>End Date</td>
           <td>
-            <DateInput Property="@(vm.GetPropertyInfo<DateTime>(nameof(vm.Model.Ended)))" />
+            <DateInput Property="@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)))" EmptyIsMin="false" />
           </td>
         </tr>
       }
@@ -80,6 +76,13 @@ else
   protected override void OnInitialized()
   {
     vm.Saved += () => NavigationManager.NavigateTo("projects");
+    vm.ModelChanging += (o, n) =>
+    {
+      if (o != null)
+        o.PropertyChanged -= async (s, e) => await InvokeAsync(() => StateHasChanged());
+      if (n != null)
+        n.PropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+    };
   }
 
   protected override async Task OnParametersSetAsync()

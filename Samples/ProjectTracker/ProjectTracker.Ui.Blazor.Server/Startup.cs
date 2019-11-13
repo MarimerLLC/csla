@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Csla.Blazor;
 using Csla.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +32,18 @@ namespace ProjectTracker.Ui.Blazor
       services.AddRazorPages();
       services.AddServerSideBlazor();
       services.AddHttpContextAccessor();
-      services.AddCsla().WithBlazorSupport();
+      // Add authentication
+      services.AddAuthentication(options =>
+      {
+        options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
+        options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
+      }).AddCustomAuth(options =>
+        {
+          // Configure password for authentication
+          options.AuthKey = "p@ssw0rd";
+        });
+      services.AddScoped<AuthenticationStateProvider, CslaAuthenticationStateProvider>();
+      services.AddCsla().WithBlazorServerSupport();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +60,7 @@ namespace ProjectTracker.Ui.Blazor
         app.UseHsts();
       }
 
+      app.UseAuthentication();
       app.UseHttpsRedirection();
       app.UseStaticFiles();
 
@@ -64,8 +78,9 @@ namespace ProjectTracker.Ui.Blazor
         "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
 
       //// use remote data portal server
-      //app.UseCsla(c => c.DataPortal()
-      //  .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/"));
+      //app.UseCsla(c => c
+      //  .DataPortal()
+      //    .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/"));
     }
   }
 }

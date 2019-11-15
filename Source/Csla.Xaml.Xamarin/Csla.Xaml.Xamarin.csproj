@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Security.Principal.Windows" Version="4.6.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.947036" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.991211" />
   </ItemGroup>
 
   <ItemGroup>

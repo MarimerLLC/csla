@@ -80,7 +80,7 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      //BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
       BusinessRules.AddRule(
         new StartDateGTEndDate { 
           PrimaryProperty = StartedProperty, 

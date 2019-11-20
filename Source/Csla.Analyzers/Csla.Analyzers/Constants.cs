@@ -19,6 +19,7 @@
       public const string DoesChildOperationHaveRunLocal = "CSLA0013";
       public const string DoesOperationHaveAttribute = "CSLA0014";
       public const string IsOperationAttributeUsageCorrect = "CSLA0015";
+      public const string AsynchronousBusinessRuleInheritance = "CSLA0016";
     }
 
     public static class Categories

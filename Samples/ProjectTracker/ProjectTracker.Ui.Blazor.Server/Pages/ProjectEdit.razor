@@ -31,7 +31,7 @@
       @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).CanRead)
       {
         <tr>
-          <td>Name</td>
+          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).FriendlyName)</td>
           <td>
             <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)))" />
           </td>
@@ -40,7 +40,7 @@
       @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Description)).CanRead)
       {
         <tr>
-          <td>Description</td>
+          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.Description)).FriendlyName)</td>
           <td>
             <TextArea rows="5" Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Description)))" />
           </td>
@@ -49,7 +49,7 @@
       @if (vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)).CanRead)
       {
         <tr>
-          <td>Start Date</td>
+          <td>@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)).FriendlyName)</td>
           <td>
             <DateInput Property="@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)))" />
           </td>
@@ -58,7 +58,7 @@
       @if (vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)).CanRead)
       {
         <tr>
-          <td>End Date</td>
+          <td>@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)).FriendlyName)</td>
           <td>
             <DateInput Property="@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)))" EmptyIsMin="false" />
           </td>
@@ -66,7 +66,7 @@
       }
     </tbody>
   </table>
-  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save</button>
 }
 
 @code {

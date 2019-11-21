@@ -25,7 +25,12 @@
     }
     set
     {
-      DateValue.Text = value;
+      try
+      {
+        DateValue.Text = value;
+      }
+      catch (ArgumentException)
+      { /* invalid text entry, don't update value */ }
       if (DateValue.IsEmpty)
         Property.Value = null;
       else

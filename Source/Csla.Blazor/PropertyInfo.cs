@@ -73,6 +73,18 @@ namespace Csla.Blazor
     }
 
     /// <summary>
+    /// Gets the friendly name for the property.
+    /// </summary>
+    public string FriendlyName
+    {
+      get
+      {
+        var pi = Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(Model.GetType(), PropertyName);
+        return pi.FriendlyName;
+      }
+    }
+
+    /// <summary>
     /// Gets the validation error messages for a
     /// property on the Model
     /// </summary>

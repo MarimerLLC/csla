@@ -39,8 +39,7 @@ namespace Csla.Analyzers
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
         var typeSymbol = methodSymbol.ContainingType;
 
-        if(typeSymbol.IsBusinessRule() && methodSymbol.Name == "Execute" && 
-          methodSymbol.IsAsync && methodSymbol.ReturnType.SpecialType == SpecialType.System_Void)
+        if(typeSymbol.IsBusinessRule() && methodSymbol.Name == "Execute" && methodSymbol.IsAsync)
         {
           context.ReportDiagnostic(Diagnostic.Create(
             inheritsFromBusinessRuleRule, methodSymbol.Locations[0]));

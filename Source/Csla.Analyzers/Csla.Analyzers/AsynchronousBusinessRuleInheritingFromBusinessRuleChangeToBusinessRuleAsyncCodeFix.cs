@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -41,22 +42,29 @@ namespace Csla.Analyzers
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
       var typeSymbol = methodSymbol.ContainingType;
 
-      var returnType = methodNode.ReturnType;
-      var methodName = methodNode.Identifier;
+      var newRoot = root;
 
-      // TODO: OK, do WithReturnType(), and WithIdentifier() on the methodNode.
-
-      // Can also do WithBaseList on the type declaration. Do this by changing
-      // GetAllRelevantBaseTypes() to GetBaseTypes(), which will return
-      // IEnumerable<SimpleBaseTypeSyntax>. It will yield new base types for the
-      // rule types, and leave others as-is.
-
-      var newRoot = root.ReplaceNode(returnType, SyntaxFactory.IdentifierName(nameof(Task)));
-      newRoot = newRoot.ReplaceToken(methodName, SyntaxFactory.Identifier("ExecuteAsync"));
-
-      foreach(var (oldBase, newBase) in GetAllRelevantBaseTypes(typeSymbol, model))
+      foreach (var typeSymbolReference in typeSymbol.DeclaringSyntaxReferences)
       {
-        newRoot = newRoot.ReplaceNode(oldBase, newBase);
+        var typeNode = typeSymbolReference.GetSyntax() as TypeDeclarationSyntax;
+
+        var newTypeNode = typeNode.WithBaseList(GetBaseTypes(typeNode))
+          .WithTriviaFrom(typeNode);
+
+        var currentMethodNode = newTypeNode.DescendantNodes(_ => true).OfType<MethodDeclarationSyntax>()
+          .Single(_ => _.Identifier.ValueText == "Execute");
+        var newReturnType = SyntaxFactory.IdentifierName(nameof(Task))
+          .WithTriviaFrom(currentMethodNode.ReturnType);
+        var newIdentifier = SyntaxFactory.Identifier("ExecuteAsync")
+          .WithTriviaFrom(currentMethodNode.Identifier);
+
+        var newMethodNode = currentMethodNode.WithReturnType(newReturnType)
+          .WithIdentifier(newIdentifier)
+          .WithTriviaFrom(currentMethodNode);
+
+        newTypeNode = newTypeNode.ReplaceNode(currentMethodNode, newMethodNode);
+
+        newRoot = newRoot.ReplaceNode(typeNode, newTypeNode);
       }
 
       context.RegisterCodeFix(
@@ -66,27 +74,33 @@ namespace Csla.Analyzers
           AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFixConstants.UpdateToAsyncEquivalentsDescription), diagnostic);
     }
 
-    private static IEnumerable<(SimpleBaseTypeSyntax, SimpleBaseTypeSyntax)> GetAllRelevantBaseTypes(
-      INamedTypeSymbol typeSymbol, SemanticModel model)
+    private static BaseListSyntax GetBaseTypes(TypeDeclarationSyntax typeNode)
     {
-      foreach(var typeSymbolReference in typeSymbol.DeclaringSyntaxReferences)
+      var currentBaseList = typeNode.BaseList;
+
+      var list = new SeparatedSyntaxList<BaseTypeSyntax>();
+
+      foreach (var baseTypeNode in typeNode.BaseList.DescendantNodes(_ => true).OfType<SimpleBaseTypeSyntax>())
       {
-        var typeSymbolReferenceNode = typeSymbolReference.GetSyntax() as TypeDeclarationSyntax;
+        var baseTypeNodeIdentifier = baseTypeNode.DescendantNodes().OfType<IdentifierNameSyntax>().Single();
 
-        foreach (var baseTypeNode in typeSymbolReferenceNode.BaseList.DescendantNodes(_ => true).OfType<SimpleBaseTypeSyntax>())
+        if (baseTypeNodeIdentifier.Identifier.ValueText == "BusinessRule")
         {
-          var baseTypeNodeIdentifier = baseTypeNode.DescendantNodes().OfType<IdentifierNameSyntax>().Single();
-
-          if(baseTypeNodeIdentifier.Identifier.ValueText == "BusinessRule")
-          {
-            yield return (baseTypeNode, SyntaxFactory.SimpleBaseType(SyntaxFactory.IdentifierName("BusinessRuleAsync")));
-          }
-          else if (baseTypeNodeIdentifier.Identifier.ValueText == "IBusinessRule")
-          {
-            yield return (baseTypeNode, SyntaxFactory.SimpleBaseType(SyntaxFactory.IdentifierName("IBusinessRuleAsync")));
-          }
+          list = list.Add(SyntaxFactory.SimpleBaseType(SyntaxFactory.IdentifierName("BusinessRuleAsync"))
+            .WithTriviaFrom(baseTypeNode));
+        }
+        else if (baseTypeNodeIdentifier.Identifier.ValueText == "IBusinessRule")
+        {
+          list = list.Add(SyntaxFactory.SimpleBaseType(SyntaxFactory.IdentifierName("IBusinessRuleAsync"))
+            .WithTriviaFrom(baseTypeNode));
+        }
+        else
+        {
+          list = list.Add(baseTypeNode);
         }
       }
+
+      return SyntaxFactory.BaseList(list).WithTriviaFrom(currentBaseList);
     }
   }
 }

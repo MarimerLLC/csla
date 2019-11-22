@@ -97,17 +97,8 @@ namespace Csla.Analyzers
         var constructor = constructorSymbol.DeclaringSyntaxReferences[0]
           .GetSyntax(context.CancellationToken) as ConstructorDeclarationSyntax;
 
-        var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier));
-
-        if (constructor.HasLeadingTrivia)
-        {
-          newConstructor = newConstructor.WithLeadingTrivia(constructor.GetLeadingTrivia());
-        }
-
-        if (constructor.HasTrailingTrivia)
-        {
-          newConstructor = newConstructor.WithTrailingTrivia(constructor.GetTrailingTrivia());
-        }
+        var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier))
+          .WithTriviaFrom(constructor);
 
         var newRoot = root.ReplaceNode(constructor, newConstructor);
 

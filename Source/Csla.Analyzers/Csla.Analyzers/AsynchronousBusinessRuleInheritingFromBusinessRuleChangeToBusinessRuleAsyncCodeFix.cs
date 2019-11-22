@@ -44,6 +44,13 @@ namespace Csla.Analyzers
       var returnType = methodNode.ReturnType;
       var methodName = methodNode.Identifier;
 
+      // TODO: OK, do WithReturnType(), and WithIdentifier() on the methodNode.
+
+      // Can also do WithBaseList on the type declaration. Do this by changing
+      // GetAllRelevantBaseTypes() to GetBaseTypes(), which will return
+      // IEnumerable<SimpleBaseTypeSyntax>. It will yield new base types for the
+      // rule types, and leave others as-is.
+
       var newRoot = root.ReplaceNode(returnType, SyntaxFactory.IdentifierName(nameof(Task)));
       newRoot = newRoot.ReplaceToken(methodName, SyntaxFactory.Identifier("ExecuteAsync"));
 
@@ -66,7 +73,7 @@ namespace Csla.Analyzers
       {
         var typeSymbolReferenceNode = typeSymbolReference.GetSyntax() as TypeDeclarationSyntax;
 
-        foreach(var baseTypeNode in typeSymbolReferenceNode.BaseList.DescendantNodes(_ => true).OfType<SimpleBaseTypeSyntax>())
+        foreach (var baseTypeNode in typeSymbolReferenceNode.BaseList.DescendantNodes(_ => true).OfType<SimpleBaseTypeSyntax>())
         {
           var baseTypeNodeIdentifier = baseTypeNode.DescendantNodes().OfType<IdentifierNameSyntax>().Single();
 

@@ -131,6 +131,16 @@ public class A : BusinessRule { }";
     }
 
     [TestMethod]
+    public async Task IsBusinessRuleForTypeThatIsABusinessRuleAsync()
+    {
+      var code =
+@"using Csla.Rules;
+
+public class A : BusinessRuleAsync { }";
+      Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsBusinessRule());
+    }
+
+    [TestMethod]
     public async Task IsObjectFactoryForNotObjectFactoryType()
     {
       var code = "public class A { }";

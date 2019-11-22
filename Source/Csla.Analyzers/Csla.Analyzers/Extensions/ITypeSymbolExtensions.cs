@@ -8,7 +8,7 @@ namespace Csla.Analyzers.Extensions
     internal static bool IsBusinessRule(this ITypeSymbol @this)
     {
       return @this != null &&
-        ((@this.Name == CslaMemberConstants.Types.IBusinessRule &&
+        (((@this.Name == CslaMemberConstants.Types.IBusinessRule || @this.Name == CslaMemberConstants.Types.IBusinessRuleAsync) &&
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
           (@this.BaseType.IsBusinessRule() || @this.Interfaces.Any(_ => _.IsBusinessRule())));
     }

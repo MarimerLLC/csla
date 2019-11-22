@@ -60,6 +60,7 @@
       public const string BusinessBindingListBase = nameof(BusinessBindingListBase);
       public const string BusinessListBase = nameof(BusinessListBase);
       public const string IBusinessRule = nameof(IBusinessRule);
+      public const string IBusinessRuleAsync = nameof(IBusinessRuleAsync);
       public const string DataPortalChildOperationAttribute = nameof(DataPortalChildOperationAttribute);
       public const string DataPortalOperationAttribute = nameof(DataPortalOperationAttribute);
       public const string DataPortalRootOperationAttribute = nameof(DataPortalRootOperationAttribute);

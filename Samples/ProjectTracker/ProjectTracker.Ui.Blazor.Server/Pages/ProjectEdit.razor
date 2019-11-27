@@ -66,6 +66,26 @@
       }
     </tbody>
   </table>
+  <a href="javascript: void(0);" @onclick="AddResource">Add resource</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var item in vm.Model.Resources)
+      {
+        <tr>
+          <td>@item.FirstName</td>
+          <td>@item.LastName</td>
+          <td><a href="javascript: void(0);" @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
   <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save</button>
 }
 
@@ -91,5 +111,13 @@
       await vm.RefreshAsync();
     else
       await vm.RefreshAsync(int.Parse(id));
+  }
+
+  private void AddResource()
+  { }
+
+  private void RemoveResource(int resourceId)
+  {
+    vm.Model.Resources.Remove(resourceId);
   }
 }

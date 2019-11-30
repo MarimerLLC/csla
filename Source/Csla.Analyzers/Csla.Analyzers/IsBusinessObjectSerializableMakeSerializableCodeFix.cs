@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
 using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
+using static Csla.Analyzers.Constants;
 
 namespace Csla.Analyzers
 {
@@ -50,11 +51,10 @@ namespace Csla.Analyzers
 
       var description = IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription;
 
-      if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
+      if (!root.HasUsing(Namespaces.System))
       {
         newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
-          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
-            IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
+          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(Namespaces.System)));
         description = IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription;
       }
 

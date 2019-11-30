@@ -44,20 +44,25 @@ namespace Csla.Analyzers.IntegrationTests
     {
       context.AddDirtyProperty(null);
       await DummyAsync();
-      context.Complete();
     }
 
     private static Task DummyAsync() => Task.CompletedTask;
   }
 
-  public class NotCallingComplete
+  public class CallingComplete
     : BusinessRuleAsync
   {
     protected override Task ExecuteAsync(IRuleContext context)
     {
-      context.AddDirtyProperty(null);
       // This method should have an error
-      // because we don't call Complete().
+      // because we call Complete().
+      #region keep this
+      context.Complete();
+      #endregion
+      context.AddDirtyProperty(null);
+      context.Complete();
+      // Keep these comments!
+      context.Complete(); /* And this one */
       return Task.CompletedTask;
     }
   }

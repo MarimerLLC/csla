@@ -60,9 +60,11 @@ namespace Csla.Analyzers.IntegrationTests
       context.Complete();
       #endregion
       context.AddDirtyProperty(null);
-      context.Complete();
+      context.Complete(); context.Complete();
       // Keep these comments!
       context.Complete(); /* And this one */
+
+      context.Complete();
       return Task.CompletedTask;
     }
   }

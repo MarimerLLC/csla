@@ -30,6 +30,12 @@
       public const string Usage = "Usage";
     }
 
+    public static class Namespaces
+    {
+      public const string System = "System";
+      public const string SystemThreadingTasks = "System.Threading.Tasks";
+    }
+
     public static class SaveMethodNames
     {
       public const string Save = "Save";

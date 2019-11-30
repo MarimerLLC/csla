@@ -2,11 +2,13 @@
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Csla.Analyzers.Constants;
 
 namespace Csla.Analyzers
 {
@@ -61,8 +63,14 @@ namespace Csla.Analyzers
           .WithTriviaFrom(currentMethodNode);
 
         newTypeNode = newTypeNode.ReplaceNode(currentMethodNode, newMethodNode);
-
         newRoot = newRoot.ReplaceNode(typeNode, newTypeNode);
+
+        if (!newRoot.HasUsing(Namespaces.SystemThreadingTasks))
+        {
+          newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
+              Namespaces.SystemThreadingTasks)));
+        }
       }
 
       context.RegisterCodeFix(

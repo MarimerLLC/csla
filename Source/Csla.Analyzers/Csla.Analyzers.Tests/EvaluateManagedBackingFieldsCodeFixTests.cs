@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -57,9 +59,17 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
-        tree, new[] { "public static readonly" });
+        (model, newRoot) =>
+        {
+          var fieldNode = newRoot.DescendantNodes(_ => true).OfType<FieldDeclarationSyntax>().Single().Declaration.Variables[0];
+          var fieldSymbol = model.GetDeclaredSymbol(fieldNode) as IFieldSymbol;
+
+          Assert.IsTrue(fieldSymbol.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(fieldSymbol.IsStatic);
+          Assert.IsTrue(fieldSymbol.IsReadOnly);
+        });
     }
 
     [TestMethod]
@@ -91,10 +101,19 @@ public class A : BusinessBase<A>
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
-        tree, new[] { "#region Properties", "public" });
+        (model, newRoot) =>
+        {
+          var fieldNode = newRoot.DescendantNodes(_ => true).OfType<FieldDeclarationSyntax>().Single().Declaration.Variables[0];
+          var fieldSymbol = model.GetDeclaredSymbol(fieldNode) as IFieldSymbol;
+
+          Assert.IsTrue(fieldSymbol.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(fieldSymbol.IsStatic);
+          Assert.IsTrue(fieldSymbol.IsReadOnly);
+
+          Assert.IsTrue(newRoot.DescendantTrivia(_ => true, true).Any(_ => _.IsKind(SyntaxKind.RegionDirectiveTrivia)));
+        });
     }
   }
 }

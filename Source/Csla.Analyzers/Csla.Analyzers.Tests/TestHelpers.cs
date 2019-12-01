@@ -15,22 +15,17 @@ namespace Csla.Analyzers.Tests
 {
   internal static class TestHelpers
   {
-    internal static async Task VerifyActionAsync(List<CodeAction> actions, string title, Document document,
-      SyntaxTree tree, string[] expectedNewTexts)
+    internal static async Task VerifyChangesAsync(List<CodeAction> actions, string title, Document document,
+      Action<SemanticModel, SyntaxNode> handleChanges)
     {
       var action = actions.Where(_ => _.Title == title).First();
-
-      var operation = (await action.GetOperationsAsync(
-        new CancellationToken(false))).ToArray()[0] as ApplyChangesOperation;
+      var operations = (await action.GetOperationsAsync(
+        new CancellationToken(false))).ToArray();
+      var operation = operations[0] as ApplyChangesOperation;
       var newDoc = operation.ChangedSolution.GetDocument(document.Id);
       var newTree = await newDoc.GetSyntaxTreeAsync();
-      var changes = newTree.GetChanges(tree);
 
-      foreach(var expectedNewText in expectedNewTexts)
-      {
-        Assert.IsTrue(changes.Any(_ => _.NewText.Contains(expectedNewText)), 
-          string.Join($"{Environment.NewLine}{Environment.NewLine}", changes.Select(_ => $"Change text: {_.NewText}")));
-      }
+      handleChanges(await newDoc.GetSemanticModelAsync(), await newTree.GetRootAsync());
     }
 
     internal static async Task RunAnalysisAsync<T>(string code, string[] diagnosticIds,
@@ -61,11 +56,12 @@ namespace Csla.Analyzers.Tests
       var projectName = "Test";
       var projectId = ProjectId.CreateNewId(projectName);
 
-      var solution = new AdhocWorkspace()
-        .CurrentSolution
-        .AddProject(projectId, projectName, projectName, LanguageNames.CSharp)
-        .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-        .AddMetadataReferences(projectId, AssemblyReferences.GetMetadataReferences(new[]
+      using (var workspace = new AdhocWorkspace())
+      {
+        var solution = workspace.CurrentSolution
+          .AddProject(projectId, projectName, projectName, LanguageNames.CSharp)
+          .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+          .AddMetadataReferences(projectId, AssemblyReferences.GetMetadataReferences(new[]
           {
               typeof(object).Assembly,
               typeof(Enumerable).Assembly,
@@ -76,10 +72,11 @@ namespace Csla.Analyzers.Tests
               typeof(BusinessBase<>).Assembly
           }));
 
-      var documentId = DocumentId.CreateNewId(projectId);
-      solution = solution.AddDocument(documentId, "Test.cs", SourceText.From(code));
+        var documentId = DocumentId.CreateNewId(projectId);
+        solution = solution.AddDocument(documentId, "Test.cs", SourceText.From(code));
 
-      return solution.GetProject(projectId).Documents.First();
+        return solution.GetProject(projectId).Documents.First();
+      }
     }
   }
 }

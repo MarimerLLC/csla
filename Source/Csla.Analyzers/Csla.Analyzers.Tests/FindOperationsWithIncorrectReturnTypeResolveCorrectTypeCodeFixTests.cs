@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -53,9 +54,15 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants.ChangeReturnTypeToVoidDescription, document,
-        tree, new[] { "void" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>().Single(_ => _.Name == "Fetch");
+          Assert.IsTrue(methodSymbol.ReturnsVoid);
+        });
     }
 
     [TestMethod]
@@ -86,10 +93,15 @@ public class A : BusinessBase<A>
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants.ChangeReturnTypeToTaskDescription, document,
-        tree, new[] { "Task" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>().Single(_ => _.Name == "FetchAsync");
+          Assert.AreEqual("Task", methodSymbol.ReturnType.Name);
+        });
     }
 
     [TestMethod]
@@ -119,10 +131,18 @@ public class A : BusinessBase<A>
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants.ChangeReturnTypeToTaskDescription, document,
-        tree, new[] { "using System.Threading.Tasks;", "Task" });
+        (model, newRoot) =>
+        {
+          Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<UsingDirectiveSyntax>().Any(
+            _ => _.Name.GetText().ToString() == "System.Threading.Tasks"));
+
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>().Single(_ => _.Name == "FetchAsync");
+          Assert.AreEqual("Task", methodSymbol.ReturnType.Name);
+        });
     }
   }
 }

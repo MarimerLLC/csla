@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -53,15 +54,31 @@ public class A : BusinessBase<A>
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(3, actions.Count);
-      await TestHelpers.VerifyActionAsync(actions,
+
+      await TestHelpers.VerifyChangesAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, document,
-        tree, new[] { "rivate" });
-      await TestHelpers.VerifyActionAsync(actions,
+        (model, newRoot) =>
+        {
+          var methodNode = newRoot.DescendantNodes(_ => true).OfType<MethodDeclarationSyntax>().Single();
+          var methodSymbol = model.GetDeclaredSymbol(methodNode) as IMethodSymbol;
+          Assert.AreEqual(Accessibility.Private, methodSymbol.DeclaredAccessibility);
+        });
+      await TestHelpers.VerifyChangesAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.ProtectedDescription, document,
-        tree, new[] { "rotected" });
-      await TestHelpers.VerifyActionAsync(actions,
+        (model, newRoot) =>
+        {
+          var methodNode = newRoot.DescendantNodes(_ => true).OfType<MethodDeclarationSyntax>().Single();
+          var methodSymbol = model.GetDeclaredSymbol(methodNode) as IMethodSymbol;
+          Assert.AreEqual(Accessibility.Protected, methodSymbol.DeclaredAccessibility);
+        });
+      await TestHelpers.VerifyChangesAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, document,
-        tree, new[] { "internal" });
+        (model, newRoot) =>
+        {
+          var methodNode = newRoot.DescendantNodes(_ => true).OfType<MethodDeclarationSyntax>().Single();
+          var methodSymbol = model.GetDeclaredSymbol(methodNode) as IMethodSymbol;
+          Assert.AreEqual(Accessibility.Internal, methodSymbol.DeclaredAccessibility);
+        });
     }
 
     [TestMethod]
@@ -91,13 +108,22 @@ public sealed class A : BusinessBase<A>
         codeActionRegistration, new CancellationToken(false));
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
-      Assert.AreEqual(2, actions.Count);
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, document,
-        tree, new[] { "rivate" });
-      await TestHelpers.VerifyActionAsync(actions,
+        (model, newRoot) =>
+        {
+          var methodNode = newRoot.DescendantNodes(_ => true).OfType<MethodDeclarationSyntax>().Single();
+          var methodSymbol = model.GetDeclaredSymbol(methodNode) as IMethodSymbol;
+          Assert.AreEqual(Accessibility.Private, methodSymbol.DeclaredAccessibility);
+        });
+      await TestHelpers.VerifyChangesAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, document,
-        tree, new[] { "internal" });
+        (model, newRoot) =>
+        {
+          var methodNode = newRoot.DescendantNodes(_ => true).OfType<MethodDeclarationSyntax>().Single();
+          var methodSymbol = model.GetDeclaredSymbol(methodNode) as IMethodSymbol;
+          Assert.AreEqual(Accessibility.Internal, methodSymbol.DeclaredAccessibility);
+        });
     }
   }
 }

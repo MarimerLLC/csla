@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -54,10 +55,18 @@ public sealed class TestRule : BusinessRule
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFixConstants.UpdateToAsyncEquivalentsDescription, document,
-        tree, new[] { "Async", "Task ExecuteAsync" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          Assert.AreEqual("BusinessRuleAsync", classSymbol.BaseType.Name);
+
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>().Single(_ => _.Name == "ExecuteAsync");
+          Assert.AreEqual("Task", methodSymbol.ReturnType.Name);
+          Assert.IsTrue(methodSymbol.IsAsync);
+        });
     }
 
     [TestMethod]
@@ -83,15 +92,25 @@ public sealed class TestRule : BusinessRule
         (a, _) => { actions.Add(a); });
 
       var fix = new AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFix();
-      var codeFixContext = new CodeFixContext(document, diagnostics[0],
-        codeActionRegistration, new CancellationToken(false));
+      var codeFixContext = new CodeFixContext(document, diagnostics[0], codeActionRegistration, default);
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFixConstants.UpdateToAsyncEquivalentsDescription, document,
-        tree, new[] { "Async", "Task ExecuteAsync", "using System.Threading.Tasks;" });
+        (model, newRoot) =>
+        {
+          Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<UsingDirectiveSyntax>().Any(
+            _ => _.Name.GetText().ToString() == "System.Threading.Tasks"));
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          Assert.AreEqual("BusinessRuleAsync", classSymbol.BaseType.Name);
+
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>().Single(_ => _.Name == "ExecuteAsync");
+          Assert.AreEqual("Task", methodSymbol.ReturnType.Name);
+          Assert.IsTrue(methodSymbol.IsAsync);
+        });
     }
   }
 }

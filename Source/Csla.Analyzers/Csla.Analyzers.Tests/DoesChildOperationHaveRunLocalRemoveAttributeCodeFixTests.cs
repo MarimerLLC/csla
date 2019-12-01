@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -53,9 +54,12 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         DoesChildOperationHaveRunLocalRemoveAttributeCodeFixConstants.RemoveRunLocalDescription, document,
-        tree, new[] { string.Empty });
+        (model, newRoot) =>
+        {
+          Assert.IsFalse(newRoot.DescendantNodes(_ => true).OfType<AttributeSyntax>().Any(_ => _.Name.ToString() == "RunLocal"));
+        });
     }
 
     [TestMethod]
@@ -88,9 +92,12 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         DoesChildOperationHaveRunLocalRemoveAttributeCodeFixConstants.RemoveRunLocalDescription, document,
-        tree, new[] { string.Empty });
+        (model, newRoot) =>
+        {
+          Assert.IsFalse(newRoot.DescendantNodes(_ => true).OfType<AttributeSyntax>().Any(_ => _.Name.ToString() == "RunLocal"));
+        });
     }
   }
 }

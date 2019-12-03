@@ -27,12 +27,12 @@ namespace ProjectTracker.Ui.Blazor
       : base(m, l, e, c)
     { }
 
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
       if (!ApplicationContext.User.Identity.IsAuthenticated)
-        ProjectTracker.Library.Security.PTPrincipal.Load("manager");
+        await ProjectTracker.Library.Security.PTPrincipal.LoadAsync("manager");
       var ticket = new AuthenticationTicket((ClaimsPrincipal)ApplicationContext.User, Options.Scheme);
-      return Task.FromResult(AuthenticateResult.Success(ticket));
+      return AuthenticateResult.Success(ticket);
     }
   }
 

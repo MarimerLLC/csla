@@ -36,7 +36,29 @@ namespace ProjectTracker.Library.Security
 
     public static bool Load(string username)
     {
+      var current = Csla.ApplicationContext.User;
+      if (current != null && current.Identity != null && current.Identity.Name == username)
+        return true;
+
+      var fromCache = PrincipalCache.GetPrincipal(username);
+      if (fromCache != null)
+        return SetPrincipal(fromCache);
+
       var identity = PTIdentity.GetPTIdentity(username);
+      return SetPrincipal(identity);
+    }
+
+    public static async Task<bool> LoadAsync(string username)
+    {
+      var current = Csla.ApplicationContext.User;
+      if (current != null && current.Identity != null && current.Identity.Name == username)
+        return true;
+
+      var fromCache = PrincipalCache.GetPrincipal(username);
+      if (fromCache != null)
+        return SetPrincipal(fromCache);
+
+      var identity = await PTIdentity.GetPTIdentityAsync(username);
       return SetPrincipal(identity);
     }
 
@@ -46,9 +68,17 @@ namespace ProjectTracker.Library.Security
       {
         PTPrincipal principal = new PTPrincipal(identity);
         Csla.ApplicationContext.User = principal;
+        PrincipalCache.AddPrincipal(principal);
       }
       OnNewUser();
       return identity.IsAuthenticated;
+    }
+
+    private static bool SetPrincipal(IPrincipal principal)
+    {
+      Csla.ApplicationContext.User = principal;
+      OnNewUser();
+      return principal.Identity.IsAuthenticated;
     }
 
     public static void Logout()

@@ -127,7 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Csla.Xamarin.Forms">
-      <Version>5.1.0-R19110101</Version>
+      <Version>5.1.0-R19112501</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="4.4.0.936621-pre1" />
   </ItemGroup>

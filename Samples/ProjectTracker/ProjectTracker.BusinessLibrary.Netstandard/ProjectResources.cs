@@ -17,9 +17,10 @@ namespace ProjectTracker.Library
 
     public async Task<ProjectResourceEdit> AssignAsync(int resourceId)
     {
-      var resource = await ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId);
-      this.Add(resource.Result);
-      return resource.Result;
+      var resourceCreator = await ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId);
+      var resourceEdit = resourceCreator.Result;
+      this.Add(resourceEdit);
+      return resourceEdit;
     }
 
     public void Remove(int resourceId)

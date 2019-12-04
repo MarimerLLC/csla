@@ -47,13 +47,13 @@ namespace ProjectTracker.Library
     }
 
     [Fetch]
-    private void DataPortal_Fetch(int resourceId)
+    private void Fetch(int resourceId)
     {
       Result = DataPortal.CreateChild<ProjectResourceEdit>(resourceId);
     }
 
     [Fetch]
-    private void DataPortal_Fetch(int projectId, int resourceId)
+    private void Fetch(int projectId, int resourceId)
     {
       Result = DataPortal.FetchChild<ProjectResourceEdit>(projectId, resourceId);
     }

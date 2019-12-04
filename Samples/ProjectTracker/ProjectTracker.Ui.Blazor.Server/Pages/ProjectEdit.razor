@@ -66,43 +66,47 @@
       }
     </tbody>
   </table>
-  @if (!IsSelectingResource)
-  {
-    <a href="javascript: void(0);" @onclick="SelectResource">Add resource</a>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var item in vm.Model.Resources)
-        {
+  <div style="background-color:lightgray">
+    @if (viewMode == SubViewModes.Details)
+    {
+      <a href="javascript: void(0);" @onclick="ResetResourcesView">Cancel assignment</a>
+      <table class="table">
+        <thead>
           <tr>
-            <td>@item.FirstName</td>
-            <td>@item.LastName</td>
-            <td><a href="javascript: void(0);" @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
+            <th>Name</th>
+            <th>Role</th>
+            <th></th>
           </tr>
-        }
-      </tbody>
-    </table>
-  }
-  else
-  {
-    <div style="background-color:lightgray">
+        </thead>
+        <tbody>
+          <tr>
+            <td>@selectedResource.FirstName @selectedResource.LastName</td>
+            <td>
+              <select @bind="selectedResource.Role">
+                @foreach (var item in ProjectTracker.Library.RoleList.GetCachedList())
+                {
+                  <option value="@item.Key">@item.Value</option>
+                }
+              </select>
+            </td>
+            <td><a href="javascript: void(0);" @onclick="() => AddResource()">Assign</a></td>
+          </tr>
+        </tbody>
+      </table>
+    }
+    else if (viewMode == SubViewModes.Select)
+    {
       @if (_resourceList == null)
       {
         <p>Loading resource list...</p>
       }
       else
       {
-        <a href="javascript: void(0);" @onclick="() => IsSelectingResource = false">Cancel assignment</a>
+        <a href="javascript: void(0);" @onclick="ResetResourcesView">Cancel assignment</a>
         <table class="table">
           <thead>
             <tr>
-              <th></th>
+              <th>Resource</th>
               <th></th>
             </tr>
           </thead>
@@ -111,14 +115,43 @@
             {
               <tr>
                 <td>@item.Name</td>
-                <td><a href="javascript: void(0);" @onclick="() => AddResource(item.Id)">Assign</a></td>
+                <td><a href="javascript: void(0);" @onclick="() => AssignRole(item.Id)">Select</a></td>
               </tr>
             }
           </tbody>
         </table>
       }
-    </div>
-  }
+    }
+    else if (viewMode == SubViewModes.Default)
+    {
+      <a href="javascript: void(0);" @onclick="SelectResource">Add resource</a>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Role</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var item in vm.Model.Resources)
+          {
+            <tr>
+              <td>@item.FirstName</td>
+              <td>@item.LastName</td>
+              <td>@item.RoleName</td>
+              <td><a href="javascript: void(0);" @onclick="() => EditResource(item.ResourceId)">Edit</a> | <a href="javascript: void(0);" @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    else
+    {
+      <p>Error in page - please contact support</p>
+    }
+  </div>
   <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save</button>
 }
 
@@ -126,7 +159,8 @@
   [Parameter]
   public string id { get; set; }
 
-  private bool IsSelectingResource = false;
+  private SubViewModes viewMode = SubViewModes.Default;
+  private ProjectTracker.Library.ProjectResourceEdit selectedResource;
   private List<ProjectTracker.Library.ResourceInfo> _resourceList;
 
   protected override void OnInitialized()
@@ -151,17 +185,37 @@
 
   private async void SelectResource()
   {
-    IsSelectingResource = true;
+    viewMode = SubViewModes.Select;
     _resourceList = (await ProjectTracker.Library.ResourceList.GetResourceListAsync())
                       .Where(r => !vm.Model.Resources.Contains(r.Id)).ToList();
     StateHasChanged();
   }
 
-  private async void AddResource(int resourceId)
+  private void ResetResourcesView()
   {
-    await vm.Model.Resources.AssignAsync(resourceId);
-    IsSelectingResource = false;
+    viewMode = SubViewModes.Default;
+  }
+
+  private async void AssignRole(int resourceId)
+  {
+    selectedResource = (await ProjectTracker.Library.ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId)).Result;
+    viewMode = SubViewModes.Details;
     StateHasChanged();
+  }
+
+  private void AddResource()
+  {
+    if (!vm.Model.Resources.Contains(selectedResource.ResourceId))
+      vm.Model.Resources.Add(selectedResource);
+    ResetResourcesView();
+    StateHasChanged();
+  }
+
+  private void EditResource(int resourceId)
+  {
+    selectedResource = vm.Model.Resources.Where(r => r.ResourceId == resourceId).FirstOrDefault();
+    if (selectedResource != null)
+      viewMode = SubViewModes.Details;
   }
 
   private void RemoveResource(int resourceId)

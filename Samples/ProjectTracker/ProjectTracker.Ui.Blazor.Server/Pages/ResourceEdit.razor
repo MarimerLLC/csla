@@ -11,7 +11,11 @@
   <a href="resources">Resource list</a>
 </p>
 
-@if (vm.Model != null)
+@if (vm.Model == null)
+{
+  <p>Loading...</p>
+}
+else
 {
   <table class="table">
     <thead>
@@ -48,39 +52,39 @@
       }
     </tbody>
   </table>
-  @if (!IsSelectingProject)
-  {
-    <a href="javascript: void(0);" @onclick="SelectProject">Assign to project</a>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Role</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var item in vm.Model.Assignments)
-        {
+  <div style="background-color:lightgray">
+    @if (viewMode == SubViewModes.Default)
+    {
+      <a href="javascript: void(0);" @onclick="SelectProject">Assign to project</a>
+      <table class="table">
+        <thead>
           <tr>
-            <td>@item.ProjectName</td>
-            <td>@item.RoleName</td>
-            <td><a href="javascript: void(0);" @onclick="() => RemoveAssignment(item.ProjectId)">Remove</a></td>
+            <th>Project</th>
+            <th>Role</th>
+            <th></th>
           </tr>
-        }
-      </tbody>
-    </table>
-  }
-  else
-  {
-    <div style="background-color:lightgray">
+        </thead>
+        <tbody>
+          @foreach (var item in vm.Model.Assignments)
+          {
+            <tr>
+              <td>@item.ProjectName</td>
+              <td>@item.RoleName</td>
+              <td><a href="javascript: void(0);" @onclick="() => EditAssignment(item.ProjectId)">Edit</a> | <a href="javascript: void(0);" @onclick="() => RemoveAssignment(item.ProjectId)">Remove</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    else if (viewMode == SubViewModes.Select)
+    {
       @if (_projectList == null)
       {
         <p>Loading project list...</p>
       }
       else
       {
-        <a href="javascript: void(0);" @onclick="() => IsSelectingProject = false">Cancel assignment</a>
+        <a href="javascript: void(0);" @onclick="() => viewMode = SubViewModes.Details">Cancel assignment</a>
         <table class="table">
           <thead>
             <tr>
@@ -93,14 +97,45 @@
             {
               <tr>
                 <td>@item.Name</td>
-                <td><a href="javascript: void(0);" @onclick="() => Assign(item.Id)">Assign</a></td>
+                <td><a href="javascript: void(0);" @onclick="() => AssignRole(item.Id)">Select</a></td>
               </tr>
             }
           </tbody>
         </table>
       }
-    </div>
-  }
+    }
+    else if (viewMode == SubViewModes.Details)
+    {
+      <a href="javascript: void(0);" @onclick="() => viewMode = SubViewModes.Default">Cancel assignment</a>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>@selectedProject.ProjectName</td>
+            <td>
+              <select @bind="selectedProject.Role">
+                @foreach (var item in ProjectTracker.Library.RoleList.GetCachedList())
+                {
+                  <option value="@item.Key">@item.Value</option>
+                }
+              </select>
+            </td>
+            <td><a href="javascript: void(0);" @onclick="() => AddAssignment()">Assign</a></td>
+          </tr>
+        </tbody>
+      </table>
+    }
+    else
+    {
+      <p>Error in page - please contact support</p>
+    }
+  </div>
   <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save</button>
 }
 
@@ -108,7 +143,8 @@
   [Parameter]
   public string id { get; set; }
 
-  private bool IsSelectingProject = false;
+  private SubViewModes viewMode = SubViewModes.Default;
+  private ProjectTracker.Library.ResourceAssignmentEdit selectedProject;
   private List<ProjectTracker.Library.ProjectInfo> _projectList;
 
   protected override void OnInitialized()
@@ -133,16 +169,31 @@
 
   private async void SelectProject()
   {
-    IsSelectingProject = true;
     _projectList = (await ProjectTracker.Library.ProjectList.GetProjectListAsync())
                       .Where(r => !vm.Model.Assignments.Contains(r.Id)).ToList();
+    viewMode = SubViewModes.Select;
     StateHasChanged();
   }
 
-  private async void Assign(int projectId)
+  private async void AssignRole(int projectId)
   {
-    await vm.Model.Assignments.AssignToAsync(projectId);
-    IsSelectingProject = false;
+    selectedProject = (await ProjectTracker.Library.ResourceAssignmentEditCreator.GetResourceAssignmentEditCreatorAsync(projectId)).Result;
+    viewMode = SubViewModes.Details;
+    StateHasChanged();
+  }
+
+  private void EditAssignment(int projectId)
+  {
+    selectedProject = vm.Model.Assignments.Where(r => r.ProjectId == projectId).FirstOrDefault();
+    if (selectedProject != null)
+      viewMode = SubViewModes.Details;
+  }
+
+  private void AddAssignment()
+  {
+    if (!vm.Model.Assignments.Contains(selectedProject.ProjectId))
+      vm.Model.Assignments.Add(selectedProject);
+    viewMode = SubViewModes.Default;
     StateHasChanged();
   }
 

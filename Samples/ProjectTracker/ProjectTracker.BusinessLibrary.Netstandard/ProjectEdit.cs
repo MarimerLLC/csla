@@ -268,8 +268,15 @@ namespace ProjectTracker.Library
     [DeleteSelf]
     private void DeleteSelf()
     {
-      using (BypassPropertyChecks)
-        Delete(this.Id);
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        using (BypassPropertyChecks)
+        {
+          Resources.Clear();
+          FieldManager.UpdateChildren(this);
+          Delete(this.Id);
+        }
+      }
     }
 
     [Delete]
@@ -277,8 +284,6 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
-        Resources.Clear();
-        FieldManager.UpdateChildren(this);
         var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
         dal.Delete(id);
       }

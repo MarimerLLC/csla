@@ -25,19 +25,53 @@ else
     <tbody>
       @foreach (var item in vm.Model)
       {
-        <tr>
-          <td>@item.Id</td>
-          <td>@item.Name</td>
-          <td><a href="resourceedit/@item.Id">Edit</a> | Delete</td>
-        </tr>
+      <tr>
+        <td>@item.Id</td>
+        <td>@item.Name</td>
+        <td>
+          @if (item.Id == itemSelectedForDeletion)
+          {
+            <span class="alert-danger"><a href="javascript: void(0);" @onclick="() => Delete(item.Id)">Confirm delete</a></span>
+            <span> | </span><a href="javascript: void(0);" @onclick="() => itemSelectedForDeletion = -1">Cancel</a>
+          }
+          else
+          {
+            @if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ResourceEdit)))
+            {
+              <a href="resourceedit/@item.Id">Edit</a>
+            }
+            @if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ResourceEdit)))
+            {
+              <span> | </span>
+              <a href="javascript: void(0);" @onclick="() => SelectForDelete(item.Id)">Delete</a>
+            }
+          }
+        </td>
+      </tr>
       }
     </tbody>
   </table>
 }
 
 @code {
+  private int itemSelectedForDeletion = -1;
+
   protected override async Task OnInitializedAsync()
   {
     await vm.RefreshAsync();
+  }
+
+  private void SelectForDelete(int id)
+  {
+    itemSelectedForDeletion = id;
+  }
+
+  private async void Delete(int id)
+  {
+    itemSelectedForDeletion = -1;
+    vm.Model = null;
+    await ProjectTracker.Library.ResourceEdit.DeleteResourceEditAsync(id);
+    await vm.RefreshAsync();
+    StateHasChanged();
   }
 }

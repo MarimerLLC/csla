@@ -11,8 +11,12 @@
   <a href="projects">Project list</a>
 </p>
 
-@if (vm.Model != null)
+@if (vm.Model == null)
 {
+  <p>Loading...</p>
+}
+else 
+{ 
   <table class="table">
     <thead>
       <tr>

@@ -124,15 +124,6 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
-    /// Get a value indicating whether the AutoCloneOnUpdate
-    /// setting should apply to this data portal proxy.
-    /// </summary>
-    public bool HonorAutoCloneOnUpdate
-    {
-      get { return false; }
-    }
-
-    /// <summary>
     /// Gets the binding object used by this proxy instance.
     /// </summary>
     public System.ServiceModel.Channels.Binding Binding { get; protected set; }

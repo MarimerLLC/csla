@@ -300,7 +300,5 @@ namespace Csla.Testing.Business.TestProxies
     {
       get { return true; }
     }
-
-    public bool HonorAutoCloneOnUpdate => true;
   }
 }

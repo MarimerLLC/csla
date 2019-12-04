@@ -158,16 +158,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     public bool IsServerRemote
     {
-      get { return true; }
-    }
-
-    /// <summary>
-    /// Get a value indicating whether the AutoCloneOnUpdate
-    /// setting should apply to this data portal proxy.
-    /// </summary>
-    public bool HonorAutoCloneOnUpdate
-    {
-      get { return true; }
+      get { return false; }
     }
 
     /// <summary>

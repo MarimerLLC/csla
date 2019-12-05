@@ -6,6 +6,8 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.Blazor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +26,9 @@ namespace Csla.Configuration
     public static ICslaBuilder WithBlazorServerSupport(this ICslaBuilder builder)
     {
       CslaConfiguration.Configure().DataPortal().AuthenticationType("Windows");
-      builder.Services.AddTransient(typeof(Csla.Blazor.ViewModel<>), typeof(Csla.Blazor.ViewModel<>));
+      builder.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+      builder.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
       return builder;
     }
 
@@ -36,7 +40,9 @@ namespace Csla.Configuration
     /// <returns></returns>
     public static ICslaBuilder WithBlazorClientSupport(this ICslaBuilder builder)
     {
-      builder.Services.AddTransient(typeof(Csla.Blazor.ViewModel<>), typeof(Csla.Blazor.ViewModel<>));
+      builder.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+      builder.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
       return builder;
     }
 

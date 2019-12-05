@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Csla.Blazor;
 using Csla.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -29,15 +30,16 @@ namespace ProjectTracker.Ui.Blazor
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddAuthentication(options =>
+      {
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+      })
+        .AddCookie();
       services.AddRazorPages();
       services.AddServerSideBlazor();
       services.AddHttpContextAccessor();
-      // Add authentication
-      services.AddAuthentication(options =>
-      {
-        options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
-        options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
-      }).AddCustomAuth();
 
       services.AddCsla().WithBlazorServerSupport();
     }
@@ -56,14 +58,17 @@ namespace ProjectTracker.Ui.Blazor
         app.UseHsts();
       }
 
-      app.UseAuthentication();
       app.UseHttpsRedirection();
       app.UseStaticFiles();
 
       app.UseRouting();
 
+      app.UseAuthentication();
+      app.UseAuthorization();
+
       app.UseEndpoints(endpoints =>
       {
+        endpoints.MapControllers();
         endpoints.MapBlazorHub();
         endpoints.MapFallbackToPage("/_Host");
       });

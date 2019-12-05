@@ -64,6 +64,12 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
+    [CreateChild]
+    private void Create()
+    {
+      base.Child_Create();
+    }
+
     [FetchChild]
     private void Child_Fetch(ProjectTracker.Dal.RoleDto data)
     {

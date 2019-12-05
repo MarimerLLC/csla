@@ -37,12 +37,8 @@ namespace ProjectTracker.Ui.Blazor
       {
         options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
         options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
-      }).AddCustomAuth(options =>
-        {
-          // Configure password for authentication
-          options.AuthKey = "p@ssw0rd";
-        });
-      services.AddScoped<AuthenticationStateProvider, CslaAuthenticationStateProvider>();
+      }).AddCustomAuth();
+
       services.AddCsla().WithBlazorServerSupport();
     }
 

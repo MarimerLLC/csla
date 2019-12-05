@@ -1,5 +1,7 @@
 ﻿@page "/projects"
-@inject Csla.Blazor.ViewModel<ProjectTracker.Library.ProjectList> vm
+@using  Csla.Blazor
+@using  Csla.Rules
+@inject ViewModel<ProjectTracker.Library.ProjectList> vm
 
 <h1>Projects</h1>
 
@@ -11,9 +13,9 @@
 }
 else
 {
-  <p>
-    <a href="projectedit">Add project</a>
-  </p>
+  <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.CreateObject, typeof(ProjectTracker.Library.ProjectEdit)))">
+    <p><a href="projectedit">Add project</a></p>
+  </AuthorizeView>
   <table class="table">
     <thead>
       <tr>
@@ -36,15 +38,13 @@ else
             }
             else
             {
-              @if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)))
-              {
+              <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)))">
                 <a href="projectedit/@item.Id">Edit</a>
-              }
-              @if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)))
-              {
                 <span> | </span>
+              </AuthorizeView>
+              <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)))">
                 <a href="javascript: void(0);" @onclick="() => SelectForDelete(item.Id)">Delete</a>
-              }
+              </AuthorizeView>
             }
           </td>
         </tr>
@@ -56,7 +56,7 @@ else
 @code {
   private int itemSelectedForDeletion = -1;
 
-  protected override async Task OnInitializedAsync()
+  protected override async Task OnParametersSetAsync()
   {
     await vm.RefreshAsync();
   }

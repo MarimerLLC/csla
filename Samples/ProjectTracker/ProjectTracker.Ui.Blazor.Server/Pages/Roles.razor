@@ -1,0 +1,170 @@
+﻿@page "/roles"
+@using Csla.Blazor
+@using  Csla.Rules
+@using ProjectTracker.Library.Admin
+@inject ViewModel<RoleEditList> vm
+
+<h1>Roles</h1>
+
+<p class="text-danger">@vm.ViewModelErrorText</p>
+@if (vm.Model == null)
+{
+  <p>Loading...</p>
+}
+else
+{
+  <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.CreateObject, typeof(ProjectTracker.Library.Admin.RoleEditList)))">
+    <p><a href="javascript: void(0);" @onclick="AddRole">Add role</a></p>
+  </AuthorizeView>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (addingRole)
+      {
+        <tr>
+          <td>new</td>
+          <td>
+            <TextInput Property="@(new PropertyInfo<string>(newRole, nameof(newRole.Name)))" />
+          </td>
+          <td>
+            <a class="alert-warning" href="javascript: void(0);" @onclick="AddAccepted">Confirm</a>
+            <span> | </span>
+            <a href="javascript: void(0);" @onclick="AddCancelled">Cancel</a>
+          </td>
+        </tr>
+      }
+      @foreach (var item in vm.Model)
+      {
+    <tr>
+      @if (item.Id == itemSelectedForDeletion)
+      {
+        <td>@item.Id</td>
+        <td>@item.Name</td>
+        <td>
+          <a class="alert-danger" href="javascript: void(0);" @onclick="() => Delete(item.Id)">Confirm</a>
+          <span> | </span><a href="javascript: void(0);" @onclick="() => itemSelectedForDeletion = -1">Cancel</a>
+        </td>
+      }
+      else if (item.Id == itemSelectedForEdit)
+      {
+        <td>@item.Id</td>
+        <td>
+          <TextInput Property="@(new PropertyInfo<string>(item, nameof(item.Name)))" />
+        </td>
+        <td>
+          <a class="alert-warning" href="javascript: void(0);" @onclick="() => EditAccepted(item.Id)">Confirm</a>
+          <span> | </span>
+          <a href="javascript: void(0);" @onclick="() => EditCancelled(item.Id)">Cancel</a>
+        </td>
+      }
+      else
+      {
+        <td>@item.Id</td>
+        <td>@item.Name</td>
+        <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditList)))">
+          <Authorized>
+            <td>
+              <a href="javascript: void(0);" @onclick="() => SelectForEdit(item.Id)">Edit</a>
+              <span> | </span>
+              <a href="javascript: void(0);" @onclick="() => SelectForDelete(item.Id)">Delete</a>
+            </td>
+          </Authorized>
+          <NotAuthorized>
+            <td></td>
+          </NotAuthorized>
+        </AuthorizeView>
+      }
+    </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@code {
+  private bool addingRole = false;
+  private RoleEdit newRole;
+  private int itemSelectedForDeletion = -1;
+  private int itemSelectedForEdit = -1;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    await vm.RefreshAsync();
+  }
+
+  private void AddRole()
+  {
+    itemSelectedForEdit = -1;
+    itemSelectedForDeletion = -1;
+    newRole = Csla.DataPortal.CreateChild<RoleEdit>();
+    addingRole = true;
+  }
+
+  private async void AddAccepted()
+  {
+    addingRole = false;
+    vm.Model.Add(newRole);
+    await SaveAndRefresh();
+  }
+
+  private void AddCancelled()
+  {
+    addingRole = false;
+    newRole = null;
+  }
+
+  private void SelectForEdit(int id)
+  {
+    addingRole = false;
+    itemSelectedForDeletion = -1;
+    itemSelectedForEdit = id;
+    var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
+    if (item != null)
+      item.BeginEdit();
+  }
+
+  private async void EditAccepted(int id)
+  {
+    itemSelectedForEdit = -1;
+    var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
+    if (item != null)
+      item.ApplyEdit();
+    await SaveAndRefresh();
+  }
+
+  private void EditCancelled(int id)
+  {
+    itemSelectedForEdit = -1;
+    var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
+    if (item != null)
+      item.CancelEdit();
+  }
+
+  private void SelectForDelete(int id)
+  {
+    addingRole = false;
+    itemSelectedForEdit = -1;
+    itemSelectedForDeletion = id;
+  }
+
+  private async void Delete(int id)
+  {
+    itemSelectedForDeletion = -1;
+    var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
+    if (item != null)
+      vm.Model.Remove(item);
+    await SaveAndRefresh();
+  }
+
+  private async Task SaveAndRefresh()
+  {
+    await vm.SaveAsync();
+    await vm.RefreshAsync();
+    StateHasChanged();
+  }
+}

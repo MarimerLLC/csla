@@ -3,6 +3,7 @@
 @using  Csla.Rules
 @using ProjectTracker.Library.Admin
 @inject ViewModel<RoleEditList> vm
+@attribute [HasPermission(AuthorizationActions.EditObject, typeof(RoleEditList))]
 
 <h1>Roles</h1>
 
@@ -41,46 +42,46 @@ else
       }
       @foreach (var item in vm.Model)
       {
-    <tr>
-      @if (item.Id == itemSelectedForDeletion)
-      {
-        <td>@item.Id</td>
-        <td>@item.Name</td>
-        <td>
-          <a class="alert-danger" href="javascript: void(0);" @onclick="() => Delete(item.Id)">Confirm</a>
-          <span> | </span><a href="javascript: void(0);" @onclick="() => itemSelectedForDeletion = -1">Cancel</a>
-        </td>
-      }
-      else if (item.Id == itemSelectedForEdit)
-      {
-        <td>@item.Id</td>
-        <td>
-          <TextInput Property="@(new PropertyInfo<string>(item, nameof(item.Name)))" />
-        </td>
-        <td>
-          <a class="alert-warning" href="javascript: void(0);" @onclick="() => EditAccepted(item.Id)">Confirm</a>
-          <span> | </span>
-          <a href="javascript: void(0);" @onclick="() => EditCancelled(item.Id)">Cancel</a>
-        </td>
-      }
-      else
-      {
-        <td>@item.Id</td>
-        <td>@item.Name</td>
-        <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditList)))">
-          <Authorized>
+        <tr>
+          @if (item.Id == itemSelectedForDeletion)
+          {
+            <td>@item.Id</td>
+            <td>@item.Name</td>
             <td>
-              <a href="javascript: void(0);" @onclick="() => SelectForEdit(item.Id)">Edit</a>
-              <span> | </span>
-              <a href="javascript: void(0);" @onclick="() => SelectForDelete(item.Id)">Delete</a>
+              <a class="alert-danger" href="javascript: void(0);" @onclick="() => Delete(item.Id)">Confirm</a>
+              <span> | </span><a href="javascript: void(0);" @onclick="() => itemSelectedForDeletion = -1">Cancel</a>
             </td>
-          </Authorized>
-          <NotAuthorized>
-            <td></td>
-          </NotAuthorized>
-        </AuthorizeView>
-      }
-    </tr>
+          }
+          else if (item.Id == itemSelectedForEdit)
+          {
+            <td>@item.Id</td>
+            <td>
+              <TextInput Property="@(new PropertyInfo<string>(item, nameof(item.Name)))" />
+            </td>
+            <td>
+              <a class="alert-warning" href="javascript: void(0);" @onclick="() => EditAccepted(item.Id)">Confirm</a>
+              <span> | </span>
+              <a href="javascript: void(0);" @onclick="() => EditCancelled(item.Id)">Cancel</a>
+            </td>
+          }
+          else
+          {
+            <td>@item.Id</td>
+            <td>@item.Name</td>
+            <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.RoleEditList)))">
+              <Authorized>
+                <td>
+                  <a href="javascript: void(0);" @onclick="() => SelectForEdit(item.Id)">Edit</a>
+                  <span> | </span>
+                  <a href="javascript: void(0);" @onclick="() => SelectForDelete(item.Id)">Delete</a>
+                </td>
+              </Authorized>
+              <NotAuthorized>
+                <td></td>
+              </NotAuthorized>
+            </AuthorizeView>
+          }
+        </tr>
       }
     </tbody>
   </table>

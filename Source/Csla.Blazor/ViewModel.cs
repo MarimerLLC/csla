@@ -94,7 +94,8 @@ namespace Csla.Blazor
     protected virtual async Task<T> DoRefreshAsync(params object[] parameters)
     {
       if (typeof(Core.IReadOnlyObject).IsAssignableFrom(typeof(T)) ||
-          typeof(Core.IReadOnlyCollection).IsAssignableFrom(typeof(T)))
+          typeof(Core.IReadOnlyCollection).IsAssignableFrom(typeof(T)) ||
+          typeof(Core.IEditableCollection).IsAssignableFrom(typeof(T)))
       {
         if (Server.DataPortal.GetCriteriaFromArray(parameters) is Server.EmptyCriteria)
           return await DataPortal.FetchAsync();

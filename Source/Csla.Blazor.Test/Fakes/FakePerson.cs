@@ -58,8 +58,19 @@ namespace Csla.Blazor.Test.Fakes
 
     protected override void AddBusinessRules()
     {
+      Csla.Rules.CommonRules.CommonBusinessRule rule;
       base.AddBusinessRules();
       BusinessRules.AddRule(new OneOfSeveralStringsRequiredRule(HomeTelephoneProperty, MobileTelephoneProperty));
+
+      // Add additional rules for warning severity level
+      rule = new Csla.Rules.CommonRules.MinLength(LastNameProperty, 2);
+      rule.Severity = Csla.Rules.RuleSeverity.Warning;
+      BusinessRules.AddRule(rule);
+
+      // Add additional rules for information severity level
+      rule = new Csla.Rules.CommonRules.MinLength(FirstNameProperty, 2);
+      rule.Severity = Csla.Rules.RuleSeverity.Information;
+      BusinessRules.AddRule(rule);
     }
 
     #endregion

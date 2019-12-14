@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -51,9 +53,16 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription, document,
-        tree, new[] { "public A()" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
+            .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(methodSymbol.Parameters.Length == 0);
+        });
     }
 
     [TestMethod]
@@ -82,9 +91,16 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { "public" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
+            .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(methodSymbol.Parameters.Length == 0);
+        });
     }
 
     [TestMethod]
@@ -113,10 +129,19 @@ public class A : BusinessBase<A>
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { "// Hey! Don't loose me!", "public" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
+            .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(methodSymbol.Parameters.Length == 0);
+
+          Assert.IsTrue(newRoot.DescendantTrivia(_ => true, true)
+            .Any(_ => _.IsKind(SyntaxKind.SingleLineCommentTrivia) && _.ToFullString().Contains("Hey! Don't loose me!")));
+        });
     }
 
     [TestMethod]
@@ -144,10 +169,19 @@ public class A : BusinessBase<A>
       await fix.RegisterCodeFixesAsync(codeFixContext);
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-        tree, new[] { "public" });
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
+            .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(methodSymbol.Parameters.Length == 0);
+
+          Assert.IsTrue(newRoot.DescendantTrivia(_ => true, true)
+            .Any(_ => _.IsKind(SyntaxKind.MultiLineCommentTrivia) && _.ToFullString().Contains("And not this either")));
+        });
     }
 
     [TestMethod]
@@ -158,7 +192,7 @@ public class A : BusinessBase<A>
 
 public class A : BusinessBase<A>
 {
-  private A() { }
+  public A() { }
 
   public class B
     : BusinessBase<B>
@@ -170,25 +204,28 @@ public class A : BusinessBase<A>
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
 
-      foreach(var diagnostic in diagnostics)
-      {
-        var sourceSpan = diagnostic.Location.SourceSpan;
+      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
-        var actions = new List<CodeAction>();
-        var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
-          (a, _) => { actions.Add(a); });
+      var actions = new List<CodeAction>();
+      var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
+        (a, _) => { actions.Add(a); });
 
-        var fix = new CheckConstructorsAnalyzerPublicConstructorCodeFix();
-        var codeFixContext = new CodeFixContext(document, diagnostic,
-          codeActionRegistration, new CancellationToken(false));
-        await fix.RegisterCodeFixesAsync(codeFixContext);
+      var fix = new CheckConstructorsAnalyzerPublicConstructorCodeFix();
+      var codeFixContext = new CodeFixContext(document, diagnostics[0],
+        codeActionRegistration, new CancellationToken(false));
+      await fix.RegisterCodeFixesAsync(codeFixContext);
 
-        Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-        await TestHelpers.VerifyActionAsync(actions,
-          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
-          tree, new[] { "public" });
-      }
+      Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+      await TestHelpers.VerifyChangesAsync(actions,
+        CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
+        (model, newRoot) =>
+        {
+          var classBNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single(_ => _.Identifier.Text == "B");
+          var classBSymbol = model.GetDeclaredSymbol(classBNode) as INamedTypeSymbol;
+          var methodBSymbol = classBSymbol.GetMembers().OfType<IMethodSymbol>()
+            .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(methodBSymbol.Parameters.Length == 0);
+        });
     }
   }
 }

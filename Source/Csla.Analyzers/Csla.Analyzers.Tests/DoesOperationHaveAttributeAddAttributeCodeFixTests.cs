@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -156,12 +157,18 @@ public class A : Csla.BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      var expectedTexts = includeUsingCsla ?
-        new[] { $"[{attributeName}]" } :
-        new[] { "using Csla;", $"[{attributeName}]" };
+      await TestHelpers.VerifyChangesAsync(actions,
+        expectedDescription, document,
+        (model, newRoot) =>
+        {
+          Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<AttributeSyntax>().Any(_ => _.Name.ToString() == attributeName));
 
-      await TestHelpers.VerifyActionAsync(actions,
-        expectedDescription, document, tree, expectedTexts);
+          if(includeUsingCsla)
+          {
+            Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<UsingDirectiveSyntax>().Any(
+              _ => _.Name.GetText().ToString() == "Csla"));
+          }
+        });
     }
   }
 }

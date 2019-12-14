@@ -114,6 +114,33 @@ namespace Csla.Analyzers.Tests.Extensions
     public void IsBusinessBaseWhenSymbolIsNull() => Assert.IsFalse((null as ITypeSymbol).IsBusinessBase());
 
     [TestMethod]
+    public async Task IsBusinessRuleForTypeThatIsNotABusinessRule()
+    {
+      var code = "public class A { }";
+      Assert.IsFalse((await GetTypeSymbolAsync(code, "A")).IsBusinessRule());
+    }
+
+    [TestMethod]
+    public async Task IsBusinessRuleForTypeThatIsABusinessRule()
+    {
+      var code = 
+@"using Csla.Rules;
+
+public class A : BusinessRule { }";
+      Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsBusinessRule());
+    }
+
+    [TestMethod]
+    public async Task IsBusinessRuleForTypeThatIsABusinessRuleAsync()
+    {
+      var code =
+@"using Csla.Rules;
+
+public class A : BusinessRuleAsync { }";
+      Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsBusinessRule());
+    }
+
+    [TestMethod]
     public async Task IsObjectFactoryForNotObjectFactoryType()
     {
       var code = "public class A { }";

@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -53,9 +54,12 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription, document,
-        tree, new[] { "[Serializable]" });
+        (model, newRoot) =>
+        {
+          Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<AttributeSyntax>().Any(_ => _.Name.ToString() == "Serializable"));
+        });
     }
 
     [TestMethod]
@@ -85,9 +89,14 @@ public class A : BusinessBase<A>
 
       Assert.AreEqual(1, actions.Count, nameof(actions.Count));
 
-      await TestHelpers.VerifyActionAsync(actions,
+      await TestHelpers.VerifyChangesAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, new[] { "using System;", "[Serializable]" });
+        (model, newRoot) =>
+        {
+          Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<UsingDirectiveSyntax>().Any(
+            _ => _.Name.GetText().ToString() == "System"));
+          Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<AttributeSyntax>().Any(_ => _.Name.ToString() == "Serializable"));
+        });
     }
   }
 }

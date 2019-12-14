@@ -12,6 +12,5 @@
     public const string AddSerializableAndUsingDescription = "Add [Serializable] and using statement";
     public const string AddSerializableDescription = "Add [Serializable]";
     public const string SerializableName = "Serializable";
-    public const string SystemNamespace = "System";
   }
 }

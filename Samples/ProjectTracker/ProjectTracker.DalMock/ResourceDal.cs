@@ -84,6 +84,12 @@ namespace ProjectTracker.DalMock
                   select r).FirstOrDefault();
       if (data != null)
         MockDb.Resources.Remove(data);
+
+      var assignments = (from r in MockDb.Assignments
+                         where r.ResourceId == id
+                         select r).ToList();
+      foreach (var item in assignments)
+        MockDb.Assignments.Remove(item);
     }
   }
 }

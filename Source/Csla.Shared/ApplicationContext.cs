@@ -856,7 +856,8 @@ namespace Csla
         var result = _contextManager.GetServiceProviderScope();
         if (result == null && DefaultServiceProvider != null)
         {
-          result = DefaultServiceProvider.CreateScope();
+          var scopeFactory = DefaultServiceProvider.GetRequiredService<IServiceScopeFactory>();
+          result = scopeFactory.CreateScope();
           ServiceProviderScope = result;
         }
         return result;

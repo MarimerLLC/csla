@@ -23,8 +23,13 @@ namespace ProjectTracker.Library.Security
       return DataPortal.Fetch<PTIdentity>(username);
     }
 
+    internal static async Task<PTIdentity> GetPTIdentityAsync(string username)
+    {
+      return await DataPortal.FetchAsync<PTIdentity>(username);
+    }
+
     [Fetch]
-    private void DataPortal_Fetch(string username)
+    private void Fetch(string username)
     {
       ProjectTracker.Dal.UserDto data = null;
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -43,7 +48,7 @@ namespace ProjectTracker.Library.Security
     }
 
     [Fetch]
-    private void DataPortal_Fetch(UsernameCriteria criteria)
+    private void Fetch(UsernameCriteria criteria)
     {
       ProjectTracker.Dal.UserDto data = null;
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

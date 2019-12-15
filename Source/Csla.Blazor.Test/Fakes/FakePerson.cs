@@ -9,10 +9,10 @@ namespace Csla.Blazor.Test.Fakes
   [Serializable()]
   public class FakePerson : BusinessBase<FakePerson>
   {
-    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
-    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
-    public static PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
-    public static PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
+    public static Csla.PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
+    public static Csla.PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
+    public static Csla.PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
+    public static Csla.PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
 
     #region Properties 
 

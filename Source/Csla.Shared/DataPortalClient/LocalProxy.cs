@@ -158,7 +158,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     public bool IsServerRemote
     {
-      get { return true; }
+      get { return false; }
     }
 
     /// <summary>

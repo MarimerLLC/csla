@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -12,6 +13,14 @@ namespace ProjectTracker.Library
       var resource = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;
       this.Add(resource);
       return resource;
+    }
+
+    public async Task<ProjectResourceEdit> AssignAsync(int resourceId)
+    {
+      var resourceCreator = await ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId);
+      var resourceEdit = resourceCreator.Result;
+      this.Add(resourceEdit);
+      return resourceEdit;
     }
 
     public void Remove(int resourceId)

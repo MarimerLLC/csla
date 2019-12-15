@@ -1,0 +1,65 @@
+﻿@page
+@model ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjectTracker</title>
+  <base href="~/" />
+  <link rel="stylesheet" href="~/css/bootstrap/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/bootstrap4-toggle.min.css" />
+  <link rel="stylesheet" href="~/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+  <app>
+    <div class="mainContent">
+      <div class="row">
+        <div class="offset-4 col-4">
+
+          <br /><br /><br />
+
+          <div class="text-center">
+            <h2>Please Login</h2>
+            <p class="lead text-primary">Before you can use this application you need to log in with a valid login name and password.</p>
+            <p>Please enter your credentials in the form below and click login</p>
+          </div>
+
+          <br /><br /><br />
+
+          @if (!string.IsNullOrWhiteSpace(Model.AlertMessage))
+          {
+            <div class="alert alert-danger">@Model.AlertMessage</div>
+          }
+
+          <form method="post">
+
+            <div class="form-group">
+              <label asp-for="loginData.UserName"></label>
+              <input asp-for="loginData.UserName" class="form-control">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+              <label asp-for="loginData.Password"></label>
+              <input asp-for="loginData.Password" class="form-control" type="password">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </app>
+
+  <!-- Razor pages can't use the blazor BS4 components, so this partial fixes up the CSS rule names in the form above on submit -->
+  @*<partial name="BS4ValidationPartial" />*@
+
+</body>
+</html>

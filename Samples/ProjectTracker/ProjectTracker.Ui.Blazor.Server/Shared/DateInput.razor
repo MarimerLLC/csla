@@ -1,0 +1,40 @@
+﻿<div>
+  <input @bind="DateAsString"
+         disabled="@(!Property.CanWrite)"
+         format-value="MM/dd/yyyy" /><br />
+  <span class="text-danger">@Property.ErrorText</span>
+  <span class="text-warning">@Property.WarningText</span>
+  <span class="text-info">@Property.InformationText</span>
+</div>
+
+@code {
+  [Parameter]
+  public Csla.Blazor.PropertyInfo<DateTime?> Property { get; set; }
+  [Parameter]
+  public bool EmptyIsMin { get; set; } = true;
+
+  private Csla.SmartDate DateValue;
+
+  private string DateAsString
+  {
+    get
+    {
+      DateValue = new Csla.SmartDate(Property.Value, EmptyIsMin);
+      DateValue.FormatString = "MM/dd/yyyy";
+      return DateValue.Text;
+    }
+    set
+    {
+      try
+      {
+        DateValue.Text = value;
+      }
+      catch (ArgumentException)
+      { /* invalid text entry, don't update value */ }
+      if (DateValue.IsEmpty)
+        Property.Value = null;
+      else
+        Property.Value = DateValue.Date;
+    }
+  }
+}

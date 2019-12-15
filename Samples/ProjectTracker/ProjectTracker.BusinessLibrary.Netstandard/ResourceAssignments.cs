@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
@@ -14,6 +15,20 @@ namespace ProjectTracker.Library
         var project = ResourceAssignmentEditCreator.GetResourceAssignmentEditCreator(projectId).Result;
         this.Add(project);
         return project;
+      }
+      else
+      {
+        throw new InvalidOperationException("Resource already assigned to project");
+      }
+    }
+
+    public async Task<ResourceAssignmentEdit> AssignToAsync(int projectId)
+    {
+      if (!(Contains(projectId)))
+      {
+        var project = await ResourceAssignmentEditCreator.GetResourceAssignmentEditCreatorAsync(projectId);
+        this.Add(project.Result);
+        return project.Result;
       }
       else
       {

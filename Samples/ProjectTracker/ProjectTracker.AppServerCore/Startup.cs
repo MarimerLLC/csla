@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Csla.Configuration;
 
 namespace ProjectTracker.AppServerCore
 {
@@ -26,6 +27,7 @@ namespace ProjectTracker.AppServerCore
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+      services.AddCsla();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +45,9 @@ namespace ProjectTracker.AppServerCore
       app.UseHttpsRedirection();
       app.UseMvc();
 
-      Csla.Configuration.ConfigurationManager.AppSettings["DalManagerType"] = 
+      app.UseCsla();
+
+      ConfigurationManager.AppSettings["DalManagerType"] = 
         "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
     }
   }

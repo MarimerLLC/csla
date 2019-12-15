@@ -22,7 +22,9 @@ namespace ProjectTracker.DalMock
         };
       Resources = new List<ResourceData>
         {
-          new ResourceData { Id = 1, FirstName = "Rocky", LastName = "Lhotka", LastChanged = GetTimeStamp() }
+          new ResourceData { Id = 1, FirstName = "Rocky", LastName = "Lhotka", LastChanged = GetTimeStamp() },
+          new ResourceData { Id = 2, FirstName = "Meghan", LastName = "Lien", LastChanged = GetTimeStamp() },
+          new ResourceData { Id = 3, FirstName = "Jason", LastName = "Bock", LastChanged = GetTimeStamp() }
         };
       Assignments = new List<AssignmentData>
         {

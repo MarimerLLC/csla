@@ -3,7 +3,7 @@
 @using BlazorExample.Shared
 @inject Csla.Blazor.ViewModel<PersonEdit> vm
 @inject NavigationManager NavigationManager
-@attribute [Authorize(Roles="Admin")]
+@attribute [Authorize(Roles = "Admin")]
 
 <h1>Edit Person</h1>
 
@@ -18,8 +18,7 @@
 else
 {
   <p>
-    <a href="listpersons">List of people</a><br />
-    <a href="editperson">Add person</a>
+    <a href="listpersons">List of people</a>
   </p>
   <table class="table">
     <thead>
@@ -33,17 +32,18 @@ else
         <td>Id</td>
         <td>@vm.Model.Id</td>
       </tr>
+      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).CanRead)
+      {
+        <tr>
+          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).FriendlyName)</td>
+          <td>
+            <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)))" />
+          </td>
+        </tr>
+      }
       <tr>
-        <td>Name</td>
-        <td>
-          <div>
-            <input @bind-value="vm.Model.Name" @bind-value:event="oninput" /><br />
-            <span csla-error-for="Model.Name">foo</span>
-            <span class="text-danger">@vm.GetPropertyInfo(nameof(vm.Model.Name)).ErrorText</span>
-            <span class="text-warning">@vm.GetPropertyInfo(nameof(vm.Model.Name)).WarningText</span>
-            <span class="text-info">@vm.GetPropertyInfo(nameof(vm.Model.Name)).InformationText</span>
-          </div>
-        </td>
+        <td>Name length</td>
+        <td>@vm.Model.NameLength</td>
       </tr>
       <tr>
         <td>IsNew</td>
@@ -62,10 +62,20 @@ else
   [Parameter]
   public string id { get; set; }
 
-  protected override async Task OnInitializedAsync()
+  protected override void OnInitialized()
   {
     vm.Saved += () => NavigationManager.NavigateTo("listpersons");
+     vm.ModelChanging += (o, n) =>
+    {
+      if (o != null)
+        o.PropertyChanged -= async (s, e) => await InvokeAsync(() => StateHasChanged());
+      if (n != null)
+        n.PropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+    };
+ }
 
+  protected override async Task OnParametersSetAsync()
+  {
     if (string.IsNullOrWhiteSpace(id))
       await vm.RefreshAsync();
     else

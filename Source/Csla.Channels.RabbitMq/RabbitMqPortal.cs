@@ -134,7 +134,7 @@ namespace Csla.Channels.RabbitMq
         }
         catch (Exception ex1)
         {
-          Console.WriteLine($"## ERROR {ex1.Message}");
+          Console.Error.WriteLine($"## ERROR {ex1.Message}");
         }
       }
     }

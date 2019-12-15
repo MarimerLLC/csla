@@ -80,7 +80,7 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      //BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
       BusinessRules.AddRule(
         new StartDateGTEndDate { 
           PrimaryProperty = StartedProperty, 
@@ -192,14 +192,14 @@ namespace ProjectTracker.Library
 
     [Create]
     [RunLocal]
-    protected override void DataPortal_Create()
+    private void Create()
     {
       LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
       base.DataPortal_Create();
     }
 
     [Fetch]
-    private void DataPortal_Fetch(int id)
+    private void Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -219,7 +219,7 @@ namespace ProjectTracker.Library
     }
 
     [Insert]
-    protected override void DataPortal_Insert()
+    private void Insert()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -242,7 +242,7 @@ namespace ProjectTracker.Library
     }
 
     [Update]
-    protected override void DataPortal_Update()
+    private void Update()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -266,19 +266,24 @@ namespace ProjectTracker.Library
     }
 
     [DeleteSelf]
-    protected override void DataPortal_DeleteSelf()
-    {
-      using (BypassPropertyChecks)
-        DataPortal_Delete(this.Id);
-    }
-
-    [Delete]
-    private void DataPortal_Delete(int id)
+    private void DeleteSelf()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
-        Resources.Clear();
-        FieldManager.UpdateChildren(this);
+        using (BypassPropertyChecks)
+        {
+          Resources.Clear();
+          FieldManager.UpdateChildren(this);
+          Delete(this.Id);
+        }
+      }
+    }
+
+    [Delete]
+    private void Delete(int id)
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
         var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
         dal.Delete(id);
       }

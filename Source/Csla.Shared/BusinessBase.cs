@@ -172,7 +172,7 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      T result;
+      T result = default(T);
       if (this.IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
       if (EditLevel > 0)
@@ -198,7 +198,11 @@ namespace Csla
           finally
           {
             if (ApplicationContext.AutoCloneOnUpdate)
+            {
+              if (result != null)
+                result.MarkIdle();
               MarkIdle();
+            }
           }
         }
       }

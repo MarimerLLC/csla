@@ -1,0 +1,77 @@
+﻿@page "/projects"
+@using  Csla.Blazor
+@using  Csla.Rules
+@inject ViewModel<ProjectTracker.Library.ProjectList> vm
+
+<h1>Projects</h1>
+
+<p class="text-danger">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+  <p>Loading...</p>
+}
+else
+{
+  <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.CreateObject, typeof(ProjectTracker.Library.ProjectEdit)))">
+    <p><a href="projectedit">Add project</a></p>
+  </AuthorizeView>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var item in vm.Model)
+      {
+        <tr>
+          <td>@item.Id</td>
+          <td>@item.Name</td>
+          <td>
+            @if (item.Id == itemSelectedForDeletion)
+            {
+              <span class="alert-danger"><a href="javascript: void(0);" @onclick="() => Delete(item.Id)">Confirm delete</a></span>
+              <span> | </span><a href="javascript: void(0);" @onclick="() => itemSelectedForDeletion = -1">Cancel</a>
+            }
+            else
+            {
+              <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)))">
+                <a href="projectedit/@item.Id">Edit</a>
+                <span> | </span>
+              </AuthorizeView>
+              <AuthorizeView Policy="@(CslaPolicy.GetPolicy(AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)))">
+                <a href="javascript: void(0);" @onclick="() => SelectForDelete(item.Id)">Delete</a>
+              </AuthorizeView>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@code {
+  private int itemSelectedForDeletion = -1;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    await vm.RefreshAsync();
+  }
+
+  private void SelectForDelete(int id)
+  {
+    itemSelectedForDeletion = id;
+  }
+
+  private async void Delete(int id)
+  {
+    itemSelectedForDeletion = -1;
+    vm.Model = null;
+    await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(id);
+    await vm.RefreshAsync();
+    StateHasChanged();
+  }
+}

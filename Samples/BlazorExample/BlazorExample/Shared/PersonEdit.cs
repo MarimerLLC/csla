@@ -25,12 +25,20 @@ namespace BlazorExample.Shared
       set { SetProperty(NameProperty, value); }
     }
 
+    public static readonly PropertyInfo<int> NameLengthProperty = RegisterProperty<int>(nameof(NameLength));
+    public int NameLength
+    {
+      get => GetProperty(NameLengthProperty);
+      set => SetProperty(NameLengthProperty, value);
+    }
+
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
       BusinessRules.AddRule(new InfoText(NameProperty, "Person name (required)"));
       BusinessRules.AddRule(new CheckCase(NameProperty));
       BusinessRules.AddRule(new NoZAllowed(NameProperty));
+      BusinessRules.AddRule(new LetterCount(NameProperty, NameLengthProperty));
     }
 
     [Create]

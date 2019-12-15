@@ -143,6 +143,11 @@ namespace ProjectTracker.Library
       DataPortal.Delete<ResourceEdit>(id);
     }
 
+    public static async Task DeleteResourceEditAsync(int id)
+    {
+      await DataPortal.DeleteAsync<ResourceEdit>(id);
+    }
+
     [RunLocal]
     protected override void DataPortal_Create()
     {
@@ -214,8 +219,15 @@ namespace ProjectTracker.Library
     [DeleteSelf]
     private void DeleteSelf()
     {
-      using (BypassPropertyChecks)
-        Delete(this.Id);
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        using (BypassPropertyChecks)
+        {
+          Assignments.Clear();
+          FieldManager.UpdateChildren(this);
+          Delete(this.Id);
+        }
+      }
     }
 
     [Delete]
@@ -223,8 +235,6 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
-        Assignments.Clear();
-        FieldManager.UpdateChildren(this);
         var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
         dal.Delete(id);
       }

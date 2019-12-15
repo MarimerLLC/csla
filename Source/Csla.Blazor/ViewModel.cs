@@ -25,6 +25,32 @@ namespace Csla.Blazor
     /// Event raised after Model has been saved
     /// </summary>
     public event Action Saved;
+    /// <summary>
+    /// Event raised when Model is changing
+    /// </summary>
+    public event Action<T, T> ModelChanging;
+    /// <summary>
+    /// Event raised when Model has changed
+    /// </summary>
+    public event Action ModelChanged;
+
+    /// <summary>
+    /// Raises the ModelChanging event
+    /// </summary>
+    /// <param name="oldValue">Old Model value</param>
+    /// <param name="newValue">New Model value</param>
+    protected virtual void OnModelChanging(T oldValue, T newValue)
+    {
+      ModelChanging?.Invoke(oldValue, newValue);
+    }
+
+    /// <summary>
+    /// Raises the ModelChanged event
+    /// </summary>
+    protected virtual void OnModelChanged()
+    {
+      ModelChanged?.Invoke();
+    }
 
     /// <summary>
     /// Creates an instance of the type
@@ -49,13 +75,13 @@ namespace Csla.Blazor
       {
         Model = default;
         ViewModelErrorText = ex.BusinessException.Message;
-        Console.WriteLine(ex.ToString());
+        Console.Error.WriteLine(ex.ToString());
       }
       catch (Exception ex)
       {
         Model = default;
         ViewModelErrorText = ex.Message;
-        Console.WriteLine(ex.ToString());
+        Console.Error.WriteLine(ex.ToString());
       }
       return Model;
     }
@@ -68,7 +94,8 @@ namespace Csla.Blazor
     protected virtual async Task<T> DoRefreshAsync(params object[] parameters)
     {
       if (typeof(Core.IReadOnlyObject).IsAssignableFrom(typeof(T)) ||
-          typeof(Core.IReadOnlyCollection).IsAssignableFrom(typeof(T)))
+          typeof(Core.IReadOnlyCollection).IsAssignableFrom(typeof(T)) ||
+          typeof(Core.IEditableCollection).IsAssignableFrom(typeof(T)))
       {
         if (Server.DataPortal.GetCriteriaFromArray(parameters) is Server.EmptyCriteria)
           return await DataPortal.FetchAsync();
@@ -103,7 +130,7 @@ namespace Csla.Blazor
       catch (Exception ex)
       {
         ViewModelErrorText = ex.Message;
-        Console.WriteLine(ex.ToString());
+        Console.Error.WriteLine(ex.ToString());
       }
     }
 
@@ -124,28 +151,46 @@ namespace Csla.Blazor
       return Model;
     }
 
+    private T _model;
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model { get; set; }
+    public T Model 
+    {
+      get => _model;
+      set
+      {
+        if (!ReferenceEquals(_model, value))
+        {
+          OnModelChanging(_model, value);
+          _model = value;
+        }
+      }
+    }
 
-    private readonly Dictionary<string, PropertyInfo> _info = new Dictionary<string, PropertyInfo>();
+    private readonly Dictionary<string, object> _info = new Dictionary<string, object>();
 
     /// <summary>
     /// Get a PropertyInfo object for a property
     /// of the Model. PropertyInfo provides access
     /// to the metastate of the property.
     /// </summary>
+    /// <typeparam name="P">Property type</typeparam>
     /// <param name="propertyName">Property name</param>
     /// <returns></returns>
-    public PropertyInfo GetPropertyInfo(string propertyName)
+    public PropertyInfo<P> GetPropertyInfo<P>(string propertyName)
     {
-      if (!_info.TryGetValue(propertyName, out PropertyInfo info))
+      PropertyInfo<P> result;
+      if (_info.TryGetValue(propertyName, out object temp))
       {
-        info = new PropertyInfo(Model, propertyName);
-        _info.Add(propertyName, info);
+        result = (PropertyInfo<P>)temp;
       }
-      return info;
+      else
+      {
+        result = new PropertyInfo<P>(Model, propertyName);
+        _info.Add(propertyName, result);
+      }
+      return result;
     }
 
     /// <summary>

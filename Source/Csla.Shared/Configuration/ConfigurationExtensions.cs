@@ -37,7 +37,7 @@ namespace Csla.Configuration
       ApplicationContext.SetServiceCollection(services);
       services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
       config?.Invoke(CslaConfiguration.Configure());
-      return new CslaBuilder();
+      return new CslaBuilder(services);
     }
 
     /// <summary>

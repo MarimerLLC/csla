@@ -1,0 +1,15 @@
+﻿@page
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@attribute [IgnoreAntiforgeryToken]
+@functions {
+  public async Task<IActionResult> OnPost()
+  {
+    if (User.Identity.IsAuthenticated)
+    {
+      await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    }
+
+    return Redirect("~/");
+  }
+}

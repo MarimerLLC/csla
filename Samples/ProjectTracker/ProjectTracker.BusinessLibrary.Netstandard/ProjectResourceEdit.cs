@@ -205,12 +205,17 @@ namespace ProjectTracker.Library
 
     private void Child_DeleteSelf(ProjectEdit project)
     {
+      Child_DeleteSelf(project.Id);
+    }
+
+    private void Child_DeleteSelf(int projectId)
+    {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
         var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
         using (BypassPropertyChecks)
         {
-          dal.Delete(project.Id, ResourceId);
+          dal.Delete(projectId, ResourceId);
         }
       }
     }

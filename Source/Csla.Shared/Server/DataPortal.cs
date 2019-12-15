@@ -69,17 +69,6 @@ namespace Csla.Server
       if (!typeof(IAuthorizeDataPortal).IsAssignableFrom(authProviderType))
         throw new ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, nameof(authProviderType));
 
-#if !NET40 && !NET45
-      if (ApplicationContext.DefaultServiceProvider != null)
-      {
-        if (ReferenceEquals(ApplicationContext.DefaultServiceProvider, ApplicationContext.ScopedServiceProvider))
-        {
-          ApplicationContext.ServiceProviderScope = 
-            ApplicationContext.DefaultServiceProvider.CreateScope();
-        }
-      }
-#endif
-
       //only construct the type if it was not constructed already
       if (null == _authorizer)
       {

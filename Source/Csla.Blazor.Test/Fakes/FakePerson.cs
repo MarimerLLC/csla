@@ -63,12 +63,12 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.AddRule(new OneOfSeveralStringsRequiredRule(HomeTelephoneProperty, MobileTelephoneProperty));
 
       // Add additional rules for warning severity level
-      rule = new Csla.Rules.CommonRules.MinLength(LastNameProperty, 2);
+      rule = new Csla.Rules.CommonRules.MinLength(LastNameProperty, 2, "Last name is quite short!");
       rule.Severity = Csla.Rules.RuleSeverity.Warning;
       BusinessRules.AddRule(rule);
 
       // Add additional rules for information severity level
-      rule = new Csla.Rules.CommonRules.MinLength(FirstNameProperty, 2);
+      rule = new Csla.Rules.CommonRules.MinLength(FirstNameProperty, 2, "First name is a bit short");
       rule.Severity = Csla.Rules.RuleSeverity.Information;
       BusinessRules.AddRule(rule);
     }

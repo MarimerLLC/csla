@@ -31,7 +31,7 @@ else
         <tr>
           <td>new</td>
           <td>
-            <TextInput Property="@(new PropertyInfo<string>(newRole, nameof(newRole.Name)))" />
+            <TextInput Property="@(new PropertyInfo(newRole, nameof(newRole.Name)))" />
           </td>
           <td>
             <a class="alert-warning" href="javascript: void(0);" @onclick="AddAccepted">Confirm</a>
@@ -56,7 +56,7 @@ else
           {
             <td>@item.Id</td>
             <td>
-              <TextInput Property="@(new PropertyInfo<string>(item, nameof(item.Name)))" />
+              <TextInput Property="@(new PropertyInfo(item, nameof(item.Name)))" />
             </td>
             <td>
               <a class="alert-warning" href="javascript: void(0);" @onclick="() => EditAccepted(item.Id)">Confirm</a>

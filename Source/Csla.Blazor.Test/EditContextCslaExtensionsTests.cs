@@ -26,9 +26,49 @@ namespace Csla.Blazor.Test
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
-      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned!");
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
 		}
+
+    [TestMethod]
+    public void ValidateModel_ShortFirstName_NoValidationMessages()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Set last name to an invalid value
+      person.LastName = "A";
+
+      // Act
+      editContext.Validate();
+      IEnumerable<string> messages = editContext.GetValidationMessages();
+
+      // Assert
+      Assert.AreEqual(0, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
+
+    [TestMethod]
+    public void ValidateModel_ShortLastName_NoValidationMessages()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Set last name to an invalid value
+      person.LastName = "A";
+
+      // Act
+      editContext.Validate();
+      IEnumerable<string> messages = editContext.GetValidationMessages();
+
+      // Assert
+      Assert.AreEqual(0, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
 
     [TestMethod]
     public void ValidateModel_ExcessiveFirstNameEmptyLastName_TwoValidationMessages()
@@ -47,7 +87,7 @@ namespace Csla.Blazor.Test
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
-      Assert.AreEqual(2, messages.Count(), "Incorrect number of validation messages returned!");
+      Assert.AreEqual(2, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
     }
 
@@ -68,7 +108,7 @@ namespace Csla.Blazor.Test
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
-      Assert.AreEqual(2, messages.Count(), "Incorrect number of validation messages returned!");
+      Assert.AreEqual(2, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
     }
 
@@ -85,11 +125,11 @@ namespace Csla.Blazor.Test
       person.LastName = string.Empty;
 
       // Act
-      editContext.Validate();
-      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, "FirstName"));
+      editContext.NotifyFieldChanged(new FieldIdentifier(person, nameof(person.FirstName)));
+      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, nameof(person.FirstName)));
 
       // Assert
-      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned!");
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
     }
 
@@ -106,11 +146,51 @@ namespace Csla.Blazor.Test
       person.MobileTelephone = "";
 
       // Act
-      editContext.Validate();
-      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, "HomeTelephone"));
+      editContext.NotifyFieldChanged(new FieldIdentifier(person, nameof(person.HomeTelephone)));
+      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, nameof(person.HomeTelephone)));
 
       // Assert
-      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned!");
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
+
+    [TestMethod]
+    public void ValidateField_ShortFirstName_NoValidationMessagesForFirstName()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Set first and last names to invalid values
+      person.FirstName = "A";
+
+      // Act
+      editContext.NotifyFieldChanged(new FieldIdentifier(person, nameof(person.FirstName)));
+      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, nameof(person.FirstName)));
+
+      // Assert
+      Assert.AreEqual(0, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
+
+    [TestMethod]
+    public void ValidateField_ShortLastName_NoValidationMessagesForLastName()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Set both phone numbers to invalid values
+      person.LastName = "A";
+
+      // Act
+      editContext.NotifyFieldChanged(new FieldIdentifier(person, nameof(person.LastName)));
+      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, nameof(person.LastName)));
+
+      // Assert
+      Assert.AreEqual(0, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
     }
 
@@ -120,10 +200,16 @@ namespace Csla.Blazor.Test
     {
       FakePerson person = FakePerson.NewFakePerson();
 
+      person.FirstName = "John";
       person.LastName = "Smith";
       person.HomeTelephone = "01234 567890";
 
       return person;
+    }
+
+    private string ConcatenateMessages(IEnumerable<string> messages)
+    {
+      return string.Join("; ", messages);
     }
 
     #endregion

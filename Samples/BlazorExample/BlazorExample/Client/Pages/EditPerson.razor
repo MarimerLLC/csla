@@ -32,12 +32,12 @@ else
         <td>Id</td>
         <td>@vm.Model.Id</td>
       </tr>
-      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).CanRead)
+      @if (vm.GetPropertyInfo(nameof(vm.Model.Name)).CanRead)
       {
         <tr>
-          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).FriendlyName)</td>
+          <td>@(vm.GetPropertyInfo(nameof(vm.Model.Name)).FriendlyName)</td>
           <td>
-            <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)))" />
+            <TextInput Property="@(vm.GetPropertyInfo(nameof(vm.Model.Name)))" />
           </td>
         </tr>
       }

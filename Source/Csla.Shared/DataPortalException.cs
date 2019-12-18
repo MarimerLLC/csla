@@ -6,9 +6,7 @@
 // <summary>This exception is returned for any errors occuring</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
 using System.Security.Permissions;
-#endif
 
 namespace Csla
 {
@@ -63,7 +61,6 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETFX_PHONE || PCL46 || PCL259
 #if !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259
     /// <summary>
     /// Creates an instance of the object.
@@ -118,7 +115,21 @@ namespace Csla
     /// about the exception.
     /// </summary>
     public Csla.Server.Hosts.HttpChannel.HttpErrorInfo ErrorInfo { get; private set; }
-#endif
+
+    /// <summary>
+    /// Gets the original exception error info
+    /// that caused this exception.
+    /// </summary>
+    public Server.Hosts.HttpChannel.HttpErrorInfo BusinessErrorInfo
+    {
+      get
+      {
+        var result = ErrorInfo;
+        while (result.InnerError != null)
+          result = result.InnerError;
+        return result;
+      }
+    }
 
     private object _businessObject;
     private string _innerStackTrace;
@@ -169,6 +180,27 @@ namespace Csla
     }
 
     /// <summary>
+    /// Gets the Message property from the
+    /// BusinessException, falling back to
+    /// the Message value from the top-level
+    /// exception.
+    /// </summary>
+    public string BusinessExceptionMessage
+    {
+      get
+      {
+        if (ErrorInfo != null)
+        {
+          return BusinessErrorInfo.Message;
+        }
+        else if (BusinessException == null)
+          return Message;
+        else
+          return BusinessException.Message;
+      }
+    }
+
+    /// <summary>
     /// Get the combined stack trace from the server
     /// and client.
     /// </summary>
@@ -178,11 +210,10 @@ namespace Csla
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>
-    /// <param name="info">Serialiation info object.</param>
+    /// <param name="info">Serialization info object.</param>
     /// <param name="context">Serialization context object.</param>
     protected DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
@@ -194,7 +225,7 @@ namespace Csla
     /// <summary>
     /// Serializes the object.
     /// </summary>
-    /// <param name="info">Serialiation info object.</param>
+    /// <param name="info">Serialization info object.</param>
     /// <param name="context">Serialization context object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
@@ -205,6 +236,5 @@ namespace Csla
       info.AddValue("_businessObject", _businessObject);
       info.AddValue("_innerStackTrace", _innerStackTrace);
     }
-#endif
   }
 }

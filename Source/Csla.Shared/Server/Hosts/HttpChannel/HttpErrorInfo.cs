@@ -24,6 +24,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// Type name of the exception object.
     /// </summary>
     public static readonly PropertyInfo<string> ExceptionTypeNameProperty = RegisterProperty<string>(c => c.ExceptionTypeName);
+
     /// <summary>
     /// Type name of the exception object.
     /// </summary>
@@ -32,10 +33,12 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(ExceptionTypeNameProperty); }
       private set { LoadProperty(ExceptionTypeNameProperty, value); }
     }
+
     /// <summary>
     /// Message from the exception object.
     /// </summary>
     public static readonly PropertyInfo<string> MessageProperty = RegisterProperty<string>(c => c.Message);
+
     /// <summary>
     /// Message from the exception object.
     /// </summary>
@@ -44,10 +47,12 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(MessageProperty); }
       private set { LoadProperty(MessageProperty, value); }
     }
+
     /// <summary>
     /// Stack trace from the exception object.
     /// </summary>
     public static readonly PropertyInfo<string> StackTraceProperty = RegisterProperty<string>(c => c.StackTrace);
+
     /// <summary>
     /// Stack trace from the exception object.
     /// </summary>
@@ -56,10 +61,12 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(StackTraceProperty); }
       private set { LoadProperty(StackTraceProperty, value); }
     }
+
     /// <summary>
     /// Source of the exception object.
     /// </summary>
     public static readonly PropertyInfo<string> SourceProperty = RegisterProperty<string>(c => c.Source);
+
     /// <summary>
     /// Source of the exception object.
     /// </summary>
@@ -68,10 +75,12 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(SourceProperty); }
       private set { LoadProperty(SourceProperty, value); }
     }
+    
     /// <summary>
     /// TargetSiteName of the exception object.
     /// </summary>
     public static readonly PropertyInfo<string> TargetSiteNameProperty = RegisterProperty<string>(c => c.TargetSiteName);
+    
     /// <summary>
     /// TargetSiteName of the exception object.
     /// </summary>
@@ -80,12 +89,14 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(TargetSiteNameProperty); }
       private set { LoadProperty(TargetSiteNameProperty, value); }
     }
+    
     /// <summary>
     /// HttpErrorInfo object containing information
     /// about any inner exception of the original
     /// exception.
     /// </summary>
     public static readonly PropertyInfo<HttpErrorInfo> InnerErrorProperty = RegisterProperty<HttpErrorInfo>(c => c.InnerError);
+
     /// <summary>
     /// HttpErrorInfo object containing information
     /// about any inner exception of the original

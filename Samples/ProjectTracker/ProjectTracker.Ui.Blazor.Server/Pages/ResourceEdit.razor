@@ -150,13 +150,7 @@ else
   protected override void OnInitialized()
   {
     vm.Saved += () => NavigationManager.NavigateTo("resources");
-    vm.ModelChanging += (o, n) =>
-    {
-      if (o != null)
-        o.PropertyChanged -= async (s, e) => await InvokeAsync(() => StateHasChanged());
-      if (n != null)
-        n.PropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
-    };
+    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
   }
 
   protected override async Task OnParametersSetAsync()

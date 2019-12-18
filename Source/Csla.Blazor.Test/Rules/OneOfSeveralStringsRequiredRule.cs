@@ -16,10 +16,10 @@ namespace Csla.Blazor.Test.Rules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="affectedProperties">Array of properties to which the rule applies.</param>
-    public OneOfSeveralStringsRequiredRule(params IPropertyInfo[] affectedProperties)
+    public OneOfSeveralStringsRequiredRule(params Csla.Core.IPropertyInfo[] affectedProperties)
       : base(affectedProperties[0])
     {
-      foreach (IPropertyInfo affectedProperty in affectedProperties)
+      foreach (Csla.Core.IPropertyInfo affectedProperty in affectedProperties)
       {
         InputProperties.Add(affectedProperty);
       }
@@ -30,7 +30,7 @@ namespace Csla.Blazor.Test.Rules
     /// </summary>
     /// <param name="affectedProperties">Array of properties to which the rule applies.</param>
     /// <param name="message">The message.</param>
-    public OneOfSeveralStringsRequiredRule(string message, params IPropertyInfo[] affectedProperties)
+    public OneOfSeveralStringsRequiredRule(string message, params Csla.Core.IPropertyInfo[] affectedProperties)
       : this(affectedProperties)
     {
       MessageText = message;
@@ -41,7 +41,7 @@ namespace Csla.Blazor.Test.Rules
     /// </summary>
     /// <param name="affectedProperties">Array of properties to which the rule applies.</param>
     /// <param name="messageDelegate">The localizable message.</param>
-    public OneOfSeveralStringsRequiredRule(Func<string> messageDelegate, params IPropertyInfo[] affectedProperties)
+    public OneOfSeveralStringsRequiredRule(Func<string> messageDelegate, params Csla.Core.IPropertyInfo[] affectedProperties)
       : this(affectedProperties)
     {
       MessageDelegate = messageDelegate;
@@ -80,7 +80,7 @@ namespace Csla.Blazor.Test.Rules
       if (!valueProvided)
       {
         // Rule not satisfied, so report it as such
-        foreach (IPropertyInfo propertyInfo in InputProperties)
+        foreach (Csla.Core.IPropertyInfo propertyInfo in InputProperties)
         { 
           var message = string.Format(GetMessage(), propertyInfo.FriendlyName);
           context.Results.Add(new RuleResult(RuleName, propertyInfo, message) { Severity = Severity });

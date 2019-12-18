@@ -193,19 +193,18 @@ namespace Csla.Blazor
     /// of the Model. PropertyInfo provides access
     /// to the metastate of the property.
     /// </summary>
-    /// <typeparam name="P">Property type</typeparam>
     /// <param name="propertyName">Property name</param>
     /// <returns></returns>
-    public PropertyInfo<P> GetPropertyInfo<P>(string propertyName)
+    public IPropertyInfo GetPropertyInfo(string propertyName)
     {
-      PropertyInfo<P> result;
+      PropertyInfo result;
       if (_info.TryGetValue(propertyName, out object temp))
       {
-        result = (PropertyInfo<P>)temp;
+        result = (PropertyInfo)temp;
       }
       else
       {
-        result = new PropertyInfo<P>(Model, propertyName);
+        result = new PropertyInfo(Model, propertyName);
         _info.Add(propertyName, result);
       }
       return result;

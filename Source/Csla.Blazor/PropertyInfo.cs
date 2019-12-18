@@ -13,8 +13,7 @@ namespace Csla.Blazor
   /// <summary>
   /// Exposes metastate for a property.
   /// </summary>
-  /// <typeparam name="P">Property type</typeparam>
-  public class PropertyInfo<P> : INotifyPropertyChanged
+  public class PropertyInfo : IPropertyInfo, INotifyPropertyChanged
   {
     /// <summary>
     /// Gets the model
@@ -59,15 +58,15 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets or sets the value of the property
     /// </summary>
-    public P Value
+    public object Value
     {
       get
       {
         var result = Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
         if (result != null)
-          return (P)result;
+          return result;
         else
-          return default(P);
+          return default;
       }
       set => Csla.Utilities.CallByName(Model, PropertyName, CallType.Set, value);
     }

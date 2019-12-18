@@ -85,6 +85,7 @@ namespace Csla.Blazor
     /// <returns></returns>
     public async Task<T> RefreshAsync(params object[] parameters)
     {
+      Exception = null;
       try
       {
         Model = await DoRefreshAsync(parameters);
@@ -92,12 +93,14 @@ namespace Csla.Blazor
       catch (DataPortalException ex)
       {
         Model = default;
-        ViewModelErrorText = ex.BusinessException.Message;
+        Exception = ex;
+        ViewModelErrorText = ex.BusinessExceptionMessage;
         Console.Error.WriteLine(ex.ToString());
       }
       catch (Exception ex)
       {
         Model = default;
+        Exception = ex;
         ViewModelErrorText = ex.Message;
         Console.Error.WriteLine(ex.ToString());
       }
@@ -135,6 +138,7 @@ namespace Csla.Blazor
     /// <returns></returns>
     public async Task SaveAsync()
     {
+      Exception = null;
       if (Model is Core.ITrackStatus obj && !obj.IsSavable)
       {
         ViewModelErrorText = ModelErrorText;
@@ -147,6 +151,7 @@ namespace Csla.Blazor
       }
       catch (Exception ex)
       {
+        Exception = ex;
         ViewModelErrorText = ex.Message;
         Console.Error.WriteLine(ex.ToString());
       }
@@ -230,6 +235,13 @@ namespace Csla.Blazor
         return string.Empty;
       }
     }
+
+    /// <summary>
+    /// Gets the last exception caught by
+    /// the viewmodel during refresh or save
+    /// operations.
+    /// </summary>
+    public Exception Exception { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the current user

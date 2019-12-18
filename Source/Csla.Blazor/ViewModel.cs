@@ -33,6 +33,11 @@ namespace Csla.Blazor
     /// Event raised when Model has changed
     /// </summary>
     public event Action ModelChanged;
+    /// <summary>
+    /// Event raised when the Model object
+    /// raises its PropertyChanged event
+    /// </summary>
+    public event PropertyChangedEventHandler ModelPropertyChanged;
 
     /// <summary>
     /// Raises the ModelChanging event
@@ -41,6 +46,10 @@ namespace Csla.Blazor
     /// <param name="newValue">New Model value</param>
     protected virtual void OnModelChanging(T oldValue, T newValue)
     {
+      if (oldValue is INotifyPropertyChanged oldObj)
+        oldObj.PropertyChanged -= (s, e) => OnModelPropertyChanged(e.PropertyName);
+      if (newValue is INotifyPropertyChanged newObj)
+        newObj.PropertyChanged += (s, e) => OnModelPropertyChanged(e.PropertyName);
       ModelChanging?.Invoke(oldValue, newValue);
     }
 
@@ -50,6 +59,15 @@ namespace Csla.Blazor
     protected virtual void OnModelChanged()
     {
       ModelChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Raises the ModelPropertyChanged event
+    /// </summary>
+    /// <param name="propertyName"></param>
+    protected virtual void OnModelPropertyChanged(string propertyName)
+    {
+      ModelPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>

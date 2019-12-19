@@ -24,7 +24,7 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
+      Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
       Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.BusinessRuleContextUsage, nameof(BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer)),
         diagnostic.HelpLinkUri,
@@ -100,6 +100,25 @@ public class A
 { 
   protected override async Task ExecuteAsync(IRuleContext context)
   { 
+    context.AddDirtyProperty(null);
+  }
+}";
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
+        code, Array.Empty<string>());
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsABusinessRuleAndCallsAddMethodAndUsesNameof()
+    {
+      var code =
+@"using Csla.Rules;
+
+public class A 
+  : BusinessRule 
+{ 
+  protected override void Execute(IRuleContext context) 
+  { 
+    var c = nameof(context);
     context.AddDirtyProperty(null);
   }
 }";

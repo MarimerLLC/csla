@@ -48,8 +48,8 @@ namespace Csla.Analyzers
             methodNode.DescendantNodes(_ => true).OfType<InvocationExpressionSyntax>()
             .Any(invocation =>
             {
-              var invocationSymbol = context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol as IMethodSymbol;
-              return invocationSymbol.Name == "Complete" && Equals(invocationSymbol.ContainingType, contextParameter.Type);
+              return context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
+                invocationSymbol.Name == "Complete" && Equals(invocationSymbol.ContainingType, contextParameter.Type);
             });
 
           if (wasCompleteMethodCalled)

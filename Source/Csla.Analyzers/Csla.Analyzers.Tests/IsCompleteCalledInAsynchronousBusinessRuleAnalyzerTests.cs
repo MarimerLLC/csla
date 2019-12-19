@@ -71,5 +71,24 @@ public class A : BusinessRuleAsync
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
         code, new[] { Constants.AnalyzerIdentifiers.CompleteInExecuteAsync });
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsABusinessRuleAndCallsCompleteAndNameof()
+    {
+      var code =
+@"using Csla.Rules;
+using System.Threading.Tasks;
+
+public class A : BusinessRuleAsync
+{ 
+  protected override Task ExecuteAsync(IRuleContext context) 
+  { 
+    var c = nameof(context);
+    context.Complete();
+  } 
+}";
+      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
+        code, new[] { Constants.AnalyzerIdentifiers.CompleteInExecuteAsync });
+    }
   }
 }

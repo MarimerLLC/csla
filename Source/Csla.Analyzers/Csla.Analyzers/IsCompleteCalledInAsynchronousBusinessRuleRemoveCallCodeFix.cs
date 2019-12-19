@@ -48,8 +48,8 @@ namespace Csla.Analyzers
       var completeInvocations = methodNode.DescendantNodes(_ => true).OfType<InvocationExpressionSyntax>()
         .Where(invocation =>
         {
-          var invocationSymbol = model.GetSymbolInfo(invocation.Expression).Symbol as IMethodSymbol;
-          return invocationSymbol.Name == "Complete" && Equals(invocationSymbol.ContainingType, contextParameter.Type);
+          return model.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
+            invocationSymbol.Name == "Complete" && Equals(invocationSymbol.ContainingType, contextParameter.Type);
         })
         .Select(invocation => invocation.FindParent<ExpressionStatementSyntax>());
 

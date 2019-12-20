@@ -30,6 +30,10 @@ namespace Csla.Security
       : base(new ClaimsIdentity())
     { }
 
+    public CslaClaimsPrincipal(ClaimsPrincipal principal)
+      : base(principal.Identities)
+    { }
+
     /// <summary>
     /// Creates an instance of the object, initializing a role
     /// claim for each role in the identity's Roles collection.
@@ -39,8 +43,9 @@ namespace Csla.Security
       : base(identity)
     {
       var baseidentity = (ClaimsIdentity)base.Identity;
-      foreach (var item in identity.Roles)
-        baseidentity.AddClaim(new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", item));
+      if (identity.Roles != null)
+        foreach (var item in identity.Roles)
+          baseidentity.AddClaim(new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", item));
     }
 
     /// <summary>

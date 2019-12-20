@@ -30,12 +30,7 @@ namespace ProjectTracker.Ui.Blazor
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddAuthentication(options =>
-      {
-        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-      })
+      services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie();
       services.AddRazorPages();
       services.AddServerSideBlazor();
@@ -73,15 +68,15 @@ namespace ProjectTracker.Ui.Blazor
         endpoints.MapFallbackToPage("/_Host");
       });
 
-      // use in-proc data portal
-      app.UseCsla();
-      ConfigurationManager.AppSettings["DalManagerType"] =
-        "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
+      //// use in-proc data portal
+      //app.UseCsla();
+      //ConfigurationManager.AppSettings["DalManagerType"] =
+      //  "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
 
-      //// use remote data portal server
-      //app.UseCsla(c => c
-      //  .DataPortal()
-      //    .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/"));
+      // use remote data portal server
+      app.UseCsla(c => c
+        .DataPortal()
+          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/"));
 
       ProjectTracker.Library.RoleList.CacheListAsync();
     }

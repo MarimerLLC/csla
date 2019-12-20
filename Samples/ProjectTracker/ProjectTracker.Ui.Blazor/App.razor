@@ -10,3 +10,11 @@
     </NotFound>
   </Router>
 </CascadingAuthenticationState>
+
+@code {    
+  protected override void OnInitialized()
+  {
+    Csla.ApplicationContext.User = new Csla.Security.CslaClaimsPrincipal();
+    base.OnInitialized();
+  }
+}

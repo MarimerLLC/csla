@@ -131,6 +131,13 @@ namespace Csla.Serialization.Mobile
       else
       {
         var thisType = obj.GetType();
+#if !NET40 && !NET45
+        if (obj is System.Security.Claims.ClaimsPrincipal cp)
+        {
+          obj = new Security.CslaClaimsPrincipal(cp);
+          thisType = obj.GetType();
+        }
+#endif
         if (!thisType.IsSerializable)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName));

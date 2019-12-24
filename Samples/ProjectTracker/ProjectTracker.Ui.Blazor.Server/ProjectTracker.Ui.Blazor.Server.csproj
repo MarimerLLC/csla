@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,16 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19112501" />
-    <PackageReference Include="Csla.Blazor" Version="5.1.0-R19112501" />
+    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19122302" />
+    <PackageReference Include="Csla.Blazor" Version="5.1.0-R19122302" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0-preview2.19525.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0-preview2.19553.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj" />
-    <ProjectReference Include="..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj" />
-    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
+    <ProjectReference Include="..\ProjectTracker.Ui.Blazor\ProjectTracker.Ui.Blazor.csproj" />
   </ItemGroup>
 
 </Project>

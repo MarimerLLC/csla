@@ -17,7 +17,7 @@ namespace Csla.Analyzers
         Constants.AnalyzerIdentifiers.BusinessRuleContextUsage,
         BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants.Title,
         BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants.Message,
-        Constants.Categories.Usage, DiagnosticSeverity.Error, true,
+        Constants.Categories.Usage, DiagnosticSeverity.Warning, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.BusinessRuleContextUsage, nameof(BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer)));
 
@@ -49,8 +49,8 @@ namespace Csla.Analyzers
             methodNode.DescendantNodes(_ => true).OfType<InvocationExpressionSyntax>()
             .Any(invocation =>
             {
-              var invocationSymbol = context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol as IMethodSymbol;
-              return invocationSymbol.Name.StartsWith("Add") && Equals(invocationSymbol.ContainingType, contextParameter.Type);
+              return context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
+                invocationSymbol.Name.StartsWith("Add") && Equals(invocationSymbol.ContainingType, contextParameter.Type);
             });
 
           if (!wasAddMethodCalled)

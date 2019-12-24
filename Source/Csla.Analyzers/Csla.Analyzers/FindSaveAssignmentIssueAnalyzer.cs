@@ -47,7 +47,7 @@ namespace Csla.Analyzers
         var symbol = context.SemanticModel.GetSymbolInfo(invocationNode.Expression);
         var invocationSymbol = symbol.Symbol;
 
-        if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
+        if (invocationSymbol?.ContainingType?.IsBusinessBase() ?? false)
         {
           context.CancellationToken.ThrowIfCancellationRequested();
           var expressionStatementNode = invocationNode.FindParent<ExpressionStatementSyntax>();

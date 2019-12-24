@@ -14,7 +14,7 @@ param($installPath, $toolsPath, $package, $project)
 		Copy-Item $files -Destination $destination
 	}
 	
-	$vsVersions = @("2010", "2012", "2013", "2015")
+	$vsVersions = @("2010", "2012", "2013", "2015", "2017", "2019")
 	$cslaFolder = "Csla"
 	$sourceSnippetsCS = "$toolsPath\Snippets\cs\*.snippet"
 	$sourceSnippetsVB = "$toolsPath\Snippets\Vb\*.snippet"

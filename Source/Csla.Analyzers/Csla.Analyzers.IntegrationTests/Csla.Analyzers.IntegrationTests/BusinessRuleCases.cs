@@ -22,6 +22,17 @@ namespace Csla.Analyzers.IntegrationTests
     }
   }
 
+  public class ExecuteWithAddAndNameof
+    : BusinessRule
+  {
+    protected override void Execute(IRuleContext context)
+    {
+      // This shouldn't cause an exception.
+      var c = nameof(context);
+      context.AddDirtyProperty(null);
+    }
+  }
+
   public class AsynchronousRuleOldSchool
     : BusinessRule
   {
@@ -64,6 +75,21 @@ namespace Csla.Analyzers.IntegrationTests
       // Keep these comments!
       context.Complete(); /* And this one */
 
+      context.Complete();
+      return Task.CompletedTask;
+    }
+  }
+
+  public class CallingCompleteWithNameof
+    : BusinessRuleAsync
+  {
+    protected override Task ExecuteAsync(IRuleContext context)
+    {
+      // This shouldn't cause an exception.
+      var c = nameof(context);
+      context.AddDirtyProperty(null);
+      // This method should have an error
+      // because we call Complete().
       context.Complete();
       return Task.CompletedTask;
     }

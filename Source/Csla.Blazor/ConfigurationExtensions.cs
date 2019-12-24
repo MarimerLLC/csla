@@ -25,7 +25,6 @@ namespace Csla.Configuration
     /// <returns></returns>
     public static ICslaBuilder WithBlazorServerSupport(this ICslaBuilder builder)
     {
-      CslaConfiguration.Configure().DataPortal().AuthenticationType("Windows");
       builder.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       builder.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();

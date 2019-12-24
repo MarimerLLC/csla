@@ -1,0 +1,16 @@
+﻿@if (Property.CanRead)
+{
+  <tr>
+    <td>@(Property.FriendlyName)</td>
+    <td>
+      <DateInput Property="@Property" EmptyIsMin="@EmptyIsMin" />
+    </td>
+  </tr>
+}
+
+@code {
+  [Parameter]
+  public Csla.Blazor.IPropertyInfo Property { get; set; }
+  [Parameter]
+  public bool EmptyIsMin { get; set; } = true;
+}

@@ -33,7 +33,7 @@ namespace Csla.Blazor
     {
       if (_principal == null)
       {
-        _principal = new Csla.Security.UnauthenticatedPrincipal();
+        _principal = new Csla.Security.CslaClaimsPrincipal();
         SetUser(_principal);
       }
       return _principal;

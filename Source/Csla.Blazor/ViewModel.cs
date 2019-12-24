@@ -33,6 +33,11 @@ namespace Csla.Blazor
     /// Event raised when Model has changed
     /// </summary>
     public event Action ModelChanged;
+    /// <summary>
+    /// Event raised when the Model object
+    /// raises its PropertyChanged event
+    /// </summary>
+    public event PropertyChangedEventHandler ModelPropertyChanged;
 
     /// <summary>
     /// Raises the ModelChanging event
@@ -41,6 +46,10 @@ namespace Csla.Blazor
     /// <param name="newValue">New Model value</param>
     protected virtual void OnModelChanging(T oldValue, T newValue)
     {
+      if (oldValue is INotifyPropertyChanged oldObj)
+        oldObj.PropertyChanged -= (s, e) => OnModelPropertyChanged(e.PropertyName);
+      if (newValue is INotifyPropertyChanged newObj)
+        newObj.PropertyChanged += (s, e) => OnModelPropertyChanged(e.PropertyName);
       ModelChanging?.Invoke(oldValue, newValue);
     }
 
@@ -50,6 +59,15 @@ namespace Csla.Blazor
     protected virtual void OnModelChanged()
     {
       ModelChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Raises the ModelPropertyChanged event
+    /// </summary>
+    /// <param name="propertyName"></param>
+    protected virtual void OnModelPropertyChanged(string propertyName)
+    {
+      ModelPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>
@@ -67,6 +85,7 @@ namespace Csla.Blazor
     /// <returns></returns>
     public async Task<T> RefreshAsync(params object[] parameters)
     {
+      Exception = null;
       try
       {
         Model = await DoRefreshAsync(parameters);
@@ -74,12 +93,14 @@ namespace Csla.Blazor
       catch (DataPortalException ex)
       {
         Model = default;
-        ViewModelErrorText = ex.BusinessException.Message;
+        Exception = ex;
+        ViewModelErrorText = ex.BusinessExceptionMessage;
         Console.Error.WriteLine(ex.ToString());
       }
       catch (Exception ex)
       {
         Model = default;
+        Exception = ex;
         ViewModelErrorText = ex.Message;
         Console.Error.WriteLine(ex.ToString());
       }
@@ -117,6 +138,7 @@ namespace Csla.Blazor
     /// <returns></returns>
     public async Task SaveAsync()
     {
+      Exception = null;
       if (Model is Core.ITrackStatus obj && !obj.IsSavable)
       {
         ViewModelErrorText = ModelErrorText;
@@ -129,6 +151,7 @@ namespace Csla.Blazor
       }
       catch (Exception ex)
       {
+        Exception = ex;
         ViewModelErrorText = ex.Message;
         Console.Error.WriteLine(ex.ToString());
       }
@@ -175,19 +198,18 @@ namespace Csla.Blazor
     /// of the Model. PropertyInfo provides access
     /// to the metastate of the property.
     /// </summary>
-    /// <typeparam name="P">Property type</typeparam>
     /// <param name="propertyName">Property name</param>
     /// <returns></returns>
-    public PropertyInfo<P> GetPropertyInfo<P>(string propertyName)
+    public IPropertyInfo GetPropertyInfo(string propertyName)
     {
-      PropertyInfo<P> result;
+      PropertyInfo result;
       if (_info.TryGetValue(propertyName, out object temp))
       {
-        result = (PropertyInfo<P>)temp;
+        result = (PropertyInfo)temp;
       }
       else
       {
-        result = new PropertyInfo<P>(Model, propertyName);
+        result = new PropertyInfo(Model, propertyName);
         _info.Add(propertyName, result);
       }
       return result;
@@ -213,6 +235,13 @@ namespace Csla.Blazor
         return string.Empty;
       }
     }
+
+    /// <summary>
+    /// Gets the last exception caught by
+    /// the viewmodel during refresh or save
+    /// operations.
+    /// </summary>
+    public Exception Exception { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the current user

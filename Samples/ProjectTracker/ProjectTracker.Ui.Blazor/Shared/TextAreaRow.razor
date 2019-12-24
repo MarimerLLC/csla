@@ -1,0 +1,16 @@
+﻿@if (Property.CanRead)
+{
+  <tr>
+    <td>@(Property.FriendlyName)</td>
+    <td>
+      <TextArea Property="@Property" rows="@rows" />
+    </td>
+  </tr>
+}
+
+@code {
+  [Parameter]
+  public Csla.Blazor.IPropertyInfo Property { get; set; }
+  [Parameter]
+  public int rows { get; set; }
+}

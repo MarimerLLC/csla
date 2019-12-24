@@ -32,21 +32,21 @@ else
           <td>@vm.Model.Id</td>
         </tr>
       }
-      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.FirstName)).CanRead)
+      @if (vm.GetPropertyInfo(nameof(vm.Model.FirstName)).CanRead)
       {
         <tr>
-          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.FirstName)).FriendlyName)</td>
+          <td>@(vm.GetPropertyInfo(nameof(vm.Model.FirstName)).FriendlyName)</td>
           <td>
-            <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.FirstName)))" />
+            <TextInput Property="@(vm.GetPropertyInfo(nameof(vm.Model.FirstName)))" />
           </td>
         </tr>
       }
-      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.LastName)).CanRead)
+      @if (vm.GetPropertyInfo(nameof(vm.Model.LastName)).CanRead)
       {
         <tr>
-          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.LastName)).FriendlyName)</td>
+          <td>@(vm.GetPropertyInfo(nameof(vm.Model.LastName)).FriendlyName)</td>
           <td>
-            <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.LastName)))" />
+            <TextInput Property="@(vm.GetPropertyInfo(nameof(vm.Model.LastName)))" />
           </td>
         </tr>
       }
@@ -150,13 +150,7 @@ else
   protected override void OnInitialized()
   {
     vm.Saved += () => NavigationManager.NavigateTo("resources");
-    vm.ModelChanging += (o, n) =>
-    {
-      if (o != null)
-        o.PropertyChanged -= async (s, e) => await InvokeAsync(() => StateHasChanged());
-      if (n != null)
-        n.PropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
-    };
+    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
   }
 
   protected override async Task OnParametersSetAsync()

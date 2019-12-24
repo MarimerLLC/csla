@@ -1,5 +1,5 @@
 ﻿<div>
-  <input @bind="DateAsString"
+  <input @bind="TextValue"
          disabled="@(!Property.CanWrite)"
          format-value="MM/dd/yyyy" /><br />
   <span class="text-danger">@Property.ErrorText</span>
@@ -9,18 +9,20 @@
 
 @code {
   [Parameter]
-  public Csla.Blazor.PropertyInfo<DateTime?> Property { get; set; }
+  public Csla.Blazor.IPropertyInfo Property { get; set; }
   [Parameter]
   public bool EmptyIsMin { get; set; } = true;
+  [Parameter]
+  public string FormatString { get; set; } = "MM/dd/yyyy";
 
   private Csla.SmartDate DateValue;
 
-  private string DateAsString
+  private string TextValue
   {
     get
     {
-      DateValue = new Csla.SmartDate(Property.Value, EmptyIsMin);
-      DateValue.FormatString = "MM/dd/yyyy";
+      DateValue = new Csla.SmartDate((DateTime?)Property.Value, EmptyIsMin);
+      DateValue.FormatString = FormatString;
       return DateValue.Text;
     }
     set

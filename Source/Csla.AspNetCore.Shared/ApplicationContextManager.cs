@@ -10,9 +10,7 @@ using Csla.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 
 namespace Csla.AspNetCore
 {

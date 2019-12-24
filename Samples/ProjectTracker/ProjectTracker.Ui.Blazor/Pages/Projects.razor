@@ -6,6 +6,7 @@
 <h1>Projects</h1>
 
 <p class="text-danger">@vm.ViewModelErrorText</p>
+<p class="text-danger">@ErrorText</p>
 
 @if (vm.Model == null)
 {
@@ -54,11 +55,19 @@ else
 }
 
 @code {
+  private string ErrorText;
   private int itemSelectedForDeletion = -1;
 
   protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync();
+    try
+    {
+      await vm.RefreshAsync();
+    }
+    catch (Exception ex)
+    {
+      ErrorText = ex.ToString();
+    }
   }
 
   private void SelectForDelete(int id)

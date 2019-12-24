@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using System.Reflection;
 using Csla.Core;
 using Csla.Reflection;
+using System.Threading.Tasks;
 
 namespace Csla.Security
 {
@@ -41,6 +42,23 @@ namespace Csla.Security
     {
       return DataPortal.Fetch<T>(criteria);
     }
+
+    /// <summary>
+    /// Invokes the data portal to get an instance of
+    /// the identity object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of the CslaIdentity subclass to retrieve.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Object containing the user's credentials.
+    /// </param>
+    /// <returns></returns>
+    public static async Task<T> GetCslaIdentityAsync<T>(object criteria)
+      where T : CslaIdentity
+    {
+      return await DataPortal.FetchAsync<T>(criteria);
+    }
   }
 
   /// <summary>
@@ -66,7 +84,6 @@ namespace Csla.Security
     /// Property info for Roles property
     /// </summary>
     public static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(c => c.Roles);
-
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
@@ -89,7 +106,6 @@ namespace Csla.Security
     /// Property info for Authentication property
     /// </summary>
     public static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(c => c.AuthenticationType, "AuthenticationType", "Csla");
-
     /// <summary>
     /// Gets the authentication type for this identity.
     /// </summary>
@@ -99,12 +115,10 @@ namespace Csla.Security
       protected set { LoadProperty<string>(AuthenticationTypeProperty, value); }
     }
 
-
     /// <summary>
     /// 
     /// </summary>
     public static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(c => c.IsAuthenticated);
-
     /// <summary>
     /// Gets a value indicating whether this identity represents
     /// an authenticated user.
@@ -119,7 +133,6 @@ namespace Csla.Security
     /// Property info for Name property
     /// </summary>
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-
     /// <summary>
     /// Gets the username value.
     /// </summary>

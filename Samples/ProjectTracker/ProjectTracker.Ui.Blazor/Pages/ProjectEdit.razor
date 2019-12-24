@@ -25,55 +25,17 @@ else
       </tr>
     </thead>
     <tbody>
-      @if (vm.Model.CanReadProperty(nameof(vm.Model.Id)))
-      {
-        <tr>
-          <td>Id</td>
-          <td>@vm.Model.Id</td>
-        </tr>
-      }
-      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).CanRead)
-      {
-        <tr>
-          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)).FriendlyName)</td>
-          <td>
-            <TextInput Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Name)))" />
-          </td>
-        </tr>
-      }
-      @if (vm.GetPropertyInfo<string>(nameof(vm.Model.Description)).CanRead)
-      {
-        <tr>
-          <td>@(vm.GetPropertyInfo<string>(nameof(vm.Model.Description)).FriendlyName)</td>
-          <td>
-            <TextArea rows="5" Property="@(vm.GetPropertyInfo<string>(nameof(vm.Model.Description)))" />
-          </td>
-        </tr>
-      }
-      @if (vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)).CanRead)
-      {
-        <tr>
-          <td>@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)).FriendlyName)</td>
-          <td>
-            <DateInput Property="@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Started)))" />
-          </td>
-        </tr>
-      }
-      @if (vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)).CanRead)
-      {
-        <tr>
-          <td>@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)).FriendlyName)</td>
-          <td>
-            <DateInput Property="@(vm.GetPropertyInfo<DateTime?>(nameof(vm.Model.Ended)))" EmptyIsMin="false" />
-          </td>
-        </tr>
-      }
+      <LabelRow Property="vm.GetPropertyInfo(nameof(vm.Model.Id))" />
+      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Name))" />
+      <TextAreaRow rows="5" Property="@(vm.GetPropertyInfo(nameof(vm.Model.Description)))" />
+      <DateInputRow Property="@(vm.GetPropertyInfo(nameof(vm.Model.Started)))" />
+      <DateInputRow Property="@(vm.GetPropertyInfo(nameof(vm.Model.Ended)))" EmptyIsMin="false" />
     </tbody>
   </table>
   <div style="background-color:lightgray">
     @if (viewMode == SubViewModes.Details)
     {
-      <a href="javascript: void(0);" @onclick="ResetResourcesView">Cancel assignment</a>
+      <a href="javascript: void(0);" @onclick="ShowDefaultView">Cancel assignment</a>
       <table class="table">
         <thead>
           <tr>
@@ -106,7 +68,7 @@ else
       }
       else
       {
-        <a href="javascript: void(0);" @onclick="ResetResourcesView">Cancel assignment</a>
+        <a href="javascript: void(0);" @onclick="ShowDefaultView">Cancel assignment</a>
         <table class="table">
           <thead>
             <tr>
@@ -170,13 +132,7 @@ else
   protected override void OnInitialized()
   {
     vm.Saved += () => NavigationManager.NavigateTo("projects");
-    vm.ModelChanging += (o, n) =>
-    {
-      if (o != null)
-        o.PropertyChanged -= async (s, e) => await InvokeAsync(() => StateHasChanged());
-      if (n != null)
-        n.PropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
-    };
+    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
   }
 
   protected override async Task OnParametersSetAsync()
@@ -195,7 +151,7 @@ else
     StateHasChanged();
   }
 
-  private void ResetResourcesView()
+  private void ShowDefaultView()
   {
     viewMode = SubViewModes.Default;
   }
@@ -211,8 +167,7 @@ else
   {
     if (!vm.Model.Resources.Contains(selectedResource.ResourceId))
       vm.Model.Resources.Add(selectedResource);
-    ResetResourcesView();
-    StateHasChanged();
+    ShowDefaultView();
   }
 
   private void EditResource(int resourceId)

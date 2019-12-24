@@ -22,7 +22,7 @@ namespace ProjectTracker.Library.Security
         var identity = await PTIdentity.GetPTIdentityAsync(username, password);
         SetPrincipal(identity);
       }
-      catch
+      catch (Exception ex)
       {
         Logout();
       }
@@ -40,10 +40,6 @@ namespace ProjectTracker.Library.Security
       if (current != null && current.Identity != null && current.Identity.Name == username)
         return true;
 
-      var fromCache = PrincipalCache.GetPrincipal(username);
-      if (fromCache != null)
-        return SetPrincipal(fromCache);
-
       var identity = PTIdentity.GetPTIdentity(username);
       return SetPrincipal(identity);
     }
@@ -53,10 +49,6 @@ namespace ProjectTracker.Library.Security
       var current = Csla.ApplicationContext.User;
       if (current != null && current.Identity != null && current.Identity.Name == username)
         return true;
-
-      var fromCache = PrincipalCache.GetPrincipal(username);
-      if (fromCache != null)
-        return SetPrincipal(fromCache);
 
       var identity = await PTIdentity.GetPTIdentityAsync(username);
       return SetPrincipal(identity);
@@ -68,7 +60,6 @@ namespace ProjectTracker.Library.Security
       {
         PTPrincipal principal = new PTPrincipal(identity);
         Csla.ApplicationContext.User = principal;
-        PrincipalCache.AddPrincipal(principal);
       }
       OnNewUser();
       return identity.IsAuthenticated;
@@ -83,7 +74,8 @@ namespace ProjectTracker.Library.Security
 
     public static void Logout()
     {
-      Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
+      var identity = Csla.DataPortal.Create<PTIdentity>();
+      Csla.ApplicationContext.User = new PTPrincipal(identity);
       OnNewUser();
     }
 

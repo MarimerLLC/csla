@@ -77,8 +77,6 @@ namespace ProjectTracker.Ui.Blazor
       app.UseCsla(c => c
         .DataPortal()
           .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/"));
-
-      ProjectTracker.Library.RoleList.CacheListAsync();
     }
   }
 }

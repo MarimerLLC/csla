@@ -28,6 +28,13 @@ namespace ProjectTracker.Library.Security
       return await DataPortal.FetchAsync<PTIdentity>(username);
     }
 
+    [Create]
+    [RunLocal]
+    private void Create()
+    {
+      LoadUser(null);
+    }
+
     [Fetch]
     private void Fetch(string username)
     {

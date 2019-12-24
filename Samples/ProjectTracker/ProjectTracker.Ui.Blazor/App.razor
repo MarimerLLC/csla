@@ -11,10 +11,9 @@
   </Router>
 </CascadingAuthenticationState>
 
-@code {    
-  protected override void OnInitialized()
+@code {
+  protected override async Task OnInitializedAsync()
   {
-    Csla.ApplicationContext.User = new Csla.Security.CslaClaimsPrincipal();
-    base.OnInitialized();
+    await ProjectTracker.Library.RoleList.CacheListAsync();
   }
 }

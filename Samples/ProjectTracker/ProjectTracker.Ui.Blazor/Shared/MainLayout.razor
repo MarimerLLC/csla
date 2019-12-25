@@ -9,12 +9,19 @@
     <AuthorizeView>
       <Authorized>
         Hello, @context.User.Identity.Name
-        <form method="post" action="Identity/Account/LogOut">
-          <button type="submit" class="nav-link btn btn-link">Log out</button>
-        </form>
+        @if (App.IsServerSide)
+        {
+          <form method="post" action="/Account/Logout">
+            <button type="submit" class="nav-link btn btn-link">Log out</button>
+          </form>
+        }
+        else
+        {
+          <a href="Account/Logout">Log out</a>
+        }
       </Authorized>
       <NotAuthorized>
-        <a href="Identity/Account/Login">Log in</a>
+        <a href="/Account/Login">Log in</a>
       </NotAuthorized>
     </AuthorizeView>
     <a href="https://cslanet.com" target="_blank">About</a>

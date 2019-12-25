@@ -1,0 +1,12 @@
+﻿@page "/account/logout"
+@inject Csla.Blazor.Client.Authentication.CslaUserService userService
+@inject NavigationManager  NavigationManager
+
+@code {
+  protected override void OnInitialized()
+  {
+    userService.CurrentUser =
+      new System.Security.Claims.ClaimsPrincipal();
+    NavigationManager.NavigateTo("/");
+  }
+}

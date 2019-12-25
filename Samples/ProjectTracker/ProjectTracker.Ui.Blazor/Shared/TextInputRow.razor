@@ -3,7 +3,7 @@
   <tr>
     <td>@(Property.FriendlyName)</td>
     <td>
-      <TextInput Property="@Property" />
+      <TextInput Property="@Property" InputType="@InputType" />
     </td>
   </tr>
 }
@@ -11,4 +11,6 @@
 @code {
   [Parameter]
   public Csla.Blazor.IPropertyInfo Property { get; set; }
+  [Parameter]
+  public string InputType { get; set; } = "text";
 }

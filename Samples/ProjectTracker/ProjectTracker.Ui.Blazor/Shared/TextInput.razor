@@ -1,5 +1,5 @@
 ﻿<div>
-  <input @bind-value="TextValue" @bind-value:event="oninput"
+  <input @bind-value="TextValue" @bind-value:event="oninput" type="@InputType"
          disabled="@(!Property.CanWrite)" /><br />
   <span class="text-danger">@Property.ErrorText</span>
   <span class="text-warning">@Property.WarningText</span>
@@ -9,6 +9,8 @@
 @code {
   [Parameter]
   public Csla.Blazor.IPropertyInfo Property { get; set; }
+  [Parameter]
+  public string InputType { get; set; } = "text";
 
   private string TextValue
   {

@@ -1,7 +1,8 @@
-using Csla.Configuration;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using ProjectTracker.Ui.Blazor;
+using Csla.Configuration;
+using Csla.Blazor.Client.Authentication;
 
 namespace ProjectTracker.Ui.Blazor.Client
 {
@@ -9,19 +10,20 @@ namespace ProjectTracker.Ui.Blazor.Client
   {
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddAuthorizationCore();
+      services.AddSingleton<AuthenticationStateProvider, CslaAuthenticationStateProvider>();
+      services.AddSingleton<CslaUserService>();
       services.AddCsla().WithBlazorClientSupport();
     }
 
     public void Configure(IComponentsApplicationBuilder app)
     {
-      app.AddComponent<App>("app");
+      //app.AddComponent<App>("app");
+      app.AddComponent<ProjectTracker.Ui.Blazor.App>("app");
 
-      app.UseCsla();
       app.UseCsla(c => c
         .DataPortal()
-          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/"));
-
-      //ProjectTracker.Library.RoleList.CacheListAsync();
+          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportaltext/"));
     }
   }
 }

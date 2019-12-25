@@ -20,6 +20,7 @@ namespace ProjectTracker.Ui.Blazor.Client
     {
       //app.AddComponent<App>("app");
       app.AddComponent<ProjectTracker.Ui.Blazor.App>("app");
+      ProjectTracker.Ui.Blazor.App.IsServerSide = false;
 
       app.UseCsla(c => c
         .DataPortal()

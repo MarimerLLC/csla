@@ -20,6 +20,7 @@ namespace ProjectTracker.AppServerCore
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddCors();
       services.AddMvc((o) => o.EnableEndpointRouting = false);
 
       // If using Kestrel:
@@ -51,6 +52,8 @@ namespace ProjectTracker.AppServerCore
 
       app.UseHttpsRedirection();
       app.UseMvc();
+
+      app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
       app.UseCsla();
 

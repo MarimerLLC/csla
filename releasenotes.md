@@ -14,9 +14,16 @@ Highlights:
 
 ### Blazor
 
+* [#1443](https://github.com/MarimerLLC/csla/issues/1443) Changed `Csla.Blazor.PropertyInfo` to not be generic
+* [#1435](https://github.com/MarimerLLC/csla/issues/1435) Add authorization helpers for Blazor
+* [#1440](https://github.com/MarimerLLC/csla/issues/1440) Add `ModelPropertyChanged` event to `ViewModel`
+* [#1410](https://github.com/MarimerLLC/csla/issues/1410) Add ModelChanged/ModelChanging events to `ViewModel`
 * [#1371](https://github.com/MarimerLLC/csla/issues/1371) Ensure `Csla.Blazor` works on server-side code too
-* [#1309](https://github.com/MarimerLLC/csla/issues/1309) Add `CslaValidator` component for Blazor
-* [#1295](https://github.com/MarimerLLC/csla/issues/1295) Add severity support to `CslaValidator` component
+* [#1295](https://github.com/MarimerLLC/csla/issues/1295) [#1309](https://github.com/MarimerLLC/csla/issues/1309) [#1436](https://github.com/MarimerLLC/csla/issues/1436) Add `CslaValidator` component for Blazor
+
+### Authentication and Authorization
+
+* [#1409](https://github.com/MarimerLLC/csla/issues/1409) Updates to `CslaClaimsPrincipal`
 
 ### Razor and MVC
 
@@ -26,12 +33,20 @@ Highlights:
 
 ### Data Portal
 
+* [#1444](https://github.com/MarimerLLC/csla/issues/1444) `DataPortalException` now returns better data via `ErrorInfo`
+* [#1424](https://github.com/MarimerLLC/csla/issues/1424) Add `ApplicationContextManagerTls` type
+* [#1417](https://github.com/MarimerLLC/csla/issues/1417) Fix issue with context disappearing after async call
 * [#1387](https://github.com/MarimerLLC/csla/issues/1387) Improve exception messages from HttpProxy
 * [#1386](https://github.com/MarimerLLC/csla/issues/1386) Auto-create scoped DI service provider on data portal server
 * [#1332](https://github.com/MarimerLLC/csla/issues/1332) Factory data portal needs to support DI (via constructor injection)
 
+### Templates
+
+* [#752](https://github.com/MarimerLLC/csla/issues/752) Update NuGet templates package to work in VS 2017, 2019
+
 ### Analyzers
 
+* [#1441](https://github.com/MarimerLLC/csla/issues/1441) Fix bug with `BusinessRuleDoesNotUseAddMethods` analyzer
 * [#1348](https://github.com/MarimerLLC/csla/issues/1348) Analyzer: Operation attribute usage
 
 ### Examples
@@ -48,10 +63,18 @@ Highlights:
 
 ### Dependabot and NuGet dependencies
 
+* Bump Microsoft.AspNetCore.Components.Web from 3.0.0 to 3.1.0
+* Bump Microsoft.AspNetCore.Components from 3.0.0 to 3.1.0
+* Bump System.Configuration.ConfigurationManager from 4.6.0 to 4.7.0
+* Bump System.ComponentModel.Annotations from 4.6.0 to 4.7.0
+* Bump System.Security.Permissions from 4.6.0 to 4.7.0
+* Bump System.Security.AccessControl from 4.6.0 to 4.7.0
+* Bump System.Security.Principal from 4.6.0 to 4.7.0
+* Bump System.Data.SqlClient from 4.7.0 to 4.8.0
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
-* Bump Google.Protobuf from 3.9.2 to 3.10.1
-* Bump Grpc.Net.Client from 2.24.0 to 2.25.0
+* Bump Google.Protobuf from 3.9.2 to 3.11.2
+* Bump Grpc.Net.Client from 2.24.0 to 2.26.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors
@@ -61,6 +84,7 @@ Highlights:
 * [@JasonBock](https://github.com/JasonBock) lots of work with the analyzers
 * [@skeeler88](https://github.com/skeeler88) bug fixes
 * [@bradtwurst](https://github.com/bradtwurst) bug fixes
+* [@jeddytier4](https://github.com/jeddytier4) got the NuGet templates package working again
 
 ---
 

@@ -12,24 +12,23 @@ namespace ProjectTracker.Ui.Xamarin
 	public partial class App : Application
 	{
     public static Page RootPage { get; private set; }
-    private ContentPage startPage = new XamarinFormsUi.Views.Dashboard();
 
     public App ()
 		{
 			InitializeComponent();
 
-      MainPage = new NavigationPage(startPage);
-      RootPage = MainPage;
-    }
-
-    protected override async void OnStart ()
-		{
-      // Handle when your app starts
       CslaConfiguration.Configure()
         .DataPortal()
           .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "https://ptrackerserver.azurewebsites.net/api/dataportal");
 
       Library.Security.PTPrincipal.Logout();
+
+      MainPage = new NavigationPage(new XamarinFormsUi.Views.Dashboard());
+      RootPage = MainPage;
+    }
+
+    protected override async void OnStart ()
+		{
       await Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
       await RoleList.CacheListAsync();

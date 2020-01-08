@@ -448,7 +448,7 @@ namespace Csla.DataPortalClient
       if (!httpResponse.IsSuccessStatusCode)
       {
         var message = new StringBuilder();
-        message.Append(httpResponse.StatusCode);
+        message.Append((int)httpResponse.StatusCode);
         message.Append(": ");
         message.Append(httpResponse.ReasonPhrase);
         var content = await httpResponse.Content.ReadAsStringAsync();

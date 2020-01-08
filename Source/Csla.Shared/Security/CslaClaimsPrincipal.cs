@@ -30,6 +30,10 @@ namespace Csla.Security
       : base(new ClaimsIdentity())
     { }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="principal">Source principal from which to copy identity</param>
     public CslaClaimsPrincipal(ClaimsPrincipal principal)
       : base(principal.Identities)
     { }

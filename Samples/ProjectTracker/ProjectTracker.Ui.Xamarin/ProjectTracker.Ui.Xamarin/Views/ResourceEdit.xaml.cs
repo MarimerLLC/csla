@@ -3,12 +3,12 @@ using Xamarin.Forms;
 
 namespace XamarinFormsUi.Views
 {
-  public partial class ProjectEdit : ContentPage
+  public partial class ResourceEdit : ContentPage
   {
-    public ProjectEdit(int id)
+    public ResourceEdit(int id)
     {
       InitializeComponent();
-      BindingContext = new ViewModels.ProjectEdit(id);
+      BindingContext = new ViewModels.ResourceEdit(id);
     }
   }
 }

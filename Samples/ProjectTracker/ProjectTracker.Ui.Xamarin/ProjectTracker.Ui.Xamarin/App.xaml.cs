@@ -1,4 +1,5 @@
-﻿using ProjectTracker.Library;
+﻿using Csla.Configuration;
+using ProjectTracker.Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,12 @@ namespace ProjectTracker.Ui.Xamarin
 	public partial class App : Application
 	{
     public static Page RootPage { get; private set; }
-    private XamarinFormsUi.Dashboard startPage = new XamarinFormsUi.Dashboard();
+    private ContentPage startPage = new XamarinFormsUi.Views.Dashboard();
 
     public App ()
 		{
 			InitializeComponent();
 
-      //MainPage = new ProjectTracker.Ui.Xamarin.MainPage();
       MainPage = new NavigationPage(startPage);
       RootPage = MainPage;
     }
@@ -25,15 +25,14 @@ namespace ProjectTracker.Ui.Xamarin
     protected override async void OnStart ()
 		{
       // Handle when your app starts
-      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://ptrackerserver.azurewebsites.net/api/DataPortal/PostAsync";
+      CslaConfiguration.Configure()
+        .DataPortal()
+          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "https://ptrackerserver.azurewebsites.net/api/dataportal");
 
       Library.Security.PTPrincipal.Logout();
-      await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
+      await Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
       await RoleList.CacheListAsync();
-
-      await startPage.InitAsync();
     }
 
     protected override void OnSleep ()
@@ -60,7 +59,6 @@ namespace ProjectTracker.Ui.Xamarin
 
     private static async Task NavigateTo(Page page)
     {
-      await Csla.Reflection.MethodCaller.CallMethodTryAsync(page, "InitAsync");
       await RootPage.Navigation.PushAsync(page);
     }
   }

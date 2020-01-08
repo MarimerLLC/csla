@@ -1,25 +1,16 @@
 ﻿using ProjectTracker.Ui.Xamarin;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 
-namespace XamarinFormsUi
+namespace XamarinFormsUi.Views
 {
   public partial class Dashboard : ContentPage
   {
     public Dashboard()
     {
       InitializeComponent();
-    }
-
-    public Task InitAsync()
-    {
       BindingContext = new ViewModels.DashboardViewModel();
-      return Task.CompletedTask;
     }
 
     private async void ShowProjectList(object sender, EventArgs e)

@@ -4,7 +4,7 @@
   {
     public DashboardViewModel()
     {
-      var task = RefreshAsync<ProjectTracker.Library.Dashboard>(async () => 
+      var task = RefreshAsync<ProjectTracker.Library.Dashboard>(async () =>
         await ProjectTracker.Library.Dashboard.GetDashboardAsync());
     }
   }

@@ -242,6 +242,9 @@ namespace Csla.Test.DataPortal
       var dp = new Csla.Server.ChildDataPortal();
       dp.Update(obj, 42);
       Assert.AreEqual(42, obj.Id);
+      obj = new ModernChild();
+      dp.Update(obj, 123);
+      Assert.AreEqual(123, obj.Id);
     }
   }
 

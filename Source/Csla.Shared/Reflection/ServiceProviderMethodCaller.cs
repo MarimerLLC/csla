@@ -61,7 +61,9 @@ namespace Csla.Reflection
       var typeOfOperation = typeof(T);
       var candidates = new List<System.Reflection.MethodInfo>();
 
-      var cacheKey = targetType.FullName + GetCriteriaTypeNames(criteria);
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
+      if (_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo cachedMethod))
+        return cachedMethod;
 
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
@@ -122,7 +124,7 @@ namespace Csla.Reflection
       if (candidates.Count == 0)
       {
         if (throwOnError)
-          throw new MissingMethodException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{cacheKey}");
+          throw new MissingMethodException(cacheKey);
         else
           return null;
       }
@@ -232,7 +234,7 @@ namespace Csla.Reflection
 
     private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)
     {
-      return targetType.FullName + "." + operationType.Name + GetCriteriaTypeNames(criteria);
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}";
     }
 
     private static string GetCriteriaTypeNames(object[] criteria)

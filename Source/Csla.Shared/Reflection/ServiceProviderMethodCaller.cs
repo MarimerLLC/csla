@@ -214,20 +214,15 @@ namespace Csla.Reflection
         if (throwOnError)
           throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
         else
+        {
+          _methodCache.TryAdd(cacheKey, null);
           return null;
+        }
       }
 
       var method = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
-      if (method != null)
-      {
-        _methodCache.TryAdd(cacheKey, method);
-        return method;
-      }
-
-      if (throwOnError)
-        throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
-      else
-        return null;
+      _methodCache.TryAdd(cacheKey, method);
+      return method;
     }
 
     private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)

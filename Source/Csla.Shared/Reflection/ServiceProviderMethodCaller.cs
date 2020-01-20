@@ -241,17 +241,20 @@ namespace Csla.Reflection
     {
       var result = new System.Text.StringBuilder();
       result.Append("(");
-      bool first = true;
-      foreach (var item in criteria)
+      if (criteria != null)
       {
-        if (first)
-          first = false;
-        else
-          result.Append(",");
-        if (item == null)
-          result.Append("null");
-        else
-          result.Append(item.GetType().Name);
+        bool first = true;
+        foreach (var item in criteria)
+        {
+          if (first)
+            first = false;
+          else
+            result.Append(",");
+          if (item == null)
+            result.Append("null");
+          else
+            result.Append(item.GetType().Name);
+        }
       }
       result.Append(")");
       return result.ToString();

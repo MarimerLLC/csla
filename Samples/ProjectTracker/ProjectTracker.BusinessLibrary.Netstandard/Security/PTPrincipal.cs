@@ -22,7 +22,7 @@ namespace ProjectTracker.Library.Security
         var identity = await PTIdentity.GetPTIdentityAsync(username, password);
         SetPrincipal(identity);
       }
-      catch (Exception ex)
+      catch
       {
         Logout();
       }

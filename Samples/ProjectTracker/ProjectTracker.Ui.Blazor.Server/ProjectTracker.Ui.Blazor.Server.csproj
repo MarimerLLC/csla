@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19122302" />
-    <PackageReference Include="Csla.Blazor" Version="5.1.0-R19122302" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0-preview2.19525.4" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0-preview2.19553.1" />
+    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R20011901" />
+    <PackageReference Include="Csla.Blazor" Version="5.1.0-R20011901" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>

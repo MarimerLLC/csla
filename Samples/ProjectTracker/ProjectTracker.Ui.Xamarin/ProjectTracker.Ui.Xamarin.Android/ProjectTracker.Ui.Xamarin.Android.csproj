@@ -50,9 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Csla.Xamarin.Forms">
-      <Version>5.1.0-R19122302</Version>
+      <Version>5.1.0-R20011901</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.4.0.936621-pre1" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991477" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.3" />

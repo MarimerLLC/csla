@@ -13,6 +13,7 @@ namespace XamarinFormsUi.Views
     public ResourceList()
     {
       InitializeComponent();
+      BindingContext = new ViewModels.ResourceList();
     }
   }
 }

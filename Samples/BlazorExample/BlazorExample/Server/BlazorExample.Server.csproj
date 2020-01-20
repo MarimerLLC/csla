@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19121703" />
     <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19122302" />
+    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R19121703" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />

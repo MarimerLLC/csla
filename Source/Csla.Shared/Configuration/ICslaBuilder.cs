@@ -20,7 +20,9 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the services collection
     /// </summary>
+#pragma warning disable CS3003 // Type is not CLS-compliant
     IServiceCollection Services { get; set; }
+#pragma warning restore CS3003 // Type is not CLS-compliant
 #endif
   }
 }

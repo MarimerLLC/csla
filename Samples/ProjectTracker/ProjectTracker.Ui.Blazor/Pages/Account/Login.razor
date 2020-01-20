@@ -1,0 +1,92 @@
+﻿@page "/account/login"
+@using System.Security.Claims
+@using Csla
+@inject Csla.Blazor.ViewModel<LoginData> vm
+@inject Csla.Blazor.Client.Authentication.CslaUserService userService
+@inject NavigationManager NavigationManager
+
+<h1>Login</h1>
+
+<p class="text-danger">@vm.ViewModelErrorText</p>
+<p class="text-danger">@ErrorText</p>
+
+@if (vm.Model == null)
+{
+  <p>Loading...</p>
+}
+else
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Username))" />
+      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Password))" InputType="password" />
+    </tbody>
+  </table>
+  <button @onclick="LoginUser" disabled="@(!vm.Model.IsSavable)">Save</button>
+}
+
+@code {
+  public string ErrorText { get; set; }
+
+  protected override void OnInitialized()
+  {
+    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+  }
+
+  protected override async Task OnParametersSetAsync()
+  {
+    await vm.RefreshAsync();
+  }
+
+  private async void LoginUser()
+  {
+    var identity = await Library.Security.PTIdentity.GetPTIdentityAsync(vm.Model.Username, vm.Model.Password);
+
+    var baseidentity = new ClaimsIdentity(identity.AuthenticationType);
+    baseidentity.AddClaim(new Claim(ClaimTypes.Name, identity.Name));
+    if (identity.Roles != null)
+      foreach (var item in identity.Roles)
+        baseidentity.AddClaim(new Claim(ClaimTypes.Role, item));
+    var principal = new ClaimsPrincipal(baseidentity);
+
+    if (identity.IsAuthenticated)
+    {
+      userService.CurrentUser = principal;
+      NavigationManager.NavigateTo("/");
+    }
+    else
+    {
+      ErrorText = "Invalid credentials";
+      StateHasChanged();
+    }
+  }
+
+  [Serializable]
+  public class LoginData : BusinessBase<LoginData>
+  {
+    public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(nameof(Username));
+    public string Username
+    {
+      get => GetProperty(UsernameProperty);
+      set => SetProperty(UsernameProperty, value);
+    }
+
+    public static readonly PropertyInfo<string> PasswordProperty = RegisterProperty<string>(nameof(Password));
+    public string Password
+    {
+      get => GetProperty(PasswordProperty);
+      set => SetProperty(PasswordProperty, value);
+    }
+
+    [Create]
+    [RunLocal]
+    private void Create()
+    { }
+  }
+}

@@ -12,6 +12,8 @@
 </CascadingAuthenticationState>
 
 @code {
+  public static bool IsServerSide { get; set; } = true;
+
   protected override async Task OnInitializedAsync()
   {
     await ProjectTracker.Library.RoleList.CacheListAsync();

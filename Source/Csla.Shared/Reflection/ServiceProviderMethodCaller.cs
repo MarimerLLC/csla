@@ -7,6 +7,7 @@
 // <summary>Dynamically find/invoke methods with DI provided params</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,8 @@ namespace Csla.Reflection
   {
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+    private static readonly ConcurrentDictionary<string, System.Reflection.MethodInfo> _methodCache =
+      new ConcurrentDictionary<string, System.Reflection.MethodInfo>();
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -55,8 +58,12 @@ namespace Csla.Reflection
       if (targetType == null)
         throw new ArgumentNullException("targetType");
 
-      var typeOfT = typeof(T);
+      var typeOfOperation = typeof(T);
       var candidates = new List<System.Reflection.MethodInfo>();
+
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
+      if (_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo cachedMethod))
+        return cachedMethod;
 
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
@@ -64,13 +71,13 @@ namespace Csla.Reflection
         var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
         if (factoryType != null)
         {
-          if (typeOfT == typeof(CreateAttribute))
+          if (typeOfOperation == typeof(CreateAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName).ToList();
-          else if (typeOfT == typeof(FetchAttribute))
+          else if (typeOfOperation == typeof(FetchAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName).ToList();
-          else if (typeOfT == typeof(DeleteAttribute))
+          else if (typeOfOperation == typeof(DeleteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName).ToList();
-          else if (typeOfT == typeof(ExecuteAttribute))
+          else if (typeOfOperation == typeof(ExecuteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName).ToList();
           else
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName).ToList();
@@ -89,7 +96,7 @@ namespace Csla.Reflection
         // if no attribute-based methods found, look for legacy methods
         if (candidates.Count == 0)
         {
-          var attributeName = typeOfT.Name.Substring(0, typeOfT.Name.IndexOf("Attribute"));
+          var attributeName = typeOfOperation.Name.Substring(0, typeOfOperation.Name.IndexOf("Attribute"));
           if (attributeName.Contains("Child"))
           {
             var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
@@ -117,7 +124,7 @@ namespace Csla.Reflection
       if (candidates.Count == 0)
       {
         if (throwOnError)
-          throw new MissingMethodException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+          throw new MissingMethodException(cacheKey);
         else
           return null;
       }
@@ -138,7 +145,7 @@ namespace Csla.Reflection
             var index = 0;
             foreach (var c in criteria)
             {
-              if (c == null) 
+              if (c == null)
               {
                 if (methodParams[index].ParameterType.IsPrimitive)
                   break;
@@ -175,7 +182,7 @@ namespace Csla.Reflection
         foreach (var item in candidates)
         {
           var lastParam = item.GetParameters().LastOrDefault();
-          if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) && 
+          if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) &&
             lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
           {
             matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = 1 });
@@ -185,7 +192,7 @@ namespace Csla.Reflection
       if (matches.Count == 0)
       {
         if (throwOnError)
-          throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+          throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
         else
           return null;
       }
@@ -216,29 +223,38 @@ namespace Csla.Reflection
         if (maxCount > 1)
         {
           if (throwOnError)
-            throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfT.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
+            throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
           else
             return null;
         }
       }
+      _methodCache.TryAdd(cacheKey, result.MethodInfo);
       return result.MethodInfo;
+    }
+
+    private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)
+    {
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}";
     }
 
     private static string GetCriteriaTypeNames(object[] criteria)
     {
       var result = new System.Text.StringBuilder();
       result.Append("(");
-      bool first = true;
-      foreach (var item in criteria)
+      if (criteria != null)
       {
-        if (first)
-          first = false;
-        else
-          result.Append(",");
-        if (item == null)
-          result.Append("null");
-        else
-          result.Append(item.GetType().Name);
+        bool first = true;
+        foreach (var item in criteria)
+        {
+          if (first)
+            first = false;
+          else
+            result.Append(",");
+          if (item == null)
+            result.Append("null");
+          else
+            result.Append(item.GetType().Name);
+        }
       }
       result.Append(")");
       return result.ToString();

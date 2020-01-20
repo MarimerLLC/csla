@@ -10,8 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R20011901" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
+    <PackageReference Include="Csla.AspNetCore" Version="5.1.0-R20012001" />
   </ItemGroup>
 
   <ItemGroup>

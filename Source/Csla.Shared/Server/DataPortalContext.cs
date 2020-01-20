@@ -122,6 +122,11 @@ namespace Csla.Server
         _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
         _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
       }
+      else if (ApplicationContext.WebContextManager != null && ApplicationContext.WebContextManager.IsValid)
+      {
+        _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
+        _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
+      }
     }
 
     /// <summary>

@@ -47,11 +47,11 @@ namespace WpfUI
     /// </summary>
     public void Configure()
     {
-      CslaConfiguration.Configure().
-        DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/");
-
-      // Azure data portal URL
-      // http://ptrackerserver.azurewebsites.net/api/dataportal"
+      CslaConfiguration.Configure()
+        .DataPortal()
+          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "https://ptrackerserver.azurewebsites.net/api/dataportal");
+      //CslaConfiguration.Configure().
+      //  DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:8040/api/dataportal/");
     }
   }
 }

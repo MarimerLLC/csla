@@ -171,7 +171,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBindingListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyListBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Reflection\AsyncManualResetEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Reflection\ServiceProviderMethodInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\AsyncManualResetEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\CallMethodException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\DynamicMemberHandle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\DynamicMethodHandle.cs" />

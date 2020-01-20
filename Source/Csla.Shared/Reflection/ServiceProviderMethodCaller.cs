@@ -24,8 +24,8 @@ namespace Csla.Reflection
   {
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-    private static readonly ConcurrentDictionary<string, System.Reflection.MethodInfo> _methodCache =
-      new ConcurrentDictionary<string, System.Reflection.MethodInfo>();
+    private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
+      new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -34,7 +34,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="target">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public static System.Reflection.MethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
+    public static ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
       where T : DataPortalOperationAttribute
     {
       if (target == null)
@@ -52,17 +52,17 @@ namespace Csla.Reflection
     /// <param name="targetType">Type of domain object</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="throwOnError">Throw exceptions on error</param>
-    public static System.Reflection.MethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria, bool throwOnError = true)
+    public static ServiceProviderMethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria, bool throwOnError = true)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)
-        throw new ArgumentNullException("targetType");
+        throw new ArgumentNullException(nameof(targetType));
 
       var typeOfOperation = typeof(T);
       var candidates = new List<System.Reflection.MethodInfo>();
 
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
-      if (_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo cachedMethod))
+      if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
         return cachedMethod;
 
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
@@ -228,8 +228,9 @@ namespace Csla.Reflection
             return null;
         }
       }
-      _methodCache.TryAdd(cacheKey, result.MethodInfo);
-      return result.MethodInfo;
+      var resultingMethod = new ServiceProviderMethodInfo { MethodInfo = result.MethodInfo };
+      _methodCache.TryAdd(cacheKey, resultingMethod);
+      return resultingMethod;
     }
 
     private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)
@@ -284,35 +285,38 @@ namespace Csla.Reflection
 
     /// <summary>
     /// Invoke a method async if possible, providing
-    /// paramters from the params array and from DI
+    /// parameters from the params array and from DI
     /// </summary>
     /// <param name="obj">Target object</param>
-    /// <param name="info">Method to invoke</param>
+    /// <param name="method">Method to invoke</param>
+    /// <param name="typeOfOperation">Data portal operation type</param>
     /// <param name="parameters">Criteria params array</param>
     /// <returns></returns>
-    public static async Task<object> CallMethodTryAsync(object obj, System.Reflection.MethodInfo info, object[] parameters)
+    public static async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, Type typeOfOperation, object[] parameters)
     {
-      if (info == null)
-        throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
+      if (method == null)
+        throw new ArgumentNullException(obj.GetType().FullName + ".<null>() " + Resources.MethodNotImplemented);
 
-      var methodParameters = info.GetParameters();
+      var info = method.MethodInfo;
+      method.PrepForInvocation();
+
       object[] plist;
 
-      if (methodParameters.Length == 1 && methodParameters[0].ParameterType.Equals(typeof(object[])))
+      if (method.TakesParamArray)
       {
         plist = new object[] { parameters };
       }
       else
       {
-        plist = new object[methodParameters.Length];
+        plist = new object[method.Parameters.Length];
         int index = 0;
         int criteriaIndex = 0;
 #if !NET40 && !NET45
         var service = ApplicationContext.ScopedServiceProvider;
 #endif
-        foreach (var item in methodParameters)
+        foreach (var item in method.Parameters)
         {
-          if (item.GetCustomAttributes<InjectAttribute>().Any())
+          if (method.IsInjected[index])
           {
 #if !NET40 && !NET45
             if (service != null)
@@ -331,16 +335,14 @@ namespace Csla.Reflection
         }
       }
 
-      var isAsyncTask = (info.ReturnType == typeof(Task));
-      var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
       try
       {
-        if (isAsyncTask)
+        if (method.IsAsyncTask)
         {
           await ((Task)info.Invoke(obj, plist)).ConfigureAwait(false);
           return null;
         }
-        else if (isAsyncTaskObject)
+        else if (method.IsAsyncTaskObject)
         {
           return await ((Task<object>)info.Invoke(obj, plist)).ConfigureAwait(false);
         }

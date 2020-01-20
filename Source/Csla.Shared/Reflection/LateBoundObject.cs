@@ -172,8 +172,8 @@ namespace Csla.Reflection
         Instance, parameters);
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method);
-        await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters).ConfigureAwait(false);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method.MethodInfo);
+        await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, typeof(T), parameters).ConfigureAwait(false);
       }
       catch (CallMethodException)
       {
@@ -181,7 +181,7 @@ namespace Csla.Reflection
       }
       catch (Exception ex)
       {
-        throw new CallMethodException(Instance.GetType().Name + "." + method.Name + " " + Resources.MethodCallFailed, ex);
+        throw new CallMethodException(Instance.GetType().Name + "." + method.MethodInfo.Name + " " + Resources.MethodCallFailed, ex);
       }
     }
 #endif

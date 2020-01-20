@@ -11,7 +11,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Csla.Reflection
+namespace Csla.Threading
 {
   /// <summary>
   /// Async/await implementation of a ManualResetEvent

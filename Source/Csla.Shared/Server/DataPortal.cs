@@ -620,6 +620,9 @@ namespace Csla.Server
       _oldLocation = Csla.ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
+      if (!context.IsRemotePortal && ApplicationContext.WebContextManager != null && !ApplicationContext.WebContextManager.IsValid)
+        ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+
       // if the dataportal is not remote then
       // do nothing
       if (!context.IsRemotePortal) return;

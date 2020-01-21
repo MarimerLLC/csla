@@ -33,6 +33,7 @@ Highlights:
 
 ### Data Portal
 
+* [#1459](https://github.com/MarimerLLC/csla/issues/1459) Fix major perf issues with CSLA 5 data portal
 * [#1444](https://github.com/MarimerLLC/csla/issues/1444) `DataPortalException` now returns better data via `ErrorInfo`
 * [#1424](https://github.com/MarimerLLC/csla/issues/1424) Add `ApplicationContextManagerTls` type
 * [#1417](https://github.com/MarimerLLC/csla/issues/1417) Fix issue with context disappearing after async call
@@ -56,15 +57,18 @@ Highlights:
 
 ### Bug fixes
 
-* [#1400](https://github.com/MarimerLLC/csla/issues/1400) Fix issue with `ApplicationContext` and `LocalProxy`
+* [#1464](https://github.com/MarimerLLC/csla/issues/1464) `AmbiguousMatchException` no longer thrown due to method overrides
+* [#1400](https://github.com/MarimerLLC/csla/issues/1400) Fix issue with `ApplicationContext` and `LocalProxy` and losing local/global context values
 * [#1402](https://github.com/MarimerLLC/csla/issues/1402) Fix issue building CSLA in debug mode
 * [#1369](https://github.com/MarimerLLC/csla/issues/1369) Fix issues with `ApplicationContext` in netcore 3
 * [#1360](https://github.com/MarimerLLC/csla/issues/1360) Fix issue with `DbContext` in .NET Core 3
 
 ### Dependabot and NuGet dependencies
 
-* Bump Microsoft.AspNetCore.Components.Web from 3.0.0 to 3.1.0
-* Bump Microsoft.AspNetCore.Components from 3.0.0 to 3.1.0
+* Bump Microsoft.Extensions.DependencyInjection to 3.1.1
+* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.1
+* Bump Microsoft.AspNetCore.Components.Web from 3.0.0 to 3.1.1
+* Bump Microsoft.AspNetCore.Components from 3.0.0 to 3.1.1
 * Bump System.Configuration.ConfigurationManager from 4.6.0 to 4.7.0
 * Bump System.ComponentModel.Annotations from 4.6.0 to 4.7.0
 * Bump System.Security.Permissions from 4.6.0 to 4.7.0

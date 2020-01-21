@@ -289,10 +289,9 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Target object</param>
     /// <param name="method">Method to invoke</param>
-    /// <param name="typeOfOperation">Data portal operation type</param>
     /// <param name="parameters">Criteria params array</param>
     /// <returns></returns>
-    public static async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, Type typeOfOperation, object[] parameters)
+    public static async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object[] parameters)
     {
       if (method == null)
         throw new ArgumentNullException(obj.GetType().FullName + ".<null>() " + Resources.MethodNotImplemented);

@@ -52,21 +52,27 @@ namespace Csla.Reflection
     /// </summary>
     public bool IsAsyncTaskObject { get; set; }
 
-    internal void PrepForInvocation()
+    /// <summary>
+    /// Initializes and caches the metastate values
+    /// necessary to invoke the method
+    /// </summary>
+    public void PrepForInvocation()
     {
       if (!_initialized)
       {
         _initialized = true;
         Parameters = MethodInfo.GetParameters();
         TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
-        int index = 0;
         IsInjected = new bool[Parameters.Length];
+#if !NET40
+        int index = 0;
         foreach (var item in Parameters)
         {
           if (item.GetCustomAttributes<InjectAttribute>().Any())
             IsInjected[index] = true;
           index++;
         }
+#endif
         IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
         IsAsyncTaskObject = (MethodInfo.ReturnType.IsGenericType && (MethodInfo.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
       }

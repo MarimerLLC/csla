@@ -112,8 +112,9 @@ namespace Csla.Test.DataPortal
     {
       var obj = new CriteriaCreateWithMultipleDI();
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, new object[] { 123 });
+      method.PrepForInvocation();
       Assert.IsNotNull(method);
-      Assert.AreEqual(3, method.GetParameters().Count());
+      Assert.AreEqual(3, method.Parameters.Count());
     }
 
     [TestMethod]
@@ -211,8 +212,9 @@ namespace Csla.Test.DataPortal
     {
       var obj = new AmbiguousNoCriteriaCreate();
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, null);
+      method.PrepForInvocation();
       Assert.IsNotNull(method);
-      Assert.AreEqual(1, method.GetParameters().Count());
+      Assert.AreEqual(1, method.Parameters.Count());
     }
 
     [TestMethod]

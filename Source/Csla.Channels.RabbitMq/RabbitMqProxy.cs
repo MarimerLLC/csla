@@ -346,7 +346,7 @@ namespace Csla.Channels.RabbitMq
     private async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation)
     {
       var correlationId = Guid.NewGuid().ToString();
-      var resetEvent = new Csla.Reflection.AsyncManualResetEvent();
+      var resetEvent = new Csla.Threading.AsyncManualResetEvent();
       var wip = Wip.WorkInProgress.GetOrAdd(correlationId, new WipItem { ResetEvent = resetEvent });
 
       SendMessage(QueueListener.ReplyQueue.QueueName, correlationId, operation, serialized);

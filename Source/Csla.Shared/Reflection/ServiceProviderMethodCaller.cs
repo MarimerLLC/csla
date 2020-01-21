@@ -38,7 +38,7 @@ namespace Csla.Reflection
       where T : DataPortalOperationAttribute
     {
       if (target == null)
-        throw new ArgumentNullException("target");
+        throw new ArgumentNullException(nameof(target));
 
       var targetType = target.GetType();
       return FindDataPortalMethod<T>(targetType, criteria);
@@ -194,35 +194,41 @@ namespace Csla.Reflection
             if (maxCount > 1)
             {
               if (throwOnError)
+              {
                 throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}. Matches: {string.Join(", ", matches.Select(m => $"{m.MethodInfo.DeclaringType.FullName}[{m.MethodInfo}]"))}");
+              }
               else
+              {
+                _methodCache.TryAdd(cacheKey, null);
                 return null;
+              }
             }
           }
         }
       }
 
+      ServiceProviderMethodInfo resultingMethod = null;
       if (result != null)
       {
-        _methodCache.TryAdd(cacheKey, result.MethodInfo);
-        return result.MethodInfo;
+        resultingMethod = new ServiceProviderMethodInfo { MethodInfo = result.MethodInfo };
       }
-
-      var baseType = targetType.BaseType;
-      if (baseType == null)
+      else
       {
-        if (throwOnError)
-          throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
-        else
+        var baseType = targetType.BaseType;
+        if (baseType == null)
         {
-          _methodCache.TryAdd(cacheKey, null);
-          return null;
+          if (throwOnError)
+            throw new TargetParameterCountException(cacheKey);
+          else
+          {
+            _methodCache.TryAdd(cacheKey, null);
+            return null;
+          }
         }
+        resultingMethod = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
       }
-
-      var method = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
-      _methodCache.TryAdd(cacheKey, method);
-      return method;
+      _methodCache.TryAdd(cacheKey, resultingMethod);
+      return resultingMethod;
     }
 
     private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)

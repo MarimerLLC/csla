@@ -89,6 +89,9 @@ Highlights:
 * [@skeeler88](https://github.com/skeeler88) bug fixes
 * [@bradtwurst](https://github.com/bradtwurst) bug fixes
 * [@jeddytier4](https://github.com/jeddytier4) got the NuGet templates package working again
+* [@j055](https://github.com/j055) helped figure out and fix the local/global context issue
+* [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) fixed the `AmbiguousMatchException` issue
+* [@linkerro](https://github.com/linkerro) fixed some NuGet package reference issues
 
 ---
 

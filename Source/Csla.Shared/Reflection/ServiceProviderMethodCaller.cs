@@ -59,12 +59,12 @@ namespace Csla.Reflection
         throw new ArgumentNullException("targetType");
 
       var typeOfOperation = typeof(T);
-      var candidates = new List<System.Reflection.MethodInfo>();
 
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
       if (_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo cachedMethod))
         return cachedMethod;
 
+      IEnumerable<System.Reflection.MethodInfo> candidates = null;
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
@@ -72,164 +72,157 @@ namespace Csla.Reflection
         if (factoryType != null)
         {
           if (typeOfOperation == typeof(CreateAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName).ToList();
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName);
           else if (typeOfOperation == typeof(FetchAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName).ToList();
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName);
           else if (typeOfOperation == typeof(DeleteAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName).ToList();
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName);
           else if (typeOfOperation == typeof(ExecuteAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName).ToList();
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName);
           else
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName).ToList();
+            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName);
         }
       }
       else
       {
-        var tType = targetType;
-        do
-        {
-          candidates.AddRange(tType.GetMethods(_bindingAttr).
-            Where(m => m.GetCustomAttributes<T>().Any()).ToList());
-          tType = tType.BaseType;
-        } while (tType != null);
+        candidates = targetType.GetMethods(_bindingAttr).
+            Where(m => m.GetCustomAttributes<T>().Any());
 
         // if no attribute-based methods found, look for legacy methods
-        if (candidates.Count == 0)
+        if (!candidates.Any())
         {
           var attributeName = typeOfOperation.Name.Substring(0, typeOfOperation.Name.IndexOf("Attribute"));
-          if (attributeName.Contains("Child"))
-          {
-            var methodName = "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child"));
-            tType = targetType;
-            do
-            {
-              candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
-                m => m.Name == methodName && !candidates.Any(c => c.ToString() == m.ToString())));
-              tType = tType.BaseType;
-            } while (tType != null);
-          }
-          else
-          {
-            var methodName = "DataPortal_" + attributeName;
-            tType = targetType;
-            do
-            {
-              candidates.AddRange(tType.GetMethods(_bindingAttr).Where(
-                m => m.Name == methodName && !candidates.Any(c => c.ToString() == m.ToString())));
-              tType = tType.BaseType;
-            } while (tType != null);
-          }
+          var methodName = attributeName.Contains("Child") ?
+              "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child")) :
+              "DataPortal_" + attributeName;
+          candidates = targetType.GetMethods(_bindingAttr).Where(
+            m => m.Name == methodName);
         }
-      }
-      if (candidates.Count == 0)
-      {
-        if (throwOnError)
-          throw new MissingMethodException(cacheKey);
-        else
-          return null;
       }
 
-      // scan candidate methods for matching criteria parameters
-      int criteriaLength = 0;
-      if (criteria != null)
-        criteriaLength = criteria.GetLength(0);
-      var matches = new List<ScoredMethodInfo>();
-      if (criteriaLength > 0)
+      ScoredMethodInfo result = null;
+
+      if (candidates != null && candidates.Any())
       {
-        foreach (var item in candidates)
+        // scan candidate methods for matching criteria parameters
+        int criteriaLength = 0;
+        if (criteria != null)
+          criteriaLength = criteria.GetLength(0);
+        var matches = new List<ScoredMethodInfo>();
+        if (criteriaLength > 0)
         {
-          int score = 0;
-          var methodParams = GetCriteriaParameters(item);
-          if (methodParams.Length == criteriaLength)
+          foreach (var item in candidates)
           {
-            var index = 0;
-            foreach (var c in criteria)
+            int score = 0;
+            var methodParams = GetCriteriaParameters(item);
+            if (methodParams.Length == criteriaLength)
             {
-              if (c == null)
+              var index = 0;
+              foreach (var c in criteria)
               {
-                if (methodParams[index].ParameterType.IsPrimitive)
-                  break;
-                else if (methodParams[index].ParameterType == typeof(object))
-                  score++;
-              }
-              else
-              {
-                if (c.GetType() == methodParams[index].ParameterType)
-                  score += 2;
-                else if (methodParams[index].ParameterType.IsAssignableFrom(c.GetType()))
-                  score++;
+                if (c == null)
+                {
+                  if (methodParams[index].ParameterType.IsPrimitive)
+                    break;
+                  else if (methodParams[index].ParameterType == typeof(object))
+                    score++;
+                }
                 else
-                  break;
+                {
+                  if (c.GetType() == methodParams[index].ParameterType)
+                    score += 2;
+                  else if (methodParams[index].ParameterType.IsAssignableFrom(c.GetType()))
+                    score++;
+                  else
+                    break;
+                }
+                index++;
               }
-              index++;
+              if (index == criteriaLength)
+                matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = score });
             }
-            if (index == criteriaLength)
-              matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = score });
           }
         }
-      }
-      else
-      {
-        foreach (var item in candidates)
+        else
         {
-          if (GetCriteriaParameters(item).Length == 0)
-            matches.Add(new ScoredMethodInfo { MethodInfo = item });
-        }
-      }
-      if (matches.Count == 0)
-      {
-        // look for params array
-        foreach (var item in candidates)
-        {
-          var lastParam = item.GetParameters().LastOrDefault();
-          if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) &&
-            lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
+          foreach (var item in candidates)
           {
-            matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = 1 });
+            if (GetCriteriaParameters(item).Length == 0)
+              matches.Add(new ScoredMethodInfo { MethodInfo = item });
+          }
+        }
+        if (matches.Count == 0)
+        {
+          // look for params array
+          foreach (var item in candidates)
+          {
+            var lastParam = item.GetParameters().LastOrDefault();
+            if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) &&
+              lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
+            {
+              matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = 1 });
+            }
+          }
+        }
+
+        if (matches.Count > 0)
+        {
+          result = matches[0];
+
+          if (matches.Count > 1)
+          {
+            // disambiguate if necessary, using a greedy algorithm
+            // so more DI parameters are better
+            foreach (var item in matches)
+              item.Score += GetDIParameters(item.MethodInfo).Length;
+
+            var maxScore = int.MinValue;
+            var maxCount = 0;
+            foreach (var item in matches)
+            {
+              if (item.Score > maxScore)
+              {
+                maxScore = item.Score;
+                maxCount = 1;
+                result = item;
+              }
+              else if (item.Score == maxScore)
+              {
+                maxCount++;
+              }
+            }
+            if (maxCount > 1)
+            {
+              if (throwOnError)
+                throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}. Matches: {string.Join(", ", matches.Select(m => $"{m.MethodInfo.DeclaringType.FullName}[{m.MethodInfo}]"))}");
+              else
+                return null;
+            }
           }
         }
       }
-      if (matches.Count == 0)
+
+      if (result != null)
+      {
+        _methodCache.TryAdd(cacheKey, result.MethodInfo);
+        return result.MethodInfo;
+      }
+
+      var baseType = targetType.BaseType;
+      if (baseType == null)
       {
         if (throwOnError)
           throw new TargetParameterCountException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
         else
+        {
+          _methodCache.TryAdd(cacheKey, null);
           return null;
-      }
-
-      var result = matches[0];
-      if (matches.Count > 1)
-      {
-        // disambiguate if necessary, using a greedy algorithm
-        // so more DI parameters are better
-        foreach (var item in matches)
-          item.Score += GetDIParameters(item.MethodInfo).Length;
-
-        var maxScore = int.MinValue;
-        var maxCount = 0;
-        foreach (var item in matches)
-        {
-          if (item.Score > maxScore)
-          {
-            maxScore = item.Score;
-            maxCount = 1;
-            result = item;
-          }
-          else if (item.Score == maxScore)
-          {
-            maxCount++;
-          }
-        }
-        if (maxCount > 1)
-        {
-          if (throwOnError)
-            throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}");
-          else
-            return null;
         }
       }
-      _methodCache.TryAdd(cacheKey, result.MethodInfo);
-      return result.MethodInfo;
+
+      var method = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
+      _methodCache.TryAdd(cacheKey, method);
+      return method;
     }
 
     private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)

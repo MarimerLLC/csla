@@ -26,9 +26,13 @@ namespace Csla.Reflection
     /// Gets or sets the MethodInfo object for the method
     /// </summary>
     public System.Reflection.MethodInfo MethodInfo { get; set; }
-
     /// <summary>
-    /// Gets the parameters for the method.
+    /// Gets delegate representing an expression that
+    /// can invoke the method
+    /// </summary>
+    public DynamicMethodDelegate DynamicMethod { get; private set; }
+    /// <summary>
+    /// Gets the parameters for the method
     /// </summary>
     public ParameterInfo[] Parameters { get; private set; }
     /// <summary>
@@ -61,6 +65,7 @@ namespace Csla.Reflection
       if (!_initialized)
       {
         _initialized = true;
+        DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(MethodInfo);
         Parameters = MethodInfo.GetParameters();
         TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
         IsInjected = new bool[Parameters.Length];

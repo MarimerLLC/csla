@@ -338,16 +338,16 @@ namespace Csla.Reflection
       {
         if (method.IsAsyncTask)
         {
-          await ((Task)info.Invoke(obj, plist)).ConfigureAwait(false);
+          await ((Task)method.DynamicMethod(obj, plist)).ConfigureAwait(false);
           return null;
         }
         else if (method.IsAsyncTaskObject)
         {
-          return await ((Task<object>)info.Invoke(obj, plist)).ConfigureAwait(false);
+          return await ((Task<object>)method.DynamicMethod(obj, plist)).ConfigureAwait(false);
         }
         else
         {
-          var result = info.Invoke(obj, plist);
+          var result = method.DynamicMethod(obj, plist);
           return result;
         }
       }

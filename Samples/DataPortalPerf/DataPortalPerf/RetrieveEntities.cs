@@ -6,7 +6,7 @@ namespace DataPortalPerf
   [MemoryDiagnoser]
   public class RetrieveEntities
   {
-    [Benchmark(OperationsPerInvoke = 100)]
+    [Benchmark()]
     public PersonEdit GetAll() => DataPortal.Fetch<PersonEdit>();
   }
 }

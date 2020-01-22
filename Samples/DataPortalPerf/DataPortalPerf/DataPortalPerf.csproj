@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
+    <!--<PackageReference Include="CSLA-Core" Version="4.11.2" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+  </ItemGroup>
+
+</Project>

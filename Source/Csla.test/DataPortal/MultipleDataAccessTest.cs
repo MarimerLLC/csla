@@ -21,6 +21,12 @@ namespace Csla.Test.DataPortal
       result = MultipleDataAccess.GetMultiple();
       Assert.AreEqual(int.MaxValue, result.Id);
       Assert.AreEqual(string.Empty, result.Name);
+
+      result = MultipleDataAccess.GetMultipleListInt();
+      Assert.AreEqual("Fetch(List<int?> values)", ApplicationContext.GlobalContext["Method"]);
+
+      result = MultipleDataAccess.GetMultipleListDateTime();
+      Assert.AreEqual("Fetch(List<DateTime?> values)", ApplicationContext.GlobalContext["Method"]);
     }
 
     [TestMethod]

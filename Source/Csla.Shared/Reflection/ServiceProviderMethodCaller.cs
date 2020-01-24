@@ -252,10 +252,38 @@ namespace Csla.Reflection
           if (item == null)
             result.Append("null");
           else
-            result.Append(item.GetType().Name);
+            result.Append(GetTypeName(item.GetType()));
         }
       }
+
       result.Append(")");
+      return result.ToString();
+    }
+
+    private static string GetTypeName(Type type)
+    {
+      if (!type.IsGenericType)
+      {
+        return type.Name;
+      }
+
+      var result = new System.Text.StringBuilder();
+      var genericArguments = type.GetGenericArguments();
+      result.Append(type.Name);
+      result.Append("<");
+
+      for (int i = 0; i < genericArguments.Length; i++)
+      {
+        if (i > 0)
+        {
+          result.Append(",");
+        }
+
+        result.Append(GetTypeName(genericArguments[i]));
+      }
+
+      result.Append(">");
+
       return result.ToString();
     }
 

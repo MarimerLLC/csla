@@ -609,7 +609,7 @@ namespace Csla
 #else
         else
         {
-          System.Reflection.MethodInfo method;
+          Reflection.ServiceProviderMethodInfo method;
           var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
           if (obj is Core.ICommandObject)
           {
@@ -1104,10 +1104,10 @@ namespace Csla
     }
 
 #if !NET40
-    private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, System.Reflection.MethodInfo method)
+    private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, Reflection.ServiceProviderMethodInfo method)
     {
       if (method != null)
-        return GetDataPortalProxy(objectType, method.RunLocal());
+        return GetDataPortalProxy(objectType, method.MethodInfo.RunLocal());
       else
         return GetDataPortalProxy(objectType, false);
     }

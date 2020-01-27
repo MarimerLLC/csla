@@ -9,7 +9,7 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class MultipleDataAccessBase<T>
     : BusinessBase<T>
-    where T: MultipleDataAccessBase<T>
+    where T : MultipleDataAccessBase<T>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id

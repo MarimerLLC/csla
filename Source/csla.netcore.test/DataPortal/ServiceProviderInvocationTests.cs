@@ -39,7 +39,7 @@ namespace Csla.Test.DataPortal
     public async Task NoServiceProvider()
     {
       var obj = new TestMethods();
-      var method = obj.GetType().GetMethod("Method1");
+      var method = new ServiceProviderMethodInfo { MethodInfo = obj.GetType().GetMethod("Method1") };
       Assert.IsNotNull(method, "needed method");
       var result = (bool) await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 });
       Assert.IsTrue(result);
@@ -53,7 +53,7 @@ namespace Csla.Test.DataPortal
       Csla.ApplicationContext.DefaultServiceProvider = services.BuildServiceProvider();
 
       var obj = new TestMethods();
-      var method = obj.GetType().GetMethod("GetSpeech");
+      var method = new ServiceProviderMethodInfo { MethodInfo = obj.GetType().GetMethod("GetSpeech") };
       Assert.IsNotNull(method, "needed method");
       var result = (string)await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 });
       Assert.AreEqual("Bark", result);

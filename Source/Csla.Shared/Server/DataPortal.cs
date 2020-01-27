@@ -760,7 +760,10 @@ namespace Csla.Server
     {
       var clength = 0;
       if (criteria != null)
-        clength = criteria.GetLength(0);
+        if (criteria.GetType().Equals(typeof(object[])))
+          clength = criteria.GetLength(0);
+        else
+          return criteria;
 
       if (criteria == null || (clength == 1 && criteria[0] == null))
         return NullCriteria.Instance;
@@ -790,8 +793,9 @@ namespace Csla.Server
 #endif
       else if (criteria is NullCriteria)
         return new object[] { null };
-      else if (criteria is object[] array)
+      else if (criteria.GetType().Equals(typeof(object[])))
       {
+        var array = (object[])criteria;
         var clength = array.GetLength(0);
         if (clength == 1 && array[0] is EmptyCriteria)
 #if NET40 || NET45

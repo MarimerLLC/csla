@@ -64,22 +64,30 @@ namespace Csla.Reflection
     {
       if (!_initialized)
       {
-        _initialized = true;
-        DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(MethodInfo);
-        Parameters = MethodInfo.GetParameters();
-        TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
-        IsInjected = new bool[Parameters.Length];
-#if !NET40
-        int index = 0;
-        foreach (var item in Parameters)
+        lock (MethodInfo)
         {
-          if (item.GetCustomAttributes<InjectAttribute>().Any())
-            IsInjected[index] = true;
-          index++;
-        }
+          if (!_initialized)
+          {
+            DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(MethodInfo);
+            Parameters = MethodInfo.GetParameters();
+            TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
+            IsInjected = new bool[Parameters.Length];
+
+#if !NET40
+            int index = 0;
+            foreach (var item in Parameters)
+            {
+              if (item.GetCustomAttributes<InjectAttribute>().Any())
+                IsInjected[index] = true;
+              index++;
+            }
 #endif
-        IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
-        IsAsyncTaskObject = (MethodInfo.ReturnType.IsGenericType && (MethodInfo.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+            IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
+            IsAsyncTaskObject = (MethodInfo.ReturnType.IsGenericType && (MethodInfo.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+
+            _initialized = true;
+          }
+        }
       }
     }
   }

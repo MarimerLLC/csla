@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client\BlazorExample.Client.csproj" />
+    <ProjectReference Include="..\DataAccess.EF\DataAccess.EF.csproj" />
+    <ProjectReference Include="..\DataAccess.Mock\DataAccess.Mock.csproj" />
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Shared\BlazorExample.Shared.csproj" />
   </ItemGroup>

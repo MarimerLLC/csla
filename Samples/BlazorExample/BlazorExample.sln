@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorExample.Shared", "Bla
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "BlazorExample\DataAccess\DataAccess.csproj", "{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.EF", "BlazorExample\DataAccess.EF\DataAccess.EF.csproj", "{2ABAE2B9-40FB-4A6E-A2F4-090366DADCB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Mock", "BlazorExample\DataAccess.Mock\DataAccess.Mock.csproj", "{24D2D965-A8A9-43B6-9615-5820D79C05E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B516733-B6FD-4A2E-B2CD-408D06BB3AD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABAE2B9-40FB-4A6E-A2F4-090366DADCB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABAE2B9-40FB-4A6E-A2F4-090366DADCB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABAE2B9-40FB-4A6E-A2F4-090366DADCB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABAE2B9-40FB-4A6E-A2F4-090366DADCB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24D2D965-A8A9-43B6-9615-5820D79C05E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24D2D965-A8A9-43B6-9615-5820D79C05E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24D2D965-A8A9-43B6-9615-5820D79C05E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24D2D965-A8A9-43B6-9615-5820D79C05E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

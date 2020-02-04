@@ -262,6 +262,11 @@ namespace Csla.Reflection
 
     private static string GetTypeName(Type type)
     {
+      if (type.IsArray)
+      {
+        return $"{GetTypeName(type.GetElementType())}[]";
+      }
+
       if (!type.IsGenericType)
       {
         return type.Name;

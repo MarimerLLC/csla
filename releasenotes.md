@@ -77,7 +77,7 @@ Highlights:
 * Bump System.Data.SqlClient from 4.7.0 to 4.8.0
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
-* Bump Google.Protobuf from 3.9.2 to 3.11.2
+* Bump Google.Protobuf from 3.9.2 to 3.11.3
 * Bump Grpc.Net.Client from 2.24.0 to 2.26.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
@@ -90,9 +90,9 @@ Highlights:
 * [@bradtwurst](https://github.com/bradtwurst) bug fixes
 * [@jeddytier4](https://github.com/jeddytier4) got the NuGet templates package working again
 * [@j055](https://github.com/j055) helped figure out and fix the local/global context issue
-* [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) fixed the `AmbiguousMatchException` issue
+* [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) found and fixed numerous method calling issues
 * [@linkerro](https://github.com/linkerro) fixed some NuGet package reference issues
-
+* [@SachinPNikam](https://github.com/SachinPNikam) updated the Blazor samples
 ---
 
 # CSLA .NET version 5.0.1 release

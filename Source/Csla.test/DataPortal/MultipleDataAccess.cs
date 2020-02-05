@@ -60,16 +60,6 @@ namespace Csla.Test.DataPortal
       return Csla.DataPortal.Fetch<MultipleDataAccess>(id, value);
     }
 
-    public static MultipleDataAccess GetMultiple(int[] values)
-    {
-      return Csla.DataPortal.Fetch<MultipleDataAccess>(values);
-    }
-
-    public static MultipleDataAccess GetMultiple(string[] values)
-    {
-      return Csla.DataPortal.Fetch<MultipleDataAccess>(values);
-    }
-
     [Fetch]
     private void Fetch(int id)
     {
@@ -117,20 +107,6 @@ namespace Csla.Test.DataPortal
     {
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Method", "Fetch(List<DateTime?> values)");
-    }
-
-    [Fetch]
-    private void Fetch(int[] values)
-    {
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Method", "Fetch(int[] values)");
-    }
-
-    [Fetch]
-    private void Fetch(string[] values)
-    {
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Method", "Fetch(string[] values)");
     }
   }
 }

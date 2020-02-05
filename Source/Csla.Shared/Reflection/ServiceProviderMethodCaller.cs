@@ -107,7 +107,11 @@ namespace Csla.Reflection
         // scan candidate methods for matching criteria parameters
         int criteriaLength = 0;
         if (criteria != null)
-          criteriaLength = criteria.GetLength(0);
+          if (criteria.GetType().Equals(typeof(object[])))
+            criteriaLength = criteria.GetLength(0);
+          else
+            criteriaLength = 1;
+
         var matches = new List<ScoredMethodInfo>();
         if (criteriaLength > 0)
         {
@@ -118,26 +122,30 @@ namespace Csla.Reflection
             if (methodParams.Length == criteriaLength)
             {
               var index = 0;
-              foreach (var c in criteria)
+              if (criteria.GetType().Equals(typeof(object[])))
               {
-                if (c == null)
+                foreach (var c in criteria)
                 {
-                  if (methodParams[index].ParameterType.IsPrimitive)
+                  var currentScore = CalculateParameterScore(methodParams[index], c);
+                  if (currentScore == 0)
+                  {
                     break;
-                  else if (methodParams[index].ParameterType == typeof(object))
-                    score++;
+                  }
+
+                  score += currentScore;
+                  index++;
                 }
-                else
-                {
-                  if (c.GetType() == methodParams[index].ParameterType)
-                    score += 2;
-                  else if (methodParams[index].ParameterType.IsAssignableFrom(c.GetType()))
-                    score++;
-                  else
-                    break;
-                }
-                index++;
               }
+              else
+              {
+                var currentScore = CalculateParameterScore(methodParams[index], criteria);
+                if (currentScore != 0)
+                {
+                  score += currentScore;
+                  index++;
+                }
+              }
+
               if (index == criteriaLength)
                 matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = score });
             }
@@ -231,6 +239,28 @@ namespace Csla.Reflection
       return resultingMethod;
     }
 
+    private static int CalculateParameterScore(ParameterInfo methodParam, object c)
+    {
+      if (c == null)
+      {
+        if (methodParam.ParameterType.IsPrimitive)
+          return 0;
+        else if (methodParam.ParameterType == typeof(object))
+          return 1;
+        else if (methodParam.ParameterType == typeof(object[]))
+          return 1;
+      }
+      else
+      {
+        if (c.GetType() == methodParam.ParameterType)
+          return 2;
+        else if (methodParam.ParameterType.IsAssignableFrom(c.GetType()))
+          return 1;
+      }
+
+      return 0;
+    }
+
     private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)
     {
       return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}";
@@ -242,18 +272,23 @@ namespace Csla.Reflection
       result.Append("(");
       if (criteria != null)
       {
-        bool first = true;
-        foreach (var item in criteria)
+        if (criteria.GetType().Equals(typeof(object[])))
         {
-          if (first)
-            first = false;
-          else
-            result.Append(",");
-          if (item == null)
-            result.Append("null");
-          else
-            result.Append(GetTypeName(item.GetType()));
+          bool first = true;
+          foreach (var item in criteria)
+          {
+            if (first)
+              first = false;
+            else
+              result.Append(",");
+            if (item == null)
+              result.Append("null");
+            else
+              result.Append(GetTypeName(item.GetType()));
+          }
         }
+        else
+          result.Append(GetTypeName(criteria.GetType()));
       }
 
       result.Append(")");
@@ -355,10 +390,15 @@ namespace Csla.Reflection
           }
           else
           {
-            if (parameters == null || parameters.Length - 1 < criteriaIndex)
-              plist[index] = null;
+            if (parameters.GetType().Equals(typeof(object[])))
+            {
+              if (parameters == null || parameters.Length - 1 < criteriaIndex)
+                plist[index] = null;
+              else
+                plist[index] = parameters[criteriaIndex];
+            }
             else
-              plist[index] = parameters[criteriaIndex];
+              plist[index] = parameters;
             criteriaIndex++;
           }
           index++;

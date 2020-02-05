@@ -246,9 +246,17 @@ namespace Csla.Reflection
         if (methodParam.ParameterType.IsPrimitive)
           return 0;
         else if (methodParam.ParameterType == typeof(object))
-          return 1;
+          return 2;
         else if (methodParam.ParameterType == typeof(object[]))
+          return 2;
+        else if (methodParam.ParameterType.IsClass)
           return 1;
+        else if (methodParam.ParameterType.IsArray)
+          return 1;
+        else if (methodParam.ParameterType.IsInterface)
+          return 1;
+        else if (Nullable.GetUnderlyingType(methodParam.ParameterType) != null)
+          return 2;
       }
       else
       {

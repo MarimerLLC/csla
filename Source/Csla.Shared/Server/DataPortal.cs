@@ -591,11 +591,14 @@ namespace Csla.Server
         _interceptor.Complete(e);
 
 #if !NET40 && !NET45
-      var scope = ApplicationContext.ServiceProviderScope;
-      if (scope != null)
+      if (ApplicationContext.DecrementScopeRef() == 0)
       {
-        ApplicationContext.ServiceProviderScope = null;
-        scope.Dispose();
+        var scope = ApplicationContext.ServiceProviderScope;
+        if (scope != null)
+        {
+          ApplicationContext.ServiceProviderScope = null;
+          scope.Dispose();
+        }
       }
 #endif
     }

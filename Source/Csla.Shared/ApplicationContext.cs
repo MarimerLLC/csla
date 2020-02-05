@@ -878,8 +878,20 @@ namespace Csla
           return null;
       }
     }
+
+    private static int _scopeRef;
+    /// <summary>
+    /// Increments the scope reference count
+    /// </summary>
+    /// <returns></returns>
+    internal static int IncrementScopeRef() => System.Threading.Interlocked.Increment(ref _scopeRef);
+    /// <summary>
+    /// Decrements the scope reference count
+    /// </summary>
+    /// <returns></returns>
+    internal static int DecrementScopeRef() => System.Threading.Interlocked.Decrement(ref _scopeRef);
 #endif
 
-#endregion
+    #endregion
   }
 }

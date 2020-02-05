@@ -181,6 +181,7 @@
     <Compile Include="DataPortal\ChildEntityList.cs" />
     <Compile Include="DataPortal\CustomDataPortalServer.cs" />
     <Compile Include="DataPortal\DataPortalExceptionTest.cs" />
+    <Compile Include="DataPortal\DisposeScopeTest.cs" />
     <Compile Include="DataPortal\InterceptorTests.cs" />
     <Compile Include="DataPortal\Legacy.cs" />
     <Compile Include="DataPortal\LegacySplit.cs" />

@@ -62,7 +62,8 @@ namespace Csla.Reflection
 
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
       if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
-        return cachedMethod;
+        if (!throwOnError || cachedMethod != null)
+          return cachedMethod;
 
       IEnumerable<System.Reflection.MethodInfo> candidates = null;
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
@@ -233,7 +234,18 @@ namespace Csla.Reflection
             return null;
           }
         }
-        resultingMethod = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
+        try
+        {
+          resultingMethod = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
+        }
+        catch(TargetParameterCountException ex)
+        {
+          throw new TargetParameterCountException(cacheKey, ex);
+        }
+        catch(AmbiguousMatchException ex)
+        {
+          throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}.", ex);
+        }
       }
       _methodCache.TryAdd(cacheKey, resultingMethod);
       return resultingMethod;

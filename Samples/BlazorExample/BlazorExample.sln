@@ -15,6 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.EF", "BlazorExam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Mock", "BlazorExample\DataAccess.Mock\DataAccess.Mock.csproj", "{24D2D965-A8A9-43B6-9615-5820D79C05E9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbScript", "DbScript", "{34448D67-5551-4492-B1F6-B08137F4C1F0}"
+	ProjectSection(SolutionItems) = preProject
+		PersonTable.sql = PersonTable.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

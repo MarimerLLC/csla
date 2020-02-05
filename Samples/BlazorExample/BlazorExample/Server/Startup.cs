@@ -24,14 +24,13 @@ namespace BlazorExample.Server
                   new[] { "application/octet-stream" });
       });
 
-      //services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
       //for MockDb
-      // services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.Mock.PersonDal));
+      services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.Mock.PersonDal));
 
       //for EF Db
-      services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.EF.PersonEFDal));
-      services.AddDbContext<DataAccess.EF.PersonDbContext>(
-      options => options.UseSqlServer("Server=servername;Database=personDB;User ID=sa; Password=pass;Trusted_Connection=True;MultipleActiveResultSets=true"));
+      //services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.EF.PersonEFDal));
+      //services.AddDbContext<DataAccess.EF.PersonDbContext>(
+      //options => options.UseSqlServer("Server=servername;Database=personDB;User ID=sa; Password=pass;Trusted_Connection=True;MultipleActiveResultSets=true"));
       services.AddCsla();
     }
 

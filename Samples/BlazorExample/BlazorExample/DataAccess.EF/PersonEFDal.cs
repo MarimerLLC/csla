@@ -5,12 +5,7 @@ using System.Linq;
 namespace DataAccess.EF
 {
   public class PersonEFDal : IPersonDal
-  {
-    //private static readonly List<PersonEntity> _personTable = new List<PersonEntity>
-    //{
-    //  new PersonEntity { Id = 1, Name = "Andy"},
-    //  new PersonEntity { Id = 3, Name = "Buzz"}
-    //};
+  {   
     private readonly PersonDbContext _context;
 
     public PersonEFDal(PersonDbContext context)
@@ -23,9 +18,7 @@ namespace DataAccess.EF
       if (person != null)
       {
         _context.Persons.Remove(person);
-        _context.SaveChanges();
-        //lock (_personTable)
-        //  _personTable.Remove(person);
+        _context.SaveChanges();     
         return true;
       }
       else
@@ -59,7 +52,6 @@ namespace DataAccess.EF
     {
       if (Exists(person.Id))
         throw new InvalidOperationException($"Key exists {person.Id}");
-     // lock (_personTable)
       {
         int lastId = 0;
         try
@@ -79,7 +71,6 @@ namespace DataAccess.EF
 
     public PersonEntity Update(PersonEntity person)
     {
-      //lock (_personTable)
       {
         var old = Get(person.Id);
         old.Name = person.Name;

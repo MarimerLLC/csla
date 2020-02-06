@@ -385,10 +385,6 @@ namespace Csla.Reflection
       var info = method.MethodInfo;
       method.PrepForInvocation();
 
-#if !NET40 && !NET45
-      ApplicationContext.IncrementScopeRef();
-#endif
-
       object[] plist;
 
       if (method.TakesParamArray)

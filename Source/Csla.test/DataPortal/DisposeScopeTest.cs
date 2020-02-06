@@ -19,7 +19,11 @@ namespace Csla.Test.DataPortal
 
       ApplicationContext.DefaultServiceProvider = serviceCollection.BuildServiceProvider();
 
-      _ = ClassA.GetClassA();
+      var classA = ClassA.GetClassA();
+      var classB = classA.ChildB;
+
+      Assert.AreEqual(classA.DisposableClass.Id, classB.DisposableClass.Id, "Ids must be the same");
+      Assert.IsTrue(classA.DisposableClass.IsDisposed, "Object must be disposed");
     }
 
   }
@@ -27,6 +31,7 @@ namespace Csla.Test.DataPortal
   public class DisposableClass
   : IDisposable
   {
+    public Guid Id { get; } = Guid.NewGuid();
     public bool IsDisposed { get; private set; } = false;
     public void Dispose()
     {
@@ -36,6 +41,9 @@ namespace Csla.Test.DataPortal
 
   public class ClassA : BusinessBase<ClassA>
   {
+    public ClassB ChildB { get; set; }
+    public DisposableClass DisposableClass { get; set; }
+
     public static ClassA GetClassA()
     {
       return Csla.DataPortal.Fetch<ClassA>();
@@ -44,12 +52,14 @@ namespace Csla.Test.DataPortal
     [Fetch]
     private void Fetch([Inject]DisposableClass disposable)
     {
+      DisposableClass = disposable;
+
       if (disposable.IsDisposed)
       {
         throw new ObjectDisposedException(nameof(disposable));
       }
 
-      _ = ClassB.GetClassB();
+      ChildB = ClassB.GetClassB();
 
       if (disposable.IsDisposed)
       {
@@ -60,6 +70,9 @@ namespace Csla.Test.DataPortal
 
   public class ClassB : BusinessBase<ClassB>
   {
+    public DisposableClass DisposableClass { get; set; }
+    public Guid Id { get; set; }
+
     public static ClassB GetClassB()
     {
       return Csla.DataPortal.Fetch<ClassB>();
@@ -68,6 +81,8 @@ namespace Csla.Test.DataPortal
     [Fetch]
     private void Fetch([Inject]DisposableClass disposable)
     {
+      DisposableClass = disposable;
+
       if (disposable.IsDisposed)
       {
         throw new ObjectDisposedException(nameof(disposable));

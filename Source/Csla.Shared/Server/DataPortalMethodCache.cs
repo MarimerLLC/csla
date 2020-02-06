@@ -41,6 +41,7 @@ namespace Csla.Server
       return result;
     }
 
+#if NET40
     #region Data Portal Methods
 
     /// <summary>
@@ -162,6 +163,7 @@ namespace Csla.Server
       return method;
     }
     #endregion
+#endif
 
 
   }

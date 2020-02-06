@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.Server;
 
 namespace Csla.Reflection
 {
@@ -55,6 +56,10 @@ namespace Csla.Reflection
     /// returns a Task of T
     /// </summary>
     public bool IsAsyncTaskObject { get; set; }
+    /// <summary>
+    /// Gets the DataPortalInfo for the method
+    /// </summary>
+    internal DataPortalMethodInfo DataPortalMethodInfo { get; private set; }
 
     /// <summary>
     /// Initializes and caches the metastate values
@@ -84,6 +89,7 @@ namespace Csla.Reflection
 #endif
             IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
             IsAsyncTaskObject = (MethodInfo.ReturnType.IsGenericType && (MethodInfo.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+            DataPortalMethodInfo = new DataPortalMethodInfo(MethodInfo);
 
             _initialized = true;
           }

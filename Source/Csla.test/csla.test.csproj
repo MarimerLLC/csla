@@ -176,6 +176,7 @@
     <Compile Include="DataPortalChild\ChildList.cs" />
     <Compile Include="DataPortalChild\DataPortalChildTests.cs" />
     <Compile Include="DataPortalChild\Root.cs" />
+    <Compile Include="DataPortal\ArrayTests.cs" />
     <Compile Include="DataPortal\AsynchDataPortalTest.cs" />
     <Compile Include="DataPortal\ChildEntity.cs" />
     <Compile Include="DataPortal\ChildEntityList.cs" />

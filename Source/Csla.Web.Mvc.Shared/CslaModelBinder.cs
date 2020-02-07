@@ -22,7 +22,7 @@ namespace Csla.Web.Mvc
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
-    /// Creates a model binder wth an instance creator for root objects.
+    /// Creates a model binder with an instance creator for root objects.
     /// </summary>
     /// <param name="instanceCreator">Instance creator for root objects.</param>
     public CslaModelBinder(Func<Type, Task<object>> instanceCreator)
@@ -31,7 +31,7 @@ namespace Csla.Web.Mvc
     }
 
     /// <summary>
-    /// Creates a model binder wth instance creators for root and child objects.
+    /// Creates a model binder with instance creators for root and child objects.
     /// </summary>
     /// <param name="instanceCreator">Instance creator for root objects.</param>
     /// <param name="childCreator">Instance creator for child objects.</param>
@@ -88,6 +88,7 @@ namespace Csla.Web.Mvc
           index = $"{bindingContext.ModelName}.{item.Name}";
         BindSingleProperty(bindingContext, result, item, index);
       }
+      CheckRules(result);
     }
 
     private void BindBusinessListBase(ModelBindingContext bindingContext, object result)
@@ -111,6 +112,7 @@ namespace Csla.Web.Mvc
           var index = $"{bindingContext.ModelName}[{i}].{item.Name}";
           BindSingleProperty(bindingContext, child, item, index);
         }
+        CheckRules(child);
         if (!list.Contains(child))
           list.Add(child);
       }

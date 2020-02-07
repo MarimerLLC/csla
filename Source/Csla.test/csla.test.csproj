@@ -189,6 +189,7 @@
     <Compile Include="DataPortal\LegacySplitBase.cs" />
     <Compile Include="DataPortal\LegacySplitTest.cs" />
     <Compile Include="DataPortal\LegacyTest.cs" />
+    <Compile Include="DataPortal\LogicalExecutionDataPortalTests.cs" />
     <Compile Include="DataPortal\MultipleDataAccess.cs" />
     <Compile Include="DataPortal\MultipleDataAccessBase.cs" />
     <Compile Include="DataPortal\MultipleDataAccessTest.cs" />

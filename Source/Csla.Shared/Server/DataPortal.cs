@@ -651,15 +651,6 @@ namespace Csla.Server
 
       if (_interceptor != null)
         _interceptor.Complete(e);
-
-#if !NET40 && !NET45
-      var scope = ApplicationContext.ServiceProviderScope;
-      if (scope != null)
-      {
-        ApplicationContext.ServiceProviderScope = null;
-        scope.Dispose();
-      }
-#endif
     }
 
     internal void Initialize(InterceptArgs e)
@@ -749,6 +740,18 @@ namespace Csla.Server
 
     private void ClearContext(DataPortalContext context)
     {
+#if !NET40 && !NET45
+      if (_oldLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      {
+        var scope = ApplicationContext.ServiceProviderScope;
+        if (scope != null)
+        {
+          ApplicationContext.ServiceProviderScope = null;
+          scope.Dispose();
+        }
+      }
+#endif
+
       ApplicationContext.SetLogicalExecutionLocation(_oldLocation);
       // if the dataportal is not remote then
       // do nothing

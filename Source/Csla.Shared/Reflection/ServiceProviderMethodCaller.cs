@@ -397,7 +397,7 @@ namespace Csla.Reflection
         int index = 0;
         int criteriaIndex = 0;
 #if !NET40 && !NET45
-        var service = ApplicationContext.ScopedServiceProvider;
+        var service = ApplicationContext.ScopedServiceProvider;        
 #endif
         foreach (var item in method.Parameters)
         {

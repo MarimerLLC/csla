@@ -182,12 +182,14 @@
     <Compile Include="DataPortal\ChildEntityList.cs" />
     <Compile Include="DataPortal\CustomDataPortalServer.cs" />
     <Compile Include="DataPortal\DataPortalExceptionTest.cs" />
+    <Compile Include="DataPortal\DisposeScopeTest.cs" />
     <Compile Include="DataPortal\InterceptorTests.cs" />
     <Compile Include="DataPortal\Legacy.cs" />
     <Compile Include="DataPortal\LegacySplit.cs" />
     <Compile Include="DataPortal\LegacySplitBase.cs" />
     <Compile Include="DataPortal\LegacySplitTest.cs" />
     <Compile Include="DataPortal\LegacyTest.cs" />
+    <Compile Include="DataPortal\LogicalExecutionDataPortalTests.cs" />
     <Compile Include="DataPortal\MultipleDataAccess.cs" />
     <Compile Include="DataPortal\MultipleDataAccessBase.cs" />
     <Compile Include="DataPortal\MultipleDataAccessTest.cs" />

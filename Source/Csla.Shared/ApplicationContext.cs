@@ -23,8 +23,8 @@ namespace Csla
   /// and server DataPortal objects. 
   /// </summary>
   public static class ApplicationContext
-  { 
-#region Context Manager
+  {
+    #region Context Manager
 
     private static IContextManager _contextManager;
 
@@ -98,15 +98,15 @@ namespace Csla
       get
       {
         if (WebContextManager != null && WebContextManager.IsValid)
-            return WebContextManager;
+          return WebContextManager;
         return _contextManager;
       }
       set { _contextManager = value; }
     }
 
-#endregion
+    #endregion
 
-#region User
+    #region User
 
     /// <summary>
     /// Get or set the current <see cref="IPrincipal" />
@@ -124,9 +124,9 @@ namespace Csla
       set { ContextManager.SetUser(value); }
     }
 
-#endregion
+    #endregion
 
-#region LocalContext
+    #region LocalContext
 
     /// <summary>
     /// Returns the application-specific context data that
@@ -155,9 +155,9 @@ namespace Csla
       }
     }
 
-#endregion
+    #endregion
 
-#region Client/Global Context
+    #region Client/Global Context
 
     private static readonly object _syncContext = new object();
 
@@ -243,9 +243,9 @@ namespace Csla
       ContextManager.SetLocalContext(null);
     }
 
-#endregion
+    #endregion
 
-#region Settings
+    #region Settings
 
     /// <summary>
     /// Gets or sets a value indicating whether the app
@@ -427,7 +427,7 @@ namespace Csla
           _authenticationTypeName = ConfigurationManager.AppSettings["CslaAuthentication"];
         if (string.IsNullOrWhiteSpace(_authenticationTypeName))
           _authenticationTypeName = "Csla";
-        return _authenticationTypeName; 
+        return _authenticationTypeName;
       }
       set { _authenticationTypeName = value; }
     }
@@ -768,9 +768,9 @@ namespace Csla
     }
 #endif
 
-#endregion
+    #endregion
 
-#region Logical Execution Location
+    #region Logical Execution Location
     /// <summary>
     /// Enum representing the logical execution location
     /// The setting is set to server when server is execting
@@ -815,7 +815,7 @@ namespace Csla
     }
     #endregion
 
-#region ServiceProvider
+    #region ServiceProvider
 
 #if !NET40 && !NET45
     private static IServiceCollection _serviceCollection;
@@ -880,6 +880,6 @@ namespace Csla
     }
 #endif
 
-#endregion
+    #endregion
   }
 }

@@ -75,9 +75,9 @@ Highlights:
 * Bump System.Security.AccessControl from 4.6.0 to 4.7.0
 * Bump System.Security.Principal from 4.6.0 to 4.7.0
 * Bump System.Data.SqlClient from 4.7.0 to 4.8.0
-* Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
+* Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.1.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
-* Bump Google.Protobuf from 3.9.2 to 3.11.3
+* Bump Google.Protobuf from 3.9.2 to 3.11.4
 * Bump Grpc.Net.Client from 2.24.0 to 2.27.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 

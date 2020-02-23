@@ -64,6 +64,45 @@ function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
     $xDoc.Save( $nuSpecFile.FullName )
 }
 
+function UpdateNuSpecRepository( $nuSpecFilePath )
+{
+    # Get Git info
+    $commit = git rev-parse HEAD
+    $origin = git config --get remote.origin.url
+
+    Write-Host "Dynamically setting NuSpec repository:" -ForegroundColor Yellow
+    Write-Host "      origin: $origin" -ForegroundColor Yellow
+    Write-Host "      commit: $commit" -ForegroundColor Yellow
+
+    # Get full path or save operation fails when launched in standalone powershell
+    $nuSpecFile = Get-Item $nuSpecFilePath | Select-Object -First 1
+
+    # Read XML document
+    [xml]$nuspec = Get-Content $nuSpecFile.FullName
+    $repo = $nuspec.package.metadata.repository;
+
+    # Generate repository tag if it doesn't exist
+    if ( !$repo ) {
+        $repo = $nuspec.CreateElement( "repository" );
+        [void]$nuspec.package.metadata.AppendChild($repo);
+    }
+
+    # Add type attribute if it doesn't exist, and set it to "git"
+    if ( !$repo.type ) { [void]$repo.Attributes.Append( $nuspec.CreateAttribute( "type" ) ) }
+    $repo.type = "git"
+
+    # Add url attribute if it doesn't exist, and set it to origin
+    if ( !$repo.url ) { [void]$repo.Attributes.Append( $nuspec.CreateAttribute( "url" ) ) }
+    $repo.url = $origin.ToString()
+
+    # Add commit attribute if it doesn't exist, and set it to current HEAD hash
+    if ( !$repo.commit ) { [void]$repo.Attributes.Append( $nuspec.CreateAttribute( "commit" ) ) }
+    $repo.commit = $commit.ToString()
+
+    # Save file
+    $nuspec.Save( $nuSpecFile.FullName )
+}
+
 function CopyMaintainingSubDirectories( $basePath, $includes, $targetBasePath )
 {
     $basePathLength = [System.IO.Path]::GetFullPath( $basePath ).Length - 1
@@ -142,17 +181,25 @@ try
         $productVersion = [System.String]::Format( "{0}.{1}.{2}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart )
     }
     ChangeNuSpecVersion "$basePath\$package.NuSpec" $productVersion
+
+    ## Update Git Repository info
+    ## ----------------------
+    ## Before building NuGet package, extract git commit hash, and origin URL and update .NuSpec
+    ## to automate repository attributes.
+    UpdateNuSpecRepository "$basePath\$package.nuspec"
     
     ## Launch NuGet.exe to build package
     Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" # -Symbols
+    if ( $package -ne "Templates" ) { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages -Symbols -SymbolPackageFormat snupkg }
+    else { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages }
     
     ## Publish package to Gallery using API Key
     ## JH - TODO
 
     ## Move NuGet package to Package Release folder"
-    Write-Host "Move package to ..\Packages folder..." -ForegroundColor Yellow
-    Move-Item "*.nupkg" -Destination $pathToNuGetPackageOutput -Force
+    ## MT - This isn't required ...
+    # Write-Host "Move package to ..\Packages folder..." -ForegroundColor Yellow
+    # Move-Item "*nupkg" -Destination $pathToNuGetPackageOutput -Force
     
     ## Cleanup after ourselves
     ## JH - TODO

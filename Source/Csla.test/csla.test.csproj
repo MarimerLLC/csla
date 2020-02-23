@@ -340,6 +340,7 @@
     <Compile Include="Silverlight\Stereotypes\TestCriteria.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="SourceLink\PdbContentTests.cs" />
     <Compile Include="Threading\BackgroundWorkerSyncContextHelper.cs" />
     <Compile Include="Threading\BackgroundWorkerTests.cs" />
     <Compile Include="Threading\BusyLockTests.cs" />

@@ -8,6 +8,7 @@
 <h1>Roles</h1>
 
 <p class="text-danger">@vm.ViewModelErrorText</p>
+
 @if (vm.Model == null)
 {
   <p>Loading...</p>
@@ -59,9 +60,9 @@ else
               <TextInput Property="@(new PropertyInfo(item, nameof(item.Name)))" />
             </td>
             <td>
-              <a class="alert-warning" href="javascript: void(0);" @onclick="() => EditAccepted(item.Id)">Confirm</a>
+              <a class="alert-warning" href="javascript: void(0);" @onclick="EditAccepted">Confirm</a>
               <span> | </span>
-              <a href="javascript: void(0);" @onclick="() => EditCancelled(item.Id)">Cancel</a>
+              <a href="javascript: void(0);" @onclick="EditCancelled">Cancel</a>
             </td>
           }
           else
@@ -100,8 +101,8 @@ else
 
   private void AddRole()
   {
-    itemSelectedForEdit = -1;
     itemSelectedForDeletion = -1;
+    EditCancelled();
     newRole = Csla.DataPortal.CreateChild<RoleEdit>();
     addingRole = true;
   }
@@ -122,6 +123,7 @@ else
   private void SelectForEdit(int id)
   {
     addingRole = false;
+    EditCancelled();
     itemSelectedForDeletion = -1;
     itemSelectedForEdit = id;
     var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
@@ -129,27 +131,32 @@ else
       item.BeginEdit();
   }
 
-  private async void EditAccepted(int id)
+  private async void EditAccepted()
   {
-    itemSelectedForEdit = -1;
-    var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
+    var item = vm.Model.Where(r => r.Id == itemSelectedForEdit).FirstOrDefault();
     if (item != null)
       item.ApplyEdit();
+    itemSelectedForEdit = -1;
     await SaveAndRefresh();
   }
 
-  private void EditCancelled(int id)
+  private void EditCancelled()
   {
-    itemSelectedForEdit = -1;
-    var item = vm.Model.Where(r => r.Id == id).FirstOrDefault();
-    if (item != null)
-      item.CancelEdit();
+    if (itemSelectedForEdit > -1)
+    {
+      var item = vm.Model
+        .Where(r => r.Id == itemSelectedForEdit)
+        .FirstOrDefault();
+      if (item != null)
+        item.CancelEdit();
+      itemSelectedForEdit = -1;
+    }
   }
 
   private void SelectForDelete(int id)
   {
     addingRole = false;
-    itemSelectedForEdit = -1;
+    EditCancelled();
     itemSelectedForDeletion = id;
   }
 

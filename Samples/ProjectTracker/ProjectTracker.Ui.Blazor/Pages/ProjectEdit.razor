@@ -153,18 +153,22 @@ else
 
   private void ShowDefaultView()
   {
+    if (selectedResource != null)
+      selectedResource.CancelEdit();
     viewMode = SubViewModes.Default;
   }
 
   private async void AssignRole(int resourceId)
   {
     selectedResource = (await ProjectTracker.Library.ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId)).Result;
+    selectedResource.BeginEdit();
     viewMode = SubViewModes.Details;
     StateHasChanged();
   }
 
   private void AddResource()
   {
+    selectedResource.ApplyEdit();
     if (!vm.Model.Resources.Contains(selectedResource.ResourceId))
       vm.Model.Resources.Add(selectedResource);
     ShowDefaultView();
@@ -172,9 +176,13 @@ else
 
   private void EditResource(int resourceId)
   {
-    selectedResource = vm.Model.Resources.Where(r => r.ResourceId == resourceId).FirstOrDefault();
+    selectedResource = vm.Model.Resources
+      .Where(r => r.ResourceId == resourceId).FirstOrDefault();
     if (selectedResource != null)
+    {
+      selectedResource.BeginEdit();
       viewMode = SubViewModes.Details;
+    }
   }
 
   private void RemoveResource(int resourceId)

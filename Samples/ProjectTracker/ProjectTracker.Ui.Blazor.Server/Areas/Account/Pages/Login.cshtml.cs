@@ -43,10 +43,8 @@ namespace ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account
 
       Csla.ApplicationContext.User = principal;
 
-      //await ProjectTracker.Library.Security.PTPrincipal.LoginAsync(loginData.UserName, loginData.Password);
       if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
       {
-        //var principal = (ClaimsPrincipal)Csla.ApplicationContext.User;
         AuthenticationProperties authProperties = new AuthenticationProperties();
         await HttpContext.SignInAsync(
           CookieAuthenticationDefaults.AuthenticationScheme,

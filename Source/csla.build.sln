@@ -144,26 +144,22 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore.NetCore3.0"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.AspNetCore.Shared", "Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.shproj", "{6AAFE6B9-5874-4040-A074-7E9FC8BB2890}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore.NetCore3.1", "Csla.AspNetCore.NetCore3.1\Csla.AspNetCore.NetCore3.1.csproj", "{46383DBD-C6FC-4271-BABD-D0AB9BD6622E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.AspNetCore.NetCore3.1", "Csla.AspNetCore.NetCore3.1\Csla.AspNetCore.NetCore3.1.csproj", "{46383DBD-C6FC-4271-BABD-D0AB9BD6622E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems*{0682f499-1c04-4a8e-b1aa-c9a477a5de82}*SharedItemsImports = 4
 		Csla.Data.EF6.Shared\Csla.Data.EF6.Shared.projitems*{11b64b3b-e639-4f05-8633-511cdca7d7a9}*SharedItemsImports = 4
 		Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems*{18ae6f5b-44b8-44b6-988e-5534620fb2e7}*SharedItemsImports = 4
-		Csla.Shared\Csla.Shared.projitems*{19801b8b-0c86-433f-8d09-da727adf6dcc}*SharedItemsImports = 5
 		Csla.Shared\Csla.Shared.projitems*{1fce45ff-c391-4ed1-a9c4-f71caf8773e6}*SharedItemsImports = 4
-		Csla.Data.EFCore.Shared\Csla.Data.EFCore.Shared.projitems*{24b7cf4f-ab54-4ea6-b4a2-ecaec6161a41}*SharedItemsImports = 5
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{261a1902-bb71-4eda-b582-70890dae7d4b}*SharedItemsImports = 4
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{282a2fc6-46ff-4831-a735-9445c5625bdf}*SharedItemsImports = 4
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{2c55afed-e0e2-4562-88c1-76e440550bbd}*SharedItemsImports = 4
-		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{2cb250bc-7faa-46f5-ab59-325ec28d7a63}*SharedItemsImports = 5
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{2d4eb600-d8cb-4bc3-8fb9-e91df30cd693}*SharedItemsImports = 4
+		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{30a278e8-321c-4bdf-8015-c03bdba64785}*SharedItemsImports = 4
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{3698d49c-25b5-4f46-bde2-14008231e68d}*SharedItemsImports = 13
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{3c5930ae-fff0-4c05-9c63-efadd5fac75f}*SharedItemsImports = 4
 		Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems*{3e5baef2-fbab-4662-8109-1fb986548762}*SharedItemsImports = 4
-		Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.projitems*{46383dbd-c6fc-4271-babd-d0ab9bd6622e}*SharedItemsImports = 5
-		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{46383dbd-c6fc-4271-babd-d0ab9bd6622e}*SharedItemsImports = 5
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{46b51c1e-51a4-4bf5-aca5-b13098712950}*SharedItemsImports = 4
 		Csla.Web.Shared\Csla.Web.Shared.projitems*{492b788e-888e-4041-b356-f5947b50d360}*SharedItemsImports = 4
 		Csla.Data.EF6.Shared\Csla.Data.EF6.Shared.projitems*{514afda4-a92f-464b-a9ed-73796448ef25}*SharedItemsImports = 13
@@ -177,21 +173,16 @@ Global
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{79283f86-5f62-4a53-adc2-8058a17d4b13}*SharedItemsImports = 13
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{86d57709-004d-4195-a671-edc37eb57ed6}*SharedItemsImports = 4
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{8ac01fee-c998-4048-b109-a98d070a167d}*SharedItemsImports = 4
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{8c1a0b30-f4e5-4245-8075-eea88a083512}*SharedItemsImports = 4
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{8c50e0d2-92e6-4c74-b317-aa56f3988160}*SharedItemsImports = 4
-		Csla.Data.EFCore.Shared\Csla.Data.EFCore.Shared.projitems*{91f60002-ac27-41cd-a9c0-2380dc11b586}*SharedItemsImports = 5
 		Csla.Web.Shared\Csla.Web.Shared.projitems*{963430c1-39f4-4bb8-961d-185c5e813dab}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{a0d874ca-c7e3-4a28-8f21-3082888fe6af}*SharedItemsImports = 4
-		Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.projitems*{a9549cc1-9e7e-4e3c-b5ae-b2915bd7c916}*SharedItemsImports = 5
-		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{a9549cc1-9e7e-4e3c-b5ae-b2915bd7c916}*SharedItemsImports = 5
-		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{b7fb0974-3ef6-4a44-9755-5681625485f8}*SharedItemsImports = 5
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{b7fb0974-3ef6-4a44-9755-5681625485f8}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{bb7a0db4-f7f4-4632-b6ae-1edcdd758f16}*SharedItemsImports = 13
 		Csla.Shared\Csla.Shared.projitems*{bf7b6927-41c1-40c7-8a7c-e0977455dad4}*SharedItemsImports = 4
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{bfc73c52-1e3c-4ac7-8cfc-d6d89be8b946}*SharedItemsImports = 4
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{c333cfed-d5a6-47a2-96a6-f13ee2b71ecf}*SharedItemsImports = 4
-		Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.projitems*{dd4728e5-b26d-465c-a297-9e6b5bb8aa1a}*SharedItemsImports = 5
-		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{dd4728e5-b26d-465c-a297-9e6b5bb8aa1a}*SharedItemsImports = 5
-		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{e4b3b736-76e3-4594-9073-99673f72a33b}*SharedItemsImports = 5
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{e6982b4d-d9be-4f70-ae2f-bb84763d317d}*SharedItemsImports = 4
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ea416867-349f-43f7-ae5a-85286643ff10}*SharedItemsImports = 4
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ebd18729-9887-4ce5-a8b7-760baf75b027}*SharedItemsImports = 13

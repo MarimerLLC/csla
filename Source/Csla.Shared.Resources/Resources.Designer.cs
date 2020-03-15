@@ -763,6 +763,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} requires a value for either the {1} or the {2} parameter..
+        /// </summary>
+        public static string OneOfTwoParametersRequiredException {
+            get {
+                return ResourceManager.GetString("OneOfTwoParametersRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} requires a value for the {1} parameter..
         /// </summary>
         public static string ParameterRequiredException {

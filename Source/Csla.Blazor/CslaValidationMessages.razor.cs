@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Csla.Blazor
@@ -12,13 +13,14 @@ namespace Csla.Blazor
   /// <summary>
   /// Validation message base type
   /// </summary>
-	public class CslaValidationMessageBase : ComponentBase, IDisposable
+	public class CslaValidationMessageBase<PropertyType> : ComponentBase, IDisposable
 	{
 
     /// <summary>
     /// Value indicating whether validation is initiated
     /// </summary>
 		protected bool _validationInitiated = false;
+    private FieldIdentifier _fieldIdentifier;
 		private EditContext _previousEditContext;
 		private EventHandler<FieldChangedEventArgs> _fieldChangedHandler;
 		private EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
@@ -27,6 +29,10 @@ namespace Csla.Blazor
     /// Gets or sets the property name
     /// </summary>
 		[Parameter] public string PropertyName { get; set; }
+    /// <summary>
+    /// Gets or sets the expression t use during validation
+    /// </summary>
+		[Parameter] public Expression<Func<PropertyType>> For { get; set; }
     /// <summary>
     /// Gets or sets the wrapper id
     /// </summary>
@@ -86,19 +92,31 @@ namespace Csla.Blazor
 			{
 				throw new InvalidOperationException(
           string.Format(Csla.Properties.Resources.CascadingEditContextRequiredException,
-          nameof(CslaValidationMessages), nameof(EditContext)));
+          nameof(CslaValidationMessages<string>), nameof(EditContext)));
 
       }
 
-      if (string.IsNullOrWhiteSpace(PropertyName))
+      if (For == null && string.IsNullOrWhiteSpace(PropertyName))
 			{
 				throw new InvalidOperationException(
-          string.Format(Csla.Properties.Resources.ParameterRequiredException, 
-          nameof(CslaValidationMessages), nameof(PropertyName)));
+          string.Format(Csla.Properties.Resources.OneOfTwoParametersRequiredException, 
+          nameof(CslaValidationMessages<string>), nameof(For), nameof(PropertyName)));
 			}
 
-			// Wire up handling of the state change events we need event
-			if (CurrentEditContext != _previousEditContext)
+      // Create a FieldIdentifier to use in recognising the field being validated
+      if (For != null)
+      {
+        // Create using the expression provided in the For parameter
+        _fieldIdentifier = FieldIdentifier.Create(For);
+      }
+      else
+      {
+        // Create using the string from the PropertyName parameter
+        _fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, PropertyName);
+      }
+
+      // Wire up handling of the state change events we need event
+      if (CurrentEditContext != _previousEditContext)
 			{
 				DetachPreviousEventHandlers();
 				CurrentEditContext.OnFieldChanged += _fieldChangedHandler;
@@ -114,7 +132,7 @@ namespace Csla.Blazor
     /// <param name="eventArgs"></param>
 		protected void OnFieldChanged(object sender, FieldChangedEventArgs eventArgs)
 		{
-			if (eventArgs.FieldIdentifier.FieldName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase))
+			if (eventArgs.FieldIdentifier.Equals(_fieldIdentifier))
 			{
 				_validationInitiated = true;
 				StateHasChanged();
@@ -131,7 +149,7 @@ namespace Csla.Blazor
 			IEnumerable<string> messages;
 
 			// Retrieve the messages for the property in which we are interested
-			messages = CurrentEditContext.GetValidationMessages(CurrentEditContext.Field(PropertyName));
+			messages = CurrentEditContext.GetValidationMessages(_fieldIdentifier);
 
 			if (messages.Any())
 			{
@@ -166,7 +184,7 @@ namespace Csla.Blazor
     /// <returns></returns>
 		protected IEnumerable<string> GetErrorMessages()
 		{
-			return GetBrokenRuleMessages(PropertyName, RuleSeverity.Error);
+			return GetBrokenRuleMessages(RuleSeverity.Error);
 		}
 
     /// <summary>
@@ -175,7 +193,7 @@ namespace Csla.Blazor
     /// <returns></returns>
 		protected IEnumerable<string> GetWarningMessages()
 		{
-			return GetBrokenRuleMessages(PropertyName, RuleSeverity.Warning);
+			return GetBrokenRuleMessages(RuleSeverity.Warning);
 		}
 
     /// <summary>
@@ -184,26 +202,26 @@ namespace Csla.Blazor
     /// <returns></returns>
 		protected IEnumerable<string> GetInfoMessages()
 		{
-			return GetBrokenRuleMessages(PropertyName, RuleSeverity.Information);
+			return GetBrokenRuleMessages(RuleSeverity.Information);
 		}
 
-		private IEnumerable<string> GetBrokenRuleMessages(string propertyName, RuleSeverity severity)
+		private IEnumerable<string> GetBrokenRuleMessages(RuleSeverity severity)
 		{
 			IList<string> messages = new List<string>();
 			ICheckRules objectUnderTest;
 
 			// Attempt to gain access to the underlying CSLA object
-			objectUnderTest = CurrentEditContext.Model as ICheckRules;
+			objectUnderTest = _fieldIdentifier.Model as ICheckRules;
 			if (objectUnderTest == null)
 			{
-        throw new ArgumentException("Model");
+        throw new ArgumentException(nameof(_fieldIdentifier.Model));
       }
 
 			// Iterate through the broken rules to find the subset we want
 			foreach (BrokenRule rule in objectUnderTest.GetBrokenRules())
 			{
 				// Exclude any broken rules that are not for the property we are interested in
-				if (rule.Property.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase))
+				if (rule.Property.Equals(_fieldIdentifier.FieldName, StringComparison.InvariantCultureIgnoreCase))
 				{
 					// Exclude any of a severity other than that we want
 					if (rule.Severity == severity)

@@ -113,6 +113,26 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
+    public void ValidateModel_EmptyChildEmailAddress_OneValidationMessage()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Create a new child object (which is immediately invalid)
+      person.EmailAddresses.NewEmailAddress();
+
+      // Act
+      editContext.Validate();
+      IEnumerable<string> messages = editContext.GetValidationMessages();
+
+      // Assert
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
+
+    [TestMethod]
     public void ValidateField_ExcessiveFirstNameEmptyLastName_OneValidationMessageForFirstName()
     {
       // Arrange
@@ -162,7 +182,7 @@ namespace Csla.Blazor.Test
       EditContext editContext = new EditContext(person);
       editContext.AddCslaValidation();
 
-      // Set first and last names to invalid values
+      // Set first name to an invalid value
       person.FirstName = "A";
 
       // Act
@@ -182,12 +202,54 @@ namespace Csla.Blazor.Test
       EditContext editContext = new EditContext(person);
       editContext.AddCslaValidation();
 
-      // Set both phone numbers to invalid values
+      // Set both last name to an invalid value
       person.LastName = "A";
 
       // Act
       editContext.NotifyFieldChanged(new FieldIdentifier(person, nameof(person.LastName)));
       IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(person, nameof(person.LastName)));
+
+      // Assert
+      Assert.AreEqual(0, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
+
+    [TestMethod]
+    public void ValidateField_MissingEmailAddress1_OneValidationMessageForEmailAddress1()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Add a new, empty email address
+      FakePersonEmailAddress address = person.EmailAddresses.NewEmailAddress();
+      address.EmailAddress = "";
+
+      // Act
+      editContext.NotifyFieldChanged(new FieldIdentifier(address, nameof(address.EmailAddress)));
+      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(address, nameof(address.EmailAddress)));
+
+      // Assert
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+
+    }
+
+    [TestMethod]
+    public void ValidateField_ValidEmailAddress1_NoValidationMessagesForEmailAddress1()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Add a new, valid email address
+      FakePersonEmailAddress address = person.EmailAddresses.NewEmailAddress();
+      address.EmailAddress = "name@domain.com";
+
+      // Act
+      editContext.NotifyFieldChanged(new FieldIdentifier(address, nameof(address.EmailAddress)));
+      IEnumerable<string> messages = editContext.GetValidationMessages(new FieldIdentifier(address, nameof(address.EmailAddress)));
 
       // Assert
       Assert.AreEqual(0, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));

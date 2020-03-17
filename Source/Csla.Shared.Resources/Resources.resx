@@ -472,4 +472,7 @@
   <data name="InterfaceNotImplementedException" xml:space="preserve">
     <value>{0} does not implement required interface {1}</value>
   </data>
+  <data name="OneOfTwoParametersRequiredException" xml:space="preserve">
+    <value>{0} requires a value for either the {1} or the {2} parameter.</value>
+  </data>
 </root>

@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Blazor;
-using Microsoft.AspNetCore.Blazor.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 

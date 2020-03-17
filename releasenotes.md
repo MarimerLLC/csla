@@ -1,6 +1,34 @@
 # CSLA 5 releases
 
-CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
+CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
+
+# CSLA .NET version 5.2.0 release
+
+Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F16).
+
+### Blazor
+
+* [#1509](https://github.com/MarimerLLC/csla/issues/1509) Add a For clause to CslaValidationMessages in Blazor
+
+### Build and Dev
+
+* [#1188](https://github.com/MarimerLLC/csla/issues/1188) Add support for NuGet symbol server
+
+### Dependabot and NuGet dependencies
+
+* Bump Microsoft.Extensions.DependencyInjection to 3.1.2
+* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.2
+* Bump Microsoft.AspNetCore.Components.Web to 3.1.2
+* Bump Microsoft.AspNetCore.Components to 3.1.2
+* Bump Microsoft.Extensions.Configuration to 3.1.2
+* Bump Microsoft.Extensions.Configuration.Binder to 3.1.2
+* Bump Microsoft.Extensions.Configuration.Json to 3.1.2
+* Bump Microsoft.AspNetCore.Components.Authorization from 3.1.1 to 3.1.2
+* Bump System.Data.SqlClient from 4.8.0 to 4.8.1
 
 # CSLA .NET version 5.1.0 release
 

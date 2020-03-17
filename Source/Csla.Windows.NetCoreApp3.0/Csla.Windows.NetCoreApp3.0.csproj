@@ -24,6 +24,25 @@
   <Import Project="..\Csla.Windows.Shared\Csla.Windows.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
+    <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
+      <Link>Themes\Generic.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
   </ItemGroup>
   <ItemGroup>

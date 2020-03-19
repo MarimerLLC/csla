@@ -1,0 +1,11 @@
+Note: These steps are taken from a reply posted by Rocky
+
+In order to run/debug the Blazor sample.
+You need to launch not just the Blazor client, but also the app server project, 
+just like you would with the WinForms or WPF apps.
+
+Right-click on the solution, select 'Set Startup Projects'
+When dialog appears select the radio button  'Multiple startup Projects'
+
+Set Action for the project 'ProjectTracker.AppServerCore' to 'Start
+Also set Action for the project 'ProjectTracker.Ui.Blazor.Client' to 'Start'

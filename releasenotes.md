@@ -14,6 +14,10 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 * [#1509](https://github.com/MarimerLLC/csla/issues/1509) Add a For clause to CslaValidationMessages in Blazor
 
+### Windows Forms and WPF (.NET Core 3)
+
+* [#1454](https://github.com/MarimerLLC/csla/issues/1454) Fix issue with `PropertyStatus` control
+
 ### Build and Dev
 
 * [#1188](https://github.com/MarimerLLC/csla/issues/1188) Add support for NuGet symbol server
@@ -29,6 +33,13 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * Bump Microsoft.Extensions.Configuration.Json to 3.1.2
 * Bump Microsoft.AspNetCore.Components.Authorization from 3.1.1 to 3.1.2
 * Bump System.Data.SqlClient from 4.8.0 to 4.8.1
+* Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
+
+## Contributors
+
+* [@jacojordaan](https://github.com/jacojordaan) help with WPF and .NET Core 3
+
+---
 
 # CSLA .NET version 5.1.0 release
 
@@ -121,6 +132,7 @@ Highlights:
 * [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) found and fixed numerous method calling issues
 * [@linkerro](https://github.com/linkerro) fixed some NuGet package reference issues
 * [@SachinPNikam](https://github.com/SachinPNikam) updated the Blazor samples
+
 ---
 
 # CSLA .NET version 5.0.1 release

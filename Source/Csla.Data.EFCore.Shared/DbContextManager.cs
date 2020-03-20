@@ -34,6 +34,7 @@ namespace Csla.Data.EntityFrameworkCore
     private static object _lock = new object();
     private C _context;
     private string _label;
+    private string _contextLabel;
 
     /// <summary>
     /// Gets the DbContextManager object for the     /// specified database.
@@ -81,6 +82,7 @@ namespace Csla.Data.EntityFrameworkCore
         mgr = new DbContextManager<C>(database, label);
         lock (_lock)
         {
+          Csla.
           ApplicationContext.LocalContext[contextLabel] = mgr;
           mgr.AddRef();
         }
@@ -90,9 +92,10 @@ namespace Csla.Data.EntityFrameworkCore
 
     private DbContextManager(string database, string label)
     {
-      _label = label;                
+      _contextLabel = GetContextName(database, label);
+      _label = label;
       if (string.IsNullOrEmpty(database))
-        _context = (C)(Activator.CreateInstance(typeof (C)));
+        _context = (C)(Activator.CreateInstance(typeof(C)));
       else
         _context = (C)(Activator.CreateInstance(typeof(C), database));
     }
@@ -135,7 +138,7 @@ namespace Csla.Data.EntityFrameworkCore
         if (_refCount == 0)
         {
           _context.Dispose();
-          ApplicationContext.LocalContext.Remove(_label);
+          ApplicationContext.LocalContext.Remove(_contextLabel);
         }
       }
     }

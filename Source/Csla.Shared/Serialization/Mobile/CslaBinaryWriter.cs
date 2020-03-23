@@ -223,7 +223,8 @@ namespace Csla.Serialization.Mobile
             writer.Write((string)target);
             break;
           default:
-            throw new NotSupportedException(Resources.BinaryWriterObjectSerializationException);
+            throw new NotSupportedException(
+              $"{Resources.BinaryWriterObjectSerializationException} ({target.GetType().FullName})");
         }
       }
     }

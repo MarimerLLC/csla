@@ -69,10 +69,12 @@ namespace Csla.Core.FieldManager
       {
         lock (cache)
         {
-          if (!(cache.TryGetValue(objectType, out list)))
+          found = cache.TryGetValue(objectType, out list);
+          if (!found)
           {
             list = new PropertyInfoList();
             cache.Add(objectType, list);
+            FieldDataManager.ForceStaticFieldInit(objectType);
           }
         }
       }

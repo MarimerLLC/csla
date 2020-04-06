@@ -28,7 +28,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestNotUndoableField()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
 
       p.NotUndoable = "something";
@@ -55,7 +57,9 @@ namespace Csla.Test.Basic
     public void TestNameValueList()
     {
       NameValueListObj nvList = NameValueListObj.GetNameValueListObj();
+#pragma warning disable CS0618 // Type or member is obsolete
       Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["NameValueListObj"]);
+#pragma warning restore CS0618 // Type or member is obsolete
 
       Assert.AreEqual("element_1", nvList[1].Value);
 
@@ -71,7 +75,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestCommandBase()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       CommandObject obj = new CommandObject();
       Assert.AreEqual("Executed", obj.ExecuteServerCode().AProperty);
     }
@@ -79,12 +85,16 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void CreateGenRoot()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       GenRoot root;
       root = GenRoot.NewRoot();
       Assert.IsNotNull(root);
       Assert.AreEqual("<new>", root.Data);
+#pragma warning disable CS0618 // Type or member is obsolete
       Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["GenRoot"]);
+#pragma warning restore CS0618 // Type or member is obsolete
       Assert.AreEqual(true, root.IsNew);
       Assert.AreEqual(false, root.IsDeleted);
       Assert.AreEqual(true, root.IsDirty);
@@ -93,14 +103,18 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void InheritanceUndo()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       GenRoot root;
       root = GenRoot.NewRoot();
       root.BeginEdit();
       root.Data = "abc";
       root.CancelEdit();
 
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       root = GenRoot.NewRoot();
       root.BeginEdit();
       root.Data = "abc";
@@ -110,12 +124,16 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void CreateRoot()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root;
       root = Csla.Test.Basic.Root.NewRoot();
       Assert.IsNotNull(root);
       Assert.AreEqual("<new>", root.Data);
+#pragma warning disable CS0618 // Type or member is obsolete
       Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["Root"]);
+#pragma warning restore CS0618 // Type or member is obsolete
       Assert.AreEqual(true, root.IsNew);
       Assert.AreEqual(false, root.IsDeleted);
       Assert.AreEqual(true, root.IsDirty);
@@ -124,7 +142,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddChild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       Assert.AreEqual(1, root.Children.Count);
@@ -134,7 +154,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddRemoveChild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       root.Children.Remove(root.Children[0]);
@@ -144,7 +166,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddRemoveAddChild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       root.BeginEdit();
@@ -160,7 +184,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddGrandChild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       Child child = root.Children[0];
@@ -172,7 +198,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddRemoveGrandChild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       Child child = root.Children[0];
@@ -184,7 +212,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void ClearChildList()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("A");
       root.Children.Add("B");
@@ -197,7 +227,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void NestedAddAcceptchild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.BeginEdit();
       root.Children.Add("A");
@@ -214,7 +246,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void NestedAddDeleteAcceptChild()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.BeginEdit();
       root.Children.Add("A");
@@ -241,13 +275,17 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void BasicEquality()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root r1 = Root.NewRoot();
       r1.Data = "abc";
       Assert.AreEqual(true, r1.Equals(r1), "objects should be equal on instance compare");
       Assert.AreEqual(true, Equals(r1, r1), "objects should be equal on static compare");
 
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root r2 = Root.NewRoot();
       r2.Data = "xyz";
       Assert.AreEqual(false, r1.Equals(r2), "objects should not be equal");
@@ -261,7 +299,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void ChildEquality()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Root.NewRoot();
       root.Children.Add("abc");
       root.Children.Add("xyz");
@@ -290,7 +330,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void DeletedListTest()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       root.Children.Add("2");
@@ -313,7 +355,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void DeletedListTestWithCancel()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
       Root root = Csla.Test.Basic.Root.NewRoot();
       root.Children.Add("1");
       root.Children.Add("2");
@@ -411,7 +455,9 @@ namespace Csla.Test.Basic
     [TestCleanup]
     public void ClearContextsAfterEachTest()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning restore CS0618 // Type or member is obsolete
     }
   }
 

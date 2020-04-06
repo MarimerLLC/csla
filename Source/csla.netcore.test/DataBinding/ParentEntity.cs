@@ -120,8 +120,10 @@ namespace Csla.Test.DataBinding
     [Create]
     protected override void DataPortal_Create()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Created");
+#pragma warning restore CS0618 // Type or member is obsolete
       BusinessRules.CheckRules();
       Console.WriteLine("DataPortal_Create");
     }
@@ -130,16 +132,20 @@ namespace Csla.Test.DataBinding
     protected void DataPortal_Fetch(object criteria)
     {
       Console.WriteLine("DataPortal_Fetch");
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Fetched");
+#pragma warning restore CS0618 // Type or member is obsolete
       BusinessRules.CheckRules();
     }
 
     [Insert]
     protected override void DataPortal_Insert()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Inserted");
+#pragma warning restore CS0618 // Type or member is obsolete
       Console.WriteLine("DataPortal_Insert");
     }
 
@@ -147,24 +153,30 @@ namespace Csla.Test.DataBinding
     protected override void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Updated");
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     [DeleteSelf]
     protected override void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted Self");
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     [Delete]
     protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted");
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     #endregion

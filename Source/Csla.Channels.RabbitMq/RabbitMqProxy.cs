@@ -427,7 +427,9 @@ namespace Csla.Channels.RabbitMq
       {
         CriteriaData = null,
         ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext),
+#pragma warning disable CS0618 // Type or member is obsolete
         GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext)
+#pragma warning restore CS0618 // Type or member is obsolete
       };
       if (ApplicationContext.AuthenticationType == "Windows")
       {
@@ -448,7 +450,9 @@ namespace Csla.Channels.RabbitMq
       {
         ObjectData = null,
         ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext),
+#pragma warning disable CS0618 // Type or member is obsolete
         GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext)
+#pragma warning restore CS0618 // Type or member is obsolete
       };
       if (ApplicationContext.AuthenticationType == "Windows")
       {

@@ -71,7 +71,9 @@ namespace Csla.Test.Basic
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       base.OnDeserialized(context);
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Add("GCDeserialized", "GC Deserialized");
+#pragma warning restore CS0618 // Type or member is obsolete
     }
   }
 }

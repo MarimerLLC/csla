@@ -211,6 +211,7 @@ namespace Csla
     /// will be transferred bi-directionally across the network.
     /// </para>
     /// </remarks>
+    [Obsolete("Use ClientContext", false)]
     public static ContextDictionary GlobalContext
     {
       get

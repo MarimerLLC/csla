@@ -57,7 +57,9 @@ namespace Csla.Testing.Business.ApplicationContext
       if(selectedContext == Contexts.Client)
         LoadProperty(ReceivedContextValueProperty, (string)Csla.ApplicationContext.ClientContext["MSG"]);
       else
+#pragma warning disable CS0618 // Type or member is obsolete
         LoadProperty(ReceivedContextValueProperty, (string)Csla.ApplicationContext.GlobalContext["MSG"]);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     }
 
@@ -66,7 +68,9 @@ namespace Csla.Testing.Business.ApplicationContext
       if (selectedContext == Contexts.Client)
         Csla.ApplicationContext.ClientContext["MSG"] = ContextMessageValues.MODIFIED_VALUE;
       else
+#pragma warning disable CS0618 // Type or member is obsolete
         Csla.ApplicationContext.GlobalContext["MSG"] = ContextMessageValues.MODIFIED_VALUE;
+#pragma warning restore CS0618 // Type or member is obsolete
     }
     #endregion
   }

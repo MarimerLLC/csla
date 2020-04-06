@@ -26,10 +26,6 @@ namespace Csla.Blazor
 		private EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
 
     /// <summary>
-    /// Gets or sets the property name
-    /// </summary>
-		[Parameter] public string PropertyName { get; set; }
-    /// <summary>
     /// Gets or sets the expression t use during validation
     /// </summary>
 		[Parameter] public Expression<Func<PropertyType>> For { get; set; }
@@ -96,24 +92,11 @@ namespace Csla.Blazor
 
       }
 
-      if (For == null && string.IsNullOrWhiteSpace(PropertyName))
-			{
-				throw new InvalidOperationException(
-          string.Format(Csla.Properties.Resources.OneOfTwoParametersRequiredException, 
-          nameof(CslaValidationMessages<string>), nameof(For), nameof(PropertyName)));
-			}
+      if (For == null)
+        throw new ArgumentNullException("For");
 
       // Create a FieldIdentifier to use in recognising the field being validated
-      if (For != null)
-      {
-        // Create using the expression provided in the For parameter
-        _fieldIdentifier = FieldIdentifier.Create(For);
-      }
-      else
-      {
-        // Create using the string from the PropertyName parameter
-        _fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, PropertyName);
-      }
+      _fieldIdentifier = FieldIdentifier.Create(For);
 
       // Wire up handling of the state change events we need event
       if (CurrentEditContext != _previousEditContext)

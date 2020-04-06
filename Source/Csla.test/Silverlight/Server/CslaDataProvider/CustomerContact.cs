@@ -119,19 +119,25 @@ namespace cslalighttest.CslaDataProvider
 
     protected void Child_DeleteSelf()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext["CustomerContactDelete"] = "Deleted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty);
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     protected void Child_Insert()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext["CustomerContactInsert"] = "Inserted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty);
+#pragma warning restore CS0618 // Type or member is obsolete
       CustomerContactList parent = this.Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty, grandParent.Name);
     }
     protected void Child_Update()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext["CustomerContactUpdate"] = "Updated  Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty);
+#pragma warning restore CS0618 // Type or member is obsolete
       CustomerContactList parent = this.Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty,grandParent.Name);

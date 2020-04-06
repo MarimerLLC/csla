@@ -45,7 +45,9 @@ namespace Csla
         this.Argument = argument;
         this.Principal = Csla.ApplicationContext.User;
         this.ClientContext = Csla.ApplicationContext.ClientContext;
+#pragma warning disable CS0618 // Type or member is obsolete
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
+#pragma warning restore CS0618 // Type or member is obsolete
         this.UserState = userState;
         this.CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
         this.CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;

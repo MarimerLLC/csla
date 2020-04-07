@@ -13,20 +13,14 @@ using Csla.Reflection;
 
 namespace Csla.Core.FieldManager
 {
-
-
   /// <summary>
-  /// Compare to propertyinfo x with y for sorting
+  /// Compare to PropertyInfo x with y for sorting
   /// </summary>
   internal class PropertyComparer : Comparer<IPropertyInfo>
   {
     public override int Compare(IPropertyInfo x, IPropertyInfo y)
     {
-#if NETFX_CORE
-      return StringComparer.CurrentCulture.Compare(x.Name, y.Name);
-#else
       return StringComparer.InvariantCulture.Compare(x.Name, y.Name);
-#endif
     }
   }
 
@@ -57,14 +51,7 @@ namespace Csla.Core.FieldManager
     internal static PropertyInfoList GetPropertyListCache(Type objectType)
     {
       var cache = PropertyInfoCache;
-      PropertyInfoList list = null;
-      var found = false;
-      try
-      {
-        found = cache.TryGetValue(objectType, out list);
-      }
-      catch
-      { /* failure will drop into !found block */ }
+      var found = cache.TryGetValue(objectType, out PropertyInfoList list);
       if (!found)
       {
         lock (cache)
@@ -103,11 +90,7 @@ namespace Csla.Core.FieldManager
       lock (list)
       {
         if (list.IsLocked)
-#if NETFX_CORE
-          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name()));
-#else
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));
-#endif
 
         // This is the semantic code for RegisterProperty
         //if (list.Any(pi => pi.Name == info.Name))
@@ -130,8 +113,6 @@ namespace Csla.Core.FieldManager
       return info;
     }
 
-
-
     /// <summary>
     /// Returns a copy of the property list for
     /// a given business object type. Returns
@@ -142,7 +123,7 @@ namespace Csla.Core.FieldManager
     /// The business object type.
     /// </param>
     /// <remarks>
-    /// Registered property information is only available after at least one instannce
+    /// Registered property information is only available after at least one instance
     /// of the object type has been created within the current AppDomain.
     /// </remarks>
     public static PropertyInfoList GetRegisteredProperties(Type objectType)

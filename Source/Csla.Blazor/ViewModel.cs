@@ -46,6 +46,7 @@ namespace Csla.Blazor
     /// <param name="newValue">New Model value</param>
     protected virtual void OnModelChanging(T oldValue, T newValue)
     {
+      _info.Clear();
       if (oldValue is INotifyPropertyChanged oldObj)
         oldObj.PropertyChanged -= (s, e) => OnModelPropertyChanged(e.PropertyName);
       if (newValue is INotifyPropertyChanged newObj)

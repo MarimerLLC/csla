@@ -19,7 +19,8 @@ namespace ProjectTracker.Ui.Xamarin
 
       CslaConfiguration.Configure()
         .DataPortal()
-          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "https://ptrackerserver.azurewebsites.net/api/dataportal");
+          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), 
+                        "https://ptrackerserver.azurewebsites.net/api/dataportal");
 
       Library.Security.PTPrincipal.Logout();
 

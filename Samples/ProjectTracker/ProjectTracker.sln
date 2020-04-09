@@ -21,12 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppServer", "AppServer", "{8D097836-73FE-425C-8D9D-A02B446DF9FE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "- How to run", "- How to run", "{8E83F6EF-5E47-4901-B053-9858B383804D}"
-	ProjectSection(SolutionItems) = preProject
-		How to run WinForms.txt = How to run WinForms.txt
-		How to run WPF.txt = How to run WPF.txt
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.BusinessLibrary.Netstandard", "ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj", "{E3D685A7-13E0-4B98-8628-CBCC3942908D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Ui.UWP", "ProjectTracker.Ui.UWP\ProjectTracker.Ui.UWP.csproj", "{A25EBA97-BF9F-43E2-B300-B5E35449D140}"
@@ -44,6 +38,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.Ui.Blazor", "ProjectTracker.Ui.Blazor\ProjectTracker.Ui.Blazor.csproj", "{EFAA837A-F173-466B-B968-73784C9AF4EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.Ui.Blazor.Client", "ProjectTracker.Ui.Blazor.Client\ProjectTracker.Ui.Blazor.Client.csproj", "{B04F49C6-E868-4551-942C-439E5E72DDA5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{C17FB7D9-ADD8-4012-A76E-83B18DC536FA}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -15,7 +15,6 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * [#1498](https://github.com/MarimerLLC/csla/issues/1498) Fix static initialization issue on "cold init" scenario
 * [#1541](https://github.com/MarimerLLC/csla/issues/1541) LocalProxy won't initialize with HttpClient added as service
 * [#1539](https://github.com/MarimerLLC/csla/issues/1539) ⚠ Mark GlobalContext as obsolete (with warning)
-* [#1538](https://github.com/MarimerLLC/csla/issues/1538) Fix ApplicationContext lost in Async call to DataPortal_Fetch
 * [#1522](https://github.com/MarimerLLC/csla/issues/1522) Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
 * [#1513](https://github.com/MarimerLLC/csla/issues/1513) Improve exception info in MobileFormatter
 
@@ -52,7 +51,11 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 ## Contributors
 
-* [@jacojordaan](https://github.com/jacojordaan) help with WPF and .NET Core 3
+* [@jacojordaan](https://github.com/jacojordaan) WPF and .NET Core 3
+* [@thecakemonster](https://github.com/thecakemonster) Blazor
+* [@SachinPNikam](https://github.com/SachinPNikam) Entity Framework
+* [@BlagoCuljak](https://github.com/BlagoCuljak) WPF and Blazor
+* [@JasonBock](https://github.com/JasonBock) Analyzers
 
 ---
 

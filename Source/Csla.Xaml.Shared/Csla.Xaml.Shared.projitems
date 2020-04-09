@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BrokenRulesSeverityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CancellableViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaDataProviderCommandManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataDecoratorBase.cs" />

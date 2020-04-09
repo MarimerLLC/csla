@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.designer.cs">
       <DependentUpon>BusyAnimation.cs</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaActionCancelEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaActionEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaActionExtender.cs">

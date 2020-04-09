@@ -19,8 +19,8 @@ namespace Csla.Configuration
     /// <summary>
     /// Configures the application to use CSLA .NET
     /// </summary>
-    /// <param name="builder">IHostBuilder instance</param>
-    public static IHostBuilder UseCsla(this IHostBuilder builder)
+    /// <param name="builder">HostBuilder instance</param>
+    public static HostBuilder UseCsla(this HostBuilder builder)
     {
       UseCsla(builder, null);
       return builder;
@@ -29,10 +29,10 @@ namespace Csla.Configuration
     /// <summary>
     /// Configures the application to use CSLA .NET
     /// </summary>
-    /// <param name="builder">IHostBuilder instance</param>
+    /// <param name="builder">HostBuilder instance</param>
     /// <param name="config">Implement to configure CSLA .NET</param>
-    public static IHostBuilder UseCsla(
-      this IHostBuilder builder, Action<CslaConfiguration> config)
+    public static HostBuilder UseCsla(
+      this HostBuilder builder, Action<CslaConfiguration> config)
     {
       CslaConfiguration.Configure().
         ContextManager(typeof(Csla.Xaml.ApplicationContextManager));

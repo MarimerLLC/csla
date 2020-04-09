@@ -103,10 +103,12 @@ namespace ProjectTracker.Library
         : base(primaryProperty)
       { }
 
+#pragma warning disable CSLA0017 // Find Business Rules That Do Not Use Add() Methods on the Context
       protected override void Execute(IRuleContext context)
       {
         ((ProjectResourceEdit)context.Target).OnPropertyChanged(nameof(RoleName));
       }
+#pragma warning restore CSLA0017 // Find Business Rules That Do Not Use Add() Methods on the Context
     }
 
 

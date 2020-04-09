@@ -10,13 +10,25 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F16).
 
+### General
+
+* [#1498](https://github.com/MarimerLLC/csla/issues/1498) Fix static initialization issue on "cold init" scenario
+* [#1541](https://github.com/MarimerLLC/csla/issues/1541) LocalProxy won't initialize with HttpClient added as service
+* [#1539](https://github.com/MarimerLLC/csla/issues/1539) ⚠ Mark GlobalContext as obsolete (with warning)
+* [#1538](https://github.com/MarimerLLC/csla/issues/1538) Fix ApplicationContext lost in Async call to DataPortal_Fetch
+* [#1522](https://github.com/MarimerLLC/csla/issues/1522) Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
+* [#1513](https://github.com/MarimerLLC/csla/issues/1513) Improve exception info in MobileFormatter
+
 ### Blazor
 
 * [#1509](https://github.com/MarimerLLC/csla/issues/1509) Add a For clause to CslaValidationMessages in Blazor
+* [#1520](https://github.com/MarimerLLC/csla/issues/1520) Fix Blazor Viewmodel GetPropertyInfo reference previous model property
+* [#1544](https://github.com/MarimerLLC/csla/issues/1544) ⚠ Remove PropertyName from Blazor CslaValidationMessages
 
 ### Windows Forms and WPF (.NET Core 3)
 
 * [#1454](https://github.com/MarimerLLC/csla/issues/1454) Fix issue with `PropertyStatus` control
+* [#1548](https://github.com/MarimerLLC/csla/issues/1548) Add UseCsla methods for Windows Forms and WPF
 
 ### Build and Dev
 
@@ -24,16 +36,19 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 ### Dependabot and NuGet dependencies
 
-* Bump Microsoft.Extensions.DependencyInjection to 3.1.2
-* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.2
-* Bump Microsoft.AspNetCore.Components.Web to 3.1.2
-* Bump Microsoft.AspNetCore.Components to 3.1.2
-* Bump Microsoft.Extensions.Configuration to 3.1.2
-* Bump Microsoft.Extensions.Configuration.Binder to 3.1.2
-* Bump Microsoft.Extensions.Configuration.Json to 3.1.2
-* Bump Microsoft.AspNetCore.Components.Authorization from 3.1.1 to 3.1.2
+* Bump Microsoft.Extensions.DependencyInjection to 3.1.3
+* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.3
+* Bump Microsoft.AspNetCore.Components.Web to 3.1.3
+* Bump Microsoft.AspNetCore.Components to 3.1.3
+* Bump Microsoft.Extensions.Configuration to 3.1.3
+* Bump Microsoft.Extensions.Configuration.Binder to 3.1.3
+* Bump Microsoft.Extensions.Configuration.Json to 3.1.3
+* Bump Microsoft.AspNetCore.Components to 3.1.3
+* Bump Microsoft.AspNetCore.Components.Authorization to 3.1.3
 * Bump System.Data.SqlClient from 4.8.0 to 4.8.1
 * Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
+* Bump System.Threading.Tasks.Extensions to 4.5.4
+* Bump System.Runtime.CompilerServices.Unsafe to 4.7.1
 
 ## Contributors
 

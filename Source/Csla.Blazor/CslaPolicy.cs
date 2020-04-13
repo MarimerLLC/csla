@@ -40,9 +40,11 @@ namespace Csla.Blazor
     {
       if (policy.StartsWith(PolicyPrefix))
       {
-        var parts = policy.Substring(PolicyPrefix.Length).Split('|');
-        var action = (Rules.AuthorizationActions)Enum.Parse(typeof(Rules.AuthorizationActions), parts[0]);
-        var type = Type.GetType(parts[1]);
+        policy = policy.Substring(PolicyPrefix.Length);
+        var actionName = policy.Substring(0, policy.IndexOf('|'));
+        var typeName = policy.Substring(policy.IndexOf('|') + 1);
+        var action = (Rules.AuthorizationActions)Enum.Parse(typeof(Rules.AuthorizationActions), actionName);
+        var type = Type.GetType(typeName);
         requirement = new CslaPermissionRequirement(action, type);
         return true;
       }

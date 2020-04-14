@@ -350,7 +350,7 @@ namespace Csla.Rules
       if (action == AuthorizationActions.ReadProperty ||
           action == AuthorizationActions.WriteProperty ||
           action == AuthorizationActions.ExecuteMethod)
-        throw new ArgumentOutOfRangeException("action");
+        throw new ArgumentOutOfRangeException(nameof(action));
 
       bool result = true;
       var rule =
@@ -378,7 +378,7 @@ namespace Csla.Rules
           action == AuthorizationActions.DeleteObject ||
           action == AuthorizationActions.GetObject ||
           action == AuthorizationActions.EditObject)
-        throw new ArgumentOutOfRangeException("action");
+        throw new ArgumentOutOfRangeException(nameof(action));
 
       bool result = true;
       var rule =

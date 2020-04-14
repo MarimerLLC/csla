@@ -1,13 +1,12 @@
-using Csla.Configuration;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
 using System.Linq;
+using Csla.Configuration;
 
 namespace BlazorExample.Server
 {
@@ -42,19 +41,21 @@ namespace BlazorExample.Server
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
-        app.UseBlazorDebugging();
+        app.UseWebAssemblyDebugging();
       }
 
+      app.UseBlazorFrameworkFiles();
       app.UseStaticFiles();
-      app.UseClientSideBlazorFiles<Client.Startup>();
 
       app.UseRouting();
 
       app.UseEndpoints(endpoints =>
       {
-        endpoints.MapDefaultControllerRoute();
-        endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+        endpoints.MapControllers();
+        endpoints.MapFallbackToFile("index.html");
       });
+
+      app.UseCsla();
     }
   }
 }

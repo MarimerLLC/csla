@@ -17,6 +17,7 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * [#1539](https://github.com/MarimerLLC/csla/issues/1539) ⚠ Mark GlobalContext as obsolete (with warning)
 * [#1522](https://github.com/MarimerLLC/csla/issues/1522) Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
 * [#1513](https://github.com/MarimerLLC/csla/issues/1513) Improve exception info in MobileFormatter
+* [#1568](https://github.com/MarimerLLC/csla/issues/1568) Add `LoadListMode` concept to collection types
 
 ### Blazor
 
@@ -35,6 +36,7 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 ### Dependabot and NuGet dependencies
 
+* Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.0-preview3.20168.3
 * Bump Microsoft.Extensions.DependencyInjection to 3.1.3
 * Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.3
 * Bump Microsoft.AspNetCore.Components.Web to 3.1.3
@@ -48,6 +50,10 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
 * Bump System.Threading.Tasks.Extensions to 4.5.4
 * Bump System.Runtime.CompilerServices.Unsafe to 4.7.1
+* Bump Grpc.Net.Client to 2.28.0
+* Bump Grpc.Tools to 2.28.1
+* Bump System.Buffers to 4.5.1
+* Bump System.Memory to 4.5.4
 
 ## Contributors
 

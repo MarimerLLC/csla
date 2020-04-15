@@ -8,9 +8,6 @@
 using System;
 using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
-#if NETFX_CORE
-using System.Collections.Generic;
-#endif
 
 namespace Csla.Core
 {
@@ -19,11 +16,7 @@ namespace Csla.Core
   /// with the MobileFormatter.
   /// </summary>
   [Serializable()]
-#if NETFX_CORE
-  public class ContextDictionary : Dictionary<string, object>, IMobileObject
-#else
   public class ContextDictionary : HybridDictionary, IMobileObject
-#endif
   {
     /// <summary>
     /// Get a value from the dictionary, or return null
@@ -32,14 +25,8 @@ namespace Csla.Core
     /// <param name="key">Key of value to get from dictionary.</param>
     public  object GetValueOrNull(string key)
     {
-#if NETFX_CORE
-      object value;
-      if (this.TryGetValue(key, out value))
-        return value;
-#else
       if (this.Contains(key))
         return this[key];
-#endif
       return null;
     }
 

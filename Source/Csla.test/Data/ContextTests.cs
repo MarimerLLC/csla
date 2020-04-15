@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-#if !NETFX_CORE
 using System;
 using System.Linq;
 using System.Data;
@@ -273,4 +272,3 @@ namespace Csla.Test.Data
 
   }
 }
-#endif

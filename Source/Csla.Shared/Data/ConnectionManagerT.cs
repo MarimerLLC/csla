@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS)
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="ConnectionManagerT.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -203,4 +202,3 @@ namespace Csla.Data
     }
   }
 }
-#endif

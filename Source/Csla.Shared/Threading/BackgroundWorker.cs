@@ -1,5 +1,4 @@
-﻿#if !NETFX_PHONE && !WINDOWS_UWP && !PCL46 && !NETSTANDARD && !PCL259
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="BackgroundWorker.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -10,11 +9,6 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
-#if NETFX_CORE
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources.Core;
-using System.Collections.Generic;
-#endif
 
 namespace Csla.Threading
 {
@@ -22,11 +16,7 @@ namespace Csla.Threading
   /// A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, GlobalContext, CurrentCulture 
   /// and CurrentUICulture to the background thread.
   /// </summary>
-#if (ANDROID || IOS) || NETFX_CORE
-  public class BackgroundWorker : System.Object
-#else
   public class BackgroundWorker : System.ComponentModel.Component
-#endif
   {
     private readonly System.ComponentModel.BackgroundWorker _myWorker = new System.ComponentModel.BackgroundWorker();
     /// <summary>
@@ -47,9 +37,7 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
     /// </summary>
-#if !NETFX_CORE
     [Description("Event handler to be run on a different thread when the operation begins."), Category("Asynchronous")]
-#endif
     public event DoWorkEventHandler DoWork
     {
       add
@@ -65,9 +53,7 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when the background operation has completed, has been canceled, or has raised an exception.
     /// </summary>
-#if !NETFX_CORE
     [Description("Raised when the worker has completed (either through success, failure or cancellation)."), Category("Asynchronous")]
-#endif
     public event RunWorkerCompletedEventHandler RunWorkerCompleted
     {
       add
@@ -84,9 +70,7 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.ReportProgress"/> is called.
     /// </summary>
-#if !NETFX_CORE
     [Description("Occurs when ReportProgress is called.).")]
-#endif
     public event ProgressChangedEventHandler ProgressChanged
     {
       add
@@ -360,4 +344,3 @@ namespace Csla.Threading
 #endregion
   }
 }
-#endif

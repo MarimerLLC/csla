@@ -63,7 +63,8 @@ namespace ProjectTracker.Library
       return CachedList;
     }
 
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     {
       var rlce = RaiseListChangedEvents;
       RaiseListChangedEvents = false;

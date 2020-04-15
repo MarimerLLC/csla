@@ -10,9 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-#if NETFX_CORE && !NETCORE && !PCL46 && !PCL259
-using Windows.System.Threading;
-#endif
 
 namespace Csla.Threading
 {
@@ -46,91 +43,6 @@ namespace Csla.Threading
     /// <summary>
     /// Informs the ThreadPool that there's work to be executed for this scheduler.
     /// </summary>
-#if NETFX_CORE && !NETCORE && !NETSTANDARD
-    private void NotifyThreadPoolOfPendingWork()
-    {
-#if !PCL46 && !PCL259 // rely on NuGet bait-and-switch for actual implementation
-      var asyncAction = ThreadPool.RunAsync(_ =>
-      {
-        // Note that the current thread is now processing work items.
-        // This is necessary to enable inlining of tasks into this thread.
-        _currentThreadIsProcessingItems = true;
-        _context.SetThreadContext();
-        try
-        {
-          // Process all available items in the queue.
-          while (true)
-          {
-            Task item;
-            lock (_tasks)
-            {
-              // When there are no more items to be processed,
-              // note that we're done processing, and get out.
-              if (_tasks.Count == 0)
-              {
-                break;
-              }
-
-              // Get the next item from the queue
-              item = _tasks.First.Value;
-              _tasks.RemoveFirst();
-            }
-
-            // Execute the task we pulled out of the queue
-            TryExecuteTask(item);
-          }
-        }
-        // We're done processing items on the current thread
-        finally
-        {
-          _currentThreadIsProcessingItems = false;
-        }
-      }, WorkItemPriority.Normal, WorkItemOptions.None);
-#else
-        _currentThreadIsProcessingItems = true;
-#endif
-    }
-#elif (ANDROID || IOS || NETCORE)
-    private void NotifyThreadPoolOfPendingWork()
-    {
-      ThreadPool.QueueUserWorkItem(_ =>
-      {
-        // Note that the current thread is now processing work items.
-        // This is necessary to enable inlining of tasks into this thread.
-        _currentThreadIsProcessingItems = true;
-        _context.SetThreadContext();
-        try
-        {
-          // Process all available items in the queue.
-          while (true)
-          {
-            Task item;
-            lock (_tasks)
-            {
-              // When there are no more items to be processed,
-              // note that we're done processing, and get out.
-              if (_tasks.Count == 0)
-              {
-                break;
-              }
-
-              // Get the next item from the queue
-              item = _tasks.First.Value;
-              _tasks.RemoveFirst();
-            }
-
-            // Execute the task we pulled out of the queue
-            base.TryExecuteTask(item);
-          }
-        }
-        // We're done processing items on the current thread
-        finally
-        {
-          _currentThreadIsProcessingItems = false;
-        }
-      }, null);
-    }
-#else
     private void NotifyThreadPoolOfPendingWork()
     {
       ThreadPool.UnsafeQueueUserWorkItem(_ =>
@@ -170,7 +82,7 @@ namespace Csla.Threading
         }
       }, null);
     }
-#endif
+
     /// <summary>Attempts to execute the specified task on the current thread.</summary>
     /// <param name="task">The task to be executed.</param>
     /// <param name="taskWasPreviouslyQueued"></param>

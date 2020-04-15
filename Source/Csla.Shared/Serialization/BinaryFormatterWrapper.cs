@@ -1,4 +1,3 @@
-#if !NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="BinaryFormatterWrapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -64,4 +63,3 @@ namespace Csla.Serialization
     }
   }
 }
-#endif

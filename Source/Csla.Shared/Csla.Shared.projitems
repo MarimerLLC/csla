@@ -38,7 +38,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\BindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BusinessBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BusyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ChildChangedEventArgs.cs" />
@@ -56,7 +55,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\GraphMerger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\IBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBusinessObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ICheckRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ICommandObject.cs" />
@@ -172,6 +170,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBindingListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\ServiceProviderMethodInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\IMobileList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\AsyncManualResetEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\CallMethodException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\DynamicMemberHandle.cs" />
@@ -328,7 +327,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)SmartDate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SortedBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\BackgroundWorker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Threading\BackgroundWorkerBCL.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\BusyLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\ContextParams.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\CslaTaskScheduler.cs" />

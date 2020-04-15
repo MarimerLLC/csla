@@ -27,48 +27,6 @@ namespace Csla.Core
     protected BindableBase()
     { }
 
-#if NETFX_CORE
-    /// <summary>
-    /// Event raised when a property is changed.
-    /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a specific property.
-    /// </summary>
-    /// <param name="propertyInfo">The property info for the property that has changed.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
-    {
-      OnPropertyChanged(propertyInfo.Name);
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a specific property.
-    /// </summary>
-    /// <param name="propertyName">The name of the property that has changed.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a MetaData (IsXYZ) property
-    /// </summary>
-    /// <param name="propertyName">The name of the property that has changed.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnMetaPropertyChanged(string propertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new MetaPropertyChangedEventArgs(propertyName));
-    }
-
-#else
     [NonSerialized()]
     private PropertyChangedEventHandler _nonSerializableChangedHandlers;
     private PropertyChangedEventHandler _serializableChangedHandlers;
@@ -170,7 +128,6 @@ namespace Csla.Core
     {
       OnPropertyChanged(propertyInfo.Name);
     }
-#endif
 
     /// <summary>
     /// Call this method to raise the PropertyChanged event
@@ -201,44 +158,6 @@ namespace Csla.Core
       OnPropertyChanged(string.Empty);
     }
 
-#if NETFX_CORE
-    /// <summary>
-    /// Event raised when a property is changing.
-    /// </summary>
-    public event PropertyChangingEventHandler PropertyChanging;
-
-    /// <summary>
-    /// Raises the PropertyChanging event.
-    /// </summary>
-    /// <param name="propertyName">Name of the property that
-    /// is being changed.</param>
-    /// <remarks>
-    /// This method may be called by properties in the business
-    /// class to indicate the change that is about to occur 
-    /// in a specific property.
-    /// </remarks>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanging(string propertyName)
-    {
-      if (PropertyChanging != null)
-        PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanging event.
-    /// </summary>
-    /// <param name="propertyInfo">The property info for the property that has changed.</param>
-    /// <remarks>
-    /// This method may be called by properties in the business
-    /// class to indicate the change that is about to occur 
-    /// in a specific property.
-    /// </remarks>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanging(IPropertyInfo propertyInfo)
-    {
-      OnPropertyChanging(propertyInfo.Name);
-    }
-#else
     [NonSerialized()]
     private PropertyChangingEventHandler _nonSerializableChangingHandlers;
     private PropertyChangingEventHandler _serializableChangingHandlers;
@@ -348,7 +267,5 @@ namespace Csla.Core
              value.Method.DeclaringType != null &&
              (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
     }
-
-#endif
   }
 }

@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
+﻿#if !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="BusyAnimation.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Interface to be implemented by any object</summary>
 //-----------------------------------------------------------------------
-using System;
-
 namespace Csla.Serialization.Mobile
 {
   /// <summary>

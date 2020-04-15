@@ -73,11 +73,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(IRuleContext context)
     {
-#if NETFX_CORE
-      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target);
-#else
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, null, null);
-#endif
       if (PrimaryProperty != null)
         ctx.MemberName = PrimaryProperty.FriendlyName;
 
@@ -717,11 +713,7 @@ namespace Csla.Rules.CommonRules
     private void Initialize(Action<IRuleContext> rule)
     {
       Rule = rule;
-#if NETFX_CORE
-      var methodName = Guid.NewGuid().ToString();
-#else
       var methodName = Rule.Method.ToString();
-#endif
       base.RuleUri.AddQueryParameter("r", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
     }
 

@@ -36,7 +36,6 @@ namespace Csla.Core
     /// </summary>
     public NotifyCollectionChangedEventArgs CollectionChangedArgs { get; private set; }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Gets the ListChangedEventArgs object from the
     /// child's ListChanged event, if the child is a
@@ -61,7 +60,6 @@ namespace Csla.Core
     {
       this.ListChangedArgs = listArgs;
     }
-#endif
 
     /// <summary>
     /// Creates an instance of the object.

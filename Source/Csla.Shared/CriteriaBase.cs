@@ -23,34 +23,6 @@ namespace Csla
   public abstract class CriteriaBase<T> : ManagedObjectBase
     where T : CriteriaBase<T>
   {
-#if (ANDROID || IOS) || NETFX_CORE
-    private static bool _forceInit = false;
-
-    /// <summary>
-    /// Creates an instance of the object. For use by
-    /// MobileFormatter only - you must provide a 
-    /// Type parameter in your code.
-    /// </summary>
-    public CriteriaBase()
-    {
-      _forceInit = _forceInit && false;
-    }
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should be deserialized. The data should be
-    /// deserialized from the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the serialized data.
-    /// </param>
-    /// <param name="mode">Serialization mode.</param>
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
-    {
-      _forceInit = _forceInit && false;
-      base.OnSetState(info, mode);
-    }
-#else
     /// <summary>
     /// Initializes empty CriteriaBase. The type of
     /// business object to be created by the DataPortal
@@ -58,7 +30,6 @@ namespace Csla
     /// </summary>
     protected CriteriaBase()
     { }
-#endif
 
     #region  Register Properties
 

@@ -50,11 +50,7 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if ((ANDROID || IOS) || NETFX_CORE) && !ANDROID && !IOS
-, INotifyDataErrorInfo
-#else
 , IDataErrorInfo
-#endif
   {
 
     #region Constructors
@@ -580,10 +576,7 @@ namespace Csla.Core
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || (ANDROID || IOS)
-#else
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
-#endif
         return true;
       }
       return CanReadProperty(propertyInfo, throwOnFalse);
@@ -659,10 +652,7 @@ namespace Csla.Core
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || (ANDROID || IOS)
-#else
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
-#endif
         return true;
       }
       return CanWriteProperty(propertyInfo, throwOnFalse);
@@ -1077,22 +1067,6 @@ namespace Csla.Core
 
 #region BusinessRules, IsValid
 
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Event raised when validation is complete.
-    /// </summary>
-    public event EventHandler ValidationComplete;
-
-    /// <summary>
-    /// Raises the ValidationComplete event.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void OnValidationComplete()
-    {
-      if (ValidationComplete != null)
-        ValidationComplete(this, EventArgs.Empty);
-    }
-#else
     [NonSerialized]
     [NotUndoable]
     private EventHandler _validationCompleteHandlers;
@@ -1123,7 +1097,6 @@ namespace Csla.Core
       if (_validationCompleteHandlers != null)
         _validationCompleteHandlers(this, EventArgs.Empty);
     }
-#endif
 
     private void InitializeBusinessRules()
     {
@@ -1405,7 +1378,6 @@ namespace Csla.Core
 
 #endregion
 
-#if (!(ANDROID || IOS) && !NETFX_CORE) || ANDROID || IOS
 #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -1437,7 +1409,6 @@ namespace Csla.Core
     }
 
 #endregion
-#endif
 
 #region Serialization Notification
 
@@ -1446,9 +1417,7 @@ namespace Csla.Core
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
-#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       BusinessRules.SetTarget(this);
@@ -1502,11 +1471,9 @@ namespace Csla.Core
       if (pc != null)
         pc.PropertyChanged += Child_PropertyChanged;
 
-#if !(ANDROID || IOS) && !NETFX_CORE
       IBindingList bl = child as IBindingList;
       if (bl != null)
         bl.ListChanged += Child_ListChanged;
-#endif
 
       INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
       if (ncc != null)
@@ -1546,11 +1513,9 @@ namespace Csla.Core
       if (pc != null)
         pc.PropertyChanged -= Child_PropertyChanged;
 
-#if !(ANDROID || IOS) && !NETFX_CORE
       IBindingList bl = child as IBindingList;
       if (bl != null)
         bl.ListChanged -= Child_ListChanged;
-#endif
 
       INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
       if (ncc != null)
@@ -3324,7 +3289,6 @@ namespace Csla.Core
       OnChildChanged(args);
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
@@ -3334,7 +3298,6 @@ namespace Csla.Core
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
     }
-#endif
 
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
@@ -3362,7 +3325,6 @@ namespace Csla.Core
       }
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Handles any ListChanged event from 
     /// a child list and echoes it up as
@@ -3373,7 +3335,6 @@ namespace Csla.Core
       if (e.ListChangedType != ListChangedType.ItemChanged)
         RaiseChildChanged(sender, null, e);
     }
-#endif
 
     /// <summary>
     /// Handles any CollectionChanged event
@@ -3808,110 +3769,6 @@ namespace Csla.Core
     }
 
 #endregion
-
-#if NETFX_CORE
-#region UndoableBase overrides
-
-#if !NETSTANDARD1_6 && !WINDOWS_UWP
-    /// <summary>
-    /// Copy object state.
-    /// </summary>
-    /// <param name="state">Serialization state.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void OnCopyState(Csla.Serialization.Mobile.SerializationInfo state)
-    {
-      OnGetState(state, StateMode.Undo);
-      ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
-      ((IUndoableObject)BusinessRules).CopyState(this.EditLevel + 1, false);
-
-      base.OnCopyState(state);
-    }
-
-    /// <summary>
-    /// Undo object state.
-    /// </summary>
-    /// <param name="state">Serialization state.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void OnUndoChanges(Csla.Serialization.Mobile.SerializationInfo state)
-    {
-      OnSetState(state, StateMode.Undo);
-      ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);
-      ((IUndoableObject)BusinessRules).UndoChanges(this.EditLevel - 1, false);
-
-      base.OnUndoChanges(state);
-    }
-#endif
-
-    /// <summary>
-    /// Accept object state.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void AcceptingChanges()
-    {
-      ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
-      ((IUndoableObject)BusinessRules).AcceptChanges(this.EditLevel - 1, false);
-
-      base.AcceptingChanges();
-    }
-
-#endregion
-
-#if !ANDROID && !IOS
-#region INotifyDataErrorInfo
-
-    /// <summary>
-    /// Event raised when error information has changed.
-    /// </summary>
-    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-    /// <summary>
-    /// Raises the ErrorsChanged event.
-    /// </summary>
-    /// <param name="e">Event arguments.</param>
-    protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
-    {
-      if (ErrorsChanged != null)
-        ErrorsChanged(this, e);
-    }
-
-    System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
-    {
-      return BusinessRules.GetBrokenRules()
-        .Where(c => (string.IsNullOrEmpty(propertyName) || c.Property == propertyName) && c.Severity == RuleSeverity.Error)
-        .ToList();
-    }
-
-    bool INotifyDataErrorInfo.HasErrors
-    {
-      get { return !IsSelfValid; }
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a specific property.
-    /// </summary>
-    /// <param name="propertyName">Name of the property that
-    /// is being changed.</param>
-    protected override void OnPropertyChanged(string propertyName)
-    {
-      base.OnPropertyChanged(propertyName);
-      OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for all object properties.
-    /// </summary>
-    protected override void OnUnknownPropertyChanged()
-    {
-      base.OnUnknownPropertyChanged();
-      foreach (var p in FieldManager.GetRegisteredProperties())
-        OnErrorsChanged(new DataErrorsChangedEventArgs(p.Name));
-    }
-
-#endregion
-#endif
-#endif
 
 #region ISuppressRuleChecking Members
 

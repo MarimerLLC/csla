@@ -1,4 +1,3 @@
-#if !NETFX_CORE && !IOS || NETSTANDARD
 //-----------------------------------------------------------------------
 // <copyright file="DataMapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -441,4 +440,3 @@ namespace Csla.Data
 #endregion
   }
 }
-#endif

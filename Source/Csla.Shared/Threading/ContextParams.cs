@@ -9,10 +9,6 @@ using System.Globalization;
 using System.Security.Principal;
 using System.Threading;
 using Csla.Core;
-#if NETFX_CORE && !NETCORE
-using System.Collections.Generic;
-#endif
-
 
 namespace Csla.Threading
 {

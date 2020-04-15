@@ -12,27 +12,27 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 ### General
 
-* [#1498](https://github.com/MarimerLLC/csla/issues/1498) Fix static initialization issue on "cold init" scenario
-* [#1541](https://github.com/MarimerLLC/csla/issues/1541) LocalProxy won't initialize with HttpClient added as service
+* [#1498](https://github.com/MarimerLLC/csla/issues/1498) 🐜 Fix static initialization issue on "cold init" scenario
+* [#1541](https://github.com/MarimerLLC/csla/issues/1541) 🐜 LocalProxy won't initialize with HttpClient added as service
 * [#1539](https://github.com/MarimerLLC/csla/issues/1539) ⚠ Mark GlobalContext as obsolete (with warning)
-* [#1522](https://github.com/MarimerLLC/csla/issues/1522) Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
-* [#1513](https://github.com/MarimerLLC/csla/issues/1513) Improve exception info in MobileFormatter
-* [#1568](https://github.com/MarimerLLC/csla/issues/1568) Add `LoadListMode` concept to collection types
+* [#1522](https://github.com/MarimerLLC/csla/issues/1522) 🐜 Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
+* [#1513](https://github.com/MarimerLLC/csla/issues/1513) 🎉 Improve exception info in MobileFormatter
+* [#1568](https://github.com/MarimerLLC/csla/issues/1568) 🎉 Add `LoadListMode` concept to collection types
 
 ### Blazor
 
-* [#1509](https://github.com/MarimerLLC/csla/issues/1509) Add a For clause to CslaValidationMessages in Blazor
-* [#1520](https://github.com/MarimerLLC/csla/issues/1520) Fix Blazor Viewmodel GetPropertyInfo reference previous model property
+* [#1509](https://github.com/MarimerLLC/csla/issues/1509) 🎉 Add a For clause to CslaValidationMessages in Blazor
+* [#1520](https://github.com/MarimerLLC/csla/issues/1520) 🐜 Fix Blazor Viewmodel GetPropertyInfo reference previous model property
 * [#1544](https://github.com/MarimerLLC/csla/issues/1544) ⚠ Remove PropertyName from Blazor CslaValidationMessages
 
 ### Windows Forms and WPF (.NET Core 3)
 
-* [#1454](https://github.com/MarimerLLC/csla/issues/1454) Fix issue with `PropertyStatus` control
-* [#1548](https://github.com/MarimerLLC/csla/issues/1548) Add UseCsla methods for Windows Forms and WPF
+* [#1454](https://github.com/MarimerLLC/csla/issues/1454) 🐜 Fix issue with `PropertyStatus` control
+* [#1548](https://github.com/MarimerLLC/csla/issues/1548) 🎉 Add UseCsla methods for Windows Forms and WPF
 
 ### Build and Dev
 
-* [#1188](https://github.com/MarimerLLC/csla/issues/1188) Add support for NuGet symbol server
+* [#1188](https://github.com/MarimerLLC/csla/issues/1188) 🎉 Add support for NuGet symbol server
 
 ### Dependabot and NuGet dependencies
 

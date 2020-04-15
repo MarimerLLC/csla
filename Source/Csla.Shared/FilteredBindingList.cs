@@ -1,4 +1,3 @@
-#if !NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="FilteredBindingList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -1042,4 +1041,3 @@ namespace Csla
   
   }
 }
-#endif

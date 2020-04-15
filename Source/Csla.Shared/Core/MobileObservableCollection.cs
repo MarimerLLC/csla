@@ -46,10 +46,7 @@ namespace Csla.Core
       get
       {
         if (_loadListModeObject == null)
-        {
           _loadListModeObject = new LoadListModeObject(this);
-          SetLoadListMode(true);
-        }
         return _loadListModeObject;
       }
     }

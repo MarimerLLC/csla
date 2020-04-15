@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
+using System.Diagnostics;
 
 namespace Csla.Core
 {
@@ -88,20 +89,6 @@ namespace Csla.Core
       set { _raiseListChangedEvents = value; }
     }
 
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Adds a new item to this collection.
-    /// </summary>
-    public void AddNew()
-    {
-      AddNewCore();
-    }
-
-    void IObservableBindingList.AddNew()
-    {
-      AddNew();
-    }
-#else
     /// <summary>
     /// Adds a new item to this collection.
     /// </summary>
@@ -116,7 +103,6 @@ namespace Csla.Core
     {
       return AddNew();
     }
-#endif
 
     #endregion
 
@@ -641,5 +627,29 @@ namespace Csla.Core
     }
 
     #endregion
+
+    [NonSerialized]
+    [NotUndoable]
+    private Stack<bool> _oldRLCE;
+
+    /// <summary>
+    /// Sets the load list mode for the list
+    /// </summary>
+    /// <param name="enabled">Enabled value</param>
+    protected override void SetLoadListMode(bool enabled)
+    {
+      if (_oldRLCE == null)
+        _oldRLCE = new Stack<bool>();
+      if (enabled)
+      {
+        _oldRLCE.Push(_raiseListChangedEvents);
+        _raiseListChangedEvents = false;
+      }
+      else
+      {
+        if (_oldRLCE.Count > 0)
+         _raiseListChangedEvents = _oldRLCE.Pop();
+      }
+    }
   }
 }

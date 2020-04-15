@@ -31,11 +31,7 @@ namespace Csla
 #endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-#if (ANDROID || IOS) || NETFX_CORE
-      ExtendedBindingList<C>,
-#else
       ObservableBindingList<C>,
-#endif
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
       INotifyBusy,
@@ -286,18 +282,6 @@ namespace Csla
 
     #region Insert, Remove, Clear
 
-#if NETFX_CORE || (ANDROID || IOS)
-    /// <summary>
-    /// Override this method to create a new object that is added
-    /// to the collection. 
-    /// </summary>
-    protected override void  AddNewCore()
-    {
-      var item = DataPortal.CreateChild<C>();
-      Add(item);
-      OnAddedNew(item);
-    }
-#else
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -308,7 +292,6 @@ namespace Csla
       Add(item);
       return item;
     }
-#endif
 
     /// <summary>
     /// This method is called by a child object when it
@@ -371,15 +354,9 @@ namespace Csla
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
       C child = this[index];
-      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
-      try
+      using (LoadListMode)
       {
-        this.RaiseListChangedEvents = false;
         base.RemoveItem(index);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
       if (!_completelyRemoveChild)
       {
@@ -409,17 +386,10 @@ namespace Csla
         child = this[index];
       // replace the original object with this new
       // object
-      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
-      try
+      using (LoadListMode)
       {
-        this.RaiseListChangedEvents = false;
-
         if (child != null)
           DeleteChild(child);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
 
       // set parent reference
@@ -533,67 +503,67 @@ namespace Csla
       _editLevel -= 1;
       if (_editLevel < 0) _editLevel = 0;
 
-      bool oldRLCE = this.RaiseListChangedEvents;
-      this.RaiseListChangedEvents = false;
-      try
+      using (LoadListMode)
       {
-        // Cancel edit on all current items
-        for (int index = Count - 1; index >= 0; index--)
+        try
         {
-          child = this[index];
-
-          //ACE: Important, make sure to remove the item prior to
-          //     it going through undo, otherwise, it will
-          //     incur a more expensive RemoveByReference operation
-          //DeferredLoadIndexIfNotLoaded();
-          //_indexSet.RemoveItem(child);
-
-          child.UndoChanges(_editLevel, false);
-
-          //ACE: Now that we have undone the changes, we can add the item
-          //     back in the index.
-          //_indexSet.InsertItem(child);
-
-          // if item is below its point of addition, remove
-          if (child.EditLevelAdded > _editLevel)
+          // Cancel edit on all current items
+          for (int index = Count - 1; index >= 0; index--)
           {
-            bool oldAllowRemove = this.AllowRemove;
-            try
-            {
-              this.AllowRemove = true;
-              _completelyRemoveChild = true;
-              //RemoveIndexItem(child);
-              RemoveAt(index);
-            }
-            finally
-            {
-              _completelyRemoveChild = false;
-              this.AllowRemove = oldAllowRemove;
-            }
-          }
-        }
+            child = this[index];
 
-        // cancel edit on all deleted items
-        for (int index = DeletedList.Count - 1; index >= 0; index--)
-        {
-          child = DeletedList[index];
-          child.UndoChanges(_editLevel, false);
-          if (child.EditLevelAdded > _editLevel)
-          {
+            //ACE: Important, make sure to remove the item prior to
+            //     it going through undo, otherwise, it will
+            //     incur a more expensive RemoveByReference operation
+            //DeferredLoadIndexIfNotLoaded();
+            //_indexSet.RemoveItem(child);
+
+            child.UndoChanges(_editLevel, false);
+
+            //ACE: Now that we have undone the changes, we can add the item
+            //     back in the index.
+            //_indexSet.InsertItem(child);
+
             // if item is below its point of addition, remove
-            DeletedList.RemoveAt(index);
+            if (child.EditLevelAdded > _editLevel)
+            {
+              bool oldAllowRemove = this.AllowRemove;
+              try
+              {
+                this.AllowRemove = true;
+                _completelyRemoveChild = true;
+                //RemoveIndexItem(child);
+                RemoveAt(index);
+              }
+              finally
+              {
+                _completelyRemoveChild = false;
+                this.AllowRemove = oldAllowRemove;
+              }
+            }
           }
-          else
+
+          // cancel edit on all deleted items
+          for (int index = DeletedList.Count - 1; index >= 0; index--)
           {
-            // if item is no longer deleted move back to main list
-            if (!child.IsDeleted) UnDeleteChild(child);
+            child = DeletedList[index];
+            child.UndoChanges(_editLevel, false);
+            if (child.EditLevelAdded > _editLevel)
+            {
+              // if item is below its point of addition, remove
+              DeletedList.RemoveAt(index);
+            }
+            else
+            {
+              // if item is no longer deleted move back to main list
+              if (!child.IsDeleted) UnDeleteChild(child);
+            }
           }
         }
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRLCE;
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        finally
+        {
+          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
       }
     }
 
@@ -906,9 +876,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_Update(params object[] parameters)
     {
-      var oldRLCE = this.RaiseListChangedEvents;
-      this.RaiseListChangedEvents = false;
-      try
+      using (LoadListMode)
       {
         foreach (var child in DeletedList)
           DataPortal.UpdateChild(child, parameters);
@@ -917,17 +885,12 @@ namespace Csla
         foreach (var child in this)
           if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
       }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRLCE;
-      }
     }
 
     #endregion
 
     #region Data Access
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -969,7 +932,6 @@ namespace Csla
           throw;
       }
     }
-#endif
 
     /// <summary>
     /// Saves the object to the database.
@@ -1166,7 +1128,6 @@ namespace Csla
 
     #region ISavable Members
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1176,7 +1137,6 @@ namespace Csla
     {
       return Save();
     }
-#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -1199,12 +1159,10 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
     }
-#endif
 
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {

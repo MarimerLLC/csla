@@ -47,6 +47,7 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * Bump Microsoft.AspNetCore.Components to 3.1.3
 * Bump Microsoft.AspNetCore.Components.Authorization to 3.1.3
 * Bump System.Data.SqlClient from 4.8.0 to 4.8.1
+* Bump Microsoft.Data.SqlClient 1.1.2.
 * Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
 * Bump System.Threading.Tasks.Extensions to 4.5.4
 * Bump System.Runtime.CompilerServices.Unsafe to 4.7.1

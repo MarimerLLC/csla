@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Csla;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -199,94 +200,75 @@ namespace ProjectTracker.Library
     }
 
     [Fetch]
-    private void Fetch(int id)
+    private void Fetch(int id, [Inject] IProjectDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      var data = dal.Fetch(id);
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        var data = dal.Fetch(id);
-        using (BypassPropertyChecks)
-        {
-          Id = data.Id;
-          Name = data.Name;
-          Description = data.Description;
-          Started = data.Started;
-          Ended = data.Ended;
-          TimeStamp = data.LastChanged;
-          Resources = DataPortal.FetchChild<ProjectResources>(id);
-        }
+        Id = data.Id;
+        Name = data.Name;
+        Description = data.Description;
+        Started = data.Started;
+        Ended = data.Ended;
+        TimeStamp = data.LastChanged;
+        Resources = DataPortal.FetchChild<ProjectResources>(id);
       }
     }
 
     [Insert]
-    private void Insert()
+    private void Insert([Inject] IProjectDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.ProjectDto
         {
-          var item = new ProjectTracker.Dal.ProjectDto
-          {
-            Name = this.Name,
-            Description = this.Description,
-            Started = this.Started,
-            Ended = this.Ended
-          };
-          dal.Insert(item);
-          Id = item.Id;
-          TimeStamp = item.LastChanged;
-        }
-        FieldManager.UpdateChildren(this);
+          Name = this.Name,
+          Description = this.Description,
+          Started = this.Started,
+          Ended = this.Ended
+        };
+        dal.Insert(item);
+        Id = item.Id;
+        TimeStamp = item.LastChanged;
       }
+      FieldManager.UpdateChildren(this);
     }
 
     [Update]
-    private void Update()
+    private void Update([Inject] IProjectDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.ProjectDto
         {
-          var item = new ProjectTracker.Dal.ProjectDto
-          {
-            Id = this.Id,
-            Name = this.Name,
-            Description = this.Description,
-            Started = this.Started,
-            Ended = this.Ended,
-            LastChanged = this.TimeStamp
-          };
-          dal.Update(item);
-          TimeStamp = item.LastChanged;
-        }
-        FieldManager.UpdateChildren(this.Id);
+          Id = this.Id,
+          Name = this.Name,
+          Description = this.Description,
+          Started = this.Started,
+          Ended = this.Ended,
+          LastChanged = this.TimeStamp
+        };
+        dal.Update(item);
+        TimeStamp = item.LastChanged;
       }
+      FieldManager.UpdateChildren(this.Id);
     }
 
     [DeleteSelf]
-    private void DeleteSelf()
+    private void DeleteSelf([Inject] IProjectDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        using (BypassPropertyChecks)
-        {
-          Resources.Clear();
-          FieldManager.UpdateChildren(this);
-          Delete(this.Id);
-        }
+        Resources.Clear();
+        FieldManager.UpdateChildren(this);
+        Delete(this.Id, dal);
       }
     }
 
     [Delete]
-    private void Delete(int id)
+    private void Delete(int id, [Inject] IProjectDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        dal.Delete(id);
-      }
+      dal.Delete(id);
     }
   }
 }

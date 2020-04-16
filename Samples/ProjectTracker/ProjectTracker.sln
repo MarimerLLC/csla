@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.Ui.Blazor", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.Ui.Blazor.Client", "ProjectTracker.Ui.Blazor.Client\ProjectTracker.Ui.Blazor.Client.csproj", "{B04F49C6-E868-4551-942C-439E5E72DDA5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{C17FB7D9-ADD8-4012-A76E-83B18DC536FA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_readme", "_readme", "{C17FB7D9-ADD8-4012-A76E-83B18DC536FA}"
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
 	EndProjectSection

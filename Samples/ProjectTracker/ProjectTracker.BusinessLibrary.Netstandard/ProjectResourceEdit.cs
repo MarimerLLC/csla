@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using System.ComponentModel;
 using Csla.Rules;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -111,8 +112,8 @@ namespace ProjectTracker.Library
 #pragma warning restore CSLA0017 // Find Business Rules That Do Not Use Add() Methods on the Context
     }
 
-
-    private void Child_Create(int resourceId)
+    [CreateChild]
+    private void Create(int resourceId, [Inject] IResourceDal dal)
     {
       using (BypassPropertyChecks)
       {
@@ -120,28 +121,22 @@ namespace ProjectTracker.Library
         RoleList.CacheList();
         Role = RoleList.DefaultRole();
         LoadProperty(AssignedProperty, DateTime.Today);
-        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-        {
-          var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
-          var person = dal.Fetch(resourceId);
-          FirstName = person.FirstName;
-          LastName = person.LastName;
-        }
+        var person = dal.Fetch(resourceId);
+        FirstName = person.FirstName;
+        LastName = person.LastName;
       }
-      base.Child_Create();
+      BusinessRules.CheckRules();
     }
 
-    private void Child_Fetch(int projectId, int resourceId)
+    [FetchChild]
+    private void Fetch(int projectId, int resourceId, [Inject] IAssignmentDal dal, [Inject] IResourceDal rdal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        var data = dal.Fetch(projectId, resourceId);
-        Child_Fetch(data);
-      }
+      var data = dal.Fetch(projectId, resourceId);
+      Fetch(data, rdal);
     }
 
-    private void Child_Fetch(ProjectTracker.Dal.AssignmentDto data)
+    [FetchChild]
+    private void Fetch(ProjectTracker.Dal.AssignmentDto data, [Inject] IResourceDal dal)
     {
       using (BypassPropertyChecks)
       {
@@ -149,76 +144,67 @@ namespace ProjectTracker.Library
         Role = data.RoleId;
         LoadProperty(AssignedProperty, data.Assigned);
         TimeStamp = data.LastChanged;
-        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-        {
-          var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
-          var person = dal.Fetch(data.ResourceId);
-          FirstName = person.FirstName;
-          LastName = person.LastName;
-        }
-      }
-    }
-    private void Child_Insert(ProjectEdit project)
-    {
-      Child_Insert(project.Id);
-    }
-
-    private void Child_Insert(int projectId)
-    {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        using (BypassPropertyChecks)
-        {
-          var item = new ProjectTracker.Dal.AssignmentDto
-          {
-            ProjectId = projectId,
-            ResourceId = this.ResourceId,
-            Assigned = ReadProperty(AssignedProperty),
-            RoleId = this.Role
-          };
-          dal.Insert(item);
-          TimeStamp = item.LastChanged;
-        }
+        var person = dal.Fetch(data.ResourceId);
+        FirstName = person.FirstName;
+        LastName = person.LastName;
       }
     }
 
-    private void Child_Update(ProjectEdit project)
+    [InsertChild]
+    private void Insert(ProjectEdit project, [Inject] IAssignmentDal dal)
     {
-      Child_Update(project.Id);
+      Insert(project.Id, dal);
     }
 
-    private void Child_Update(int projectId)
+    [InsertChild]
+    private void Insert(int projectId, [Inject] IAssignmentDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.AssignmentDto
         {
-          var item = dal.Fetch(projectId, ResourceId);
-          item.Assigned = ReadProperty(AssignedProperty);
-          item.RoleId = Role;
-          item.LastChanged = TimeStamp;
-          dal.Update(item);
-          TimeStamp = item.LastChanged;
-        }
+          ProjectId = projectId,
+          ResourceId = this.ResourceId,
+          Assigned = ReadProperty(AssignedProperty),
+          RoleId = this.Role
+        };
+        dal.Insert(item);
+        TimeStamp = item.LastChanged;
       }
     }
 
-    private void Child_DeleteSelf(ProjectEdit project)
+    [UpdateChild]
+    private void Update(ProjectEdit project, [Inject] IAssignmentDal dal)
     {
-      Child_DeleteSelf(project.Id);
+      Update(project.Id, dal);
     }
 
-    private void Child_DeleteSelf(int projectId)
+    [UpdateChild]
+    private void Update(int projectId, [Inject] IAssignmentDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        using (BypassPropertyChecks)
-        {
-          dal.Delete(projectId, ResourceId);
-        }
+        var item = dal.Fetch(projectId, ResourceId);
+        item.Assigned = ReadProperty(AssignedProperty);
+        item.RoleId = Role;
+        item.LastChanged = TimeStamp;
+        dal.Update(item);
+        TimeStamp = item.LastChanged;
+      }
+    }
+
+    [DeleteSelfChild]
+    private void DeleteSelf(ProjectEdit project, [Inject] IAssignmentDal dal)
+    {
+      DeleteSelf(project.Id, dal);
+    }
+
+    [DeleteSelfChild]
+    private void DeleteSelf(int projectId, [Inject] IAssignmentDal dal)
+    {
+      using (BypassPropertyChecks)
+      {
+        dal.Delete(projectId, ResourceId);
       }
     }
   }

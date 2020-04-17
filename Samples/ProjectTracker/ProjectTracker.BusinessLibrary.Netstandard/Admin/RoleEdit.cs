@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Csla.Rules;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -67,11 +68,11 @@ namespace ProjectTracker.Library.Admin
     [CreateChild]
     private void Create()
     {
-      base.Child_Create();
+      BusinessRules.CheckRules();
     }
 
     [FetchChild]
-    private void Child_Fetch(ProjectTracker.Dal.RoleDto data)
+    private void Fetch(ProjectTracker.Dal.RoleDto data)
     {
       using (BypassPropertyChecks)
       {
@@ -82,55 +83,43 @@ namespace ProjectTracker.Library.Admin
     }
 
     [InsertChild]
-    private void Child_Insert()
+    private void Insert([Inject] IRoleDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.RoleDto
         {
-          var item = new ProjectTracker.Dal.RoleDto
-          {
-            Name = this.Name
-          };
-          dal.Insert(item);
-          Id = item.Id;
-          TimeStamp = item.LastChanged;
-        }
+          Name = this.Name
+        };
+        dal.Insert(item);
+        Id = item.Id;
+        TimeStamp = item.LastChanged;
       }
     }
 
     [UpdateChild]
-    private void Child_Update()
+    private void Update([Inject] IRoleDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.RoleDto
         {
-          var item = new ProjectTracker.Dal.RoleDto
-          {
-            Id = this.Id,
-            Name = this.Name,
-            LastChanged = this.TimeStamp
-          };
-          dal.Update(item);
-          Id = item.Id;
-          TimeStamp = item.LastChanged;
-        }
+          Id = this.Id,
+          Name = this.Name,
+          LastChanged = this.TimeStamp
+        };
+        dal.Update(item);
+        Id = item.Id;
+        TimeStamp = item.LastChanged;
       }
     }
 
     [DeleteSelfChild]
-    private void Child_DeleteSelf()
+    private void DeleteSelf([Inject] IRoleDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
-        using (BypassPropertyChecks)
-        {
-          dal.Delete(this.Id);
-        }
+        dal.Delete(this.Id);
       }
     }
   }

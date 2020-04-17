@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Csla;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -61,17 +62,14 @@ namespace ProjectTracker.Library
       return count > 0;
     }
 
-    private void Child_Fetch(int resourceId)
+    [FetchChild]
+    private void Fetch(int resourceId, [Inject] IAssignmentDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (LoadListMode)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
         var data = dal.FetchForResource(resourceId);
-        var rlce = RaiseListChangedEvents;
-        RaiseListChangedEvents = false;
         foreach (var item in data)
           Add(DataPortal.FetchChild<ResourceAssignmentEdit>(item));
-        RaiseListChangedEvents = rlce;
       }
     }
   }

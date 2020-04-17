@@ -1,5 +1,6 @@
 ﻿using System;
 using Csla;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -33,16 +34,12 @@ namespace ProjectTracker.Library
     }
 
     [Fetch]
-    private void DataPortal_Fetch()
+    private void Fetch([Inject] IDashboardDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IDashboardDal>();
-        var data = dal.Fetch();
-        ProjectCount = data.ProjectCount;
-        OpenProjectCount = data.OpenProjectCount;
-        ResourceCount = data.ResourceCount;
-      }
+      var data = dal.Fetch();
+      ProjectCount = data.ProjectCount;
+      OpenProjectCount = data.OpenProjectCount;
+      ResourceCount = data.ResourceCount;
     }
   }
 }

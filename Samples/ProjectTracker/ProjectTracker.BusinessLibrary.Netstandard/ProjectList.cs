@@ -3,6 +3,7 @@ using System.Linq;
 using Csla;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -44,20 +45,16 @@ namespace ProjectTracker.Library
     }
 
     [Fetch]
-    private void DataPortal_Fetch()
+    private void Fetch([Inject] IProjectDal dal)
     {
-      DataPortal_Fetch(null);
+      Fetch(null, dal);
     }
 
     [Fetch]
-    private void DataPortal_Fetch(string name)
+    private void Fetch(string name, [Inject] IProjectDal dal)
     {
-      var rlce = RaiseListChangedEvents;
-      RaiseListChangedEvents = false;
-      IsReadOnly = false;
-      using (var ctx = Dal.DalFactory.GetManager())
+      using (LoadListMode)
       {
-        var dal = ctx.GetProvider<Dal.IProjectDal>();
         List<Dal.ProjectDto> list = null;
         if (name == null)
           list = dal.Fetch();
@@ -66,8 +63,6 @@ namespace ProjectTracker.Library
         foreach (var item in list)
           Add(DataPortal.FetchChild<ProjectInfo>(item));
       }
-      IsReadOnly = true;
-      RaiseListChangedEvents = rlce;
     }
   }
 }

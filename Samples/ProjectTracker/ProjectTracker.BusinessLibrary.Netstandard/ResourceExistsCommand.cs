@@ -1,5 +1,6 @@
 ﻿using System;
 using Csla;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -29,13 +30,10 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResourceExistsProperty, value); }
     }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+    private void Execute([Inject] IResourceDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
-        ResourceExists = dal.Exists(ResourceId);
-      }
+      ResourceExists = dal.Exists(ResourceId);
     }
   }
 }

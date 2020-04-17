@@ -1,5 +1,6 @@
 ﻿using System;
 using Csla;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -20,21 +21,10 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ProjectExistsProperty, value); }
     }
 
-    public ProjectExistsCommand()
-    { }
-
-    public ProjectExistsCommand(int id)
+    [Execute]
+    private void Execute([Inject] IProjectDal dal)
     {
-      ProjectId = id;
-    }
-
-    protected override void DataPortal_Execute()
-    {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        ProjectExists = dal.Exists(ProjectId);
-      }
+      ProjectExists = dal.Exists(ProjectId);
     }
   }
 }

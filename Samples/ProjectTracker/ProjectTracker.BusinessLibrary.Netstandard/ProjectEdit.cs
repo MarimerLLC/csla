@@ -106,6 +106,7 @@ namespace ProjectTracker.Library
     }
 
     [EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    [ObjectAuthorizationRules]
     public static void AddObjectAuthorizationRules()
     {
       Csla.Rules.BusinessRules.AddRule(
@@ -196,7 +197,7 @@ namespace ProjectTracker.Library
     private void Create()
     {
       LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     [Fetch]

@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="PTrackerData.mdf" />
+    <None Remove="PTrackerData_log.ldf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -18,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj" />
+    <ProjectReference Include="..\ProjectTracker.DalEfCore\ProjectTracker.DalEfCore.csproj" />
     <ProjectReference Include="..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj" />
     <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
   </ItemGroup>

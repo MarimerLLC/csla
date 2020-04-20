@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.DalMock;
+using ProjectTracker.Dal;
 
-namespace ProjectTracker.Dal
+namespace ProjectTracker.Configuration
 {
   /// <summary>
   /// Configuration extension methods

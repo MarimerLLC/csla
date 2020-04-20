@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using ProjectTracker.Dal;
+using ProjectTracker.Configuration;
 
 namespace ProjectTracker.AppServerCore
 {
@@ -48,6 +48,7 @@ namespace ProjectTracker.AppServerCore
       });
 
       services.AddDalMock();
+      //services.AddDalEfCore();
       services.AddCsla();
     }
 

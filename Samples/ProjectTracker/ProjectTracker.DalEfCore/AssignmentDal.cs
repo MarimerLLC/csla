@@ -3,20 +3,20 @@ using System.Linq;
 using ProjectTracker.Dal;
 using System.Data;
 
-namespace ProjectTracker.DalEf
+namespace ProjectTracker.DalEfCore
 {
   public class AssignmentDal : IAssignmentDal
   {
-    private readonly PTrackerEntities objectContext;
+    private readonly PTrackerContext db;
 
-    public AssignmentDal(PTrackerEntities context)
+    public AssignmentDal(PTrackerContext context)
     {
-      objectContext = context;
+      db = context;
     }
 
     public AssignmentDto Fetch(int projectId, int resourceId)
     {
-      var result = (from r in objectContext.Assignments
+      var result = (from r in db.Assignments
                     where r.ProjectId == projectId && r.ResourceId == resourceId
                     select new AssignmentDto
                     {
@@ -33,7 +33,7 @@ namespace ProjectTracker.DalEf
 
     public List<AssignmentDto> FetchForProject(int projectId)
     {
-      var result = from r in objectContext.Assignments
+      var result = from r in db.Assignments
                    where r.ProjectId == projectId
                    select new AssignmentDto
                    {
@@ -48,7 +48,7 @@ namespace ProjectTracker.DalEf
 
     public List<AssignmentDto> FetchForResource(int resourceId)
     {
-      var result = from r in objectContext.Assignments
+      var result = from r in db.Assignments
                    where r.ResourceId == resourceId
                    select new AssignmentDto
                    {
@@ -70,14 +70,14 @@ namespace ProjectTracker.DalEf
         Assigned = item.Assigned,
         RoleId = item.RoleId
       };
-      objectContext.AddToAssignments(newItem);
-      objectContext.SaveChanges();
+      db.Assignments.Add(newItem);
+      db.SaveChanges();
       item.LastChanged = newItem.LastChanged;
     }
 
     public void Update(AssignmentDto item)
     {
-      var data = (from r in objectContext.Assignments
+      var data = (from r in db.Assignments
                   where r.ProjectId == item.ProjectId && r.ResourceId == item.ResourceId
                   select r).FirstOrDefault();
       if (data == null)
@@ -86,21 +86,19 @@ namespace ProjectTracker.DalEf
         throw new ConcurrencyException("Assignment");
       data.Assigned = item.Assigned;
       data.RoleId = item.RoleId;
-      var count = objectContext.SaveChanges();
-      if (count == 0)
-        throw new UpdateFailureException("Assignment");
+      var count = db.SaveChanges();
       item.LastChanged = data.LastChanged;
     }
 
     public void Delete(int projectId, int resourceId)
     {
-      var data = (from r in objectContext.Assignments
+      var data = (from r in db.Assignments
                   where r.ProjectId == projectId && r.ResourceId == resourceId
                   select r).FirstOrDefault();
       if (data != null)
       {
-        objectContext.Assignments.DeleteObject(data);
-        objectContext.SaveChanges();
+        db.Assignments.Remove(data);
+        db.SaveChanges();
       }
     }
   }

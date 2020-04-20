@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ProjectTracker.DalEf;
+using ProjectTracker.DalEfCore;
+using ProjectTracker.Dal;
 
-namespace ProjectTracker.Dal
+namespace ProjectTracker.Configuration
 {
   /// <summary>
   /// Configuration extension methods
@@ -13,9 +14,9 @@ namespace ProjectTracker.Dal
     /// use Entity Framework
     /// </summary>
     /// <param name="services"></param>
-    public static void AddDalEf(this IServiceCollection services)
+    public static void AddDalEfCore(this IServiceCollection services)
     {
-      services.AddScoped<PTrackerEntities>();
+      services.AddScoped<PTrackerContext>();
       services.AddTransient<IAssignmentDal, AssignmentDal>();
       services.AddTransient<IDashboardDal, DashboardDal>();
       services.AddTransient<IProjectDal, ProjectDal>();

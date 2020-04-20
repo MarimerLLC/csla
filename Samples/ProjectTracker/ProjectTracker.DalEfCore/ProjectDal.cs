@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ProjectTracker.Dal;
-using System.Data;
 
-namespace ProjectTracker.DalEf
+namespace ProjectTracker.DalEfCore
 {
   public class ProjectDal : IProjectDal
   {
-    private readonly PTrackerEntities objectContext;
+    private readonly PTrackerContext db;
 
-    public ProjectDal(PTrackerEntities context)
+    public ProjectDal(PTrackerContext context)
     {
-      objectContext = context;
+      db = context;
     }
 
     public List<ProjectDto> Fetch()
     {
-      var result = from r in objectContext.Projects
+      var result = from r in db.Projects
                    select new ProjectDto
                    {
                      Id = r.Id,
@@ -31,7 +30,7 @@ namespace ProjectTracker.DalEf
 
     public List<ProjectDto> Fetch(string nameFilter)
     {
-      var result = from r in objectContext.Projects
+      var result = from r in db.Projects
                    where r.Name.Contains(nameFilter)
                    select new ProjectDto
                    {
@@ -47,7 +46,7 @@ namespace ProjectTracker.DalEf
 
     public ProjectDto Fetch(int id)
     {
-      var result = (from r in objectContext.Projects
+      var result = (from r in db.Projects
                     where r.Id == id
                     select new ProjectDto
                     {
@@ -65,7 +64,7 @@ namespace ProjectTracker.DalEf
 
     public bool Exists(int id)
     {
-      var result = (from r in objectContext.Projects
+      var result = (from r in db.Projects
                     where r.Id == id
                     select r.Id).Count() > 0;
       return result;
@@ -80,15 +79,15 @@ namespace ProjectTracker.DalEf
         Started = item.Started,
         Ended = item.Ended
       };
-      objectContext.AddToProjects(newItem);
-      objectContext.SaveChanges();
+      db.Projects.Add(newItem);
+      db.SaveChanges();
       item.Id = newItem.Id;
       item.LastChanged = newItem.LastChanged;
     }
 
     public void Update(ProjectDto item)
     {
-      var data = (from r in objectContext.Projects
+      var data = (from r in db.Projects
                   where r.Id == item.Id
                   select r).FirstOrDefault();
       if (data == null)
@@ -100,21 +99,19 @@ namespace ProjectTracker.DalEf
       data.Description = item.Description;
       data.Started = item.Started;
       data.Ended = item.Ended;
-      var count = objectContext.SaveChanges();
-      if (count == 0)
-        throw new UpdateFailureException("Project");
+      var count = db.SaveChanges();
       item.LastChanged = data.LastChanged;
     }
 
     public void Delete(int id)
     {
-      var data = (from r in objectContext.Projects
+      var data = (from r in db.Projects
                   where r.Id == id
                   select r).FirstOrDefault();
       if (data != null)
       {
-        objectContext.Projects.DeleteObject(data);
-        objectContext.SaveChanges();
+        db.Projects.Remove(data);
+        db.SaveChanges();
       }
     }
   }

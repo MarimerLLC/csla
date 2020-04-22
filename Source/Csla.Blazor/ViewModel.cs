@@ -87,6 +87,7 @@ namespace Csla.Blazor
     public async Task<T> RefreshAsync(params object[] parameters)
     {
       Exception = null;
+      ViewModelErrorText = null;
       try
       {
         Model = await DoRefreshAsync(parameters);
@@ -140,6 +141,7 @@ namespace Csla.Blazor
     public async Task SaveAsync()
     {
       Exception = null;
+      ViewModelErrorText = null;
       if (Model is Core.ITrackStatus obj && !obj.IsSavable)
       {
         ViewModelErrorText = ModelErrorText;

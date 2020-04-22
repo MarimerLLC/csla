@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="PTrackerData.mdf" />
+    <None Remove="PTrackerData_log.ldf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -13,11 +19,12 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
-    <PackageReference Include="Csla.AspNetCore" Version="5.2.0-R20040904" />
+    <PackageReference Include="Csla.AspNetCore" Version="5.2.0-R20041602" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Netstandard\ProjectTracker.BusinessLibrary.Netstandard.csproj" />
+    <ProjectReference Include="..\ProjectTracker.DalEfCore\ProjectTracker.DalEfCore.csproj" />
     <ProjectReference Include="..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj" />
     <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
   </ItemGroup>

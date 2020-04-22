@@ -34,7 +34,8 @@ namespace ProjectTracker.Library
       return Name;
     }
 
-    private void Child_Fetch(ProjectTracker.Dal.ResourceDto item)
+    [FetchChild]
+    private void Fetch(ProjectTracker.Dal.ResourceDto item)
     {
       Id = item.Id;
       Name = string.Format("{1}, {0}", item.FirstName, item.LastName);

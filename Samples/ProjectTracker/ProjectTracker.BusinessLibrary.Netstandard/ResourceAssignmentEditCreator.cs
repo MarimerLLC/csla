@@ -25,7 +25,7 @@ namespace ProjectTracker.Library
     }
 
     [Fetch]
-    private void DataPortal_Fetch(int projectId)
+    private void Fetch(int projectId)
     {
       Result = DataPortal.CreateChild<ResourceAssignmentEdit>(projectId);
     }

@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -49,21 +50,15 @@ namespace ProjectTracker.Library
     { }
 
     [Fetch]
-    private void DataPortal_Fetch()
+    private void Fetch([Inject] IResourceDal dal)
     {
-      var rlce = RaiseListChangedEvents;
-      RaiseListChangedEvents = false;
-      IsReadOnly = false;
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (LoadListMode)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
         List<ProjectTracker.Dal.ResourceDto> list = null;
         list = dal.Fetch();
         foreach (var item in list)
           Add(DataPortal.FetchChild<ResourceInfo>(item));
       }
-      IsReadOnly = true;
-      RaiseListChangedEvents = rlce;
     }
   }
 }

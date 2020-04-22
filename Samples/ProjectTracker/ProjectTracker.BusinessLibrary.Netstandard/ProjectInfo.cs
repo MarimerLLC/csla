@@ -35,7 +35,8 @@ namespace ProjectTracker.Library
       return Name;
     }
 
-    private void Child_Fetch(ProjectTracker.Dal.ProjectDto item)
+    [FetchChild]
+    private void Fetch(ProjectTracker.Dal.ProjectDto item)
     {
       Id = item.Id;
       Name = item.Name;

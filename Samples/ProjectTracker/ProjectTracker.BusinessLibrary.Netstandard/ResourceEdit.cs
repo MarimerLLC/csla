@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Csla;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -77,6 +78,7 @@ namespace ProjectTracker.Library
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    [ObjectAuthorizationRules]
     public static void AddObjectAuthorizationRules()
     {
       Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, Security.Roles.ProjectManager));
@@ -149,95 +151,77 @@ namespace ProjectTracker.Library
     }
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+    private void Create()
     {
       LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     [Fetch]
-    private void Fetch(int id)
+    private void Fetch(int id, [Inject] IResourceDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
         var data = dal.Fetch(id);
-        using (BypassPropertyChecks)
-        {
-          Id = data.Id;
-          FirstName = data.FirstName;
-          LastName = data.LastName;
-          TimeStamp = data.LastChanged;
-          Assignments = DataPortal.FetchChild<ResourceAssignments>(id);
-        }
+      using (BypassPropertyChecks)
+      {
+        Id = data.Id;
+        FirstName = data.FirstName;
+        LastName = data.LastName;
+        TimeStamp = data.LastChanged;
+        Assignments = DataPortal.FetchChild<ResourceAssignments>(id);
       }
     }
 
     [Insert]
-    private void Insert()
+    private void Insert([Inject] IResourceDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.ResourceDto
         {
-          var item = new ProjectTracker.Dal.ResourceDto
-          {
-            FirstName = this.FirstName,
-            LastName = this.LastName
-          };
-          dal.Insert(item);
-          Id = item.Id;
-          TimeStamp = item.LastChanged;
-        }
-        FieldManager.UpdateChildren(this);
+          FirstName = this.FirstName,
+          LastName = this.LastName
+        };
+        dal.Insert(item);
+        Id = item.Id;
+        TimeStamp = item.LastChanged;
       }
+      FieldManager.UpdateChildren(this);
     }
 
     [Update]
-    private void Update()
+    private void Update([Inject] IResourceDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.ResourceDto
         {
-          var item = new ProjectTracker.Dal.ResourceDto
-          {
-            Id = this.Id,
-            FirstName = this.FirstName,
-            LastName = this.LastName,
-            LastChanged = this.TimeStamp
-          };
-          dal.Update(item);
-          TimeStamp = item.LastChanged;
-        }
-        FieldManager.UpdateChildren(this);
+          Id = this.Id,
+          FirstName = this.FirstName,
+          LastName = this.LastName,
+          LastChanged = this.TimeStamp
+        };
+        dal.Update(item);
+        TimeStamp = item.LastChanged;
       }
+      FieldManager.UpdateChildren(this);
     }
 
     [DeleteSelf]
-    private void DeleteSelf()
+    private void DeleteSelf([Inject] IResourceDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        using (BypassPropertyChecks)
-        {
-          Assignments.Clear();
-          FieldManager.UpdateChildren(this);
-          Delete(this.Id);
-        }
+        Assignments.Clear();
+        FieldManager.UpdateChildren(this);
+        Delete(this.Id, dal);
       }
     }
 
     [Delete]
-    private void Delete(int id)
+    private void Delete(int id, [Inject] IResourceDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
-        dal.Delete(id);
-      }
+      dal.Delete(id);
     }
   }
 }

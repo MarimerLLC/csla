@@ -47,6 +47,8 @@ namespace ProjectTracker.AppServerCore
         options.AllowSynchronousIO = true;
       });
 
+      services.AddHttpContextAccessor();
+
       services.AddDalMock();
       //services.AddDalEfCore();
       services.AddCsla();
@@ -70,9 +72,6 @@ namespace ProjectTracker.AppServerCore
       app.UseMvc();
 
       app.UseCsla();
-
-      ConfigurationManager.AppSettings["DalManagerType"] = 
-        "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
     }
   }
 }

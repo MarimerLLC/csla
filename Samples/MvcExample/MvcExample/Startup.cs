@@ -26,6 +26,8 @@ namespace MvcExample
       services.AddControllersWithViews((c) =>
         c.ModelBinderProviders.Insert(0, new Csla.Web.Mvc.CslaModelBinderProvider()));
 
+      services.AddHttpContextAccessor();
+
       services.AddCsla();
       services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
     }

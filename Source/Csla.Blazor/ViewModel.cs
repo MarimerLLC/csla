@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Csla.Rules;
 
@@ -222,6 +223,22 @@ namespace Csla.Blazor
     private readonly Dictionary<string, object> _info = new Dictionary<string, object>();
 
     /// <summary>
+    /// Get a PropertyInfo object for a property.
+    /// PropertyInfo provides access
+    /// to the metastate of the property.
+    /// </summary>
+    /// <param name="property">Property</param>
+    /// <returns></returns>
+    public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property)
+    {
+      if (property == null)
+        throw new ArgumentNullException(nameof(property));
+
+      var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
+      return GetPropertyInfo(identifier.Model, identifier.FieldName);
+    }
+
+    /// <summary>
     /// Get a PropertyInfo object for a property
     /// of the Model. PropertyInfo provides access
     /// to the metastate of the property.
@@ -230,15 +247,21 @@ namespace Csla.Blazor
     /// <returns></returns>
     public IPropertyInfo GetPropertyInfo(string propertyName)
     {
+      return GetPropertyInfo(Model, propertyName);
+    }
+
+    private IPropertyInfo GetPropertyInfo(object model, string propertyName)
+    {
+      var keyName = model.GetType().FullName + "." + propertyName;
       PropertyInfo result;
-      if (_info.TryGetValue(propertyName, out object temp))
+      if (_info.TryGetValue(keyName, out object temp))
       {
         result = (PropertyInfo)temp;
       }
       else
       {
         result = new PropertyInfo(Model, propertyName);
-        _info.Add(propertyName, result);
+        _info.Add(keyName, result);
       }
       return result;
     }

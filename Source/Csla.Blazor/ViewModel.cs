@@ -108,59 +108,6 @@ namespace Csla.Blazor
     }
 
     /// <summary>
-    /// Refresh the Model
-    /// </summary>
-    /// <param name="parameters">Parameters passed to data portal</param>
-    /// <returns></returns>
-    public async Task<T> RefreshAsync(params object[] parameters)
-    {
-      Exception = null;
-      ViewModelErrorText = null;
-      try
-      {
-        Model = await DoRefreshAsync(parameters);
-      }
-      catch (DataPortalException ex)
-      {
-        Model = default;
-        Exception = ex;
-        ViewModelErrorText = ex.BusinessExceptionMessage;
-      }
-      catch (Exception ex)
-      {
-        Model = default;
-        Exception = ex;
-        ViewModelErrorText = ex.Message;
-      }
-      return Model;
-    }
-
-    /// <summary>
-    /// Override to provide custom Model refresh behavior
-    /// </summary>
-    /// <param name="parameters">Parameters passed to data portal</param>
-    /// <returns></returns>
-    protected virtual async Task<T> DoRefreshAsync(params object[] parameters)
-    {
-      if (typeof(Core.IReadOnlyObject).IsAssignableFrom(typeof(T)) ||
-          typeof(Core.IReadOnlyCollection).IsAssignableFrom(typeof(T)) ||
-          typeof(Core.IEditableCollection).IsAssignableFrom(typeof(T)))
-      {
-        if (Server.DataPortal.GetCriteriaFromArray(parameters) is Server.EmptyCriteria)
-          return await DataPortal.FetchAsync();
-        else
-          return await DataPortal.FetchAsync(parameters);
-      }
-      else
-      {
-        if (Server.DataPortal.GetCriteriaFromArray(parameters) is Server.EmptyCriteria)
-          return await DataPortal.CreateAsync();
-        else
-          return await DataPortal.FetchAsync(parameters);
-      }
-    }
-
-    /// <summary>
     /// Saves the Model
     /// </summary>
     /// <returns></returns>

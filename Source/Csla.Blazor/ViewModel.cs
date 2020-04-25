@@ -174,15 +174,16 @@ namespace Csla.Blazor
     /// PropertyInfo provides access
     /// to the metastate of the property.
     /// </summary>
-    /// <param name="property">Property</param>
+    /// <param name="property">Property expression</param>
     /// <returns></returns>
     public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
 
+      var keyName = property.ToString().Substring(property.ToString().IndexOf(").") + 2);
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
-      return GetPropertyInfo(identifier.Model, identifier.FieldName);
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName);
     }
 
     /// <summary>
@@ -194,12 +195,12 @@ namespace Csla.Blazor
     /// <returns></returns>
     public IPropertyInfo GetPropertyInfo(string propertyName)
     {
-      return GetPropertyInfo(Model, propertyName);
+      var keyName = Model.GetType().FullName + "." + propertyName;
+      return GetPropertyInfo(keyName, Model, propertyName);
     }
 
-    private IPropertyInfo GetPropertyInfo(object model, string propertyName)
+    private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName)
     {
-      var keyName = model.GetType().FullName + "." + propertyName;
       PropertyInfo result;
       if (_info.TryGetValue(keyName, out object temp))
       {
@@ -207,7 +208,7 @@ namespace Csla.Blazor
       }
       else
       {
-        result = new PropertyInfo(Model, propertyName);
+        result = new PropertyInfo(model, propertyName);
         _info.Add(keyName, result);
       }
       return result;

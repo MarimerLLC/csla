@@ -82,6 +82,33 @@ namespace Csla.Blazor
     /// <summary>
     /// Refresh the Model
     /// </summary>
+    /// <param name="factory">Async data portal or factory method</param>
+    public async Task<T> RefreshAsync(Func<Task<T>> factory)
+    {
+      Exception = null;
+      ViewModelErrorText = null;
+      try
+      {
+        Model = await factory();
+      }
+      catch (DataPortalException ex)
+      {
+        Model = default;
+        Exception = ex;
+        ViewModelErrorText = ex.BusinessExceptionMessage;
+      }
+      catch (Exception ex)
+      {
+        Model = default;
+        Exception = ex;
+        ViewModelErrorText = ex.Message;
+      }
+      return Model;
+    }
+
+    /// <summary>
+    /// Refresh the Model
+    /// </summary>
     /// <param name="parameters">Parameters passed to data portal</param>
     /// <returns></returns>
     public async Task<T> RefreshAsync(params object[] parameters)
@@ -97,14 +124,12 @@ namespace Csla.Blazor
         Model = default;
         Exception = ex;
         ViewModelErrorText = ex.BusinessExceptionMessage;
-        Console.Error.WriteLine(ex.ToString());
       }
       catch (Exception ex)
       {
         Model = default;
         Exception = ex;
         ViewModelErrorText = ex.Message;
-        Console.Error.WriteLine(ex.ToString());
       }
       return Model;
     }

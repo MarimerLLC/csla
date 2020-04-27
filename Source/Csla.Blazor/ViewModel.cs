@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Csla.Reflection;
 using Csla.Rules;
 
 namespace Csla.Blazor
@@ -181,8 +182,7 @@ namespace Csla.Blazor
       if (property == null)
         throw new ArgumentNullException(nameof(property));
 
-      var keyName = property.ToString();
-      keyName = keyName.Substring(keyName.IndexOf(").") + 2);
+      var keyName = property.GetKey();
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
       return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName);
     }

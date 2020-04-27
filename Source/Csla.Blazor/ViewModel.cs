@@ -181,7 +181,8 @@ namespace Csla.Blazor
       if (property == null)
         throw new ArgumentNullException(nameof(property));
 
-      var keyName = property.ToString().Substring(property.ToString().IndexOf(").") + 2);
+      var keyName = property.ToString();
+      keyName = keyName.Substring(keyName.IndexOf(").") + 2);
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
       return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName);
     }

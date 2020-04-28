@@ -34,9 +34,16 @@ namespace Csla.Core
           if (sourceValue is IEditableBusinessObject sourceChild)
           {
             if (ReadProperty(target, item) is IEditableBusinessObject targetChild)
+            {
               MergeGraph(targetChild, sourceChild);
+            }
             else
-              LoadProperty(target, item, sourceChild);
+            {
+              if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+                Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
+              else
+                LoadProperty(target, item, sourceChild);
+            }
           }
           else
           {
@@ -47,7 +54,10 @@ namespace Csla.Core
             }
             else
             {
-              LoadProperty(target, item, sourceValue);
+              if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+                Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
+              else
+                LoadProperty(target, item, sourceValue);
             }
           }
         }

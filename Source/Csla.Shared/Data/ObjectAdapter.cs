@@ -1,4 +1,3 @@
-#if !NETFX_CORE && !IOS
 //-----------------------------------------------------------------------
 // <copyright file="ObjectAdapter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -273,4 +272,3 @@ namespace Csla.Data
 
   }
 }
-#endif

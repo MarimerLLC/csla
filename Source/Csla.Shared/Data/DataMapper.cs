@@ -288,16 +288,11 @@ namespace Csla.Data
 
       private static IList<string> GetPropertyNames(Type sourceType)
       {
-#if NETSTANDARD
-        var properties = sourceType.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-        List<string> result = properties.Select(r => r.Name).ToList();
-#else
         List<string> result = new List<string>();
         PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
         foreach (PropertyDescriptor item in props)
             if (item.IsBrowsable)
                 result.Add(item.Name);
-#endif
         return result;
     }
     #endregion
@@ -384,15 +379,9 @@ namespace Csla.Data
 
       Type pType = handle.MemberType;
 
-#if NETSTANDARD && !NETSTANDARD2_0
-      var isGeneric = pType.IsGenericType();
-      var isPrimitive = pType.IsPrimitive();
-      var isValueType = pType.IsValueType();
-#else
       var isGeneric = pType.IsGenericType;
       var isPrimitive = pType.IsPrimitive;
       var isValueType = pType.IsValueType;
-#endif
       if (!isGeneric
           || (isGeneric && pType.GetGenericTypeDefinition() != typeof(Nullable<>)))
       {

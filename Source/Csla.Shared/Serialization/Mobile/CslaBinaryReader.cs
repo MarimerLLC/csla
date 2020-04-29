@@ -97,6 +97,13 @@ namespace Csla.Serialization.Mobile
       var knownType = (CslaKnownTypes)reader.ReadByte();
       switch (knownType)
       {
+        case CslaKnownTypes.IMobileObject:
+          using (MemoryStream arrayBuffer = new MemoryStream(reader.ReadBytes(reader.ReadInt32())))
+          {
+            var formatter = SerializationFormatterFactory.GetFormatter();
+            var obj = formatter.Deserialize(arrayBuffer);
+            return obj;
+          }
         case CslaKnownTypes.Boolean:
           return reader.ReadBoolean();
         case CslaKnownTypes.Char:

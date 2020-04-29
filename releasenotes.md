@@ -18,12 +18,22 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * [#1522](https://github.com/MarimerLLC/csla/issues/1522) 🐜 Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
 * [#1513](https://github.com/MarimerLLC/csla/issues/1513) 🎉 Improve exception info in MobileFormatter
 * [#1568](https://github.com/MarimerLLC/csla/issues/1568) 🎉 Add `LoadListMode` concept to collection types
+* [#1524](https://github.com/MarimerLLC/csla/issues/1524) 🎉 Add CheckRulesAsync method for checking rules
+* [#1590](https://github.com/MarimerLLC/csla/issues/1590) 🐜 `DataMapper` now honors `Browsable` attribute
+* [#1590](https://github.com/MarimerLLC/csla/issues/1590) 🐜 `DataMapper` now honors `Browsable` attribute
 
 ### Blazor
 
 * [#1509](https://github.com/MarimerLLC/csla/issues/1509) 🎉 Add a For clause to CslaValidationMessages in Blazor
 * [#1520](https://github.com/MarimerLLC/csla/issues/1520) 🐜 Fix Blazor Viewmodel GetPropertyInfo reference previous model property
 * [#1544](https://github.com/MarimerLLC/csla/issues/1544) ⚠ Remove PropertyName from Blazor CslaValidationMessages
+* [#1586](https://github.com/MarimerLLC/csla/issues/1586) ⚠ Move wasm dependencies to `Csla.Blazor.WebAssembly` package
+* [#1585](https://github.com/MarimerLLC/csla/issues/1585) ⚠ Change `RefreshAsync` to require data portal or factory method
+* [#1584](https://github.com/MarimerLLC/csla/issues/1584) 🎉 Add overload for `GetPropertyInfo` to accept expression
+
+### Xamarin and XAML
+
+* [#1570](https://github.com/MarimerLLC/csla/issues/1570) 🐜 Fix issue with PropertyInfo error/warn/info text
 
 ### Windows Forms and WPF (.NET Core 3)
 

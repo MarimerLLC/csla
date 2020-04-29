@@ -20,7 +20,6 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * [#1568](https://github.com/MarimerLLC/csla/issues/1568) 🎉 Add `LoadListMode` concept to collection types
 * [#1524](https://github.com/MarimerLLC/csla/issues/1524) 🎉 Add CheckRulesAsync method for checking rules
 * [#1590](https://github.com/MarimerLLC/csla/issues/1590) 🐜 `DataMapper` now honors `Browsable` attribute
-* [#1590](https://github.com/MarimerLLC/csla/issues/1590) 🐜 `DataMapper` now honors `Browsable` attribute
 
 ### Blazor
 

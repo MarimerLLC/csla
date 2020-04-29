@@ -97,6 +97,18 @@ namespace Csla.Serialization.Mobile
       {
         Write(CslaKnownTypes.Null, writer);
       }
+      else if (target is IMobileObject)
+      {
+        using (MemoryStream buffer = new MemoryStream())
+        {
+          var formatter = SerializationFormatterFactory.GetFormatter();
+          formatter.Serialize(buffer, target);
+          var data = buffer.ToArray();
+          Write(CslaKnownTypes.IMobileObject, writer);
+          writer.Write(data.Length);
+          writer.Write(data);
+        }
+      }
       else if (target is CslaKnownTypes)
       {
         writer.Write((byte)((CslaKnownTypes)target));

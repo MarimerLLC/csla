@@ -114,5 +114,9 @@ namespace Csla.Serialization.Mobile
     /// Array of array of bytes
     /// </summary>
     ByteArrayArray = 25,
+    /// <summary>
+    /// IMobileObject serialized into a byte array
+    /// </summary>
+    IMobileObject
   }
 }

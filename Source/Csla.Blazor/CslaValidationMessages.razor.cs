@@ -93,7 +93,7 @@ namespace Csla.Blazor
       }
 
       if (For == null)
-        throw new ArgumentNullException("For");
+        throw new ArgumentNullException(nameof(For));
 
       // Create a FieldIdentifier to use in recognising the field being validated
       _fieldIdentifier = FieldIdentifier.Create(For);

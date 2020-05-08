@@ -77,8 +77,8 @@ else
   protected override async Task OnParametersSetAsync()
   {
     if (string.IsNullOrWhiteSpace(id))
-      await vm.RefreshAsync();
+      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<PersonEdit>());
     else
-      await vm.RefreshAsync(int.Parse(id));
+      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<PersonEdit>(int.Parse(id)));
   }
 }

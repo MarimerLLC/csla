@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inject Csla.Blazor.ViewModel<ProjectTracker.Library.Dashboard> vm
+@using ProjectTracker.Library
+@inject Csla.Blazor.ViewModel<Dashboard> vm
 
 <h1>Project Tracker</h1>
 
@@ -30,7 +31,7 @@ else
   {
     try
     {
-      await vm.RefreshAsync();
+      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<Dashboard>());
     }
     catch (Exception ex)
     {

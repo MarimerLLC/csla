@@ -1,5 +1,5 @@
 ﻿@page "/projectedit"
-@page "/projectedit/{id}"
+@page "/projectedit/{id:int}"
 @inject Csla.Blazor.ViewModel<ProjectTracker.Library.ProjectEdit> vm
 @inject NavigationManager NavigationManager
 
@@ -123,7 +123,7 @@ else
 
 @code {
   [Parameter]
-  public string id { get; set; }
+  public int id { get; set; }
 
   private SubViewModes viewMode = SubViewModes.Default;
   private ProjectTracker.Library.ProjectResourceEdit selectedResource;
@@ -137,10 +137,10 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    if (string.IsNullOrWhiteSpace(id))
-      await vm.RefreshAsync();
+    if (id == 0)
+      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<ProjectTracker.Library.ProjectEdit>());
     else
-      await vm.RefreshAsync(int.Parse(id));
+      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectEdit>(id));
   }
 
   private async void SelectResource()

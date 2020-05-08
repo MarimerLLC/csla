@@ -58,9 +58,9 @@ namespace DataAccess.EF
         {
           lastId = _context.Persons.Max(m => m.Id);
         }
-        catch(Exception ex)
+        catch
         {
-
+          /* ignore exception */
         }
         person.Id = ++lastId;
         _context.Persons.Add(person);

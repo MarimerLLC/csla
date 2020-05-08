@@ -31,7 +31,7 @@ else
   {
     try
     {
-      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<Dashboard>());
+      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<Dashboard>());
     }
     catch (Exception ex)
     {

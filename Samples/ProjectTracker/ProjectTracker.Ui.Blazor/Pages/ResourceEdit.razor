@@ -155,7 +155,7 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    if (id > 0)
+    if (id == 0)
       await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<ProjectTracker.Library.ResourceEdit>());
     else
       await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<ProjectTracker.Library.ResourceEdit>(id));

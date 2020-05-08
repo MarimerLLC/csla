@@ -41,7 +41,7 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<LoginData>());
   }
 
   private async void LoginUser()

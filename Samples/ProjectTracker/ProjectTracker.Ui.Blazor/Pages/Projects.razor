@@ -58,7 +58,7 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectList>());
   }
 
   private void SelectForDelete(int id)
@@ -71,7 +71,7 @@ else
     itemSelectedForDeletion = -1;
     vm.Model = null;
     await ProjectTracker.Library.ProjectEdit.DeleteProjectAsync(id);
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectList>());
     StateHasChanged();
   }
 }

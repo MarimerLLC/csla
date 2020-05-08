@@ -96,7 +96,7 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<RoleEditList>());
   }
 
   private void AddRole()
@@ -172,7 +172,7 @@ else
   private async Task SaveAndRefresh()
   {
     await vm.SaveAsync();
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<RoleEditList>());
     StateHasChanged();
   }
 }

@@ -40,6 +40,6 @@ else
 @code {
   protected override async Task OnInitializedAsync()
   {
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<PersonList>());
   }
 }

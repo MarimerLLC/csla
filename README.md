@@ -16,7 +16,7 @@ More information about CSLA .NET is available from the following sources:
 
 * [CSLA .NET home page](http://www.cslanet.com)
 * [Sponsor CSLA .NET](https://github.com/sponsors/rockfordlhotka)
-* [CSLA .NET FAQ](https://github.com/MarimerLLC/csla/blob/master/docs/index.md)
+* [CSLA .NET FAQ](https://github.com/MarimerLLC/csla/blob/master/docs/readme.md)
 * [Getting started with CSLA .NET](https://github.com/MarimerLLC/csla/blob/master/docs/Getting-started.md)
 * [CSLA .NET discussions](https://github.com/MarimerLLC/csla/discussions) 
 * [CSLA .NET training videos and ebooks](https://github.com/MarimerLLC/csla/blob/master/docs/Books-and-videos.md)

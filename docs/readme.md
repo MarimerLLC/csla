@@ -19,7 +19,7 @@ Resources
 ---------
 You can learn how to get started using the resources listed here:
 * [Getting started](Getting-started.md)
-* [Discussion forum](https://github.com/MarimerLLC/cslaforum)
+* [Discussion forum](https://github.com/MarimerLLC/csla/discussions)
 * [Code generators](https://github.com/MarimerLLC/csla/blob/master/docs/code-generators.md)
 
 Contributing

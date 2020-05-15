@@ -45,19 +45,7 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 ### Dependabot and NuGet dependencies
 
-* Bump Microsoft.Extensions.DependencyInjection to 3.1.3
-* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.3
-* Bump Microsoft.Extensions.Configuration to 3.1.4
-* Bump Microsoft.Extensions.Configuration.Abstractions to 3.1.4
-* Bump Microsoft.Extensions.Configuration.Binder to 3.1.4
-* Bump Microsoft.Extensions.Configuration.Json to 3.1.3
-* Bump Microsoft.Extensions.Configuration.EnvironmentVariables from 3.1.3 to 3.1.4
-* Bump Microsoft.Extensions.FileProviders.Physical from 3.1.3 to 3.1.4
-* Bump Microsoft.Extensions.Hosting to 3.1.4
-* Bump Microsoft.Extensions.Logging.Console from 3.1.3 to 3.1.4
-* Bump Microsoft.AspNetCore.Components to 3.1.3
-* Bump Microsoft.AspNetCore.Components.Web to 3.1.3
-* Bump Microsoft.AspNetCore.Components.Authorization to 3.1.3
+* Bump Microsoft.* packages to 3.1.4
 * Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.0-preview3.20168.3
 * Bump System.Data.SqlClient from 4.8.0 to 4.8.1
 * Bump Microsoft.Data.SqlClient 1.1.2.
@@ -70,6 +58,7 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * Bump System.Memory to 4.5.4
 * Bump System.Text.Encodings.Web from 4.7.0 to 4.7.1
 * Bump Microsoft.Bcl.AsyncInterfaces from 1.1.0 to 1.1.1
+* Bump Xamarin.Forms to 4.6.0.772
 
 ## Contributors
 

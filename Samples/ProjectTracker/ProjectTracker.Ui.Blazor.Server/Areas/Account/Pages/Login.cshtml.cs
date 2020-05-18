@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ProjectTracker.BusinessLibrary.Security;
 
 namespace ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account
 {
@@ -15,7 +16,7 @@ namespace ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account
   public class LoginModel : PageModel
   {
     [BindProperty]
-    public LoginData loginData { get; set; }
+    public Credentials credentials { get; set; }
     [BindProperty]
     public string AlertMessage { get; set; } = "";
 
@@ -31,15 +32,17 @@ namespace ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
       }
 
-      var identity = await Library.Security.PTIdentity.GetPTIdentityAsync(loginData.UserName, loginData.Password);
-
-      // create claimsidentity and claimsprincipal
-      var baseidentity = new ClaimsIdentity(identity.AuthenticationType);
-      baseidentity.AddClaim(new Claim(ClaimTypes.Name, identity.Name));
-      if (identity.Roles != null)
-        foreach (var item in identity.Roles)
-          baseidentity.AddClaim(new Claim(ClaimTypes.Role, item));
-      var principal = new ClaimsPrincipal(baseidentity);
+      var validator =
+        await Csla.DataPortal.FetchAsync<CredentialValidator>(credentials);
+      var identity = new ClaimsIdentity(validator.AuthenticationType);
+      if (!string.IsNullOrWhiteSpace(validator.Name))
+      {
+        identity.AddClaim(new Claim(ClaimTypes.Name, validator.Name));
+        if (validator.Roles != null)
+          foreach (var item in validator.Roles)
+            identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      }
+      var principal = new ClaimsPrincipal(identity);
 
       Csla.ApplicationContext.User = principal;
 

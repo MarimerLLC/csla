@@ -1,7 +1,8 @@
 ﻿@page "/account/login"
 @using System.Security.Claims
+@using ProjectTracker.BusinessLibrary.Security
 @using Csla
-@inject Csla.Blazor.ViewModel<LoginData> vm
+@inject Csla.Blazor.ViewModel<Credentials> vm
 @inject Csla.Blazor.Client.Authentication.CslaUserService userService
 @inject NavigationManager NavigationManager
 
@@ -24,8 +25,8 @@ else
       </tr>
     </thead>
     <tbody>
-      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Username))" />
-      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Password))" InputType="password" />
+      <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Username)" />
+      <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Password)" InputType="password" />
     </tbody>
   </table>
   <button @onclick="LoginUser" disabled="@(!vm.Model.IsSavable)">Login</button>
@@ -36,24 +37,28 @@ else
 
   protected override void OnInitialized()
   {
-    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+    vm.ModelPropertyChanged += async (s, e) =>
+      await InvokeAsync(() => StateHasChanged());
   }
 
   protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<LoginData>());
+    await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<Credentials>());
   }
 
   private async void LoginUser()
   {
-    var identity = await Library.Security.PTIdentity.GetPTIdentityAsync(vm.Model.Username, vm.Model.Password);
-
-    var baseidentity = new ClaimsIdentity(identity.AuthenticationType);
-    baseidentity.AddClaim(new Claim(ClaimTypes.Name, identity.Name));
-    if (identity.Roles != null)
-      foreach (var item in identity.Roles)
-        baseidentity.AddClaim(new Claim(ClaimTypes.Role, item));
-    var principal = new ClaimsPrincipal(baseidentity);
+    var validator =
+      await Csla.DataPortal.FetchAsync<CredentialValidator>(vm.Model);
+    var identity = new ClaimsIdentity(validator.AuthenticationType);
+    if (!string.IsNullOrWhiteSpace(validator.Name))
+    {
+      identity.AddClaim(new Claim(ClaimTypes.Name, validator.Name));
+      if (validator.Roles != null)
+        foreach (var item in validator.Roles)
+          identity.AddClaim(new Claim(ClaimTypes.Role, item));
+    }
+    var principal = new ClaimsPrincipal(identity);
 
     if (identity.IsAuthenticated)
     {
@@ -65,28 +70,5 @@ else
       ErrorText = "Invalid credentials";
       StateHasChanged();
     }
-  }
-
-  [Serializable]
-  public class LoginData : BusinessBase<LoginData>
-  {
-    public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(nameof(Username));
-    public string Username
-    {
-      get => GetProperty(UsernameProperty);
-      set => SetProperty(UsernameProperty, value);
-    }
-
-    public static readonly PropertyInfo<string> PasswordProperty = RegisterProperty<string>(nameof(Password));
-    public string Password
-    {
-      get => GetProperty(PasswordProperty);
-      set => SetProperty(PasswordProperty, value);
-    }
-
-    [Create]
-    [RunLocal]
-    private void Create()
-    { }
   }
 }

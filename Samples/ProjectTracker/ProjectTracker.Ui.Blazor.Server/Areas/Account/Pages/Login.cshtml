@@ -31,13 +31,13 @@
         }
         <form method="post">
           <div class="form-group">
-            <label asp-for="loginData.UserName"></label>
-            <input asp-for="loginData.UserName" class="form-control">
+            <label asp-for="credentials.Username"></label>
+            <input asp-for="credentials.Username" class="form-control">
             <div class="invalid-feedback"></div>
           </div>
           <div class="form-group">
-            <label asp-for="loginData.Password"></label>
-            <input asp-for="loginData.Password" class="form-control" type="password">
+            <label asp-for="credentials.Password"></label>
+            <input asp-for="credentials.Password" class="form-control" type="password">
             <div class="invalid-feedback"></div>
           </div>
           <button type="submit" class="btn btn-primary">Login</button>

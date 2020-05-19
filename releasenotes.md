@@ -1,4 +1,4 @@
-# CSLA 5 releases
+﻿# CSLA 5 releases
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
 
@@ -46,13 +46,14 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 ### Dependabot and NuGet dependencies
 
 * Bump Microsoft.* packages to 3.1.4
-* Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.0-preview3.20168.3
+* Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.0
 * Bump System.Data.SqlClient from 4.8.0 to 4.8.1
-* Bump Microsoft.Data.SqlClient 1.1.2.
+* Bump Microsoft.Data.SqlClient 1.1.3
 * Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
 * Bump System.Threading.Tasks.Extensions to 4.5.4
 * Bump System.Runtime.CompilerServices.Unsafe to 4.7.1
 * Bump Grpc.Net.Client to 2.28.0
+* Bump Google.Protobuf to 3.12.0
 * Bump Grpc.Tools to 2.28.1
 * Bump System.Buffers to 4.5.1
 * Bump System.Memory to 4.5.4
@@ -146,7 +147,7 @@ Highlights:
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.1.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
 * Bump Google.Protobuf from 3.9.2 to 3.11.4
-* Bump Grpc.Net.Client from 2.24.0 to 2.27.0
+* Bump Grpc.Net.Client from 2.24.0 to 2.28.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors

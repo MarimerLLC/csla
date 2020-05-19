@@ -7,7 +7,6 @@
 <p>Welcome to the project tracker sample app.</p>
 
 <p class="text-danger">@vm.ViewModelErrorText</p>
-<p class="text-danger">@ErrorText</p>
 
 @if (vm.Model != null)
 {
@@ -25,17 +24,8 @@ else
 }
 
 @code {
-  private string ErrorText;
-
   protected override async Task OnParametersSetAsync()
   {
-    try
-    {
-      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<Dashboard>());
-    }
-    catch (Exception ex)
-    {
-      ErrorText = ex.Message;
-    }
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<Dashboard>());
   }
 }

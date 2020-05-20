@@ -25,7 +25,8 @@ namespace BlazorExample.Client
       builder.Services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
 
       builder.UseCsla((c) =>
-        c.DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:57410/api/DataPortal"));
+        c.DataPortal().DefaultProxy(
+          typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:57416/api/DataPortal"));
 
       var host = builder.Build();
 

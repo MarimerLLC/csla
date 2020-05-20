@@ -12,10 +12,11 @@ namespace BlazorExample.Shared
     [Fetch]
     private void Fetch([Inject]DataAccess.IPersonDal dal)
     {
-      IsReadOnly = false;
-      var data = dal.Get().Select(d => DataPortal.FetchChild<PersonInfo>(d));
-      AddRange(data);
-      IsReadOnly = true;
+      using (LoadListMode)
+      {
+        var data = dal.Get().Select(d => DataPortal.FetchChild<PersonInfo>(d));
+        AddRange(data);
+      }
     }
   }
 }

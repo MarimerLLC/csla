@@ -30,6 +30,9 @@ else
     </tbody>
   </table>
   <button @onclick="LoginUser" disabled="@(!vm.Model.IsSavable)">Login</button>
+  <p class="text-info">
+    Use username/password 'manager' or 'admin'.
+  </p>
 }
 
 @code {

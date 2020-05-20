@@ -25,11 +25,11 @@ else
       </tr>
     </thead>
     <tbody>
-      <LabelRow Property="vm.GetPropertyInfo(nameof(vm.Model.Id))" />
-      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Name))" />
-      <TextAreaRow rows="5" Property="@(vm.GetPropertyInfo(nameof(vm.Model.Description)))" />
-      <DateInputRow Property="@(vm.GetPropertyInfo(nameof(vm.Model.Started)))" />
-      <DateInputRow Property="@(vm.GetPropertyInfo(nameof(vm.Model.Ended)))" EmptyIsMin="false" />
+      <LabelRow Property="vm.GetPropertyInfo(() => vm.Model.Id)" />
+      <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Name)" />
+      <TextAreaRow rows="5" Property="@(vm.GetPropertyInfo(() => vm.Model.Description))" />
+      <DateInputRow Property="@(vm.GetPropertyInfo(() => vm.Model.Started))" />
+      <DateInputRow Property="@(vm.GetPropertyInfo(() => vm.Model.Ended))" EmptyIsMin="false" />
     </tbody>
   </table>
   <div style="background-color:lightgray">

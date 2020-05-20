@@ -59,6 +59,8 @@ namespace ProjectTracker.Ui.Blazor
         endpoints.MapFallbackToPage("/_Host");
       });
 
+      App.IsServerSide = true;
+
       //// use in-proc data portal
       //app.UseCsla();
       //ConfigurationManager.AppSettings["DalManagerType"] =

@@ -172,7 +172,8 @@ else
   private async Task SaveAndRefresh()
   {
     await vm.SaveAsync();
-    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<RoleEditList>());
+    await vm.RefreshAsync(() => 
+      Csla.DataPortal.FetchAsync<RoleEditList>());
     StateHasChanged();
   }
 }

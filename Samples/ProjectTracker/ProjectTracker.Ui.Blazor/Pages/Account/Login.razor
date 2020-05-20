@@ -36,42 +36,34 @@ else
 }
 
 @code {
-  public string ErrorText { get; set; }
+    public string ErrorText { get; set; }
 
-  protected override void OnInitialized()
-  {
-    vm.ModelPropertyChanged += async (s, e) =>
-      await InvokeAsync(() => StateHasChanged());
-  }
-
-  protected override async Task OnParametersSetAsync()
-  {
-    await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<Credentials>());
-  }
-
-  private async void LoginUser()
-  {
-    var validator =
-      await Csla.DataPortal.FetchAsync<CredentialValidator>(vm.Model);
-    var identity = new ClaimsIdentity(validator.AuthenticationType);
-    if (!string.IsNullOrWhiteSpace(validator.Name))
+    protected override void OnInitialized()
     {
-      identity.AddClaim(new Claim(ClaimTypes.Name, validator.Name));
-      if (validator.Roles != null)
-        foreach (var item in validator.Roles)
-          identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      vm.ModelPropertyChanged += async (s, e) =>
+        await InvokeAsync(() => StateHasChanged());
     }
-    var principal = new ClaimsPrincipal(identity);
 
-    if (identity.IsAuthenticated)
+    protected override async Task OnParametersSetAsync()
     {
-      userService.CurrentUser = principal;
-      NavigationManager.NavigateTo("/");
+      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<Credentials>());
     }
-    else
+
+    private async void LoginUser()
     {
-      ErrorText = "Invalid credentials";
-      StateHasChanged();
+      var validator =
+        await Csla.DataPortal.FetchAsync<CredentialValidator>(vm.Model);
+      var principal = validator.GetPrincipal();
+
+      if (principal.Identity.IsAuthenticated)
+      {
+        userService.CurrentUser = principal;
+        NavigationManager.NavigateTo("/");
+      }
+      else
+      {
+        ErrorText = "Invalid credentials";
+        StateHasChanged();
+      }
     }
-  }
 }

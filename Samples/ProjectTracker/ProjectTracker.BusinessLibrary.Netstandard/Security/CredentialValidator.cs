@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using Csla;
 using Csla.Core;
 using Csla.Security;
@@ -28,6 +29,19 @@ namespace ProjectTracker.BusinessLibrary.Security
     {
       get => GetProperty(RolesProperty);
       private set => LoadProperty(RolesProperty, value);
+    }
+
+    public ClaimsPrincipal GetPrincipal()
+    {
+      var identity = new ClaimsIdentity(AuthenticationType);
+      if (!string.IsNullOrWhiteSpace(Name))
+      {
+        identity.AddClaim(new Claim(ClaimTypes.Name, Name));
+        if (Roles != null)
+          foreach (var item in Roles)
+            identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      }
+      return new ClaimsPrincipal(identity);
     }
 
     [Fetch]

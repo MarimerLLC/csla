@@ -34,19 +34,11 @@ namespace ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account
 
       var validator =
         await Csla.DataPortal.FetchAsync<CredentialValidator>(credentials);
-      var identity = new ClaimsIdentity(validator.AuthenticationType);
-      if (!string.IsNullOrWhiteSpace(validator.Name))
-      {
-        identity.AddClaim(new Claim(ClaimTypes.Name, validator.Name));
-        if (validator.Roles != null)
-          foreach (var item in validator.Roles)
-            identity.AddClaim(new Claim(ClaimTypes.Role, item));
-      }
-      var principal = new ClaimsPrincipal(identity);
+      var principal = validator.GetPrincipal();
 
       Csla.ApplicationContext.User = principal;
 
-      if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+      if (principal.Identity.IsAuthenticated)
       {
         AuthenticationProperties authProperties = new AuthenticationProperties();
         await HttpContext.SignInAsync(

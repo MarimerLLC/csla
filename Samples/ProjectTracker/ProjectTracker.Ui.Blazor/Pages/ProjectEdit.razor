@@ -107,7 +107,10 @@ else
               <td>@item.FirstName</td>
               <td>@item.LastName</td>
               <td>@item.RoleName</td>
-              <td><a href="javascript: void(0);" @onclick="() => EditResource(item.ResourceId)">Edit</a> | <a href="javascript: void(0);" @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
+              <td><a href="javascript: void(0);" 
+                     @onclick="() => EditResource(item.ResourceId)">Edit</a>
+              | <a href="javascript: void(0);" 
+                   @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
             </tr>
           }
         </tbody>

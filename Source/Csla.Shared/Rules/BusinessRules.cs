@@ -833,7 +833,7 @@ namespace Csla.Rules
           if (rule is IBusinessRule syncRule)
             syncRule.Execute(context);
           else if (rule is IBusinessRuleAsync asyncRule)
-            asyncRule.ExecuteAsync(context).ContinueWith((t)=> { context.Complete(); });
+            RunAsyncRule(asyncRule, context);
           else
             throw new ArgumentOutOfRangeException(rule.GetType().FullName);
         }
@@ -868,6 +868,12 @@ namespace Csla.Rules
       }
       // return any synchronous results
       return new RunRulesResult(affectedProperties, dirtyProperties);
+    }
+
+    private async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
+    {
+      await asyncRule.ExecuteAsync(context);
+      context.Complete();
     }
 
     #region DataAnnotations

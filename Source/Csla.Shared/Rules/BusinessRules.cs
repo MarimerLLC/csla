@@ -872,8 +872,14 @@ namespace Csla.Rules
 
     private async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
     {
-      await asyncRule.ExecuteAsync(context);
-      context.Complete();
+      try
+      {
+        await asyncRule.ExecuteAsync(context);
+      }
+      finally
+      {
+        context.Complete();
+      }
     }
 
     #region DataAnnotations

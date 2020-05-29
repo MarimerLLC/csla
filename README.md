@@ -2,7 +2,7 @@ CSLA .NET
 ====
 [![Build status](https://ci.appveyor.com/api/projects/status/jl2k3pjvtqca4lei/branch/master?svg=true)](https://ci.appveyor.com/project/rockfordlhotka/csla/branch/master)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=MarimerLLC/csla)](https://dependabot.com)
-[![Join the chat at https://gitter.im/MarimerLLC/cslaforum](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarimerLLC/cslaforum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/MarimerLLC/cslaforum](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarimerLLC/csla?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![NuGet](https://img.shields.io/nuget/v/Csla.svg)](https://www.nuget.org/packages/Csla)
 

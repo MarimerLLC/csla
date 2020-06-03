@@ -765,7 +765,17 @@ namespace Csla.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Conponent requires a value for the PropertyName parameter.
+        ///   Looks up a localized string similar to Component requires a value for either the For or PropertyName parameter.
+        /// </summary>
+        public static string OneOfTwoParametersRequiredException
+        {
+            get {
+                return ResourceManager.GetString("OneOfTwoParametersRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component requires a value for the PropertyName parameter.
         /// </summary>
         public static string ParameterRequiredException
         {

@@ -108,6 +108,5 @@ namespace Csla.Test.DataPortal
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Method", "Fetch(List<DateTime?> values)");
     }
-
   }
 }

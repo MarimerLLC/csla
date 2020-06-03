@@ -13,6 +13,7 @@ namespace Csla.Blazor.Test.Fakes
     public static Csla.PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
     public static Csla.PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
     public static Csla.PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
+    public static Csla.PropertyInfo<FakePersonEmailAddresses> EmailAddressesProperty = RegisterProperty<FakePersonEmailAddresses>(nameof(EmailAddresses));
 
     #region Properties 
 
@@ -41,6 +42,11 @@ namespace Csla.Blazor.Test.Fakes
     {
       get { return GetProperty(MobileTelephoneProperty); }
       set { SetProperty(MobileTelephoneProperty, value); }
+    }
+
+    public FakePersonEmailAddresses EmailAddresses
+    {
+      get { return GetProperty(EmailAddressesProperty); }
     }
 
     #endregion
@@ -73,6 +79,16 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.AddRule(rule);
     }
 
+    protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
+    {
+      if (e.ChildObject is FakePersonEmailAddresses)
+      {
+        BusinessRules.CheckRules(EmailAddressesProperty);
+        OnPropertyChanged(EmailAddressesProperty);
+      }
+      base.OnChildChanged(e);
+    }
+
     #endregion
 
     #region Data Access
@@ -81,6 +97,9 @@ namespace Csla.Blazor.Test.Fakes
     [Create]
     private void Create()
     {
+      // Create an empty list for holding email addresses
+      LoadProperty(EmailAddressesProperty, DataPortal.CreateChild<FakePersonEmailAddresses>());
+
       // Trigger object checks
       BusinessRules.CheckRules();
     }

@@ -63,12 +63,13 @@ namespace Csla.Blazor
 
       // Transfer broken rules of severity Error to the ValidationMessageStore
       messages.Clear();
-      foreach (var brokenRule in model.GetBrokenRules())
+      foreach (var brokenRuleNode in BusinessRules.GetAllBrokenRules(model))
       {
+        foreach (var brokenRule in brokenRuleNode.BrokenRules)
         if (brokenRule.Severity == RuleSeverity.Error)
         {
           // Add a new message for each broken rule
-          messages.Add(new FieldIdentifier(model, brokenRule.Property), brokenRule.Description);
+          messages.Add(new FieldIdentifier(brokenRuleNode.Object, brokenRule.Property), brokenRule.Description);
         }
       }
 
@@ -88,14 +89,14 @@ namespace Csla.Blazor
       ICheckRules model;
 
       // Get access to the model via the required interface
-      model = editContext.Model as ICheckRules;
+      model = fieldIdentifier.Model as ICheckRules;
 
       // Check if the model was provided, and correctly cast
       if (model == null)
       {
         throw new ArgumentException(
           string.Format(Csla.Properties.Resources.InterfaceNotImplementedException,
-          nameof(editContext.Model), nameof(ICheckRules)));
+          nameof(fieldIdentifier.Model), nameof(ICheckRules)));
       }
 
       // Transfer any broken rules of severity Error for the required property to the store

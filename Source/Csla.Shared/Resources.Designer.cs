@@ -1270,6 +1270,7 @@ namespace Csla.Properties
         return GetResourceString();
       }
     }
+	
     /// <summary>
     /// Looks up a localized string.
     /// </summary>
@@ -1280,6 +1281,18 @@ namespace Csla.Properties
         return GetResourceString();
       }
     }
+	
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string OneOfTwoParametersRequiredException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
   }
 }
 #endif

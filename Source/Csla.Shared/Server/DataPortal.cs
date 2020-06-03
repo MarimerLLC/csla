@@ -154,8 +154,19 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
         DataPortalResult result;
+        DataPortalMethodInfo method;
 
-        DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
+#if NET40
+        method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
+#else
+        Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
+        if (criteria is Server.EmptyCriteria)
+          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
+        else
+          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+        serviceProviderMethodInfo.PrepForInvocation();
+        method = serviceProviderMethodInfo.DataPortalMethodInfo;
+#endif
 
         IDataPortalServer portal;
 #if !(ANDROID || IOS) && !NETFX_CORE 
@@ -246,11 +257,23 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
         DataPortalResult result;
+        DataPortalMethodInfo method;
 
-        DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
+#if NET40
+        method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
+#else
+        Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
+        if (criteria is EmptyCriteria)
+          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
+        else
+          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+
+        serviceProviderMethodInfo.PrepForInvocation();
+        method = serviceProviderMethodInfo.DataPortalMethodInfo;
+#endif
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE 
+#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO && !NETSTANDARD2_0
@@ -361,6 +384,7 @@ namespace Csla.Server
             methodName = factoryInfo.UpdateMethodName;
           method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, new object[] { obj });
         }
+#if NET40
         else
         {
           string methodName;
@@ -381,7 +405,32 @@ namespace Csla.Server
             methodName = "DataPortal_Update";
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
         }
-#if !(ANDROID || IOS) && !NETFX_CORE 
+#else
+        else
+        {
+          Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
+          var bbase = obj as Core.BusinessBase;
+          if (bbase != null)
+          {
+            if (bbase.IsDeleted)
+              serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, null);
+            else
+              if (bbase.IsNew)
+                serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, null);
+              else
+                serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+          }
+          else if (obj is Core.ICommandObject)
+            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
+          else
+            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+
+          serviceProviderMethodInfo.PrepForInvocation();
+          method = serviceProviderMethodInfo.DataPortalMethodInfo;
+        }
+#endif
+
+#if !(ANDROID || IOS) && !NETFX_CORE
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
 #else
         context.TransactionalType = method.TransactionalType;
@@ -480,13 +529,26 @@ namespace Csla.Server
           string methodName = factoryInfo.DeleteMethodName;
           method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
         }
+#if NET40
         else
         {
           method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
         }
+#else
+        else
+        {
+          Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
+          if (criteria is EmptyCriteria)
+            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
+          else
+            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo.PrepForInvocation();
+          method = serviceProviderMethodInfo.DataPortalMethodInfo;
+        }
+#endif
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE 
+#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO && !NETSTANDARD2_0
@@ -589,15 +651,6 @@ namespace Csla.Server
 
       if (_interceptor != null)
         _interceptor.Complete(e);
-
-#if !NET40 && !NET45
-      var scope = ApplicationContext.ServiceProviderScope;
-      if (scope != null)
-      {
-        ApplicationContext.ServiceProviderScope = null;
-        scope.Dispose();
-      }
-#endif
     }
 
     internal void Initialize(InterceptArgs e)
@@ -687,6 +740,18 @@ namespace Csla.Server
 
     private void ClearContext(DataPortalContext context)
     {
+#if !NET40 && !NET45
+      if (_oldLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      {
+        var scope = ApplicationContext.ServiceProviderScope;
+        if (scope != null)
+        {
+          ApplicationContext.ServiceProviderScope = null;
+          scope.Dispose();
+        }
+      }
+#endif
+
       ApplicationContext.SetLogicalExecutionLocation(_oldLocation);
       // if the dataportal is not remote then
       // do nothing
@@ -760,7 +825,10 @@ namespace Csla.Server
     {
       var clength = 0;
       if (criteria != null)
-        clength = criteria.GetLength(0);
+        if (criteria.GetType().Equals(typeof(object[])))
+          clength = criteria.GetLength(0);
+        else
+          return criteria;
 
       if (criteria == null || (clength == 1 && criteria[0] == null))
         return NullCriteria.Instance;
@@ -790,8 +858,9 @@ namespace Csla.Server
 #endif
       else if (criteria is NullCriteria)
         return new object[] { null };
-      else if (criteria is object[] array)
+      else if (criteria.GetType().Equals(typeof(object[])))
       {
+        var array = (object[])criteria;
         var clength = array.GetLength(0);
         if (clength == 1 && array[0] is EmptyCriteria)
 #if NET40 || NET45

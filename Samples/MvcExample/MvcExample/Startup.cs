@@ -23,7 +23,8 @@ namespace MvcExample
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddControllersWithViews();
+      services.AddControllersWithViews((c) =>
+        c.ModelBinderProviders.Insert(0, new Csla.Web.Mvc.CslaModelBinderProvider()));
 
       services.AddCsla();
       services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));

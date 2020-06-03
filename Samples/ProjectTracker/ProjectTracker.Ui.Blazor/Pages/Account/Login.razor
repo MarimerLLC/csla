@@ -28,7 +28,7 @@ else
       <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Password))" InputType="password" />
     </tbody>
   </table>
-  <button @onclick="LoginUser" disabled="@(!vm.Model.IsSavable)">Save</button>
+  <button @onclick="LoginUser" disabled="@(!vm.Model.IsSavable)">Login</button>
 }
 
 @code {

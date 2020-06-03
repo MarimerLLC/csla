@@ -85,7 +85,11 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
         var proxy = GetDataPortalProxy(objectType, method.RunLocal);
 #else
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+        Reflection.ServiceProviderMethodInfo method;
+        if (criteria is Server.EmptyCriteria)
+          method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null, false);
+        else
+          method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
 #endif
 

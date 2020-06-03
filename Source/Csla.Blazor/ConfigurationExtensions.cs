@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Blazor;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -37,7 +37,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="builder">ICslaBuilder instance</param>
     /// <returns></returns>
-    public static ICslaBuilder WithBlazorClientSupport(this ICslaBuilder builder)
+    private static ICslaBuilder WithBlazorClientSupport(this ICslaBuilder builder)
     {
       builder.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
@@ -48,24 +48,25 @@ namespace Csla.Configuration
     /// <summary>
     /// Configures the application to use CSLA .NET
     /// </summary>
-    /// <param name="app">ApplicationBuilder object</param>
-    public static IComponentsApplicationBuilder UseCsla(this IComponentsApplicationBuilder app)
+    /// <param name="builder">IWebAssemblyHostBuilder object</param>
+    public static WebAssemblyHostBuilder UseCsla(this WebAssemblyHostBuilder builder)
     {
-      return UseCsla(app, null);
+      return UseCsla(builder, null);
     }
 
     /// <summary>
     /// Configures the application to use CSLA .NET
     /// </summary>
-    /// <param name="app">ApplicationBuilder object</param>
+    /// <param name="builder">IWebAssemblyHostBuilder object</param>
     /// <param name="config">Implement to configure CSLA .NET</param>
-    public static IComponentsApplicationBuilder UseCsla(
-      this IComponentsApplicationBuilder app, Action<CslaConfiguration> config)
+    public static WebAssemblyHostBuilder UseCsla(
+      this WebAssemblyHostBuilder builder, Action<CslaConfiguration> config)
     {
+      builder.Services.AddCsla().WithBlazorClientSupport();
       CslaConfiguration.Configure().
         ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
       config?.Invoke(CslaConfiguration.Configure());
-      return app;
+      return builder;
     }
   }
 }

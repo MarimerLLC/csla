@@ -1,6 +1,45 @@
 # CSLA 5 releases
 
-CSLA 5 is a big release with some breaking changes, some major enhancements, and with new support for .NET Core 3 and WebAssembly (Blazor, etc.).
+CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
+
+# CSLA .NET version 5.2.0 release
+
+Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F16).
+
+### Blazor
+
+* [#1509](https://github.com/MarimerLLC/csla/issues/1509) Add a For clause to CslaValidationMessages in Blazor
+
+### Windows Forms and WPF (.NET Core 3)
+
+* [#1454](https://github.com/MarimerLLC/csla/issues/1454) Fix issue with `PropertyStatus` control
+
+### Build and Dev
+
+* [#1188](https://github.com/MarimerLLC/csla/issues/1188) Add support for NuGet symbol server
+
+### Dependabot and NuGet dependencies
+
+* Bump Microsoft.Extensions.DependencyInjection to 3.1.2
+* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.2
+* Bump Microsoft.AspNetCore.Components.Web to 3.1.2
+* Bump Microsoft.AspNetCore.Components to 3.1.2
+* Bump Microsoft.Extensions.Configuration to 3.1.2
+* Bump Microsoft.Extensions.Configuration.Binder to 3.1.2
+* Bump Microsoft.Extensions.Configuration.Json to 3.1.2
+* Bump Microsoft.AspNetCore.Components.Authorization from 3.1.1 to 3.1.2
+* Bump System.Data.SqlClient from 4.8.0 to 4.8.1
+* Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
+
+## Contributors
+
+* [@jacojordaan](https://github.com/jacojordaan) help with WPF and .NET Core 3
+
+---
 
 # CSLA .NET version 5.1.0 release
 
@@ -75,10 +114,10 @@ Highlights:
 * Bump System.Security.AccessControl from 4.6.0 to 4.7.0
 * Bump System.Security.Principal from 4.6.0 to 4.7.0
 * Bump System.Data.SqlClient from 4.7.0 to 4.8.0
-* Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.0.19269.1
+* Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.1.1
 * Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
-* Bump Google.Protobuf from 3.9.2 to 3.11.2
-* Bump Grpc.Net.Client from 2.24.0 to 2.26.0
+* Bump Google.Protobuf from 3.9.2 to 3.11.4
+* Bump Grpc.Net.Client from 2.24.0 to 2.27.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors
@@ -90,8 +129,9 @@ Highlights:
 * [@bradtwurst](https://github.com/bradtwurst) bug fixes
 * [@jeddytier4](https://github.com/jeddytier4) got the NuGet templates package working again
 * [@j055](https://github.com/j055) helped figure out and fix the local/global context issue
-* [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) fixed the `AmbiguousMatchException` issue
+* [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) found and fixed numerous method calling issues
 * [@linkerro](https://github.com/linkerro) fixed some NuGet package reference issues
+* [@SachinPNikam](https://github.com/SachinPNikam) updated the Blazor samples
 
 ---
 

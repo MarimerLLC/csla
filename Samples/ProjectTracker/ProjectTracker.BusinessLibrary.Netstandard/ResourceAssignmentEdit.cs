@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Csla;
 using System.ComponentModel;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -75,7 +76,8 @@ namespace ProjectTracker.Library
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, Security.Roles.ProjectManager));
     }
 
-    private void Child_Create(int projectId)
+    [CreateChild]
+    private void Create(int projectId, [Inject] IProjectDal dal)
     {
       using (BypassPropertyChecks)
       {
@@ -83,17 +85,14 @@ namespace ProjectTracker.Library
         RoleList.CacheList();
         Role = RoleList.DefaultRole();
         LoadProperty(AssignedProperty, DateTime.Today);
-        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-        {
-          var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-          var project = dal.Fetch(projectId);
-          ProjectName = project.Name;
-        }
+        var project = dal.Fetch(projectId);
+        ProjectName = project.Name;
       }
-      base.Child_Create();
+      BusinessRules.CheckRules();
     }
 
-    private void Child_Fetch(ProjectTracker.Dal.AssignmentDto data)
+    [FetchChild]
+    private void Fetch(ProjectTracker.Dal.AssignmentDto data, [Inject] IProjectDal dal)
     {
       using (BypassPropertyChecks)
       {
@@ -101,61 +100,48 @@ namespace ProjectTracker.Library
         Role = data.RoleId;
         LoadProperty(AssignedProperty, data.Assigned);
         TimeStamp = data.LastChanged;
-        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-        {
-          var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-          var project = dal.Fetch(data.ProjectId);
-          ProjectName = project.Name;
-        }
+        var project = dal.Fetch(data.ProjectId);
+        ProjectName = project.Name;
       }
     }
 
-    private void Child_Insert(ResourceEdit resource)
+    [InsertChild]
+    private void Insert(ResourceEdit resource, [Inject] IAssignmentDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        using (BypassPropertyChecks)
+        var item = new ProjectTracker.Dal.AssignmentDto
         {
-          var item = new ProjectTracker.Dal.AssignmentDto
-          {
-            ProjectId = this.ProjectId,
-            ResourceId = resource.Id,
-            Assigned = ReadProperty(AssignedProperty),
-            RoleId = this.Role
-          };
-          dal.Insert(item);
-          TimeStamp = item.LastChanged;
-        }
+          ProjectId = this.ProjectId,
+          ResourceId = resource.Id,
+          Assigned = ReadProperty(AssignedProperty),
+          RoleId = this.Role
+        };
+        dal.Insert(item);
+        TimeStamp = item.LastChanged;
       }
     }
 
-    private void Child_Update(ResourceEdit resource)
+    [UpdateChild]
+    private void Update(ResourceEdit resource, [Inject] IAssignmentDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        using (BypassPropertyChecks)
-        {
-          var item = dal.Fetch(ProjectId, resource.Id);
-          item.Assigned = ReadProperty(AssignedProperty);
-          item.RoleId = Role;
-          item.LastChanged = TimeStamp;
-          dal.Update(item);
-          TimeStamp = item.LastChanged;
-        }
+        var item = dal.Fetch(ProjectId, resource.Id);
+        item.Assigned = ReadProperty(AssignedProperty);
+        item.RoleId = Role;
+        item.LastChanged = TimeStamp;
+        dal.Update(item);
+        TimeStamp = item.LastChanged;
       }
     }
 
-    private void Child_DeleteSelf(ResourceEdit resource)
+    [DeleteSelfChild]
+    private void DeleteSelf(ResourceEdit resource, [Inject] IAssignmentDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      using (BypassPropertyChecks)
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
-        using (BypassPropertyChecks)
-        {
-          dal.Delete(ProjectId, resource.Id);
-        }
+        dal.Delete(ProjectId, resource.Id);
       }
     }
   }

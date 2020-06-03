@@ -97,6 +97,18 @@ namespace Csla.Serialization.Mobile
       {
         Write(CslaKnownTypes.Null, writer);
       }
+      else if (target is IMobileObject)
+      {
+        using (MemoryStream buffer = new MemoryStream())
+        {
+          var formatter = SerializationFormatterFactory.GetFormatter();
+          formatter.Serialize(buffer, target);
+          var data = buffer.ToArray();
+          Write(CslaKnownTypes.IMobileObject, writer);
+          writer.Write(data.Length);
+          writer.Write(data);
+        }
+      }
       else if (target is CslaKnownTypes)
       {
         writer.Write((byte)((CslaKnownTypes)target));
@@ -150,11 +162,7 @@ namespace Csla.Serialization.Mobile
       }
       else
       {
-#if NETFX_CORE
-        var typeCode = TypeExtensions.GetTypeCode(target.GetType());
-#else
         var typeCode = Type.GetTypeCode(target.GetType());
-#endif
         switch (typeCode)
         {
           case TypeCode.Boolean:
@@ -223,7 +231,8 @@ namespace Csla.Serialization.Mobile
             writer.Write((string)target);
             break;
           default:
-            throw new NotSupportedException(Resources.BinaryWriterObjectSerializationException);
+            throw new NotSupportedException(
+              $"{Resources.BinaryWriterObjectSerializationException} ({target.GetType().FullName})");
         }
       }
     }

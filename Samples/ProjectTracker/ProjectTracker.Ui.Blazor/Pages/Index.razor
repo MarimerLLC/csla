@@ -1,12 +1,12 @@
 ﻿@page "/"
-@inject Csla.Blazor.ViewModel<ProjectTracker.Library.Dashboard> vm
+@using ProjectTracker.Library
+@inject Csla.Blazor.ViewModel<Dashboard> vm
 
 <h1>Project Tracker</h1>
 
 <p>Welcome to the project tracker sample app.</p>
 
 <p class="text-danger">@vm.ViewModelErrorText</p>
-<p class="text-danger">@ErrorText</p>
 
 @if (vm.Model != null)
 {
@@ -20,21 +20,12 @@
 }
 else
 {
-  <p>No data available.</p>
+  <p>Loading data...</p>
 }
 
 @code {
-  private string ErrorText;
-
   protected override async Task OnParametersSetAsync()
   {
-    try
-    {
-      await vm.RefreshAsync();
-    }
-    catch (Exception ex)
-    {
-      ErrorText = ex.Message;
-    }
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<Dashboard>());
   }
 }

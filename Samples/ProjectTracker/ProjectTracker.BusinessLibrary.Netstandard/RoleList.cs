@@ -1,4 +1,5 @@
 using Csla;
+using ProjectTracker.Dal;
 using System;
 using System.Threading.Tasks;
 
@@ -63,19 +64,14 @@ namespace ProjectTracker.Library
       return CachedList;
     }
 
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch([Inject] IRoleDal dal)
     {
-      var rlce = RaiseListChangedEvents;
-      RaiseListChangedEvents = false;
-      IsReadOnly = false;
-      using (var ctx = Dal.DalFactory.GetManager())
+      using (LoadListMode)
       {
-        var dal = ctx.GetProvider<Dal.IRoleDal>();
         foreach (var item in dal.Fetch())
           Add(new NameValuePair(item.Id, item.Name));
       }
-      IsReadOnly = true;
-      RaiseListChangedEvents = rlce;
     }
   }
 }

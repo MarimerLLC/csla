@@ -1,5 +1,5 @@
 ﻿@page "/projectedit"
-@page "/projectedit/{id}"
+@page "/projectedit/{id:int}"
 @inject Csla.Blazor.ViewModel<ProjectTracker.Library.ProjectEdit> vm
 @inject NavigationManager NavigationManager
 
@@ -25,11 +25,11 @@ else
       </tr>
     </thead>
     <tbody>
-      <LabelRow Property="vm.GetPropertyInfo(nameof(vm.Model.Id))" />
-      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Name))" />
-      <TextAreaRow rows="5" Property="@(vm.GetPropertyInfo(nameof(vm.Model.Description)))" />
-      <DateInputRow Property="@(vm.GetPropertyInfo(nameof(vm.Model.Started)))" />
-      <DateInputRow Property="@(vm.GetPropertyInfo(nameof(vm.Model.Ended)))" EmptyIsMin="false" />
+      <LabelRow Property="vm.GetPropertyInfo(() => vm.Model.Id)" />
+      <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Name)" />
+      <TextAreaRow rows="5" Property="@(vm.GetPropertyInfo(() => vm.Model.Description))" />
+      <DateInputRow Property="@(vm.GetPropertyInfo(() => vm.Model.Started))" />
+      <DateInputRow Property="@(vm.GetPropertyInfo(() => vm.Model.Ended))" EmptyIsMin="false" />
     </tbody>
   </table>
   <div style="background-color:lightgray">
@@ -107,7 +107,10 @@ else
               <td>@item.FirstName</td>
               <td>@item.LastName</td>
               <td>@item.RoleName</td>
-              <td><a href="javascript: void(0);" @onclick="() => EditResource(item.ResourceId)">Edit</a> | <a href="javascript: void(0);" @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
+              <td><a href="javascript: void(0);" 
+                     @onclick="() => EditResource(item.ResourceId)">Edit</a>
+              | <a href="javascript: void(0);" 
+                   @onclick="() => RemoveResource(item.ResourceId)">Remove</a></td>
             </tr>
           }
         </tbody>
@@ -123,7 +126,7 @@ else
 
 @code {
   [Parameter]
-  public string id { get; set; }
+  public int id { get; set; }
 
   private SubViewModes viewMode = SubViewModes.Default;
   private ProjectTracker.Library.ProjectResourceEdit selectedResource;
@@ -137,10 +140,10 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    if (string.IsNullOrWhiteSpace(id))
-      await vm.RefreshAsync();
+    if (id == 0)
+      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<ProjectTracker.Library.ProjectEdit>());
     else
-      await vm.RefreshAsync(int.Parse(id));
+      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectEdit>(id));
   }
 
   private async void SelectResource()

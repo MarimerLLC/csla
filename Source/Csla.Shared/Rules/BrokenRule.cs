@@ -17,16 +17,8 @@ namespace Csla.Rules
   [Serializable]
   public partial class BrokenRule : MobileObject
   {
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Creates an instance of this object.
-    /// </summary>
-    public BrokenRule()
-    { }
-#else
     internal BrokenRule()
     { }
-#endif
 
     private string _ruleName;
     private string _description;

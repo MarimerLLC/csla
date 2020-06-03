@@ -48,11 +48,7 @@ namespace Csla.Core
     public bool IsReadOnly
     {
       get { return IsReadOnlyCore; }
-#if !IOS
       protected set { IsReadOnlyCore = value; }
-#else
-      set { IsReadOnlyCore = value; }
-#endif
     }
 
     /// <summary>
@@ -69,6 +65,16 @@ namespace Csla.Core
     {
       get { return IsReadOnly; }
       set { IsReadOnly = value; }
+    }
+
+    /// <summary>
+    /// Sets the LoadListMode for the collection
+    /// </summary>
+    /// <param name="enabled">Enable or disable mode</param>
+    protected override void SetLoadListMode(bool enabled)
+    {
+      IsReadOnly = !enabled;
+      base.SetLoadListMode(enabled);
     }
 
     /// <summary>

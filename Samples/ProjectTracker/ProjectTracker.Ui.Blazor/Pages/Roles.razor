@@ -32,7 +32,7 @@ else
         <tr>
           <td>new</td>
           <td>
-            <TextInput Property="@(new PropertyInfo(newRole, nameof(newRole.Name)))" />
+            <TextInput Property="@(vm.GetPropertyInfo(() => newRole.Name))" />
           </td>
           <td>
             <a class="alert-warning" href="javascript: void(0);" @onclick="AddAccepted">Confirm</a>
@@ -57,7 +57,7 @@ else
           {
             <td>@item.Id</td>
             <td>
-              <TextInput Property="@(new PropertyInfo(item, nameof(item.Name)))" />
+              <TextInput Property="@(vm.GetPropertyInfo(() => item.Name))" />
             </td>
             <td>
               <a class="alert-warning" href="javascript: void(0);" @onclick="EditAccepted">Confirm</a>
@@ -96,7 +96,7 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<RoleEditList>());
   }
 
   private void AddRole()
@@ -172,7 +172,8 @@ else
   private async Task SaveAndRefresh()
   {
     await vm.SaveAsync();
-    await vm.RefreshAsync();
+    await vm.RefreshAsync(() => 
+      Csla.DataPortal.FetchAsync<RoleEditList>());
     StateHasChanged();
   }
 }

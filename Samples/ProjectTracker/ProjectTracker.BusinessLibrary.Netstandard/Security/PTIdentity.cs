@@ -2,6 +2,7 @@
 using Csla;
 using Csla.Security;
 using System.Threading.Tasks;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Security
 {
@@ -36,41 +37,33 @@ namespace ProjectTracker.Library.Security
     }
 
     [Fetch]
-    private void Fetch(string username)
+    private void Fetch(string username, [Inject] IUserDal dal)
     {
       ProjectTracker.Dal.UserDto data = null;
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      try
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IUserDal>();
-        try
-        {
-          data = dal.Fetch(username);
-        }
-        catch (ProjectTracker.Dal.DataNotFoundException)
-        {
-          data = null;
-        }
-        LoadUser(data);
+        data = dal.Fetch(username);
       }
+      catch (ProjectTracker.Dal.DataNotFoundException)
+      {
+        data = null;
+      }
+      LoadUser(data);
     }
 
     [Fetch]
-    private void Fetch(UsernameCriteria criteria)
+    private void Fetch(UsernameCriteria criteria, [Inject] IUserDal dal)
     {
       ProjectTracker.Dal.UserDto data = null;
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      try
       {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IUserDal>();
-        try
-        {
-          data = dal.Fetch(criteria.Username, criteria.Password);
-        }
-        catch (ProjectTracker.Dal.DataNotFoundException)
-        {
-          data = null;
-        }
-        LoadUser(data);
+        data = dal.Fetch(criteria.Username, criteria.Password);
       }
+      catch (ProjectTracker.Dal.DataNotFoundException)
+      {
+        data = null;
+      }
+      LoadUser(data);
     }
 
     private void LoadUser(ProjectTracker.Dal.UserDto data)

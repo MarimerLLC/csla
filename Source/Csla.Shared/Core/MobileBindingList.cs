@@ -12,6 +12,7 @@ using Csla.Serialization.Mobile;
 using Csla.Properties;
 using System.Reflection;
 using Csla.Reflection;
+using System.Diagnostics;
 
 namespace Csla.Core
 {
@@ -26,8 +27,83 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileBindingList<T> : BindingList<T>, IMobileObject
+  public class MobileBindingList<T> : BindingList<T>, IMobileList
   {
+    #region LoadListMode
+
+    [NonSerialized]
+    [NotUndoable]
+    private LoadListModeObject _loadListModeObject = null;
+
+    /// <summary>
+    /// By wrapping this property inside Using block
+    /// you can set property values on current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    protected LoadListModeObject LoadListMode
+    {
+      get
+      {
+        if (_loadListModeObject == null)
+        {
+          _loadListModeObject = new LoadListModeObject(this);
+          SetLoadListMode(true);
+        }
+        return _loadListModeObject;
+      }
+    }
+    void IMobileList.SetLoadListMode(bool enabled)
+    {
+      _loadListModeObject = null;
+      SetLoadListMode(enabled);
+    }
+
+    /// <summary>
+    /// Sets the load list mode for the list
+    /// </summary>
+    /// <param name="enabled">Enabled value</param>
+    protected virtual void SetLoadListMode(bool enabled)
+    {
+    }
+
+    /// <summary>
+    /// Class that allows setting of property values on 
+    /// current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CA1063 // Implement IDisposable Correctly
+    protected class LoadListModeObject : IDisposable
+#pragma warning restore CA1063 // Implement IDisposable Correctly
+    {
+      private readonly IMobileList _target;
+      /// <summary>
+      /// Create instance of type
+      /// </summary>
+      /// <param name="target">List object</param>
+      public LoadListModeObject(IMobileList target)
+      {
+        _target = target;
+        _target.SetLoadListMode(true);
+      }
+
+      /// <summary>
+      /// Disposes the object.
+      /// </summary>
+#pragma warning disable CA1063 // Implement IDisposable Correctly
+      public void Dispose()
+#pragma warning restore CA1063 // Implement IDisposable Correctly
+      {
+        _target.SetLoadListMode(false);
+        GC.SuppressFinalize(this);
+      }
+    }
+
+    #endregion
+
     #region IMobileObject Members
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)

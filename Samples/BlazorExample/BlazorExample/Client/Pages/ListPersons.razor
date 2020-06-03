@@ -4,14 +4,11 @@
 
 <h1>List of People</h1>
 
-<p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+<p class="alert-danger">@vm.ViewModelErrorText</p>
 
 @if (vm.Model == null)
 {
   <p>Loading List...</p>
-  <p>
-    <a href="editperson">Add person</a>
-  </p>
 }
 else
 {
@@ -38,8 +35,10 @@ else
 }
 
 @code {
-  protected override async Task OnInitializedAsync()
+  string errortext;
+
+  protected override async Task OnParametersSetAsync()
   {
-    await vm.RefreshAsync();
+     await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<PersonList>());
   }
 }

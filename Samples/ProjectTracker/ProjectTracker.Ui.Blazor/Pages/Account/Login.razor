@@ -1,7 +1,8 @@
 ﻿@page "/account/login"
 @using System.Security.Claims
+@using ProjectTracker.BusinessLibrary.Security
 @using Csla
-@inject Csla.Blazor.ViewModel<LoginData> vm
+@inject Csla.Blazor.ViewModel<Credentials> vm
 @inject Csla.Blazor.Client.Authentication.CslaUserService userService
 @inject NavigationManager NavigationManager
 
@@ -24,69 +25,45 @@ else
       </tr>
     </thead>
     <tbody>
-      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Username))" />
-      <TextInputRow Property="vm.GetPropertyInfo(nameof(vm.Model.Password))" InputType="password" />
+      <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Username)" />
+      <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Password)" InputType="password" />
     </tbody>
   </table>
   <button @onclick="LoginUser" disabled="@(!vm.Model.IsSavable)">Login</button>
+  <p class="text-info">
+    Use username/password 'manager' or 'admin'.
+  </p>
 }
 
 @code {
-  public string ErrorText { get; set; }
+    public string ErrorText { get; set; }
 
-  protected override void OnInitialized()
-  {
-    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
-  }
-
-  protected override async Task OnParametersSetAsync()
-  {
-    await vm.RefreshAsync();
-  }
-
-  private async void LoginUser()
-  {
-    var identity = await Library.Security.PTIdentity.GetPTIdentityAsync(vm.Model.Username, vm.Model.Password);
-
-    var baseidentity = new ClaimsIdentity(identity.AuthenticationType);
-    baseidentity.AddClaim(new Claim(ClaimTypes.Name, identity.Name));
-    if (identity.Roles != null)
-      foreach (var item in identity.Roles)
-        baseidentity.AddClaim(new Claim(ClaimTypes.Role, item));
-    var principal = new ClaimsPrincipal(baseidentity);
-
-    if (identity.IsAuthenticated)
+    protected override void OnInitialized()
     {
-      userService.CurrentUser = principal;
-      NavigationManager.NavigateTo("/");
-    }
-    else
-    {
-      ErrorText = "Invalid credentials";
-      StateHasChanged();
-    }
-  }
-
-  [Serializable]
-  public class LoginData : BusinessBase<LoginData>
-  {
-    public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(nameof(Username));
-    public string Username
-    {
-      get => GetProperty(UsernameProperty);
-      set => SetProperty(UsernameProperty, value);
+      vm.ModelPropertyChanged += async (s, e) =>
+        await InvokeAsync(() => StateHasChanged());
     }
 
-    public static readonly PropertyInfo<string> PasswordProperty = RegisterProperty<string>(nameof(Password));
-    public string Password
+    protected override async Task OnParametersSetAsync()
     {
-      get => GetProperty(PasswordProperty);
-      set => SetProperty(PasswordProperty, value);
+      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<Credentials>());
     }
 
-    [Create]
-    [RunLocal]
-    private void Create()
-    { }
-  }
+    private async void LoginUser()
+    {
+      var validator =
+        await Csla.DataPortal.FetchAsync<CredentialValidator>(vm.Model);
+      var principal = validator.GetPrincipal();
+
+      if (principal.Identity.IsAuthenticated)
+      {
+        userService.CurrentUser = principal;
+        NavigationManager.NavigateTo("/");
+      }
+      else
+      {
+        ErrorText = "Invalid credentials";
+        StateHasChanged();
+      }
+    }
 }

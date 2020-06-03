@@ -802,15 +802,13 @@ namespace Csla.Xaml
       }
       else
       {
-        var iarw = Source as Csla.Security.IAuthorizeReadWrite;
-        if (iarw != null)
+        if (Source is Csla.Security.IAuthorizeReadWrite iarw)
         {
           CanWrite = iarw.CanWriteProperty(BindingPath);
           CanRead = iarw.CanReadProperty(BindingPath);
         }
 
-        BusinessBase businessObject = Source as BusinessBase;
-        if (businessObject != null)
+        if (Source is BusinessBase businessObject)
         {
           var allRules = (from r in businessObject.BrokenRulesCollection
                           where r.Property == BindingPath
@@ -843,14 +841,14 @@ namespace Csla.Xaml
               RuleDescription = worst.Description;
             }
             else
+            {
               RuleDescription = string.Empty;
-
-            OnPropertyChanged(nameof(ErrorText));
-            OnPropertyChanged(nameof(WarningText));
-            OnPropertyChanged(nameof(InformationText));
+            }
           }
           else
+          {
             RuleDescription = string.Empty;
+          }
         }
         else
         {
@@ -858,6 +856,9 @@ namespace Csla.Xaml
           RuleDescription = string.Empty;
         }
       }
+      OnPropertyChanged(nameof(ErrorText));
+      OnPropertyChanged(nameof(WarningText));
+      OnPropertyChanged(nameof(InformationText));
     }
 
     #endregion

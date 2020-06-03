@@ -35,14 +35,34 @@ namespace Csla.Test.DataPortal
     [ExpectedException(typeof(AmbiguousMatchException))]
     public void Test_DataPortal_Int_Null()
     {
-      _ = ArrayDataPortalClass.Get(default(int[]));
+      try
+      {
+        _ = ArrayDataPortalClass.Get(default(int[]));
+      }
+      catch (DataPortalException ex)
+      {
+        if (ex.InnerException != null)
+          throw ex.InnerException;
+        else
+          throw ex;
+      }
     }
 
     [TestMethod]
     [ExpectedException(typeof(AmbiguousMatchException))]
     public void Test_DataPortal_String_Null()
     {
-      _ = ArrayDataPortalClass.Get(default(string[]));
+      try
+      {
+        _ = ArrayDataPortalClass.Get(default(string[]));
+      }
+      catch (DataPortalException ex)
+      {
+        if (ex.InnerException != null)
+          throw ex.InnerException;
+        else
+          throw ex;
+      }
     }
 
     [TestMethod]

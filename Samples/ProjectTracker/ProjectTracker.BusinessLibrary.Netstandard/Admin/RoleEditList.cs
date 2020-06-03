@@ -5,6 +5,7 @@ using System;
 using Csla.Serialization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -43,14 +44,13 @@ namespace ProjectTracker.Library
         foreach (RoleEdit item in this)
         {
           if (item.Id == id)
-          {
             return item;
-          }
         }
         return null;
       }
 
       [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+      [ObjectAuthorizationRules]
       public static void AddObjectAuthorizationRules()
       {
         Csla.Rules.BusinessRules.AddRule(typeof(RoleEditList), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, Security.Roles.Administrator));
@@ -106,29 +106,25 @@ namespace ProjectTracker.Library
       }
 
       [Fetch]
-      private void DataPortal_Fetch()
+      private void Fetch([Inject] IRoleDal dal)
       {
-        var rlce = RaiseListChangedEvents;
-        RaiseListChangedEvents = false;
-        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+        using (LoadListMode)
         {
-          var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
           List<ProjectTracker.Dal.RoleDto> list = null;
           list = dal.Fetch();
           foreach (var item in list)
             Add(DataPortal.FetchChild<RoleEdit>(item));
         }
-        RaiseListChangedEvents = rlce;
       }
 
       [Update]
       [Transactional(TransactionalTypes.TransactionScope)]
-      protected override void DataPortal_Update()
+      private void Update()
       {
-        this.RaiseListChangedEvents = false;
-        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+        using (LoadListMode)
+        {
           Child_Update();
-        this.RaiseListChangedEvents = true;
+        }
       }
     }
   }

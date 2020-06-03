@@ -1,5 +1,5 @@
 ﻿@page "/resourceedit"
-@page "/resourceedit/{id}"
+@page "/resourceedit/{id:int}"
 @inject Csla.Blazor.ViewModel<ProjectTracker.Library.ResourceEdit> vm
 @inject NavigationManager NavigationManager
 
@@ -32,21 +32,21 @@ else
           <td>@vm.Model.Id</td>
         </tr>
       }
-      @if (vm.GetPropertyInfo(nameof(vm.Model.FirstName)).CanRead)
+      @if (vm.GetPropertyInfo(() => vm.Model.FirstName).CanRead)
       {
         <tr>
-          <td>@(vm.GetPropertyInfo(nameof(vm.Model.FirstName)).FriendlyName)</td>
+          <td>@(vm.GetPropertyInfo(() => vm.Model.FirstName).FriendlyName)</td>
           <td>
-            <TextInput Property="@(vm.GetPropertyInfo(nameof(vm.Model.FirstName)))" />
+            <TextInput Property="@(vm.GetPropertyInfo(() => vm.Model.FirstName))" />
           </td>
         </tr>
       }
-      @if (vm.GetPropertyInfo(nameof(vm.Model.LastName)).CanRead)
+      @if (vm.GetPropertyInfo(() => vm.Model.LastName).CanRead)
       {
         <tr>
-          <td>@(vm.GetPropertyInfo(nameof(vm.Model.LastName)).FriendlyName)</td>
+          <td>@(vm.GetPropertyInfo(() => vm.Model.LastName)).FriendlyName)</td>
           <td>
-            <TextInput Property="@(vm.GetPropertyInfo(nameof(vm.Model.LastName)))" />
+            <TextInput Property="@(vm.GetPropertyInfo(() => vm.Model.LastName))" />
           </td>
         </tr>
       }
@@ -141,7 +141,7 @@ else
 
 @code {
   [Parameter]
-  public string id { get; set; }
+  public int id { get; set; }
 
   private SubViewModes viewMode = SubViewModes.Default;
   private ProjectTracker.Library.ResourceAssignmentEdit selectedProject;
@@ -155,10 +155,10 @@ else
 
   protected override async Task OnParametersSetAsync()
   {
-    if (string.IsNullOrWhiteSpace(id))
-      await vm.RefreshAsync();
+    if (id == 0)
+      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<ProjectTracker.Library.ResourceEdit>());
     else
-      await vm.RefreshAsync(int.Parse(id));
+      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<ProjectTracker.Library.ResourceEdit>(id));
   }
 
   private async void SelectProject()

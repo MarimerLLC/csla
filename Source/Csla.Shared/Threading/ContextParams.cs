@@ -9,10 +9,6 @@ using System.Globalization;
 using System.Security.Principal;
 using System.Threading;
 using Csla.Core;
-#if NETFX_CORE && !NETCORE
-using System.Collections.Generic;
-#endif
-
 
 namespace Csla.Threading
 {
@@ -31,7 +27,9 @@ namespace Csla.Threading
     {
       this.User = Csla.ApplicationContext.User;
       this.ClientContext = Csla.ApplicationContext.ClientContext;
+#pragma warning disable CS0618 // Type or member is obsolete
       this.GlobalContext = Csla.ApplicationContext.GlobalContext;
+#pragma warning restore CS0618 // Type or member is obsolete
       this.Culture = System.Globalization.CultureInfo.CurrentCulture;
       this.UICulture = System.Globalization.CultureInfo.CurrentUICulture;
     }

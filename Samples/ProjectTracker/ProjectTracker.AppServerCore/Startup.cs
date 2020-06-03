@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ProjectTracker.Configuration;
 
 namespace ProjectTracker.AppServerCore
 {
@@ -46,6 +47,10 @@ namespace ProjectTracker.AppServerCore
         options.AllowSynchronousIO = true;
       });
 
+      services.AddHttpContextAccessor();
+
+      services.AddDalMock();
+      //services.AddDalEfCore();
       services.AddCsla();
     }
 
@@ -67,9 +72,6 @@ namespace ProjectTracker.AppServerCore
       app.UseMvc();
 
       app.UseCsla();
-
-      ConfigurationManager.AppSettings["DalManagerType"] = 
-        "ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock";
     }
   }
 }

@@ -23,32 +23,11 @@ namespace Csla.Core
   [Serializable]
   public class ExtendedBindingList<T> : MobileBindingList<T>,
     IExtendedBindingList, 
-    IMobileObject,
+    IMobileList,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
   {
-
-#if NETFX_CORE || (ANDROID || IOS)
-    /// <summary>
-    /// Implements a serialization-safe RemovingItem event.
-    /// </summary>
-    public event EventHandler<RemovingItemEventArgs> RemovingItem;
-
-    /// <summary>
-    /// Raise the RemovingItem event.
-    /// </summary>
-    /// <param name="removedItem">
-    /// A reference to the item that 
-    /// is being removed.
-    /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnRemovingItem(T removedItem)
-    {
-      if (RemovingItem != null)
-        RemovingItem(this, new RemovingItemEventArgs(removedItem));
-    }
-#else
     [NonSerialized()]
     private EventHandler<RemovingItemEventArgs> _nonSerializableHandlers;
     private EventHandler<RemovingItemEventArgs> _serializableHandlers;
@@ -99,7 +78,6 @@ namespace Csla.Core
         _serializableHandlers.Invoke(this,
           new RemovingItemEventArgs(removedItem));
     }
-#endif
 
     /// <summary>
     /// Remove the item at the

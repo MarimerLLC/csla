@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Bxf;
 using Csla;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WpfUI
 {
@@ -18,7 +17,6 @@ namespace WpfUI
     public MainPresenter()
     {
       DesignMode = DesignerProperties.GetIsInDesignMode(this);
-      DoStartup();
 
       _closeTimer.Tick += new EventHandler(CloseTimer_Tick);
       _closeTimer.Interval = new TimeSpan(1000);
@@ -108,20 +106,6 @@ namespace WpfUI
       }
     }
 
-    private void DoStartup()
-    {
-      // basically a WPF "app builder" implementation
-      var serviceCollection = new ServiceCollection();
-      serviceCollection.AddScoped((c) =>
-        Startup.LoadAppConfiguration(Array.Empty<string>()));
-      var startup = ActivatorUtilities.CreateInstance<Startup>(
-        serviceCollection.BuildServiceProvider(), Array.Empty<object>());
-      startup.ConfigureServices(serviceCollection);
-      ProjectTracker.Ui.WPF.App.ServiceProvider =
-        serviceCollection.BuildServiceProvider();
-      startup.Configure();
-    }
-
     public static void ShowMenu()
     {
       Shell.Instance.ShowView(
@@ -149,56 +133,55 @@ namespace WpfUI
     public UserControl MainContent
     {
       get { return _mainContent; }
-      set { _mainContent = value; OnPropertyChanged("MainContent"); }
+      set { _mainContent = value; OnPropertyChanged(nameof(MainContent)); }
     }
 
     private UserControl _menuContent;
     public UserControl MenuContent
     {
       get { return _menuContent; }
-      set { _menuContent = value; OnPropertyChanged("MenuContent"); }
+      set { _menuContent = value; OnPropertyChanged(nameof(MenuContent)); }
     }
 
     private UserControl _statusContent;
     public UserControl StatusContent
     {
       get { return _statusContent; }
-      set { _statusContent = value; OnPropertyChanged("StatusContent"); }
+      set { _statusContent = value; OnPropertyChanged(nameof(StatusContent)); }
     }
 
     private UserControl _errorContent;
     public UserControl ErrorContent
     {
       get { return _errorContent; }
-      set { _errorContent = value; OnPropertyChanged("ErrorContent"); }
+      set { _errorContent = value; OnPropertyChanged(nameof(ErrorContent)); }
     }
 
     private UserControl _userContent;
     public UserControl UserContent
     {
       get { return _userContent; }
-      set { _userContent = value; OnPropertyChanged("UserContent"); }
+      set { _userContent = value; OnPropertyChanged(nameof(UserContent)); }
     }
 
     private bool _appBusy;
     public bool AppBusy
     {
       get { return _appBusy; }
-      set { _appBusy = value; OnPropertyChanged("AppBusy"); }
+      set { _appBusy = value; OnPropertyChanged(nameof(AppBusy)); }
     }
 
     private bool _designMode;
     public bool DesignMode
     {
       get { return _designMode; }
-      private set { _designMode = value; OnPropertyChanged("DesignMode"); }
+      private set { _designMode = value; OnPropertyChanged(nameof(DesignMode)); }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName)
     {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
   }
 }

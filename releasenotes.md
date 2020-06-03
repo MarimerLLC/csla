@@ -1,4 +1,4 @@
-# CSLA 5 releases
+﻿# CSLA 5 releases
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
 
@@ -10,34 +10,64 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 
 [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F16).
 
+### General
+
+* [#1498](https://github.com/MarimerLLC/csla/issues/1498) 🐜 Fix static initialization issue on "cold init" scenario
+* [#1541](https://github.com/MarimerLLC/csla/issues/1541) 🐜 LocalProxy won't initialize with HttpClient added as service
+* [#1539](https://github.com/MarimerLLC/csla/issues/1539) ⚠ Mark GlobalContext as obsolete (with warning)
+* [#1522](https://github.com/MarimerLLC/csla/issues/1522) 🐜 Fix Csla.Data.EntityFrameworkCore=> GetManager returning disposed DbContext object
+* [#1513](https://github.com/MarimerLLC/csla/issues/1513) 🎉 Improve exception info in MobileFormatter
+* [#1568](https://github.com/MarimerLLC/csla/issues/1568) 🎉 Add `LoadListMode` concept to collection types
+* [#1524](https://github.com/MarimerLLC/csla/issues/1524) 🎉 Add CheckRulesAsync method for checking rules
+* [#1590](https://github.com/MarimerLLC/csla/issues/1590) 🐜 `DataMapper` now honors `Browsable` attribute
+
 ### Blazor
 
-* [#1509](https://github.com/MarimerLLC/csla/issues/1509) Add a For clause to CslaValidationMessages in Blazor
+* [#1509](https://github.com/MarimerLLC/csla/issues/1509) 🎉 Add a For clause to CslaValidationMessages in Blazor
+* [#1520](https://github.com/MarimerLLC/csla/issues/1520) 🐜 Fix Blazor Viewmodel GetPropertyInfo reference previous model property
+* [#1544](https://github.com/MarimerLLC/csla/issues/1544) ⚠ Remove PropertyName from Blazor CslaValidationMessages
+* [#1586](https://github.com/MarimerLLC/csla/issues/1586) ⚠ Move wasm dependencies to `Csla.Blazor.WebAssembly` package
+* [#1585](https://github.com/MarimerLLC/csla/issues/1585) ⚠ Change `RefreshAsync` to require data portal or factory method
+* [#1584](https://github.com/MarimerLLC/csla/issues/1584) 🎉 Add overload for `GetPropertyInfo` to accept expression
+
+### Xamarin and XAML
+
+* [#1570](https://github.com/MarimerLLC/csla/issues/1570) 🐜 Fix issue with PropertyInfo error/warn/info text
 
 ### Windows Forms and WPF (.NET Core 3)
 
-* [#1454](https://github.com/MarimerLLC/csla/issues/1454) Fix issue with `PropertyStatus` control
+* [#1454](https://github.com/MarimerLLC/csla/issues/1454) 🐜 Fix issue with `PropertyStatus` control
+* [#1548](https://github.com/MarimerLLC/csla/issues/1548) 🎉 Add UseCsla methods for Windows Forms and WPF
 
 ### Build and Dev
 
-* [#1188](https://github.com/MarimerLLC/csla/issues/1188) Add support for NuGet symbol server
+* [#1188](https://github.com/MarimerLLC/csla/issues/1188) 🎉 Add support for NuGet symbol server
 
 ### Dependabot and NuGet dependencies
 
-* Bump Microsoft.Extensions.DependencyInjection to 3.1.2
-* Bump Microsoft.Extensions.DependencyInjection.Abstractions to 3.1.2
-* Bump Microsoft.AspNetCore.Components.Web to 3.1.2
-* Bump Microsoft.AspNetCore.Components to 3.1.2
-* Bump Microsoft.Extensions.Configuration to 3.1.2
-* Bump Microsoft.Extensions.Configuration.Binder to 3.1.2
-* Bump Microsoft.Extensions.Configuration.Json to 3.1.2
-* Bump Microsoft.AspNetCore.Components.Authorization from 3.1.1 to 3.1.2
+* Bump Microsoft.* packages to 3.1.4
+* Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.0
 * Bump System.Data.SqlClient from 4.8.0 to 4.8.1
+* Bump Microsoft.Data.SqlClient 1.1.3
 * Bump Microsoft.NETCore.UniversalWindowsPlatform from 6.2.9 to 6.2.10
+* Bump System.Threading.Tasks.Extensions to 4.5.4
+* Bump System.Runtime.CompilerServices.Unsafe to 4.7.1
+* Bump Grpc.Net.Client to 2.28.0
+* Bump Google.Protobuf to 3.12.0
+* Bump Grpc.Tools to 2.28.1
+* Bump System.Buffers to 4.5.1
+* Bump System.Memory to 4.5.4
+* Bump System.Text.Encodings.Web from 4.7.0 to 4.7.1
+* Bump Microsoft.Bcl.AsyncInterfaces from 1.1.0 to 1.1.1
+* Bump Xamarin.Forms to 4.6.0.772
 
 ## Contributors
 
-* [@jacojordaan](https://github.com/jacojordaan) help with WPF and .NET Core 3
+* [@jacojordaan](https://github.com/jacojordaan) WPF and .NET Core 3
+* [@thecakemonster](https://github.com/thecakemonster) Blazor
+* [@SachinPNikam](https://github.com/SachinPNikam) Entity Framework
+* [@BlagoCuljak](https://github.com/BlagoCuljak) WPF and Blazor
+* [@JasonBock](https://github.com/JasonBock) Analyzers
 
 ---
 
@@ -115,9 +145,9 @@ Highlights:
 * Bump System.Security.Principal from 4.6.0 to 4.7.0
 * Bump System.Data.SqlClient from 4.7.0 to 4.8.0
 * Bump Microsoft.Data.SqlClient from 1.0.19249.1 to 1.1.1
-* Bump Xamarin.Forms from 4.2.0.815419 to 4.3.0.947036
+* Bump Xamarin.Forms to 4.6.800
 * Bump Google.Protobuf from 3.9.2 to 3.11.4
-* Bump Grpc.Net.Client from 2.24.0 to 2.27.0
+* Bump Grpc.Net.Client from 2.24.0 to 2.28.0
 * Bump Microsoft.CodeAnalysis.Analyzers from 2.9.4 to 2.9.7
 
 ## Contributors

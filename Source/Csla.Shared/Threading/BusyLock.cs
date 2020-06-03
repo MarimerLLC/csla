@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="BusyLock.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -116,4 +115,3 @@ namespace Csla.Threading
     }
   }
 }
-#endif

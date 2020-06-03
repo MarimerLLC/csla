@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
+﻿#if !XAMARIN && !WINDOWS_UWP
 //-----------------------------------------------------------------------
 // <copyright file="BrokenRulesSeverityConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -7,9 +7,6 @@
 // <summary>Converts validation severity values into corresponding</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Rules;
 using System.Windows.Resources;
 using System.Windows.Media.Imaging;
@@ -24,8 +21,6 @@ namespace Csla.Xaml
   /// </summary>
   public class BrokenRuleSeverityConverter : IValueConverter
   {
-#region IValueConverter Members
-
     /// <summary>
     /// Converts validation severity values into corresponding
     /// images.
@@ -38,11 +33,7 @@ namespace Csla.Xaml
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       RuleSeverity severity = (RuleSeverity)value;
-#if SILVERLIGHT
-      string uri = string.Format("/Csla;component/Resources/{0}.png", severity);
-#else
       string uri = string.Format("/Csla.Xaml;component/Resources/{0}.png", severity);
-#endif
       StreamResourceInfo sr = Application.GetResourceStream(new Uri(uri, UriKind.Relative));
       BitmapImage bmp = new BitmapImage();
       bmp.BeginInit();
@@ -63,8 +54,6 @@ namespace Csla.Xaml
     {
       return RuleSeverity.Error;
     }
-
-#endregion
   }
 }
 #endif

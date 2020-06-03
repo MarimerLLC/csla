@@ -7,7 +7,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5A150C0A-7D5D-43B5-B5CC-F346396FC2A6}</ProjectGuid>
+    <ProjectGuid>{5.2.0C0A-7D5D-43B5-B5CC-F346396FC2A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Web</RootNamespace>

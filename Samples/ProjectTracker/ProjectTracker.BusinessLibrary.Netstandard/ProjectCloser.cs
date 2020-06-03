@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Csla;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
@@ -37,17 +38,13 @@ namespace ProjectTracker.Library
     }
 
     [Execute]
-    protected override void DataPortal_Execute()
+    private void Execute([Inject] IProjectDal dal)
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        var data = dal.Fetch(ProjectId);
-        if (data.Ended.HasValue)
-          throw new InvalidOperationException("Project already closed");
-        data.Ended = DateTime.Today;
-        dal.Update(data);
-      }
+      var data = dal.Fetch(ProjectId);
+      if (data.Ended.HasValue)
+        throw new InvalidOperationException("Project already closed");
+      data.Ended = DateTime.Today;
+      dal.Update(data);
       Closed = true;
     }
   }

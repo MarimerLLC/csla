@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Csla.Threading;
 
 namespace Csla.Rules
 {
@@ -262,13 +264,24 @@ namespace Csla.Rules
     [NonSerialized]
     private bool _isBusy;
 
+    [NonSerialized]
+    private AsyncManualResetEvent busyChanged = new AsyncManualResetEvent();
+
     /// <summary>
     /// Gets a value indicating whether any async
     /// rules are currently executing.
     /// </summary>
     public bool RunningAsyncRules
     {
-      get { return _isBusy; /* BusyProperties.Count > 0; */ }
+      get { return _isBusy; }
+      set
+      {
+        _isBusy = value;
+        if (_isBusy)
+          busyChanged.Reset();
+        else
+          busyChanged.Set();
+      }
     }
 
     /// <summary>
@@ -350,7 +363,7 @@ namespace Csla.Rules
       if (action == AuthorizationActions.ReadProperty ||
           action == AuthorizationActions.WriteProperty ||
           action == AuthorizationActions.ExecuteMethod)
-        throw new ArgumentOutOfRangeException("action");
+        throw new ArgumentOutOfRangeException(nameof(action));
 
       bool result = true;
       var rule =
@@ -378,7 +391,7 @@ namespace Csla.Rules
           action == AuthorizationActions.DeleteObject ||
           action == AuthorizationActions.GetObject ||
           action == AuthorizationActions.EditObject)
-        throw new ArgumentOutOfRangeException("action");
+        throw new ArgumentOutOfRangeException(nameof(action));
 
       bool result = true;
       var rule =
@@ -411,6 +424,42 @@ namespace Csla.Rules
         result = rule.CacheResult;
       return result;
     }
+
+#if !NET40
+    /// <summary>
+    /// Invokes all rules for the business type.
+    /// </summary>
+    /// <param name="timeout">Timeout value in milliseconds</param>
+    /// <returns>
+    /// Returns a list of property names affected by the invoked rules.
+    /// The PropertyChanged event should be raised for each affected
+    /// property. Does not return until all async rules are complete.
+    /// </returns>
+    public Task<List<string>> CheckRulesAsync(int timeout)
+    {
+      var result = CheckRules();
+      if (RunningAsyncRules)
+      {
+        var tasks = new Task[] { busyChanged.WaitAsync() };
+        if (Task.WaitAny(tasks, TimeSpan.FromMilliseconds(timeout)) == -1)
+          throw new TimeoutException(nameof(CheckRulesAsync));
+      }
+      return Task.FromResult(result);
+    }
+
+    /// <summary>
+    /// Invokes all rules for the business type.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of property names affected by the invoked rules.
+    /// The PropertyChanged event should be raised for each affected
+    /// property. Does not return until all async rules are complete.
+    /// </returns>
+    public async Task<List<string>> CheckRulesAsync()
+    {
+      return await CheckRulesAsync(int.MaxValue);
+    }
+#endif
 
     /// <summary>
     /// Invokes all rules for the business type.
@@ -694,7 +743,7 @@ namespace Csla.Rules
               foreach (var item in r.Rule.AffectedProperties)
               {
                 BusyProperties.Remove(item);
-                _isBusy = BusyProperties.Count > 0;
+                RunningAsyncRules = BusyProperties.Count > 0;
                 if (!BusyProperties.Contains(item))
                   _target.RuleComplete(item);
               }
@@ -771,7 +820,7 @@ namespace Csla.Rules
             {
               var alreadyBusy = BusyProperties.Contains(item);
               BusyProperties.Add(item);
-              _isBusy = true;
+              RunningAsyncRules = true;
               if (!alreadyBusy)
                 _target.RuleStart(item);
             }
@@ -784,7 +833,7 @@ namespace Csla.Rules
           if (rule is IBusinessRule syncRule)
             syncRule.Execute(context);
           else if (rule is IBusinessRuleAsync asyncRule)
-            asyncRule.ExecuteAsync(context).ContinueWith((t)=> { context.Complete(); });
+            RunAsyncRule(asyncRule, context);
           else
             throw new ArgumentOutOfRangeException(rule.GetType().FullName);
         }
@@ -819,6 +868,18 @@ namespace Csla.Rules
       }
       // return any synchronous results
       return new RunRulesResult(affectedProperties, dirtyProperties);
+    }
+
+    private async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
+    {
+      try
+      {
+        await asyncRule.ExecuteAsync(context);
+      }
+      finally
+      {
+        context.Complete();
+      }
     }
 
     #region DataAnnotations

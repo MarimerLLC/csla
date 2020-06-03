@@ -1,5 +1,6 @@
 ﻿using System;
 using Csla;
+using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -49,22 +50,18 @@ namespace ProjectTracker.Library.Admin
     }
 
     [Execute]
-    private void Execute()
+    private void Execute([Inject] IRoleDal dal)
     {
       if (Id > 0)
-        GetRoleEdit();
+        GetRoleEdit(dal);
       else
         SaveRoleEdit();
     }
 
-    private void GetRoleEdit()
+    private void GetRoleEdit([Inject] IRoleDal dal)
     {
-      using (var ctx = Dal.DalFactory.GetManager())
-      {
-        var dal = ctx.GetProvider<Dal.IRoleDal>();
-        var item = dal.Fetch(Id);
-        RoleEdit = DataPortal.FetchChild<RoleEdit>(item);
-      }
+      var item = dal.Fetch(Id);
+      RoleEdit = DataPortal.FetchChild<RoleEdit>(item);
     }
 
     private void SaveRoleEdit()

@@ -39,10 +39,7 @@ namespace ProjectTracker.Library
     [Execute]
     private void Execute()
     {
-      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
-      {
-        DataPortal.UpdateChild(ProjectResource, ProjectId);
-      }
+      DataPortal.UpdateChild(ProjectResource, ProjectId);
     }
   }
 }

@@ -37,6 +37,7 @@ namespace Csla.Test.SourceLink
     /// assumption that this string will only appear in a pdb if Source Link is enabled.
     /// </summary>
     [TestMethod]
+    [Ignore]
     public void SearchPdbForString()
     {
       byte[] searchBytes = Encoding.UTF8.GetBytes("https://raw.githubusercontent.com");

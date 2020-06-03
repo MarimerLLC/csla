@@ -5,29 +5,6 @@
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE || (ANDROID || IOS)
-using System;
-
-namespace Csla
-{
-  /// <summary>
-  /// This is the base class from which most business collections
-  /// or lists will be derived.
-  /// </summary>
-  /// <typeparam name="T">Type of the business object being defined.</typeparam>
-  /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
-#if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
-#endif
-  [Serializable]
-  public abstract class BusinessBindingListBase<T, C> : BusinessListBase<T, C>
-    where T : BusinessBindingListBase<T, C>
-    where C : Csla.Core.IEditableBusinessObject
-  {
-
-  }
-}
-#else
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -347,55 +324,55 @@ namespace Csla
       _editLevel -= 1;
       if (_editLevel < 0) _editLevel = 0;
 
-      bool oldRLCE = this.RaiseListChangedEvents;
-      this.RaiseListChangedEvents = false;
       try
       {
-        // Cancel edit on all current items
-        for (int index = Count - 1; index >= 0; index--)
+        using (LoadListMode)
         {
-          child = this[index];
-
-          child.UndoChanges(_editLevel, false);
-
-          // if item is below its point of addition, remove
-          if (child.EditLevelAdded > _editLevel)
+          // Cancel edit on all current items
+          for (int index = Count - 1; index >= 0; index--)
           {
-            bool oldAllowRemove = this.AllowRemove;
-            try
-            {
-              this.AllowRemove = true;
-              _completelyRemoveChild = true;
-              RemoveAt(index);
-            }
-            finally
-            {
-              _completelyRemoveChild = false;
-              this.AllowRemove = oldAllowRemove;
-            }
-          }
-        }
+            child = this[index];
 
-        // cancel edit on all deleted items
-        for (int index = DeletedList.Count - 1; index >= 0; index--)
-        {
-          child = DeletedList[index];
-          child.UndoChanges(_editLevel, false);
-          if (child.EditLevelAdded > _editLevel)
-          {
+            child.UndoChanges(_editLevel, false);
+
             // if item is below its point of addition, remove
-            DeletedList.RemoveAt(index);
+            if (child.EditLevelAdded > _editLevel)
+            {
+              bool oldAllowRemove = this.AllowRemove;
+              try
+              {
+                this.AllowRemove = true;
+                _completelyRemoveChild = true;
+                RemoveAt(index);
+              }
+              finally
+              {
+                _completelyRemoveChild = false;
+                this.AllowRemove = oldAllowRemove;
+              }
+            }
           }
-          else
+
+          // cancel edit on all deleted items
+          for (int index = DeletedList.Count - 1; index >= 0; index--)
           {
-            // if item is no longer deleted move back to main list
-            if (!child.IsDeleted) UnDeleteChild(child);
+            child = DeletedList[index];
+            child.UndoChanges(_editLevel, false);
+            if (child.EditLevelAdded > _editLevel)
+            {
+              // if item is below its point of addition, remove
+              DeletedList.RemoveAt(index);
+            }
+            else
+            {
+              // if item is no longer deleted move back to main list
+              if (!child.IsDeleted) UnDeleteChild(child);
+            }
           }
         }
       }
       finally
       {
-        this.RaiseListChangedEvents = oldRLCE;
         OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
       }
     }
@@ -554,15 +531,9 @@ namespace Csla
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
       C child = this[index];
-      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
-      try
+      using (LoadListMode)
       {
-        this.RaiseListChangedEvents = false;
         base.RemoveItem(index);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
       if (!_completelyRemoveChild)
       {
@@ -603,10 +574,8 @@ namespace Csla
         child = this[index];
       // replace the original object with this new
       // object
-      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
-      try
+      using (LoadListMode)
       {
-        this.RaiseListChangedEvents = false;
         // set parent reference
         item.SetParent(this);
         // set child edit level
@@ -616,10 +585,6 @@ namespace Csla
 
         // add to list
         base.SetItem(index, item);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
       if (child != null)
         DeleteChild(child);
@@ -819,9 +784,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_Update(params object[] parameters)
     {
-      var oldRLCE = this.RaiseListChangedEvents;
-      this.RaiseListChangedEvents = false;
-      try
+      using (LoadListMode)
       {
         foreach (var child in DeletedList)
           DataPortal.UpdateChild(child, parameters);
@@ -829,10 +792,6 @@ namespace Csla
 
         foreach (var child in this)
           if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRLCE;
       }
     }
 
@@ -1105,7 +1064,6 @@ namespace Csla
 
 #region ISavable Members
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1115,7 +1073,6 @@ namespace Csla
     {
       return Save();
     }
-#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -1132,12 +1089,10 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
     }
-#endif
 
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {
@@ -1443,4 +1398,3 @@ namespace Csla
 #endregion
   }
 }
-#endif

@@ -118,7 +118,9 @@ namespace Csla.Server.Hosts.Mobile
 #endif
         }
         result.Object = newObject;
+#pragma warning disable CS0618 // Type or member is obsolete
         result.GlobalContext = ApplicationContext.GlobalContext;
+#pragma warning restore CS0618 // Type or member is obsolete
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
@@ -207,7 +209,9 @@ namespace Csla.Server.Hosts.Mobile
 #endif
         }
         result.Object = newObject;
+#pragma warning disable CS0618 // Type or member is obsolete
         result.GlobalContext = ApplicationContext.GlobalContext;
+#pragma warning restore CS0618 // Type or member is obsolete
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
@@ -285,7 +289,9 @@ namespace Csla.Server.Hosts.Mobile
 #endif
         }
         result.Object = newObject;
+#pragma warning disable CS0618 // Type or member is obsolete
         result.GlobalContext = ApplicationContext.GlobalContext;
+#pragma warning restore CS0618 // Type or member is obsolete
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
@@ -360,7 +366,9 @@ namespace Csla.Server.Hosts.Mobile
           await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.DeleteMethodName, criteria).ConfigureAwait(false);
 #endif
         }
+#pragma warning disable CS0618 // Type or member is obsolete
         result.GlobalContext = ApplicationContext.GlobalContext;
+#pragma warning restore CS0618 // Type or member is obsolete
       }
       catch (Csla.Reflection.CallMethodException ex)
       {

@@ -203,8 +203,8 @@ namespace Csla.Server
         }
         throw DataPortal.NewDataPortalException(
               "DataPortal.Execute " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Execute", ex),
-              obj);
+              new DataPortalExceptionHandler().InspectException(obj.Instance.GetType(), obj.Instance, null, "DataPortal.Execute", ex),
+              obj);       
       }
       finally
       {

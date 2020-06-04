@@ -201,9 +201,11 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
+        object reference = null;
+        reference = obj.Instance ?? obj;
         throw DataPortal.NewDataPortalException(
               "DataPortal.Execute " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler().InspectException(obj.Instance.GetType(), obj.Instance, null, "DataPortal.Execute", ex),
+              new DataPortalExceptionHandler().InspectException(reference.GetType(), reference, null, "DataPortal.Execute", ex),
               obj);       
       }
       finally

@@ -27,7 +27,7 @@ Supports the use of Entity Framework Core.
       </group>
       <group targetFramework="netstandard2.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.EntityFrameworkCore" version="3.1.4" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="3.1.5" />
       </group>
     </dependencies>
   </metadata>

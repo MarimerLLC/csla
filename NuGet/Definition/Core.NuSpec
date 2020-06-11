@@ -22,11 +22,11 @@ Supports the creation of Class Library projects containing business domain class
     <language>en-US</language>
     <dependencies>
       <group targetFramework="net46">
-        <dependency id="Microsoft.Extensions.Configuration" version="3.1.4" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.4" />
+        <dependency id="Microsoft.Extensions.Configuration" version="3.1.5" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.5" />
         <dependency id="System.ComponentModel.Annotations" version="4.7.0" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.4" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.4" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.5" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.5" />
       </group>
       <group targetFramework="net45" />
       <group targetFramework="net40">
@@ -36,8 +36,8 @@ Supports the creation of Class Library projects containing business domain class
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.0" />
-        <dependency id="Microsoft.Extensions.Configuration" version="3.1.4" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.4" />
+        <dependency id="Microsoft.Extensions.Configuration" version="3.1.5" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.5" />
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
@@ -47,8 +47,8 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.ComponentModel.Annotations" version="4.7.0" />
         <dependency id="System.Reflection" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Formatters" version="4.3.0" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.4" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.4" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.5" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.5" />
       </group>
     </dependencies>
   </metadata>

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Csla;
 
-namespace ProjectTracker.BusinessLibrary.Security
+namespace ProjectTracker.Library.Security
 {
   [Serializable]
   public class Credentials : BusinessBase<Credentials>
@@ -26,5 +26,14 @@ namespace ProjectTracker.BusinessLibrary.Security
     [RunLocal]
     private void Create()
     { }
+
+    [Create]
+    [RunLocal]
+    private void Create(string username, string password)
+    {
+      Username = username;
+      Password = password;
+      BusinessRules.CheckRules();
+    }
   }
 }

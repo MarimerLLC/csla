@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using Csla;
+using ProjectTracker.Library.Security;
 
 namespace WpfUI.ViewModels
 {
@@ -22,7 +24,7 @@ namespace WpfUI.ViewModels
     public async void LoginUser()
     {
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Validating credentials..." });
-      await ProjectTracker.Library.Security.PTPrincipal.LoginAsync(Username, Password);
+      await PTPrincipal.LoginAsync(Username, Password);
       Bxf.Shell.Instance.ShowView(null, "Main");
     }
 

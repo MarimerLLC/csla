@@ -25,12 +25,7 @@ namespace WpfUI.ViewModels
         Shell.Instance.ShowStatus(new Status { IsOk = false });
         string message;
         if (ex is Csla.DataPortalException be)
-        {
-          if (be.BusinessException != null)
-            message = be.BusinessException.Message;
-          else
-            message = be.Message;
-        }
+          message = be.BusinessExceptionMessage;
         else
           message = ex.Message;
 

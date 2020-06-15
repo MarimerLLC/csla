@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Security.Claims;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -24,8 +25,6 @@ namespace WpfUI
         _closeTimer.Start();
 
       var presenter = (IPresenter)Shell.Instance;
-
-      LoadRoleListCache();
 
       presenter.OnShowError += (message, title) =>
         {
@@ -75,6 +74,9 @@ namespace WpfUI
           }
         };
 
+      ProjectTracker.Library.Security.PTPrincipal.Logout();
+      LoadRoleListCache();
+
       Shell.Instance.ShowView(
         typeof(Views.UserDisplay).AssemblyQualifiedName,
         "userViewSource",
@@ -96,9 +98,7 @@ namespace WpfUI
     {
       try
       {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        ProjectTracker.Library.RoleList.CacheListAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        var task = ProjectTracker.Library.RoleList.CacheListAsync();
       }
       catch (DataPortalException ex)
       {

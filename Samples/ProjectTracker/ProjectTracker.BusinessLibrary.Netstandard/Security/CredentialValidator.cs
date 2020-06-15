@@ -5,7 +5,7 @@ using Csla.Core;
 using Csla.Security;
 using ProjectTracker.Dal;
 
-namespace ProjectTracker.BusinessLibrary.Security
+namespace ProjectTracker.Library.Security
 {
   [Serializable]
   public class CredentialValidator : ReadOnlyBase<CredentialValidator>

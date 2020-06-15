@@ -11,9 +11,11 @@ namespace ProjectTracker.Ui.WPF
   /// </summary>
   public partial class App : Application
   {
+    private readonly IHost host;
+
     public App()
     {
-      var builder = new HostBuilder()
+      host = new HostBuilder()
          .UseCsla((config) =>
          {
            config

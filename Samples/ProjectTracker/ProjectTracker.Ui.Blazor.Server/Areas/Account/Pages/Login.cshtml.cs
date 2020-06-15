@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ProjectTracker.BusinessLibrary.Security;
+using ProjectTracker.Library.Security;
 
 namespace ProjectTracker.Ui.Blazor.Areas.Identity.Pages.Account
 {

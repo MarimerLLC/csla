@@ -188,6 +188,24 @@ namespace Csla.Blazor
     }
 
     /// <summary>
+    /// Get a PropertyInfo object for a property.
+    /// PropertyInfo provides access
+    /// to the metastate of the property.
+    /// </summary>
+    /// <param name="property">Property expression</param>
+    /// <param name="id">Unique identifier for property in list or array</param>
+    /// <returns></returns>
+    public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property, string id)
+    {
+      if (property == null)
+        throw new ArgumentNullException(nameof(property));
+
+      var keyName = property.GetKey() + $"[{id}]";
+      var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName);
+    }
+
+    /// <summary>
     /// Get a PropertyInfo object for a property
     /// of the Model. PropertyInfo provides access
     /// to the metastate of the property.
@@ -197,6 +215,20 @@ namespace Csla.Blazor
     public IPropertyInfo GetPropertyInfo(string propertyName)
     {
       var keyName = Model.GetType().FullName + "." + propertyName;
+      return GetPropertyInfo(keyName, Model, propertyName);
+    }
+
+    /// <summary>
+    /// Get a PropertyInfo object for a property
+    /// of the Model. PropertyInfo provides access
+    /// to the metastate of the property.
+    /// </summary>
+    /// <param name="propertyName">Property name</param>
+    /// <param name="id">Unique identifier for property in list or array</param>
+    /// <returns></returns>
+    public IPropertyInfo GetPropertyInfo(string propertyName, string id)
+    {
+      var keyName = Model.GetType().FullName + "." + propertyName + $"[{id}]";
       return GetPropertyInfo(keyName, Model, propertyName);
     }
 

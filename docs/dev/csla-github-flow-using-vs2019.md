@@ -78,7 +78,7 @@ Here's a tl;dr summary if you just want to get working without all the backgroun
     
         ![][image_ref_1ohcwh18]
     
-    e.	It is good practice to run the unit tests at this point to ensure everything is working and establish a base line before making you changes.
+    e.	It is good practice to run the unit tests at this point to ensure everything is working and establish a base line before making your changes.
 
 # Create a branch to do some work against a maintenance branch
 1.	Follow the same steps as above but use the marimer/maintenance-branch-name instead of the marimer/master branch.

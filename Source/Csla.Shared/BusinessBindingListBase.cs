@@ -850,6 +850,16 @@ namespace Csla
     }
 
     /// <summary>
+    /// Saves the object to the database, merging
+    /// any resulting updates into the existing
+    /// object graph.
+    /// </summary>
+    public Task SaveAndMergeAsync()
+    {
+      throw new NotSupportedException(nameof(SaveAndMergeAsync));
+    }
+
+    /// <summary>
     /// Saves the object to the database.
     /// </summary>
     /// <param name="userState">User state data.</param>
@@ -1084,6 +1094,11 @@ namespace Csla
       return await SaveAsync();
     }
 
+    async Task ISavable.SaveAndMergeAsync(bool forceUpdate)
+    {
+      await SaveAndMergeAsync();
+    }
+
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);
@@ -1097,6 +1112,11 @@ namespace Csla
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {
       return await SaveAsync();
+    }
+
+    async Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
+    {
+      await SaveAndMergeAsync();
     }
 
     void Csla.Core.ISavable<T>.SaveComplete(T newObject)

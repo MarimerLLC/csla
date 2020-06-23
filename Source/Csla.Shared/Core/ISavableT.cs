@@ -42,6 +42,19 @@ namespace Csla.Core
     /// <param name="forceUpdate">true to force the save to be an update.</param>
     Task<T> SaveAsync(bool forceUpdate);
     /// <summary>
+    /// Saves the object to the database, merging the result into the
+    /// original object graph
+    /// </summary>
+    /// <returns>A new object containing the saved values.</returns>
+    Task SaveAndMergeAsync();
+    /// <summary>
+    /// Saves the object to the database, merging the result into the
+    /// original object graph
+    /// </summary>
+    /// <returns>A new object containing the saved values.</returns>
+    /// <param name="forceUpdate">true to force the save to be an update.</param>
+    Task SaveAndMergeAsync(bool forceUpdate);
+    /// <summary>
     /// Saves the object to the database asynchronously. The saved event will contain
     /// the new object when the save operation completes.
     /// </summary>

@@ -1148,6 +1148,11 @@ namespace Csla
       return await SaveAsync();
     }
 
+    async Task ISavable.SaveAndMergeAsync(bool forceUpdate)
+    {
+      await SaveAndMergeAsync();
+    }
+
     [Obsolete]
     void ISavable.BeginSave()
     {
@@ -1167,6 +1172,11 @@ namespace Csla
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {
       return await SaveAsync();
+    }
+
+    async Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
+    {
+      await SaveAndMergeAsync();
     }
 
     void Csla.Core.ISavable<T>.SaveComplete(T newObject)

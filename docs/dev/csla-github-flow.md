@@ -1,7 +1,6 @@
 Git Flow for CSLA Development
 -----------------------------
-In response to a lot of questions about how to work with git and GitHub when contributing to CSLA I wrote a blog post [Simple Flow for Using Git and Pull Requests](www.lhotka.net/weblog/ASimpleFlowForUsingGitAndPullRequests.aspx
-). That post is fairly long and includes explanations about why things work as they do.
+In response to a lot of questions about how to work with git and GitHub when contributing to CSLA I wrote a blog post [Simple Flow for Using Git and Pull Requests](http://lhotka.net/weblog/ASimpleFlowForUsingGitAndPullRequests.aspx). That post is fairly long and includes explanations about why things work as they do.
 
 Here's a tl;dr summary if you just want to get working without all the background. 
 

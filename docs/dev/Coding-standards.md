@@ -10,7 +10,7 @@ The following are instructions for setting up an environment for CSLA .NET devel
 ## Dev environment setup
 
 You will need to set up your development workstation with the following
-* Visual Studio 2017
+* Visual Studio 2019
   * Make sure Visual Studio is running the latest updates from Microsoft, CSLA .NET is almost always at or ahead of any current release of Visual Studio tooling
   * Workloads
     * Windows client development (for Windows Forms, WPF, UWP)
@@ -35,7 +35,7 @@ Once you have that all installed, and you have your GitHub credentials, you’ll
 
 As far as coding standards – follow the code style you see in CSLA .NET. Some of the basics are covered by the `editorconfig` file in the repo. Here are some other basic guidelines/rules:
 
-* Casing and stuff
+* Casing and naming
   * Use _fieldName for all instance fields
   * Use ClassName
   * Use PropertyName and MethodName

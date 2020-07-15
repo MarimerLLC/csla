@@ -117,7 +117,7 @@
       <Version>3.1.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions">
-      <Version>3.1.5</Version>
+      <Version>3.1.6</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>

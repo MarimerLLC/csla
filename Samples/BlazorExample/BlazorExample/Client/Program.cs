@@ -26,7 +26,7 @@ namespace BlazorExample.Client
 
       builder.UseCsla((c) =>
         c.DataPortal().DefaultProxy(
-          typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:57416/api/DataPortal"));
+          typeof(Csla.DataPortalClient.HttpProxy), "/api/DataPortal"));
 
       var host = builder.Build();
 

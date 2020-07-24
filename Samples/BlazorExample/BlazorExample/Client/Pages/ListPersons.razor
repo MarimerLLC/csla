@@ -35,8 +35,6 @@ else
 }
 
 @code {
-  string errortext;
-
   protected override async Task OnParametersSetAsync()
   {
      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<PersonList>());

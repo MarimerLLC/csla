@@ -1,6 +1,28 @@
-﻿# CSLA 5 releases
+# CSLA 5 releases
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
+
+# CSLA .NET version 5.3.0 release
+
+Bug fixes and enhancements over the 5.2.0 release.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F17+is%3Aclosed).
+
+### General
+
+* [#1696](https://github.com/MarimerLLC/csla/issues/1696) 🎉 Blazor GetPropertyInfo now supports lists and arrays
+* [#1644](https://github.com/MarimerLLC/csla/issues/1644) 🐜 HttpProxy should get an HttpClient injected if one is available
+* [#1635](https://github.com/MarimerLLC/csla/issues/1635) 🐜 PropertyChanged being invoked in a background thread
+* [#1655](https://github.com/MarimerLLC/csla/issues/1655) 🐜 New SaveAndMergeAsync methods not exposed via ISavable and ISavable<T>
+* [#1657](https://github.com/MarimerLLC/csla/issues/1657) 🐜 DataPortalExceptionInspector=> InspectException does not track actual objectType,and businessObject in case exception is thrown by any CommandBase
+* [#1733](https://github.com/MarimerLLC/csla/issues/1733) 🎉 Updated docs for using GitHub from Visual Studio
+
+## Contributors
+
+* [@SachinPNikam](https://github.com/SachinPNikam) Data portal exception
+* [@russblair](https://github.com/russblair) GitHub docs
 
 # CSLA .NET version 5.2.0 release
 

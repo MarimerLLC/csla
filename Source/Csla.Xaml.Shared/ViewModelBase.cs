@@ -957,7 +957,6 @@ namespace Csla.Xaml
 
         IsBusy = true;
         Model = (T) await savable.SaveAsync();
-        IsBusy = false;
       }
       finally
       {

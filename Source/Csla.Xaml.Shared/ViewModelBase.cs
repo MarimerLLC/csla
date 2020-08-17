@@ -462,10 +462,13 @@ namespace Csla.Xaml
       get { return _model; }
       set
       {
-        var oldValue = _model;
-        _model = value;
-        this.OnModelChanged((T)oldValue, _model);
-        OnPropertyChanged(nameof(Model));
+        if (!ReferenceEquals(value, _model))
+        {
+          var oldValue = _model;
+          _model = value;
+          this.OnModelChanged((T)oldValue, _model);
+          OnPropertyChanged(nameof(Model));
+        }
       }
     }
 #else
@@ -532,9 +535,12 @@ namespace Csla.Xaml
       get { return _isBusy; }
       protected set
       {
-        _isBusy = value;
-        OnPropertyChanged(nameof(IsBusy));
-        OnSetProperties();
+        if (value != _isBusy)
+        {
+          _isBusy = value;
+          OnPropertyChanged(nameof(IsBusy));
+          OnSetProperties();
+        }
       }
     }
 
@@ -951,7 +957,6 @@ namespace Csla.Xaml
 
         IsBusy = true;
         Model = (T) await savable.SaveAsync();
-        IsBusy = false;
       }
       finally
       {

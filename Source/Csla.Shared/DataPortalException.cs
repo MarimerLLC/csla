@@ -151,31 +151,28 @@ namespace Csla
       get { return _businessObject; }
     }
 
+    private Exception _businessException;
+
     /// <summary>
     /// Gets the original server-side exception.
     /// </summary>
     /// <returns>An exception object.</returns>
     /// <remarks>
-    /// When an exception occurs in business code behind
-    /// the data portal, it is wrapped in a 
-    /// <see cref="Csla.Server.DataPortalException"/>, which 
-    /// is then wrapped in a 
-    /// <see cref="Csla.DataPortalException"/>. This property
-    /// unwraps and returns the original exception 
-    /// thrown by the business code on the server.
+    /// Removes all DataPortalException and CallMethodException
+    /// instances in the exception stack to find the original
+    /// exception.
     /// </remarks>
     public Exception BusinessException
     {
       get
       {
-        var result = this.InnerException;
-        if (result != null)
-          result = result.InnerException;
-        if (result is DataPortalException dpe && dpe.InnerException != null)
-          result = dpe.InnerException;
-        if (result is Csla.Reflection.CallMethodException cme && cme.InnerException != null)
-          result = cme.InnerException;
-        return result;
+        if (_businessException == null)
+        {
+          _businessException = this.InnerException;
+          while (_businessException is Csla.Reflection.CallMethodException || _businessException is DataPortalException)
+            _businessException = _businessException.InnerException;
+        }
+        return _businessException;
       }
     }
 
@@ -190,9 +187,7 @@ namespace Csla
       get
       {
         if (ErrorInfo != null)
-        {
           return BusinessErrorInfo.Message;
-        }
         else if (BusinessException == null)
           return Message;
         else

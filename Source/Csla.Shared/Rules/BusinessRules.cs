@@ -265,7 +265,16 @@ namespace Csla.Rules
     private bool _isBusy;
 
     [NonSerialized]
-    private AsyncManualResetEvent busyChanged = new AsyncManualResetEvent();
+    private AsyncManualResetEvent _busyChanged;
+    private AsyncManualResetEvent BusyChanged
+    {
+      get
+      {
+        if (_busyChanged == null)
+          _busyChanged = new AsyncManualResetEvent();
+        return _busyChanged;
+      }
+    }
 
     /// <summary>
     /// Gets a value indicating whether any async
@@ -278,9 +287,9 @@ namespace Csla.Rules
       {
         _isBusy = value;
         if (_isBusy)
-          busyChanged.Reset();
+          BusyChanged.Reset();
         else
-          busyChanged.Set();
+          BusyChanged.Set();
       }
     }
 
@@ -435,16 +444,17 @@ namespace Csla.Rules
     /// The PropertyChanged event should be raised for each affected
     /// property. Does not return until all async rules are complete.
     /// </returns>
-    public Task<List<string>> CheckRulesAsync(int timeout)
+    public async Task<List<string>> CheckRulesAsync(int timeout)
     {
       var result = CheckRules();
       if (RunningAsyncRules)
       {
-        var tasks = new Task[] { busyChanged.WaitAsync() };
-        if (Task.WaitAny(tasks, TimeSpan.FromMilliseconds(timeout)) == -1)
+        var tasks = new Task[] { BusyChanged.WaitAsync(), Task.Delay(timeout) };
+        var final = await Task.WhenAny(tasks);
+        if (final == tasks[1])
           throw new TimeoutException(nameof(CheckRulesAsync));
       }
-      return Task.FromResult(result);
+      return result;
     }
 
     /// <summary>

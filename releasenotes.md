@@ -2,6 +2,28 @@
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
 
+# CSLA .NET version 5.3.1 release
+
+Bug fixes over the 5.3.0 release.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F18+is%3Aclosed+).
+
+### General
+
+* [#1767](https://github.com/MarimerLLC/csla/issues/1767) 🐜 ViewModelBase always raises PropertyChanged for IsBusy & Model, even if they are set to the same values
+* [#1764](https://github.com/MarimerLLC/csla/issues/1764) 🐜 DataPortalException.BusinessException returns wrong exception for data portal call
+* [#1749](https://github.com/MarimerLLC/csla/issues/1749) 🐜 CheckRulesAsync is blocking the UI thread
+* [#1746](https://github.com/MarimerLLC/csla/issues/1746) 🐜 busyChanged property in the BusinessRule of BusinessBase is marked as NonSerialized
+
+## Contributors
+
+* [@ajj7060](https://github.com/ajj7060) Bug fixes
+* [@rockfordlhotka](https://github.com/rockfordlhotka) Bug fixes
+* [@shushil](https://github.com/shushil) Bug reports
+* [@ajohnstone-ks](https://github.com/ajohnstone-ks) Bug reports
+
 # CSLA .NET version 5.3.0 release
 
 Bug fixes and enhancements over the 5.2.0 release.
@@ -23,6 +45,7 @@ Bug fixes and enhancements over the 5.2.0 release.
 
 * [@SachinPNikam](https://github.com/SachinPNikam) Data portal exception
 * [@russblair](https://github.com/russblair) GitHub docs
+* [@rockfordlhotka](https://github.com/rockfordlhotka) Bug fixes and enhancements
 
 # CSLA .NET version 5.2.0 release
 
@@ -90,6 +113,7 @@ Enhancements related to Blazor, .NET core 3.1, and other good changes/fixes.
 * [@SachinPNikam](https://github.com/SachinPNikam) Entity Framework
 * [@BlagoCuljak](https://github.com/BlagoCuljak) WPF and Blazor
 * [@JasonBock](https://github.com/JasonBock) Analyzers
+* [@rockfordlhotka](https://github.com/rockfordlhotka) Bug fixes and enhancements
 
 ---
 
@@ -184,6 +208,7 @@ Highlights:
 * [@Eduardo-Micromust](https://github.com/Eduardo-Micromust) found and fixed numerous method calling issues
 * [@linkerro](https://github.com/linkerro) fixed some NuGet package reference issues
 * [@SachinPNikam](https://github.com/SachinPNikam) updated the Blazor samples
+* [@rockfordlhotka](https://github.com/rockfordlhotka) Bug fixes and enhancements
 
 ---
 

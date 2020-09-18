@@ -3656,7 +3656,7 @@ namespace Csla.Core
     /// Gets a value whether the business object is currently bypassing property checks?
     /// </summary>
     protected internal bool IsBypassingPropertyChecks { get { return _bypassPropertyChecks; } }
-	
+  
     [NonSerialized]
     [NotUndoable]
     private BypassPropertyChecksObject _bypassPropertyChecksObject = null;
@@ -3709,7 +3709,7 @@ namespace Csla.Core
       /// Disposes the object.
       /// </summary>
       /// <param name="dispose">Dispose flag.</param>
-      protected void Dispose(bool dispose)
+      protected virtual void Dispose(bool dispose)
       {
         DeRef();
       }
@@ -3795,6 +3795,16 @@ namespace Csla.Core
     {
       BusinessRules.CheckRules();
     }
+
+#if !NET40
+    /// <summary>
+    /// Invokes all rules for the business object.
+    /// </summary>
+    Task ICheckRules.CheckRulesAsync()
+    {
+      return BusinessRules.CheckRulesAsync();
+    }
+#endif
 
     /// <summary>
     /// Gets the broken rules for this object

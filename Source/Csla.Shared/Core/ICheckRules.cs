@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>  Defines the common methods for any business object which exposes means to supress and check business rules.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using Csla.Rules;
 
 namespace Csla.Core
@@ -31,6 +30,13 @@ namespace Csla.Core
     /// Invokes all rules for the business type.
     /// </summary>
     void CheckRules();
+
+#if !NET40
+    /// <summary>
+    /// Invokes all rules for the business type.
+    /// </summary>
+    Task CheckRulesAsync();
+#endif
 
     /// <summary>
     /// Gets the broken rules collection

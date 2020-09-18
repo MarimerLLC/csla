@@ -33,8 +33,8 @@ namespace Csla.AspNetCore.RazorPages
     /// Save the Item
     /// </summary>
     /// <param name="forceUpdate">Indicates whether an update operation should be forced.</param>
-    /// <returns>Redirection based on success or failure</returns>
-    public async Task<ActionResult> SaveAsync(bool forceUpdate = false)
+    /// <returns>True if the save operation succeeds</returns>
+    public async Task<bool> SaveAsync(bool forceUpdate = false)
     {
       try
       {
@@ -43,7 +43,7 @@ namespace Csla.AspNetCore.RazorPages
         if (ModelState.IsValid)
         {
           Item = (T) await Item.SaveAsync(forceUpdate);
-          return RedirectToPage("/People/Index");
+          return true;
         }
       }
       catch (ValidationException ex)
@@ -61,7 +61,7 @@ namespace Csla.AspNetCore.RazorPages
       {
         ModelState.AddModelError(string.Empty, ex.Message);
       }
-      return Page();
+      return false;
     }
 
     private void AddBrokenRuleInfo(T item, string defaultText)

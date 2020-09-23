@@ -4,7 +4,7 @@ CSLA .NET
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=MarimerLLC/csla)](https://dependabot.com)
 [![Join the chat at https://gitter.im/MarimerLLC/csla](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarimerLLC/csla?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![NuGet](https://img.shields.io/nuget/v/Csla.svg)](https://www.nuget.org/packages/Csla)
+[![NuGet](https://img.shields.io/nuget/v/Csla.svg)](https://www.nuget.org/packages/Csla) [![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/emersion/stability-badges#stable)
 
 ![](https://raw.github.com/MarimerLLC/csla/master/Support/Logos/csla%20win8_mid.png)
 

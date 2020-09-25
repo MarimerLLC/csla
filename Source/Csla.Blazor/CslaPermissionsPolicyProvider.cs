@@ -39,7 +39,7 @@ namespace Csla.Blazor
     /// Gets the fallback policy
     /// </summary>
     /// <returns></returns>
-    public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => FallbackPolicyProvider.GetDefaultPolicyAsync();
+    public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => FallbackPolicyProvider.GetFallbackPolicyAsync();
 
     /// <summary>
     /// Gets the authorization policy
@@ -61,7 +61,7 @@ namespace Csla.Blazor
       }
       else
       {
-        return FallbackPolicyProvider.GetPolicyAsync(policyName);
+        return GetFallbackPolicyAsync();
       }
     }
   }

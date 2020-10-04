@@ -645,9 +645,13 @@ namespace Csla.Server
 
     internal void Complete(InterceptArgs e)
     {
-      var startTime = (DateTimeOffset)ApplicationContext.ClientContext["__dataportaltimer"];
-      e.Runtime = DateTimeOffset.Now - startTime;
-      Dashboard.CompleteCall(e);
+      var timer = ApplicationContext.ClientContext.GetValueOrNull("__dataportaltimer");
+      if (timer != null)
+      {
+        var startTime = (DateTimeOffset)timer;
+        e.Runtime = DateTimeOffset.Now - startTime;
+        Dashboard.CompleteCall(e);
+      }
 
       if (_interceptor != null)
         _interceptor.Complete(e);

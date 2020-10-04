@@ -80,8 +80,14 @@ namespace Csla.Reflection
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName);
           else if (typeOfOperation == typeof(ExecuteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName);
+          else if (typeOfOperation == typeof(CreateChildAttribute))
+            candidates = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
           else
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName);
+        }
+        else if (typeOfOperation == typeof(CreateChildAttribute))
+        {
+          candidates = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
         }
       }
       else

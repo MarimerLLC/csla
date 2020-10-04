@@ -344,7 +344,6 @@
     <Compile Include="Threading\BackgroundWorkerSyncContextHelper.cs" />
     <Compile Include="Threading\BackgroundWorkerTests.cs" />
     <Compile Include="Threading\BusyLockTests.cs" />
-    <Compile Include="Threading\CslaTaskSchedulerTests.cs" />
     <Compile Include="Threading\MyIdentity.cs" />
     <Compile Include="Threading\MyPrincipal.cs" />
     <Compile Include="Utilities\CorerseValueTests.cs" />

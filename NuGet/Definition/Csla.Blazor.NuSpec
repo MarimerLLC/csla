@@ -23,15 +23,15 @@ Provides UI support for Blazor.
     <dependencies>
       <group targetFramework="netstandard2.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components" version="3.1.5" />
-        <dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.5" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="3.1.5" />
+        <dependency id="Microsoft.AspNetCore.Components" version="3.1.9" />
+        <dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.9" />
+        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="3.1.9" />
       </group>
       <group targetFramework="netcoreapp3.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components" version="3.1.5" />
-        <dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.5" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="3.1.5" />
+        <dependency id="Microsoft.AspNetCore.Components" version="3.1.9" />
+        <dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.9" />
+        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="3.1.9" />
       </group>
     </dependencies>
   </metadata>

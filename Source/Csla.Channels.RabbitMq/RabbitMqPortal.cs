@@ -6,7 +6,6 @@
 // <summary>Exposes server-side DataPortal functionality through RabbitMQ</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.IO;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Core;
@@ -27,9 +26,11 @@ namespace Csla.Channels.RabbitMq
     /// Gets the URI for the data portal service.
     /// </summary>
     public string DataPortalUrl { get; private set; }
+
     private IConnection Connection;
     private IModel Channel;
     private string DataPortalQueueName;
+
     /// <summary>
     /// Gets or sets the timeout for network
     /// operations in seconds (default is 30 seconds).
@@ -91,16 +92,16 @@ namespace Csla.Channels.RabbitMq
       InitializeRabbitMQ();
       Channel.QueueDeclare(
         queue: DataPortalQueueName,
-        durable: false, 
-        exclusive: false, 
-        autoDelete: false, 
+        durable: false,
+        exclusive: false,
+        autoDelete: false,
         arguments: null);
 
       var consumer = new EventingBasicConsumer(Channel);
       consumer.Received += (model, ea) =>
       {
         Console.WriteLine($"Received {ea.BasicProperties.Type} for {ea.BasicProperties.CorrelationId} from {ea.BasicProperties.ReplyTo}");
-        InvokePortal(ea, ea.Body);
+        InvokePortal(ea, ea.Body.ToArray());
       };
       Console.WriteLine($"Listening on queue {DataPortalQueueName}");
       Channel.BasicConsume(queue: DataPortalQueueName, autoAck: true, consumer: consumer);
@@ -159,15 +160,19 @@ namespace Csla.Channels.RabbitMq
         case "create":
           result = await Create((CriteriaRequest)request).ConfigureAwait(false);
           break;
+
         case "fetch":
           result = await Fetch((CriteriaRequest)request).ConfigureAwait(false);
           break;
+
         case "update":
           result = await Update((UpdateRequest)request).ConfigureAwait(false);
           break;
+
         case "delete":
           result = await Delete((CriteriaRequest)request).ConfigureAwait(false);
           break;
+
         default:
           throw new InvalidOperationException(operation);
       }
@@ -367,7 +372,7 @@ namespace Csla.Channels.RabbitMq
       return criteria;
     }
 
-    #endregion
+    #endregion Criteria
 
     #region Conversion methods
 
@@ -401,7 +406,7 @@ namespace Csla.Channels.RabbitMq
       return response;
     }
 
-    #endregion
+    #endregion Conversion methods
 
     /// <summary>
     /// Dispose this object.

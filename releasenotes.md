@@ -2,6 +2,21 @@
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
 
+# CSLA .NET version 5.3.2 release
+
+Bug fixes over the 5.3.1 release.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F19+is%3Aclosed)
+
+## Contributors
+
+* [@JacoJordaan](https://github.com/JacoJordaan) Bug fixes
+* [@rockfordlhotka](https://github.com/rockfordlhotka) Bug fixes
+* [@rfcdejong](https://github.com/rfcdejong) Bug reports/research
+* [@skeeler88](https://github.com/skeeler88) Bug reports/research
+
 # CSLA .NET version 5.3.1 release
 
 Bug fixes over the 5.3.0 release.

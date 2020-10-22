@@ -20,10 +20,12 @@ namespace Csla.Channels.RabbitMq
     /// Gets or sets the connection to the RabbitMQ service.
     /// </summary>
     protected IConnection Connection { get; set; }
+
     /// <summary>
     /// Gets or sets the channel (model) for RabbitMQ.
     /// </summary>
     protected IModel Channel { get; set; }
+
     /// <summary>
     /// Gets or sets the queue for inbound messages
     /// and replies.
@@ -34,7 +36,9 @@ namespace Csla.Channels.RabbitMq
 
     private static ProxyListener _instance;
 
-    private ProxyListener() { }
+    private ProxyListener()
+    {
+    }
 
     public static ProxyListener GetListener(Uri queueUri)
     {
@@ -113,7 +117,7 @@ namespace Csla.Channels.RabbitMq
         Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
         if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem item))
         {
-          item.Response = ea.Body;
+          item.Response = ea.Body.ToArray();
           item.ResetEvent.Set();
         }
         else

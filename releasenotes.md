@@ -2,6 +2,33 @@
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
 
+# CSLA .NET version 5.4.0 release
+
+Add support for .NET 5.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F20)
+
+### .NET 5
+
+### NuGet dependencies
+
+* Bump Microsoft.* packages to 3.1.9
+* Bump RabbitmMQ.Client to 6.2.1
+* Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.1
+* Bump Google.Protobuf to 3.13.0
+* Bump Grpc.Net.Client to 2.32.0
+* Bump Microsoft.Data.SqlClient to 2.0.1
+* Bump System.Data.SqlClient to 4.8.2
+* Bump Xamarin.Forms to 4.8.0.1560
+
+## Contributors
+
+* [@danielmartind](https://github.com/danielmartind) Depenendency updates
+* [@rockfordlhotka](https://github.com/rockfordlhotka) Enhancements
+* [@richardbartley](https://github.com/richardbartley) Bug reports/research
+
 # CSLA .NET version 5.3.2 release
 
 Bug fixes over the 5.3.1 release.

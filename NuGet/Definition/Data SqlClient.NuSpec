@@ -22,7 +22,7 @@ Supports the use of Microsoft.Data.SqlClient.
     <language>en-US</language>
     <dependencies>     
       <dependency id="Csla" version="[4.6.3-Beta10]" />
-      <dependency id="Microsoft.Data.SqlClient" version="2.0.0" />
+      <dependency id="Microsoft.Data.SqlClient" version="2.0.1" />
     </dependencies>
   </metadata>
   <files>

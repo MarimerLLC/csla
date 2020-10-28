@@ -403,14 +403,17 @@ namespace Csla.Reflection
         int index = 0;
         int criteriaIndex = 0;
 #if !NET40 && !NET45
-        var service = ApplicationContext.ScopedServiceProvider;        
+        var service = ApplicationContext.ScopedServiceProvider;   
+        if(service == null)
+        {
+           throw new InvalidOperationException();
+        }
 #endif
         foreach (var item in method.Parameters)
         {
           if (method.IsInjected[index])
           {
-#if !NET40 && !NET45
-            if (service != null)
+#if !NET40 && !NET45           
               plist[index] = service.GetService(item.ParameterType);
 #endif
           }

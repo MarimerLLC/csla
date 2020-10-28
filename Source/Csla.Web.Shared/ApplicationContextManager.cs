@@ -27,13 +27,15 @@ namespace Csla.Web
     private const string _clientContextName = "Csla.ClientContext";
     private const string _globalContextName = "Csla.GlobalContext";
 
+    private IServiceProvider _defaultServiceProvider = null;
+
     /// <summary>
     /// Gets a value indicating whether this
     /// context manager is valid for use in
     /// the current environment.
     /// </summary>
-    public bool IsValid 
-    { 
+    public bool IsValid
+    {
       get { return HttpContext.Current != null; }
     }
 
@@ -116,11 +118,7 @@ namespace Csla.Web
     /// </summary>
     public IServiceProvider GetDefaultServiceProvider()
     {
-      IServiceProvider result;
-      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__dsp"];
-      if (result == null)
-        result = GetDefaultServiceProvider();
-      return result;
+      return _defaultServiceProvider;
     }
 
     /// <summary>
@@ -129,24 +127,24 @@ namespace Csla.Web
     /// <param name="serviceProvider">IServiceProvider instance</param>
     public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
     {
-      Csla.ApplicationContext.LocalContext["__dsp"] = serviceProvider;
+      _defaultServiceProvider = serviceProvider;
     }
 
 #if !NET40 && !NET45
     /// <summary>
-    /// Gets the service provider scope
+    /// Gets the service provider for current scope
     /// </summary>
     /// <returns></returns>
-    public IServiceScope GetServiceProviderScope()
+    public IServiceProvider GetServiceProvider()
     {
-      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+      return (IServiceProvider)ApplicationContext.LocalContext["__sps"] ?? GetDefaultServiceProvider();
     }
 
     /// <summary>
-    /// Sets the service provider scope
+    /// Sets the service provider for current scope
     /// </summary>
-    /// <param name="scope">IServiceScope instance</param>
-    public void SetServiceProviderScope(IServiceScope scope)
+    /// <param name="scope">IServiceProvider instance</param>
+    public void SetServiceProvider(IServiceProvider scope)
     {
       Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }

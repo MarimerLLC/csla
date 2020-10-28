@@ -151,22 +151,22 @@ namespace Csla.Core
 
 #if !NET40 && !NET45
     /// <summary>
-    /// Gets the service provider scope
+    /// Gets the service provider for current scope
     /// </summary>
     /// <returns></returns>
 #pragma warning disable CS3002 // Return type is not CLS-compliant
-    public IServiceScope GetServiceProviderScope()
+    public IServiceProvider GetServiceProvider()
 #pragma warning restore CS3002 // Return type is not CLS-compliant
     {
-      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+      return (IServiceProvider)ApplicationContext.LocalContext["__sps"] ?? GetDefaultServiceProvider();
     }
 
     /// <summary>
-    /// Sets the service provider scope
+    /// Sets the service provider for current scope
     /// </summary>
-    /// <param name="scope">IServiceScope instance</param>
+    /// <param name="scope">IServiceProvider instance</param>
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
-    public void SetServiceProviderScope(IServiceScope scope)
+    public void SetServiceProvider(IServiceProvider scope)
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
     {
       Csla.ApplicationContext.LocalContext["__sps"] = scope;

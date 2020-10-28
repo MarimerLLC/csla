@@ -41,8 +41,7 @@ namespace Csla.Test.DataPortal
       var obj = new TestMethods();
       var method = new ServiceProviderMethodInfo { MethodInfo = obj.GetType().GetMethod("Method1") };
       Assert.IsNotNull(method, "needed method");
-      var result = (bool) await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 });
-      Assert.IsTrue(result);
+      await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 }));      
     }
 
     [TestMethod]
@@ -75,12 +74,12 @@ namespace Csla.Test.DataPortal
 
   public class TestMethods
   {
-    public bool Method1(int id, [Inject]ISpeak speaker)
+    public bool Method1(int id, [Inject] ISpeak speaker)
     {
       return speaker == null;
     }
 
-    public string GetSpeech(int id, [Inject]ISpeak speaker)
+    public string GetSpeech(int id, [Inject] ISpeak speaker)
     {
       return speaker.Speak();
     }

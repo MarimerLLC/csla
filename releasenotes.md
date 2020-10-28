@@ -25,7 +25,7 @@ Add support for .NET 5.
 
 ## Contributors
 
-* [@danielmartind](https://github.com/danielmartind) Depenendency updates
+* [@danielmartind](https://github.com/danielmartind) Bug fixes, Depenendency updates
 * [@rockfordlhotka](https://github.com/rockfordlhotka) Enhancements
 * [@richardbartley](https://github.com/richardbartley) Bug reports/research
 

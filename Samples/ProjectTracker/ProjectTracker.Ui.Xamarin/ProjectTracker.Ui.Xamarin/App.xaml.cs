@@ -1,26 +1,23 @@
-﻿using Csla.Configuration;
-using ProjectTracker.Library;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using Csla.Configuration;
+using ProjectTracker.Library;
 using Xamarin.Forms;
 
 namespace ProjectTracker.Ui.Xamarin
 {
-	public partial class App : Application
-	{
+  public partial class App : Application
+  {
     public static Page RootPage { get; private set; }
 
-    public App ()
-		{
-			InitializeComponent();
-
+    public App()
+    {
+      InitializeComponent();
+      Csla.DataPortalClient.HttpProxy.UseTextSerialization = true;
       CslaConfiguration.Configure()
         .DataPortal()
-          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), 
-                        "https://ptrackerserver.azurewebsites.net/api/dataportal");
+          .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy),
+                        "https://ptrackerserver.azurewebsites.net/api/dataportaltext");
 
       Library.Security.PTPrincipal.Logout();
 
@@ -28,22 +25,22 @@ namespace ProjectTracker.Ui.Xamarin
       RootPage = MainPage;
     }
 
-    protected override async void OnStart ()
-		{
+    protected override async void OnStart()
+    {
       await Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
       await RoleList.CacheListAsync();
     }
 
-    protected override void OnSleep ()
-		{
-			// Handle when your app sleeps
-		}
+    protected override void OnSleep()
+    {
+      // Handle when your app sleeps
+    }
 
-		protected override void OnResume ()
-		{
-			// Handle when your app resumes
-		}
+    protected override void OnResume()
+    {
+      // Handle when your app resumes
+    }
 
     public static async Task NavigateTo(Type page)
     {

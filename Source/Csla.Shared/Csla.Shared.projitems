@@ -169,6 +169,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBindingListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyListBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Reflection\InjectException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\ExpressionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\ServiceProviderMethodInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\IMobileList.cs" />

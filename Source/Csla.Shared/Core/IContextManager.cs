@@ -72,17 +72,17 @@ namespace Csla.Core
     void SetDefaultServiceProvider(IServiceProvider serviceProvider);
 #if !NET40 && !NET45
     /// <summary>
-    /// Gets the service provider scope
+    /// Gets the service provider scope for current scope.
     /// </summary>
 #pragma warning disable CS3002 // Return type is not CLS-compliant
-    IServiceScope GetServiceProviderScope();
+    IServiceProvider GetServiceProvider();
 #pragma warning restore CS3002 // Return type is not CLS-compliant
     /// <summary>
-    /// Sets the service provider scope
+    /// Sets the service provider for current scope.
     /// </summary>
-    /// <param name="scope">IServiceScope instance</param>
+    /// <param name="scope">IServiceProvider instance</param>
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
-    void SetServiceProviderScope(IServiceScope scope);
+    void SetServiceProvider(IServiceProvider scope);
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
 #endif
   }

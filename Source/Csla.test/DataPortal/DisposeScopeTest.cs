@@ -12,8 +12,9 @@ namespace Csla.Test.DataPortal
   public class DisposeScopeTest
   {
     [TestMethod]
-    public void Test_Scope_Dispose()
+    public void Test_Scope_DoesNotDispose()
     {
+      // CSLA should not dispose of the default service provider.
       var serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
 
@@ -23,7 +24,7 @@ namespace Csla.Test.DataPortal
       var classB = classA.ChildB;
 
       Assert.AreEqual(classA.DisposableClass.Id, classB.DisposableClass.Id, "Ids must be the same");
-      Assert.IsTrue(classA.DisposableClass.IsDisposed, "Object must be disposed");
+      Assert.IsFalse(classA.DisposableClass.IsDisposed, "Object must not be disposed");
     }
 
   }

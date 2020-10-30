@@ -14,6 +14,7 @@ using Csla.Core;
 using Csla.Configuration;
 #if !NET40 && !NET45
 using Microsoft.Extensions.DependencyInjection;
+using Csla.Properties;
 #endif
 
 namespace Csla
@@ -849,21 +850,15 @@ namespace Csla
     /// Sets the service provider scope for this application context.
     /// </summary>
 #pragma warning disable CS3003 // Type is not CLS-compliant
-    public static IServiceScope ServiceProviderScope
+    public static IServiceProvider ServiceProviderScope
 #pragma warning restore CS3003 // Type is not CLS-compliant
     {
       internal get
       {
-        var result = _contextManager.GetServiceProviderScope();
-        if (result == null && DefaultServiceProvider != null)
-        {
-          var scopeFactory = DefaultServiceProvider.GetRequiredService<IServiceScopeFactory>();
-          result = scopeFactory.CreateScope();
-          ServiceProviderScope = result;
-        }
-        return result;
+        var result = _contextManager.GetServiceProvider();
+        return result;       
       }
-      set => _contextManager.SetServiceProviderScope(value);
+      set => _contextManager.SetServiceProvider(value);
     }
 
     /// <summary>
@@ -874,7 +869,7 @@ namespace Csla
       get
       {
         if (ServiceProviderScope != null)
-          return ServiceProviderScope.ServiceProvider;
+          return ServiceProviderScope;
         else
           return null;
       }

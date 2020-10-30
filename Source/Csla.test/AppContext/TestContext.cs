@@ -96,19 +96,19 @@ namespace Csla.Test.AppContext
     }
 
     /// <summary>
-    /// Gets the service provider scope
+    /// Gets the service provider for current scope
     /// </summary>
     /// <returns></returns>
-    public IServiceScope GetServiceProviderScope()
+    public IServiceProvider GetServiceProvider()
     {
-      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+      return (IServiceProvider)ApplicationContext.LocalContext["__sps"];
     }
 
     /// <summary>
-    /// Sets the service provider scope
+    /// Sets the service provider for current scope
     /// </summary>
-    /// <param name="scope">IServiceScope instance</param>
-    public void SetServiceProviderScope(IServiceScope scope)
+    /// <param name="scope">IServiceProvider instance</param>
+    public void SetServiceProvider(IServiceProvider scope)
     {
       Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }

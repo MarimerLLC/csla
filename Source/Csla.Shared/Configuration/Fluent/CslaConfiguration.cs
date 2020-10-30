@@ -160,7 +160,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="scope">IServiceScope instance</param>
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
-    public CslaConfiguration ServiceProviderScope(IServiceScope scope)
+    public CslaConfiguration ServiceProviderScope(IServiceProvider scope)
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
     {
       ApplicationContext.ServiceProviderScope = scope;

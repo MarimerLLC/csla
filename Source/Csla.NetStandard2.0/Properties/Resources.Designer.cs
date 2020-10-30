@@ -10,7 +10,6 @@
 
 namespace Csla.Properties {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Csla.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -37,10 +36,10 @@ namespace Csla.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -52,7 +51,7 @@ namespace Csla.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -240,12 +239,11 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("CannotSerializeCollectionsNotOfIMobileObject", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Component requires a cascading parameter of type EditContext. For example, you can use component inside an EditForm.
+        ///   Looks up a localized string similar to {0} requires a cascading parameter of type {1}. For example, you can use {0} inside an EditForm..
         /// </summary>
-        public static string CascadingEditContextRequiredException
-        {
+        public static string CascadingEditContextRequiredException {
             get {
                 return ResourceManager.GetString("CascadingEditContextRequiredException", resourceCulture);
             }
@@ -573,7 +571,7 @@ namespace Csla.Properties {
             get {
                 return ResourceManager.GetString("MethodExecuteNotAllowed", resourceCulture);
             }
-        }
+        }        
         
         /// <summary>
         ///   Looks up a localized string similar to not implemented.
@@ -763,22 +761,20 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("ObjectTypeCouldNotBeLoaded", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Component requires a value for either the For or PropertyName parameter.
+        ///   Looks up a localized string similar to {0} requires a value for either the {1} or the {2} parameter..
         /// </summary>
-        public static string OneOfTwoParametersRequiredException
-        {
+        public static string OneOfTwoParametersRequiredException {
             get {
                 return ResourceManager.GetString("OneOfTwoParametersRequiredException", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component requires a value for the PropertyName parameter.
+        ///   Looks up a localized string similar to {0} requires a value for the {1} parameter..
         /// </summary>
-        public static string ParameterRequiredException
-        {
+        public static string ParameterRequiredException {
             get {
                 return ResourceManager.GetString("ParameterRequiredException", resourceCulture);
             }
@@ -1053,7 +1049,7 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("TypeLoadException", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Unable to load DataPortalProxyFactory {0}.
         /// </summary>
@@ -1062,7 +1058,7 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("UnableToLoadDataPortalProxyFactory", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Unhandled CSLA Known type was found.
         /// </summary>

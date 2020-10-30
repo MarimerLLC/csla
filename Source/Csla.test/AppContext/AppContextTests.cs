@@ -343,9 +343,18 @@ namespace Csla.Test.AppContext
     #endregion
 
     [TestCleanup]
-    public void ClearContextsAfterEachTest() {
+    public void ClearContextsAfterEachTest()
+    {
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.Clear();
     }
+
+    [TestInitialize]
+    public void SetScopedSp()
+    {
+      ApplicationContext.GlobalContext.Clear();
+      ApplicationContext.Clear();
+    }
+
   }
 }

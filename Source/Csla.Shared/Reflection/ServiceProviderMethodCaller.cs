@@ -244,11 +244,11 @@ namespace Csla.Reflection
         {
           resultingMethod = FindDataPortalMethod<T>(baseType, criteria, throwOnError);
         }
-        catch(TargetParameterCountException ex)
+        catch (TargetParameterCountException ex)
         {
           throw new TargetParameterCountException(cacheKey, ex);
         }
-        catch(AmbiguousMatchException ex)
+        catch (AmbiguousMatchException ex)
         {
           throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}.", ex);
         }
@@ -403,7 +403,7 @@ namespace Csla.Reflection
         int index = 0;
         int criteriaIndex = 0;
 #if !NET40 && !NET45
-        var service = ApplicationContext.ScopedServiceProvider;        
+        var service = ApplicationContext.ScopedServiceProvider;
 #endif
         foreach (var item in method.Parameters)
         {
@@ -412,6 +412,8 @@ namespace Csla.Reflection
 #if !NET40 && !NET45
             if (service != null)
               plist[index] = service.GetService(item.ParameterType);
+            //throw new InjectException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodInjectFailed);
+
 #endif
           }
           else

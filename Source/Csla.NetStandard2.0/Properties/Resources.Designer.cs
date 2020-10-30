@@ -571,16 +571,7 @@ namespace Csla.Properties {
             get {
                 return ResourceManager.GetString("MethodExecuteNotAllowed", resourceCulture);
             }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Method can not be injected as there is no IServiceProvider currently in scope..
-        /// </summary>
-        public static string MethodInjectFailed {
-            get {
-                return ResourceManager.GetString("MethodInjectFailed", resourceCulture);
-            }
-        }
+        }        
         
         /// <summary>
         ///   Looks up a localized string similar to not implemented.

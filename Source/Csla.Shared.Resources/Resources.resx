@@ -475,7 +475,4 @@
   <data name="OneOfTwoParametersRequiredException" xml:space="preserve">
     <value>{0} requires a value for either the {1} or the {2} parameter.</value>
   </data>
-  <data name="MethodInjectFailed" xml:space="preserve">
-    <value>Method can not be injected as there is no IServiceProvider currently in scope.</value>
-  </data>
 </root>

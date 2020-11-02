@@ -41,10 +41,7 @@ namespace Csla.Test.DataPortal
       var obj = new TestMethods();
       var method = new ServiceProviderMethodInfo { MethodInfo = obj.GetType().GetMethod("Method1") };
       Assert.IsNotNull(method, "needed method");
-      var result = (bool)await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 });
-      Assert.IsTrue(result);
-
-     // await Assert.ThrowsExceptionAsync<InjectException>(async () => await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 }));      
+      await Assert.ThrowsExceptionAsync<NullReferenceException>(async () => await ServiceProviderMethodCaller.CallMethodTryAsync(obj, method, new object[] { 123 }));
     }
 
     [TestMethod]

@@ -110,7 +110,11 @@ namespace Csla.DataPortalClient
     protected virtual HttpClient GetHttpClient()
     {
       if (_httpClient == null) {
-        _httpClient = new HttpClient();
+        HttpClientHandler handler = new HttpClientHandler()
+        {
+          AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+        };
+        _httpClient = new HttpClient(handler);
         if (this.Timeout > 0) {
           _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         }
@@ -417,6 +421,8 @@ namespace Csla.DataPortalClient
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post, 
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
+      httpRequest.Headers.Add("Accept", "*/*");
+      httpRequest.Headers.Add("Accept-Encoding", "gzip,deflate,*");
       if (UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else
@@ -433,6 +439,8 @@ namespace Csla.DataPortalClient
     private byte[] CallViaWebClient(byte[] serialized, string operation, string routingToken)
     {
       WebClient client = GetWebClient();
+      client.Headers.Set("Accept", "*/*");
+      client.Headers.Set("Accept-Encoding", "gzip,deflate,*");
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";
       if (UseTextSerialization)
       {
@@ -523,7 +531,8 @@ namespace Csla.DataPortalClient
 
       protected override WebRequest GetWebRequest(Uri address)
       {
-        var req = base.GetWebRequest(address);
+        var req = base.GetWebRequest(address) as HttpWebRequest;
+        req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
         if (Timeout > 0)
           req.Timeout = Timeout;
         return req;

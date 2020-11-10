@@ -1,6 +1,6 @@
 # CSLA 5 releases
 
-CSLA 5 includes major enhancements, and brings support for .NET Core 3 and WebAssembly (Blazor, Uno, etc.).
+CSLA 5 includes major enhancements, and brings support for .NET Core 3, .NET 5, and WebAssembly (Blazor, Uno, etc.).
 
 # CSLA .NET version 5.4.0 release
 
@@ -12,6 +12,13 @@ Add support for .NET 5.
 
 ### .NET 5
 
+* [#1846](https://github.com/MarimerLLC/csla/issues/1846) 🎉 .NET 5 support for
+  * Csla
+  * Csla.Blazor
+  * Csla.Blazor.WebAssembly
+  * Csla.WindowsForms
+  * Csla.Wpf
+
 ### NuGet dependencies
 
 * Bump Microsoft.Extensions.Configuration.* packages to 5.0.0
@@ -21,6 +28,7 @@ Add support for .NET 5.
 * Bump Microsoft.Extensions.Hosting.* packages to 5.0.0
 * Bump System.Diagnostics.EventLog packages to 5.0.0
 * Bump System.ComponentModel.Annotations packages to 5.0.0
+* Bump System.Configuration.ConfigurationManager package to 5.0.0
 * Bump Microsoft.* packages to 3.1.9
 * Bump RabbitmMQ.Client to 6.2.1
 * Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.1

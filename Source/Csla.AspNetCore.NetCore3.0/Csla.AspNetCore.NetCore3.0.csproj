@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.Mvc.xml</DocumentationFile>
     <DefineConstants>TRACE;NETCORE3_0</DefineConstants>
   </PropertyGroup>
 

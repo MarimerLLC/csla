@@ -14,8 +14,8 @@ using System.Windows.Markup;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for NetCoreApp3 (Xaml)")]
-[assembly: AssemblyDescription("CSLA .NET Xaml (NetCoreApp3.0)")]
+[assembly: AssemblyTitle("CSLA .NET for NetCoreApp3.1 (Xaml)")]
+[assembly: AssemblyDescription("CSLA .NET Xaml (NetCoreApp3.1)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]

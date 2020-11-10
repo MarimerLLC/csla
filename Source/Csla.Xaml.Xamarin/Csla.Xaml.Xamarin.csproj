@@ -11,6 +11,8 @@
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET for Xamarin</Product>
     <Copyright>Copyright © 2010-18 Marimer LLC</Copyright>
+    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

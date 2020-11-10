@@ -12,8 +12,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for NetCoreApp3.0")]
-[assembly: AssemblyDescription("CSLA .NET Windows Forms (NetCoreApp3.0)")]
+[assembly: AssemblyTitle("CSLA .NET for NetCoreApp3.1")]
+[assembly: AssemblyDescription("CSLA .NET Windows Forms (NetCoreApp3.1)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]

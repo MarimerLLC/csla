@@ -61,7 +61,7 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259
+#if !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259 && !NET5_0
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -223,8 +223,10 @@ namespace Csla
     /// <param name="info">Serialization info object.</param>
     /// <param name="context">Serialization context object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+#if !NET5_0
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+#endif
     public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
     {
       base.GetObjectData(info, context);

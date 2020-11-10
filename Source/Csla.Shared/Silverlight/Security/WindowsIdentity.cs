@@ -53,7 +53,7 @@ namespace Csla.Silverlight.Security
 
     #region Identity and roles population
 
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NET5_0
     /// <summary>
     /// Retrieves identity and role information from the currently
     /// logged in Windows user.
@@ -63,7 +63,7 @@ namespace Csla.Silverlight.Security
       throw new NotImplementedException();
     }
 #endif
-#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE && !NETSTANDARD2_0 && !NET5_0
     /// <summary>
     /// Retrieves identity and role information from the currently
     /// logged in Windows user.

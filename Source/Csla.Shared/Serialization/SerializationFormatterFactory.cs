@@ -23,13 +23,16 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
+#if !NET5_0
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
         return new BinaryFormatterWrapper();
 #if !NETSTANDARD2_0
       else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.NetDataContractSerializer)
         return new NetDataContractSerializerWrapper();
 #endif
-      else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
+      else
+#endif
+      if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
       {
         string customFormatterTypeName = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
         return (ISerializationFormatter)MethodCaller.CreateInstance(Type.GetType(customFormatterTypeName, true, true));

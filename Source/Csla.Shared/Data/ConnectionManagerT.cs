@@ -99,7 +99,7 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NET5_0
         throw new NotSupportedException("isDatabaseName==true");
 #else
         var connection = ConfigurationManager.ConnectionStrings[database];

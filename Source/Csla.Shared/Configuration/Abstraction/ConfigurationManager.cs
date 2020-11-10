@@ -20,7 +20,7 @@ namespace Csla.Configuration
 
     static ConfigurationManager()
     {
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_0 && !NET5_0
       try
       {
         _settings = System.Configuration.ConfigurationManager.AppSettings;

@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Data;
-#if !NET40 && !NETSTANDARD2_0
+#if !NET40 && !NETSTANDARD2_0 && !NET5_0
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 #endif
@@ -20,7 +20,7 @@ namespace Csla.Data
   /// </summary>
   public class SafeDataReader : IDataReader
   {
-#if !NET40 && !NETSTANDARD2_0
+#if !NET40 && !NETSTANDARD2_0 && !NET5_0
     private SqlDataReader _sqlDataReader;
 #endif
 
@@ -39,12 +39,12 @@ namespace Csla.Data
     public SafeDataReader(IDataReader dataReader)
     {
       DataReader = dataReader;
-#if !NET40 && !NETSTANDARD2_0
+#if !NET40 && !NETSTANDARD2_0 && !NET5_0
       _sqlDataReader = DataReader as SqlDataReader;
 #endif
     }
 
-#if !NET40 && !NETSTANDARD2_0
+#if !NET40 && !NETSTANDARD2_0 && !NET5_0
     /// <summary>
     /// Asynchronously gets the data value as a type.
     /// </summary>

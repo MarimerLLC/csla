@@ -21,7 +21,7 @@ namespace Csla.Configuration
     public ConnectionStringSettings()
     { }
 
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_0 && !NET5_0
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>

@@ -42,7 +42,7 @@ namespace Csla.Configuration
       return new CslaConfiguration();
     }
 
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_0 && !NET5_0
     /// <summary>
     /// Sets the web context manager.
     /// </summary>

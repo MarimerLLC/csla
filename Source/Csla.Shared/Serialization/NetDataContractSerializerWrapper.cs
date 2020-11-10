@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !NETSTANDARD2_0
+#if !NETFX_CORE && !NETSTANDARD2_0 && !NET5_0
 //-----------------------------------------------------------------------
 // <copyright file="NetDataContractSerializerWrapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

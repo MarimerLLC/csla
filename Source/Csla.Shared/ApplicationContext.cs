@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_0 && !NET5_0
 using System.Web;
 #endif
 using Csla.Core;
@@ -551,7 +551,7 @@ namespace Csla
 
         string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
         if (string.IsNullOrWhiteSpace(tmp))
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NET5_0
           tmp = "MobileFormatter";
 #else
           tmp = "BinaryFormatter";
@@ -569,7 +569,7 @@ namespace Csla
     /// </summary>
     public enum SerializationFormatters
     {
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_0 && !NET5_0
       /// <summary>
       /// Use the Microsoft .NET 3.0
       /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">

@@ -35,9 +35,9 @@ Provides UI support for Blazor.
       </group>
       <group targetFramework="net5.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components" version="5.0.0-rc.2.20475.5" />
-        <dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.0-rc.2.20475.5" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="5.0.0-rc.2.20475.5" />
+        <dependency id="Microsoft.AspNetCore.Components" version="5.0.0" />
+        <dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.0" />
+        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="5.0.0" />
       </group>
     </dependencies>
   </metadata>

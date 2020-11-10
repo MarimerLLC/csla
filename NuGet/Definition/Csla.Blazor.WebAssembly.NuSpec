@@ -29,7 +29,7 @@ Provides UI support for client-side Blazor WebAssembly.
       <group targetFramework="net5.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="5.0.0-rc.2.20475.17" />
+        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="5.0.0" />
       </group>
     </dependencies>
   </metadata>

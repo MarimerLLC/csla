@@ -14,6 +14,13 @@ Add support for .NET 5.
 
 ### NuGet dependencies
 
+* Bump Microsoft.Extensions.Configuration.* packages to 5.0.0
+* Bump Microsoft.Extensions.Logging.* packages to 5.0.0
+* Bump System.Security.* packages to 5.0.0
+* Bump Microsoft.Extensions.Logging.* packages to 5.0.0
+* Bump Microsoft.Extensions.Hosting.* packages to 5.0.0
+* Bump System.Diagnostics.EventLog packages to 5.0.0
+* Bump System.ComponentModel.Annotations packages to 5.0.0
 * Bump Microsoft.* packages to 3.1.9
 * Bump RabbitmMQ.Client to 6.2.1
 * Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.1

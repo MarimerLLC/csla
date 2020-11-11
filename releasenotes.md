@@ -17,7 +17,10 @@ Add support for .NET 5.
   * Csla.Blazor
   * Csla.Blazor.WebAssembly
   * Csla.WindowsForms
-  * Csla.Wpf
+  * Csla.Xaml (WPF)
+* [#1874](https://github.com/MarimerLLC/csla/issues/1874) 🎉 Rework and improve the DI implementation
+* [#1881](https://github.com/MarimerLLC/csla/issues/1881) 🎉 Support compression in the Http data portal channel
+* [#1845](https://github.com/MarimerLLC/csla/issues/1845) 🐜 Fix issue with resx file name when building on Linux
 
 ### NuGet dependencies
 
@@ -40,8 +43,12 @@ Add support for .NET 5.
 
 ## Contributors
 
-* [@danielmartind](https://github.com/danielmartind) Bug fixes, Depenendency updates
+* [@BlagoCuljak](https://github.com/BlagoCuljak) Compression in Http data portal channel
+* [@dazinator](https://github.com/dazinator) DI enhancements
+* [@danielmartind](https://github.com/danielmartind) RabbitMQ updates, dependency updates, bug fixes
 * [@rockfordlhotka](https://github.com/rockfordlhotka) Enhancements
+* [@richardbartley](https://github.com/richardbartley) Bug reports/research
+* [@brinawebb](https://github.com/brinawebb) Bug reports
 * [@richardbartley](https://github.com/richardbartley) Bug reports/research
 
 # CSLA .NET version 5.3.2 release

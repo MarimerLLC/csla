@@ -15,7 +15,7 @@ using Csla.Server.Hosts.HttpChannel;
 using System.Web.Mvc;
 #endif
 using System.Net.Http;
-#if NETSTANDARD2_0 || NETCORE3_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0 || NETCORE3_0 || NETCORE3_1
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD2_0 || NETCORE3_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0 || NETCORE3_0 || NETCORE3_1
   public class HttpPortalController : Controller
   {
     /// <summary>
@@ -167,7 +167,7 @@ namespace Csla.Server.Hosts
       set { _portal = value; }
     }
 
-#if NETSTANDARD2_0 || NETCORE3_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0 || NETCORE3_0 || NETCORE3_1
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
       var serializer = new MobileFormatter();

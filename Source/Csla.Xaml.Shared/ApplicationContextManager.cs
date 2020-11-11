@@ -26,7 +26,9 @@ namespace Csla.Xaml
       if (_principal == null)
       {
         if (ApplicationContext.AuthenticationType == "Windows")
+#pragma warning disable CA1416 // Validate platform compatibility
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
+#pragma warning restore CA1416 // Validate platform compatibility
         else
           SetUser(new Csla.Security.UnauthenticatedPrincipal());
       }

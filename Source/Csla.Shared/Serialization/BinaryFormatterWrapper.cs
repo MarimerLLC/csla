@@ -1,3 +1,4 @@
+#if !NET5_0
 //-----------------------------------------------------------------------
 // <copyright file="BinaryFormatterWrapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -22,7 +23,7 @@ namespace Csla.Serialization
     private BinaryFormatter _formatter =
       new BinaryFormatter();
 
-    #region ISerializationFormatter Members
+#region ISerializationFormatter Members
 
     /// <summary>
     /// Converts a serialization stream into an
@@ -47,7 +48,7 @@ namespace Csla.Serialization
       _formatter.Serialize(serializationStream, graph);
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Gets a reference to the underlying
@@ -63,3 +64,4 @@ namespace Csla.Serialization
     }
   }
 }
+#endif

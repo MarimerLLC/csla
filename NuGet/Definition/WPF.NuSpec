@@ -30,18 +30,27 @@ Supports the creation of WPF applications.
       <group targetFramework="net46">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="netcoreapp3.0">
+      <group targetFramework="netcoreapp3.1">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net5.0-windows">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
     </dependencies>
   </metadata>
   <files>
-     <!-- netcoreapp3.0 Assembly -->
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.dll*" target="lib\netcoreapp3.0" />
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.pdb*" target="lib\netcoreapp3.0" />
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.resources.dll*" target="lib\netcoreapp3.0" />
-    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.resources.pdb*" target="lib\netcoreapp3.0" />
-    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Xaml.xml*" target="lib\netcoreapp3.0" />
+     <!-- netcoreapp3.1 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Xaml.dll*" target="lib\netcoreapp3.1" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Xaml.pdb*" target="lib\netcoreapp3.1" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Xaml.resources.dll*" target="lib\netcoreapp3.1" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Xaml.resources.pdb*" target="lib\netcoreapp3.1" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Xaml.xml*" target="lib\netcoreapp3.1" />
+     <!-- net5.0-windows Assembly -->
+    <file src="..\..\bin\Release\netstandard\net5.0-windows\**\Csla.Xaml.dll*" target="lib\net5.0-windows" />
+    <file src="..\..\bin\Release\netstandard\net5.0-windows\**\Csla.Xaml.pdb*" target="lib\net5.0-windows" />
+    <file src="..\..\bin\Release\netstandard\net5.0-windows\**\Csla.Xaml.resources.dll*" target="lib\net5.0-windows" />
+    <file src="..\..\Bin\Release\netstandard\net5.0-windows\**\Csla.Xaml.resources.pdb*" target="lib\net5.0-windows" />
+    <file src="..\..\Bin\Release\netstandard\net5.0-windows\**\Csla.Xaml.xml*" target="lib\net5.0-windows" />
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.dll*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.pdb*" target="lib\net40" />

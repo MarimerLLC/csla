@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
     <AssemblyName>Csla.AspNetCore</AssemblyName>
     <RootNamespace>Csla.AspNetCore</RootNamespace>
     <PackageId>Csla.AspNetCore</PackageId>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET</Product>
-    <Description>CSLA .NET support for AspNetCore 3.1</Description>
+    <Description>CSLA .NET support for AspNetCore and .NET 5</Description>
     <Copyright>Copyright © 2010-18 Marimer LLC</Copyright>
     <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</PackageLicenseUrl>
     <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
@@ -20,14 +20,20 @@
     <AssemblyOriginatorKeyFile>..\Csla.NetStandard2.0\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.Mvc.xml</DocumentationFile>
     <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
     <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'net5.0'">
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\netstandard\net5.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
@@ -45,8 +51,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <ProjectReference Include="..\Csla.Net5.0\Csla.Net5.0.csproj" />
   </ItemGroup>
 
 </Project>

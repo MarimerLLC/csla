@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Csla.AspNetCore</AssemblyName>
     <RootNamespace>Csla.AspNetCore</RootNamespace>
     <PackageId>Csla.AspNetCore</PackageId>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
     <Product>CSLA .NET</Product>
-    <Description>CSLA .NET support for AspNetCore 3.0</Description>
+    <Description>CSLA .NET support for AspNetCore 3.1</Description>
     <Copyright>Copyright © 2010-18 Marimer LLC</Copyright>
     <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</PackageLicenseUrl>
     <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.Mvc.xml</DocumentationFile>
     <DefineConstants>TRACE;NETCORE3_0</DefineConstants>
   </PropertyGroup>
 

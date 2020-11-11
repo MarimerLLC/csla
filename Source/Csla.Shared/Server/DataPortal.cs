@@ -115,7 +115,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !MONO && !NETSTANDARD2_0
+#if !(ANDROID || IOS) && !NETFX_CORE && !MONO && !NETSTANDARD2_0 && !NET5_0
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -172,7 +172,7 @@ namespace Csla.Server
 #if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !MONO && !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -276,7 +276,7 @@ namespace Csla.Server
 #if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !MONO && !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -439,7 +439,7 @@ namespace Csla.Server
 #if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !MONO && !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -551,7 +551,7 @@ namespace Csla.Server
 #if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0
+#if !MONO && !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try

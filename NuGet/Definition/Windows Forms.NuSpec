@@ -21,16 +21,31 @@ Supports the creation of Windows Forms applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="3.1.9" />
+      </group>
+      <group targetFramework="net5.0-windows">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-     <!-- netcoreapp3.0 Assembly -->
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.dll*" target="lib\netcoreapp3.0" />
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.pdb*" target="lib\netcoreapp3.0" />
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.resources.dll*" target="lib\netcoreapp3.0" />
-    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.resources.pdb*" target="lib\netcoreapp3.0" />
-    <file src="..\..\Bin\Release\netstandard\netcoreapp3.0\**\Csla.Windows.xml*" target="lib\netcoreapp3.0" />
+     <!-- netcoreapp3.1 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.dll*" target="lib\netcoreapp3.1" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.pdb*" target="lib\netcoreapp3.1" />
+    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.resources.dll*" target="lib\netcoreapp3.1" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.resources.pdb*" target="lib\netcoreapp3.1" />
+    <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.xml*" target="lib\netcoreapp3.1" />
+     <!-- net5.0-windows Assembly -->
+    <file src="..\..\bin\Release\netstandard\net5.0-windows\**\Csla.Windows.dll*" target="lib\net5.0-windows" />
+    <file src="..\..\bin\Release\netstandard\net5.0-windows\**\Csla.Windows.pdb*" target="lib\net5.0-windows" />
+    <file src="..\..\bin\Release\netstandard\net5.0-windows\**\Csla.Windows.resources.dll*" target="lib\net5.0-windows" />
+    <file src="..\..\Bin\Release\netstandard\net5.0-windows\**\Csla.Windows.resources.pdb*" target="lib\net5.0-windows" />
+    <file src="..\..\Bin\Release\netstandard\net5.0-windows\**\Csla.Windows.xml*" target="lib\net5.0-windows" />
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.dll*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.pdb*" target="lib\net40" />

@@ -56,6 +56,7 @@ try
     ## ---------------------------------------
     Write-Host "Clean destination folders..." -ForegroundColor Yellow
     Remove-Item ".\Packages\*.nupkg" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item ".\Packages\*.snupkg" -Recurse -Force -ErrorAction SilentlyContinue
     
     ## RDL - Copy definition files to temp folder
     ## ------------------------------------------

@@ -4,7 +4,7 @@
   {
     public const string Title = "Evaluate Managed Backing Fields";
     public const string IdentifierText = "ManagedBackingFieldMustBePublicStaticAndReadOnlyRule";
-    public const string Message = "Managed backing fields must be public, static and read-only.";
+    public const string Message = "Managed backing fields must be public, static and read-only";
   }
 
   public static class EvaluateManagedBackingFieldsCodeFixConstants

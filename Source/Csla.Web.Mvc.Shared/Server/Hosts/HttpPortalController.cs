@@ -61,13 +61,15 @@ namespace Csla.Server.Hosts
       }
     }
 
+    private static Dictionary<string, string> routingTagUrls = new Dictionary<string, string>();
+    private static HttpClient _client;
+
     /// <summary>
     /// Gets a dictionary containing the URLs for each
     /// data portal route, where each key is the 
     /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls = new Dictionary<string, string>();
-    private static HttpClient _client;
+    protected static Dictionary<string, string> RoutingTagUrls { get => routingTagUrls; set => routingTagUrls = value; }
 
     /// <summary>
     /// Gets or sets the HttpClient timeout
@@ -180,10 +182,12 @@ namespace Csla.Server.Hosts
         var request = serializer.Deserialize(requestStream);
         result = await CallPortal(operation, request);
       }
+#pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
         errorData = new HttpErrorInfo(ex);
       }
+#pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       serializer.Serialize(responseStream, portalResult);
     }
@@ -204,20 +208,22 @@ namespace Csla.Server.Hosts
         var request = serializer.Deserialize(requestBuffer);
         result = await CallPortal(operation, request);
       }
+#pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
         errorData = new HttpErrorInfo(ex);
       }
+#pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
 
       var responseBuffer = new MemoryStream();
       serializer.Serialize(responseBuffer, portalResult);
       responseBuffer.Position = 0;
-      using (var writer = new StreamWriter(responseStream))
+      using var writer = new StreamWriter(responseStream)
       {
-        writer.AutoFlush = true;
-        await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
-      }
+        AutoFlush = true
+      };
+      await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
     }
 #else
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
@@ -226,15 +232,19 @@ namespace Csla.Server.Hosts
       HttpErrorInfo errorData = null;
       try
       {
-        var buffer = new MemoryStream(data);
-        buffer.Position = 0;
+        var buffer = new MemoryStream(data)
+        {
+          Position = 0
+        };
         var request = MobileFormatter.Deserialize(buffer.ToArray());
         result = await CallPortal(operation, request);
       }
+#pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
         errorData = new HttpErrorInfo(ex);
       }
+#pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       var bytes = MobileFormatter.Serialize(portalResult);
       return bytes;
@@ -243,25 +253,15 @@ namespace Csla.Server.Hosts
 
     private async Task<HttpResponse> CallPortal(string operation, object request)
     {
-      HttpResponse result = null;
       var portal = Portal;
-      switch (operation)
+      HttpResponse result = operation switch
       {
-        case "create":
-          result = await portal.Create((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-        case "fetch":
-          result = await portal.Fetch((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-        case "update":
-          result = await portal.Update((UpdateRequest)request).ConfigureAwait(false);
-          break;
-        case "delete":
-          result = await portal.Delete((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-        default:
-          throw new InvalidOperationException(operation);
-      }
+        "create" => await portal.Create((CriteriaRequest)request).ConfigureAwait(false),
+        "fetch" => await portal.Fetch((CriteriaRequest)request).ConfigureAwait(false),
+        "update" => await portal.Update((UpdateRequest)request).ConfigureAwait(false),
+        "delete" => await portal.Delete((CriteriaRequest)request).ConfigureAwait(false),
+        _ => throw new InvalidOperationException(operation),
+      };
       return result;
     }
   }

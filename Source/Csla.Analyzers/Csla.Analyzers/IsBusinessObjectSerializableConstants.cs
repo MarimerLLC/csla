@@ -4,7 +4,7 @@
   {
     public const string Title = "Find CSLA Business Objects That are Not Serializable";
     public const string IdentifierText = "IsBusinessObjectSerializable";
-    public const string Message = "CSLA business objects must be serializable.";
+    public const string Message = "CSLA business objects must be serializable";
   }
 
   public static class IsBusinessObjectSerializableMakeSerializableCodeFixConstants

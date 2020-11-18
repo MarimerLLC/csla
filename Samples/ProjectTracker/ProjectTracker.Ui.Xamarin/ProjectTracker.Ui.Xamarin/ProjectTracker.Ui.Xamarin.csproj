@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Xamarin.Forms" Version="5.2.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.5.0.530" />
-    <PackageReference Include="Xamarin.Forms" Version="4.6.0.772" />
+    <PackageReference Include="Csla.Xamarin.Forms" Version="5.4.0-R20111805" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1687" />
   </ItemGroup>
 
   <ItemGroup>

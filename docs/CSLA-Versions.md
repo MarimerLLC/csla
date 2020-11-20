@@ -61,6 +61,7 @@ Some older posts with information about upgrading:
 * [From 3.8 to 4](https://cslanet.com/old-forum/10688.html)
 * [from version 3.8 to 4](https://cslanet.com/old-forum/9225.html)
 * [Using multiple versions of CSLA in one app](https://cslanet.com/old-forum/9893.html)
+* [from 3.8 to 5.0](https://github.com/MarimerLLC/csla/discussions/1914)
 
 ## Future Roadmap
 

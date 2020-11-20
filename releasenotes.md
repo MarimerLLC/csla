@@ -40,6 +40,7 @@ Add support for .NET 5.
 * Bump Microsoft.Data.SqlClient to 2.0.1
 * Bump System.Data.SqlClient to 4.8.2
 * Bump Xamarin.Forms to 4.8.0.1560
+* Bump Microsoft.Data.SqlClient to 2.1.0
 
 ## Contributors
 

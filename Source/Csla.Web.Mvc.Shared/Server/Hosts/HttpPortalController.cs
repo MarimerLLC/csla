@@ -175,7 +175,14 @@ namespace Csla.Server.Hosts
       var serializer = new MobileFormatter();
       var result = new HttpResponse();
       HttpErrorInfo errorData = null;
-      Response.Headers.Add("Content-type", "application/octet-stream,text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+      if (UseTextSerialization)
+      {
+        Response.Headers.Add("Content-type", "application/base64,text/plain");
+      }
+      else
+      {
+        Response.Headers.Add("Content-type", "application/octet-stream");
+      }
       Response.Headers.Add("Accept-Encoding", "gzip,deflate");
       try
       {

@@ -110,10 +110,18 @@ namespace Csla.DataPortalClient
     protected virtual HttpClient GetHttpClient()
     {
       if (_httpClient == null) {
-        HttpClientHandler handler = new HttpClientHandler()
+        HttpClientHandler handler;
+        if (UseTextSerialization)
         {
-          AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-        };
+          handler = new HttpClientHandler();
+        }
+        else
+        {
+          handler = new HttpClientHandler()
+          {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+          };
+        }
         _httpClient = new HttpClient(handler);
         if (this.Timeout > 0) {
           _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);

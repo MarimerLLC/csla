@@ -42,7 +42,7 @@ Supports the creation of Windows Forms applications.
         <dependency id="Microsoft.Extensions.Hosting" version="3.1.9" />
         <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="3.1.9" />
       </group>
-      <group targetFramework="net5.0-windows10.0.19041">
+      <group targetFramework="net5.0-windows10.0.19041.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
         <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
@@ -56,12 +56,12 @@ Supports the creation of Windows Forms applications.
     <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.resources.dll*" target="lib\netcoreapp3.1" />
     <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.resources.pdb*" target="lib\netcoreapp3.1" />
     <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.xml*" target="lib\netcoreapp3.1" />
-     <!-- net5.0-windows10.0.19041 Assembly -->
-    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041\**\Csla.Windows.dll*" target="lib\net5.0-windows10.0.19041" />
-    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041\**\Csla.Windows.pdb*" target="lib\net5.0-windows10.0.19041" />
-    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041\**\Csla.Windows.resources.dll*" target="lib\net5.0-windows10.0.19041" />
-    <file src="..\..\Bin\Release\netstandard\net5.0-windows10.0.19041\**\Csla.Windows.resources.pdb*" target="lib\net5.0-windows10.0.19041" />
-    <file src="..\..\Bin\Release\netstandard\net5.0-windows10.0.19041\**\Csla.Windows.xml*" target="lib\net5.0-windows10.0.19041" />
+     <!-- net5.0-windows10.0.19041.0 Assembly -->
+    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.dll*" target="lib\net5.0-windows10.0.19041.0" />
+    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.pdb*" target="lib\net5.0-windows10.0.19041.0" />
+    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.resources.dll*" target="lib\net5.0-windows10.0.19041.0" />
+    <file src="..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.resources.pdb*" target="lib\net5.0-windows10.0.19041.0" />
+    <file src="..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.xml*" target="lib\net5.0-windows10.0.19041.0" />
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.dll*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.pdb*" target="lib\net40" />

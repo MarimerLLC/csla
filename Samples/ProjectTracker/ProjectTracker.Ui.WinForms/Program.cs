@@ -46,10 +46,12 @@ namespace PTWin
 
           Console.WriteLine("Success");
         }
+#pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception ex)
         {
           Console.WriteLine("Error Occurred " + ex.Message);
         }
+#pragma warning restore CA1031 // Do not catch general exception types
       }
     }
   }

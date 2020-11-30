@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.xml</DocumentationFile>
     <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
   </PropertyGroup>
 
@@ -32,7 +32,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'net5.0'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\net5.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\net5.0\Csla.AspNetCore.xml</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 

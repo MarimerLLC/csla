@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <UseWindowsForms>true</UseWindowsForms>
-    <TargetFrameworks>netcoreapp3.1;net5.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0-windows10.0.19041.0</TargetFrameworks>
     <AssemblyName>Csla.Windows</AssemblyName>
     <RootNamespace>Csla.Windows</RootNamespace>
     <ApplicationIcon />
@@ -16,9 +16,9 @@
     <DocumentationFile>..\..\Bin\Debug\netstandard\netcoreapp3.1\Csla.Windows.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'net5.0-windows10.0.19041'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
     <OutputPath>..\..\Bin\Debug\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Debug\netstandard\net5.0-windows10.0.19041\Csla.Windows.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\netstandard\net5.0-windows10.0.19041.0\Csla.Windows.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
@@ -26,9 +26,9 @@
     <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.Windows.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'net5.0-windows10.0.19041'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\net5.0-windows10.0.19041\Csla.Windows.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\Csla.Windows.xml</DocumentationFile>
   </PropertyGroup>
 
   <Import Project="..\Csla.Windows.Shared\Csla.Windows.Shared.projitems" Label="Shared" />
@@ -53,11 +53,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.9" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows10.0.19041'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
     <ProjectReference Include="..\Csla.Net5.0\Csla.Net5.0.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows10.0.19041'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
   </ItemGroup>

@@ -21,12 +21,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Csla.Shared\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\Csla.Shared.Resources\*.resx" Link="Properties\%(RecursiveDir)%(Filename)%(Extension)" Exclude="..\Csla.Shared.Resources\CslaPrivate.resx" />
     <Compile Remove="Service References\**\*.cs" />
     <None Include="Service References\**\*.cs" />
-    <Compile Remove="..\Csla.Shared\Silverlight\**\*.cs" Condition="'$(TargetFramework)' != 'net40'"/>
-    <Compile Include="..\Csla.Shared\Silverlight\Security\WindowsIdentity.cs" Condition="'$(TargetFramework)' != 'net40'"/>
+    <Compile Remove="Silverlight\**\*.cs" Condition="'$(TargetFramework)' != 'net40'"/>
+    <Compile Include="Silverlight\Security\WindowsIdentity.cs" Condition="'$(TargetFramework)' != 'net40'"/>
     <Compile Include="..\Csla.Shared.Resources\Resources.Designer.cs">
       <Link>Properties\Resources.Designer.cs</Link>
       <AutoGen>True</AutoGen>

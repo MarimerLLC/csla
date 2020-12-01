@@ -53,14 +53,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
-    <ProjectReference Include="..\Csla.Net5.0\Csla.Net5.0.csproj" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">

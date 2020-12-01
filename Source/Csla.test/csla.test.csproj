@@ -486,9 +486,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
+    <ProjectReference Include="..\Csla\Csla.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla.Net4.6</Name>
+      <Name>Csla</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csla.Windows.Net4.6\Csla.Windows.Net4.6.csproj">
       <Project>{e6982b4d-d9be-4f70-ae2f-bb84763d317d}</Project>

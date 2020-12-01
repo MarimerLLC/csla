@@ -17,7 +17,7 @@
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla.NetStandard2.0\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -48,7 +48,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Csla.Blazor\Csla.Blazor.csproj" />
-    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
 </Project>

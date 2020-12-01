@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />

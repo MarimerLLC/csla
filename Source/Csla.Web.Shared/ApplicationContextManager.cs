@@ -11,9 +11,6 @@ using System.Linq;
 using System.Text;
 using Csla.Core;
 using System.Web;
-#if !NET40 && !NET45
-using Microsoft.Extensions.DependencyInjection;
-#endif
 
 namespace Csla.Web
 {

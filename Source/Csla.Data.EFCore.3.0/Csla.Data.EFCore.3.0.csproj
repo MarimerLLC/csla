@@ -19,7 +19,7 @@
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla.NetStandard2.0\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
   <Import Project="..\Csla.Data.EFCore.Shared\Csla.Data.EFCore.Shared.projitems" Label="Shared" />

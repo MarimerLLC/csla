@@ -21,18 +21,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\Csla.Shared.Resources\*.resx" Link="Properties\%(RecursiveDir)%(Filename)%(Extension)" Exclude="..\Csla.Shared.Resources\CslaPrivate.resx" />
+    <EmbeddedResource Remove="Properties\CslaPrivate.resx" />
     <Compile Remove="Service References\**\*.cs" />
     <None Include="Service References\**\*.cs" />
-    <Compile Remove="Silverlight\**\*.cs" Condition="'$(TargetFramework)' != 'net40'"/>
-    <Compile Include="Silverlight\Security\WindowsIdentity.cs" Condition="'$(TargetFramework)' != 'net40'"/>
-    <Compile Include="..\Csla.Shared.Resources\Resources.Designer.cs">
-      <Link>Properties\Resources.Designer.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <Compile Remove="Silverlight\**\*.cs" Condition="'$(TargetFramework)' != 'net40'" />
+    <Compile Include="Silverlight\Security\WindowsIdentity.cs" Condition="'$(TargetFramework)' != 'net40'" />
+    </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
     <Reference Include="System.Configuration" />
@@ -87,6 +81,11 @@
     <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,8 @@
    <Product>CSLA .NET</Product>
    <Copyright>Copyright © 2010-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
    <Authors>Marimer LLC</Authors>
-   <PackageIcon>images\csla.png</PackageIcon>
+   <PackageIcon>images\csla.png</PackageIcon>   
+   <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
  </PropertyGroup>
  
  <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">

@@ -3,20 +3,17 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net5.0;net40;net45;net461</TargetFrameworks>
     <PackageId>Csla</PackageId>
-    <Version>5.4.0.0</Version>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageLicenseExpression>mit</PackageLicenseExpression>
-    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
-    <Company>Marimer LLC</Company>
-    <Product>CSLA .NET</Product>
-    <Copyright>Copyright © 2010-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
-    <Description>CSLA</Description>
-    <Authors>Marimer LLC</Authors>
+    <Product>CSLA .NET - Core</Product>
+    <PackageTags>CSLA Business Core</PackageTags>
+    <Description>
+      Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
+
+      CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </Description>
     <GenerateDocumentationFile Condition="'$(Configuration)'=='Release'">true</GenerateDocumentationFile>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>

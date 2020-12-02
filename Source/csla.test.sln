@@ -72,8 +72,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor.Test", "Csla.Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Data.EFCore.3.0", "Csla.Data.EFCore.3.0\Csla.Data.EFCore.3.0.csproj", "{EE54E7F4-3CE0-4FCC-B4FE-1EB29B1AF2DE}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Data.EF4.Shared", "Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.shproj", "{EBD18729-9887-4CE5-A8B7-760BAF75B027}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Data.EFCore.Shared", "Csla.Data.EFCore.Shared\Csla.Data.EFCore.Shared.shproj", "{603A5662-E1A9-44A7-A10B-A16B343452BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore.NetCore3.0", "Csla.AspNetCore.NetCore3.0\Csla.AspNetCore.NetCore3.0.csproj", "{91816C4C-B785-409A-A5EE-D32CEA8EBCB8}"
@@ -112,7 +110,6 @@ Global
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{bb7a0db4-f7f4-4632-b6ae-1edcdd758f16}*SharedItemsImports = 13
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{be377ead-d926-4220-953f-e097a8b4d77c}*SharedItemsImports = 5
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{e6982b4d-d9be-4f70-ae2f-bb84763d317d}*SharedItemsImports = 4
-		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ebd18729-9887-4ce5-a8b7-760baf75b027}*SharedItemsImports = 13
 		Csla.Data.EFCore.Shared\Csla.Data.EFCore.Shared.projitems*{ee54e7f4-3ce0-4fcc-b4fe-1eb29b1af2de}*SharedItemsImports = 5
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{f468eb7c-bd08-476c-a615-298b541f1265}*SharedItemsImports = 4
 	EndGlobalSection
@@ -1485,7 +1482,6 @@ Global
 		{1BF91E37-25BF-4E3B-B391-81A5F965E8F5} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{BE377EAD-D926-4220-953F-E097A8B4D77C} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{EE54E7F4-3CE0-4FCC-B4FE-1EB29B1AF2DE} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
-		{EBD18729-9887-4CE5-A8B7-760BAF75B027} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{603A5662-E1A9-44A7-A10B-A16B343452BD} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{91816C4C-B785-409A-A5EE-D32CEA8EBCB8} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{C1B34E87-6F41-494F-A6B8-997B69ACB0C9} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}

@@ -83,9 +83,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Data.EF4.Net4.6\Csla.Data.EF4.Net4.6.csproj">
+    <ProjectReference Include="..\Csla.Data.EF4\Csla.Data.EF4.csproj">
       <Project>{ee1b7d74-2bc6-4bb0-b1f0-3491d354cb7e}</Project>
-      <Name>Csla.Data.EF4.Net4.6</Name>
+      <Name>Csla.Data.EF4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csla\Csla.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>

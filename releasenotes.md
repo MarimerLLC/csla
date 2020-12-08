@@ -22,6 +22,10 @@ Add support for .NET 5.
 * [#1881](https://github.com/MarimerLLC/csla/issues/1881) 🎉 Support compression in the Http data portal channel
 * [#1845](https://github.com/MarimerLLC/csla/issues/1845) 🐜 Fix issue with resx file name when building on Linux
 
+### Blazor
+
+* [#1925](https://github.com/MarimerLLC/csla/issues/1925) 🐜 Http compression throws an exception in Blazor client code (dotnet 5)
+
 ### NuGet dependencies
 
 * Bump Microsoft.Extensions.Configuration.* packages to 5.0.0
@@ -36,7 +40,8 @@ Add support for .NET 5.
 * Bump RabbitmMQ.Client to 6.2.1
 * Bump Microsoft.AspNetCore.Components.WebAssembly to 3.2.1
 * Bump Google.Protobuf to 3.13.0
-* Bump Grpc.Net.Client to 2.32.0
+* Bump Grpc.Net.Client to 2.33.1
+* Bump Grpc.Tools to 2.34.0
 * Bump Microsoft.Data.SqlClient to 2.0.1
 * Bump System.Data.SqlClient to 4.8.2
 * Bump Xamarin.Forms to 4.8.0.1560

@@ -206,9 +206,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Csla.Net4.6\Csla.Net4.6.csproj">
+    <ProjectReference Include="..\..\..\Csla\Csla.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla.Net4.6</Name>
+      <Name>Csla</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

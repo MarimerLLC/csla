@@ -82,9 +82,9 @@
     <Compile Include="VPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
+    <ProjectReference Include="..\Csla\Csla.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla.Net4.6</Name>
+      <Name>Csla</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csla.Validation.Net4.6\Csla.Validation.Net4.6.csproj">
       <Project>{261a1902-bb71-4eda-b582-70890dae7d4b}</Project>

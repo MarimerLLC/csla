@@ -2,4 +2,23 @@
  <PropertyGroup>
    <LangVersion>8.0</LangVersion>
  </PropertyGroup>
+ 
+ <!-- Common Package Settings -->
+ <PropertyGroup>
+   <Version>5.4.0.0</Version>
+   <PackageLicenseExpression>MIT</PackageLicenseExpression>
+   <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
+   <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
+   <RepositoryType>GitHub</RepositoryType>
+   <Company>Marimer LLC</Company>
+   <Product>CSLA .NET</Product>
+   <Copyright>Copyright © 2010-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
+   <Authors>Marimer LLC</Authors>
+   <PackageIcon>images\csla.png</PackageIcon>   
+   <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+ </PropertyGroup>
+ 
+ <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
+   <None Include="$(MSBuildThisFileDirectory)..\NuGet\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />
+ </ItemGroup>
 </Project>

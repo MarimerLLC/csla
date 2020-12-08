@@ -54,9 +54,9 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.NetStandard2.0\Csla.NetStandard2.0.csproj">
+    <ProjectReference Include="..\Csla\Csla.csproj">
       <Project>{19801b8b-0c86-433f-8d09-da727adf6dcc}</Project>
-      <Name>Csla.NetStandard2.0</Name>
+      <Name>Csla</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

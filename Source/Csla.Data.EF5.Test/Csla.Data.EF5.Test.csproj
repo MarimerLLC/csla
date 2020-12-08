@@ -66,13 +66,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Data.EF5.Net4.6\Csla.Data.EF5.Net4.6.csproj">
-      <Project>{18ae6f5b-44b8-44b6-988e-5534620fb2e7}</Project>
-      <Name>Csla.Data.EF5.Net4.6</Name>
+    <ProjectReference Include="..\Csla.Data.EF5\Csla.Data.EF5.csproj">
+      <Project>{dcd47ec7-cc17-43e8-8ad8-51bf53747bc1}</Project>
+      <Name>Csla.Data.EF5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
+    <ProjectReference Include="..\Csla\Csla.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla.Net4.6</Name>
+      <Name>Csla</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csla.test\csla.test.csproj">
       <Project>{d464bfbe-c26a-46e9-bc72-3978bcad02d7}</Project>

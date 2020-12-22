@@ -70,12 +70,16 @@ Supports the creation of Class Library projects containing business domain class
   <files>
     <!-- NetStandard 2.0 Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.dll*" target="lib\netstandard2.0" />
-    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.xml*" target="lib\netstandard2.0" />
+    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.pdb*" target="lib\netstandard2.0" />
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.resources.dll*" target="lib\netstandard2.0" />
+    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.resources.pdb*" target="lib\netstandard2.0" />
+    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.xml*" target="lib\netstandard2.0" />
     <!-- Net 5.0 Assembly -->
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.dll*" target="lib\net5.0" />
-    <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.xml*" target="lib\net5.0" />
+    <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.pdb*" target="lib\net5.0" />
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.resources.dll*" target="lib\net5.0" />
+    <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.resources.pdb*" target="lib\net5.0" />
+    <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.xml*" target="lib\net5.0" />
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\NET4\**\Csla.dll*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.pdb*" target="lib\net40" />

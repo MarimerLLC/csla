@@ -16,11 +16,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.Xaml.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\Csla.Xaml.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />

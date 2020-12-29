@@ -35,13 +35,14 @@
     <DocumentationFile>..\..\Bin\Debug\Android\Csla.Validation.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\Android\</OutputPath>
     <DefineConstants>TRACE;__ANDROID__,SILVERLIGHT,WINDOWS_PHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\Android\Csla.Validation.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />

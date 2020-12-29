@@ -33,7 +33,7 @@
     <DocumentationFile>..\..\bin\Debug\ios\Csla.Validation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\iOS\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -42,6 +42,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <DefineConstants>__UNIFIED__;__MOBILE__;__IOS__;SILVERLIGHT;WINDOWS_PHONE;__IOS__</DefineConstants>
     <DocumentationFile>..\..\Bin\Release\iOS\Csla.Validation.XML</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -24,6 +24,8 @@
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.1\Csla.Blazor.WebAssembly.xml</DocumentationFile>
     <DefineConstants>TRACE;BLAZOR</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

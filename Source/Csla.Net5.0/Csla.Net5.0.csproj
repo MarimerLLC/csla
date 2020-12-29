@@ -27,6 +27,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\net5.0\Csla.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <Target Name="PrecompileScript" BeforeTargets="BeforeBuild">

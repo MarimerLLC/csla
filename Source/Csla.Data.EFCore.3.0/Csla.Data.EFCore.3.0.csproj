@@ -26,6 +26,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.1\Csla.Data.EntityFrameworkCore.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

@@ -24,6 +24,8 @@
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.xml</DocumentationFile>
     <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
@@ -34,6 +36,8 @@
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\net5.0\Csla.AspNetCore.xml</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />

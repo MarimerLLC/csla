@@ -834,7 +834,7 @@ namespace Csla
     {
       internal get
       {
-        var result = _contextManager.GetDefaultServiceProvider();
+        var result = ContextManager.GetDefaultServiceProvider();
         if (result == null && _serviceCollection != null)
         {
           result = _serviceCollection.BuildServiceProvider();
@@ -843,7 +843,7 @@ namespace Csla
         }
         return result;
       }
-      set => _contextManager.SetDefaultServiceProvider(value);
+      set => ContextManager.SetDefaultServiceProvider(value);
     }
 
     /// <summary>
@@ -855,10 +855,10 @@ namespace Csla
     {
       internal get
       {
-        var result = _contextManager.GetServiceProvider();
+        var result = ContextManager.GetServiceProvider();
         return result;       
       }
-      set => _contextManager.SetServiceProvider(value);
+      set => ContextManager.SetServiceProvider(value);
     }
 
     /// <summary>

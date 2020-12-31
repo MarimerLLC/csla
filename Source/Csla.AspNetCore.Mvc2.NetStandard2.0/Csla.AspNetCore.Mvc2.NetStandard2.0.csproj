@@ -24,6 +24,8 @@
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\Csla.AspNetCore.Mvc.xml</DocumentationFile>
     <DefineConstants>TRACE;NETSTANDARD2_0</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

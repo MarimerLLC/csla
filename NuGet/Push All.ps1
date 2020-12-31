@@ -31,15 +31,15 @@ try
     Write-Host "Publish all CLSA .NET NuGet packages" -ForegroundColor White
     Write-Host "====================================" -ForegroundColor White
     
-    ## Get list of packages (without ".symbols.") from Packages folder
+    ## Get list of packages (without ".snupkg") from Packages folder
     ## ---------------------------------------------------------------
     Write-Host "Get list of packages..." -ForegroundColor Yellow
-    $packages = Get-ChildItem $pathToNuGetPackageOutput -Exclude "*.symbols.*"
+    $packages = Get-ChildItem $pathToNuGetPackageOutput -Exclude "*.snupkg"
     
     ## Spawn off individual publish processes...
     ## -----------------------------------------
     Write-Host "Publishing packages..." -ForegroundColor Yellow
-    $packages | ForEach-Object { & $pathToNuGetPackager Push "$_" -Source https://www.nuget.org/api/v2/package }
+    $packages | ForEach-Object { & $pathToNuGetPackager Push "$_" -Source https://api.nuget.org/v3/index.json }
     Write-Host "Publish all done." -ForegroundColor Green
 }
 catch 

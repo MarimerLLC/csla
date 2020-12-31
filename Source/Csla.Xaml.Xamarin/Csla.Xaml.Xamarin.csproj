@@ -25,6 +25,8 @@
     <DefineConstants>TRACE;XAMARIN</DefineConstants>
     <OutputPath>..\..\Bin\Release\Xamarin\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\Xamarin\netstandard2.0\Csla.Xaml.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

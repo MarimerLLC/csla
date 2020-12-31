@@ -33,7 +33,7 @@
     <DocumentationFile>..\..\Bin\Debug\iOS\Csla.Iosui.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\iOS\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -42,6 +42,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <DocumentationFile>..\..\Bin\Release\iOS\Csla.Iosui.XML</DocumentationFile>
     <DefineConstants>IOS</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Xaml.Shared\ExecuteEventArgs.cs">

@@ -15,6 +15,8 @@ namespace Csla.Blazor
   /// </summary>
   public class PropertyInfo : IPropertyInfo, INotifyPropertyChanged
   {
+    private const string TextSeparator = ", ";
+    
     /// <summary>
     /// Gets the model
     /// </summary>
@@ -94,7 +96,7 @@ namespace Csla.Blazor
       {
         var result = string.Empty;
         if (Model is Core.BusinessBase obj)
-          result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Error, PropertyName);
+          result = obj.BrokenRulesCollection.ToString(TextSeparator, RuleSeverity.Error, PropertyName);
         return result;
       }
     }
@@ -110,7 +112,7 @@ namespace Csla.Blazor
       {
         var result = string.Empty;
         if (Model is Core.BusinessBase obj)
-          result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Warning, PropertyName);
+          result = obj.BrokenRulesCollection.ToString(TextSeparator, RuleSeverity.Warning, PropertyName);
         return result;
       }
     }
@@ -126,7 +128,7 @@ namespace Csla.Blazor
       {
         var result = string.Empty;
         if (Model is Core.BusinessBase obj)
-          result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Information, PropertyName);
+          result = obj.BrokenRulesCollection.ToString(TextSeparator, RuleSeverity.Information, PropertyName);
         return result;
       }
     }

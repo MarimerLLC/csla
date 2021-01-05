@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
-#if !NETSTANDARD && !NETSTANDARD2_0 && !NETCORE3_0 && !NETCORE3_1 && !NET5_0
+#if !NETSTANDARD2_0 && !NETCORE3_1 && !NET5_0
 using System;
 using System.Web;
 using System.Web.Mvc;

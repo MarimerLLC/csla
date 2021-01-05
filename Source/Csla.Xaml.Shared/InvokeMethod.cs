@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
+﻿#if !NETFX_CORE && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="InvokeMethod.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

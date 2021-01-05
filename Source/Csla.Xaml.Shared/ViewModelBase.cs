@@ -202,11 +202,7 @@ namespace Csla.Xaml
     [Obsolete("Use RefreshAsync", false)]
     protected virtual void DoRefresh(string factoryMethod)
     {
-#if NET40 || NET45
-      DoRefresh(factoryMethod, new object[] { });
-#else
       DoRefresh(factoryMethod, Array.Empty<object>());
-#endif
     }
 #endif
 
@@ -277,11 +273,7 @@ namespace Csla.Xaml
     [Obsolete("Use RefreshAsync", false)]
     protected virtual void BeginRefresh(string factoryMethod)
     {
-#if NET40 || NET45
-      BeginRefresh(factoryMethod, new object[] { });
-#else
       BeginRefresh(factoryMethod, Array.Empty<object>());
-#endif
     }
 
     private Delegate CreateHandler(Type objectType)
@@ -290,15 +282,7 @@ namespace Csla.Xaml
       var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
       var args = typeof(EventHandler<>).MakeGenericType(innerType);
 
-#if XAMARIN
-      var target = Expression.Constant(this);
-      var p1 = new ParameterExpression[] { Expression.Parameter(typeof(object), "sender"), Expression.Parameter(typeof(EventArgs), "args") };
-      var call = Expression.Call(target, method, p1);
-      var lambda = Expression.Lambda(args, call, "QueryCompleted", p1);
-      var handler = lambda.Compile();
-#else
       Delegate handler = Delegate.CreateDelegate(args, this, method);
-#endif
       return handler;
     }
 
@@ -341,7 +325,6 @@ namespace Csla.Xaml
     protected virtual void OnRefreshed()
     { }
 
-#if !(ANDROID || IOS) && !XAMARIN
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
@@ -379,7 +362,6 @@ namespace Csla.Xaml
       }
       return result;
     }
-#endif
 
     /// <summary>
     /// Saves the Model, first committing changes

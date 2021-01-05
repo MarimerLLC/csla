@@ -1,4 +1,4 @@
-#if !NETFX_PHONE && !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -9,13 +9,8 @@
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using Csla.Core;
-using Csla.Serialization.Mobile;
 using Csla.Server;
-#if !NETFX_CORE && !(IOS || ANDROID)
-using Csla.Server.Hosts;
 using Csla.Server.Hosts.WcfChannel;
-#endif
 
 namespace Csla.DataPortalClient
 {
@@ -39,14 +34,8 @@ namespace Csla.DataPortalClient
       {
         if (_defaultBinding == null)
         {
-#if !NETFX_CORE && !(IOS || ANDROID)
           _defaultBinding = new WSHttpBinding();
           WSHttpBinding binding = (WSHttpBinding)_defaultBinding;
-#else
-          _defaultBinding = new BasicHttpBinding();
-          BasicHttpBinding binding = (BasicHttpBinding)_defaultBinding;
-          binding.MaxBufferSize = int.MaxValue;
-#endif
           binding.MaxReceivedMessageSize = int.MaxValue;
           binding.ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas()
           {
@@ -140,7 +129,6 @@ namespace Csla.DataPortalClient
     /// </summary>
     public string EndPoint { get; protected set; }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Returns an instance of the channel factory
     /// used by GetProxy() to create the WCF proxy
@@ -171,94 +159,6 @@ namespace Csla.DataPortalClient
     {
       return cf.CreateChannel();
     }
-#else
-    /// <summary>
-    /// Gets an instance of the WcfPortalClient object
-    /// for use in communicating with the server.
-    /// </summary>
-    /// <remarks>
-    /// If both DataPortalUrl and Binding are non-null then
-    /// those values are used to initialize the proxy, otherwise
-    /// the proxy is initialized using values from the
-    /// system.serviceModel element in the Silverlight
-    /// client-side config file.
-    /// </remarks>
-    protected virtual WcfPortal.WcfPortalClient GetProxy()
-    {
-      if (!string.IsNullOrEmpty(this.DataPortalUrl) && this.Binding != null)
-      {
-        var address = new EndpointAddress(this.DataPortalUrl);
-        return new WcfPortal.WcfPortalClient(this.Binding, address);
-      }
-      else
-      {
-#if NETFX_CORE || IOS || ANDROID
-        return new WcfPortal.WcfPortalClient();
-#else
-        if (string.IsNullOrEmpty(EndPoint))
-          return new WcfPortal.WcfPortalClient();
-        else
-          return new WcfPortal.WcfPortalClient(EndPoint);
-#endif
-      }
-    }
-#endif
-
-#if (ANDROID || IOS) || NETFX_CORE
-#region Criteria
-
-    private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
-    {
-      var request = new WcfPortal.CriteriaRequest();
-      request.CriteriaData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      if (ApplicationContext.AuthenticationType == "Windows")
-      {
-        request.Principal = MobileFormatter.Serialize(null);
-      }
-      else
-      {
-        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
-      }
-#if NETFX_CORE
-      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
-      request.ClientCulture = language;
-      request.ClientUICulture = language;
-#else
-      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-#endif
-      return request;
-    }
-
-    private WcfPortal.UpdateRequest GetBaseUpdateCriteriaRequest()
-    {
-      var request = new WcfPortal.UpdateRequest();
-      request.ObjectData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      if (ApplicationContext.AuthenticationType == "Windows")
-      {
-        request.Principal = MobileFormatter.Serialize(null);
-      }
-      else
-      {
-        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
-      }
-#if NETFX_CORE
-      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
-      request.ClientCulture = language;
-      request.ClientUICulture = language;
-#else
-      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-#endif
-      return request;
-    }
-
-#endregion
-#endif
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -272,46 +172,9 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
-#if NET40
-      try
-      {
-        var request = new CreateRequest(objectType, criteria, context);
-        if (isSync)
-        {
-          response = proxy.Create(request);
-        }
-        else
-        {
-          var worker = new Csla.Threading.BackgroundWorker();
-          var tcs = new TaskCompletionSource<WcfResponse>();
-          worker.RunWorkerCompleted += (o, e) =>
-            {
-              tcs.SetResult((WcfResponse)e.Result);
-            };
-          worker.DoWork += (o, e) =>
-            {
-              e.Result = proxy.Create(request);
-            };
-          worker.RunWorkerAsync();
-          response = await tcs.Task;
-        }
-        if (cf != null)
-          cf.Close();
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
-      catch
-      {
-        cf.Abort();
-        throw;
-      }
-#else
       try
       {
         var request = new CreateRequest(objectType, criteria, context);
@@ -331,88 +194,6 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
-#endif
-#else
-      var request = GetBaseCriteriaRequest();
-      request.TypeName = objectType.AssemblyQualifiedName;
-      if (!(criteria is IMobileObject))
-      {
-        criteria = new PrimitiveCriteria(criteria);
-      }
-      request.CriteriaData = MobileFormatter.Serialize(criteria);
-      request = ConvertRequest(request);
-
-      var proxy = GetProxy();
-      DataPortalResult result = null;
-#if !NETFX_CORE && !(IOS || ANDROID)
-      var tcs = new TaskCompletionSource<DataPortalResult>();
-      proxy.CreateCompleted += (s, e) => 
-        {
-          try
-          {
-            Csla.WcfPortal.WcfResponse response = null;
-            if (e.Error == null)
-              response = ConvertResponse(e.Result);
-            ContextDictionary globalContext = null;
-            if (response != null)
-              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-            if (e.Error == null && response != null && response.ErrorData == null)
-            {
-              var obj = MobileFormatter.Deserialize(response.ObjectData);
-              result = new DataPortalResult(obj, null, globalContext);
-            }
-            else if (response != null && response.ErrorData != null)
-            {
-              var ex = new DataPortalException(response.ErrorData);
-              result = new DataPortalResult(null, ex, globalContext);
-            }
-            else
-            {
-              result = new DataPortalResult(null, e.Error, globalContext);
-            }
-          }
-          catch (Exception ex)
-          {
-            result = new DataPortalResult(null, ex, null);
-          }
-          finally
-          {
-            tcs.SetResult(result);
-          }
-        };
-      proxy.CreateAsync(request);
-      var finalresult = await tcs.Task;
-      if (finalresult.Error != null)
-        throw finalresult.Error;
-      return finalresult;
-#else
-      try
-      {
-        var response = await proxy.CreateAsync(request);
-        response = ConvertResponse(response);
-        if (response == null)
-          throw new DataPortalException("null response", null);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response.ErrorData == null)
-        {
-          var obj = MobileFormatter.Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null, globalContext);
-        }
-        else
-        {
-          var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
-        }
-      }
-      catch (Exception ex)
-      {
-        result = new DataPortalResult(null, ex, null);
-      }
-      if (result.Error != null)
-        throw result.Error;
-      return result;
-#endif
-#endif
     }
 
     /// <summary>
@@ -429,46 +210,9 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
-#if NET40
-      try
-      {
-        var request = new FetchRequest(objectType, criteria, context);
-        if (isSync)
-        {
-          response = proxy.Fetch(request);
-        }
-        else
-        {
-          var worker = new Csla.Threading.BackgroundWorker();
-          var tcs = new TaskCompletionSource<WcfResponse>();
-          worker.RunWorkerCompleted += (o, e) =>
-            {
-              tcs.SetResult((WcfResponse)e.Result);
-            };
-          worker.DoWork += (o, e) =>
-            {
-              e.Result = proxy.Fetch(request);
-            };
-          worker.RunWorkerAsync();
-          response = await tcs.Task;
-        }
-        if (cf != null)
-          cf.Close();
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
-      catch
-      {
-        cf.Abort();
-        throw;
-      }
-#else
       try
       {
         var request = new FetchRequest(objectType, criteria, context);
@@ -488,91 +232,6 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
-#endif
-#else // WinRT and Silverlight
-      var request = GetBaseCriteriaRequest();
-      request.TypeName = objectType.AssemblyQualifiedName;
-      if (!(criteria is IMobileObject))
-      {
-        criteria = new PrimitiveCriteria(criteria);
-      }
-      request.CriteriaData = MobileFormatter.Serialize(criteria);
-
-      request = ConvertRequest(request);
-
-      var proxy = GetProxy();
-      DataPortalResult result = null;
-
-#if !NETFX_CORE  && !(IOS || ANDROID)
-      var tcs = new TaskCompletionSource<DataPortalResult>();
-      proxy.FetchCompleted += (s, e) => 
-        {
-          try
-          {
-            Csla.WcfPortal.WcfResponse response = null;
-            if (e.Error == null)
-              response = ConvertResponse(e.Result);
-            ContextDictionary globalContext = null;
-            if (response != null)
-              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-            if (e.Error == null && response != null && response.ErrorData == null)
-            {
-              var obj = MobileFormatter.Deserialize(response.ObjectData);
-              result = new DataPortalResult(obj, null, globalContext);
-            }
-            else if (response != null && response.ErrorData != null)
-            {
-              var ex = new DataPortalException(response.ErrorData);
-              result = new DataPortalResult(null, ex, globalContext);
-            }
-            else
-            {
-              result = new DataPortalResult(null, e.Error, globalContext);
-            }
-          }
-          catch (Exception ex)
-          {
-            result = new DataPortalResult(null, ex, null);
-          }
-          finally
-          {
-            tcs.SetResult(result);
-          }
-        };
-      proxy.FetchAsync(request);
-      var finalresult = await tcs.Task;
-      if (finalresult.Error != null)
-        throw finalresult.Error;
-      return finalresult;
-
-#else // WinRT
-      try
-      {
-        var response = await proxy.FetchAsync(request);
-        response = ConvertResponse(response);
-        if (response == null)
-          throw new DataPortalException("null response", null);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response.ErrorData == null)
-        {
-          var obj = MobileFormatter.Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null, globalContext);
-        }
-        else
-        {
-          var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
-        }
-      }
-      catch (Exception ex)
-      {
-        result = new DataPortalResult(null, ex, null);
-      }
-      if (result.Error != null)
-        throw result.Error;
-      return result;
-#endif
-#endif
     }
 
     /// <summary>
@@ -588,46 +247,9 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
-#if NET40
-      try
-      {
-        var request = new UpdateRequest(obj, context);
-        if (isSync)
-        {
-          response = proxy.Update(request);
-        }
-        else
-        {
-          var worker = new Csla.Threading.BackgroundWorker();
-          var tcs = new TaskCompletionSource<WcfResponse>();
-          worker.RunWorkerCompleted += (o, e) =>
-            {
-              tcs.SetResult((WcfResponse)e.Result);
-            };
-          worker.DoWork += (o, e) =>
-            {
-              e.Result = proxy.Update(request);
-            };
-          worker.RunWorkerAsync();
-          response = await tcs.Task;
-        }
-        if (cf != null)
-          cf.Close();
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
-      catch
-      {
-        cf.Abort();
-        throw;
-      }
-#else
       try
       {
         var request = new UpdateRequest(obj, context);
@@ -647,83 +269,6 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
-#endif
-#else
-      var request = GetBaseUpdateCriteriaRequest();
-      request.ObjectData = MobileFormatter.Serialize(obj);
-      request = ConvertRequest(request);
-
-      var proxy = GetProxy();
-      DataPortalResult result = null;
-#if !NETFX_CORE && !(IOS || ANDROID)
-      var tcs = new TaskCompletionSource<DataPortalResult>();
-      proxy.UpdateCompleted += (s, e) => 
-        {
-          try
-          {
-            Csla.WcfPortal.WcfResponse response = null;
-            if (e.Error == null)
-              response = ConvertResponse(e.Result);
-            ContextDictionary globalContext = null;
-            if (response != null)
-              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-            if (e.Error == null && response != null && response.ErrorData == null)
-            {
-              var newobj = MobileFormatter.Deserialize(response.ObjectData);
-              result = new DataPortalResult(newobj, null, globalContext);
-            }
-            else if (response != null && response.ErrorData != null)
-            {
-              var ex = new DataPortalException(response.ErrorData);
-              result = new DataPortalResult(null, ex, globalContext);
-            }
-            else
-            {
-              result = new DataPortalResult(null, e.Error, globalContext);
-            }
-          }
-          catch (Exception ex)
-          {
-            result = new DataPortalResult(null, ex, null);
-          }
-          finally
-          {
-            tcs.SetResult(result);
-          }
-        };
-      proxy.UpdateAsync(request);
-      var finalresult = await tcs.Task;
-      if (finalresult.Error != null)
-        throw finalresult.Error;
-      return finalresult;
-#else
-      try
-      {
-        var response = await proxy.UpdateAsync(request);
-        response = ConvertResponse(response);
-        if (response == null)
-          throw new DataPortalException("null response", null);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response.ErrorData == null)
-        {
-          var newobj = MobileFormatter.Deserialize(response.ObjectData);
-          result = new DataPortalResult(newobj, null, globalContext);
-        }
-        else
-        {
-          var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
-        }
-      }
-      catch (Exception ex)
-      {
-        result = new DataPortalResult(null, ex, null);
-      }
-      if (result.Error != null)
-        throw result.Error;
-      return result;
-#endif
-#endif
     }
 
     /// <summary>
@@ -740,46 +285,9 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
-#if NET40
-      try
-      {
-        var request = new DeleteRequest(objectType, criteria, context);
-        if (isSync)
-        {
-          response = proxy.Delete(request);
-        }
-        else
-        {
-          var worker = new Csla.Threading.BackgroundWorker();
-          var tcs = new TaskCompletionSource<WcfResponse>();
-          worker.RunWorkerCompleted += (o, e) =>
-            {
-              tcs.SetResult((WcfResponse)e.Result);
-            };
-          worker.DoWork += (o, e) =>
-            {
-              e.Result = proxy.Delete(request);
-            };
-          worker.RunWorkerAsync();
-          response = await tcs.Task;
-        }
-        if (cf != null)
-          cf.Close();
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
-      catch
-      {
-        cf.Abort();
-        throw;
-      }
-#else
       try
       {
         var request = new DeleteRequest(objectType, criteria, context);
@@ -799,123 +307,7 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
-#endif
-#else
-      var request = GetBaseCriteriaRequest();
-      request.TypeName = objectType.AssemblyQualifiedName;
-      if (!(criteria is IMobileObject))
-      {
-        criteria = new PrimitiveCriteria(criteria);
-      }
-      request.CriteriaData = MobileFormatter.Serialize(criteria);
-      request = ConvertRequest(request);
-
-      var proxy = GetProxy();
-      DataPortalResult result = null;
-#if !NETFX_CORE && !(IOS || ANDROID)
-      var tcs = new TaskCompletionSource<DataPortalResult>();
-      proxy.DeleteCompleted += (s, e) => 
-        {
-          try
-          {
-            Csla.WcfPortal.WcfResponse response = null;
-            if (e.Error == null)
-              response = ConvertResponse(e.Result);
-            ContextDictionary globalContext = null;
-            if (response != null)
-              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-            if (e.Error == null && response != null && response.ErrorData == null)
-            {
-              result = new DataPortalResult(null, null, globalContext);
-            }
-            else if (response != null && response.ErrorData != null)
-            {
-              var ex = new DataPortalException(response.ErrorData);
-              result = new DataPortalResult(null, ex, globalContext);
-            }
-            else
-            {
-              result = new DataPortalResult(null, e.Error, globalContext);
-            }
-          }
-          catch (Exception ex)
-          {
-            result = new DataPortalResult(null, ex, null);
-          }
-          finally
-          {
-            tcs.SetResult(result);
-          }
-        };
-      proxy.DeleteAsync(request);
-      var finalresult = await tcs.Task;
-      if (finalresult.Error != null)
-        throw finalresult.Error;
-      return finalresult;
-#else
-      try
-      {
-        var response = await proxy.DeleteAsync(request);
-        response = ConvertResponse(response);
-        if (response == null)
-          throw new DataPortalException("null response", null);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response.ErrorData == null)
-        {
-          result = new DataPortalResult(null, null, globalContext);
-        }
-        else
-        {
-          var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
-        }
-      }
-      catch (Exception ex)
-      {
-        result = new DataPortalResult(null, ex, null);
-      }
-      if (result.Error != null)
-        throw result.Error;
-      return result;
-#endif
-#endif
     }
-
-#if ANDROID || IOS || NETFX_CORE
-#region Extension Method for Requests
-
-    /// <summary>
-    /// Override this method to manipulate the message
-    /// request data sent to the server.
-    /// </summary>
-    /// <param name="request">Update request data.</param>
-    protected virtual WcfPortal.UpdateRequest ConvertRequest(WcfPortal.UpdateRequest request)
-    {
-      return request;
-    }
-
-    /// <summary>
-    /// Override this method to manipulate the message
-    /// request data sent to the server.
-    /// </summary>
-    /// <param name="request">Criteria request data.</param>
-    protected virtual WcfPortal.CriteriaRequest ConvertRequest(WcfPortal.CriteriaRequest request)
-    {
-      return request;
-    }
-
-    /// <summary>
-    /// Override this method to manipulate the message
-    /// request data returned from the server.
-    /// </summary>
-    /// <param name="response">Response data.</param>
-    protected virtual WcfPortal.WcfResponse ConvertResponse(WcfPortal.WcfResponse response)
-    {
-      return response;
-    }
-
-#endregion
-#endif
   }
 }
 #endif

@@ -359,12 +359,7 @@ namespace Csla.Core
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       var t = this.GetType();
-#if NET40 || (ANDROID || IOS)
-      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
-#else
       var method = t.GetRuntimeMethods().FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
-#endif
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
       gm.Invoke(this, p);
@@ -483,10 +478,8 @@ namespace Csla.Core
 
     #region OnDeserialized
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
 
     [System.Runtime.Serialization.OnDeserialized()]
-#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       OnDeserialized(context);

@@ -1,5 +1,4 @@
-﻿#if !NET40
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="ServiceProviderMethodCaller.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -402,21 +401,17 @@ namespace Csla.Reflection
         plist = new object[method.Parameters.Length];
         int index = 0;
         int criteriaIndex = 0;
-#if !NET40 && !NET45
         var service = ApplicationContext.ScopedServiceProvider;
-#endif
         foreach (var item in method.Parameters)
         {
           if (method.IsInjected[index])
           {
-#if !NET40 && !NET45
             if (service == null)
             {
               throw new NullReferenceException(nameof(service));
             }
             plist[index] = service.GetService(item.ParameterType);
 
-#endif
           }
           else
           {
@@ -470,4 +465,3 @@ namespace Csla.Reflection
     }
   }
 }
-#endif

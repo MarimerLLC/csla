@@ -8,7 +8,6 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Csla.Properties;
 
@@ -83,17 +82,12 @@ namespace Csla
             Resources.UserNotAuthorizedException,
             "create",
             objectType.Name));
-#if NET40
-        var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
-        var proxy = GetDataPortalProxy(objectType, method.RunLocal);
-#else
         Reflection.ServiceProviderMethodInfo method;
         if (criteria is Server.EmptyCriteria)
           method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null, false);
         else
           method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
-#endif
 
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -289,13 +283,8 @@ namespace Csla
             "get",
             objectType.Name));
 
-#if NET40
-        var method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria);
-        var proxy = GetDataPortalProxy(objectType, method.RunLocal);
-#else
         var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
-#endif
 
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -555,64 +544,6 @@ namespace Csla
             method = new Csla.Server.DataPortalMethodInfo();
           proxy = GetDataPortalProxy(objectType, method.RunLocal);
         }
-#if NET40
-        else
-        {
-          Csla.Server.DataPortalMethodInfo method = null;
-          string methodName;
-          if (obj is Core.ICommandObject)
-          {
-            methodName = "DataPortal_Execute";
-            operation = DataPortalOperations.Execute;
-            if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                "execute",
-                objectType.Name));
-          }
-          else
-          {
-            var bbase = obj as Core.BusinessBase;
-            if (bbase != null)
-            {
-              if (bbase.IsDeleted)
-              {
-                methodName = "DataPortal_DeleteSelf";
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                    "delete",
-                    objectType.Name));
-              }
-              else
-                if (bbase.IsNew)
-                {
-                  methodName = "DataPortal_Insert";
-                  if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
-                    throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                      "create",
-                      objectType.Name));
-                }
-                else
-                {
-                  methodName = "DataPortal_Update";
-                  if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-                    throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                      "save",
-                      objectType.Name));
-                }
-            }
-            else
-            {
-              methodName = "DataPortal_Update";
-              if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                  "save",
-                  objectType.Name));
-            }
-          }
-          method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
-          proxy = GetDataPortalProxy(objectType, method.RunLocal);
-        }
-#else
         else
         {
           Reflection.ServiceProviderMethodInfo method;
@@ -662,7 +593,6 @@ namespace Csla
           }
           proxy = GetDataPortalProxy(objectType, method);
         }
-#endif
 
         dpContext =
           new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -858,13 +788,8 @@ namespace Csla
             "delete",
             objectType.Name));
 
-#if NET40
-        var method = Server.DataPortalMethodCache.GetDeleteMethod(objectType, criteria);
-        var proxy = GetDataPortalProxy(objectType, method.RunLocal);
-#else
         var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
-#endif
 
         dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
@@ -1109,7 +1034,6 @@ namespace Csla
       return await DoUpdateAsync(command, false);
     }
 
-#if !NET40
     private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, Reflection.ServiceProviderMethodInfo method)
     {
       if (method != null)
@@ -1117,7 +1041,6 @@ namespace Csla
       else
         return GetDataPortalProxy(objectType, false);
     }
-#endif
 
     private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
     {
@@ -1150,7 +1073,6 @@ namespace Csla
     }
   }
 
-#if !NET40
   internal static class Extensions
   {
     internal static bool RunLocal(this System.Reflection.MethodInfo t)
@@ -1158,5 +1080,4 @@ namespace Csla
       return t.CustomAttributes.Count(a => a.AttributeType.Equals(typeof(RunLocalAttribute))) > 0;
     }
   }
-#endif
 }

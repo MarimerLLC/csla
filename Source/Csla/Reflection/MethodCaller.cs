@@ -278,12 +278,8 @@ namespace Csla.Reflection
     {
       if (ApplicationContext.UseReflectionFallback)
       {
-#if NET40
-        throw new NotSupportedException("CallPropertyGetter + UseReflectionFallback");
-#else
         var propertyInfo = obj.GetType().GetProperty(property);
         return propertyInfo.GetValue(obj);
-#endif
       }
       else
       {
@@ -322,12 +318,8 @@ namespace Csla.Reflection
 
       if (ApplicationContext.UseReflectionFallback)
       {
-#if NET40
-        throw new NotSupportedException("CallPropertySetter + UseReflectionFallback");
-#else
         var propertyInfo = obj.GetType().GetProperty(property);
         propertyInfo.SetValue(obj, value);
-#endif
       }
       else
       {

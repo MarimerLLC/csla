@@ -5,12 +5,7 @@
 // </copyright>
 // <summary>Default CSLA .NET service builder</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-#if !NET40 && !NET45
 using Microsoft.Extensions.DependencyInjection;
-#endif
 
 namespace Csla.Configuration
 {
@@ -19,7 +14,6 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaBuilder : ICslaBuilder
   {
-#if !NET40 && !NET45
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
@@ -37,6 +31,5 @@ namespace Csla.Configuration
 #pragma warning disable CS3003 // Type is not CLS-compliant
     public IServiceCollection Services { get; set; }
 #pragma warning restore CS3003 // Type is not CLS-compliant
-#endif
   }
 }

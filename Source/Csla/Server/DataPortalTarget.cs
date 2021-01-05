@@ -107,70 +107,31 @@ namespace Csla.Server
         CallMethodIfImplemented("MarkOld");
     }
 
-#if !NET40
     private async Task InvokeOperationAsync<T>(object criteria, bool isSync)
       where T : DataPortalOperationAttribute
     {
       object[] parameters = DataPortal.GetCriteriaArray(criteria);
       await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
     }
-#endif
 
     public async Task CreateAsync(object criteria, bool isSync)
     {
-#if NET40
-      if (criteria is EmptyCriteria)
-      {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Create);
-        await CallMethodTryAsync(_methodNames.Create).ConfigureAwait(false);
-      }
-      else
-      {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.CreateCriteria, criteria);
-        if (criteria is Core.MobileList<object> list)
-          await CallMethodTryAsync(_methodNames.CreateCriteria, list.ToArray()).ConfigureAwait(false);
-        else
-          await CallMethodTryAsync(_methodNames.CreateCriteria, criteria).ConfigureAwait(false);
-      }
-#else
       await InvokeOperationAsync<CreateAttribute>(criteria, isSync).ConfigureAwait(false);
-#endif
     }
 
     public async Task CreateChildAsync(params object[] parameters)
     {
-#if NET40
-      await CallMethodTryAsync(_methodNames.CreateChild, parameters).ConfigureAwait(false);
-#else
       await CallMethodTryAsyncDI<CreateChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
     }
 
     public async Task FetchAsync(object criteria, bool isSync)
     {
-#if NET40
-      if (criteria is EmptyCriteria)
-      {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Fetch);
-        await CallMethodTryAsync(_methodNames.Fetch).ConfigureAwait(false);
-      }
-      else
-      {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.FetchCriteria, criteria);
-        await CallMethodTryAsync(_methodNames.FetchCriteria, criteria).ConfigureAwait(false);
-      }
-#else
       await InvokeOperationAsync<FetchAttribute>(criteria, isSync).ConfigureAwait(false);
-#endif
     }
 
     public async Task FetchChildAsync(params object[] parameters)
     {
-#if NET40
-      await CallMethodTryAsync(_methodNames.FetchChild, parameters).ConfigureAwait(false);
-#else
       await CallMethodTryAsyncDI<FetchChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
     }
 
 
@@ -183,12 +144,7 @@ namespace Csla.Server
           if (!busObj.IsNew)
           {
             // tell the object to delete itself
-#if NET40
-            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.DeleteSelf);
-            await CallMethodTryAsync(_methodNames.DeleteSelf).ConfigureAwait(false);
-#else
             await InvokeOperationAsync<DeleteSelfAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
-#endif
           }
           MarkNew();
         }
@@ -197,22 +153,12 @@ namespace Csla.Server
           if (busObj.IsNew)
           {
             // tell the object to insert itself
-#if NET40
-            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Insert);
-            await CallMethodTryAsync(_methodNames.Insert).ConfigureAwait(false);
-#else
             await InvokeOperationAsync<InsertAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
-#endif
           }
           else
           {
             // tell the object to update itself
-#if NET40
-            Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Update);
-            await CallMethodTryAsync(_methodNames.Update).ConfigureAwait(false);
-#else
             await InvokeOperationAsync<UpdateAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
-#endif
           }
           MarkOld();
         }
@@ -222,12 +168,7 @@ namespace Csla.Server
         // this is an updatable collection or some other
         // non-BusinessBase type of object
         // tell the object to update itself
-#if NET40
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Update);
-        await CallMethodTryAsync(_methodNames.Update).ConfigureAwait(false);
-#else
         await InvokeOperationAsync<UpdateAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
-#endif
         MarkOld();
       }
     }
@@ -242,11 +183,7 @@ namespace Csla.Server
           if (!busObj.IsNew)
           {
             // tell the object to delete itself
-#if NET40
-            await CallMethodTryAsync(_methodNames.DeleteSelfChild, parameters).ConfigureAwait(false);
-#else
             await CallMethodTryAsyncDI<DeleteSelfChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
             MarkNew();
           }
         }
@@ -255,20 +192,12 @@ namespace Csla.Server
           if (busObj.IsNew)
           {
             // tell the object to insert itself
-#if NET40
-            await CallMethodTryAsync(_methodNames.InsertChild, parameters).ConfigureAwait(false);
-#else
             await CallMethodTryAsyncDI<InsertChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
           }
           else
           {
             // tell the object to update itself
-#if NET40
-            await CallMethodTryAsync(_methodNames.UpdateChild, parameters).ConfigureAwait(false);
-#else
             await CallMethodTryAsyncDI<UpdateChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
           }
           MarkOld();
         }
@@ -277,44 +206,26 @@ namespace Csla.Server
       else if (Instance is Core.ICommandObject)
       {
         // tell the object to update itself
-#if NET40
-        await CallMethodTryAsync(_methodNames.ExecuteChild, parameters).ConfigureAwait(false);
-#else
         await CallMethodTryAsyncDI<ExecuteChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
       }
       else
       {
         // this is an updatable collection or some other
         // non-BusinessBase type of object
         // tell the object to update itself
-#if NET40
-        await CallMethodTryAsync(_methodNames.UpdateChild, parameters).ConfigureAwait(false);
-#else
         await CallMethodTryAsyncDI<UpdateChildAttribute>(false, parameters).ConfigureAwait(false);
-#endif
         MarkOld();
       }
     }
 
     public async Task ExecuteAsync(bool isSync)
     {
-#if NET40
-      Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Execute);
-      await CallMethodTryAsync(_methodNames.Execute).ConfigureAwait(false);
-#else
       await InvokeOperationAsync<ExecuteAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
-#endif
     }
 
     public async Task DeleteAsync(object criteria, bool isSync)
     {
-#if NET40
-      Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, Instance, _methodNames.Delete, criteria);
-      await CallMethodTryAsync(_methodNames.Delete, criteria).ConfigureAwait(false);
-#else
       await InvokeOperationAsync<DeleteAttribute>(criteria, isSync).ConfigureAwait(false);
-#endif
     }
   }
 

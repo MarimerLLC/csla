@@ -128,9 +128,7 @@ namespace Csla.Core
     /// </remarks>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {
@@ -174,9 +172,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is new.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public bool IsNew
     {
       get { return _isNew; }
@@ -198,9 +194,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is marked for deletion.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public bool IsDeleted
     {
       get { return _isDeleted; }
@@ -227,9 +221,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsDirty
     {
       get { return IsSelfDirty || (_fieldManager != null && FieldManager.IsDirty()); }
@@ -254,9 +246,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfDirty
     {
       get { return _isDirty; }
@@ -468,9 +458,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSavable
     {
       get
@@ -490,7 +478,6 @@ namespace Csla.Core
 
     #region Authorization
 
-#if !PCL259
     [NotUndoable]
     [NonSerialized]
     private ConcurrentDictionary<string, bool> _readResultCache;
@@ -503,7 +490,6 @@ namespace Csla.Core
     [NotUndoable]
     [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
-#endif
 
     /// <summary>
     /// Returns true if the user is allowed to read the
@@ -514,7 +500,6 @@ namespace Csla.Core
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
       var result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
@@ -527,7 +512,6 @@ namespace Csla.Core
           _readResultCache.AddOrUpdate(property.Name, result, (a,b) => { return result; });
         }
       }
-#endif
       return result;
     }
 
@@ -591,7 +575,6 @@ namespace Csla.Core
     public virtual bool CanWriteProperty(Csla.Core.IPropertyInfo property)
     {
       bool result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
@@ -604,7 +587,6 @@ namespace Csla.Core
           _writeResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
         }
       }
-#endif
       return result;
     }
 
@@ -660,7 +642,6 @@ namespace Csla.Core
 
     private void VerifyAuthorizationCache()
     {
-#if !PCL259 // rely on bait-and-switch for implementation
       if (_readResultCache == null)
         _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_writeResultCache == null)
@@ -675,7 +656,6 @@ namespace Csla.Core
         _executeResultCache.Clear();
         _lastPrincipal = Csla.ApplicationContext.User;
       }
-#endif
     }
 
     /// <summary>
@@ -688,7 +668,6 @@ namespace Csla.Core
     public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
       bool result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
@@ -701,7 +680,6 @@ namespace Csla.Core
           _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
         }
       }
-#endif
       return result;
     }
 
@@ -953,9 +931,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public bool IsChild
     {
       get { return _isChild; }
@@ -1216,9 +1192,7 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsValid
     {
       get { return IsSelfValid && (_fieldManager == null || FieldManager.IsValid()); }
@@ -1241,9 +1215,7 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfValid
     {
       get { return BusinessRules.IsValid; }
@@ -1255,12 +1227,8 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#if !NET40
+    [ScaffoldColumn(false)]
     [System.ComponentModel.DataAnnotations.Schema.NotMapped]
-#endif
-#endif
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual Rules.BrokenRulesCollection BrokenRulesCollection
     {
@@ -3113,9 +3081,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -3127,9 +3093,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
       get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
@@ -3796,7 +3760,6 @@ namespace Csla.Core
       BusinessRules.CheckRules();
     }
 
-#if !NET40
     /// <summary>
     /// Invokes all rules for the business object.
     /// </summary>
@@ -3804,7 +3767,6 @@ namespace Csla.Core
     {
       return BusinessRules.CheckRulesAsync();
     }
-#endif
 
     /// <summary>
     /// Gets the broken rules for this object

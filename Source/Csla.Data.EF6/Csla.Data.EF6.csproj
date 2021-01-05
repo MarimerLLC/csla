@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net45;net461</TargetFrameworks>
+    <TargetFrameworks>net461</TargetFrameworks>
     <PackageId>Csla.Data.EntityFramework6</PackageId>
     <DefaultLanguage>en-US</DefaultLanguage>
     <SignAssembly>true</SignAssembly>
@@ -21,7 +21,7 @@
     <Reference Include="System.Configuration" />
     <PackageReference Include="EntityFramework" Version="6.3.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-	  <ProjectReference Include="..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
 </Project>

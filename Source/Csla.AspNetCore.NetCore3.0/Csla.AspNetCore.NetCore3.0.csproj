@@ -23,11 +23,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\netstandard\netcoreapp3.1\Csla.AspNetCore.Mvc.xml</DocumentationFile>
-    <DefineConstants>TRACE;NETCORE3_0</DefineConstants>
+    <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;NETCORE3_0</DefineConstants>
+    <DefineConstants>TRACE;NETCORE3_1</DefineConstants>
   </PropertyGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />

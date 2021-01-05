@@ -1,4 +1,3 @@
-#if !NETFX_CORE && !(ANDROID || IOS) 
 //-----------------------------------------------------------------------
 // <copyright file="TransactionalDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -64,11 +63,7 @@ namespace Csla.Server
 
     private TransactionScope CreateTransactionScope()
     {
-#if NET40 || NET45
-      return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions());
-#else
       return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions(), _transactionalAttribute.AsyncFlowOption);
-#endif
     }
 
     private TransactionOptions GetTransactionOptions()
@@ -183,4 +178,3 @@ namespace Csla.Server
     }
   }
 }
-#endif

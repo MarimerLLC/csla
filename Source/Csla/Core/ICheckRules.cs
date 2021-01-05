@@ -31,12 +31,10 @@ namespace Csla.Core
     /// </summary>
     void CheckRules();
 
-#if !NET40
     /// <summary>
     /// Invokes all rules for the business type.
     /// </summary>
     Task CheckRulesAsync();
-#endif
 
     /// <summary>
     /// Gets the broken rules collection

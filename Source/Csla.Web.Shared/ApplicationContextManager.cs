@@ -127,7 +127,6 @@ namespace Csla.Web
       _defaultServiceProvider = serviceProvider;
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
@@ -145,6 +144,5 @@ namespace Csla.Web
     {
       Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }
-#endif
   }
 }

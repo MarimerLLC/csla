@@ -61,7 +61,7 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETCORE && !PCL46 && !ANDROID && !NETSTANDARD2_0 && !PCL259 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

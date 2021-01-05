@@ -7,15 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
-#if !NETSTANDARD2_0 && !NET5_0
-using System.Web;
-#endif
 using Csla.Core;
 using Csla.Configuration;
-#if !NET40 && !NET45
 using Microsoft.Extensions.DependencyInjection;
-using Csla.Properties;
-#endif
 
 namespace Csla
 {
@@ -741,7 +735,6 @@ namespace Csla
       }
     }
 
-#if !NET40 && !NET45
     private static System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
     private static bool _defaultTransactionAsyncFlowOptionSet;
 
@@ -768,7 +761,6 @@ namespace Csla
         _defaultTransactionAsyncFlowOptionSet = true;
       }
     }
-#endif
 
     #endregion
 
@@ -819,7 +811,6 @@ namespace Csla
 
     #region ServiceProvider
 
-#if !NET40 && !NET45
     private static IServiceCollection _serviceCollection;
 
     internal static void SetServiceCollection(IServiceCollection serviceCollection)
@@ -874,7 +865,6 @@ namespace Csla
           return null;
       }
     }
-#endif
 
     #endregion
   }

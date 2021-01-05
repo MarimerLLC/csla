@@ -124,7 +124,6 @@ namespace Csla
       }
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Marks a method to run within the specified
     /// type of transactional context.
@@ -159,7 +158,6 @@ namespace Csla
       }
       AsyncFlowOption = asyncFlowOption;
     }
-#endif
 
     /// <summary>
     /// Gets the type of transaction requested by the
@@ -182,12 +180,10 @@ namespace Csla
     /// </value>
     public int TimeoutInSeconds { get; private set; }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Gets the AsyncFlowOption for this transaction
     /// </summary>
     public TransactionScopeAsyncFlowOption AsyncFlowOption { get; private set; } = 
       TransactionScopeAsyncFlowOption.Suppress;
-#endif
   }
 }

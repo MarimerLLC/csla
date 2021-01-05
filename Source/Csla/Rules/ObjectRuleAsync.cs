@@ -1,5 +1,4 @@
-﻿#if !NET40 && !NET45
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="ObjectRuleAsync.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -66,4 +65,3 @@ namespace Csla.Rules
     }
   }
 }
-#endif

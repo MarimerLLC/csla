@@ -22,8 +22,8 @@ namespace Csla.Reflection
   /// </summary>
   public static class ServiceProviderMethodCaller
   {
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-    private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
+    private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
 

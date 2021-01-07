@@ -38,9 +38,8 @@ namespace Csla.Test.Basic
             }
         }
 
-        private GrandChildren()
+        public GrandChildren()
         {
-            //prevent direct creation
             MarkAsChild();
         }
     }

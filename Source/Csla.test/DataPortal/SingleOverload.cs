@@ -46,9 +46,6 @@ namespace Csla.Test.DataPortalTest
       Csla.DataPortal.Delete<SingleOverload>(new Criteria(id));
     }
 
-    private SingleOverload()
-    { /* Require use of factory methods */ }
-
     #endregion
 
     #region Data Access

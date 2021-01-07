@@ -139,11 +139,6 @@ namespace Csla.Validation.Test
       DataPortal.Delete<Project>(id);
     }
 
-    public Project()
-    {
-      /* require use of factory methods */
-    }
-
     #endregion
 
     protected override void DataPortal_Create()

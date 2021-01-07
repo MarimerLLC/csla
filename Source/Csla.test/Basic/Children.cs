@@ -39,9 +39,8 @@ namespace Csla.Test.Basic
             }
         }
 
-        private Children()
+        public Children()
         {
-            //prevent direct creation
             this.MarkAsChild();
         }
 

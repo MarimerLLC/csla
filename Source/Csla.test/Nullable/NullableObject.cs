@@ -76,9 +76,8 @@ namespace Csla.Test.Nullable
           Csla.DataPortal.Delete<NullableObject>(new Criteria(name));
         }
 
-        private NullableObject()
+        public NullableObject()
         {
-            //prevent direct creation
             AddBusinessRules();
         }
 

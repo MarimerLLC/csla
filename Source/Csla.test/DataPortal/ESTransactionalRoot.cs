@@ -59,15 +59,6 @@ namespace Csla.Test.DataPortal
       //we are going to allow strings that are longer than what the database allows
     }
 
-    #region "constructors"
-
-    private ESTransactionalRoot()
-    {
-      //require factory method 
-    }
-
-    #endregion
-
     #region "Factory Methods"
 
     public static ESTransactionalRoot NewESTransactionalRoot()

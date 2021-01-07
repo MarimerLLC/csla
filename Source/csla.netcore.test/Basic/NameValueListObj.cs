@@ -14,21 +14,10 @@ namespace Csla.Test.Basic
     [Serializable()]
     public class NameValueListObj : NameValueListBase<int, string>
     {
-        private NameValueListObj()
-        {
-            //require factory method
-        }
-
-        #region "factory methods"
-
         public static NameValueListObj GetNameValueListObj()
         {
             return Csla.DataPortal.Fetch<NameValueListObj>();
         }
-
-        #endregion
-
-        #region "Data Access"
 
         [Fetch]
         protected void DataPortal_Fetch()
@@ -45,7 +34,5 @@ namespace Csla.Test.Basic
             }
             this.IsReadOnly = true;
         }
-
-        #endregion
     }
 }

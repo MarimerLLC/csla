@@ -25,7 +25,7 @@ namespace Csla.Test.DataPortalChild
       return Csla.DataPortal.FetchChild<Child>();
     }
 
-    private Child()
+    public Child()
     {
       MarkAsChild();
     }

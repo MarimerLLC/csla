@@ -15,9 +15,8 @@ namespace Csla.Test.DataBinding
     [Serializable()]
     public class ChildEntityList : BusinessBindingListBase<ChildEntityList, ChildEntity>
     {
-        private ChildEntityList()
+        public ChildEntityList()
         {
-            //require factory method
             this.MarkAsChild();
         }
 

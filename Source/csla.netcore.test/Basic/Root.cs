@@ -66,11 +66,6 @@ namespace Csla.Test.Basic
       Csla.DataPortal.Delete<Root>(new Criteria(data));
     }
 
-    private Root()
-    {
-      //prevent direct creation
-    }
-
     [Create]
     private void DataPortal_Create(object criteria)
     {

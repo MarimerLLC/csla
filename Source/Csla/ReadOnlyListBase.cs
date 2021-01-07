@@ -32,8 +32,6 @@ namespace Csla
     IReadOnlyListBase<C>
     where T : ReadOnlyListBase<T, C>
   {
-    #region Constructors
-
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -41,8 +39,6 @@ namespace Csla
     {
       Initialize();
     }
-
-    #endregion
 
     #region Initialize
 

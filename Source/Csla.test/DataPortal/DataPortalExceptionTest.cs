@@ -30,11 +30,6 @@ namespace Csla.Test.DataPortal
     public static readonly PropertyInfo<EditableChild1> ChildProperty =
         RegisterProperty<EditableChild1>(c => c.Child);
 
-    private EditableRoot1()
-    {
-      /* Require use of factory methods */
-    }
-
     public EditableChild1 Child
     {
       get { return GetProperty(ChildProperty); }
@@ -74,11 +69,6 @@ namespace Csla.Test.DataPortal
     internal static EditableChild1 New()
     {
       return Csla.DataPortal.CreateChild<EditableChild1>();
-    }
-
-    private EditableChild1()
-    {
-      /* Require use of factory methods */
     }
 
     #endregion

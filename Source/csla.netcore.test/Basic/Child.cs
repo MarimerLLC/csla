@@ -50,9 +50,8 @@ namespace Csla.Test.Basic
       return obj;
     }
 
-    private Child()
+    public Child()
     {
-      //prevent direct creation
       GrandChildren = GrandChildren.NewGrandChildren();
       MarkAsChild();
     }

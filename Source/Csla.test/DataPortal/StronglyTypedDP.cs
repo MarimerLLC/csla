@@ -64,11 +64,6 @@ namespace Csla.Test.DataPortal
       Csla.DataPortal.Delete<StronglyTypedDP>(new Criteria(id));
     }
 
-    private StronglyTypedDP()
-    {
-      //prevent direct creation
-    }
-
     protected void DataPortal_Create(StronglyTypedDP.Criteria criteria)
     {
       using (BypassPropertyChecks)

@@ -15,8 +15,6 @@ namespace Csla.Serialization.Mobile
   [Serializable()]
   public sealed class NullPlaceholder : IMobileObject
   {
-    #region Constructors
-
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -24,8 +22,6 @@ namespace Csla.Serialization.Mobile
     {
       // Nothing
     }
-
-    #endregion
 
     #region IMobileObject Members
 

@@ -79,11 +79,6 @@ namespace Csla.Test.RollBack
           Csla.DataPortal.Delete<RollbackRoot>(new Criteria(data));
         }
 
-        private RollbackRoot()
-        {
-            //prevent direct creation
-        }
-
         private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);

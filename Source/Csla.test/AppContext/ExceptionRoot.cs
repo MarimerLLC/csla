@@ -3,7 +3,6 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>prevent direct creation</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
@@ -65,12 +64,6 @@ namespace Csla.Test.AppContext
       Csla.DataPortal.Delete<ExceptionRoot>(new Criteria(Data));
     }
 
-    /// <summary>
-    /// prevent direct creation
-    /// </summary>
-    private ExceptionRoot()
-    {
-    }
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = criteria as Criteria;

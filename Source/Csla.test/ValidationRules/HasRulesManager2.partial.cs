@@ -14,11 +14,6 @@ namespace Csla.Test.ValidationRules
 {
   public partial class HasRulesManager2
   {
-    private HasRulesManager2()
-    {
-      //prevent direct creation
-    }
-
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

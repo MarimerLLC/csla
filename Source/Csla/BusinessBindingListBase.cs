@@ -31,7 +31,6 @@ namespace Csla
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
-#region Constructors
 
     /// <summary>
     /// Creates an instance of the object.
@@ -43,7 +42,6 @@ namespace Csla
       this.AllowNew = true;
     }
 
-#endregion
 
 #region Initialize
 

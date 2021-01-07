@@ -88,12 +88,7 @@ namespace Csla.Test.AppContext
         {
           Csla.DataPortal.Delete<SimpleRoot>(new Criteria(Data));
         }
-        /// <summary>
-        /// Prevent direct creation
-        /// </summary>
-        private SimpleRoot()
-        {
-        }
+
         /// <summary>
         /// Handles new DataPortal Create calls
         /// </summary>

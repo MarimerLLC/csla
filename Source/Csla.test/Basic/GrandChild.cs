@@ -49,9 +49,8 @@ namespace Csla.Test.Basic
             return obj;
         }
 
-        private GrandChild()
+        public GrandChild()
         {
-            //prevent direct creation
             MarkAsChild();
         }
 

@@ -77,9 +77,8 @@ namespace Csla.Test.Basic
             return obj;
         }
 
-        private Child()
+        public Child()
         {
-            //prevent direct creation
             MarkAsChild();
         }
 

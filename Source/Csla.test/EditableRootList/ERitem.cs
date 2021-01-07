@@ -21,8 +21,8 @@ namespace Csla.Test.EditableRootList
       set { SetProperty(DataProperty, value); }
     }
 
-    private ERitem()
-    { /* require use of factory methods */ }
+    public ERitem()
+    { }
 
     private ERitem(string data)
     {

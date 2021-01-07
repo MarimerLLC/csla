@@ -14,11 +14,6 @@ namespace Csla.Test.Basic
     [Serializable()]
     public class NameValueListObj : NameValueListBase<int, string>
     {
-        private NameValueListObj()
-        {
-            //require factory method
-        }
-
         #region "factory methods"
 
         public static NameValueListObj GetNameValueListObj()

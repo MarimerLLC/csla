@@ -250,7 +250,7 @@ namespace Csla.Serialization.Mobile
           }
           else
           {
-            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
 
             _deserializationReferences.Add(info.ReferenceId, mobile);
 

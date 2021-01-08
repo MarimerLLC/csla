@@ -51,10 +51,7 @@ namespace Csla.Server
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      var provider = ApplicationContext.ScopedServiceProvider;
-      if (provider != null)
-        return ActivatorUtilities.CreateInstance(provider, ft);
-      return Activator.CreateInstance(ft);
+      return Reflection.MethodCaller.CreateInstance(ft);
     }
   }
 }

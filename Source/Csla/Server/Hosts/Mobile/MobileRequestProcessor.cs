@@ -38,7 +38,7 @@ namespace Csla.Server.Hosts.Mobile
           string setting = ConfigurationManager.AppSettings["CslaMobileFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
-              (IMobileFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
+              (IMobileFactoryLoader)Reflection.MethodCaller.CreateInstance(Type.GetType(setting, true, true));
           else
             _factoryLoader = new MobileFactoryLoader();
         }

@@ -54,7 +54,7 @@ namespace Csla.Data
 
     private DataServiceContextManager(Uri path)
     {
-      _context = (C)(Activator.CreateInstance(typeof(C), path));
+      _context = (C)(Reflection.MethodCaller.CreateInstance(typeof(C), path));
     }
 
     /// <summary>

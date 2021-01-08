@@ -61,7 +61,7 @@ namespace Csla.Serialization.Mobile
           _writerType = Type.GetType(writerType);
         }
       }
-      return (ICslaWriter)Activator.CreateInstance(_writerType);
+      return (ICslaWriter)Reflection.MethodCaller.CreateInstance(_writerType);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace Csla.Serialization.Mobile
           _readerType = Type.GetType(readerType);
         }
       }
-      return (ICslaReader)Activator.CreateInstance(_readerType);
+      return (ICslaReader)Reflection.MethodCaller.CreateInstance(_readerType);
     }
   }
 }

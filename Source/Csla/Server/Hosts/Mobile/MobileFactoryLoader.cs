@@ -40,7 +40,7 @@ namespace Csla.Server.Hosts.Mobile
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      return Activator.CreateInstance(ft);
+      return Reflection.MethodCaller.CreateInstance(ft);
     }
   }
 }

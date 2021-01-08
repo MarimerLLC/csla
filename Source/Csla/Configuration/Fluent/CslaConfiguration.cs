@@ -78,7 +78,7 @@ namespace Csla.Configuration
     /// </returns>
     public CslaConfiguration ContextManager(Type contextManagerType)
     {
-      ContextManager((IContextManager)Activator.CreateInstance(contextManagerType));
+      ContextManager((IContextManager)Reflection.MethodCaller.CreateInstance(contextManagerType));
       return this;
     }
 

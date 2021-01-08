@@ -17,7 +17,7 @@ namespace Csla.Rules
   [Serializable]
   public partial class BrokenRule : MobileObject
   {
-    internal BrokenRule()
+    public BrokenRule()
     { }
 
     private string _ruleName;

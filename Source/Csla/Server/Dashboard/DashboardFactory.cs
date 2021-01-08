@@ -34,7 +34,7 @@ namespace Csla.Server.Dashboard
           else if (typeName == "NullDashboard")
             result = new NullDashboard();
           else
-            result = (IDashboard)Activator.CreateInstance(Type.GetType(typeName));
+            result = (IDashboard)Reflection.MethodCaller.CreateInstance(Type.GetType(typeName));
         }
         else
         {

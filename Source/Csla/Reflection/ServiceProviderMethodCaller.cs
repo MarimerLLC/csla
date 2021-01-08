@@ -21,7 +21,7 @@ namespace Csla.Reflection
   /// </summary>
   public static class ServiceProviderMethodCaller
   {
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
@@ -80,13 +80,13 @@ namespace Csla.Reflection
           else if (typeOfOperation == typeof(ExecuteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName);
           else if (typeOfOperation == typeof(CreateChildAttribute))
-            candidates = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
+            candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
           else
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName);
         }
         else if (typeOfOperation == typeof(CreateChildAttribute))
         {
-          candidates = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
+          candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
         }
       }
       else

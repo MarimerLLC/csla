@@ -15,10 +15,18 @@ namespace Csla.Validation.Test
   [TestClass]
   public class AuthorizationTest
   {
+    private static ClaimsPrincipal GetPrincipal(params string[] roles)
+    {
+      var identity = new ClaimsIdentity();
+      foreach (var item in roles)
+        identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      return new ClaimsPrincipal(identity);
+    }
+
     [TestInitialize]
     public void Initialize()
     {
-      Thread.CurrentPrincipal = new VPrincipal("NoRole");
+      Thread.CurrentPrincipal = GetPrincipal("NoRole");
     }
 
     [TestCleanup]
@@ -53,7 +61,7 @@ namespace Csla.Validation.Test
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWhenIsInRoleReturnsObject()
     {
-      Thread.CurrentPrincipal = new VPrincipal("Administrator", "ProjectManager");
+      Thread.CurrentPrincipal = GetPrincipal("Administrator", "ProjectManager");
       var project = DataPortal.Create<Project>();
       Assert.IsNotNull(project);
     }
@@ -61,7 +69,7 @@ namespace Csla.Validation.Test
     [TestMethod]
     public void GetWhenIsInRoleDeletesObject()
     {
-      Thread.CurrentPrincipal = new VPrincipal("Administrator", "ProjectManager");
+      Thread.CurrentPrincipal = GetPrincipal("Administrator", "ProjectManager");
       var project = DataPortal.Fetch<Project>(Guid.NewGuid()); 
       Assert.IsNotNull(project);
     }
@@ -69,7 +77,7 @@ namespace Csla.Validation.Test
     [TestMethod]
     public void DeleteWhenIsInRoleDeletesObject()
     {
-      Thread.CurrentPrincipal = new VPrincipal("Administrator", "ProjectManager");
+      Thread.CurrentPrincipal = GetPrincipal("Administrator", "ProjectManager");
       DataPortal.Delete<Project>(Guid.NewGuid());
       Assert.IsTrue(true);
     }
@@ -78,7 +86,7 @@ namespace Csla.Validation.Test
     [ExpectedException(typeof(SecurityException))]
     public void SetPropertyWhenNotIsInRoleThrowsException()
     {
-      Thread.CurrentPrincipal = new VPrincipal("Administrator");
+      Thread.CurrentPrincipal = GetPrincipal("Administrator");
       var project = DataPortal.Fetch<Project>(Guid.NewGuid());
       project.Name = "My name";
       Assert.Inconclusive("should never get here.");
@@ -87,7 +95,7 @@ namespace Csla.Validation.Test
     [TestMethod]
     public void SetPropertyWhenIsInRoleSetsValue()
     {
-      Thread.CurrentPrincipal = new VPrincipal("Administrator");
+      Thread.CurrentPrincipal = GetPrincipal("Administrator");
       var project = DataPortal.Fetch<Project>(Guid.NewGuid());
       project.Description = "My description";
       Assert.AreSame("My description", project.Description);

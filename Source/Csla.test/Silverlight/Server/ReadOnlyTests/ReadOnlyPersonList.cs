@@ -6,14 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using Csla;
-using Csla.Serialization;
-using Csla.Silverlight;
-using Csla.Core.FieldManager;
-using System.Linq;
-using System.Text;
-using Csla.DataPortalClient;
 
 namespace Csla.Testing.Business.ReadOnlyTest
 {

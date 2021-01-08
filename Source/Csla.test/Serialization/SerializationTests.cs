@@ -15,6 +15,7 @@ using Csla.Serialization;
 using Csla.Test.ValidationRules;
 using UnitDriven;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 #if NUNIT
 using NUnit.Framework;
@@ -51,6 +52,15 @@ namespace Csla.Test.Serialization
         MarkAsChild();
       }
     }
+
+    private static ClaimsPrincipal GetPrincipal(params string[] roles)
+    {
+      var identity = new ClaimsIdentity();
+      foreach (var item in roles)
+        identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      return new ClaimsPrincipal(identity);
+    }
+
 
     [TestMethod]
     public void SerializeDataPortalException()
@@ -252,129 +262,129 @@ namespace Csla.Test.Serialization
       context.Complete();
     }
 
-		[TestMethod()]
-		public void TestSerializationCslaBinaryReaderWriterList()
-		{
-			var test = new BinaryReaderWriterTestClassList();
-			BinaryReaderWriterTestClassList result;
-			test.Setup();
-			var serialized = MobileFormatter.SerializeToDTO(test);
-			CslaBinaryWriter writer = new CslaBinaryWriter();
-			byte[] data;
-			using (var stream = new MemoryStream())
-			{
-				writer.Write(stream, serialized);
-				data = stream.ToArray();
-			}
+    [TestMethod()]
+    public void TestSerializationCslaBinaryReaderWriterList()
+    {
+      var test = new BinaryReaderWriterTestClassList();
+      BinaryReaderWriterTestClassList result;
+      test.Setup();
+      var serialized = MobileFormatter.SerializeToDTO(test);
+      CslaBinaryWriter writer = new CslaBinaryWriter();
+      byte[] data;
+      using (var stream = new MemoryStream())
+      {
+        writer.Write(stream, serialized);
+        data = stream.ToArray();
+      }
 
-			CslaBinaryReader reader = new CslaBinaryReader();
-			using (var stream = new MemoryStream(data))
-			{
-				var deserialized = reader.Read(stream);
-				result = (BinaryReaderWriterTestClassList)MobileFormatter.DeserializeFromDTO(deserialized);
-			}
+      CslaBinaryReader reader = new CslaBinaryReader();
+      using (var stream = new MemoryStream(data))
+      {
+        var deserialized = reader.Read(stream);
+        result = (BinaryReaderWriterTestClassList)MobileFormatter.DeserializeFromDTO(deserialized);
+      }
 
-			Assert.AreEqual(test.Count, result.Count);
-			for (int i = 0; i < test.Count; i++)
-			{
-				Assert.AreEqual(test[i].CharTest, result[i].CharTest);
-				Assert.AreEqual(test[i].DateTimeOffsetTest, result[i].DateTimeOffsetTest);
-				Assert.AreEqual(test[i].DateTimeTest, result[i].DateTimeTest);
-				Assert.AreEqual(test[i].DecimalTest, result[i].DecimalTest);
-				Assert.AreEqual(test[i].DoubleTest, result[i].DoubleTest);
-				Assert.AreEqual(test[i].EnumTest, result[i].EnumTest);
-				Assert.AreEqual(test[i].GuidTest, result[i].GuidTest);
-				Assert.AreEqual(test[i].Int16Test, result[i].Int16Test);
-				Assert.AreEqual(test[i].Int32Test, result[i].Int32Test);
-				Assert.AreEqual(test[i].Int64Test, result[i].Int64Test);
-				Assert.AreEqual(test[i].SByteTest, result[i].SByteTest);
-				Assert.AreEqual(test[i].SingleTest, result[i].SingleTest);
-				Assert.AreEqual(test[i].StringTest, result[i].StringTest);
-				Assert.AreEqual(test[i].TimeSpanTest, result[i].TimeSpanTest);
-				Assert.AreEqual(test[i].UInt16Test, result[i].UInt16Test);
-				Assert.AreEqual(test[i].UInt32Test, result[i].UInt32Test);
-				Assert.AreEqual(test[i].UInt64Test, result[i].UInt64Test);
+      Assert.AreEqual(test.Count, result.Count);
+      for (int i = 0; i < test.Count; i++)
+      {
+        Assert.AreEqual(test[i].CharTest, result[i].CharTest);
+        Assert.AreEqual(test[i].DateTimeOffsetTest, result[i].DateTimeOffsetTest);
+        Assert.AreEqual(test[i].DateTimeTest, result[i].DateTimeTest);
+        Assert.AreEqual(test[i].DecimalTest, result[i].DecimalTest);
+        Assert.AreEqual(test[i].DoubleTest, result[i].DoubleTest);
+        Assert.AreEqual(test[i].EnumTest, result[i].EnumTest);
+        Assert.AreEqual(test[i].GuidTest, result[i].GuidTest);
+        Assert.AreEqual(test[i].Int16Test, result[i].Int16Test);
+        Assert.AreEqual(test[i].Int32Test, result[i].Int32Test);
+        Assert.AreEqual(test[i].Int64Test, result[i].Int64Test);
+        Assert.AreEqual(test[i].SByteTest, result[i].SByteTest);
+        Assert.AreEqual(test[i].SingleTest, result[i].SingleTest);
+        Assert.AreEqual(test[i].StringTest, result[i].StringTest);
+        Assert.AreEqual(test[i].TimeSpanTest, result[i].TimeSpanTest);
+        Assert.AreEqual(test[i].UInt16Test, result[i].UInt16Test);
+        Assert.AreEqual(test[i].UInt32Test, result[i].UInt32Test);
+        Assert.AreEqual(test[i].UInt64Test, result[i].UInt64Test);
 
-				Assert.AreEqual(test[i].EmptySmartDateTest, result[i].EmptySmartDateTest);
-				Assert.AreEqual(test[i].EmptySmartDateTest.FormatString, result[i].EmptySmartDateTest.FormatString);
-				Assert.AreEqual(test[i].EmptySmartDateTest.EmptyIsMin, result[i].EmptySmartDateTest.EmptyIsMin);
-				Assert.AreEqual(test[i].EmptySmartDateTest.IsEmpty, result[i].EmptySmartDateTest.IsEmpty);
-				Assert.AreEqual(test[i].EmptySmartDateTest.Date, result[i].EmptySmartDateTest.Date);
-												
-				Assert.AreEqual(test[i].FilledSmartDateTest, result[i].FilledSmartDateTest);
-				Assert.AreEqual(test[i].FilledSmartDateTest.FormatString, result[i].FilledSmartDateTest.FormatString);
-				Assert.AreEqual(test[i].FilledSmartDateTest.EmptyIsMin, result[i].FilledSmartDateTest.EmptyIsMin);
-				Assert.AreEqual(test[i].FilledSmartDateTest.IsEmpty, result[i].FilledSmartDateTest.IsEmpty);
-				Assert.AreEqual(test[i].FilledSmartDateTest.Date, result[i].FilledSmartDateTest.Date);
-			}
-		}
+        Assert.AreEqual(test[i].EmptySmartDateTest, result[i].EmptySmartDateTest);
+        Assert.AreEqual(test[i].EmptySmartDateTest.FormatString, result[i].EmptySmartDateTest.FormatString);
+        Assert.AreEqual(test[i].EmptySmartDateTest.EmptyIsMin, result[i].EmptySmartDateTest.EmptyIsMin);
+        Assert.AreEqual(test[i].EmptySmartDateTest.IsEmpty, result[i].EmptySmartDateTest.IsEmpty);
+        Assert.AreEqual(test[i].EmptySmartDateTest.Date, result[i].EmptySmartDateTest.Date);
+                        
+        Assert.AreEqual(test[i].FilledSmartDateTest, result[i].FilledSmartDateTest);
+        Assert.AreEqual(test[i].FilledSmartDateTest.FormatString, result[i].FilledSmartDateTest.FormatString);
+        Assert.AreEqual(test[i].FilledSmartDateTest.EmptyIsMin, result[i].FilledSmartDateTest.EmptyIsMin);
+        Assert.AreEqual(test[i].FilledSmartDateTest.IsEmpty, result[i].FilledSmartDateTest.IsEmpty);
+        Assert.AreEqual(test[i].FilledSmartDateTest.Date, result[i].FilledSmartDateTest.Date);
+      }
+    }
 
 
-  	[TestMethod()]
-		public void TestSerializationCslaBinaryReaderWriter()
-		{
-			var test = new BinaryReaderWriterTestClass();
-			BinaryReaderWriterTestClass result;
-			test.Setup();
-			var serialized = MobileFormatter.SerializeToDTO(test);
-			CslaBinaryWriter writer = new CslaBinaryWriter();
-			byte[] data;
-			using (var stream = new MemoryStream())
-			{
-				writer.Write(stream, serialized);
-				data = stream.ToArray();
-			}
-			
-			CslaBinaryReader reader = new CslaBinaryReader();
-			using (var stream = new MemoryStream(data))
-			{
-				var deserialized = reader.Read(stream);
-				result = (BinaryReaderWriterTestClass)MobileFormatter.DeserializeFromDTO(deserialized);
-			}
-			Assert.AreEqual(test.BoolTest, result.BoolTest);
-			Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
-			for (int i = 0; i < test.ByteArrayTest.Length; i++)
-			{
-				Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
-			}
-			
-			Assert.AreEqual(test.ByteTest, result.ByteTest);
-			Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
-			for (int i = 0; i < test.CharArrayTest.Length; i++)
-			{
-				Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
-			}
+    [TestMethod()]
+    public void TestSerializationCslaBinaryReaderWriter()
+    {
+      var test = new BinaryReaderWriterTestClass();
+      BinaryReaderWriterTestClass result;
+      test.Setup();
+      var serialized = MobileFormatter.SerializeToDTO(test);
+      CslaBinaryWriter writer = new CslaBinaryWriter();
+      byte[] data;
+      using (var stream = new MemoryStream())
+      {
+        writer.Write(stream, serialized);
+        data = stream.ToArray();
+      }
+      
+      CslaBinaryReader reader = new CslaBinaryReader();
+      using (var stream = new MemoryStream(data))
+      {
+        var deserialized = reader.Read(stream);
+        result = (BinaryReaderWriterTestClass)MobileFormatter.DeserializeFromDTO(deserialized);
+      }
+      Assert.AreEqual(test.BoolTest, result.BoolTest);
+      Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
+      for (int i = 0; i < test.ByteArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
+      }
+      
+      Assert.AreEqual(test.ByteTest, result.ByteTest);
+      Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
+      for (int i = 0; i < test.CharArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
+      }
 
-			Assert.AreEqual(test.CharTest, result.CharTest);
-			Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
-			Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
-			Assert.AreEqual(test.DecimalTest, result.DecimalTest);
-			Assert.AreEqual(test.DoubleTest, result.DoubleTest);
-			Assert.AreEqual(test.EnumTest, result.EnumTest);
-			Assert.AreEqual(test.GuidTest, result.GuidTest);
-			Assert.AreEqual(test.Int16Test, result.Int16Test);
-			Assert.AreEqual(test.Int32Test, result.Int32Test);
-			Assert.AreEqual(test.Int64Test, result.Int64Test);
-			Assert.AreEqual(test.SByteTest, result.SByteTest);
-			Assert.AreEqual(test.SingleTest, result.SingleTest);
-			Assert.AreEqual(test.StringTest, result.StringTest);
-			Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
-			Assert.AreEqual(test.UInt16Test, result.UInt16Test);
-			Assert.AreEqual(test.UInt32Test, result.UInt32Test);
-			Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+      Assert.AreEqual(test.CharTest, result.CharTest);
+      Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
+      Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
+      Assert.AreEqual(test.DecimalTest, result.DecimalTest);
+      Assert.AreEqual(test.DoubleTest, result.DoubleTest);
+      Assert.AreEqual(test.EnumTest, result.EnumTest);
+      Assert.AreEqual(test.GuidTest, result.GuidTest);
+      Assert.AreEqual(test.Int16Test, result.Int16Test);
+      Assert.AreEqual(test.Int32Test, result.Int32Test);
+      Assert.AreEqual(test.Int64Test, result.Int64Test);
+      Assert.AreEqual(test.SByteTest, result.SByteTest);
+      Assert.AreEqual(test.SingleTest, result.SingleTest);
+      Assert.AreEqual(test.StringTest, result.StringTest);
+      Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
+      Assert.AreEqual(test.UInt16Test, result.UInt16Test);
+      Assert.AreEqual(test.UInt32Test, result.UInt32Test);
+      Assert.AreEqual(test.UInt64Test, result.UInt64Test);
 
-			Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
-			Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
-			Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
-			Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
-			Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
+      Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
+      Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
+      Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
+      Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
 
-			Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
-			Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
-			Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
-			Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
-			Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
-		}
+      Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
+      Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
+      Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
+      Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
+    }
 
     [TestMethod()]
     public void TestAuthorizationRulesAfterSerialization()
@@ -391,9 +401,7 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
-#pragma warning disable CS0436 // Type conflicts with imported type
-      Csla.Test.Security.TestPrincipal.SimulateLogin();
-#pragma warning restore CS0436 // Type conflicts with imported type
+      Csla.ApplicationContext.User = GetPrincipal("Admin");
 
       try
       {
@@ -404,9 +412,7 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
-#pragma warning disable CS0436 // Type conflicts with imported type
-      Csla.Test.Security.TestPrincipal.SimulateLogout();
-#pragma warning restore CS0436 // Type conflicts with imported type
+      Csla.ApplicationContext.User = new ClaimsPrincipal();
 
       Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
 
@@ -420,9 +426,7 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
-#pragma warning disable CS0436 // Type conflicts with imported type
-      Csla.Test.Security.TestPrincipal.SimulateLogin();
-#pragma warning restore CS0436 // Type conflicts with imported type
+      Csla.ApplicationContext.User = GetPrincipal("Admin");
 
       try
       {
@@ -433,9 +437,7 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
-#pragma warning disable CS0436 // Type conflicts with imported type
-      Csla.Test.Security.TestPrincipal.SimulateLogout();
-#pragma warning restore CS0436 // Type conflicts with imported type
+      Csla.ApplicationContext.User = new ClaimsPrincipal();
 
     }
 

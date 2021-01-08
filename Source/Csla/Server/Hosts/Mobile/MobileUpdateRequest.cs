@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Class that will be used to execute an Update request from a Silverlight client.</summary>
+// <summary>Class that will be used to execute an Update request from a client.</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
@@ -12,7 +12,7 @@ using Csla.Core;
 namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
-  /// Class that will be used to execute an Update request from a Silverlight client.
+  /// Class that will be used to execute an Update request from a client.
   /// </summary>
   public class MobileUpdateRequest : IMobileRequest
   {

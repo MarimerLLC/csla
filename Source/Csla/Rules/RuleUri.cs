@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Csla.Reflection;
 
 namespace Csla.Rules
 {
@@ -190,11 +189,7 @@ namespace Csla.Rules
     /// <returns></returns>
     private static string GetTypeName(Type type)
     {
-#if NETFX_CORE
-      if (!type.IsGenericType())
-#else
       if (!type.IsGenericType)
-#endif
       {
         return type.FullName;
       }
@@ -203,20 +198,12 @@ namespace Csla.Rules
         var sb = new StringBuilder();
         if (!string.IsNullOrEmpty(type.Namespace)) 
           sb.Append(type.Namespace + ".");
-#if NETFX_CORE
-        var typeName = type.Name();
-#else
         var typeName = type.Name;
-#endif
         sb.Append(typeName.Replace("`1", ""));
         foreach (var t in type.GetGenericArguments())
         {
           sb.Append("-");
-#if NETFX_CORE
-          if (t.IsGenericType())
-#else
           if (t.IsGenericType) 
-#endif
             sb.Append(GetTypeName(t));
           else 
             sb.Append(t.FullName);
@@ -237,21 +224,11 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="uri">URI to parse.</param>
     /// <returns>
-    /// On .NET returns the Segments property. On Silverlight
-    /// parses the path by / and returns a string array comparable
-    /// to the .NET Segments property.
+    /// Returns the Segments property. 
     /// </returns>
     public static string[] Parts(this System.Uri uri)
     {
-#if (ANDROID || IOS) || NETFX_CORE
-      var path = uri.LocalPath.Split('/');
-      string[] result = new string[path.Length - 1];
-      for (int i = 0; i < path.Length - 1; i++)
-        result[i] = path[i + 1];
-      return result;
-#else
       return uri.Segments;
-#endif
     }
   }
 

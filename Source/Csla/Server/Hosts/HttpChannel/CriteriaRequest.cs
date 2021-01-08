@@ -15,8 +15,7 @@ using Csla;
 namespace Csla.Server.Hosts.HttpChannel
 {
   /// <summary>
-  /// Message sent to the Silverlight
-  /// WCF data portal.
+  /// Message sent to the WCF data portal.
   /// </summary>
   [Serializable]
   public class CriteriaRequest : ReadOnlyBase<CriteriaRequest>

@@ -19,8 +19,6 @@
     <EmbeddedResource Remove="Properties\CslaPrivate.resx" />
     <Compile Remove="Service References\**\*.cs" />
     <None Include="Service References\**\*.cs" />
-    <Compile Remove="Silverlight\**\*.cs" />
-    <Compile Include="Silverlight\Security\WindowsIdentity.cs" />
     </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">

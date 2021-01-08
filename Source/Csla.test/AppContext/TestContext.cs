@@ -29,7 +29,7 @@ namespace Csla.Test.AppContext
       IPrincipal result = Thread.CurrentPrincipal;
       if (result == null)
       {
-        result = new Csla.Security.UnauthenticatedPrincipal();
+        result = new System.Security.Claims.ClaimsPrincipal();
         SetUser(result);
       }
       return result;

@@ -111,12 +111,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Authorization\TestIdentity.cs">
-      <Link>Security\TestIdentity.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Authorization\TestPrincipal.cs">
-      <Link>Security\TestPrincipal.cs</Link>
-    </Compile>
     <Compile Include="..\..\LogicalExecutionLocation\LocationBusinessBase.cs">
       <Link>LogicalExecutionLocation\LocationBusinessBase.cs</Link>
     </Compile>
@@ -160,13 +154,6 @@
     <Compile Include="ReadOnlyTests\ReadOnlyPerson.cs" />
     <Compile Include="ReadOnlyTests\ReadOnlyPerson.partial.cs" />
     <Compile Include="ReadOnlyTests\ReadOnlyPersonList.cs" />
-    <Compile Include="Security\MockMembershipProvider.cs" />
-    <Compile Include="Security\MockRoleProvider.cs" />
-    <Compile Include="Security\SilverlightIdentity.cs" />
-    <Compile Include="Security\SilverlightMembershipIdentity.cs" />
-    <Compile Include="Security\SilverlightPrincipal.cs" />
-    <Compile Include="Security\SilverlightPrincipal.server.cs" />
-    <Compile Include="Security\SilverlightWindowsIdentity.cs" />
     <Compile Include="TestProxies\AppDomainProxy.cs" />
     <Compile Include="Validation\RootThrowsException.cs" />
     <Compile Include="Validation\RuleWithCyrillic.cs" />

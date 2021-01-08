@@ -6,11 +6,7 @@
 // <summary>Implementation of a lock that waits while</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Core;
-using System.ComponentModel;
 using System.Threading;
 
 namespace Csla.Threading
@@ -20,7 +16,7 @@ namespace Csla.Threading
   /// a target object is busy.
   /// </summary>
   /// <remarks>
-  /// Do not call this from a Silverlight UI thread, as it will block
+  /// Do not call this from a Blazor UI thread, as it will block
   /// the entire browser.
   /// </remarks>
   public static class BusyLock

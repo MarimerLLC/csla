@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Security.Claims;
 using System.Threading;
-using System.Threading.Tasks;
 using Csla.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProjectTracker.Library;
@@ -14,10 +9,18 @@ namespace Csla.Validation.Test
   [TestClass]
   public class ReadOnlyAuthorizationTest
   {
+    private static ClaimsPrincipal GetPrincipal(params string[] roles)
+    {
+      var identity = new ClaimsIdentity();
+      foreach (var item in roles)
+        identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      return new ClaimsPrincipal(identity);
+    }
+
     [TestInitialize]
     public void Initialize()
     {
-      Thread.CurrentPrincipal = new VPrincipal("NoRole");
+      Thread.CurrentPrincipal = GetPrincipal("NoRole");
     }
 
     [TestCleanup]
@@ -36,7 +39,7 @@ namespace Csla.Validation.Test
     [TestMethod]
     public void GetWhenIsInRoleReturnsList()
     {
-      Thread.CurrentPrincipal = new VPrincipal("Administrator");
+      Thread.CurrentPrincipal = GetPrincipal("Administrator");
       var resources = DataPortal.Fetch<ResourceList>();
       Assert.IsTrue(resources.Count > 0);
     }

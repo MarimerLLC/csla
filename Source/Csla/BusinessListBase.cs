@@ -470,14 +470,6 @@ namespace Csla
       // we are going a level deeper in editing
       _editLevel += 1;
 
-      // JMC 6/24/08
-      // This used to be a foreach loop but there appears to be a bug
-      // in the silverlight runtime (SL2 B2) since calling foreach here will result
-      // in SEHException with the error code -2147467259, or Error Unkown.
-      // Iterating on this collection outside of this call will result in
-      // behavior as expected but for some reason doing it here results in
-      // an unknown exception.
-
       // cascade the call to all child objects
       for (int x = 0; x < this.Count; x++)
       {

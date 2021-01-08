@@ -28,7 +28,7 @@ namespace Csla.Windows
       if (_principal == null)
       {
         if (ApplicationContext.AuthenticationType != "Windows")
-          SetUser(new Csla.Security.UnauthenticatedPrincipal());
+          SetUser(new System.Security.Claims.ClaimsPrincipal());
         else
 #pragma warning disable CA1416 // Validate platform compatibility
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));

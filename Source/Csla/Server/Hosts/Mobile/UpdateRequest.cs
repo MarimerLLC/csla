@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Message sent to the Silverlight</summary>
+// <summary>Message sent to the WCF data portal</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Runtime.Serialization;
@@ -12,8 +12,7 @@ using System.Security.Principal;
 namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
-  /// Message sent to the Silverlight
-  /// WCF data portal.
+  /// Message sent to the WCF data portal.
   /// </summary>
   [DataContract]
   public class UpdateRequest

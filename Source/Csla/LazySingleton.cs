@@ -4,7 +4,7 @@ using System.Threading;
 namespace Csla
 {
   /// <summary>
-  /// An alternative to Lazy&lt;T&gt; that works on .NET, Silverlight and Windows Phone
+  /// An alternative to Lazy&lt;T&gt; 
   /// </summary>
   /// <typeparam name="T"></typeparam>
   public sealed class LazySingleton<T> where T : class

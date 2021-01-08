@@ -32,7 +32,7 @@ namespace Csla.Core
     /// </para>. You may also choose to use the Microsoft .NET 3.0
     /// System.Runtime.Serialization.NetDataContractSerializer
     /// NetDataContractSerializer provided as part of WCF.
-    /// <para>In UWP, Windows Phone, and Silverlight the only
+    /// <para>In UWP and Blazor the only
     /// option is to use the CSLA .NET MobileFormatter
     /// for serialization as the other serializers don't
     /// exist.</para>

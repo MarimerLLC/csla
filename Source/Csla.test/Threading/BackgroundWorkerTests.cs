@@ -8,6 +8,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 #if MSTEST
@@ -98,7 +99,7 @@ namespace Csla.Test.Threading
 
           var UIThreadid = Thread.CurrentThread.ManagedThreadId;
 
-          Csla.ApplicationContext.User = new MyPrincipal();
+          Csla.ApplicationContext.User = new ClaimsPrincipal();
           Csla.ApplicationContext.ClientContext["BWTEST"] = "TEST";
           Csla.ApplicationContext.GlobalContext["BWTEST"] = "TEST";
 
@@ -115,7 +116,7 @@ namespace Csla.Test.Threading
             context.Assert.IsFalse(Thread.CurrentThread.ManagedThreadId == UIThreadid);
 
             // make sure that user, clientcontext, globalcontext, currentCulture and currentUIculture are sent 
-            context.Assert.IsTrue(Csla.ApplicationContext.User is MyPrincipal);
+            context.Assert.IsTrue(Csla.ApplicationContext.User is ClaimsPrincipal);
             context.Assert.AreEqual("TEST", Csla.ApplicationContext.GlobalContext["BWTEST"]);
             context.Assert.AreEqual("TEST", Csla.ApplicationContext.ClientContext["BWTEST"]);
             context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentCulture.Name.ToUpper());

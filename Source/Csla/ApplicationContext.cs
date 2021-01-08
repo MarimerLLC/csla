@@ -525,11 +525,7 @@ namespace Csla
       /// <summary>
       /// The code is executing on the application server.
       /// </summary>
-      Server,
-      /// <summary>
-      /// The code is executing on the Silverlight client.
-      /// </summary>
-      MobileClient
+      Server
     }
 
     /// <summary>

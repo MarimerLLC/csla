@@ -31,7 +31,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     {
       var context = GetContext();
 
-      Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
+      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
 
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
 
@@ -56,7 +56,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     public void GlobalContextOnClientShouldBeAffectedByChangeOnServer()
     {
       var context = GetContext();
-      Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
+      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
 
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
 

@@ -78,8 +78,6 @@
     <Compile Include="ResourceList.cs" />
     <Compile Include="ValidationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VIdentity.cs" />
-    <Compile Include="VPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj">

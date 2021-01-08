@@ -16,7 +16,7 @@ namespace Csla.Server.Hosts.Mobile
   /// <summary>
   /// Class containing the default implementation for
   /// the FactoryLoader delegate used by the
-  /// Silverlight data portal host.
+  /// data portal host.
   /// </summary>
   public class MobileFactoryLoader : IMobileFactoryLoader
   {

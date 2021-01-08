@@ -17,9 +17,7 @@ namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Serializes and deserializes objects
-  /// at the field level. A Silverlight-
-  /// compatible facsimile of the
-  /// BinaryFormatter or NetDataContractSerializer.
+  /// at the field level. 
   /// </summary>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]

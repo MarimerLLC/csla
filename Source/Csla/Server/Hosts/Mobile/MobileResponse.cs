@@ -15,7 +15,7 @@ namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Object that encompasses the resut of the request from 
-  /// a Silverlight client
+  /// a client
   /// </summary>
   public class MobileResponse
   {

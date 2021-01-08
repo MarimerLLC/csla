@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Object taht processes all the requests from a Silverlight client</summary>
+// <summary>Object that processes all the requests from a client</summary>
 //-----------------------------------------------------------------------
 using System;
 using Csla.Configuration;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
-  /// Object that processes all the requests from a Silverlight client
+  /// Object that processes all the requests from a client
   /// </summary>
   public class MobileRequestProcessor
   {

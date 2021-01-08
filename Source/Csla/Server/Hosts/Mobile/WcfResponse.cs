@@ -13,7 +13,7 @@ namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Response message returned from the 
-  /// Silverlight WCF data portal methods.
+  /// WCF data portal methods.
   /// </summary>
   [DataContract]
   public class WcfResponse

@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Specifies that the Silverlight WCF data portal</summary>
+// <summary>Specifies that the WCF data portal</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Text;
 namespace Csla.Server
 {
   /// <summary>
-  /// Specifies that the Silverlight WCF data portal
+  /// Specifies that the WCF data portal
   /// should invoke a factory object rather than
   /// the business object.
   /// </summary>

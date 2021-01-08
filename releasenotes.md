@@ -37,6 +37,11 @@ This is a major release with numerous breaking changes, including:
 
 * [#1974](https://github.com/MarimerLLC/csla/issues/1974) 🐜 Fix formatting of ErrorText
 
+
+### Misc
+
+* [#1743](https://github.com/MarimerLLC/csla/issues/1743) 🛑🎉 Use only `ClaimsPrincipal` and `ClaimsIdentity`, as these are the only types supported in modern .NET
+
 ### NuGet dependencies
 
 ## Contributors

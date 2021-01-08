@@ -7,17 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Configuration;
-#if NETFX_CORE
-using System.Reflection;
-using Csla.Reflection;
-#endif
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
-using System.Collections.Generic;
-#if !NET40 && !NET45
-using Microsoft.Extensions.DependencyInjection;
-#endif
 
 namespace Csla.Server
 {
@@ -75,7 +67,7 @@ namespace Csla.Server
         lock (_syncRoot)
         {
           if (null == _authorizer)
-            _authorizer = (IAuthorizeDataPortal)Activator.CreateInstance(authProviderType);
+            _authorizer = (IAuthorizeDataPortal)Reflection.MethodCaller.CreateInstance(authProviderType);
         }
       }
 
@@ -86,7 +78,7 @@ namespace Csla.Server
           lock (_syncRoot)
           {
             if (_interceptor == null)
-              _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
+              _interceptor = (IInterceptDataPortal)Reflection.MethodCaller.CreateInstance(InterceptorType);
           }
         }
       }
@@ -115,7 +107,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !MONO && !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -156,9 +148,6 @@ namespace Csla.Server
         DataPortalResult result;
         DataPortalMethodInfo method;
 
-#if NET40
-        method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
-#else
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
         if (criteria is Server.EmptyCriteria)
           serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
@@ -166,13 +155,11 @@ namespace Csla.Server
           serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
-#endif
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE 
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -197,10 +184,6 @@ namespace Csla.Server
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Create, IsSync = isSync });
         return result;
       }
@@ -259,9 +242,6 @@ namespace Csla.Server
         DataPortalResult result;
         DataPortalMethodInfo method;
 
-#if NET40
-        method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
-#else
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
         if (criteria is EmptyCriteria)
           serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
@@ -270,13 +250,11 @@ namespace Csla.Server
 
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
-#endif
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -298,10 +276,6 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Fetch, IsSync = isSync });
         return result;
       }
@@ -384,28 +358,6 @@ namespace Csla.Server
             methodName = factoryInfo.UpdateMethodName;
           method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, new object[] { obj });
         }
-#if NET40
-        else
-        {
-          string methodName;
-          var bbase = obj as Core.BusinessBase;
-          if (bbase != null)
-          {
-            if (bbase.IsDeleted)
-              methodName = "DataPortal_DeleteSelf";
-            else
-              if (bbase.IsNew)
-                methodName = "DataPortal_Insert";
-              else
-                methodName = "DataPortal_Update";
-          }
-          else if (obj is Core.ICommandObject)
-            methodName = "DataPortal_Execute";
-          else
-            methodName = "DataPortal_Update";
-          method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
-        }
-#else
         else
         {
           Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
@@ -428,18 +380,12 @@ namespace Csla.Server
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
         }
-#endif
 
-#if !(ANDROID || IOS) && !NETFX_CORE
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
-#else
-        context.TransactionalType = method.TransactionalType;
-#endif
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -461,10 +407,6 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Result = result, Operation = operation, IsSync = isSync });
         return result;
       }
@@ -529,12 +471,6 @@ namespace Csla.Server
           string methodName = factoryInfo.DeleteMethodName;
           method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
         }
-#if NET40
-        else
-        {
-          method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
-        }
-#else
         else
         {
           Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
@@ -545,13 +481,11 @@ namespace Csla.Server
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
         }
-#endif
 
         IDataPortalServer portal;
-#if !(ANDROID || IOS) && !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !MONO && !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -573,10 +507,6 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-#else
-        portal = new DataPortalBroker();
-        result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
-#endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Delete, IsSync = isSync });
         return result;
       }
@@ -693,24 +623,10 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if !PCL46 && !PCL259// rely on NuGet bait-and-switch for actual implementation
-#if NETCORE
-      System.Globalization.CultureInfo.CurrentCulture =
-        new System.Globalization.CultureInfo(context.ClientCulture); 
-      System.Globalization.CultureInfo.CurrentUICulture = 
-        new System.Globalization.CultureInfo(context.ClientUICulture);
-#elif NETFX_CORE
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientUICulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientCulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-#else
       System.Threading.Thread.CurrentThread.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture);
       System.Threading.Thread.CurrentThread.CurrentUICulture =
         new System.Globalization.CultureInfo(context.ClientUICulture);
-#endif
-#endif
 
       if (ApplicationContext.AuthenticationType == "Windows")
       {
@@ -722,10 +638,8 @@ namespace Csla.Server
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
-#if !(ANDROID || IOS) && !NETFX_CORE
         // Set .NET to use integrated security
         AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
-#endif
       }
       else
       {
@@ -843,11 +757,7 @@ namespace Csla.Server
       if (criteria == null)
         return null;
       else if (criteria is EmptyCriteria)
-#if NET40 || NET45
-        return new object[] { };
-#else
         return Array.Empty<object>();
-#endif
       else if (criteria is NullCriteria)
         return new object[] { null };
       else if (criteria.GetType().Equals(typeof(object[])))
@@ -855,11 +765,7 @@ namespace Csla.Server
         var array = (object[])criteria;
         var clength = array.GetLength(0);
         if (clength == 1 && array[0] is EmptyCriteria)
-#if NET40 || NET45
-          return new object[] { };
-#else
           return Array.Empty<object>();
-#endif
         else
           return array;
       }

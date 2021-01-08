@@ -9,9 +9,7 @@ using System;
 using System.Security.Principal;
 using System.Threading;
 using Csla;
-#if !NET40 && !NET45
 using Microsoft.Extensions.DependencyInjection;
-#endif
 
 namespace Csla.Core
 {
@@ -21,13 +19,8 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
-#if NET40 || NET45
-      private const string _localContextName = "Csla.LocalContext";
-      private const string _clientContextName = "Csla.ClientContext";
-#else
     private AsyncLocal<ContextDictionary> _localContext = new AsyncLocal<ContextDictionary>();
     private AsyncLocal<ContextDictionary> _clientContext = new AsyncLocal<ContextDictionary>();
-#endif
     private const string _globalContextName = "Csla.GlobalContext";
 
     /// <summary>
@@ -67,12 +60,7 @@ namespace Csla.Core
     /// </summary>
     public ContextDictionary GetLocalContext()
     {
-#if NET40 || NET45
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-        return (ContextDictionary)Thread.GetData(slot);
-#else
       return _localContext.Value;
-#endif
     }
 
     /// <summary>
@@ -81,12 +69,7 @@ namespace Csla.Core
     /// <param name="localContext">Context dictionary</param>
     public void SetLocalContext(ContextDictionary localContext)
     {
-#if NET40 || NET45
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-        Thread.SetData(slot, localContext);
-#else
       _localContext.Value = localContext;
-#endif
     }
 
     /// <summary>
@@ -94,19 +77,7 @@ namespace Csla.Core
     /// </summary>
     public ContextDictionary GetClientContext()
     {
-#if NET40 || NET45
-        if (ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Client)
-        {
-          return (ContextDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
-        }
-        else
-        {
-          LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
-          return (ContextDictionary)Thread.GetData(slot);
-        }
-#else
       return _clientContext.Value;
-#endif
     }
 
     /// <summary>
@@ -115,19 +86,7 @@ namespace Csla.Core
     /// <param name="clientContext">Context dictionary</param>
     public void SetClientContext(ContextDictionary clientContext)
     {
-#if NET40 || NET45
-        if (ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Client)
-        {
-          AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
-        }
-        else
-        {
-          LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
-          Thread.SetData(slot, clientContext);
-        }
-#else
       _clientContext.Value = clientContext;
-#endif
     }
 
     /// <summary>
@@ -168,7 +127,6 @@ namespace Csla.Core
       _provider = serviceProvider;
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
@@ -190,6 +148,5 @@ namespace Csla.Core
     {
       Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }
-#endif
   }
 }

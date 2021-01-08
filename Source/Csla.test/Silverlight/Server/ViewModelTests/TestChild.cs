@@ -40,9 +40,6 @@ namespace cslalighttest.ViewModelTests
       return Csla.DataPortal.FetchChild<TestChild>(childData);
     }
 
-    public TestChild()
-    { /* Require use of factory methods */ }
-
     #endregion
 
     #region Data Access

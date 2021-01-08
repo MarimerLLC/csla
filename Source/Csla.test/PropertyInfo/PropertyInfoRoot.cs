@@ -14,14 +14,6 @@ namespace Csla.Test.PropertyInfo
   [Serializable()]
   public class PropertyInfoRoot : BusinessBase<PropertyInfoRoot>
   {
-    #region Constructor(s)
-
-    private PropertyInfoRoot()
-    {
-    }
-
-    #endregion
-
     #region Factory Methods
 
     public static PropertyInfoRoot NewPropertyInfoRoot()

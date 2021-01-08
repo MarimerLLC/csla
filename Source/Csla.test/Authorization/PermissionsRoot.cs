@@ -84,13 +84,6 @@ namespace Csla.Test.Security
 
     #endregion
 
-    #region "Constructors"
-    private PermissionsRoot()
-    {
-      //require use of factory methods
-    }
-    #endregion
-
     #region "factory methods"
 
     public static PermissionsRoot NewPermissionsRoot()

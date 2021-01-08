@@ -1,5 +1,4 @@
-﻿#if !NET40
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="ServiceProviderMethodCaller.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -22,7 +21,7 @@ namespace Csla.Reflection
   /// </summary>
   public static class ServiceProviderMethodCaller
   {
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
@@ -81,13 +80,13 @@ namespace Csla.Reflection
           else if (typeOfOperation == typeof(ExecuteAttribute))
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName);
           else if (typeOfOperation == typeof(CreateChildAttribute))
-            candidates = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
+            candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
           else
             candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName);
         }
         else if (typeOfOperation == typeof(CreateChildAttribute))
         {
-          candidates = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
+          candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
         }
       }
       else
@@ -402,21 +401,17 @@ namespace Csla.Reflection
         plist = new object[method.Parameters.Length];
         int index = 0;
         int criteriaIndex = 0;
-#if !NET40 && !NET45
         var service = ApplicationContext.ScopedServiceProvider;
-#endif
         foreach (var item in method.Parameters)
         {
           if (method.IsInjected[index])
           {
-#if !NET40 && !NET45
             if (service == null)
             {
               throw new NullReferenceException(nameof(service));
             }
             plist[index] = service.GetService(item.ParameterType);
 
-#endif
           }
           else
           {
@@ -470,4 +465,3 @@ namespace Csla.Reflection
     }
   }
 }
-#endif

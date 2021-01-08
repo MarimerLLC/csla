@@ -15,14 +15,6 @@ namespace Csla.Test.PropertyGetSet
   [Serializable]
   public class EditableGetSetRuleValidation : BusinessBase<EditableGetSetRuleValidation>
   {
-    #region Constructor
-
-    private EditableGetSetRuleValidation()
-    {
-    }
-
-    #endregion
-
     #region Business Rules
 
     protected override void AddBusinessRules()

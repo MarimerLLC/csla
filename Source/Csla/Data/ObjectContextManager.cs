@@ -135,7 +135,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      _context = (C)(Activator.CreateInstance(typeof(C), connectionString));
+      _context = (C)(Reflection.MethodCaller.CreateInstance(typeof(C), connectionString));
       _context.Connection.Open();
     }
 

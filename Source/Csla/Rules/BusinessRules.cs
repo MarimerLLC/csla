@@ -434,7 +434,6 @@ namespace Csla.Rules
       return result;
     }
 
-#if !NET40
     /// <summary>
     /// Invokes all rules for the business type.
     /// </summary>
@@ -469,7 +468,6 @@ namespace Csla.Rules
     {
       return await CheckRulesAsync(int.MaxValue);
     }
-#endif
 
     /// <summary>
     /// Invokes all rules for the business type.

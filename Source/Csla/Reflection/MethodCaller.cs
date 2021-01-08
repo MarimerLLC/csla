@@ -12,6 +12,7 @@ using System.Reflection;
 using Csla.Properties;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Reflection
 {
@@ -190,10 +191,10 @@ namespace Csla.Reflection
     /// <param name="objectType">Type of object to create.</param>
     public static object CreateInstance(Type objectType)
     {
-      var ctor = GetCachedConstructor(objectType);
-      if (ctor == null)
-        throw new NotImplementedException(objectType.Name + " " + Resources.DefaultConstructor + Resources.MethodNotImplemented);
-      return ctor.Invoke();
+      if (ApplicationContext.ScopedServiceProvider is null)
+        return Activator.CreateInstance(objectType);
+      else
+        return ActivatorUtilities.CreateInstance(ApplicationContext.ScopedServiceProvider, objectType);
     }
 
     /// <summary>
@@ -203,7 +204,10 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for constructor</param>
     public static object CreateInstance(Type objectType, params object[] parameters)
     {
-      return Activator.CreateInstance(objectType, parameters);
+      if (ApplicationContext.ScopedServiceProvider is null)
+        return Activator.CreateInstance(objectType, parameters);
+      else
+        return ActivatorUtilities.CreateInstance(ApplicationContext.ScopedServiceProvider, objectType, parameters);
     }
 
     /// <summary>
@@ -217,7 +221,7 @@ namespace Csla.Reflection
     {
       var genericType = type.GetGenericTypeDefinition();
       var gt = genericType.MakeGenericType(paramTypes);
-      return Activator.CreateInstance(gt);
+      return CreateInstance(gt);
     }
 
     #endregion
@@ -280,12 +284,8 @@ namespace Csla.Reflection
     {
       if (ApplicationContext.UseReflectionFallback)
       {
-#if NET40
-        throw new NotSupportedException("CallPropertyGetter + UseReflectionFallback");
-#else
         var propertyInfo = obj.GetType().GetProperty(property);
         return propertyInfo.GetValue(obj);
-#endif
       }
       else
       {
@@ -324,12 +324,8 @@ namespace Csla.Reflection
 
       if (ApplicationContext.UseReflectionFallback)
       {
-#if NET40
-        throw new NotSupportedException("CallPropertySetter + UseReflectionFallback");
-#else
         var propertyInfo = obj.GetType().GetProperty(property);
         propertyInfo.SetValue(obj, value);
-#endif
       }
       else
       {

@@ -155,7 +155,6 @@ namespace Csla.Reflection
       }
     }
 
-#if !NET40
     /// <summary>
     /// Invokes a method using the await keyword
     /// if the method returns Task,
@@ -184,6 +183,5 @@ namespace Csla.Reflection
         throw new CallMethodException(Instance.GetType().Name + "." + method.MethodInfo.Name + " " + Resources.MethodCallFailed, ex);
       }
     }
-#endif
   }
 }

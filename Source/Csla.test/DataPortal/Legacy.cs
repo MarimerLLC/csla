@@ -44,9 +44,6 @@ namespace Csla.Test.DataPortalTest
       Csla.DataPortal.Delete<Legacy>(new Criteria(id));
     }
 
-    private Legacy()
-    { /* Require use of factory methods */ }
-
     #endregion
 
     #region Data Access

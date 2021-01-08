@@ -45,8 +45,6 @@ namespace Csla
     where T : ReadOnlyBindingListBase<T, C>
   {
 
-#region Constructors
-
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -54,8 +52,6 @@ namespace Csla
     {
       Initialize();
     }
-
-#endregion
 
 #region Initialize
 

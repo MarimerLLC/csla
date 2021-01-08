@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS) && !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0
 //-----------------------------------------------------------------------
 // <copyright file="ContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -135,7 +135,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      _context = (C)(Activator.CreateInstance(typeof(C), connectionString));
+      _context = (C)(Reflection.MethodCaller.CreateInstance(typeof(C), connectionString));
 
     }
 

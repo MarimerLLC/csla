@@ -49,8 +49,6 @@ namespace Csla
       ICommandBase
     where T : CommandBase<T>
   {
-    #region Constructors
-
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -58,8 +56,6 @@ namespace Csla
     {
       Initialize();
     }
-
-    #endregion
 
     #region Initialize
 

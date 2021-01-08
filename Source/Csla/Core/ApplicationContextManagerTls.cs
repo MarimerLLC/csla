@@ -8,10 +8,6 @@
 using System;
 using System.Security.Principal;
 using System.Threading;
-using Csla;
-#if !NET40 && !NET45
-using Microsoft.Extensions.DependencyInjection;
-#endif
 
 namespace Csla.Core
 {
@@ -149,7 +145,6 @@ namespace Csla.Core
       _provider = serviceProvider;
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
@@ -171,6 +166,5 @@ namespace Csla.Core
     {
       Csla.ApplicationContext.LocalContext["__sps"] = scope;
     }
-#endif
   }
 }

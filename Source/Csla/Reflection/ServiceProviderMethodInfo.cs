@@ -78,7 +78,6 @@ namespace Csla.Reflection
             TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
             IsInjected = new bool[Parameters.Length];
 
-#if !NET40
             int index = 0;
             foreach (var item in Parameters)
             {
@@ -86,7 +85,6 @@ namespace Csla.Reflection
                 IsInjected[index] = true;
               index++;
             }
-#endif
             IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
             IsAsyncTaskObject = (MethodInfo.ReturnType.IsGenericType && (MethodInfo.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
             DataPortalMethodInfo = new DataPortalMethodInfo(MethodInfo);

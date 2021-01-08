@@ -132,7 +132,6 @@ namespace Csla.Configuration
       set { ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = value.ToString(); }
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects. (Enabled or Suppress)
@@ -142,7 +141,6 @@ namespace Csla.Configuration
       get { return ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"]; }
       set { ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = value.ToString(); }
     }
-#endif
 
     /// <summary>
     /// Gets the maximum cache size

@@ -81,8 +81,6 @@ namespace Csla
 
     #endregion
 
-    #region Constructors
-
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -91,8 +89,6 @@ namespace Csla
       Initialize();
       InitializeBusinessRules();
     }
-
-    #endregion
 
     #region Initialize
 
@@ -117,7 +113,6 @@ namespace Csla
 
     #region Authorization
 
-#if !PCL259
     [NotUndoable()]
     [NonSerialized()]
     private ConcurrentDictionary<string, bool> _readResultCache;
@@ -127,7 +122,6 @@ namespace Csla
     [NotUndoable()]
     [NonSerialized()]
     private System.Security.Principal.IPrincipal _lastPrincipal;
-#endif
 
     private void InitializeBusinessRules()
     {
@@ -204,7 +198,6 @@ namespace Csla
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
       bool result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
@@ -214,7 +207,6 @@ namespace Csla
         // store value in cache
         _readResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
       }
-#endif
       return result;
     }
 
@@ -284,7 +276,6 @@ namespace Csla
 
     private void VerifyAuthorizationCache()
     {
-#if !PCL259 // rely on bait-and-switch for implementation
       if (_readResultCache == null)
         _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
@@ -296,7 +287,6 @@ namespace Csla
         _executeResultCache.Clear();
         _lastPrincipal = Csla.ApplicationContext.User;
       }
-#endif
     }
 
     /// <summary>
@@ -309,7 +299,6 @@ namespace Csla
     public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
       bool result = true;
-#if !PCL259 // rely on bait-and-switch for implementation
 
       VerifyAuthorizationCache();
 
@@ -318,7 +307,6 @@ namespace Csla
         result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
         _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
       }
-#endif
       return result;
     }
 
@@ -506,9 +494,7 @@ namespace Csla
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized()]
-#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       if (_fieldManager != null)
@@ -1522,9 +1508,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -1537,9 +1521,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
+    [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
       get { return _isBusy || LoadManager.IsLoading; }

@@ -47,7 +47,6 @@ namespace Csla.Configuration
       return this;
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Sets the default transaction async flow option
     /// used to create new TransactionScope objects.
@@ -58,6 +57,5 @@ namespace Csla.Configuration
       ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = asyncFlowOption.ToString();
       return this;
     }
-#endif
   }
 }

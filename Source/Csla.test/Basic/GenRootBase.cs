@@ -64,11 +64,6 @@ namespace Csla.Test.Basic
           Csla.DataPortal.Delete<GenRoot>(new Criteria(data));
         }
 
-        protected GenRootBase()
-        {
-            //prevent direct creation
-        }
-
         private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);

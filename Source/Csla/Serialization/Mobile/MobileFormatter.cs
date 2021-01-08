@@ -7,12 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Linq;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -93,17 +90,9 @@ namespace Csla.Serialization.Mobile
           {
             Type fieldType = fieldData.Value.GetType();
 
-#if NETFX_CORE
-            if (fieldType.IsEnum())
-#else
             if (fieldType.IsEnum)
-#endif
             {
-#if (ANDROID || IOS) || NETFX_CORE
-              fieldData.Value = Convert.ChangeType(fieldData.Value, Enum.GetUnderlyingType(fieldType), CultureInfo.CurrentCulture);
-#else
               fieldData.Value = Convert.ChangeType(fieldData.Value, Enum.GetUnderlyingType(fieldType));
-#endif
               fieldData.EnumTypeName = fieldType.AssemblyQualifiedName;
             }
           }
@@ -131,13 +120,11 @@ namespace Csla.Serialization.Mobile
       else
       {
         var thisType = obj.GetType();
-#if !NET40 && !NET45
         if (obj is System.Security.Claims.ClaimsPrincipal cp)
         {
           obj = new Security.CslaClaimsPrincipal(cp);
           thisType = obj.GetType();
         }
-#endif
         if (!thisType.IsSerializable)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName));
@@ -152,7 +139,6 @@ namespace Csla.Serialization.Mobile
           _serializationReferences.Add(mobile, info);
 
           info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
-#if !NET40 && !NET45
           if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var principal = (Security.CslaClaimsPrincipal)obj;
@@ -170,10 +156,6 @@ namespace Csla.Serialization.Mobile
             mobile.GetChildren(info, this);
             mobile.GetState(info);
           }
-#else
-          mobile.GetChildren(info, this);
-          mobile.GetState(info);
-#endif
         }
       }
       return info;
@@ -254,7 +236,6 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
-#if !NET40 && !NET45
           if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var state = info.GetValue<byte[]>("s");
@@ -269,21 +250,13 @@ namespace Csla.Serialization.Mobile
           }
           else
           {
-            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
+            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
 
             _deserializationReferences.Add(info.ReferenceId, mobile);
 
             ConvertEnumsFromIntegers(info);
             mobile.SetState(info);
           }
-#else
-            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);
-
-            _deserializationReferences.Add(info.ReferenceId, mobile);
-
-            ConvertEnumsFromIntegers(info);
-            mobile.SetState(info);
-#endif
         }
       }
 

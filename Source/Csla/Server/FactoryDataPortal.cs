@@ -38,7 +38,7 @@ namespace Csla.Server
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
-              (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
+              (IObjectFactoryLoader)Reflection.MethodCaller.CreateInstance(Type.GetType(setting, true, true));
           else
           _factoryLoader = new ObjectFactoryLoader();
         }

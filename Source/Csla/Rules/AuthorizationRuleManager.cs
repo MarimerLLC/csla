@@ -76,10 +76,6 @@ namespace Csla.Rules
 
     private static System.Reflection.MethodInfo FindObjectAuthorizationRulesMethod(Type type)
     {
-#if NET40
-        const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
-        return type.GetMethod("AddObjectAuthorizationRules", flags);
-#else
       System.Reflection.MethodInfo method;
       method = type.GetMethods().Where(
         m => m.IsStatic && m.CustomAttributes.Where(
@@ -91,7 +87,6 @@ namespace Csla.Rules
         method = type.GetMethod("AddObjectAuthorizationRules", flags);
       }
       return method;
-#endif
     }
 
     private static bool RulesExistForType(Type type)

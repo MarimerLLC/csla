@@ -39,9 +39,6 @@ namespace Csla.Test.ObjectFactory
       return cmd.Result;
     }
 
-    private CommandObject()
-    { /* require use of factory methods */ }
-
     #endregion
 
     #region Client-side Code

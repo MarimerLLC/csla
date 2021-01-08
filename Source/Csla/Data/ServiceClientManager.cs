@@ -53,7 +53,7 @@ namespace Csla.Data
 
     private ServiceClientManager(string name)
     {
-      _client = (C)(Activator.CreateInstance(typeof(C)));
+      _client = (C)(Reflection.MethodCaller.CreateInstance(typeof(C)));
     }
 
     /// <summary>

@@ -7,15 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
-#if !NETSTANDARD2_0 && !NET5_0
-using System.Web;
-#endif
 using Csla.Core;
 using Csla.Configuration;
-#if !NET40 && !NET45
 using Microsoft.Extensions.DependencyInjection;
-using Csla.Properties;
-#endif
 
 namespace Csla
 {
@@ -56,7 +50,7 @@ namespace Csla
         _contextManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
 
       if (_contextManagerType != null)
-        _contextManager = (IContextManager)Activator.CreateInstance(_contextManagerType);
+        _contextManager = (IContextManager)Reflection.MethodCaller.CreateInstance(_contextManagerType);
 
       if (_contextManager == null)
         _contextManager = new ApplicationContextManager();
@@ -65,7 +59,7 @@ namespace Csla
       {
         _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
         if (_webManagerType != null)
-          WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
+          WebContextManager = (IContextManager)Reflection.MethodCaller.CreateInstance(_webManagerType);
       }
     }
 
@@ -288,7 +282,7 @@ namespace Csla
               if (!string.IsNullOrWhiteSpace(typeName))
               {
                 var type = Type.GetType(typeName);
-                _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(type);
+                _dataPortalActivator = (Csla.Server.IDataPortalActivator)Reflection.MethodCaller.CreateInstance(type);
               }
               else
               {
@@ -741,7 +735,6 @@ namespace Csla
       }
     }
 
-#if !NET40 && !NET45
     private static System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
     private static bool _defaultTransactionAsyncFlowOptionSet;
 
@@ -768,7 +761,6 @@ namespace Csla
         _defaultTransactionAsyncFlowOptionSet = true;
       }
     }
-#endif
 
     #endregion
 
@@ -819,7 +811,6 @@ namespace Csla
 
     #region ServiceProvider
 
-#if !NET40 && !NET45
     private static IServiceCollection _serviceCollection;
 
     internal static void SetServiceCollection(IServiceCollection serviceCollection)
@@ -855,7 +846,7 @@ namespace Csla
     {
       internal get
       {
-        var result = ContextManager.GetServiceProvider();
+        var result = ContextManager?.GetServiceProvider();
         return result;       
       }
       set => ContextManager.SetServiceProvider(value);
@@ -874,7 +865,6 @@ namespace Csla
           return null;
       }
     }
-#endif
 
     #endregion
   }

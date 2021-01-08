@@ -1,5 +1,4 @@
-﻿#if !NET40 && !NET45 && !NETSTANDARD1_5 && !NETSTANDARD1_6 && !PCL46 && !WINDOWS_UWP && !PCL259
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="CslaClaimsPrincipal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -9,11 +8,8 @@
 using System;
 using System.Security.Principal;
 using Csla.Serialization.Mobile;
-using Csla.Core;
-using System.ComponentModel;
 using System.Security.Claims;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Csla.Security
 {
@@ -109,4 +105,3 @@ namespace Csla.Security
     { }
   }
 }
-#endif

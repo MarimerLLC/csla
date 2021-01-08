@@ -123,9 +123,6 @@ namespace Csla.Test.ValidationRules
       return Csla.DataPortal.Create<RuleBaseClassesRoot>(ruleSet);
     }
 
-    private RuleBaseClassesRoot()
-    { /* Require use of factory methods */}
-
     #endregion
 
     [RunLocal]

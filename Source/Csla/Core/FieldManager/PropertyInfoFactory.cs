@@ -38,7 +38,7 @@ namespace Csla.Core.FieldManager
           else
           {
             var type = Type.GetType(typeName);
-            _factory = (Csla.Core.IPropertyInfoFactory)Activator.CreateInstance(type);
+            _factory = (Csla.Core.IPropertyInfoFactory)Reflection.MethodCaller.CreateInstance(type);
           }
         }
         return _factory;

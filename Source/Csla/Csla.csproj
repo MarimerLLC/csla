@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;net40;net45;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0;net461</TargetFrameworks>
     <PackageId>Csla</PackageId>
     <DefaultLanguage>en-US</DefaultLanguage>
     <SignAssembly>true</SignAssembly>
@@ -19,8 +19,8 @@
     <EmbeddedResource Remove="Properties\CslaPrivate.resx" />
     <Compile Remove="Service References\**\*.cs" />
     <None Include="Service References\**\*.cs" />
-    <Compile Remove="Silverlight\**\*.cs" Condition="'$(TargetFramework)' != 'net40'" />
-    <Compile Include="Silverlight\Security\WindowsIdentity.cs" Condition="'$(TargetFramework)' != 'net40'" />
+    <Compile Remove="Silverlight\**\*.cs" />
+    <Compile Include="Silverlight\Security\WindowsIdentity.cs" />
     </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
@@ -51,17 +51,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
-    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'net45' AND '$(TargetFramework)' != 'net40'">
+  <ItemGroup>
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Security.Principal" Version="4.3.0" />
@@ -81,8 +72,8 @@
   </ItemGroup>  
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.9" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />

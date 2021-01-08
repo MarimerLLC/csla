@@ -6,12 +6,7 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
-#if !NET40 && !NET45
-using Microsoft.Extensions.DependencyInjection;
-#endif
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Configuration
 {
@@ -83,7 +78,7 @@ namespace Csla.Configuration
     /// </returns>
     public CslaConfiguration ContextManager(Type contextManagerType)
     {
-      ContextManager((IContextManager)Activator.CreateInstance(contextManagerType));
+      ContextManager((IContextManager)Reflection.MethodCaller.CreateInstance(contextManagerType));
       return this;
     }
 
@@ -154,7 +149,6 @@ namespace Csla.Configuration
       return this;
     }
 
-#if !NET40 && !NET45
     /// <summary>
     /// Sets the IServiceProvider scope for the current context.
     /// </summary>
@@ -166,7 +160,6 @@ namespace Csla.Configuration
       ApplicationContext.ServiceProviderScope = scope;
       return this;
     }
-#endif
 
     /// <summary>
     /// Resets any ApplicationContext settings so they 

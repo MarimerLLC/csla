@@ -36,29 +36,6 @@ namespace Csla.Test.MethodCaller
     }
 
     [TestMethod]
-#if WINDOWS_PHONE
-    [ExpectedException(typeof(MissingMethodException))]
-#else
-    [ExpectedException(typeof(NotSupportedException))]
-#endif
-    public void CreateInstanceNoParameterlessConstructorFail()
-    {
-      Csla.Reflection.MethodCaller.CreateInstance(typeof(Fail1));
-    }
-
-    [TestMethod]
-#if WINDOWS_PHONE
-    [ExpectedException(typeof(MissingMethodException))]
-#endif
-    public void CreateInstanceNonPublicConstructor()
-    {
-      Csla.Reflection.MethodCaller.CreateInstance(typeof(NonPublic1));
-    }
-
-    [TestMethod]
-#if WINDOWS_PHONE
-    [ExpectedException(typeof(MethodAccessException))]
-#endif
     public void CreateInstanceNonPublicNestedTypeSuccess()
     {
       var instance = (NonPublic2)Csla.Reflection.MethodCaller.CreateInstance(typeof(NonPublic2));
@@ -66,15 +43,10 @@ namespace Csla.Test.MethodCaller
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void CreateInstanceNotClassFail()
     {
       Csla.Reflection.MethodCaller.CreateInstance(typeof(TestStruct));
-    }
-
-    public class Fail1
-    {
-      public Fail1(int unsupported) { }
     }
 
     public class NonPublic1

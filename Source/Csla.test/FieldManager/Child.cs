@@ -23,7 +23,7 @@ namespace Csla.Test.FieldManager
       return Csla.DataPortal.FetchChild<Child>();
     }
 
-    private Child()
+    public Child()
     {
       MarkAsChild();
     }

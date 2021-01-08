@@ -144,9 +144,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
     public virtual bool IsBusy
     {
       get { throw new NotImplementedException(); }
@@ -157,9 +155,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
-#if !PCL46 && !PCL259 
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
-#endif
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
@@ -290,9 +286,7 @@ namespace Csla.Core
       OnDeserialized();
     }
 
-#if !NETFX_CORE || PCL46 || WINDOWS_UWP || PCL259
     [System.Runtime.Serialization.OnDeserialized]
-#endif 
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       foreach (T item in this)

@@ -837,7 +837,7 @@ namespace Csla
     /// Sets the service provider scope for this application context.
     /// </summary>
 #pragma warning disable CS3003 // Type is not CLS-compliant
-    public static IServiceProvider ServiceProviderScope
+    public static IServiceProvider CurrentServiceProvider
 #pragma warning restore CS3003 // Type is not CLS-compliant
     {
       internal get
@@ -855,8 +855,8 @@ namespace Csla
     {
       get
       {
-        if (ServiceProviderScope != null)
-          return ServiceProviderScope;
+        if (CurrentServiceProvider != null)
+          return CurrentServiceProvider;
         else
           return null;
       }

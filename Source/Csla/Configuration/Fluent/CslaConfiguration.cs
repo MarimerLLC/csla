@@ -157,7 +157,7 @@ namespace Csla.Configuration
     public CslaConfiguration ServiceProviderScope(IServiceProvider scope)
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
     {
-      ApplicationContext.ServiceProviderScope = scope;
+      ApplicationContext.CurrentServiceProvider = scope;
       return this;
     }
 

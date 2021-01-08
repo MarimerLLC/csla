@@ -177,9 +177,6 @@ namespace Csla.Testing.Business.TestProxies
 
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      //Security.BusinessPrincipal
-      //var temp = new DataPortalContext(new UnauthenticatedPrincipal(), context.IsRemotePortal);
-
       var task = 
         new UpdateTask
           {

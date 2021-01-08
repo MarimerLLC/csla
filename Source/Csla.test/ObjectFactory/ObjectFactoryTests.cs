@@ -44,7 +44,7 @@ namespace Csla.Test.ObjectFactory
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void Create()
     {
-      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
+      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
@@ -73,7 +73,7 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void CreateWithParam()
     {
-      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
+      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader();
@@ -91,7 +91,7 @@ namespace Csla.Test.ObjectFactory
     [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
     {
-      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
+      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);

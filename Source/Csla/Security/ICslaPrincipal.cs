@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ICslaPrincipal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Defines the base requirements for the interface of any</summary>
+//-----------------------------------------------------------------------
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Csla.Security
 {

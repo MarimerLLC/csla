@@ -9,7 +9,6 @@ using Csla;
 using Csla.DataPortalClient;
 using Csla.Testing.Business.ReadOnlyTest;
 using System;
-using Csla.Testing.Business.Security;
 using UnitDriven;
 using Csla.Testing.Business.BusyStatus;
 using System.Threading.Tasks;

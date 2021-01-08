@@ -44,7 +44,7 @@ namespace Csla.Web
       var result = HttpContext.Current.User;
       if (result == null)
       {
-        result = new Csla.Security.UnauthenticatedPrincipal();
+        result = new System.Security.Claims.ClaimsPrincipal();
         SetUser(result);
       }
       return result;

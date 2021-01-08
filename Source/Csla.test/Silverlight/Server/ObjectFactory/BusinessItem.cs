@@ -6,10 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Silverlight;
-using Csla.Serialization;
-using Csla;
-using Csla.Server;
 
 namespace Csla.Testing.Business.ObjectFactory
 {

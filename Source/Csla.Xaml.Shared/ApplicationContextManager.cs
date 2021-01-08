@@ -30,7 +30,7 @@ namespace Csla.Xaml
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
 #pragma warning restore CA1416 // Validate platform compatibility
         else
-          SetUser(new Csla.Security.UnauthenticatedPrincipal());
+          SetUser(new System.Security.Claims.ClaimsPrincipal());
       }
       return _principal;
     }

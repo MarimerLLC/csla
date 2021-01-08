@@ -127,8 +127,6 @@
     <Compile Include="Authorization\ReadonlyAuthorizationTests.cs" />
     <Compile Include="Authorization\ReadOnlyPerson.cs" />
     <Compile Include="Authorization\RootException.cs" />
-    <Compile Include="Authorization\TestIdentity.cs" />
-    <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="BasicModern\BasicModernTests.cs" />
     <Compile Include="BasicModern\Child.cs" />
     <Compile Include="BasicModern\ChildList.cs" />
@@ -313,8 +311,6 @@
     <Compile Include="Silverlight\ReadOnly\MockReadOnlyList.cs" />
     <Compile Include="Silverlight\ReadOnly\ReadOnlyTests.cs" />
     <Compile Include="Silverlight\Rollback\RollbackRoot.cs" />
-    <Compile Include="Silverlight\Security\SecurityTests.server.cs" />
-    <Compile Include="Silverlight\Security\SecurityTests.cs" />
     <Compile Include="Silverlight\Serialization\Address.cs" />
     <Compile Include="Silverlight\Serialization\AddressBase.cs" />
     <Compile Include="Silverlight\Serialization\AddressList.cs" />
@@ -344,8 +340,6 @@
     <Compile Include="Threading\BackgroundWorkerSyncContextHelper.cs" />
     <Compile Include="Threading\BackgroundWorkerTests.cs" />
     <Compile Include="Threading\BusyLockTests.cs" />
-    <Compile Include="Threading\MyIdentity.cs" />
-    <Compile Include="Threading\MyPrincipal.cs" />
     <Compile Include="Utilities\CorerseValueTests.cs" />
     <Compile Include="Utilities\UtilitiesTestHelper.cs" />
     <Compile Include="ValidationRules\AsyncRuleRoot.cs" />

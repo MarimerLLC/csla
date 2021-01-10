@@ -191,10 +191,13 @@ namespace Csla.Reflection
     /// <param name="objectType">Type of object to create.</param>
     public static object CreateInstance(Type objectType)
     {
-      if (ApplicationContext.ScopedServiceProvider is null)
-        return Activator.CreateInstance(objectType);
+      var provider = ApplicationContext.ScopedServiceProvider;
+      if (provider is null)
+        provider = ApplicationContext.DefaultServiceProvider;
+      if (provider != null)
+        return ActivatorUtilities.CreateInstance(provider, objectType);
       else
-        return ActivatorUtilities.CreateInstance(ApplicationContext.ScopedServiceProvider, objectType);
+        return Activator.CreateInstance(objectType);
     }
 
     /// <summary>
@@ -204,10 +207,13 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for constructor</param>
     public static object CreateInstance(Type objectType, params object[] parameters)
     {
-      if (ApplicationContext.ScopedServiceProvider is null)
-        return Activator.CreateInstance(objectType, parameters);
+      var provider = ApplicationContext.ScopedServiceProvider;
+      if (provider is null)
+        provider = ApplicationContext.DefaultServiceProvider;
+      if (provider != null)
+        return ActivatorUtilities.CreateInstance(provider, objectType, parameters);
       else
-        return ActivatorUtilities.CreateInstance(ApplicationContext.ScopedServiceProvider, objectType, parameters);
+        return Activator.CreateInstance(objectType, parameters);
     }
 
     /// <summary>

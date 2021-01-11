@@ -32,7 +32,7 @@ namespace Csla.Test.DataPortal
     public void Initialize()
     {
       Csla.ApplicationContext.DefaultServiceProvider = null;
-      Csla.ApplicationContext.ServiceProviderScope = null;
+      Csla.ApplicationContext.CurrentServiceProvider = null;
     }
 
     [TestMethod]

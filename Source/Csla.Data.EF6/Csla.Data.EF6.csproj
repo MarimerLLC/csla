@@ -19,7 +19,7 @@
   
   <ItemGroup>
     <Reference Include="System.Configuration" />
-    <PackageReference Include="EntityFramework" Version="6.3.0" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>

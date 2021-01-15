@@ -150,14 +150,14 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Sets the IServiceProvider scope for the current context.
+    /// Sets the default service provider which Csla will use.
     /// </summary>
-    /// <param name="scope">IServiceScope instance</param>
+    /// <param name="defaultServiceProvider">IServiceProvider instance</param>
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
-    public CslaConfiguration ServiceProviderScope(IServiceProvider scope)
+    public CslaConfiguration DefaultServiceProvider(IServiceProvider defaultServiceProvider)
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
     {
-      ApplicationContext.CurrentServiceProvider = scope;
+      ApplicationContext.DefaultServiceProvider = defaultServiceProvider;
       return this;
     }
 

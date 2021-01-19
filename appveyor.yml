@@ -1,7 +1,7 @@
 version: '{branch}.{build}'
 branches:
   only:
-  - master
+  - main
 image: Visual Studio 2019
 configuration: Release
 platform: Any CPU

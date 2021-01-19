@@ -764,18 +764,21 @@ namespace Csla.Core.FieldManager
     /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
-      var attr =
+      const BindingFlags attr =
         BindingFlags.Static |
         BindingFlags.Public |
         BindingFlags.DeclaredOnly |
         BindingFlags.NonPublic;
-      var t = type;
-      while (t != null)
+      lock (type)
       {
-        var fields = t.GetFields(attr);
-        if (fields.Length > 0)
-          fields[0].GetValue(null);
-        t = t.BaseType;
+        var t = type;
+        while (t != null)
+        {
+          var fields = t.GetFields(attr);
+          if (fields.Length > 0)
+            fields[0].GetValue(null);
+          t = t.BaseType;
+        }
       }
     }
   }

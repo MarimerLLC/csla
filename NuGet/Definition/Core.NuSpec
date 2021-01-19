@@ -21,18 +21,26 @@ Supports the creation of Class Library projects containing business domain class
     </summary>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework="net46">
+      <group targetFramework="net461">
         <dependency id="Microsoft.Extensions.Configuration" version="3.1.9" />
         <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.9" />
         <dependency id="System.ComponentModel.Annotations" version="4.7.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.9" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.9" />
       </group>
-      <group targetFramework="net45" />
-      <group targetFramework="net40">
-        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
-        <dependency id="Microsoft.Bcl" version="1.1.10" />
-        <dependency id="Microsoft.Net.Http" version="2.2.29" />
+      <group targetFramework="net472">
+        <dependency id="Microsoft.Extensions.Configuration" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.9" />
+        <dependency id="System.ComponentModel.Annotations" version="4.7.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.9" />
+      </group>
+      <group targetFramework="net48">
+        <dependency id="Microsoft.Extensions.Configuration" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="3.1.9" />
+        <dependency id="System.ComponentModel.Annotations" version="4.7.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.9" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.0" />
@@ -76,24 +84,24 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.dll*" target="lib\net5.0" />
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.xml*" target="lib\net5.0" />
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.resources.dll*" target="lib\net5.0" />
-    <!-- .NET 4.0 Client -->
-    <file src="..\..\Bin\Release\NET4\**\Csla.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.resources.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.resources.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.xml*" target="lib\net40" />
-    <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET45\**\Csla.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.xml*" target="lib\net45" />
-    <!-- .NET 4.6 Client -->
-    <file src="..\..\Bin\Release\NET46\**\Csla.dll*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.pdb*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.resources.dll*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.resources.pdb*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.xml*" target="lib\net461" />
+    <!-- .NET 4.6.1 -->
+    <file src="..\..\Bin\Release\NET461\**\Csla.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET461\**\Csla.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET461\**\Csla.resources.dll*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET461\**\Csla.resources.pdb*" target="lib\net461" />
+    <file src="..\..\Bin\Release\NET461\**\Csla.xml*" target="lib\net461" />
+    <!-- .NET 4.7.2 -->
+    <file src="..\..\Bin\Release\NET472\**\Csla.dll*" target="lib\net472" />
+    <file src="..\..\Bin\Release\NET472\**\Csla.pdb*" target="lib\net472" />
+    <file src="..\..\Bin\Release\NET472\**\Csla.resources.dll*" target="lib\net472" />
+    <file src="..\..\Bin\Release\NET472\**\Csla.resources.pdb*" target="lib\net472" />
+    <file src="..\..\Bin\Release\NET472\**\Csla.xml*" target="lib\net472" />
+    <!-- .NET 4.8.0 -->
+    <file src="..\..\Bin\Release\NET48\**\Csla.dll*" target="lib\net48" />
+    <file src="..\..\Bin\Release\NET48\**\Csla.pdb*" target="lib\net48" />
+    <file src="..\..\Bin\Release\NET48\**\Csla.resources.dll*" target="lib\net48" />
+    <file src="..\..\Bin\Release\NET48\**\Csla.resources.pdb*" target="lib\net48" />
+    <file src="..\..\Bin\Release\NET48\**\Csla.xml*" target="lib\net48" />
     <!-- CSLA Analyzers -->
     <file src="..\..\bin\Release\netstandard\netstandard1.3\Csla.Analyzers.*" target="analyzers\c#" />
     <file src="..\..\bin\Release\netstandard\netstandard1.3\tools\*.ps1" target="tools\" />

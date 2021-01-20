@@ -43,6 +43,17 @@ namespace Csla.Serialization.Mobile
       writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
+    /// <summary>
+    /// Converts an object graph into a byte stream.
+    /// </summary>
+    /// <param name="graph">Object graph to be serialized.</param>
+    byte[] ISerializationFormatter.Serialize(object graph)
+    {
+      using var buffer = new MemoryStream();
+      Serialize(buffer, graph);
+      buffer.Position = 0;
+      return buffer.ToArray();
+    }
 
     /// <summary>
     /// Serialize an object graph into DTO.

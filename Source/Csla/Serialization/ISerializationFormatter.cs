@@ -30,5 +30,10 @@ namespace Csla.Serialization
     /// Stream that will contain the the serialized data.</param>
     /// <param name="graph">Object graph to be serialized.</param>
     void Serialize(System.IO.Stream serializationStream, object graph);
+    /// <summary>
+    /// Converts an object graph into a byte stream.
+    /// </summary>
+    /// <param name="graph">Object graph to be serialized.</param>
+    byte[] Serialize(object graph);
   }
 }

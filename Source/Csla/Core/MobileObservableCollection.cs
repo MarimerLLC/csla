@@ -126,7 +126,7 @@ namespace Csla.Core
     /// values from the serialization stream.
     /// </summary>
     /// <param name="info">Serialization info.</param>
-    /// <param name="formatter">Reference to the MobileFormatter.</param>
+    /// <param name="formatter">Reference to the SerializationFormatterFactory.GetFormatter().</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
@@ -171,7 +171,7 @@ namespace Csla.Core
     /// values into the serialization stream.
     /// </summary>
     /// <param name="info">Serialization info.</param>
-    /// <param name="formatter">Reference to the MobileFormatter.</param>
+    /// <param name="formatter">Reference to the SerializationFormatterFactory.GetFormatter().</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {

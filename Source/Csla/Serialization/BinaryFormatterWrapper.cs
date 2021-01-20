@@ -6,7 +6,7 @@
 // </copyright>
 // <summary>Wraps the <see cref="BinaryFormatter"/></summary>
 //-----------------------------------------------------------------------
-using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Csla.Serialization
@@ -20,10 +20,8 @@ namespace Csla.Serialization
   /// </summary>
   public class BinaryFormatterWrapper : ISerializationFormatter
   {
-    private BinaryFormatter _formatter =
+    private readonly BinaryFormatter _formatter =
       new BinaryFormatter();
-
-#region ISerializationFormatter Members
 
     /// <summary>
     /// Converts a serialization stream into an
@@ -38,6 +36,19 @@ namespace Csla.Serialization
     }
 
     /// <summary>
+    /// Converts a serialization stream into an
+    /// object graph.
+    /// </summary>
+    /// <param name="buffer">
+    /// Byte stream containing the serialized data.</param>
+    /// <returns>A deserialized object graph.</returns>
+    public object Deserialize(byte[] buffer)
+    {
+      using var serializationStream = new MemoryStream(buffer);
+      return _formatter.Deserialize(serializationStream);
+    }
+
+    /// <summary>
     /// Converts an object graph into a byte stream.
     /// </summary>
     /// <param name="serializationStream">
@@ -48,7 +59,17 @@ namespace Csla.Serialization
       _formatter.Serialize(serializationStream, graph);
     }
 
-#endregion
+    /// <summary>
+    /// Converts an object graph into a byte stream.
+    /// </summary>
+    /// <param name="graph">Object graph to be serialized.</param>
+    public byte[] Serialize(object graph)
+    {
+      using var buffer = new MemoryStream();
+      _formatter.Serialize(buffer, graph);
+      buffer.Position = 0;
+      return buffer.ToArray();
+    }
 
     /// <summary>
     /// Gets a reference to the underlying

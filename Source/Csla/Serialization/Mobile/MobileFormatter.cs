@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MobileFormatter.cs" company="Marimer LLC">
+// <copyright file="SerializationFormatterFactory.GetFormatter().cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -43,6 +43,17 @@ namespace Csla.Serialization.Mobile
       writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
+    /// <summary>
+    /// Converts an object graph into a byte stream.
+    /// </summary>
+    /// <param name="graph">Object graph to be serialized.</param>
+    byte[] ISerializationFormatter.Serialize(object graph)
+    {
+      using var buffer = new MemoryStream();
+      Serialize(buffer, graph);
+      buffer.Position = 0;
+      return buffer.ToArray();
+    }
 
     /// <summary>
     /// Serialize an object graph into DTO.
@@ -208,6 +219,23 @@ namespace Csla.Serialization.Mobile
       return DeserializeAsDTO(data);
     }
 
+    /// <summary>
+    /// Deserialize an object from XML.
+    /// </summary>
+    /// <param name="buffer">
+    /// Stream containing the serialized XML
+    /// data.
+    /// </param>
+    /// <returns></returns>
+    object ISerializationFormatter.Deserialize(byte[] buffer)
+    {
+      if (buffer.Length == 0)
+        return null;
+      using var serializationStream = new MemoryStream(buffer);
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+      var data = reader.Read(serializationStream);
+      return DeserializeAsDTO(data);
+    }
 
     /// <summary>
     /// Deserialize an object from DTO graph.

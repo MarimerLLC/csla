@@ -17,6 +17,9 @@ namespace Csla.Rules
   [Serializable]
   public partial class BrokenRule : MobileObject
   {
+    /// <summary>
+    /// Creates an instance of this type.
+    /// </summary>
     public BrokenRule()
     { }
 

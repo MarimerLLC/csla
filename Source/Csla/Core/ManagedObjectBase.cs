@@ -21,7 +21,7 @@ namespace Csla.Core
 {
   /// <summary>
   /// Base class for an object that is serializable
-  /// using MobileFormatter.
+  /// using SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
@@ -445,7 +445,7 @@ namespace Csla.Core
     /// object data from the serializations stream.
     /// </summary>
     /// <param name="info">Serialization info.</param>
-    /// <param name="formatter">Reference to the MobileFormatter.</param>
+    /// <param name="formatter">Reference to the SerializationFormatterFactory.GetFormatter().</param>
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (_fieldManager != null)
@@ -462,7 +462,7 @@ namespace Csla.Core
     /// objects into the serialization stream.
     /// </summary>
     /// <param name="info">Serialization info.</param>
-    /// <param name="formatter">Reference to the MobileFormatter.</param>
+    /// <param name="formatter">Reference to the SerializationFormatterFactory.GetFormatter().</param>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_fieldManager"))

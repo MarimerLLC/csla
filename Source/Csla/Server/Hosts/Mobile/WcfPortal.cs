@@ -7,12 +7,12 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization.Mobile;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using Csla.Core;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Csla.Serialization;
 
 namespace Csla.Server.Hosts.Mobile
 {
@@ -50,9 +50,9 @@ namespace Csla.Server.Hosts.Mobile
         var createRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           request.ClientCulture,
           request.ClientUICulture);
 
@@ -61,8 +61,8 @@ namespace Csla.Server.Hosts.Mobile
         {
           result.ErrorData = new WcfErrorInfo(createResponse.Error);
         }
-        result.GlobalContext = MobileFormatter.Serialize(createResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(createResponse.Object);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(createResponse.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(createResponse.Object);
       }
       catch (Exception ex)
       {
@@ -97,9 +97,9 @@ namespace Csla.Server.Hosts.Mobile
         var fetchRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           request.ClientCulture,
           request.ClientUICulture);
 
@@ -108,8 +108,8 @@ namespace Csla.Server.Hosts.Mobile
         {
           result.ErrorData = new WcfErrorInfo(fetchResponse.Error);
         }
-        result.GlobalContext = MobileFormatter.Serialize(fetchResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(fetchResponse.Object);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(fetchResponse.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(fetchResponse.Object);
       }
       catch (Exception ex)
       {
@@ -139,9 +139,9 @@ namespace Csla.Server.Hosts.Mobile
         var processor = new MobileRequestProcessor();
         var updateRequest = new MobileUpdateRequest(
           obj,
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           request.ClientCulture,
           request.ClientUICulture);
 
@@ -150,8 +150,8 @@ namespace Csla.Server.Hosts.Mobile
         {
           result.ErrorData = new WcfErrorInfo(updateResponse.Error);
         }
-        result.GlobalContext = MobileFormatter.Serialize(updateResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(updateResponse.Object);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(updateResponse.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(updateResponse.Object);
       }
       catch (Exception ex)
       {
@@ -186,9 +186,9 @@ namespace Csla.Server.Hosts.Mobile
         var deleteRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           request.ClientCulture,
           request.ClientUICulture);
 
@@ -197,8 +197,8 @@ namespace Csla.Server.Hosts.Mobile
         {
           result.ErrorData = new WcfErrorInfo(deleteResponse.Error);
         }
-        result.GlobalContext = MobileFormatter.Serialize(deleteResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(deleteResponse.Object);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(deleteResponse.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(deleteResponse.Object);
       }
       catch (Exception ex)
       {
@@ -219,7 +219,7 @@ namespace Csla.Server.Hosts.Mobile
     {
       object criteria = null;
       if (criteriaData != null)
-        criteria = MobileFormatter.Deserialize(criteriaData);
+        criteria = SerializationFormatterFactory.GetFormatter().Deserialize(criteriaData);
       return criteria;
     }
 

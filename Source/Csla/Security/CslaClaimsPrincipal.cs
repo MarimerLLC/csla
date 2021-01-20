@@ -14,7 +14,7 @@ using System.Collections.Generic;
 namespace Csla.Security
 {
   /// <summary>
-  /// ClaimsPrincipal subclass that supports serialization by MobileFormatter.
+  /// ClaimsPrincipal subclass that supports serialization by SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable()]
   public class CslaClaimsPrincipal : ClaimsPrincipal, ICslaPrincipal

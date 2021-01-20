@@ -11,7 +11,7 @@ namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Interface defining callback methods used
-  /// by the MobileFormatter.
+  /// by the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   public interface ISerializationNotification
   {

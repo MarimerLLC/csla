@@ -13,7 +13,7 @@ namespace System
 {
   /// <summary>
   /// Indicates that a field should not be
-  /// serialized by the MobileFormatter.
+  /// serialized by the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [AttributeUsage(AttributeTargets.Field)]
   public class NonSerializedAttribute : Attribute

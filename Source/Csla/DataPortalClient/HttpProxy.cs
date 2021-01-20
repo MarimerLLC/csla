@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using System;
@@ -153,17 +154,17 @@ namespace Csla.DataPortalClient
     {
       var request = new Csla.Server.Hosts.HttpChannel.CriteriaRequest();
       request.CriteriaData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
+      request.ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext);
 #pragma warning disable CS0618 // Type or member is obsolete
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      request.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.GlobalContext);
 #pragma warning restore CS0618 // Type or member is obsolete
       if (ApplicationContext.AuthenticationType == "Windows")
       {
-        request.Principal = MobileFormatter.Serialize(null);
+        request.Principal = SerializationFormatterFactory.GetFormatter().Serialize(null);
       }
       else
       {
-        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+        request.Principal = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.User);
       }
       request.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
       request.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
@@ -174,17 +175,17 @@ namespace Csla.DataPortalClient
     {
       var request = new Csla.Server.Hosts.HttpChannel.UpdateRequest();
       request.ObjectData = null;
-      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
+      request.ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext);
 #pragma warning disable CS0618 // Type or member is obsolete
-      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      request.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.GlobalContext);
 #pragma warning restore CS0618 // Type or member is obsolete
       if (ApplicationContext.AuthenticationType == "Windows")
       {
-        request.Principal = MobileFormatter.Serialize(null);
+        request.Principal = SerializationFormatterFactory.GetFormatter().Serialize(null);
       }
       else
       {
-        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+        request.Principal = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.User);
       }
       request.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       request.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
@@ -214,19 +215,19 @@ namespace Csla.DataPortalClient
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = MobileFormatter.Serialize(criteria);
+        request.CriteriaData = SerializationFormatterFactory.GetFormatter().Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = MobileFormatter.Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync);
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
         {
-          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
           result = new DataPortalResult(obj, null, globalContext);
         }
         else if (response != null && response.ErrorData != null)
@@ -271,19 +272,19 @@ namespace Csla.DataPortalClient
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = MobileFormatter.Serialize(criteria);
+        request.CriteriaData = SerializationFormatterFactory.GetFormatter().Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = MobileFormatter.Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync);
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
         {
-          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
           result = new DataPortalResult(obj, null, globalContext);
         }
         else if (response != null && response.ErrorData != null)
@@ -322,19 +323,19 @@ namespace Csla.DataPortalClient
       try
       {
         var request = GetBaseUpdateCriteriaRequest();
-        request.ObjectData = MobileFormatter.Serialize(obj);
+        request.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(obj);
         request = ConvertRequest(request);
 
-        var serialized = MobileFormatter.Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync);
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
         {
-          var newobj = MobileFormatter.Deserialize(response.ObjectData);
+          var newobj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
           result = new DataPortalResult(newobj, null, globalContext);
         }
         else if (response != null && response.ErrorData != null)
@@ -380,16 +381,16 @@ namespace Csla.DataPortalClient
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = MobileFormatter.Serialize(criteria);
+        request.CriteriaData = SerializationFormatterFactory.GetFormatter().Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = MobileFormatter.Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync);
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
         {
           result = new DataPortalResult(null, null, globalContext);

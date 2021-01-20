@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Wraps the <see cref="BinaryFormatter"/></summary>
 //-----------------------------------------------------------------------
-using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -33,6 +32,19 @@ namespace Csla.Serialization
     /// <returns>A deserialized object graph.</returns>
     public object Deserialize(System.IO.Stream serializationStream)
     {
+      return _formatter.Deserialize(serializationStream);
+    }
+
+    /// <summary>
+    /// Converts a serialization stream into an
+    /// object graph.
+    /// </summary>
+    /// <param name="buffer">
+    /// Byte stream containing the serialized data.</param>
+    /// <returns>A deserialized object graph.</returns>
+    public object Deserialize(byte[] buffer)
+    {
+      using var serializationStream = new MemoryStream(buffer);
       return _formatter.Deserialize(serializationStream);
     }
 

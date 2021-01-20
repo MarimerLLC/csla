@@ -24,6 +24,14 @@ namespace Csla.Serialization
     /// <returns>A deserialized object graph.</returns>
     object Deserialize(System.IO.Stream serializationStream);
     /// <summary>
+    /// Converts a serialization stream into an
+    /// object graph.
+    /// </summary>
+    /// <param name="serializationStream">
+    /// Byte stream containing the serialized data.</param>
+    /// <returns>A deserialized object graph.</returns>
+    object Deserialize(byte[] serializationStream);
+    /// <summary>
     /// Converts an object graph into a byte stream.
     /// </summary>
     /// <param name="serializationStream">

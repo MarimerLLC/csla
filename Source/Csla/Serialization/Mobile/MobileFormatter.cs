@@ -219,6 +219,23 @@ namespace Csla.Serialization.Mobile
       return DeserializeAsDTO(data);
     }
 
+    /// <summary>
+    /// Deserialize an object from XML.
+    /// </summary>
+    /// <param name="buffer">
+    /// Stream containing the serialized XML
+    /// data.
+    /// </param>
+    /// <returns></returns>
+    object ISerializationFormatter.Deserialize(byte[] buffer)
+    {
+      if (buffer.Length == 0)
+        return null;
+      using var serializationStream = new MemoryStream(buffer);
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+      var data = reader.Read(serializationStream);
+      return DeserializeAsDTO(data);
+    }
 
     /// <summary>
     /// Deserialize an object from DTO graph.

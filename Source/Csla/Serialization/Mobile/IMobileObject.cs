@@ -10,7 +10,7 @@ namespace Csla.Serialization.Mobile
   /// <summary>
   /// Interface to be implemented by any object
   /// that supports serialization by the
-  /// MobileFormatter.
+  /// SerializationFormatterFactory.GetFormatter().
   /// </summary>
   public interface IMobileObject
   {

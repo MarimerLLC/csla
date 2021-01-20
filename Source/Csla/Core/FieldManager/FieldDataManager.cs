@@ -639,7 +639,7 @@ namespace Csla.Core.FieldManager
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
-            info.AddValue(data.Name, MobileFormatter.Serialize(data.Value), data.IsDirty);
+            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter().Serialize(data.Value), data.IsDirty);
           else if(!(data.Value is IMobileObject))
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
@@ -709,7 +709,7 @@ namespace Csla.Core.FieldManager
             typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
             !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
-            data.Value = MobileFormatter.Deserialize((byte[])value.Value);
+            data.Value = SerializationFormatterFactory.GetFormatter().Deserialize((byte[])value.Value);
           }
           else data.Value = value.Value;
 

@@ -79,7 +79,7 @@ namespace Csla.Configuration
 
     /// <summary>
     /// Sets type of the writer that is used to read data to
-    /// serialization stream in MobileFormatter.
+    /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
     public string Reader
     {

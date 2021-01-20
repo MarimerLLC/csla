@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Csla.Server.Hosts.HttpChannel;
 using System.Net.Http;
+using Csla.Serialization;
 #if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -168,7 +169,7 @@ namespace Csla.Server.Hosts
 #if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
-      var serializer = new MobileFormatter();
+      var serializer = SerializationFormatterFactory.GetFormatter();
       var result = new HttpResponse();
       HttpErrorInfo errorData = null;
       if (UseTextSerialization)
@@ -203,7 +204,7 @@ namespace Csla.Server.Hosts
       var requestArray = System.Convert.FromBase64String(requestString);
       var requestBuffer = new MemoryStream(requestArray);
 
-      var serializer = new MobileFormatter();
+      var serializer = SerializationFormatterFactory.GetFormatter();
       var result = new HttpResponse();
       HttpErrorInfo errorData = null;
       try
@@ -239,7 +240,7 @@ namespace Csla.Server.Hosts
         {
           Position = 0
         };
-        var request = MobileFormatter.Deserialize(buffer.ToArray());
+        var request = SerializationFormatterFactory.GetFormatter().Deserialize(buffer.ToArray());
         result = await CallPortal(operation, request);
       }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -249,7 +250,7 @@ namespace Csla.Server.Hosts
       }
 #pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
-      var bytes = MobileFormatter.Serialize(portalResult);
+      var bytes = SerializationFormatterFactory.GetFormatter().Serialize(portalResult);
       return bytes;
     }
 #endif

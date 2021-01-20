@@ -13,7 +13,7 @@ namespace Csla.Core
 {
   /// <summary>
   /// Dictionary type that is serializable
-  /// with the MobileFormatter.
+  /// with the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable()]
   public class ContextDictionary : HybridDictionary, IMobileObject

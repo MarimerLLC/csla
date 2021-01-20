@@ -16,7 +16,7 @@ namespace Csla.Core
 {
   /// <summary>
   /// Defines a dictionary that can be serialized through
-  /// the MobileFormatter.
+  /// the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   /// <typeparam name="K">Key value: any primitive or IMobileObject type.</typeparam>
   /// <typeparam name="V">Value: any primitive or IMobileObject type.</typeparam>

@@ -1379,7 +1379,7 @@ namespace Csla
     /// Object containing the data to serialize.
     /// </param>
     /// <param name="formatter">
-    /// Reference to the current MobileFormatter.
+    /// Reference to the current SerializationFormatterFactory.GetFormatter().
     /// </param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
@@ -1400,7 +1400,7 @@ namespace Csla
     /// Object containing the serialized data.
     /// </param>
     /// <param name="formatter">
-    /// Reference to the current MobileFormatter.
+    /// Reference to the current SerializationFormatterFactory.GetFormatter().
     /// </param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)

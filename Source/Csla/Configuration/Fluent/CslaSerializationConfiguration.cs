@@ -41,7 +41,7 @@ namespace Csla.Configuration
 
     /// <summary>
     /// Sets type of the writer that is used to write data to 
-    /// serialization stream in MobileFormatter.
+    /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
     public CslaSerializationConfiguration MobileWriter(string typeName)
@@ -52,7 +52,7 @@ namespace Csla.Configuration
 
     /// <summary>
     /// Sets type of the writer that is used to read data to 
-    /// serialization stream in MobileFormatter.
+    /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
     public CslaSerializationConfiguration MobileReader(string typeName)

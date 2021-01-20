@@ -19,7 +19,7 @@ namespace Csla.Core
 {
   /// <summary>
   /// Implements a list that is serializable using
-  /// the MobileFormatter.
+  /// the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   /// <typeparam name="T">
   /// Type of object contained in the list.
@@ -70,7 +70,7 @@ namespace Csla.Core
     /// contained within the current object.
     /// </summary>
     /// <param name="info">Object containing serialized values.</param>
-    /// <param name="formatter">Reference to the current MobileFormatter.</param>
+    /// <param name="formatter">Reference to the current SerializationFormatterFactory.GetFormatter().</param>
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
@@ -113,7 +113,7 @@ namespace Csla.Core
     /// from data in the serialization stream.
     /// </summary>
     /// <param name="info">Object containing serialized values.</param>
-    /// <param name="formatter">Reference to the current MobileFormatter.</param>
+    /// <param name="formatter">Reference to the current SerializationFormatterFactory.GetFormatter().</param>
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));

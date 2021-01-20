@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Csla.Server.Hosts.HttpChannel;
 using Csla.Core;
 using System.Security.Principal;
+using Csla.Serialization;
 
 namespace Csla.Server.Hosts
 {
@@ -47,20 +48,20 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
         var prtl = new Csla.Server.DataPortal();
         var dpr = await prtl.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new HttpErrorInfo(dpr.Error);
-        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
@@ -96,20 +97,20 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
         var prtl = new Csla.Server.DataPortal();
         var dpr = await prtl.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new HttpErrorInfo(dpr.Error);
-        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
@@ -139,12 +140,12 @@ namespace Csla.Server.Hosts
         object obj = GetCriteria(request.ObjectData);
 
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
         var prtl = new Csla.Server.DataPortal();
         var dpr = await prtl.Update(obj, context, true);
@@ -152,8 +153,8 @@ namespace Csla.Server.Hosts
         if (dpr.Error != null)
           result.ErrorData = new HttpErrorInfo(dpr.Error);
 
-        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
@@ -189,20 +190,20 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
         var prtl = new Csla.Server.DataPortal();
         var dpr = await prtl.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new HttpErrorInfo(dpr.Error);
-        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
+        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
@@ -222,7 +223,7 @@ namespace Csla.Server.Hosts
     {
       object criteria = null;
       if (criteriaData != null)
-        criteria = MobileFormatter.Deserialize(criteriaData);
+        criteria = SerializationFormatterFactory.GetFormatter().Deserialize(criteriaData);
       return criteria;
     }
 

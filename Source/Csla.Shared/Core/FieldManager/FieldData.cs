@@ -210,7 +210,7 @@ namespace Csla.Core.FieldManager
 
     bool ITrackStatus.IsSelfDirty => IsDirty;
 
-    bool INotifyBusy.IsBusy => false;
+    bool INotifyBusy.IsBusy => IsBusy;
 
     [NotUndoable]
     [NonSerialized]

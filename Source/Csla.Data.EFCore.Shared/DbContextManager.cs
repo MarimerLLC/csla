@@ -29,6 +29,7 @@ namespace Csla.Data.EntityFrameworkCore
   /// dispose the object when the last consumer
   /// has called Dispose."
   /// </remarks>
+  [Obsolete("Use dependency injection instead", false)]
   public class DbContextManager<C> : IDisposable where C : DbContext
   {
     private static object _lock = new object();

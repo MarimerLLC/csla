@@ -31,6 +31,7 @@ namespace Csla.Data.SqlClient
   /// dispose the connection when the last consumer
   /// has called Dispose."
   /// </remarks>
+  [Obsolete("Use dependency injection instead", false)]
   public class ConnectionManager : IDisposable
   {
     private static readonly object _lock = new object();
@@ -184,6 +185,17 @@ namespace Csla.Data.SqlClient
     /// managing.
     /// </summary>
     public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Dispose object, dereferencing or
+    /// disposing the context it is
+    /// managing.
+    /// </summary>
+    protected virtual void Dispose(bool p)
     {
       DeRef();
     }

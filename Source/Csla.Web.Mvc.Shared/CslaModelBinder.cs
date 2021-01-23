@@ -138,22 +138,23 @@ namespace Csla.Web.Mvc
       try
       {
         var value = bindingContext.ActionContext.HttpContext.Request.Form[index].FirstOrDefault();
-        if (!string.IsNullOrWhiteSpace(value))
+        try
         {
-          try
-          {
-            if (item.Type.Equals(typeof(string)))
-              Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
-            else
-              Reflection.MethodCaller.CallPropertySetter(result, item.Name, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
-          }
-          catch
-          {
-            if (item.Type.Equals(typeof(string)))
-              LoadProperty(result, item, value);
-            else
-              LoadProperty(result, item, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
-          }
+          if (item.Type.Equals(typeof(string)))
+            Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
+          else if (value != null)
+            Reflection.MethodCaller.CallPropertySetter(result, item.Name, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
+          else
+            Reflection.MethodCaller.CallPropertySetter(result, item.Name, null);
+        }
+        catch
+        {
+          if (item.Type.Equals(typeof(string)))
+            LoadProperty(result, item, value);
+          else if (value != null)
+            LoadProperty(result, item, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
+          else
+            LoadProperty(result, item, null);
         }
       }
       catch (Exception ex)

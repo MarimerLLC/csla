@@ -66,11 +66,11 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=5.4.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.5.4.0-R20111805\lib\net461\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=5.4.1.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\Csla.5.4.1\lib\net461\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Windows, Version=5.4.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.Windows.Forms.5.4.0-R20111805\lib\net461\Csla.Windows.dll</HintPath>
+    <Reference Include="Csla.Windows, Version=5.4.1.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\Csla.Windows.Forms.5.4.1\lib\net461\Csla.Windows.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -331,7 +331,7 @@
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Csla.5.4.0-R20111805\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\Csla.5.4.1\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -191,7 +191,7 @@ namespace Csla.Reflection
     /// <param name="objectType">Type of object to create.</param>
     public static object CreateInstance(Type objectType)
     {
-      var provider = ApplicationContext.ScopedServiceProvider;
+      var provider = ApplicationContext.CurrentServiceProvider;
       if (provider is null)
         provider = ApplicationContext.DefaultServiceProvider;
       if (provider != null)
@@ -207,7 +207,7 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for constructor</param>
     public static object CreateInstance(Type objectType, params object[] parameters)
     {
-      var provider = ApplicationContext.ScopedServiceProvider;
+      var provider = ApplicationContext.CurrentServiceProvider;
       if (provider is null)
         provider = ApplicationContext.DefaultServiceProvider;
       if (provider != null)

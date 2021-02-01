@@ -856,7 +856,15 @@ namespace Csla
       internal get
       {
         var result = ContextManager.GetServiceProvider();
-        return result;       
+        if (result == null)
+        {
+          var def = DefaultServiceProvider;
+          if (def != null)
+          {
+            result = ServiceProviderScope = def.CreateScope().ServiceProvider;
+          }
+        }
+        return result;
       }
       set => ContextManager.SetServiceProvider(value);
     }
@@ -868,10 +876,7 @@ namespace Csla
     {
       get
       {
-        if (ServiceProviderScope != null)
-          return ServiceProviderScope;
-        else
-          return null;
+        return ServiceProviderScope;
       }
     }
 #endif

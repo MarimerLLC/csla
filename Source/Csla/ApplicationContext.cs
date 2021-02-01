@@ -83,7 +83,7 @@ namespace Csla
     /// the application.
     /// </summary>
     /// <remarks>
-    /// Ïf WebContextManager is not null and IsValid then WebContextManager is returned,
+    /// Ãf WebContextManager is not null and IsValid then WebContextManager is returned,
     /// else default ContextManager is returned. 
     /// This behaviour is to support background threads in web applications and return
     /// to use WebContextManager when completed. 
@@ -843,7 +843,15 @@ namespace Csla
       internal get
       {
         var result = ContextManager?.GetServiceProvider();
-        return result;       
+        if (result == null)
+        {
+          var def = DefaultServiceProvider;
+          if (def != null)
+          {
+            result = ServiceProviderScope = def.CreateScope().ServiceProvider;
+          }
+        }
+        return result;
       }
       set => ContextManager.SetServiceProvider(value);
     }
@@ -855,10 +863,7 @@ namespace Csla
     {
       get
       {
-        if (CurrentServiceProvider != null)
-          return CurrentServiceProvider;
-        else
-          return null;
+        return ServiceProviderScope;
       }
     }
 

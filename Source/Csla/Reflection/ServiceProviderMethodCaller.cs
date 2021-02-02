@@ -401,7 +401,7 @@ namespace Csla.Reflection
         plist = new object[method.Parameters.Length];
         int index = 0;
         int criteriaIndex = 0;
-        var service = ApplicationContext.ScopedServiceProvider;
+        var service = ApplicationContext.CurrentServiceProvider;
         foreach (var item in method.Parameters)
         {
           if (method.IsInjected[index])

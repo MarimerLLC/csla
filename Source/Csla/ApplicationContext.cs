@@ -843,23 +843,17 @@ namespace Csla
       internal get
       {
         var result = ContextManager?.GetServiceProvider();
-        return result;       
+        if (result == null)
+        {
+          var def = DefaultServiceProvider;
+          if (def != null)
+          {
+            result = CurrentServiceProvider = def.CreateScope().ServiceProvider;
+          }
+        }
+        return result;
       }
       set => ContextManager.SetServiceProvider(value);
-    }
-
-    /// <summary>
-    /// Gets the service provider scoped for this application context.
-    /// </summary>
-    internal static IServiceProvider ScopedServiceProvider
-    {
-      get
-      {
-        if (CurrentServiceProvider != null)
-          return CurrentServiceProvider;
-        else
-          return null;
-      }
     }
 
     #endregion

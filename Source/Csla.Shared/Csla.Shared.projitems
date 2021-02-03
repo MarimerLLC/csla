@@ -112,6 +112,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\DataPortalProxyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\HttpCompressionProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\HttpProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPortalClient\IDataPortalProxyFactory.cs" />

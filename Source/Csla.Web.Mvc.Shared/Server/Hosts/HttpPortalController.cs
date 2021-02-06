@@ -170,6 +170,19 @@ namespace Csla.Server.Hosts
     }
 
 #if NETSTANDARD2_0 || NET5_0 || NETCORE3_0 || NETCORE3_1
+
+    /// <summary>
+    /// Override to add elements to the HttpReponse
+    /// headers.
+    /// </summary>
+    /// <param name="response">HttpResponse instance</param>
+    /// <remarks>
+    /// For example, you may allow compressed payloads:
+    /// response.Headers.Add("Accept-Encoding", "gzip,deflate");
+    /// </remarks>
+    protected virtual void SetHttpResponseHeaders(Microsoft.AspNetCore.Http.HttpResponse response)
+    { }
+
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
       var serializer = new MobileFormatter();
@@ -183,7 +196,7 @@ namespace Csla.Server.Hosts
       {
         Response.Headers.Add("Content-type", "application/octet-stream");
       }
-      Response.Headers.Add("Accept-Encoding", "gzip,deflate");
+      SetHttpResponseHeaders(Response);
       try
       {
         var request = serializer.Deserialize(requestStream);

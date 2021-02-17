@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Analyzers.Tests", "Csl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Vsix", "Csla.Analyzers\Csla.Analyzers.Vsix\Csla.Analyzers.Vsix.csproj", "{50271129-612E-46FA-9F10-3F7C581ECA40}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla", "Csla\Csla.csproj", "{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,16 @@ Global
 		{50271129-612E-46FA-9F10-3F7C581ECA40}.Release|Any CPU.Build.0 = Release|Any CPU
 		{50271129-612E-46FA-9F10-3F7C581ECA40}.Testing|Any CPU.ActiveCfg = Release|Any CPU
 		{50271129-612E-46FA-9F10-3F7C581ECA40}.Testing|Any CPU.Build.0 = Release|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AC8ECF7-1C8B-4BD2-9C31-CE44EF6366DC}.Testing|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

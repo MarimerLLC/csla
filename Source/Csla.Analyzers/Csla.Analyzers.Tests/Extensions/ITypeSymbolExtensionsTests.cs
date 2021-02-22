@@ -135,6 +135,24 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
+    public async Task IsSerializableByMobileFormatterForSupportedType()
+    {
+      var code = "using System; public class A { public void Foo(Guid a) { } }";
+      var (type, compilation) = await GetParameterType(code);
+
+      Assert.IsTrue(type.IsSerializableByMobileFormatter(compilation));
+    }
+
+    [TestMethod]
+    public async Task IsSerializableByMobileFormatterForNonSupportedType()
+    {
+      var code = "using System; using System.Collections.Generic; public class A { public void Foo(Dictionary<int, string> a) { } }";
+      var (type, compilation) = await GetParameterType(code);
+
+      Assert.IsFalse(type.IsSerializableByMobileFormatter(compilation));
+    }
+
+    [TestMethod]
     public async Task IsBusinessRuleForTypeThatIsABusinessRule()
     {
       var code = 
@@ -425,6 +443,25 @@ public class A
       var (root, model) = await GetRootAndModel(code);
       return model.GetDeclaredSymbol(
         root.DescendantNodes().OfType<TypeDeclarationSyntax>().First(_ => _.Identifier.Text == name));
+    }
+
+    private async Task<(ITypeSymbol, Compilation)> GetParameterType(string code)
+    {
+      var tree = CSharpSyntaxTree.ParseText(code);
+
+      var compilation = CSharpCompilation.Create(Guid.NewGuid().ToString("N"),
+        syntaxTrees: new[] { tree },
+        references: AssemblyReferences.GetMetadataReferences(new[]
+        {
+          typeof(object).Assembly,
+          typeof(BusinessBase<>).Assembly
+        }));
+
+      var root = await tree.GetRootAsync().ConfigureAwait(false);
+      var model = compilation.GetSemanticModel(tree);
+      var methodSymbol = model.GetDeclaredSymbol(
+        root.DescendantNodes().OfType<MethodDeclarationSyntax>().First(_ => _.Identifier.Text == "Foo"));
+      return (methodSymbol.Parameters[0].Type, compilation);
     }
 
     private async Task<(SyntaxNode, SemanticModel)> GetRootAndModel(string code)

@@ -1,10 +1,15 @@
 ﻿using Microsoft.CodeAnalysis;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Csla.Analyzers.Extensions
 {
   internal static class ITypeSymbolExtensions
   {
+    private static readonly Type[] SerializableTypesByMobileFormatter =
+      new[] { typeof(TimeSpan), typeof(DateTimeOffset), typeof(byte[]), typeof(byte[][]), typeof(char[]), typeof(Guid), typeof(List<int>) };
+
     internal static bool IsBusinessRule(this ITypeSymbol @this)
     {
       return @this != null &&
@@ -68,7 +73,29 @@ namespace Csla.Analyzers.Extensions
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName;
     }
 
-    internal static bool IsPrimitive(this ITypeSymbol @this)
+    internal static bool IsSerializableByMobileFormatter(this ITypeSymbol @this, Compilation compilation)
+    {
+      if(@this.TypeKind == TypeKind.Enum)
+      {
+        return true;
+      }
+      else
+      {
+        foreach(var serializableType in SerializableTypesByMobileFormatter)
+        {
+          var type = compilation.GetTypeByMetadataName(serializableType.FullName);
+
+          if(@this.Equals(type))
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    internal static bool IsSpecialTypeSerializable(this ITypeSymbol @this)
     {
       var specialType = @this.SpecialType;
       return specialType == SpecialType.System_Boolean ||
@@ -83,7 +110,9 @@ namespace Csla.Analyzers.Extensions
         specialType == SpecialType.System_Int64 ||
         specialType == SpecialType.System_UInt64 ||
         specialType == SpecialType.System_Single ||
-        specialType == SpecialType.System_Double;
+        specialType == SpecialType.System_Double ||
+        specialType == SpecialType.System_Decimal ||
+        specialType == SpecialType.System_DateTime;
     }
 
     internal static bool IsIPropertyInfo(this ITypeSymbol @this)

@@ -13,6 +13,9 @@ namespace Csla.Analyzers.IntegrationTests
     [Fetch]
     private void Fetch(SerializedObject x) { }
 
+    [Fetch]
+    private void Fetch(Guid id) { }
+
     // This should fail because it's not serializable.
     [Fetch]
     private void Fetch(NonSerializedObject x) { }

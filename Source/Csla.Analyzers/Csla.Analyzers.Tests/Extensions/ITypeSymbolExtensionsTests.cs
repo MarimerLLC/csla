@@ -13,101 +13,115 @@ namespace Csla.Analyzers.Tests.Extensions
   public sealed class ITypeSymbolExtensionsTests
   {
     [TestMethod]
-    public async Task IsPrimitiveForNonPrimitiveType()
+    public async Task IsSpecialTypeSerializableForNonPrimitiveType()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsFalse(model.Compilation.GetTypeByMetadataName(typeof(Guid).FullName).IsPrimitive());
+      Assert.IsFalse(model.Compilation.GetTypeByMetadataName(typeof(Guid).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForBool()
+    public async Task IsSpecialTypeSerializableForBool()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(bool).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(bool).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForChar()
+    public async Task IsSpecialTypeSerializableForChar()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(char).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(char).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForString()
+    public async Task IsSpecialTypeSerializableForString()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(string).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(string).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForByte()
+    public async Task IsSpecialTypeSerializableForByte()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(byte).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(byte).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForSByte()
+    public async Task IsSpecialTypeSerializableForSByte()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(sbyte).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(sbyte).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForInt16()
+    public async Task IsSpecialTypeSerializableForInt16()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(short).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(short).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForUInt16()
+    public async Task IsSpecialTypeSerializableForUInt16()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(ushort).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(ushort).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForInt32()
+    public async Task IsSpecialTypeSerializableForInt32()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(int).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(int).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForUInt32()
+    public async Task IsSpecialTypeSerializableForUInt32()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(uint).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(uint).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForInt64()
+    public async Task IsSpecialTypeSerializableForInt64()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(long).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(long).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForUInt64()
+    public async Task IsSpecialTypeSerializableForUInt64()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(ulong).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(ulong).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForSingle()
+    public async Task IsSpecialTypeSerializableForSingle()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(float).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(float).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]
-    public async Task IsPrimitiveForDouble()
+    public async Task IsSpecialTypeSerializableForDouble()
     {
       var (_, model) = await GetRootAndModel(string.Empty);
-      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(double).FullName).IsPrimitive());
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(double).FullName).IsSpecialTypeSerializable());
+    }
+
+    [TestMethod]
+    public async Task IsSpecialTypeSerializableForDecimal()
+    {
+      var (_, model) = await GetRootAndModel(string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(decimal).FullName).IsSpecialTypeSerializable());
+    }
+
+    [TestMethod]
+    public async Task IsSpecialTypeSerializableForDateTime()
+    {
+      var (_, model) = await GetRootAndModel(string.Empty);
+      Assert.IsTrue(model.Compilation.GetTypeByMetadataName(typeof(DateTime).FullName).IsSpecialTypeSerializable());
     }
 
     [TestMethod]

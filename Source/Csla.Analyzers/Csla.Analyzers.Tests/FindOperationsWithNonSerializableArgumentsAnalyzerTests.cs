@@ -101,6 +101,23 @@ public class B : BusinessBase<B>
     }
 
     [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithMobileObjectArgument()
+    {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A> { }
+
+public class B : BusinessBase<B>
+{
+  [Fetch]
+  private void Fetch(A x) { }
+}";
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, Array.Empty<string>());
+    }
+
+    [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgumentThatIsInjectable()
     {
       var code =

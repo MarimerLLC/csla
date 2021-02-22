@@ -40,8 +40,11 @@ namespace Csla.Analyzers
       {
         foreach(var argument in methodSymbol.Parameters)
         {
-          if (!argument.Type.IsPrimitive() && !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
-            argument.Type is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable)
+          var argumentType = argument.Type;
+          if (!argumentType.IsMobileObject() && !argumentType.IsSpecialTypeSerializable() &&
+            !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
+            !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
+            argumentType is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));

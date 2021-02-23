@@ -37,6 +37,24 @@ namespace Csla.Analyzers.IntegrationTests
     public PublicConstructorWithArgumentsTest(int x) { }
   }
 
+  // This should have an error because it doesn't have a public constructor...
+  [Serializable]
+  public class InternalConstructorTest
+    : BusinessBase<PrivateConstructorTest>
+  {
+    // ... and I don't want to lose the comment
+    InternalConstructorTest() { }
+  }
+
+  // This should have an error because it doesn't have a public constructor...
+  [Serializable]
+  public class PrivateConstructorTestNoArguments
+    : BusinessBase<PrivateConstructorTest>
+  {
+    // ... and I don't want to lose the comment
+    private PrivateConstructorTestNoArguments() { }
+  }
+
   [Serializable]
   public class PublicConstructorExplicitNoArgumentTest
     : BusinessBase<PublicConstructorExplicitNoArgumentTest>

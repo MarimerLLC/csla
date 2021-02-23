@@ -33,9 +33,11 @@ namespace Csla.Analyzers.IntegrationTests
     }
   }
 
+  // Don't lose this comment.
   public class AsynchronousRuleOldSchool
     : BusinessRule
   {
+    // Or this one either.
     protected override async void Execute(IRuleContext context)
     {
       context.AddDirtyProperty(null);

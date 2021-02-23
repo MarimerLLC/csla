@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.Editing;
 
 namespace Csla.Analyzers
 {
@@ -26,16 +27,15 @@ namespace Csla.Analyzers
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
-      var fieldNode = root.FindNode(diagnostic.Location.SourceSpan) as FieldDeclarationSyntax;
+      var fieldNode = root.FindNode(diagnostic.Location.SourceSpan);
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
-      var newFieldNode = fieldNode
-        .WithModifiers(SyntaxFactory.TokenList(
-          SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-          SyntaxFactory.Token(SyntaxKind.StaticKeyword),
-          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)))
-        .WithTriviaFrom(fieldNode);
+      var newFieldNode = fieldNode;
+
+      var generator = SyntaxGenerator.GetGenerator(context.Document);
+      newFieldNode = generator.WithModifiers(newFieldNode, DeclarationModifiers.Static + DeclarationModifiers.ReadOnly);
+      newFieldNode = generator.WithAccessibility(newFieldNode, Accessibility.Public);
 
       var newRoot = root.ReplaceNode(fieldNode, newFieldNode);
 

@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.Editing;
 
 namespace Csla.Analyzers
 {
@@ -94,11 +95,12 @@ namespace Csla.Analyzers
           .Single(_ => _.Parameters.Count() == 0 &&
             !_.DeclaredAccessibility.HasFlag(Accessibility.Public));
 
-        var constructor = constructorSymbol.DeclaringSyntaxReferences[0]
-          .GetSyntax(context.CancellationToken) as ConstructorDeclarationSyntax;
+        var constructor = constructorSymbol.DeclaringSyntaxReferences[0].GetSyntax(context.CancellationToken);
 
-        var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier))
-          .WithTriviaFrom(constructor);
+        var newConstructor = constructor;
+
+        var generator = SyntaxGenerator.GetGenerator(context.Document);
+        newConstructor = generator.WithAccessibility(newConstructor, Accessibility.Public);
 
         var newRoot = root.ReplaceNode(constructor, newConstructor);
 

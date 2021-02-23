@@ -41,6 +41,14 @@ namespace Csla.Analyzers.IntegrationTests
       private set { LoadProperty(ResourceNotPublicProperty, value); }
     }
 
+    // This should fail because it isn't anything
+    PropertyInfo<int> ResourceNotAnythingProperty = RegisterProperty<int>(c => c.ResourceNotAnything);
+    public int ResourceNotAnything
+    {
+      get { return ReadProperty(ResourceNotAnythingProperty); }
+      private set { LoadProperty(ResourceNotAnythingProperty, value); }
+    }
+
     [Execute]
     protected override void DataPortal_Execute() { }
   }

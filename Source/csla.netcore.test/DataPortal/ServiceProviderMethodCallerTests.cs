@@ -248,6 +248,17 @@ namespace Csla.Test.DataPortal
       dp.Update(obj, 123);
       Assert.AreEqual(123, obj.Id);
     }
+
+    [TestMethod]
+    public void Issue2109()
+    {
+      var obj = new Issue2109();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(obj, new object[] { new string[] { "a" } });
+      Assert.IsNotNull(method, "string[]");
+      var criteria = new Issue2109.MyCriteria();
+      method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(obj, new object[] { criteria });
+      Assert.IsNotNull(method, "ICriteriaBase");
+    }
   }
 
   [Serializable]
@@ -425,5 +436,27 @@ namespace Csla.Test.DataPortal
     [Create]
     private void Create(int? c)
     { }
+  }
+
+  [Serializable]
+  public class Issue2109 : BusinessBase<Issue2109>
+  {
+    [Fetch]
+    private void Fetch(ICriteriaBase criteria)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(IEnumerable<string> criteria)
+    {
+    }
+
+    public interface ICriteriaBase
+    { }
+
+    [Serializable]
+    public class MyCriteria : ICriteriaBase
+    {
+    }
   }
 }

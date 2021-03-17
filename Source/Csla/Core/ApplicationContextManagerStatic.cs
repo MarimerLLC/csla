@@ -7,11 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
-#if !NET40 && !NET45
 using System.Security.Claims;
-#else
-using Csla.Security;
-#endif
 
 namespace Csla.Core
 {
@@ -31,11 +27,7 @@ namespace Csla.Core
     private static ContextDictionary currentLocalContext = new ContextDictionary();
     private static ContextDictionary currentClientContext = new ContextDictionary();
     private static ContextDictionary currentGlobalContext = new ContextDictionary();
-#if !NET40 && !NET45
     private static IPrincipal currentPrincipal = new ClaimsPrincipal();
-#else
-    private static IPrincipal currentPrincipal = new UnauthenticatedPrincipal();
-#endif
     private static IServiceProvider currentDefaultServiceProvider;
     private static IServiceProvider currentServiceProvider;
 

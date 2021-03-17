@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla.Blazor;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
 {
@@ -23,9 +23,9 @@ namespace Csla.Configuration
     /// <returns></returns>
     public static ICslaBuilder WithBlazorServerSupport(this ICslaBuilder builder)
     {
-      builder.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
-      builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
-      builder.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
+      builder.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      builder.Services.TryAddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+      builder.Services.TryAddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
       return builder;
     }
   }

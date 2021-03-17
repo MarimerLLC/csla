@@ -9,7 +9,7 @@ using System;
 using Csla.Blazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
 {
@@ -29,6 +29,7 @@ namespace Csla.Configuration
 
     /// <summary>
     /// Configures the application to use CSLA .NET
+    /// in a Blazor WebAssembly runtime
     /// </summary>
     /// <param name="builder">IWebAssemblyHostBuilder object</param>
     /// <param name="config">Implement to configure CSLA .NET</param>
@@ -36,11 +37,12 @@ namespace Csla.Configuration
       this WebAssemblyHostBuilder builder, Action<CslaConfiguration> config)
     {
       builder.Services.AddCsla();
-      builder.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
-      builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
-      builder.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
+      DataPortalClient.HttpProxy.UseTextSerialization = true;
+      builder.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      builder.Services.TryAddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+      builder.Services.TryAddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
       CslaConfiguration.Configure().
-        ContextManager(typeof(Csla.Blazor.ApplicationContextManager));
+        ContextManager(typeof(Csla.Core.ApplicationContextManagerStatic));
       config?.Invoke(CslaConfiguration.Configure());
       return builder;
     }

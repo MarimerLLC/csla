@@ -24,6 +24,10 @@ namespace Csla.Blazor
     /// </summary>
     string FriendlyName { get; }
     /// <summary>
+    /// Gets the property name for the property.
+    /// </summary>
+    string PropertyName { get; }
+    /// <summary>
     /// Gets the validation error messages for a
     /// property on the Model
     /// </summary>

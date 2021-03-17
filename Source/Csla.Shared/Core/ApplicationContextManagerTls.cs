@@ -8,10 +8,6 @@
 using System;
 using System.Security.Principal;
 using System.Threading;
-using Csla;
-#if !NET40 && !NET45
-using Microsoft.Extensions.DependencyInjection;
-#endif
 
 namespace Csla.Core
 {

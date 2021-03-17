@@ -7,9 +7,9 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
 {
@@ -35,7 +35,7 @@ namespace Csla.Configuration
     public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> config)
     {
       ApplicationContext.SetServiceCollection(services);
-      services.AddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
+      services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
       config?.Invoke(CslaConfiguration.Configure());
       return new CslaBuilder(services);
     }

@@ -2,6 +2,23 @@
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3, .NET 5, and WebAssembly (Blazor, Uno, etc.).
 
+# CSLA .NET version 5.4.2 release
+
+Bug fixes over the 5.4.1 release.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F22)
+
+* [#2161](https://github.com/MarimerLLC/csla/issues/2161) 🐜 Fix Blazor WebAssembly loses ApplicationContext values
+* [#2109](https://github.com/MarimerLLC/csla/issues/2109) 🐜 Fix AmbiguousMatchException DataPortal.Fetch 
+* [#2075](https://github.com/MarimerLLC/csla/issues/2075) 🐜 HttpProxy compression code doesn't work with custom HttpClient
+
+## Contributors
+
+* [@rockfordlhotka](https://github.com/rockfordlhotka)
+* [@coder-rr](https://github.com/coder-rr)
+
 # CSLA .NET version 5.4.1 release
 
 Bug fixes over the 5.4.0 release.

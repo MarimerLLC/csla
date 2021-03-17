@@ -21,10 +21,6 @@ namespace Csla.Blazor
     /// Gets the model
     /// </summary>
     protected object Model { get; }
-    /// <summary>
-    /// Gets the property name
-    /// </summary>
-    protected string PropertyName { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -84,6 +80,11 @@ namespace Csla.Blazor
         return pi.FriendlyName;
       }
     }
+
+    /// <summary>
+    /// Gets the property name for the property.
+    /// </summary>
+    public string PropertyName { get; }
 
     /// <summary>
     /// Gets the validation error messages for a

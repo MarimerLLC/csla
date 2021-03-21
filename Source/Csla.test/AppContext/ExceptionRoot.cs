@@ -83,14 +83,18 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail create");
     }
-    protected override void DataPortal_Insert()
+
+    [Insert]
+    protected void DataPortal_Insert()
     {
       //we would insert here
       Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail insert");
     }
-    protected override void DataPortal_Update()
+
+    [Update]
+    protected void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
@@ -102,14 +106,13 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail delete");
     }
-    protected override void DataPortal_DeleteSelf()
+
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail delete self");
     }
-
-
-
   }
 }

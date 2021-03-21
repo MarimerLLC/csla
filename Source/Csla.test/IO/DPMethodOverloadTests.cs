@@ -170,7 +170,8 @@ namespace Csla.Test.IO
     {
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       Csla.ApplicationContext.GlobalContext["Create"] = "No criteria";
     }

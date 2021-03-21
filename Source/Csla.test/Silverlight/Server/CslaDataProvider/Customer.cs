@@ -241,7 +241,8 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
@@ -251,12 +252,15 @@ namespace cslalighttest.CslaDataProvider
       Method = "Deleted Customer ID " + criteria.ToString();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));
     }
-    protected override void DataPortal_Update()
+
+    [Update]
+    protected void DataPortal_Update()
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));

@@ -79,7 +79,8 @@ namespace Csla.Test.Basic
             Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
         }
 
-        protected override void DataPortal_Update()
+        [Update]
+        protected void DataPortal_Update()
         {
             if (IsDeleted)
             {

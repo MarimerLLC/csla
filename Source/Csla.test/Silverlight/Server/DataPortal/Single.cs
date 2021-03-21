@@ -54,7 +54,8 @@ namespace Csla.Test.DataPortalTest
     public Single()
     { }
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       DoCreate(0);
     }
@@ -97,12 +98,14 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("Bad data");
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       DoInsertUpdate(false);
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       DoInsertUpdate(true);
     }
@@ -118,7 +121,8 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = insertOrUpdate;
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -166,12 +170,12 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(IdProperty, value); }
     }
 
+    [Create]
     private void DataPortal_Create(int id)
     {
       if (id == 9999)
         throw new Exception("bad value");
       Id = id;
-      base.DataPortal_Create();
     }
 
     private void DataPortal_Fetch()
@@ -179,27 +183,30 @@ namespace Csla.Test.DataPortalTest
       DataPortal_Fetch(0);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(int id)
     {
       if (id == 9999)
         throw new Exception("bad value");
       Id = id;
-      base.DataPortal_Create();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       if (Id == 555)
         throw new Exception("bad value");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       if (Id == 555)
         throw new Exception("bad value");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       if (Id == 555)
         throw new Exception("bad value");
@@ -223,7 +230,8 @@ namespace Csla.Test.DataPortalTest
       set { LoadProperty(ValueProperty, value); }
     }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+    protected void DataPortal_Execute()
     {
       if (Value == 555)
         throw new Exception("bad value");

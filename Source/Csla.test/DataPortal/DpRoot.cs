@@ -101,17 +101,20 @@ namespace Csla.Test.DataPortal
       MarkOld();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       //we would insert here
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       //we would update here
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       //we would delete here
     }

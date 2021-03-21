@@ -94,12 +94,14 @@ namespace Csla.Test.RollBack
             Csla.ApplicationContext.GlobalContext["Root"] = "Fetched";
         }
 
-        protected override void DataPortal_Insert()
+        [Insert]
+        protected void DataPortal_Insert()
         {
             Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
         }
 
-        protected override void DataPortal_Update()
+        [Update]
+        protected void DataPortal_Update()
         {
             //we would update here
             Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
@@ -108,7 +110,8 @@ namespace Csla.Test.RollBack
                 throw new Exception("fail Update");
         }
 
-        protected override void DataPortal_DeleteSelf()
+        [DeleteSelf]
+        protected void DataPortal_DeleteSelf()
         {
             Csla.ApplicationContext.GlobalContext["Root"] = "Deleted self";
         }
@@ -124,9 +127,5 @@ namespace Csla.Test.RollBack
             base.OnDeserialized(context);
             Csla.ApplicationContext.GlobalContext["Deserialized"] = "root Deserialized";
         }
-        
-
-
-
     }
 }

@@ -28,25 +28,28 @@ namespace Csla.Testing.Business.DataPortal
       MarkAsChild();
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       MethodCalled = "Created";
-      base.DataPortal_Create();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       MethodCalled = "Inserted";
       throw new DataException("boom");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       MethodCalled = "Updated";
       throw new DataException("boom");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       throw new DataException("boom");
     }

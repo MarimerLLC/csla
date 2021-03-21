@@ -53,7 +53,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Fetch]
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       for (int i = 0; i < 10; i++)
         Add(new ChildEntity(i, "first" + i, "last" + i));

@@ -42,17 +42,18 @@ namespace Csla.Test.DataPortal
     }
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       using (BypassPropertyChecks)
       {
         Child = EditableChild1.New();
       }
-      base.DataPortal_Create();
     }
 
+    [Insert]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
       using (BypassPropertyChecks)
       {

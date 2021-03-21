@@ -121,14 +121,16 @@ namespace Csla.Test.Windows
       base.OnPropertyChanged(propertyInfo);
     }
 
-    [RunLocal()]
-    protected override void DataPortal_Insert()
+    [RunLocal]
+    [Insert]
+    protected void DataPortal_Insert()
     {
       DoInsertUpdate();
     }
 
-    [RunLocal()]
-    protected override void DataPortal_Update()
+    [RunLocal]
+    [Update]
+    protected void DataPortal_Update()
     {
       DoInsertUpdate();
     }

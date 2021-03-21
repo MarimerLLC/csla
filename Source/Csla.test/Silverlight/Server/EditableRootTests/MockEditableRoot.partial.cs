@@ -14,8 +14,9 @@ namespace Csla.Testing.Business.EditableRootTests
 {
   partial class MockEditableRoot
   {
-    [RunLocal()]
-    protected override void DataPortal_Create()
+    [RunLocal]
+    [Create]
+    protected void DataPortal_Create()
     {
       LoadProperty<Guid>(IdProperty, MockEditableRootId);
       BusinessRules.CheckRules();
@@ -32,8 +33,9 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "fetch");
     }
 
+    [Insert]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -42,8 +44,9 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "insert");
     }
 
+    [Update]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -52,8 +55,9 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "update");
     }
 
+    [DeleteSelf]
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(ReadProperty<Guid>(IdProperty));
     }

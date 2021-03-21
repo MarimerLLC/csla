@@ -94,7 +94,8 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext.Add("clientcontext",
           ApplicationContext.ClientContext["clientcontext"]);
@@ -108,13 +109,15 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       //we would update here
       Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
     }

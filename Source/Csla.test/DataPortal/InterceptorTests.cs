@@ -181,7 +181,8 @@ namespace Csla.Test.DataPortal
       }
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
     }
 
@@ -201,7 +202,8 @@ namespace Csla.Test.DataPortal
       }
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       base.Child_Update();
     }
@@ -210,7 +212,8 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class InterceptorCommand : CommandBase<InterceptorCommand>
   {
-    protected override void DataPortal_Execute()
+    [Execute]
+    protected void DataPortal_Execute()
     {
       Csla.ApplicationContext.GlobalContext["InterceptorCommand"] = "Execute";
     }

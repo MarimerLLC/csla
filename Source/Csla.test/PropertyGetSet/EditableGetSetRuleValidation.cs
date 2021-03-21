@@ -61,7 +61,8 @@ namespace Csla.Test.PropertyGetSet
     #region Data Access
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       BusinessRules.CheckRules();
     }

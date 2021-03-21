@@ -111,7 +111,8 @@ namespace Csla.Test.GraphMerge
       DeletedList.Clear();
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       base.Child_Update();
     }

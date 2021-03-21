@@ -64,10 +64,10 @@ namespace Csla.Test.BasicModern
       Csla.DataPortal.Delete<Root>(id);
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       Children = Csla.DataPortal.CreateChild<ChildList>();
-      base.DataPortal_Create();
     }
     
     private void DataPortal_Fetch(int id)
@@ -75,17 +75,20 @@ namespace Csla.Test.BasicModern
       Children = Csla.DataPortal.CreateChild<ChildList>();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       FieldManager.UpdateChildren();
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(ReadProperty(IdProperty));
     }

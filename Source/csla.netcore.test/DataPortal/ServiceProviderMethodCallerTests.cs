@@ -266,7 +266,8 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class OldStyleCreate : BusinessBase<OldStyleCreate>
   {
-    protected override void DataPortal_Create() { }
+    [Create]
+    protected void DataPortal_Create() { }
 
     private void DataPortal_Create(int id) { }
   }

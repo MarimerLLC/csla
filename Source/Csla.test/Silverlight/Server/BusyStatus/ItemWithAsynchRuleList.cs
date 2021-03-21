@@ -28,7 +28,9 @@ namespace Csla.Testing.Business.BusyStatus
       returnValue.Add(ItemWithAsynchRule.GetOneItemForList("2"));
       return returnValue;
     }
-    protected override void DataPortal_Update()
+
+    [Update]
+    protected void DataPortal_Update()
     {
       foreach (var oneItem in this)
       {

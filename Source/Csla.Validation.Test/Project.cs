@@ -141,7 +141,8 @@ namespace Csla.Validation.Test
 
     #endregion
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       
     }

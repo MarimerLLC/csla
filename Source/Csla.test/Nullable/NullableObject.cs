@@ -97,7 +97,8 @@ namespace Csla.Test.Nullable
             Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Fetched");
         }
 
-        protected override void DataPortal_Update()
+        [Update]
+        protected void DataPortal_Update()
         {
             if (IsDeleted)
             {

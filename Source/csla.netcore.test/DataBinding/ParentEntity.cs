@@ -116,9 +116,9 @@ namespace Csla.Test.DataBinding
 
     #region "Data Access"
 
-    [RunLocal()]
+    [RunLocal]
     [Create]
-    protected override void DataPortal_Create()
+    protected void DataPortal_Create()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -140,7 +140,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Insert]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -150,7 +150,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Update]
-    protected override void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -160,7 +160,7 @@ namespace Csla.Test.DataBinding
     }
 
     [DeleteSelf]
-    protected override void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
 #pragma warning disable CS0618 // Type or member is obsolete

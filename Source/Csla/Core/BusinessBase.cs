@@ -1236,13 +1236,6 @@ namespace Csla.Core
 #region Data Access
 
     /// <summary>
-    /// Override this method to allow insertion of a business
-    /// object.
-    /// </summary>
-    protected virtual void DataPortal_Insert()
-    { }
-
-    /// <summary>
     /// Override this method to allow deferred deletion of a business object.
     /// </summary>
     protected virtual void DataPortal_DeleteSelf()

@@ -1243,13 +1243,6 @@ namespace Csla.Core
     { }
 
     /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    protected virtual void DataPortal_Update()
-    { }
-
-    /// <summary>
     /// Override this method to allow deferred deletion of a business object.
     /// </summary>
     protected virtual void DataPortal_DeleteSelf()

@@ -34,9 +34,9 @@ namespace Csla.Server
 
       DataPortalMethodInfo result = null;
 
-#if NET5_0_OR_GREATER
       var found = false;
 
+#if NET5_0_OR_GREATER
       try
       {
         found = _cache.TryGetValue(key, out var methodInfo);

@@ -8,14 +8,27 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.ALC;
+#endif
+
 using Csla.Reflection;
 
 namespace Csla.Server
 {
   internal class DataPortalTarget : LateBoundObject
   {
+#if NET5_0_OR_GREATER
+    private static readonly ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>> _methodNameList =
+      new ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>>();
+#else
     private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList =
       new ConcurrentDictionary<Type, DataPortalMethodNames>();
+#endif
+
     private readonly IDataPortalTarget _target;
     private readonly DataPortalMethodNames _methodNames;
 
@@ -23,8 +36,17 @@ namespace Csla.Server
       : base(obj)
     {
       _target = obj as IDataPortalTarget;
+#if NET5_0_OR_GREATER
+      var objectType = obj.GetType();
+
+      var methodNameListInfo = _methodNameList.GetOrAdd(objectType,
+        (t) => ALCManager.CreateCacheInstance(objectType, DataPortalMethodNames.Default, OnAssemblyLoadContextUnload));
+
+      _methodNames = methodNameListInfo.Item2;
+#else
       _methodNames = _methodNameList.GetOrAdd(obj.GetType(), 
         (t) => DataPortalMethodNames.Default);
+#endif
     }
 
     public void OnDataPortalInvoke(DataPortalEventArgs eventArgs)
@@ -316,6 +338,13 @@ namespace Csla.Server
       await InvokeOperationAsync<DeleteAttribute>(criteria, isSync).ConfigureAwait(false);
 #endif
     }
+
+#if NET5_0_OR_GREATER
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      ALCManager.RemoveFromCache(_methodNameList, context, true);
+    }
+#endif
   }
 
   internal class DataPortalMethodNames

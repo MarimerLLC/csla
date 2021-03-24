@@ -12,6 +12,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.ALC;
+#endif
+
 using Csla.Properties;
 
 namespace Csla.Reflection
@@ -24,8 +31,14 @@ namespace Csla.Reflection
   {
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    
+#if NET5_0_OR_GREATER
+    private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>> _methodCache =
+          new ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>>();
+#else
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
+#endif
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -61,9 +74,20 @@ namespace Csla.Reflection
       var typeOfOperation = typeof(T);
 
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
-      if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
+
+#if NET5_0_OR_GREATER
+      if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
+      {
+        var cachedMethod = unloadableCachedMethodInfo?.Item2;
+
         if (!throwOnError || cachedMethod != null)
           return cachedMethod;
+      }
+#else
+      if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
+        if (!throwOnError || cachedMethod != null)
+            return cachedMethod;
+#endif
 
       IEnumerable<System.Reflection.MethodInfo> candidates = null;
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
@@ -214,7 +238,12 @@ namespace Csla.Reflection
               }
               else
               {
+#if NET5_0_OR_GREATER
                 _methodCache.TryAdd(cacheKey, null);
+#else
+                _methodCache.TryAdd(cacheKey, null);
+#endif
+
                 return null;
               }
             }
@@ -236,7 +265,12 @@ namespace Csla.Reflection
             throw new TargetParameterCountException(cacheKey);
           else
           {
+#if NET5_0_OR_GREATER
             _methodCache.TryAdd(cacheKey, null);
+#else
+            _methodCache.TryAdd(cacheKey, null);
+#endif
+
             return null;
           }
         }
@@ -253,7 +287,15 @@ namespace Csla.Reflection
           throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}.", ex);
         }
       }
+
+#if NET5_0_OR_GREATER
+      var cacheInstance = ALCManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
+
+      _ = _methodCache.TryAdd(cacheKey, cacheInstance);
+#else
       _methodCache.TryAdd(cacheKey, resultingMethod);
+#endif
+
       return resultingMethod;
     }
 
@@ -462,6 +504,13 @@ namespace Csla.Reflection
         throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
     }
+
+#if NET5_0_OR_GREATER
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      ALCManager.RemoveFromCache(_methodCache, context, true);
+    }
+#endif
 
     private class ScoredMethodInfo
     {

@@ -250,6 +250,14 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindOverlappingCriteriaInt()
+    {
+      var obj = new MultipleOverlappingCriteria();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(obj, new object[] { 1 });
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
     public void Issue2109()
     {
       var obj = new Issue2109List();
@@ -443,6 +451,35 @@ namespace Csla.Test.DataPortal
     [Create]
     private void Create(int? c)
     { }
+  }
+
+  [Serializable]
+  public class MultipleOverlappingCriteria : BusinessBase<MultipleOverlappingCriteria>
+  {
+    [Fetch]
+    private void Fetch(int id)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(int id, bool? value)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(int id, int? value)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(List<int?> values)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(List<DateTime?> values)
+    {
+    }
   }
 
   [Serializable]

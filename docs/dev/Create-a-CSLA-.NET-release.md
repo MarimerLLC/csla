@@ -4,8 +4,9 @@ You must have:
 
 1. PC
  1. Windows 10
- 1. .NET Core 3 SDK
- 1. Visual Studio 2019 with the latest updates
+ 1. .NET Core 3.1 SDK
+ 2. .NET 5 SDK
+ 3. Visual Studio 2019 with the latest updates
   1. Xamarin
   1. UWP SDK
   1. Blazor templates

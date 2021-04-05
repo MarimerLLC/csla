@@ -278,9 +278,11 @@ namespace Csla.Reflection
       else
       {
         if (c.GetType() == methodParam.ParameterType)
-          return 2;
-        else if (methodParam.ParameterType.IsAssignableFrom(c.GetType()))
+          return 3;
+        else if (methodParam.ParameterType.Equals(typeof(object)))
           return 1;
+        else if (methodParam.ParameterType.IsAssignableFrom(c.GetType()))
+          return 2;
       }
 
       return 0;

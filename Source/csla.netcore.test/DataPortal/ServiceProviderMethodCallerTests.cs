@@ -252,12 +252,19 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void Issue2109()
     {
-      var obj = new Issue2109();
+      var obj = new Issue2109List();
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(obj, new object[] { new string[] { "a" } });
       Assert.IsNotNull(method, "string[]");
-      var criteria = new Issue2109.MyCriteria();
+      var criteria = new My2109Criteria();
       method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(obj, new object[] { criteria });
       Assert.IsNotNull(method, "ICriteriaBase");
+
+      obj = Csla.DataPortal.Fetch<Issue2109List>(new My2109Criteria());
+      Assert.IsNotNull(obj, "Fetch via criteria");
+      Assert.AreEqual("Csla.Test.DataPortal.My2109Criteria", obj[0].Name);
+      obj = Csla.DataPortal.Fetch<Issue2109List>(new string[] { "a" });
+      Assert.IsNotNull(obj, "Fetch via string array");
+      Assert.AreEqual("a", obj[0].Name);
     }
   }
 
@@ -439,24 +446,50 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
+  public class Issue2109List : BusinessListBase<Issue2109List, Issue2109>
+  {
+    private void DataPortal_Fetch(ICriteriaBase criteria)
+    {
+      using (LoadListMode)
+      {
+        Add(Csla.DataPortal.Fetch<Issue2109>(criteria.ToString()));
+      }
+    }
+
+    private void DataPortal_Fetch(IEnumerable<string> criteria)
+    {
+      using (LoadListMode)
+      {
+        Add(Csla.DataPortal.Fetch<Issue2109>(criteria.First().ToString()));
+      }
+    }
+  }
+
+  [Serializable]
   public class Issue2109 : BusinessBase<Issue2109>
   {
-    [Fetch]
-    private void Fetch(ICriteriaBase criteria)
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    public string Name
     {
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
-    [Fetch]
-    private void Fetch(IEnumerable<string> criteria)
+    private void DataPortal_Fetch(string name)
     {
+      using (BypassPropertyChecks)
+      {
+        Name = name;
+      }
+      MarkAsChild();
     }
+  }
 
-    public interface ICriteriaBase
-    { }
+  public interface ICriteriaBase
+  { }
 
-    [Serializable]
-    public class MyCriteria : ICriteriaBase
-    {
-    }
+  [Serializable]
+  public class My2109Criteria : ICriteriaBase
+  {
   }
 }

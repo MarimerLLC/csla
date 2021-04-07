@@ -10,6 +10,7 @@ using System.Security.Principal;
 using Csla.Core;
 using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace Csla
 {
@@ -102,6 +103,16 @@ namespace Csla
     #endregion
 
     #region User
+
+    /// <summary>
+    /// Get or set the current ClaimsPrincipal
+    /// object representing the user's identity.
+    /// </summary>
+    public static ClaimsPrincipal Principal
+    {
+      get { return (ClaimsPrincipal)ContextManager.GetUser(); }
+      set { ContextManager.SetUser(value); }
+    }
 
     /// <summary>
     /// Get or set the current <see cref="IPrincipal" />

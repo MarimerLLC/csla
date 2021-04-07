@@ -249,6 +249,13 @@ namespace Csla
       set { _index = value; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this property
+    /// references a child in the object graph.
+    /// </summary>
+    public bool IsChild { get => typeof(Core.IBusinessObject).IsAssignableFrom(Type); }
+
+
     #region IComparable Members
 
     int IComparable.CompareTo(object obj)

@@ -48,5 +48,10 @@ namespace Csla.Core
 	  /// INTERNAL CSLA .NET USE ONLY.
 	  /// </summary>
     int Index { get; set; }
+    /// <summary>
+    /// Gets a value indicating whether this property
+    /// references a child in the object graph.
+    /// </summary>
+    bool IsChild { get; }
   }
 }

@@ -11,7 +11,7 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/MarimerLLC/csla/blob/main/license.md</PackageLicenseUrl>
     <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>

@@ -9,7 +9,7 @@ namespace Csla.Analyzers.Tests
     public void Build()
     {
       var url = HelpUrlBuilder.Build("a", "b");
-      Assert.AreEqual("https://github.com/MarimerLLC/csla/tree/master/docs/analyzers/a-b.md", url);
+      Assert.AreEqual("https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/a-b.md", url);
     }
   }
 }

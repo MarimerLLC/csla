@@ -28,6 +28,11 @@ namespace Csla.Test.Basic
       Add(child);
       return child;
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 
   [Serializable]

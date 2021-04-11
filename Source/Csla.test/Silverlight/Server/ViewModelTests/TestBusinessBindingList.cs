@@ -21,6 +21,10 @@ namespace cslalighttest.ViewModelTests
     }
     #region Data Access
 
+    [Create]
+    private void DataPortal_Create()
+    { 
+    }
     private void DataPortal_Fetch()
     {
       RaiseListChangedEvents = false;

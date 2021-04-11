@@ -64,10 +64,11 @@ namespace Csla.Test.BasicModern
       Csla.DataPortal.Delete<Root>(id);
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       Children = Csla.DataPortal.CreateChild<ChildList>();
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
     
     private void DataPortal_Fetch(int id)

@@ -85,6 +85,12 @@ namespace Csla.Test.GraphMerge
       }
     }
 
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
     private void Child_Insert()
     { }
 
@@ -111,6 +117,11 @@ namespace Csla.Test.GraphMerge
       DeletedList.Clear();
     }
 
+    [Create]
+    private void Create()
+    {
+    }
+
     protected override void DataPortal_Update()
     {
       base.Child_Update();
@@ -119,7 +130,13 @@ namespace Csla.Test.GraphMerge
 
   [Serializable]
   public class FooBindingList : BusinessBindingListBase<FooBindingList, Foo>
-  { }
+  {
+    [Create]
+    private void DataPortal_Create()
+    {
+
+    }
+  }
 
   [Serializable]
   public class FooDynamicList : DynamicListBase<Foo>

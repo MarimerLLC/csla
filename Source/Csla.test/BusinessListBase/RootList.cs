@@ -17,6 +17,11 @@ namespace Csla.Test.BusinessListBase
   [Serializable]
   public class RootList : BusinessListBase<RootList, Child>
   {
+    [Create]
+    private void Create()
+    {
+    }
+
     protected override void DataPortal_Update()
     {
       Child_Update();

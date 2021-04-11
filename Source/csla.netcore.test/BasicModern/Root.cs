@@ -65,10 +65,10 @@ namespace Csla.Test.BasicModern
     }
 
     [Create]
-    protected override void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       Children = Csla.DataPortal.CreateChild<ChildList>();
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
     
     [Fetch]

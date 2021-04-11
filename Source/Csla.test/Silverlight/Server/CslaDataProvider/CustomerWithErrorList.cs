@@ -29,8 +29,9 @@ namespace cslalighttest.CslaDataProvider
         Add(CustomerWithError.GetCustomerWithError(i));
       }
     }
-
-    protected override void DataPortal_Create()
+    
+    [Create]
+		protected void DataPortal_Create()
     {
 
     }

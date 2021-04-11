@@ -51,7 +51,8 @@ namespace Csla.Test.Data
 
 
     [RunLocal]
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
 
     }

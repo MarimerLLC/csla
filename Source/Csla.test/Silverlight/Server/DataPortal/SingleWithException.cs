@@ -28,10 +28,11 @@ namespace Csla.Testing.Business.DataPortal
       MarkAsChild();
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       MethodCalled = "Created";
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     protected override void DataPortal_Insert()

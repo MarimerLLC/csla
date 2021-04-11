@@ -118,7 +118,7 @@ namespace Csla.Test.DataBinding
 
     [RunLocal()]
     [Create]
-    protected override void DataPortal_Create()
+    protected void DataPortal_Create()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();

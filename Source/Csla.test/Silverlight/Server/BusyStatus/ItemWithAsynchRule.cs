@@ -128,7 +128,8 @@ namespace Csla.Testing.Business.BusyStatus
       this.MarkOld();
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";

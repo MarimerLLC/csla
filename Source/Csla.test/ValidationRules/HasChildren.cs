@@ -13,6 +13,7 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 
 namespace Csla.Test.ValidationRules
 {
@@ -75,6 +76,12 @@ namespace Csla.Test.ValidationRules
     void HasChildren_ChildChanged(object sender, ChildChangedEventArgs e)
     {
       BusinessRules.CheckRules(ChildListProperty);
+    }
+
+    [Create]
+    private async Task Create()
+    {
+      await BusinessRules.CheckRulesAsync();
     }
   }
 }

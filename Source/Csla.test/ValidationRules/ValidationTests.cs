@@ -619,6 +619,12 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinLength(MinCheckProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(MaxCheckProperty, 5));
     }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
   }
 
   [Serializable]
@@ -637,6 +643,12 @@ namespace Csla.Test.ValidationRules
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataNullableProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxValue<int>(DataNullableProperty, 15));
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
     }
   }
 

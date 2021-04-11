@@ -129,9 +129,7 @@ namespace Csla.Test.ValidationRules
     protected void DataPortal_Create(string ruleSet)
     {
       BusinessRules.RuleSet = ruleSet;
-
-      // this wil call BusinessRules.CheckRules();
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
   }
 

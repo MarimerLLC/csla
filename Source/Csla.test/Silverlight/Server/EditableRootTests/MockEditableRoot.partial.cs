@@ -15,7 +15,8 @@ namespace Csla.Testing.Business.EditableRootTests
   partial class MockEditableRoot
   {
     [RunLocal()]
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       LoadProperty<Guid>(IdProperty, MockEditableRootId);
       BusinessRules.CheckRules();

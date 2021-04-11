@@ -123,6 +123,12 @@ namespace csla.netcore.test.DataPortal
       set { SetProperty(IdProperty, value); }
     }
 
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
     [Fetch]
     private void DataPortal_Fetch(int id)
     {

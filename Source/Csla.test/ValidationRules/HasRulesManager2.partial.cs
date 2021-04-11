@@ -14,6 +14,13 @@ namespace Csla.Test.ValidationRules
 {
   public partial class HasRulesManager2
   {
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

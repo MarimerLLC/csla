@@ -75,17 +75,22 @@ namespace Csla.Test.DataPortalTest
       { _id = id; }
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       _id = 0;
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Created");
+      BusinessRules.CheckRules();
     }
+
+    [Create]
     private void DataPortal_Create(Criteria1 criteria)
     {
       _id = 0;
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Created1");
+      BusinessRules.CheckRules();
     }
 
     private void DataPortal_Fetch(Criteria criteria)

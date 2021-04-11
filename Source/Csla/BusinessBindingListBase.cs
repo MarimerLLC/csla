@@ -959,14 +959,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Create()
-    { }
-
-    /// <summary>
     /// Override this method to allow retrieval of an existing business
     /// object based on data in the database.
     /// </summary>

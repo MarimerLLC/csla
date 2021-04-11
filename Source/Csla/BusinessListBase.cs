@@ -1045,13 +1045,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    protected virtual void DataPortal_Create()
-    { }
-
-    /// <summary>
     /// Override this method to allow update of a business
     /// object.
     /// </summary>

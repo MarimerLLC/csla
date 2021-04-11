@@ -54,13 +54,18 @@ namespace Csla.Test.DataPortalTest
     public Single()
     { }
 
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       DoCreate(0);
+      BusinessRules.CheckRules();
     }
+
+    [Create]
     protected void DataPortal_Create(int id)
     {
       DoCreate(id);
+      BusinessRules.CheckRules();
     }
 
     private void DoCreate(int id)
@@ -171,7 +176,7 @@ namespace Csla.Test.DataPortalTest
       if (id == 9999)
         throw new Exception("bad value");
       Id = id;
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     private void DataPortal_Fetch()
@@ -184,7 +189,7 @@ namespace Csla.Test.DataPortalTest
       if (id == 9999)
         throw new Exception("bad value");
       Id = id;
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     protected override void DataPortal_Insert()

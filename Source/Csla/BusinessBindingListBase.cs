@@ -959,17 +959,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to allow retrieval of an existing business
-    /// object based on data in the database.
-    /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Fetch(object criteria)
-    {
-      throw new NotSupportedException(Resources.FetchNotSupportedException);
-    }
-
-    /// <summary>
     /// Override this method to allow update of a business
     /// object.
     /// </summary>

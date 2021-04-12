@@ -13,10 +13,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Csla.Server.Hosts.HttpChannel;
 using Csla.Core;
 using System.Security.Principal;
 using Csla.Serialization;
+using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla.Server.Hosts
 {
@@ -31,10 +31,10 @@ namespace Csla.Server.Hosts
     /// </summary>
     /// <param name="request">The request parameter object.</param>
 #pragma warning disable 1998
-    public async Task<HttpResponse> Create(CriteriaRequest request)
+    public async Task<DataPortalResponse> Create(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -59,13 +59,13 @@ namespace Csla.Server.Hosts
         var dpr = await prtl.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -80,10 +80,10 @@ namespace Csla.Server.Hosts
     /// </summary>
     /// <param name="request">The request parameter object.</param>
 #pragma warning disable 1998
-    public async Task<HttpResponse> Fetch(CriteriaRequest request)
+    public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -108,13 +108,13 @@ namespace Csla.Server.Hosts
         var dpr = await prtl.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -129,10 +129,10 @@ namespace Csla.Server.Hosts
     /// </summary>
     /// <param name="request">The request parameter object.</param>
 #pragma warning disable 1998
-    public async Task<HttpResponse> Update(UpdateRequest request)
+    public async Task<DataPortalResponse> Update(UpdateRequest request)
 #pragma warning restore 1998
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -151,14 +151,14 @@ namespace Csla.Server.Hosts
         var dpr = await prtl.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
 
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -173,10 +173,10 @@ namespace Csla.Server.Hosts
     /// </summary>
     /// <param name="request">The request parameter object.</param>
 #pragma warning disable 1998
-    public async Task<HttpResponse> Delete(CriteriaRequest request)
+    public async Task<DataPortalResponse> Delete(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -201,13 +201,13 @@ namespace Csla.Server.Hosts
         var dpr = await prtl.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -227,7 +227,7 @@ namespace Csla.Server.Hosts
       return criteria;
     }
 
-    #endregion
+    #endregion Criteria
 
     #region Extention Method for Requests
 
@@ -256,11 +256,11 @@ namespace Csla.Server.Hosts
     /// comes back from the network.
     /// </summary>
     /// <param name="response">Response object.</param>
-    protected virtual HttpResponse ConvertResponse(HttpResponse response)
+    protected virtual DataPortalResponse ConvertResponse(DataPortalResponse response)
     {
       return response;
     }
 
-    #endregion
+    #endregion Extention Method for Requests
   }
 }

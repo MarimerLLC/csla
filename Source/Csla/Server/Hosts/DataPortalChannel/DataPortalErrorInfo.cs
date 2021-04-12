@@ -5,20 +5,17 @@
 // </copyright>
 // <summary>Message containing details about any</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Csla.Server.Hosts.HttpChannel
+using System;
+
+namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>
   /// Message containing details about any
   /// server-side exception.
   /// </summary>
   [Serializable]
-  public class HttpErrorInfo : ReadOnlyBase<HttpErrorInfo>
+  public class DataPortalErrorInfo : ReadOnlyBase<DataPortalErrorInfo>
   {
     /// <summary>
     /// Type name of the exception object.
@@ -75,12 +72,12 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(SourceProperty); }
       private set { LoadProperty(SourceProperty, value); }
     }
-    
+
     /// <summary>
     /// TargetSiteName of the exception object.
     /// </summary>
     public static readonly PropertyInfo<string> TargetSiteNameProperty = RegisterProperty<string>(c => c.TargetSiteName);
-    
+
     /// <summary>
     /// TargetSiteName of the exception object.
     /// </summary>
@@ -89,20 +86,20 @@ namespace Csla.Server.Hosts.HttpChannel
       get { return GetProperty(TargetSiteNameProperty); }
       private set { LoadProperty(TargetSiteNameProperty, value); }
     }
-    
-    /// <summary>
-    /// HttpErrorInfo object containing information
-    /// about any inner exception of the original
-    /// exception.
-    /// </summary>
-    public static readonly PropertyInfo<HttpErrorInfo> InnerErrorProperty = RegisterProperty<HttpErrorInfo>(c => c.InnerError);
 
     /// <summary>
     /// HttpErrorInfo object containing information
     /// about any inner exception of the original
     /// exception.
     /// </summary>
-    public HttpErrorInfo InnerError
+    public static readonly PropertyInfo<DataPortalErrorInfo> InnerErrorProperty = RegisterProperty<DataPortalErrorInfo>(c => c.InnerError);
+
+    /// <summary>
+    /// HttpErrorInfo object containing information
+    /// about any inner exception of the original
+    /// exception.
+    /// </summary>
+    public DataPortalErrorInfo InnerError
     {
       get { return GetProperty(InnerErrorProperty); }
       private set { LoadProperty(InnerErrorProperty, value); }
@@ -114,7 +111,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// <param name="ex">
     /// The Exception to encapusulate.
     /// </param>
-    public HttpErrorInfo(Exception ex)
+    public DataPortalErrorInfo(Exception ex)
     {
       this.ExceptionTypeName = ex.GetType().FullName;
       this.Message = ex.Message;
@@ -123,13 +120,13 @@ namespace Csla.Server.Hosts.HttpChannel
       this.Source = ex.Source;
 #endif
       if (ex.InnerException != null)
-        this.InnerError = new HttpErrorInfo(ex.InnerException);
+        this.InnerError = new DataPortalErrorInfo(ex.InnerException);
     }
 
     /// <summary>
     /// Creates an empty instance of the type.
     /// </summary>
-    public HttpErrorInfo()
+    public DataPortalErrorInfo()
     { }
 
 #if !NETSTANDARD2_0 && !NET5_0
@@ -138,7 +135,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// the WcfErrorInfo data.
     /// </summary>
     /// <param name="info">WcfErrorInfo object.</param>
-    public HttpErrorInfo(Csla.WcfPortal.WcfErrorInfo info)
+    public DataPortalErrorInfo(Csla.WcfPortal.WcfErrorInfo info)
     {
       var errorInfo = this;
       var source = info;
@@ -152,7 +149,7 @@ namespace Csla.Server.Hosts.HttpChannel
         source = source.InnerError;
         if (source != null)
         {
-          errorInfo.InnerError = new HttpErrorInfo();
+          errorInfo.InnerError = new DataPortalErrorInfo();
           errorInfo = errorInfo.InnerError;
         }
       }

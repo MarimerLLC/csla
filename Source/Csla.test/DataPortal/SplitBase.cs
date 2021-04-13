@@ -81,7 +81,8 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Add("Split", "Inserted");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Split", "Updated");

@@ -115,7 +115,8 @@ namespace Csla.Test.AppContext
         /// <summary>
         /// 
         /// </summary>
-        protected override void DataPortal_Update()
+        [Update]
+		protected void DataPortal_Update()
         {
             if (this.IsDeleted)
             {

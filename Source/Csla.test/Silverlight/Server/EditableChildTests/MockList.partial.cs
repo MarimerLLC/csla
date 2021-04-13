@@ -28,7 +28,8 @@ namespace Csla.Testing.Business.EditableChildTests
     }
 
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Child_Update();
     }

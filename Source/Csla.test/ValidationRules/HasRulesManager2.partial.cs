@@ -39,7 +39,8 @@ namespace Csla.Test.ValidationRules
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Fetched");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       if (IsDeleted)
       {

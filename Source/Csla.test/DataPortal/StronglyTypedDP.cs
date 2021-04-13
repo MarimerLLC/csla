@@ -90,7 +90,8 @@ namespace Csla.Test.DataPortal
       Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Inserted");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Updated");
     }

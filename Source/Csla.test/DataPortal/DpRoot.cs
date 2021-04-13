@@ -106,7 +106,8 @@ namespace Csla.Test.DataPortal
       //we would insert here
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       //we would update here
     }

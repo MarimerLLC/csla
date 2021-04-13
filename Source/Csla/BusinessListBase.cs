@@ -1045,15 +1045,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    protected virtual void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_xyz method.
     /// </summary>

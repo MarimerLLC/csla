@@ -959,16 +959,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-
-    /// <summary>
     /// Override this method to allow immediate deletion of a business object.
     /// </summary>
     /// <param name="criteria">An object containing criteria values to identify the object.</param>

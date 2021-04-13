@@ -122,7 +122,8 @@ namespace Csla.Test.GraphMerge
     {
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       base.Child_Update();
     }

@@ -34,7 +34,8 @@ namespace Csla.Testing.Business.ApplicationContext
 
     //DataPortal_Update is used to verify that the ClientContext["MSG"] 
     //changed on the server does not change the value on the client
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Client);
     }
@@ -52,7 +53,8 @@ namespace Csla.Testing.Business.ApplicationContext
 
     //DataPortal_Update is used to verify that the ClientContext["MSG"] 
     //changed on the server does not change the value on the client
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Global);
     }

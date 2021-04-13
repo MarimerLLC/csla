@@ -159,7 +159,8 @@ namespace cslalighttest.CslaDataProvider
     {
       Method = "Inserted CustomerWithError " + GetProperty<string>(NameProperty);
     }
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Method = "Updating CustomerWithError " + GetProperty<string>(NameProperty);
     }

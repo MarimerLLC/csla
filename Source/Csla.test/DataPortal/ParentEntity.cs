@@ -141,7 +141,8 @@ namespace Csla.Test.DataBinding
       Console.WriteLine("DataPortal_Insert");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
       Csla.ApplicationContext.GlobalContext.Clear();

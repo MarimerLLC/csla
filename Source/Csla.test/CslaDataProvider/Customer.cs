@@ -178,7 +178,8 @@ namespace Csla.Test.CslaDataProvider
     {
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
     }
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
     }

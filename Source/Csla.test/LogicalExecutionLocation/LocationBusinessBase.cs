@@ -64,7 +64,8 @@ namespace Csla.Test.LogicalExecutionLocation
       }
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       
     }

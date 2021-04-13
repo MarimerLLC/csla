@@ -108,7 +108,8 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       //we would update here
       Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");

@@ -41,7 +41,8 @@ namespace Csla.Testing.Business.DataPortal
       throw new DataException("boom");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       MethodCalled = "Updated";
       throw new DataException("boom");

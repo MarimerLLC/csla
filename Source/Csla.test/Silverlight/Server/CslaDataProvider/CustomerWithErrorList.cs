@@ -36,7 +36,8 @@ namespace cslalighttest.CslaDataProvider
 
     }
         
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       if (this.Items[0].ThrowException)
         throw new Exception();

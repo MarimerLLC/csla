@@ -103,7 +103,8 @@ namespace Csla.Testing.Business.EditableRootListTests
     {
       MethodCalled = "DataPortal_Insert";
     }
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       MethodCalled = "DataPortal_Update";
     }

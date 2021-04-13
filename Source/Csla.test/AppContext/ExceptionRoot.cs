@@ -90,7 +90,8 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail insert");
     }
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
       Csla.ApplicationContext.GlobalContext["create"] = "create";

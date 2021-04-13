@@ -84,7 +84,7 @@ namespace Csla.Test.BasicModern
     }
 
     [Update]
-    protected override void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
     }

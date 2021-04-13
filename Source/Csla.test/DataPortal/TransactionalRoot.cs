@@ -156,7 +156,8 @@ namespace Csla.Test.DataPortal
         }
 
         [Transactional(TransactionalTypes.TransactionScope)]
-        protected override void DataPortal_Update()
+        [Update]
+		protected void DataPortal_Update()
         {
             Console.WriteLine("DataPortal_Update");
             Csla.ApplicationContext.GlobalContext.Clear();

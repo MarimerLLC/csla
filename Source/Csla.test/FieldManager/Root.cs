@@ -52,7 +52,8 @@ namespace Csla.Test.FieldManager
       FieldManager.UpdateChildren();
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
     }

@@ -231,7 +231,8 @@ namespace Csla.Test.PropertyGetSet
         ManagedChildList.Update();
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
     }
@@ -339,7 +340,8 @@ namespace Csla.Test.PropertyGetSet
     {
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
     }

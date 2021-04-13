@@ -99,7 +99,8 @@ namespace Csla.Test.RollBack
             Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
         }
 
-        protected override void DataPortal_Update()
+        [Update]
+		protected void DataPortal_Update()
         {
             //we would update here
             Csla.ApplicationContext.GlobalContext["Root"] = "Updated";

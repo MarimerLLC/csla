@@ -143,7 +143,8 @@ namespace Csla.Testing.Business.BusyStatus
       this.MarkOld();
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

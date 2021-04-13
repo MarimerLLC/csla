@@ -107,7 +107,8 @@ namespace Csla.Test.DataPortalTest
       DoInsertUpdate(false);
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       DoInsertUpdate(true);
     }
@@ -198,7 +199,8 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("bad value");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       if (Id == 555)
         throw new Exception("bad value");

@@ -86,7 +86,7 @@ namespace Csla.Test.Basic
     }
 
     [Update]
-        protected override void DataPortal_Update()
+    protected void DataPortal_Update()
         {
             if (IsDeleted)
             {

@@ -150,7 +150,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Update]
-    protected override void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
 #pragma warning disable CS0618 // Type or member is obsolete

@@ -46,7 +46,8 @@ namespace Csla.Test.EditableRootList
       ApplicationContext.GlobalContext["DP"] = "Insert";
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       ApplicationContext.GlobalContext["DP"] = "Update";
     }

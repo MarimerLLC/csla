@@ -257,7 +257,8 @@ namespace cslalighttest.CslaDataProvider
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));
     }
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));

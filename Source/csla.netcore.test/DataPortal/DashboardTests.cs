@@ -143,7 +143,7 @@ namespace csla.netcore.test.DataPortal
     }
 
     [Update]
-    protected override void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       // TODO: update object's data
     }

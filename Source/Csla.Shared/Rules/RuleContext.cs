@@ -406,9 +406,7 @@ namespace Csla.Rules
     /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
     public void AddOutValue(Csla.Core.IPropertyInfo property, object value)
     {
-      if (!Rule.AffectedProperties.Contains(property))
-        throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
-      _outputPropertyValues.Value.Add(property, value);
+      _outputPropertyValues.Value[property] = value;
     }
 
 

@@ -12,7 +12,7 @@
     <None Include="$(MSBuildThisFileDirectory)CslaKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ALC\ALCManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Runtime\AssemblyLoadContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ApplicationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessBindingListBase.cs" />

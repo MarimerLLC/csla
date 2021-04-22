@@ -607,7 +607,8 @@ namespace Csla.Test.Serialization
       set { LoadProperty(NameProperty, value); }
     }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+		protected void DataPortal_Execute()
     {
       Name = Name + " server";     
     }

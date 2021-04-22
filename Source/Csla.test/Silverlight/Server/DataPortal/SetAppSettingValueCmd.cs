@@ -43,7 +43,8 @@ namespace  Csla.Testing.Business.DataPortal
 
     protected SetAppSettingValueCmd() { }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+		protected void DataPortal_Execute()
     {
       //As the value of the _authorizer is loaded from App.Config we consider it as variable that is
       //set once per AppDomain - it had initial value of null and once it is set to a certain type its

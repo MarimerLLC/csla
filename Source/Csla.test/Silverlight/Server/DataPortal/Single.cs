@@ -236,7 +236,8 @@ namespace Csla.Test.DataPortalTest
       set { LoadProperty(ValueProperty, value); }
     }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+		protected void DataPortal_Execute()
     {
       if (Value == 555)
         throw new Exception("bad value");

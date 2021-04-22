@@ -212,7 +212,8 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class InterceptorCommand : CommandBase<InterceptorCommand>
   {
-    protected override void DataPortal_Execute()
+    [Execute]
+		protected void DataPortal_Execute()
     {
       Csla.ApplicationContext.GlobalContext["InterceptorCommand"] = "Execute";
     }

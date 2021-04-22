@@ -44,7 +44,8 @@ namespace Csla.Testing.Business.CommandBase
     protected TestCommandBase() 
     { }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+    protected void DataPortal_Execute()
     {
       ExecutionResult = ExecutionSignal + Parameter;
     }

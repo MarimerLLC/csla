@@ -113,16 +113,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to implement any server-side code
-    /// that is to be run when the command is executed.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Execute()
-    {
-      throw new NotSupportedException(Resources.ExecuteNotSupportedException);
-    }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_xyz method.
     /// </summary>

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Properties;
@@ -238,11 +238,7 @@ namespace Csla.Reflection
               }
               else
               {
-#if NET5_0_OR_GREATER
                 _methodCache.TryAdd(cacheKey, null);
-#else
-                _methodCache.TryAdd(cacheKey, null);
-#endif
 
                 return null;
               }
@@ -265,11 +261,7 @@ namespace Csla.Reflection
             throw new TargetParameterCountException(cacheKey);
           else
           {
-#if NET5_0_OR_GREATER
             _methodCache.TryAdd(cacheKey, null);
-#else
-            _methodCache.TryAdd(cacheKey, null);
-#endif
 
             return null;
           }
@@ -289,7 +281,7 @@ namespace Csla.Reflection
       }
 
 #if NET5_0_OR_GREATER
-      var cacheInstance = ALCManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
+      var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
 
       _ = _methodCache.TryAdd(cacheKey, cacheInstance);
 #else
@@ -508,7 +500,7 @@ namespace Csla.Reflection
 #if NET5_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
-      ALCManager.RemoveFromCache(_methodCache, context, true);
+      AssemblyLoadContextManager.RemoveFromCache(_methodCache, context, true);
     }
 #endif
 

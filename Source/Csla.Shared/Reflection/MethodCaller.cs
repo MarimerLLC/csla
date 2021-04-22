@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Properties;
@@ -102,7 +102,7 @@ namespace Csla.Reflection
           {
             mh = new DynamicMethodHandle(info, parameters);
 
-            var cacheInstance = ALCManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
 
             _methodCache.Add(key, cacheInstance);
           }
@@ -151,7 +151,7 @@ namespace Csla.Reflection
 
             mh = new DynamicMethodHandle(info, parameters);
 
-            var cacheInstance = ALCManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
 
             _methodCache.Add(key, cacheInstance);
           }
@@ -330,7 +330,7 @@ namespace Csla.Reflection
 
             mh = new DynamicMemberHandle(info);
 
-            var cacheInstance = ALCManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
 
             _memberCache.Add(key, cacheInstance);
           }
@@ -383,7 +383,7 @@ namespace Csla.Reflection
 
             mh = new DynamicMemberHandle(info);
 
-            var cacheInstance = ALCManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
 
             _memberCache.Add(key, cacheInstance);
           }
@@ -1403,13 +1403,13 @@ namespace Csla.Reflection
     {
 
       lock (_methodCache)
-        ALCManager.RemoveFromCache(_methodCache, context);
+        AssemblyLoadContextManager.RemoveFromCache(_methodCache, context);
     }
 
     private static void OnMemberAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_memberCache)
-        ALCManager.RemoveFromCache(_memberCache, context);
+        AssemblyLoadContextManager.RemoveFromCache(_memberCache, context);
     }
 #endif
   }

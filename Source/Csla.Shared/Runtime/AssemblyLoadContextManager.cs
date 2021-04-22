@@ -5,13 +5,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 
-namespace Csla.ALC
+namespace Csla.Runtime
 {
     /// <summary>
     /// Provides common access to "AssemblyLoadContext" logic, which is used for "Plugins" concept of .NET 5+
     /// </summary>
-    public static class ALCManager
-    {
+    public static class AssemblyLoadContextManager
+  {
         /// <summary>
         /// Simplified helper for "unloadable" cache item creation, linked to currently active "ContextualReflectionScope".
         /// </summary>

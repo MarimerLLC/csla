@@ -12,7 +12,7 @@ using System.Linq;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Properties;
@@ -100,7 +100,7 @@ namespace Csla.Core.FieldManager
           {
             list = new PropertyInfoList();
 
-            var cacheInstance = ALCManager.CreateCacheInstance(objectType, list, OnAssemblyLoadContextUnload);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, list, OnAssemblyLoadContextUnload);
 
             cache.Add(objectType, cacheInstance);
 
@@ -204,7 +204,7 @@ namespace Csla.Core.FieldManager
       var cache = PropertyInfoCache;
 
       lock (cache)
-        ALCManager.RemoveFromCache(cache, context);
+        AssemblyLoadContextManager.RemoveFromCache(cache, context);
     }
 #endif
   }

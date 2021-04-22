@@ -14,7 +14,7 @@ using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Reflection;
@@ -46,7 +46,10 @@ namespace Csla.Rules
 
 #if NET5_0_OR_GREATER
       var rulesInfo = _perTypeRules.Value
-        .GetOrAdd(key, (t) => ALCManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload));
+        .GetOrAdd(
+          key,
+          (t) => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
+        );
 
       var result = rulesInfo.Item2;
 #else
@@ -190,7 +193,7 @@ namespace Csla.Rules
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)
-        ALCManager.RemoveFromCache(_perTypeRules.Value, context, true);
+        AssemblyLoadContextManager.RemoveFromCache(_perTypeRules.Value, context, true);
     }
 #endif
   }

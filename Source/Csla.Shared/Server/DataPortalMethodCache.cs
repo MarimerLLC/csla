@@ -11,7 +11,7 @@ using System.Collections.Generic;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Reflection;
@@ -57,7 +57,7 @@ namespace Csla.Server
           {
             result = new DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters));
 
-            var cacheInstance = ALCManager.CreateCacheInstance(objectType, result, OnAssemblyLoadContextUnload);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, result, OnAssemblyLoadContextUnload);
 
             _cache.Add(key, cacheInstance);
           }
@@ -214,7 +214,7 @@ namespace Csla.Server
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_cache)
-        ALCManager.RemoveFromCache(_cache, context);
+        AssemblyLoadContextManager.RemoveFromCache(_cache, context);
     }
 #endif
   }

@@ -14,7 +14,7 @@ using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Properties;
@@ -151,7 +151,7 @@ namespace Csla.Core.FieldManager
             // It is required for shared classes which are declared in main application but was activated first time inside active dynamic "ContextualReflectionScope".
             // In that case, cached types are referenced to main application context and should not be flushed because
             // "PropertyInfoManager" will not register their static CSLA properties second time - they have been registered already and cached in main application.
-            var cacheInstance = ALCManager.CreateCacheInstance(type, result, OnAssemblyLoadContextUnload, true);
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(type, result, OnAssemblyLoadContextUnload, true);
 
             _consolidatedLists.Add(type, cacheInstance);
           }
@@ -825,7 +825,7 @@ namespace Csla.Core.FieldManager
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_consolidatedLists)
-        ALCManager.RemoveFromCache(_consolidatedLists, context);
+        AssemblyLoadContextManager.RemoveFromCache(_consolidatedLists, context);
     }
 #endif
   }

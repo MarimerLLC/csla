@@ -13,7 +13,7 @@ using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Reflection;
@@ -51,7 +51,7 @@ namespace Csla.Core
                     {
                         var newHandlers = BuildHandlers(type);
 
-                        var cacheInstance = ALCManager.CreateCacheInstance(type, newHandlers, OnAssemblyLoadContextUnload);
+                        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(type, newHandlers, OnAssemblyLoadContextUnload);
 
                         _undoableFieldCache.Add(type, cacheInstance);
 
@@ -112,7 +112,7 @@ namespace Csla.Core
         private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
         {
             lock (_undoableFieldCache)
-                ALCManager.RemoveFromCache(_undoableFieldCache, context);
+              AssemblyLoadContextManager.RemoveFromCache(_undoableFieldCache, context);
         }
 #endif
     }

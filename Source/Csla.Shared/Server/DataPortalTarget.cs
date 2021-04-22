@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
-using Csla.ALC;
+using Csla.Runtime;
 #endif
 
 using Csla.Reflection;
@@ -39,8 +39,14 @@ namespace Csla.Server
 #if NET5_0_OR_GREATER
       var objectType = obj.GetType();
 
-      var methodNameListInfo = _methodNameList.GetOrAdd(objectType,
-        (t) => ALCManager.CreateCacheInstance(objectType, DataPortalMethodNames.Default, OnAssemblyLoadContextUnload));
+      var methodNameListInfo = _methodNameList.GetOrAdd(
+        objectType,
+        (t) => AssemblyLoadContextManager.CreateCacheInstance(
+          objectType,
+          DataPortalMethodNames.Default,
+          OnAssemblyLoadContextUnload
+        )
+      );
 
       _methodNames = methodNameListInfo.Item2;
 #else
@@ -342,7 +348,7 @@ namespace Csla.Server
 #if NET5_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
-      ALCManager.RemoveFromCache(_methodNameList, context, true);
+      AssemblyLoadContextManager.RemoveFromCache(_methodNameList, context, true);
     }
 #endif
   }

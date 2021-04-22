@@ -76,7 +76,8 @@ namespace Csla.Test.BasicModern
       Children = Csla.DataPortal.CreateChild<ChildList>();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       FieldManager.UpdateChildren();
     }

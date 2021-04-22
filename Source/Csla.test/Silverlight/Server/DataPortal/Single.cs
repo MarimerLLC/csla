@@ -102,7 +102,8 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("Bad data");
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       DoInsertUpdate(false);
     }
@@ -193,7 +194,8 @@ namespace Csla.Test.DataPortalTest
       BusinessRules.CheckRules();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       if (Id == 555)
         throw new Exception("bad value");

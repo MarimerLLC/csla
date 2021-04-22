@@ -174,10 +174,12 @@ namespace Csla.Test.CslaDataProvider
       Method = "Deleted Customer ID " + criteria.ToString();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
     }
+
     [Update]
 		protected void DataPortal_Update()
     {

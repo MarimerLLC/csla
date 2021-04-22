@@ -140,7 +140,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Insert]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();

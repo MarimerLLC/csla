@@ -27,7 +27,8 @@ namespace Csla.Testing.Business.ApplicationContext
       base.OnDeserialized(context);
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Client);
     }
@@ -46,7 +47,8 @@ namespace Csla.Testing.Business.ApplicationContext
   {
     public GlobalContextBOVerifier(bool isNew) : base(isNew) { }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Global);
     }

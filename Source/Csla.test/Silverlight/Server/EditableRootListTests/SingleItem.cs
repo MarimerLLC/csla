@@ -99,10 +99,12 @@ namespace Csla.Testing.Business.EditableRootListTests
         MethodCalled = "DataPortal_DeleteSelf";
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       MethodCalled = "DataPortal_Insert";
     }
+
     [Update]
 		protected void DataPortal_Update()
     {

@@ -74,7 +74,9 @@ namespace Csla.Test.DataPortalTest
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Fetched");
     }
-    protected override void DataPortal_Insert()
+
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Inserted");

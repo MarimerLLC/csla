@@ -35,7 +35,8 @@ namespace Csla.Testing.Business.DataPortal
       BusinessRules.CheckRules();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       MethodCalled = "Inserted";
       throw new DataException("boom");

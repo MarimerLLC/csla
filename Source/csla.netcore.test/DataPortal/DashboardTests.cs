@@ -137,7 +137,7 @@ namespace csla.netcore.test.DataPortal
     }
 
     [Insert]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
       // TODO: insert object's data
     }

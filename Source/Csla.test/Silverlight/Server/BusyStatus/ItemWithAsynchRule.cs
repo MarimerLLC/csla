@@ -136,7 +136,8 @@ namespace Csla.Testing.Business.BusyStatus
       this.MarkNew();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";

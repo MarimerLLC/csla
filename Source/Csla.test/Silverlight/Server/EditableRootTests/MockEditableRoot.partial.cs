@@ -34,7 +34,8 @@ namespace Csla.Testing.Business.EditableRootTests
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)

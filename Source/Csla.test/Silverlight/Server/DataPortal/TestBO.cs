@@ -34,14 +34,17 @@ namespace Csla.Testing.Business.DataPortal
 
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
 
     }
+
     protected void DataPortal_Delete(object criteria)
     {
 
     }
+
     protected void DataPortal_Delete(int criteria)
     {
 

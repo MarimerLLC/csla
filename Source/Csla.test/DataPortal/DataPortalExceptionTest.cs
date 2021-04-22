@@ -53,7 +53,8 @@ namespace Csla.Test.DataPortal
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       using (BypassPropertyChecks)
       {

@@ -33,7 +33,8 @@ namespace Csla.Test.Silverlight.PropertyGetSet
       base.OnDeserialized(context);
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       LoadProperty(IdProperty, 1);
     }

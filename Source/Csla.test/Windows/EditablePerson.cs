@@ -122,7 +122,8 @@ namespace Csla.Test.Windows
     }
 
     [RunLocal()]
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       DoInsertUpdate();
     }

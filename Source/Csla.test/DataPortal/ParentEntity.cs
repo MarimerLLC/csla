@@ -134,7 +134,8 @@ namespace Csla.Test.DataBinding
       BusinessRules.CheckRules();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Inserted");

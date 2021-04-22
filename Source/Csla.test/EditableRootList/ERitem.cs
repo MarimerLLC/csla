@@ -41,7 +41,8 @@ namespace Csla.Test.EditableRootList
       return new ERitem(data);
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       ApplicationContext.GlobalContext["DP"] = "Insert";
     }

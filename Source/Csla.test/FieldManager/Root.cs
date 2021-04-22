@@ -47,7 +47,8 @@ namespace Csla.Test.FieldManager
       SetProperty<Child>(ChildProperty, Child.GetChild());
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       FieldManager.UpdateChildren();
     }

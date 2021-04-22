@@ -155,10 +155,12 @@ namespace cslalighttest.CslaDataProvider
       Method = "Deleted CustomerWithError ID " + criteria.ToString();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Method = "Inserted CustomerWithError " + GetProperty<string>(NameProperty);
     }
+
     [Update]
 		protected void DataPortal_Update()
     {

@@ -103,7 +103,8 @@ namespace Csla.Test.DataPortalTest
 
     #region DataPortal_Insert / DataPortal_Update / DataPortal_Delete
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       DoInsertUpdate(false);
     }

@@ -78,7 +78,7 @@ namespace Csla.Test.BasicModern
     }
 
     [Insert]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
       FieldManager.UpdateChildren();
     }

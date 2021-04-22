@@ -38,7 +38,8 @@ namespace Csla.Test.BusinessListBase
       BusinessRules.CheckRules();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       FieldManager.UpdateChildren();
     }

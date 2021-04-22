@@ -114,7 +114,8 @@ namespace Csla.Test.DataPortal
     }
 
     [Transactional(TransactionalTypes.EnterpriseServices)]
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       SqlConnection cn = new SqlConnection(CONNECTION_STRING);
       string firstName = this.FirstName;

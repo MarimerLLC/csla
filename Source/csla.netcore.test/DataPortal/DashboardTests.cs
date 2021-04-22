@@ -149,7 +149,7 @@ namespace csla.netcore.test.DataPortal
     }
 
     [DeleteSelf]
-    protected override void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(ReadProperty(IdProperty));
     }

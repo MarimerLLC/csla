@@ -105,12 +105,14 @@ namespace Csla.Test.DataPortalTest
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Fetched1");
     }
-    private void DataPortal_Delete(Criteria criteria)
+    [Delete]
+		private void DataPortal_Delete(Criteria criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Deleted");
     }
-    private void DataPortal_Delete(Criteria1 criteria)
+    [Delete]
+		private void DataPortal_Delete(Criteria1 criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Deleted1");

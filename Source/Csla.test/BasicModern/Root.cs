@@ -88,12 +88,14 @@ namespace Csla.Test.BasicModern
       FieldManager.UpdateChildren();
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(ReadProperty(IdProperty));
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+		private void DataPortal_Delete(int id)
     {
       FieldManager.UpdateChildren();
     }

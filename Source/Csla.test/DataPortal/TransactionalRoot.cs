@@ -165,14 +165,16 @@ namespace Csla.Test.DataPortal
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Updated");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Deleted Self");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
       if (crit._id == 13)

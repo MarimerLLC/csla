@@ -49,12 +49,14 @@ namespace Csla.Testing.Business.DataPortal
       throw new DataException("boom");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       throw new DataException("boom");
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+		private void DataPortal_Delete(int id)
     {
       throw new DataException("boom");
     }

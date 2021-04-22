@@ -113,12 +113,14 @@ namespace Csla.Test.DataPortal
       //we would update here
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       //we would delete here
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
     }

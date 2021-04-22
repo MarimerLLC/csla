@@ -959,16 +959,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to allow immediate deletion of a business object.
-    /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Delete(object criteria)
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_xyz method.
     /// </summary>

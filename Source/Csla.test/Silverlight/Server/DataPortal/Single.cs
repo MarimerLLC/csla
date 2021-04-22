@@ -125,7 +125,8 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = insertOrUpdate;
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -134,7 +135,8 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = "SelfDeleted";
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+		private void DataPortal_Delete(int id)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -208,13 +210,15 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("bad value");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       if (Id == 555)
         throw new Exception("bad value");
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+		private void DataPortal_Delete(int id)
     {
       if (Id == 555)
         throw new Exception("bad value");

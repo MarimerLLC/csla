@@ -145,12 +145,14 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(NameProperty, "New CustomerWithError for Id: " + criteria.ToString());
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Method = "Deleted CustomerWithError " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(int criteria)
+    [Delete]
+		protected void DataPortal_Delete(int criteria)
     {
       Method = "Deleted CustomerWithError ID " + criteria.ToString();
     }

@@ -106,14 +106,16 @@ namespace Csla.Test.AppContext
       throw new ApplicationException("Fail update");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail delete");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";

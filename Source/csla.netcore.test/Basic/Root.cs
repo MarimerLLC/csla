@@ -123,7 +123,7 @@ namespace Csla.Test.Basic
     }
 
     [DeleteSelf]
-    protected override void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
@@ -131,7 +131,7 @@ namespace Csla.Test.Basic
     }
 
     [Delete]
-    protected void DataPortal_Delete(object criteria)
+		protected void DataPortal_Delete(object criteria)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");

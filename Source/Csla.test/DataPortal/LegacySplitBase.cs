@@ -90,12 +90,15 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Add("LegacySplit", "Updated");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "Deleted");
     }
-    protected override void DataPortal_DeleteSelf()
+
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "SelfDeleted");

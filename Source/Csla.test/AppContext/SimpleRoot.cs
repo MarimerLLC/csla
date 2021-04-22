@@ -138,7 +138,8 @@ namespace Csla.Test.AppContext
         /// 
         /// </summary>
         /// <param name="criteria"></param>
-        protected void DataPortal_Delete(object criteria)
+        [Delete]
+		protected void DataPortal_Delete(object criteria)
         {
             Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
         }

@@ -106,7 +106,8 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    private void DataPortal_Delete(object criteria)
+    [Delete]
+		private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException(Resources.DeleteNotSupportedException);
     }

@@ -56,12 +56,14 @@ namespace Csla.Testing.Business.EditableRootTests
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(ReadProperty<Guid>(IdProperty));
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
+    [Delete]
     private void DataPortal_Delete(Guid criteria)
     {
       Guid id = ReadProperty<Guid>(IdProperty);

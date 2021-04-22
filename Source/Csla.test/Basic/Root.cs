@@ -116,12 +116,14 @@ namespace Csla.Test.Basic
       Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
     }

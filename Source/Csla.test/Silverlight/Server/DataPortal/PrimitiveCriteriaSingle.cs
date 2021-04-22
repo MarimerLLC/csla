@@ -125,7 +125,8 @@ namespace Csla.Test.DataPortalTest
     #endregion
 
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+		private void DataPortal_Delete(int id)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       ApplicationContext.GlobalContext.Clear();

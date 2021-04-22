@@ -40,12 +40,14 @@ namespace Csla.Testing.Business.DataPortal
 
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
 
     }
 
-    protected void DataPortal_Delete(int criteria)
+    [Delete]
+		protected void DataPortal_Delete(int criteria)
     {
 
     }

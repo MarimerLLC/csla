@@ -152,7 +152,8 @@ namespace Csla.Validation.Test
       
     }
 
-    protected void DataPortal_Delete(Guid criteria)
+    [Delete]
+		protected void DataPortal_Delete(Guid criteria)
     {
 
     }

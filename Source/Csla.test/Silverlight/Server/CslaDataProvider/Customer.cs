@@ -242,12 +242,14 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(int criteria)
+    [Delete]
+		protected void DataPortal_Delete(int criteria)
     {
       Method = "Deleted Customer ID " + criteria.ToString();
     }

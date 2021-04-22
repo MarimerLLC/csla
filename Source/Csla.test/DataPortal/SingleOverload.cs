@@ -118,12 +118,14 @@ namespace Csla.Test.DataPortalTest
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SingleOverload", "Fetched1");
     }
-    private void DataPortal_Delete(Criteria criteria)
+    [Delete]
+		private void DataPortal_Delete(Criteria criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SingleOverload", "Deleted");
     }
-    private void DataPortal_Delete(OtherCriteria criteria)
+    [Delete]
+		private void DataPortal_Delete(OtherCriteria criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SingleOverload", "Deleted1");

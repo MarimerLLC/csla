@@ -50,7 +50,8 @@ namespace Csla.Test.BusinessListBase
       FieldManager.UpdateChildren();
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Children = Csla.DataPortal.CreateChild<ChildList>();
     }

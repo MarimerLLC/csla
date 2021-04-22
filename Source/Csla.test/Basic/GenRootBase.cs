@@ -104,7 +104,8 @@ namespace Csla.Test.Basic
             }
         }
 
-        protected void DataPortal_Delete(object Criteria)
+        [Delete]
+		protected void DataPortal_Delete(object Criteria)
         {
             //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");

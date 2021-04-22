@@ -93,7 +93,7 @@ namespace Csla.Testing.Business.EditableRootListTests
       return newItem;
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]void DataPortal_DeleteSelf()
     {
       if (!IsNew)
         MethodCalled = "DataPortal_DeleteSelf";
@@ -110,7 +110,8 @@ namespace Csla.Testing.Business.EditableRootListTests
     {
       MethodCalled = "DataPortal_Update";
     }
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       if (!IsNew)
         MethodCalled = "DataPortal_Delete";

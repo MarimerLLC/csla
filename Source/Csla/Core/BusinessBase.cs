@@ -1236,12 +1236,6 @@ namespace Csla.Core
 #region Data Access
 
     /// <summary>
-    /// Override this method to allow deferred deletion of a business object.
-    /// </summary>
-    protected virtual void DataPortal_DeleteSelf()
-    { }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_XYZ method.
     /// </summary>

@@ -122,7 +122,8 @@ namespace Csla.Test.Nullable
             }
         }
 
-        protected void DataPortal_Delete(object criteria)
+        [Delete]
+		protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Deleted");

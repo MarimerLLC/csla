@@ -110,12 +110,14 @@ namespace Csla.Test.RollBack
         throw new Exception("fail Update");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted self";
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";

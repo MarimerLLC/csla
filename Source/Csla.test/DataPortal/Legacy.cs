@@ -89,12 +89,15 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Add("Legacy", "Updated");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Deleted");
     }
-    protected override void DataPortal_DeleteSelf()
+
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "SelfDeleted");

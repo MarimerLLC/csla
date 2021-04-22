@@ -160,7 +160,7 @@ namespace Csla.Test.DataBinding
     }
 
     [DeleteSelf]
-    protected override void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
 #pragma warning disable CS0618 // Type or member is obsolete

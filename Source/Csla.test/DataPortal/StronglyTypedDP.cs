@@ -97,12 +97,14 @@ namespace Csla.Test.DataPortal
       Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Updated");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Deleted self");
     }
 
-    protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
+    [Delete]
+		protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
     {
       Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP_Criteria", criteria._ID);
     }

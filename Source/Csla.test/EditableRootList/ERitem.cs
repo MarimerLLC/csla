@@ -53,12 +53,14 @@ namespace Csla.Test.EditableRootList
       ApplicationContext.GlobalContext["DP"] = "Update";
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       ApplicationContext.GlobalContext["DP"] = "DeleteSelf";
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       ApplicationContext.GlobalContext["DP"] = "Delete";
     }

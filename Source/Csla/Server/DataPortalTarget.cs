@@ -232,21 +232,6 @@ namespace Csla.Server
   internal class DataPortalMethodNames
   {
     public static readonly DataPortalMethodNames Default = new DataPortalMethodNames();
-    public string Create { get; set; } = "DataPortal_Create";
-    public string CreateCriteria { get; set; } = "DataPortal_Create";
-    public string Fetch { get; set; } = "DataPortal_Fetch";
-    public string FetchCriteria { get; set; } = "DataPortal_Fetch";
-    public string Insert { get; set; } = "DataPortal_Insert";
-    public string Update { get; set; } = "DataPortal_Update";
-    public string Execute { get; set; } = "DataPortal_Execute";
-    public string Delete { get; set; } = "DataPortal_Delete";
-    public string DeleteSelf { get; set; } = "DataPortal_DeleteSelf";
-    public string CreateChild { get; set; } = "Child_Create";
-    public string FetchChild { get; set; } = "Child_Fetch";
-    public string UpdateChild { get; set; } = "Child_Update";
-    public string InsertChild { get; set; } = "Child_Insert";
-    public string DeleteSelfChild { get; set; } = "Child_DeleteSelf";
-    public string ExecuteChild { get; set; } = "Child_Execute";
     public string OnDataPortalInvoke { get; set; } = "DataPortal_OnDataPortalInvoke";
     public string OnDataPortalInvokeComplete { get; set; } = "DataPortal_OnDataPortalInvokeComplete";
     public string OnDataPortalException { get; set; } = "DataPortal_OnDataPortalException";

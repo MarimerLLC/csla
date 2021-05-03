@@ -1,0 +1,76 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/Source"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: EntityFramework
+    versions:
+    - "< 6, >= 5.a"
+  - dependency-name: Microsoft.CodeAnalysis.CSharp.Workspaces
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: Microsoft.EntityFrameworkCore
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - ">= 10.a, < 11"
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - ">= 11.a, < 12"
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - ">= 12.a, < 13"
+  - dependency-name: NuGet.CommandLine
+    versions:
+    - "< 5, >= 4.a"
+  - dependency-name: Microsoft.EntityFrameworkCore
+    versions:
+    - 5.0.3
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: Microsoft.AspNetCore.Components.Web
+    versions:
+    - 5.0.3
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: Microsoft.AspNetCore.Components
+    versions:
+    - 5.0.3
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: Microsoft.Extensions.Logging.EventSource
+    versions:
+    - 5.0.1
+  - dependency-name: Microsoft.Extensions.Primitives
+    versions:
+    - 5.0.1
+  - dependency-name: Microsoft.AspNetCore.Components.WebAssembly
+    versions:
+    - 5.0.3
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: Microsoft.AspNetCore.Components.Authorization
+    versions:
+    - 5.0.3
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - 13.0.1
+  - dependency-name: MSTest.TestAdapter
+    versions:
+    - 2.2.2
+  - dependency-name: System.Text.Encodings.Web
+    versions:
+    - 5.0.1
+  - dependency-name: Grpc.Tools
+    versions:
+    - 2.36.0
+  - dependency-name: System.Diagnostics.EventLog
+    versions:
+    - 5.0.1

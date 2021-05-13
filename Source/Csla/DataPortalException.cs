@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Permissions;
+using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla
 {
-
   /// <summary>
   /// This exception is returned for any errors occurring
   /// during the server-side DataPortal invocation.
@@ -69,7 +69,7 @@ namespace Csla
     public DataPortalException(WcfPortal.WcfErrorInfo info)
       : base(info.Message)
     {
-      this.ErrorInfo = new Csla.Server.Hosts.HttpChannel.HttpErrorInfo(info);
+      this.ErrorInfo = new Csla.Server.Hosts.DataPortalChannel.DataPortalErrorInfo(info);
     }
 #endif
 
@@ -77,7 +77,7 @@ namespace Csla
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="info">Info about the exception.</param>
-    public DataPortalException(Csla.Server.Hosts.HttpChannel.HttpErrorInfo info)
+    public DataPortalException(DataPortalErrorInfo info)
       : base(info.Message)
     {
       this.ErrorInfo = info;
@@ -114,13 +114,13 @@ namespace Csla
     /// but this property returns information
     /// about the exception.
     /// </summary>
-    public Csla.Server.Hosts.HttpChannel.HttpErrorInfo ErrorInfo { get; private set; }
+    public DataPortalErrorInfo ErrorInfo { get; private set; }
 
     /// <summary>
     /// Gets the original exception error info
     /// that caused this exception.
     /// </summary>
-    public Server.Hosts.HttpChannel.HttpErrorInfo BusinessErrorInfo
+    public DataPortalErrorInfo BusinessErrorInfo
     {
       get
       {

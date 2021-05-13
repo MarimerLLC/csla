@@ -15,7 +15,7 @@ using Csla.Core;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-using Csla.Server.Hosts.HttpChannel;
+using Csla.Server.Hosts.DataPortalChannel;
 using Google.Protobuf;
 using Grpc.Core;
 
@@ -49,7 +49,7 @@ namespace Csla.Channels.Grpc
 
     /// <summary>
     /// Gets a dictionary containing the URLs for each
-    /// data portal route, where each key is the 
+    /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
     protected static Dictionary<string, string> RoutingTagUrls = new Dictionary<string, string>();
@@ -82,8 +82,8 @@ namespace Csla.Channels.Grpc
 
     private async Task<ResponseMessage> InvokePortal(string operation, ByteString requestData)
     {
-      var result = new HttpResponse();
-      HttpErrorInfo errorData = null;
+      var result = new DataPortalResponse();
+      DataPortalErrorInfo errorData = null;
       try
       {
         var request = SerializationFormatterFactory.GetFormatter().Deserialize(requestData.ToByteArray());
@@ -91,30 +91,34 @@ namespace Csla.Channels.Grpc
       }
       catch (Exception ex)
       {
-        errorData = new HttpErrorInfo(ex);
+        errorData = new DataPortalErrorInfo(ex);
       }
-      var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       var buffer = SerializationFormatterFactory.GetFormatter().Serialize(portalResult);
       return new ResponseMessage { Body = ByteString.CopyFrom(buffer) };
     }
 
-    private async Task<HttpResponse> CallPortal(string operation, object request)
+    private async Task<DataPortalResponse> CallPortal(string operation, object request)
     {
-      HttpResponse result;
+      DataPortalResponse result;
       switch (operation)
       {
         case "create":
           result = await Create((CriteriaRequest)request).ConfigureAwait(false);
           break;
+
         case "fetch":
           result = await Fetch((CriteriaRequest)request).ConfigureAwait(false);
           break;
+
         case "update":
           result = await Update((UpdateRequest)request).ConfigureAwait(false);
           break;
+
         case "delete":
           result = await Delete((CriteriaRequest)request).ConfigureAwait(false);
           break;
+
         default:
           throw new InvalidOperationException(operation);
       }
@@ -125,9 +129,9 @@ namespace Csla.Channels.Grpc
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Create(CriteriaRequest request)
+    public async Task<DataPortalResponse> Create(CriteriaRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -152,13 +156,13 @@ namespace Csla.Channels.Grpc
         var dpr = await prtl.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -172,9 +176,9 @@ namespace Csla.Channels.Grpc
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Fetch(CriteriaRequest request)
+    public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -199,13 +203,13 @@ namespace Csla.Channels.Grpc
         var dpr = await prtl.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -219,9 +223,9 @@ namespace Csla.Channels.Grpc
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Update(UpdateRequest request)
+    public async Task<DataPortalResponse> Update(UpdateRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -240,14 +244,14 @@ namespace Csla.Channels.Grpc
         var dpr = await prtl.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
 
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -261,9 +265,9 @@ namespace Csla.Channels.Grpc
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Delete(CriteriaRequest request)
+    public async Task<DataPortalResponse> Delete(CriteriaRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -288,13 +292,13 @@ namespace Csla.Channels.Grpc
         var dpr = await prtl.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -314,7 +318,7 @@ namespace Csla.Channels.Grpc
       return criteria;
     }
 
-    #endregion
+    #endregion Criteria
 
     #region Extention Method for Requests
 
@@ -343,11 +347,11 @@ namespace Csla.Channels.Grpc
     /// comes back from the network.
     /// </summary>
     /// <param name="response">Response object.</param>
-    protected virtual HttpResponse ConvertResponse(HttpResponse response)
+    protected virtual DataPortalResponse ConvertResponse(DataPortalResponse response)
     {
       return response;
     }
 
-    #endregion
+    #endregion Extention Method for Requests
   }
 }

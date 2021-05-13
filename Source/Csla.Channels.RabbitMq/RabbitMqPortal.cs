@@ -12,7 +12,7 @@ using Csla.Core;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-using Csla.Server.Hosts.HttpChannel;
+using Csla.Server.Hosts.DataPortalChannel;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -110,7 +110,7 @@ namespace Csla.Channels.RabbitMq
 
     private async void InvokePortal(BasicDeliverEventArgs ea, byte[] requestData)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         var request = SerializationFormatterFactory.GetFormatter().Deserialize(requestData);
@@ -118,7 +118,7 @@ namespace Csla.Channels.RabbitMq
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
       }
 
       try
@@ -130,7 +130,7 @@ namespace Csla.Channels.RabbitMq
       {
         try
         {
-          result = new HttpResponse { ErrorData = new HttpErrorInfo(ex) };
+          result = new DataPortalResponse { ErrorData = new DataPortalErrorInfo(ex) };
           var response = SerializationFormatterFactory.GetFormatter().Serialize(result);
           SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
         }
@@ -153,9 +153,9 @@ namespace Csla.Channels.RabbitMq
         body: request);
     }
 
-    private async Task<HttpResponse> CallPortal(string operation, object request)
+    private async Task<DataPortalResponse> CallPortal(string operation, object request)
     {
-      HttpResponse result;
+      DataPortalResponse result;
       switch (operation)
       {
         case "create":
@@ -184,9 +184,9 @@ namespace Csla.Channels.RabbitMq
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Create(CriteriaRequest request)
+    public async Task<DataPortalResponse> Create(CriteriaRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -211,13 +211,13 @@ namespace Csla.Channels.RabbitMq
         var dpr = await prtl.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -231,9 +231,9 @@ namespace Csla.Channels.RabbitMq
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Fetch(CriteriaRequest request)
+    public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -258,13 +258,13 @@ namespace Csla.Channels.RabbitMq
         var dpr = await prtl.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -278,9 +278,9 @@ namespace Csla.Channels.RabbitMq
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Update(UpdateRequest request)
+    public async Task<DataPortalResponse> Update(UpdateRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -299,14 +299,14 @@ namespace Csla.Channels.RabbitMq
         var dpr = await prtl.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
 
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -320,9 +320,9 @@ namespace Csla.Channels.RabbitMq
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<HttpResponse> Delete(CriteriaRequest request)
+    public async Task<DataPortalResponse> Delete(CriteriaRequest request)
     {
-      var result = new HttpResponse();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -347,13 +347,13 @@ namespace Csla.Channels.RabbitMq
         var dpr = await prtl.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new HttpErrorInfo(dpr.Error);
+          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
         result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new HttpErrorInfo(ex);
+        result.ErrorData = new DataPortalErrorInfo(ex);
         throw;
       }
       finally
@@ -402,7 +402,7 @@ namespace Csla.Channels.RabbitMq
     /// comes back from the network.
     /// </summary>
     /// <param name="response">Response object.</param>
-    protected virtual HttpResponse ConvertResponse(HttpResponse response)
+    protected virtual DataPortalResponse ConvertResponse(DataPortalResponse response)
     {
       return response;
     }

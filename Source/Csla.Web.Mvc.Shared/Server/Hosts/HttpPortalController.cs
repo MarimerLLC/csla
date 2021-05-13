@@ -9,13 +9,16 @@ using Csla.Serialization.Mobile;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Csla.Server.Hosts.HttpChannel;
 using System.Net.Http;
 using Csla.Serialization;
+using Csla.Server.Hosts.DataPortalChannel;
+
 #if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+
 #else
 using System.Web.Http;
 #endif
@@ -27,6 +30,7 @@ namespace Csla.Server.Hosts
   /// through HTTP request/response.
   /// </summary>
 #if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+
   public class HttpPortalController : Controller
   {
     /// <summary>
@@ -42,7 +46,7 @@ namespace Csla.Server.Hosts
     /// <param name="operation">Name of the data portal operation to perform.</param>
     /// <returns>Results from the server-side data portal.</returns>
     [HttpPost]
-    public virtual async Task PostAsync([FromQuery]string operation)
+    public virtual async Task PostAsync([FromQuery] string operation)
     {
       if (operation.Contains("/"))
       {
@@ -63,7 +67,7 @@ namespace Csla.Server.Hosts
 
     /// <summary>
     /// Gets a dictionary containing the URLs for each
-    /// data portal route, where each key is the 
+    /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
     protected static Dictionary<string, string> RoutingTagUrls { get => routingTagUrls; set => routingTagUrls = value; }
@@ -115,6 +119,7 @@ namespace Csla.Server.Hosts
         await PostAsync(operation).ConfigureAwait(false);
       }
     }
+
 #elif MVC4
   public class HttpPortalController : Controller
   {
@@ -150,6 +155,7 @@ namespace Csla.Server.Hosts
 #endif
 
     private HttpPortal _portal;
+
     /// <summary>
     /// Gets or sets the HttpPortal implementation
     /// used to coordinate the data portal
@@ -167,6 +173,7 @@ namespace Csla.Server.Hosts
     }
 
 #if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+
     /// <summary>
     /// Override to add elements to the HttpReponse
     /// headers.
@@ -182,8 +189,8 @@ namespace Csla.Server.Hosts
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
       var serializer = SerializationFormatterFactory.GetFormatter();
-      var result = new HttpResponse();
-      HttpErrorInfo errorData = null;
+      var result = new DataPortalResponse();
+      DataPortalErrorInfo errorData = null;
       if (UseTextSerialization)
       {
         Response.Headers.Add("Content-type", "application/base64,text/plain");
@@ -201,10 +208,10 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = new HttpErrorInfo(ex);
+        errorData = new DataPortalErrorInfo(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       serializer.Serialize(responseStream, portalResult);
     }
 
@@ -217,8 +224,8 @@ namespace Csla.Server.Hosts
       var requestBuffer = new MemoryStream(requestArray);
 
       var serializer = SerializationFormatterFactory.GetFormatter();
-      var result = new HttpResponse();
-      HttpErrorInfo errorData = null;
+      var result = new DataPortalResponse();
+      DataPortalErrorInfo errorData = null;
       try
       {
         var request = serializer.Deserialize(requestBuffer);
@@ -227,10 +234,10 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = new HttpErrorInfo(ex);
+        errorData = new DataPortalErrorInfo(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
 
       var responseBuffer = new MemoryStream();
       serializer.Serialize(responseBuffer, portalResult);
@@ -241,11 +248,12 @@ namespace Csla.Server.Hosts
       };
       await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
     }
+
 #else
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
-      var result = new HttpResponse();
-      HttpErrorInfo errorData = null;
+      var result = new DataPortalResponse();
+      DataPortalErrorInfo errorData = null;
       try
       {
         var buffer = new MemoryStream(data)
@@ -258,19 +266,19 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = new HttpErrorInfo(ex);
+        errorData = new DataPortalErrorInfo(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       var bytes = SerializationFormatterFactory.GetFormatter().Serialize(portalResult);
       return bytes;
     }
 #endif
 
-    private async Task<HttpResponse> CallPortal(string operation, object request)
+    private async Task<DataPortalResponse> CallPortal(string operation, object request)
     {
       var portal = Portal;
-      HttpResponse result = operation switch
+      DataPortalResponse result = operation switch
       {
         "create" => await portal.Create((CriteriaRequest)request).ConfigureAwait(false),
         "fetch" => await portal.Fetch((CriteriaRequest)request).ConfigureAwait(false),

@@ -1,57 +1,41 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CriteriaRequest.cs" company="Marimer LLC">
+// <copyright file="UpdateRequest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Message sent to the server</summary>
+// <summary>Request message for updating</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Csla;
 
-namespace Csla.Server.Hosts.HttpChannel
+using System;
+
+namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>
-  /// Message sent to the WCF data portal.
+  /// Request message for updating
+  /// a business object.
   /// </summary>
   [Serializable]
-  public class CriteriaRequest : ReadOnlyBase<CriteriaRequest>
+  public class UpdateRequest : ReadOnlyBase<UpdateRequest>
   {
     /// <summary>
-    /// Assembly qualified name of the 
-    /// business object type to create.
+    /// Serialized object data.
     /// </summary>
-    public static readonly PropertyInfo<string> TypeNameProperty = RegisterProperty<string>(c => c.TypeName);
-    /// <summary>
-    /// Assembly qualified name of the 
-    /// business object type to create.
-    /// </summary>
-    public string TypeName
-    {
-      get { return GetProperty(TypeNameProperty); }
-      set { LoadProperty(TypeNameProperty, value); }
-    }
+    public static readonly PropertyInfo<byte[]> ObjectDataProperty = RegisterProperty<byte[]>(c => c.ObjectData);
 
     /// <summary>
-    /// Serialized data for the criteria object.
+    /// Serialized object data.
     /// </summary>
-    public static readonly PropertyInfo<byte[]> CriteriaDataProperty = RegisterProperty<byte[]>(c => c.CriteriaData);
-    /// <summary>
-    /// Serialized data for the criteria object.
-    /// </summary>
-    public byte[] CriteriaData
+    public byte[] ObjectData
     {
-      get { return GetProperty(CriteriaDataProperty); }
-      set { LoadProperty(CriteriaDataProperty, value); }
+      get { return GetProperty(ObjectDataProperty); }
+      set { LoadProperty(ObjectDataProperty, value); }
     }
 
     /// <summary>
     /// Serialized data for the principal object.
     /// </summary>
     public static readonly PropertyInfo<byte[]> PrincipalProperty = RegisterProperty<byte[]>(c => c.Principal);
+
     /// <summary>
     /// Serialized data for the principal object.
     /// </summary>
@@ -65,6 +49,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// Serialized data for the global context object.
     /// </summary>
     public static readonly PropertyInfo<byte[]> GlobalContextProperty = RegisterProperty<byte[]>(c => c.GlobalContext);
+
     /// <summary>
     /// Serialized data for the global context object.
     /// </summary>
@@ -78,6 +63,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// Serialized data for the client context object.
     /// </summary>
     public static readonly PropertyInfo<byte[]> ClientContextProperty = RegisterProperty<byte[]>(c => c.ClientContext);
+
     /// <summary>
     /// Serialized data for the client context object.
     /// </summary>
@@ -92,6 +78,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// </summary>
     /// <value>The client culture.</value>
     public static readonly PropertyInfo<string> ClientCultureProperty = RegisterProperty<string>(c => c.ClientCulture);
+
     /// <summary>
     /// Serialized client culture.
     /// </summary>
@@ -107,6 +94,7 @@ namespace Csla.Server.Hosts.HttpChannel
     /// </summary>
     /// <value>The client UI culture.</value>
     public static readonly PropertyInfo<string> ClientUICultureProperty = RegisterProperty<string>(c => c.ClientUICulture);
+
     /// <summary>
     /// Serialized client UI culture.
     /// </summary>

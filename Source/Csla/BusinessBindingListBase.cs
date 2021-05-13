@@ -959,45 +959,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Create()
-    { }
-
-    /// <summary>
-    /// Override this method to allow retrieval of an existing business
-    /// object based on data in the database.
-    /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Fetch(object criteria)
-    {
-      throw new NotSupportedException(Resources.FetchNotSupportedException);
-    }
-
-    /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-
-    /// <summary>
-    /// Override this method to allow immediate deletion of a business object.
-    /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Delete(object criteria)
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_xyz method.
     /// </summary>

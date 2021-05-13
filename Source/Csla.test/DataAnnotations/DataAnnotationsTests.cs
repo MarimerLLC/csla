@@ -116,6 +116,12 @@ namespace Csla.Test.DataAnnotations
       set { SetProperty(NameProperty, value); }
     }
 
+    [Create]
+    private async Task Create()
+    {
+      await BusinessRules.CheckRulesAsync();
+    }
+
     public string[] GetRules()
     {
       return BusinessRules.GetRuleDescriptions();
@@ -135,6 +141,12 @@ namespace Csla.Test.DataAnnotations
       set { SetProperty(NameProperty, value); }
     }
 
+    [Create]
+    private async Task Create()
+    {
+      await BusinessRules.CheckRulesAsync();
+    }
+
     public string[] GetRules()
     {
       return BusinessRules.GetRuleDescriptions();
@@ -150,6 +162,12 @@ namespace Csla.Test.DataAnnotations
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
+    }
+
+    [Create]
+    private async Task Create()
+    {
+      await BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()

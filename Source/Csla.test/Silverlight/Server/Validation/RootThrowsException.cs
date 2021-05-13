@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
@@ -20,6 +21,12 @@ namespace Csla.Test.ValidationRules
     {
       System.Threading.Interlocked.Increment(ref _counter);
       throw new ArgumentException();
+    }
+
+    [Create]
+    private async Task DataPortal_Create()
+    {
+      await BusinessRules.CheckRulesAsync();
     }
   }
 }

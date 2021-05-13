@@ -48,7 +48,8 @@ namespace Csla.Testing.Business.DataPortal
 
     public AsyncPortalWithCulture() { }
 
-    protected override void DataPortal_Execute()
+    [Execute]
+		protected void DataPortal_Execute()
     {    
       CurrentCulture = Thread.CurrentThread.CurrentCulture.Name;
       CurrentUICulture = Thread.CurrentThread.CurrentUICulture.Name;

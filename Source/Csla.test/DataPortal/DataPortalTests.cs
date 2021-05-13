@@ -405,9 +405,10 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class EncapsulatedBusy : BusinessBase<EncapsulatedBusy>
   {
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
       MarkBusy();
     }
 

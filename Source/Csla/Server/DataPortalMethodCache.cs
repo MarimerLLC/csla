@@ -3,7 +3,6 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Gets a reference to the DataPortal_Create method for</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;

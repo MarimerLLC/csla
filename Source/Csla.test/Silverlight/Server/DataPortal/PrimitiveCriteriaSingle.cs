@@ -103,7 +103,8 @@ namespace Csla.Test.DataPortalTest
 
     #region DataPortal_Insert / DataPortal_Update / DataPortal_Delete
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       DoInsertUpdate(false);
     }
@@ -124,7 +125,8 @@ namespace Csla.Test.DataPortalTest
     #endregion
 
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+		private void DataPortal_Delete(int id)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
       ApplicationContext.GlobalContext.Clear();

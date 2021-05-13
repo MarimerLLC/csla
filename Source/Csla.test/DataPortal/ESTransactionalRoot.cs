@@ -96,7 +96,8 @@ namespace Csla.Test.DataPortal
     #region "Data Access"
 
     [RunLocal()]
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Created");
@@ -113,7 +114,8 @@ namespace Csla.Test.DataPortal
     }
 
     [Transactional(TransactionalTypes.EnterpriseServices)]
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       SqlConnection cn = new SqlConnection(CONNECTION_STRING);
       string firstName = this.FirstName;
@@ -148,21 +150,24 @@ namespace Csla.Test.DataPortal
     }
 
     [Transactional(TransactionalTypes.EnterpriseServices)]
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Updated");
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Deleted Self");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");
       Csla.ApplicationContext.GlobalContext.Clear();

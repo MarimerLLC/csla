@@ -1236,41 +1236,6 @@ namespace Csla.Core
 #region Data Access
 
     /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    /// <remarks>
-    /// Normally you will overload this method to accept a strongly-typed
-    /// criteria parameter, rather than overriding the method with a
-    /// loosely-typed criteria parameter.
-    /// </remarks>
-    [RunLocal]
-    protected virtual void DataPortal_Create()
-    {
-      BusinessRules.CheckRules();
-    }
-
-    /// <summary>
-    /// Override this method to allow insertion of a business
-    /// object.
-    /// </summary>
-    protected virtual void DataPortal_Insert()
-    { }
-
-    /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    protected virtual void DataPortal_Update()
-    { }
-
-    /// <summary>
-    /// Override this method to allow deferred deletion of a business object.
-    /// </summary>
-    protected virtual void DataPortal_DeleteSelf()
-    { }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_XYZ method.
     /// </summary>

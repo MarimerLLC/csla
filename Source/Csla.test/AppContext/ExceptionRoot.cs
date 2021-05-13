@@ -33,20 +33,24 @@ namespace Csla.Test.AppContext
       public const string DefaultData = "<new>";
 
       private string _Data;
+
       public string Data
       {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
         get { return this._Data; }
       }
+
       public Criteria()
       {
         this._Data = Criteria.DefaultData;
       }
+
       public Criteria(string Data)
       {
         this._Data = Data;
       }
     }
+
     public static ExceptionRoot NewExceptionRoot()
     {
       Criteria c = new Criteria();
@@ -74,6 +78,7 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail fetch");
     }
+
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = criteria as Criteria;
@@ -83,33 +88,38 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail create");
     }
-    protected override void DataPortal_Insert()
+
+    [Insert]
+    protected void DataPortal_Insert()
     {
       //we would insert here
       Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail insert");
     }
-    protected override void DataPortal_Update()
+
+    [Update]
+		protected void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail update");
     }
-    protected void DataPortal_Delete(object criteria)
+
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail delete");
     }
-    protected override void DataPortal_DeleteSelf()
+
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail delete self");
     }
-
-
-
   }
 }

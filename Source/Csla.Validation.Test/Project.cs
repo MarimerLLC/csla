@@ -141,7 +141,8 @@ namespace Csla.Validation.Test
 
     #endregion
 
-    protected override void DataPortal_Create()
+    [Create]
+    protected void DataPortal_Create()
     {
       
     }
@@ -151,7 +152,8 @@ namespace Csla.Validation.Test
       
     }
 
-    protected void DataPortal_Delete(Guid criteria)
+    [Delete]
+		protected void DataPortal_Delete(Guid criteria)
     {
 
     }

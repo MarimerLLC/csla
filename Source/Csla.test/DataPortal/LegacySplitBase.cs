@@ -61,7 +61,8 @@ namespace Csla.Test.DataPortalTest
       { _id = id; }
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       _id = 0;
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -74,24 +75,30 @@ namespace Csla.Test.DataPortalTest
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "Fetched");
     }
-    protected override void DataPortal_Insert()
+
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "Inserted");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "Updated");
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "Deleted");
     }
-    protected override void DataPortal_DeleteSelf()
+
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("LegacySplit", "SelfDeleted");

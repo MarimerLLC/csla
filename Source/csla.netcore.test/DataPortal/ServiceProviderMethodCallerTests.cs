@@ -279,20 +279,37 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class OldStyleNoOverride : BusinessBase<OldStyleNoOverride>
   {
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
   }
 
   [Serializable]
   public class OldStyleCreate : BusinessBase<OldStyleCreate>
   {
-    protected override void DataPortal_Create() { }
+    [Create]
+    protected void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
 
-    private void DataPortal_Create(int id) { }
+    [Create]
+    private void DataPortal_Create(int id)
+    {
+      BusinessRules.CheckRules();
+    }
   }
 
   [Serializable]
   public class OldStyleCriteria : BusinessBase<OldStyleCriteria>
   {
-    private void DataPortal_Create(int id) { }
+    [Create]
+    private void DataPortal_Create(int id)
+    {
+      BusinessRules.CheckRules();
+    }
   }
 
   [Serializable]

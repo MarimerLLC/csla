@@ -97,7 +97,8 @@ namespace Csla.Test.Nullable
             Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Fetched");
         }
 
-        protected override void DataPortal_Update()
+        [Update]
+		protected void DataPortal_Update()
         {
             if (IsDeleted)
             {
@@ -121,7 +122,8 @@ namespace Csla.Test.Nullable
             }
         }
 
-        protected void DataPortal_Delete(object criteria)
+        [Delete]
+		protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Deleted");

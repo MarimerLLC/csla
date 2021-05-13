@@ -75,17 +75,22 @@ namespace Csla.Test.DataPortalTest
       { _id = id; }
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       _id = 0;
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Created");
+      BusinessRules.CheckRules();
     }
+
+    [Create]
     private void DataPortal_Create(Criteria1 criteria)
     {
       _id = 0;
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Created1");
+      BusinessRules.CheckRules();
     }
 
     private void DataPortal_Fetch(Criteria criteria)
@@ -100,12 +105,14 @@ namespace Csla.Test.DataPortalTest
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Fetched1");
     }
-    private void DataPortal_Delete(Criteria criteria)
+    [Delete]
+		private void DataPortal_Delete(Criteria criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Deleted");
     }
-    private void DataPortal_Delete(Criteria1 criteria)
+    [Delete]
+		private void DataPortal_Delete(Criteria1 criteria)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("SplitOverload", "Deleted1");

@@ -41,22 +41,26 @@ namespace Csla.Test.EditableRootList
       return new ERitem(data);
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       ApplicationContext.GlobalContext["DP"] = "Insert";
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       ApplicationContext.GlobalContext["DP"] = "Update";
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       ApplicationContext.GlobalContext["DP"] = "DeleteSelf";
     }
 
-    protected void DataPortal_Delete(object criteria)
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
       ApplicationContext.GlobalContext["DP"] = "Delete";
     }

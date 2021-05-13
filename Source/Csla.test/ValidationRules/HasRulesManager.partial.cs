@@ -14,6 +14,7 @@ namespace Csla.Test.ValidationRules
 {
   public partial class HasRulesManager
   {
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -23,6 +24,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -32,7 +34,8 @@ namespace Csla.Test.ValidationRules
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Fetched");
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       if (IsDeleted)
       {

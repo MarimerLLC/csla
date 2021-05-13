@@ -13,7 +13,8 @@ namespace Csla.Testing.Business.DataPortal
   [Serializable]
   public class TestBO : BusinessBase<TestBO>
   {
-    protected override void DataPortal_Create()
+    [Create]
+		protected void DataPortal_Create()
     {
       //base.DataPortal_Create();
       string x = ConfigurationManager.AppSettings["CslaAuthorizationProvider"];
@@ -33,15 +34,20 @@ namespace Csla.Testing.Business.DataPortal
 
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
 
     }
-    protected void DataPortal_Delete(object criteria)
+
+    [Delete]
+		protected void DataPortal_Delete(object criteria)
     {
 
     }
-    protected void DataPortal_Delete(int criteria)
+
+    [Delete]
+		protected void DataPortal_Delete(int criteria)
     {
 
     }

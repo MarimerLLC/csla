@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Csla;
 using Csla.Security;
 using Csla.Core;
@@ -241,22 +242,27 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(int criteria)
+    [Delete]
+		protected void DataPortal_Delete(int criteria)
     {
       Method = "Deleted Customer ID " + criteria.ToString();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));
     }
-    protected override void DataPortal_Update()
+
+    [Update]
+		protected void DataPortal_Update()
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
       DataPortal.UpdateChild(ReadProperty(ContactsProperty));
@@ -267,5 +273,10 @@ namespace cslalighttest.CslaDataProvider
   [Serializable]
   public class CustomerWO_DP_XYZ : BusinessBase<CustomerWO_DP_XYZ>
   {
+    [Create]
+    private async Task Create()
+    {
+      await BusinessRules.CheckRulesAsync();
+    }
   }
 }

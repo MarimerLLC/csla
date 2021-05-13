@@ -164,21 +164,26 @@ namespace Csla.Test.CslaDataProvider
       LoadProperty(DateCreatedProperty, new Csla.SmartDate(DateTime.Today));
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
     {
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(int criteria)
+    [Delete]
+		protected void DataPortal_Delete(int criteria)
     {
       Method = "Deleted Customer ID " + criteria.ToString();
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
     }
-    protected override void DataPortal_Update()
+
+    [Update]
+		protected void DataPortal_Update()
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
     }

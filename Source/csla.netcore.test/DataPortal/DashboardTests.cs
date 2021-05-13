@@ -123,6 +123,12 @@ namespace csla.netcore.test.DataPortal
       set { SetProperty(IdProperty, value); }
     }
 
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
     [Fetch]
     private void DataPortal_Fetch(int id)
     {
@@ -131,19 +137,19 @@ namespace csla.netcore.test.DataPortal
     }
 
     [Insert]
-    protected override void DataPortal_Insert()
+    protected void DataPortal_Insert()
     {
       // TODO: insert object's data
     }
 
     [Update]
-    protected override void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       // TODO: update object's data
     }
 
     [DeleteSelf]
-    protected override void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(ReadProperty(IdProperty));
     }

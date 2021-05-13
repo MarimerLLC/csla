@@ -222,7 +222,8 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(M06Property, null);
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
       //FieldManager.UpdateChildren();
       if (FieldManager.FieldExists(ManagedChildProperty))
@@ -231,7 +232,8 @@ namespace Csla.Test.PropertyGetSet
         ManagedChildList.Update();
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
     }
@@ -335,11 +337,13 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(DataProperty, "Hi");
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    protected void DataPortal_Insert()
     {
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+		protected void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
     }

@@ -9,6 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.Runtime;
+#endif
+
 namespace Csla.Rules
 {
   /// <summary>
@@ -16,15 +22,31 @@ namespace Csla.Rules
   /// </summary>
   public class BusinessRuleManager
   {
+#if NET5_0_OR_GREATER
+    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>> _perTypeRules =
+      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>>();
+#else
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>>();
+#endif
 
     internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
     {
       if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;
 
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
+
+#if NET5_0_OR_GREATER
+      var rulesInfo = _perTypeRules.Value
+        .GetOrAdd(
+          key,
+          (t) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
+        );
+
+      return rulesInfo.Item2;
+#else
       return _perTypeRules.Value.GetOrAdd(key, (t) => { return new BusinessRuleManager(); });
+#endif
     }
 
     /// <summary>
@@ -38,7 +60,11 @@ namespace Csla.Rules
         // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
         var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
         foreach (var key in typeRules)
+#if NET5_0_OR_GREATER
+          _perTypeRules.Value.TryRemove(key.Key, out _);
+#else
           _perTypeRules.Value.TryRemove(key.Key, out BusinessRuleManager manager);
+#endif
       }
     }
 
@@ -81,5 +107,13 @@ namespace Csla.Rules
     {
       Rules = new List<IBusinessRuleBase>();
     }
+
+#if NET5_0_OR_GREATER
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      lock (_perTypeRules)
+        AssemblyLoadContextManager.RemoveFromCache(_perTypeRules.Value, context, true);
+    }
+#endif
   }
 }

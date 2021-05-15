@@ -10,15 +10,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
+
 #if !NUNIT
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 #else
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+#endif
 
 namespace csla.netcore.test.DataPortal
 {
@@ -37,9 +40,10 @@ namespace csla.netcore.test.DataPortal
     public void GetRoutingTag()
     {
       var proxy = new Csla.DataPortalClient.HttpProxy();
-      var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-        .Where(r=>r.Name == "GetRoutingToken")
+      var method = proxy.GetType().BaseType.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+        .Where(r => r.Name == "GetRoutingToken")
         .FirstOrDefault();
+
       string result = (string)method.Invoke(proxy, new object[] { typeof(RoutingTest) });
       Assert.AreEqual("mytag", result);
     }
@@ -93,6 +97,5 @@ namespace csla.netcore.test.DataPortal
   [DataPortalServerRoutingTag("mytag")]
   public class RoutingTest : BusinessBase<RoutingTest>
   {
-
   }
 }

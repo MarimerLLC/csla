@@ -123,13 +123,19 @@ namespace Csla.DataPortalClient
     /// </summary>
     public static bool UseTextSerialization { get; set; } = false;
 
+    /// <summary>
+    /// Select client to make request based on isSync parameter and return response from server
+    /// </summary>
+    /// <param name="serialized">Serialised request</param>
+    /// <param name="operation">DataPortal operation</param>
+    /// <param name="routingToken">Routing Tag for server</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns>Serialised response from server</returns>
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
-      if (isSync)
-        serialized = CallViaWebClient(serialized, operation, routingToken);
-      else
-        serialized = await CallViaHttpClient(serialized, operation, routingToken);
-      return serialized;
+      return isSync
+        ? CallViaWebClient(serialized, operation, routingToken)
+        : await CallViaHttpClient(serialized, operation, routingToken);
     }
 
     /// <summary>

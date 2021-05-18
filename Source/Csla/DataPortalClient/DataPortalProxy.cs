@@ -282,9 +282,18 @@ namespace Csla.DataPortalClient
       return response;
     }
 
+    /// <summary>
+    /// Override this method with implementation of sending and receiving of data to the server
+    /// Returns serialised response from server
+    /// </summary>
+    /// <param name="serialized">Serialised request</param>
+    /// <param name="operation">DataPortal operation</param>
+    /// <param name="routingToken">Routing Tag for server</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns>Serialised response from server</returns>
     protected abstract Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync);
 
-    protected virtual string GetRoutingToken(Type objectType)
+    private string GetRoutingToken(Type objectType)
     {
       string result = null;
       var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);

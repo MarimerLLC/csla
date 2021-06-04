@@ -11,6 +11,9 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using System.Threading.Tasks;
+#if !NET40 && !NET45
+using System.Runtime.Loader;
+#endif
 
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -58,7 +61,7 @@ namespace Csla.Reflection
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
-    #region Dynamic Method Cache
+#region Dynamic Method Cache
 
 #if NET5_0_OR_GREATER
     private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache =
@@ -227,9 +230,27 @@ namespace Csla.Reflection
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
     public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
-      string fullTypeName;
-        fullTypeName = typeName;
-        return Type.GetType(fullTypeName, throwOnError, ignoreCase);
+#if NET40 || NET45
+      return Type.GetType(typeName, throwOnError, ignoreCase);
+#else
+      try
+      {
+        return Type.GetType(typeName, throwOnError, ignoreCase);
+      }
+      catch
+      {
+        string[] splitName = typeName.Split(',');
+        if (splitName.Length > 2)
+        {
+          var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(AppContext.BaseDirectory + splitName[1].Trim() + ".dll");
+          return asm.GetType(splitName[0].Trim());
+        }
+        else
+        {
+          throw;
+        }
+      }
+#endif
     }
 
     /// <summary>

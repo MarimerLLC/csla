@@ -58,4 +58,11 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <Reference Include="System.Runtime.Loader">
+      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0\Facades\System.Runtime.Loader.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
 </Project>

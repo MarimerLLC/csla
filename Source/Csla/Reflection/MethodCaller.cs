@@ -13,6 +13,7 @@ using Csla.Properties;
 using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.Loader;
 
 namespace Csla.Reflection
 {
@@ -156,9 +157,23 @@ namespace Csla.Reflection
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
     public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
-      string fullTypeName;
-        fullTypeName = typeName;
-        return Type.GetType(fullTypeName, throwOnError, ignoreCase);
+      try
+      {
+        return Type.GetType(typeName, throwOnError, ignoreCase);
+      }
+      catch
+      {
+        string[] splitName = typeName.Split(',');
+        if (splitName.Length > 2)
+        {
+          var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(AppContext.BaseDirectory + splitName[1].Trim() + ".dll");
+          return asm.GetType(splitName[0].Trim());
+        }
+        else
+        {
+          throw;
+        }
+      }
     }
 
     /// <summary>

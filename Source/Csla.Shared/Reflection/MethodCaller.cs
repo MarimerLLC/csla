@@ -11,17 +11,13 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using System.Threading.Tasks;
+using Csla.Properties;
 #if !NET40 && !NET45
 using System.Runtime.Loader;
 #endif
-
 #if NET5_0_OR_GREATER
-using System.Runtime.Loader;
-
 using Csla.Runtime;
 #endif
-
-using Csla.Properties;
 
 namespace Csla.Reflection
 {

@@ -91,7 +91,7 @@ namespace Csla.Test.DataPortalChild
       }
     }
 
-    protected void Child_DeleteSelf(Root parent)
+    protected void Child_DeleteSelf()
     {
       _status = "Deleted";
     }

@@ -81,6 +81,16 @@ namespace Csla.Test.DataPortal
       await dp.UpdateAsync(child, "update", 123);
       Assert.AreEqual("update/123", child.Name);
     }
+
+    [TestMethod]
+    public async Task DeleteSelfChild()
+    {
+      var dp = new Server.ChildDataPortal();
+      var child = await dp.FetchAsync<TestChild>();
+      child.MarkForDeletion();
+      await dp.UpdateAsync(child, "update", 123);
+      Assert.AreEqual("none", child.Name);
+    }
   }
 
   [Serializable]
@@ -91,6 +101,11 @@ namespace Csla.Test.DataPortal
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
+    }
+
+    public void MarkForDeletion()
+    {
+      MarkDeleted();
     }
 
     [CreateChild]
@@ -172,10 +187,9 @@ namespace Csla.Test.DataPortal
     }
 
     [DeleteSelfChild]
-    private async Task DeleteChild(params object[] parameters)
+    private async Task DeleteSelfChild()
     {
       await Task.Delay(0);
-      Name = parameters[0].ToString();
     }
   }
 }

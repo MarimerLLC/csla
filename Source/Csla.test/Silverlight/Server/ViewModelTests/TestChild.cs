@@ -70,7 +70,7 @@ namespace cslalighttest.ViewModelTests
     }
 
     [RunLocal]
-    private void Child_DeleteSelf(object parent)
+    private void Child_DeleteSelf()
     {
     }
 

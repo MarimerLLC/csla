@@ -59,6 +59,11 @@ namespace Csla.Reflection
 
       var typeOfOperation = typeof(T);
 
+      if (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute))
+      {
+        criteria = Array.Empty<object>();
+      }
+
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
       if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
         if (!throwOnError || cachedMethod != null)

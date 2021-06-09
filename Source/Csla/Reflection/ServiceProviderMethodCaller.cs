@@ -69,30 +69,40 @@ namespace Csla.Reflection
       if (factoryInfo != null)
       {
         var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
-        if (factoryType != null)
+        var ftList = new List<System.Reflection.MethodInfo>();
+        while (factoryType != null)
         {
           if (typeOfOperation == typeof(CreateAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName);
+            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName));
           else if (typeOfOperation == typeof(FetchAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName);
+            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName));
           else if (typeOfOperation == typeof(DeleteAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName);
+            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName));
           else if (typeOfOperation == typeof(ExecuteAttribute))
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName);
+            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName));
           else if (typeOfOperation == typeof(CreateChildAttribute))
-            candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
+            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create"));
           else
-            candidates = factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName);
+            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName));
+          factoryType = factoryType.BaseType;
         }
-        else if (typeOfOperation == typeof(CreateChildAttribute))
+        candidates = ftList;
+        if (!candidates.Any() && typeOfOperation == typeof(CreateChildAttribute))
         {
           candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
         }
       }
       else
       {
-        candidates = targetType.GetMethods(_bindingAttr).
-            Where(m => m.GetCustomAttributes<T>().Any());
+        var tt = targetType;
+        var ttList = new List<System.Reflection.MethodInfo>();
+        while (tt != null)
+        {
+          ttList.AddRange(tt.GetMethods(_bindingAttr).
+              Where(m => m.GetCustomAttributes<T>().Any()));
+          tt = tt.BaseType;
+        }
+        candidates = ttList;
 
         // if no attribute-based methods found, look for legacy methods
         if (!candidates.Any())
@@ -101,8 +111,15 @@ namespace Csla.Reflection
           var methodName = attributeName.Contains("Child") ?
               "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child")) :
               "DataPortal_" + attributeName;
-          candidates = targetType.GetMethods(_bindingAttr).Where(
-            m => m.Name == methodName);
+          tt = targetType;
+          ttList = new List<System.Reflection.MethodInfo>();
+          while (tt != null && !ttList.Any())
+          {
+            ttList.AddRange(tt.GetMethods(_bindingAttr).Where(
+              m => m.Name == methodName));
+            tt = tt.BaseType;
+          }
+          candidates = ttList;
         }
       }
 

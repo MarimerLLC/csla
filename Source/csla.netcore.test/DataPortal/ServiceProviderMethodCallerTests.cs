@@ -176,6 +176,23 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindMethod_PrivateBase()
+    {
+      var obj = new PrivateMethod();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(obj, null);
+      Assert.IsNotNull(method);
+      Assert.AreEqual("Execute", method.MethodInfo.Name, "Method name should match");
+    }
+
+    [TestMethod]
+    public void FindMethod_PrivateBase_Invoke()
+    {
+      var obj = Csla.DataPortal.Create<PrivateMethod>();
+      obj = Csla.DataPortal.Execute(obj);
+      Assert.IsNotNull(obj);
+    }
+
+    [TestMethod]
     public void FindMethodDataPortal_CreateCriteria()
     {
       var obj = new OldStyleCreate();
@@ -285,6 +302,25 @@ namespace Csla.Test.DataPortal
   public class OldStyleCriteria : BusinessBase<OldStyleCriteria>
   {
     private void DataPortal_Create(int id) { }
+  }
+
+  [Serializable]
+  public class PrivateMethodBase<T> : CommandBase<T>
+    where T : CommandBase<T>
+  {
+    [Create]
+    private void Create()
+    { }
+
+    [Execute]
+    private void Execute()
+    { }
+  }
+
+  [Serializable]
+  public class PrivateMethod : PrivateMethodBase<PrivateMethod>
+  {
+
   }
 
   [Serializable]

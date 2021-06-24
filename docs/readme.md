@@ -31,7 +31,7 @@ CSLA .NET is an open source project and we do accept contributions. Information 
 
 External links
 --------------
-* [Rockford Lhotka home page](http://www.lhotka.net)
+* [Rockford Lhotka home page](https://lhotka.net)
 * [Rockford Lhotka blog](https://blog.lhotka.net)
 * [Jonny Bekkum blog](https://jonnybekkum.wordpress.com/)
 * [CSLA .NET archive download page](http://www.lhotka.net/cslanet/download.aspx)

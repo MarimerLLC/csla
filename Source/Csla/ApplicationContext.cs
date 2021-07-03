@@ -49,6 +49,7 @@ namespace Csla
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
+      _dataPortalActivator = null;
       //_dataPortalActivator = null;
       _dataPortalUrl = null;
       _dataPortalProxyFactory = null;
@@ -215,6 +216,50 @@ namespace Csla
     /// </summary>
     public static bool UseReflectionFallback { get; set; } = false;
 
+    private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
+    private static readonly object _dataPortalActivatorSync = new object();
+
+    /// <summary>
+    /// Gets the DataPortalActivator type from configuration.
+    /// </summary>
+    public static Type DataPortalActivatorType
+    {
+      get
+      {
+        var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
+        if (!string.IsNullOrWhiteSpace(typeName))
+        {
+          return Type.GetType(typeName);
+        }
+        else
+        {
+          return typeof(Csla.Server.DefaultDataPortalActivator);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets an instance of the IDataPortalActivator provider.
+    /// </summary>
+    public static Csla.Server.IDataPortalActivator DataPortalActivator
+    {
+      get
+      {
+        if (_dataPortalActivator == null)
+        {
+          lock (_dataPortalActivatorSync)
+          {
+            if (_dataPortalActivator == null)
+              _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(DataPortalActivatorType);
+          }
+        }
+        return _dataPortalActivator;
+      }
+      set
+      {
+        _dataPortalActivator = value;
+      }
+    }
     //private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
     //private static readonly object _dataPortalActivatorSync = new object();
 

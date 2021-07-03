@@ -45,6 +45,11 @@ namespace Csla.DataPortalClient
     public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
     /// new business object.
     /// </summary>

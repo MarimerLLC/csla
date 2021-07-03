@@ -18,8 +18,13 @@ namespace Csla.Server
   /// message router as discussed
   /// in Chapter 4.
   /// </summary>
-  public class DataPortal : IDataPortalServer
+  public class DataPortal : IDataPortalServer, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets the data portal dashboard instance.
     /// </summary>
@@ -67,7 +72,7 @@ namespace Csla.Server
         lock (_syncRoot)
         {
           if (null == _authorizer)
-            _authorizer = (IAuthorizeDataPortal)Reflection.MethodCaller.CreateInstance(authProviderType);
+            _authorizer = (IAuthorizeDataPortal)Activator.CreateInstance(authProviderType);
         }
       }
 
@@ -78,7 +83,7 @@ namespace Csla.Server
           lock (_syncRoot)
           {
             if (_interceptor == null)
-              _interceptor = (IInterceptDataPortal)Reflection.MethodCaller.CreateInstance(InterceptorType);
+              _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
           }
         }
       }
@@ -124,7 +129,18 @@ namespace Csla.Server
           throw new ArgumentOutOfRangeException("transactionalAttribute");
       }
     }
-#endif 
+#endif
+
+    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
+    {
+      get
+      {
+        if (serviceProviderMethodCaller == null)
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+        return serviceProviderMethodCaller;
+      }
+    }
 
     /// <summary>
     /// Create a new business object.
@@ -150,9 +166,9 @@ namespace Csla.Server
 
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
         if (criteria is Server.EmptyCriteria)
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
 
@@ -244,9 +260,9 @@ namespace Csla.Server
 
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
         if (criteria is EmptyCriteria)
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
 
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
@@ -365,17 +381,17 @@ namespace Csla.Server
           if (bbase != null)
           {
             if (bbase.IsDeleted)
-              serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, null);
+              serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, null);
             else
               if (bbase.IsNew)
-                serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, null);
+                serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, null);
               else
-                serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+                serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
           }
           else if (obj is Core.ICommandObject)
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
           else
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
 
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
@@ -475,9 +491,9 @@ namespace Csla.Server
         {
           Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
           if (criteria is EmptyCriteria)
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
           else
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
         }
@@ -604,7 +620,7 @@ namespace Csla.Server
 
     private void SetContext(DataPortalContext context)
     {
-      _oldLocation = Csla.ApplicationContext.LogicalExecutionLocation;
+      _oldLocation = ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
       if (!context.IsRemotePortal && ApplicationContext.WebContextManager != null && !ApplicationContext.WebContextManager.IsValid)
@@ -716,7 +732,8 @@ namespace Csla.Server
 
 #endregion
 
-    internal static DataPortalException NewDataPortalException(string message, Exception innerException, object businessObject)
+    internal static DataPortalException NewDataPortalException(
+      string message, Exception innerException, object businessObject)
     {
       if (!ApplicationContext.DataPortalReturnObjectOnException)
         businessObject = null;

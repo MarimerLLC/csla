@@ -7,8 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-using System.Globalization;
-using System.Threading;
 
 namespace Csla.Threading
 {
@@ -22,12 +20,15 @@ namespace Csla.Threading
     /// <summary>
     /// Initializes a new instance of the <see cref="BackgroundWorker"/> class.
     /// </summary>
-    public BackgroundWorker()
+    public BackgroundWorker(ApplicationContext applicationContext)
     {
+      ApplicationContext = applicationContext;
       _myWorker.DoWork += InternalDoWork;
       _myWorker.RunWorkerCompleted += InternalRunWorkerCompleted;
       _myWorker.ProgressChanged += InternalProgressChanged;
     }
+
+    private ApplicationContext ApplicationContext { get; set; }
 
     // overridden event handler to be invoked by this class
     private DoWorkEventHandler _myDoWork;
@@ -167,7 +168,8 @@ namespace Csla.Threading
     {
       public object Argument { get; private set; }
 
-      public WorkerAsyncRequest(object argument)
+      public WorkerAsyncRequest(ApplicationContext applicationContext, object argument)
+        : base(applicationContext)
       {
         this.Argument = argument;
       }
@@ -226,7 +228,7 @@ namespace Csla.Threading
     /// </exception>
     public void RunWorkerAsync(object argument)
     {
-      _myWorker.RunWorkerAsync(new WorkerAsyncRequest(argument));
+      _myWorker.RunWorkerAsync(new WorkerAsyncRequest(ApplicationContext, argument));
     }
 
 
@@ -256,7 +258,7 @@ namespace Csla.Threading
           _myDoWork.Invoke(this, doWorkEventArgs);
         }
 #pragma warning disable CS0618 // Type or member is obsolete
-        e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, Csla.ApplicationContext.GlobalContext, null);
+        e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, ApplicationContext.GlobalContext, null);
 #pragma warning restore CS0618 // Type or member is obsolete
         e.Cancel = doWorkEventArgs.Cancel;
       }
@@ -264,7 +266,7 @@ namespace Csla.Threading
       catch (Exception ex)
       {
 #pragma warning disable CS0618 // Type or member is obsolete
-        e.Result = new WorkerAsyncResult(null, Csla.ApplicationContext.GlobalContext, ex);
+        e.Result = new WorkerAsyncResult(null, ApplicationContext.GlobalContext, ex);
 #pragma warning restore CS0618 // Type or member is obsolete
       }
     }

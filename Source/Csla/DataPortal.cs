@@ -801,7 +801,7 @@ namespace Csla
             throw new InvalidOperationException(
               string.Format(Resources.UnableToLoadDataPortalProxyFactory, ApplicationContext.DataPortalProxyFactory));
 
-          _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory)MethodCaller.CreateInstance(proxyFactoryType);
+          _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory)Activator.CreateInstance(proxyFactoryType);
         }
       }
     }

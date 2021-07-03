@@ -47,7 +47,8 @@ namespace Csla
     IManageProperties,
     INotifyBusy,
     IHostRules,
-    IReadOnlyBase
+    IReadOnlyBase,
+    IUseApplicationContext
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -80,6 +81,11 @@ namespace Csla
     }
 
     #endregion
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the object.
@@ -280,12 +286,12 @@ namespace Csla
         _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
         _executeResultCache = new ConcurrentDictionary<string, bool>();
-      if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      if (!ReferenceEquals(ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
         _readResultCache.Clear();
         _executeResultCache.Clear();
-        _lastPrincipal = Csla.ApplicationContext.User;
+        _lastPrincipal = ApplicationContext.User;
       }
     }
 
@@ -410,7 +416,7 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
     [Delete]
-		private void DataPortal_Delete(object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException(Resources.DeleteNotSupportedException);
     }

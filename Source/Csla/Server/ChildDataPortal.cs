@@ -15,8 +15,13 @@ namespace Csla.Server
   /// Invoke data portal methods on child
   /// objects.
   /// </summary>
-  public class ChildDataPortal
+  public class ChildDataPortal : Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Create a new business object.
     /// </summary>

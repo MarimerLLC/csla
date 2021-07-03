@@ -197,55 +197,55 @@ namespace Csla.Reflection
 
     #endregion
 
-    #region Create Instance
+    //#region Create Instance
 
-    /// <summary>
-    /// Uses reflection to create an object using its 
-    /// default constructor.
-    /// </summary>
-    /// <param name="objectType">Type of object to create.</param>
-    public static object CreateInstance(Type objectType)
-    {
-      var provider = ApplicationContext.CurrentServiceProvider;
-      if (provider is null)
-        provider = ApplicationContext.DefaultServiceProvider;
-      if (provider != null)
-        return ActivatorUtilities.CreateInstance(provider, objectType);
-      else
-        return Activator.CreateInstance(objectType);
-    }
+    ///// <summary>
+    ///// Uses reflection to create an object using its 
+    ///// default constructor.
+    ///// </summary>
+    ///// <param name="objectType">Type of object to create.</param>
+    //public static object CreateInstance(Type objectType)
+    //{
+    //  var provider = ApplicationContext.CurrentServiceProvider;
+    //  if (provider is null)
+    //    provider = ApplicationContext.DefaultServiceProvider;
+    //  if (provider != null)
+    //    return ActivatorUtilities.CreateInstance(provider, objectType);
+    //  else
+    //    return Activator.CreateInstance(objectType);
+    //}
 
-    /// <summary>
-    /// Creates an object.
-    /// </summary>
-    /// <param name="objectType">Type of object to create</param>
-    /// <param name="parameters">Parameters for constructor</param>
-    public static object CreateInstance(Type objectType, params object[] parameters)
-    {
-      var provider = ApplicationContext.CurrentServiceProvider;
-      if (provider is null)
-        provider = ApplicationContext.DefaultServiceProvider;
-      if (provider != null)
-        return ActivatorUtilities.CreateInstance(provider, objectType, parameters);
-      else
-        return Activator.CreateInstance(objectType, parameters);
-    }
+    ///// <summary>
+    ///// Creates an object.
+    ///// </summary>
+    ///// <param name="objectType">Type of object to create</param>
+    ///// <param name="parameters">Parameters for constructor</param>
+    //public static object CreateInstance(Type objectType, params object[] parameters)
+    //{
+    //  var provider = ApplicationContext.CurrentServiceProvider;
+    //  if (provider is null)
+    //    provider = ApplicationContext.DefaultServiceProvider;
+    //  if (provider != null)
+    //    return ActivatorUtilities.CreateInstance(provider, objectType, parameters);
+    //  else
+    //    return Activator.CreateInstance(objectType, parameters);
+    //}
 
-    /// <summary>
-    /// Creates an instance of a generic type
-    /// using its default constructor.
-    /// </summary>
-    /// <param name="type">Generic type to create</param>
-    /// <param name="paramTypes">Type parameters</param>
-    /// <returns></returns>
-    public static object CreateGenericInstance(Type type, params Type[] paramTypes)
-    {
-      var genericType = type.GetGenericTypeDefinition();
-      var gt = genericType.MakeGenericType(paramTypes);
-      return CreateInstance(gt);
-    }
+    ///// <summary>
+    ///// Creates an instance of a generic type
+    ///// using its default constructor.
+    ///// </summary>
+    ///// <param name="type">Generic type to create</param>
+    ///// <param name="paramTypes">Type parameters</param>
+    ///// <returns></returns>
+    //public static object CreateGenericInstance(Type type, params Type[] paramTypes)
+    //{
+    //  var genericType = type.GetGenericTypeDefinition();
+    //  var gt = genericType.MakeGenericType(paramTypes);
+    //  return CreateInstance(gt);
+    //}
 
-    #endregion
+    //#endregion
 
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;

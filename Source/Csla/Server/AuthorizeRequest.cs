@@ -16,8 +16,13 @@ namespace Csla.Server
   /// Object containing information about the
   /// client request to the data portal.
   /// </summary>
-  public class AuthorizeRequest
+  public class AuthorizeRequest : Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets the type of business object affected by
     /// the client request.
@@ -54,7 +59,7 @@ namespace Csla.Server
           Operation == DataPortalOperations.Execute)
       { 
          // Per-Instance checks
-         if (!BusinessRules.HasPermission(Operation.ToAuthAction(), RequestObject))
+         if (!BusinessRules.HasPermission(ApplicationContext, Operation.ToAuthAction(), RequestObject))
          {
             throw new SecurityException(
                string.Format(Resources.UserNotAuthorizedException,
@@ -65,7 +70,7 @@ namespace Csla.Server
       }
 
       // Per-Type checks
-      if (!BusinessRules.HasPermission(Operation.ToAuthAction(), ObjectType))
+      if (!BusinessRules.HasPermission(ApplicationContext, Operation.ToAuthAction(), ObjectType))
       {
          throw new SecurityException(
             string.Format(Resources.UserNotAuthorizedException,

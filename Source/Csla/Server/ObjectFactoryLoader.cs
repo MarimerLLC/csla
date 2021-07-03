@@ -15,8 +15,13 @@ namespace Csla.Server
   /// Class containing the default implementation for
   /// the FactoryLoader delegate used by the data portal host.
   /// </summary>
-  public class ObjectFactoryLoader : IObjectFactoryLoader
+  public class ObjectFactoryLoader : IObjectFactoryLoader, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets the type of the object factory.
     /// </summary>
@@ -51,7 +56,7 @@ namespace Csla.Server
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      return Reflection.MethodCaller.CreateInstance(ft);
+      return ApplicationContext.CreateInstance(ft);
     }
   }
 }

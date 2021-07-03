@@ -17,19 +17,24 @@ namespace Csla.Server.Hosts.Mobile
   /// <summary>
   /// Object that processes all the requests from a client
   /// </summary>
-  public class MobileRequestProcessor
+  public class MobileRequestProcessor : Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
 
 #region Factory Loader
 
-    private static IMobileFactoryLoader _factoryLoader;
+    private IMobileFactoryLoader _factoryLoader;
     /// <summary>
     /// Gets or sets a delegate reference to the method
     /// called to create instances of factory objects
     /// as requested by the MobileFactory attribute on
     /// a CSLA Light business object.
     /// </summary>
-    public static IMobileFactoryLoader FactoryLoader
+    public IMobileFactoryLoader FactoryLoader
     {
       get
       {
@@ -38,7 +43,7 @@ namespace Csla.Server.Hosts.Mobile
           string setting = ConfigurationManager.AppSettings["CslaMobileFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
-              (IMobileFactoryLoader)Reflection.MethodCaller.CreateInstance(Type.GetType(setting, true, true));
+              (IMobileFactoryLoader)ApplicationContext.CreateInstance(Type.GetType(setting, true, true));
           else
             _factoryLoader = new MobileFactoryLoader();
         }
@@ -363,9 +368,10 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     public static void ClearContext()
     {
-      ApplicationContext.Clear();
-      if (ApplicationContext.AuthenticationType != "Windows")
-        ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
+      // TODO: this needs figuring out
+      //ApplicationContext.Clear();
+      //if (ApplicationContext.AuthenticationType != "Windows")
+      //  ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
     }
 
 #region client culture

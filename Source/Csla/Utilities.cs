@@ -263,10 +263,10 @@ namespace Csla
 
     #endregion
 
-    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, System.Reflection.MethodInfo method)
+    internal static void ThrowIfAsyncMethodOnSyncClient(ApplicationContext applicationContext, bool isSync, System.Reflection.MethodInfo method)
     {
       if (isSync
-        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
         && MethodCaller.IsAsyncMethod(method))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, method.Name));
@@ -276,14 +276,15 @@ namespace Csla
     /// <summary>
     /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <param name="obj">Object containing method.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <returns></returns>
-    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName)
+    internal static void ThrowIfAsyncMethodOnSyncClient(ApplicationContext applicationContext, bool isSync, object obj, string methodName)
     {
       if (isSync
-        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
         && MethodCaller.IsAsyncMethod(obj, methodName))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
@@ -293,16 +294,17 @@ namespace Csla
     /// <summary>
     /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <param name="obj">Object containing method.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName, params object[] parameters)
+    internal static void ThrowIfAsyncMethodOnSyncClient(ApplicationContext applicationContext, bool isSync, object obj, string methodName, params object[] parameters)
     {
       if (isSync
-        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
         && MethodCaller.IsAsyncMethod(obj, methodName, parameters))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));

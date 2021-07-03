@@ -7,20 +7,27 @@ namespace Csla
   /// An alternative to Lazy&lt;T&gt; 
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public sealed class LazySingleton<T> where T : class
+  public sealed class LazySingleton<T> : Core.IUseApplicationContext
+    where T : class
   {
     private readonly object _syncRoot = new object();
     private T _value;
     private readonly Func<T> _delegate;
     private bool _isValueCreated;
 
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
-    /// Will use the default public constructor to create an instance of T (the vlaue)
+    /// Will use the default public constructor to create an instance of T (the value)
     /// </summary>
     public LazySingleton()
-      : this(() => (T)Csla.Reflection.MethodCaller.CreateInstance(typeof(T))) { }
+    {
+      _delegate = () => (T)ApplicationContext.CreateInstance(typeof(T));
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.

@@ -35,7 +35,8 @@ namespace Csla
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
       INotifyBusy,
-      IBusinessListBase<C>
+      IBusinessListBase<C>,
+      IUseApplicationContext
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -48,6 +49,11 @@ namespace Csla
       Initialize();
       AllowNew = true;
     }
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     #region Initialize
 
@@ -779,7 +785,7 @@ namespace Csla
     {
       get
       {
-        bool auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
+        bool auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
         return (IsDirty && IsValid && auth && !IsBusy);
       }
     }

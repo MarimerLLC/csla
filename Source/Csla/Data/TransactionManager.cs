@@ -34,7 +34,7 @@ namespace Csla.Data
   /// dispose the transaction when the last consumer
   /// has called Dispose."
   /// </remarks>
-  public class TransactionManager<C, T> : IDisposable
+  public class TransactionManager<C, T> : IDisposable, Core.IUseApplicationContext
     where C : IDbConnection, new()
     where T : IDbTransaction
   {
@@ -45,13 +45,18 @@ namespace Csla.Data
     private string _label;
 
     /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Gets the TransactionManager object for the 
     /// specified database.
     /// </summary>
     /// <param name="database">
     /// Database name as shown in the config file.
     /// </param>
-    public static TransactionManager<C, T> GetManager(string database)
+    public TransactionManager<C, T> GetManager(string database)
     {
       return GetManager(database, true);
     }
@@ -64,7 +69,7 @@ namespace Csla.Data
     /// Database name as shown in the config file.
     /// </param>
     /// <param name="label">Label for this transaction.</param>
-    public static TransactionManager<C, T> GetManager(string database, string label)
+    public TransactionManager<C, T> GetManager(string database, string label)
     {
       return GetManager(database, true, label);
     }
@@ -83,7 +88,7 @@ namespace Csla.Data
     /// used as a Transaction string.
     /// </param>
     /// <returns>TransactionManager object for the name.</returns>
-    public static TransactionManager<C, T> GetManager(string database, bool isDatabaseName)
+    public TransactionManager<C, T> GetManager(string database, bool isDatabaseName)
     {
       return GetManager(database, isDatabaseName, "default");
     }
@@ -103,7 +108,7 @@ namespace Csla.Data
     /// </param>
     /// <param name="label">Label for this transaction.</param>
     /// <returns>TransactionManager object for the name.</returns>
-    public static TransactionManager<C, T> GetManager(string database, bool isDatabaseName, string label)
+    public TransactionManager<C, T> GetManager(string database, bool isDatabaseName, string label)
     {
       if (isDatabaseName)
       {

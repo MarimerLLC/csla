@@ -20,16 +20,26 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>
+  public class DataPortal<T> : IDataPortal<T>, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets a reference to the global context returned from
     /// the background thread and/or server.
     /// </summary>
     public Csla.Core.ContextDictionary GlobalContext { get; set; }
 
-    private class DataPortalAsyncRequest
+    private class DataPortalAsyncRequest : Core.IUseApplicationContext
     {
+      /// <summary>
+      /// Gets or sets the current ApplicationContext object.
+      /// </summary>
+      public ApplicationContext ApplicationContext { get; set; }
+
       public object Argument { get; set; }
       public System.Security.Principal.IPrincipal Principal { get; set; }
       public Csla.Core.ContextDictionary ClientContext { get; set; }
@@ -42,10 +52,10 @@ namespace Csla
       public DataPortalAsyncRequest(object argument, object userState)
       {
         this.Argument = argument;
-        this.Principal = Csla.ApplicationContext.User;
-        this.ClientContext = Csla.ApplicationContext.ClientContext;
+        this.Principal = ApplicationContext.User;
+        this.ClientContext = ApplicationContext.ClientContext;
 #pragma warning disable CS0618 // Type or member is obsolete
-        this.GlobalContext = Csla.ApplicationContext.GlobalContext;
+        this.GlobalContext = ApplicationContext.GlobalContext;
 #pragma warning restore CS0618 // Type or member is obsolete
         this.UserState = userState;
         this.CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
@@ -69,6 +79,17 @@ namespace Csla
       }
     }
 
+    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
+    {
+      get
+      {
+        if (serviceProviderMethodCaller == null)
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+        return serviceProviderMethodCaller;
+      }
+    }
+
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
       Server.DataPortalResult result = null;
@@ -77,16 +98,16 @@ namespace Csla
       {
         DataPortal.OnDataPortalInitInvoke(null);
 
-        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
+        if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "create",
             objectType.Name));
         Reflection.ServiceProviderMethodInfo method;
         if (criteria is Server.EmptyCriteria)
-          method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null, false);
+          method = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null, false);
         else
-          method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+          method = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
 
         dpContext =
@@ -277,13 +298,13 @@ namespace Csla
       {
         DataPortal.OnDataPortalInitInvoke(null);
 
-        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
+        if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "get",
             objectType.Name));
 
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+        var method = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
 
         dpContext =
@@ -485,7 +506,7 @@ namespace Csla
 
           if (obj is Core.ICommandObject)
           {
-            if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+            if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
@@ -498,7 +519,7 @@ namespace Csla
             {
               if (bbase.IsDeleted)
               {
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
+                if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, obj))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "delete",
                                                                             objectType.Name));
@@ -509,7 +530,7 @@ namespace Csla
               // must check the same authorization rules as for DataPortal_XYZ methods 
               else if (bbase.IsNew)
               {
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
+                if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, obj))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "create",
                                                                             objectType.Name));
@@ -519,7 +540,7 @@ namespace Csla
               }
               else
               {
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+                if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "save",
                                                                             objectType.Name));
@@ -530,7 +551,7 @@ namespace Csla
             }
             else
             {
-              if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+              if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
                 throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                           "save",
                                                                           objectType.Name));
@@ -551,11 +572,11 @@ namespace Csla
           if (obj is Core.ICommandObject)
           {
             operation = DataPortalOperations.Execute;
-            if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+            if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
-            method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, criteria, false);
+            method = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, criteria, false);
           }
           else
           {
@@ -563,32 +584,32 @@ namespace Csla
             {
               if (bbase.IsDeleted)
               {
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
+                if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, obj))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "delete",
                     objectType.Name));
-                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, false);
+                method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, false);
               }
               else if (bbase.IsNew)
               {
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
+                if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, obj))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "create",
                     objectType.Name));
-                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, criteria, false);
+                method = ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, criteria, false);
               }
               else
               {
-                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+                if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "save",
                     objectType.Name));
-                method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
+                method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
               }
             }
             else
             {
-              method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
+              method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
             }
           }
           proxy = GetDataPortalProxy(objectType, method);
@@ -783,12 +804,12 @@ namespace Csla
       {
         DataPortal.OnDataPortalInitInvoke(null);
 
-        if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
+        if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "delete",
             objectType.Name));
 
-        var method = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+        var method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
 
         dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -1034,7 +1055,7 @@ namespace Csla
       return await DoUpdateAsync(command, false);
     }
 
-    private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, Reflection.ServiceProviderMethodInfo method)
+    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, Reflection.ServiceProviderMethodInfo method)
     {
       if (method != null)
         return GetDataPortalProxy(objectType, method.MethodInfo.RunLocal());
@@ -1042,7 +1063,7 @@ namespace Csla
         return GetDataPortalProxy(objectType, false);
     }
 
-    private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
+    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
     {
       if (forceLocal || ApplicationContext.IsOffline)
       {
@@ -1058,7 +1079,7 @@ namespace Csla
       }
     }
 
-    private static System.Security.Principal.IPrincipal GetPrincipal()
+    private System.Security.Principal.IPrincipal GetPrincipal()
     {
       if (ApplicationContext.AuthenticationType == "Windows")
       {

@@ -18,8 +18,13 @@ namespace Csla.Server.Hosts.Mobile
   /// the FactoryLoader delegate used by the
   /// data portal host.
   /// </summary>
-  public class MobileFactoryLoader : IMobileFactoryLoader
+  public class MobileFactoryLoader : IMobileFactoryLoader, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Creates an instance of a mobile factory
     /// object for use by the data portal.
@@ -40,7 +45,7 @@ namespace Csla.Server.Hosts.Mobile
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      return Reflection.MethodCaller.CreateInstance(ft);
+      return ApplicationContext.CreateInstance(ft);
     }
   }
 }

@@ -17,8 +17,13 @@ namespace Csla.Server
   /// use only.
   /// </summary>
   [Serializable]
-  public class DataPortalResult : EventArgs
+  public class DataPortalResult : EventArgs, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// The business object being returned from
     /// the server.

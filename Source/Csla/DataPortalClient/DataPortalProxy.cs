@@ -20,8 +20,13 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server.
   /// </summary>
-  public abstract class DataPortalProxy : IDataPortalProxy
+  public abstract class DataPortalProxy : IDataPortalProxy, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
@@ -304,7 +309,7 @@ namespace Csla.DataPortalClient
 
     #region Criteria
 
-    private static CriteriaRequest GetBaseCriteriaRequest()
+    private CriteriaRequest GetBaseCriteriaRequest()
     {
       return new CriteriaRequest
       {
@@ -320,7 +325,7 @@ namespace Csla.DataPortalClient
       };
     }
 
-    private static UpdateRequest GetBaseUpdateCriteriaRequest()
+    private UpdateRequest GetBaseUpdateCriteriaRequest()
     {
       return new UpdateRequest
       {

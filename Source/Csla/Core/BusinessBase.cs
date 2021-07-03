@@ -49,8 +49,9 @@ namespace Csla.Core
     ICheckRules,
     INotifyBusy,
     INotifyChildChanged,
-    ISerializationNotification
-, IDataErrorInfo
+    ISerializationNotification,
+    IDataErrorInfo,
+    Core.IUseApplicationContext
   {
 
     /// <summary>
@@ -62,6 +63,12 @@ namespace Csla.Core
       Initialize();
       InitializeBusinessRules();
     }
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
 
     #region Initialize
 
@@ -461,11 +468,11 @@ namespace Csla.Core
       {
         bool auth;
         if (IsDeleted)
-          auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, this);
+          auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, this);
         else if (IsNew)
-          auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, this);
+          auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, this);
         else
-          auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
+          auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
         return (auth && IsDirty && IsValid && !IsBusy);
       }
     }
@@ -644,13 +651,13 @@ namespace Csla.Core
         _writeResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
         _executeResultCache = new ConcurrentDictionary<string, bool>();
-      if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      if (!ReferenceEquals(ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
         _readResultCache.Clear();
         _writeResultCache.Clear();
         _executeResultCache.Clear();
-        _lastPrincipal = Csla.ApplicationContext.User;
+        _lastPrincipal = ApplicationContext.User;
       }
     }
 

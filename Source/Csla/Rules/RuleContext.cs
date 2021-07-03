@@ -48,8 +48,13 @@ namespace Csla.Rules
   /// Context information provided to a business rule
   /// when it is invoked.
   /// </summary>
-  public class RuleContext : IRuleContext
+  public class RuleContext : IRuleContext, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets the rule object.
     /// </summary>
@@ -149,7 +154,7 @@ namespace Csla.Rules
     public void ExecuteRule(IBusinessRuleBase innerRule)
     {
       var chainedContext = GetChainedContext(innerRule);
-      if (BusinessRules.CanRunRule(innerRule, chainedContext.ExecuteContext))
+      if (BusinessRules.CanRunRule(ApplicationContext, innerRule, chainedContext.ExecuteContext))
       {
         if (innerRule is IBusinessRule syncRule)
           syncRule.Execute(chainedContext);

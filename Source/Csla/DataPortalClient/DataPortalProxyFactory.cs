@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Core;
 using Csla.Reflection;
 
 namespace Csla.DataPortalClient
@@ -18,9 +19,15 @@ namespace Csla.DataPortalClient
   /// creates the IDataPortalProxy instance 
   /// to use for the DataPortal server call.
   /// </summary>
-  public class DataPortalProxyFactory : IDataPortalProxyFactory
+  public class DataPortalProxyFactory : IDataPortalProxyFactory, Core.IUseApplicationContext
   {
     private static Type _proxyType;
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
 
     /// <summary>
     /// Creates the DataPortalProxy to use for DataPortal call on the objectType.
@@ -38,13 +45,13 @@ namespace Csla.DataPortalClient
           {
             var httpClient = ApplicationContext.CurrentServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
             if (httpClient == null)
-              return (IDataPortalProxy)MethodCaller.CreateInstance(type, descriptor.DataPortalUrl);
+              return (IDataPortalProxy)ApplicationContext.CreateInstance(type, descriptor.DataPortalUrl);
             else
-              return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType, httpClient, descriptor.DataPortalUrl);
+              return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType, httpClient, descriptor.DataPortalUrl);
           }
           else
           {
-            return (IDataPortalProxy)MethodCaller.CreateInstance(type, descriptor.DataPortalUrl);
+            return (IDataPortalProxy)ApplicationContext.CreateInstance(type, descriptor.DataPortalUrl);
           }
         }
       }
@@ -59,16 +66,16 @@ namespace Csla.DataPortalClient
       }
       var provider = ApplicationContext.CurrentServiceProvider;
       if (provider == null)
-        return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType);
+        return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType);
       else
       {
         if (_proxyType.Equals(typeof(HttpProxy)))
         {
           var httpClient = ApplicationContext.CurrentServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
           if (httpClient == null)
-            return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType);
+            return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType);
           else
-            return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType, httpClient);
+            return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType, httpClient);
         }
         else
         {

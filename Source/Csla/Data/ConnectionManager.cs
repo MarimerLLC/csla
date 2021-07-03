@@ -28,12 +28,17 @@ namespace Csla.Data
   /// dispose the connection when the last consumer
   /// has called Dispose."
   /// </remarks>
-  public class ConnectionManager : IDisposable
+  public class ConnectionManager : IDisposable, Core.IUseApplicationContext
   {
     private static object _lock = new object();
     private IDbConnection _connection;
     private string _connectionString;
     private string _label;
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the ConnectionManager object for the 
@@ -42,7 +47,7 @@ namespace Csla.Data
     /// <param name="database">
     /// Database name as shown in the config file.
     /// </param>
-    public static ConnectionManager GetManager(string database)
+    public ConnectionManager GetManager(string database)
     {
       return GetManager(database, true);
     }
@@ -55,7 +60,7 @@ namespace Csla.Data
     /// Database name as shown in the config file.
     /// </param>
     /// <param name="label">Label for this connection.</param>
-    public static ConnectionManager GetManager(string database, string label)
+    public ConnectionManager GetManager(string database, string label)
     {
       return GetManager(database, true, label);
     }
@@ -74,7 +79,7 @@ namespace Csla.Data
     /// used as a connection string.
     /// </param>
     /// <returns>ConnectionManager object for the name.</returns>
-    public static ConnectionManager GetManager(string database, bool isDatabaseName)
+    public ConnectionManager GetManager(string database, bool isDatabaseName)
     {
       return GetManager(database, isDatabaseName, "default");
     }
@@ -94,7 +99,7 @@ namespace Csla.Data
     /// </param>
     /// <param name="label">Label for this connection.</param>
     /// <returns>ConnectionManager object for the name.</returns>
-    public static ConnectionManager GetManager(string database, bool isDatabaseName, string label)
+    public ConnectionManager GetManager(string database, bool isDatabaseName, string label)
     {
       if (isDatabaseName)
       {

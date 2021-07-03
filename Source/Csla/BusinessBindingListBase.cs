@@ -27,7 +27,8 @@ namespace Csla
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
       Core.ISavable, Core.ISavable<T>, Core.IParent, Server.IDataPortalTarget,
-      INotifyBusy
+      INotifyBusy,
+      Core.IUseApplicationContext
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -42,8 +43,13 @@ namespace Csla
       this.AllowNew = true;
     }
 
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
-#region Initialize
+
+    #region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -169,7 +175,7 @@ namespace Csla
     {
       get 
       {
-        bool auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
+        bool auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
         return (IsDirty && IsValid && auth && !IsBusy);
       }
     }

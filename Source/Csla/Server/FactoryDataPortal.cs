@@ -17,8 +17,13 @@ namespace Csla.Server
   /// invokes an object factory rather than directly
   /// interacting with the business object.
   /// </summary>
-  public class FactoryDataPortal : IDataPortalServer
+  public class FactoryDataPortal : IDataPortalServer, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     #region Factory Loader
 
     private static IObjectFactoryLoader _factoryLoader;
@@ -38,7 +43,7 @@ namespace Csla.Server
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
-              (IObjectFactoryLoader)Reflection.MethodCaller.CreateInstance(Type.GetType(setting, true, true));
+              (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
           _factoryLoader = new ObjectFactoryLoader();
         }
@@ -63,7 +68,7 @@ namespace Csla.Server
       object result = null;
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, factory, methodName);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
         var error = result as Exception;
@@ -94,7 +99,7 @@ namespace Csla.Server
       object result = null;
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName, e);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, factory, methodName, e);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
         var error = result as Exception;
@@ -171,7 +176,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-         context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
+          context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
           null);
       }

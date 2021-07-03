@@ -10,11 +10,16 @@ using System;
 
 namespace Csla.Server
 {
-  internal class DefaultDataPortalActivator : IDataPortalActivator
+  internal class DefaultDataPortalActivator : IDataPortalActivator, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     public object CreateInstance(Type requestedType)
     {
-      return MethodCaller.CreateInstance(requestedType);
+      return ApplicationContext.CreateInstance(requestedType);
     }
 
     public void InitializeInstance(object obj)

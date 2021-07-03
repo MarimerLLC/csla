@@ -16,7 +16,7 @@ namespace Csla.Server
   /// Implements the server-side DataPortal as discussed
   /// in Chapter 4.
   /// </summary>
-  public class SimpleDataPortal : IDataPortalServer
+  public class SimpleDataPortal : IDataPortalServer, Core.IUseApplicationContext
   {
     public SimpleDataPortal(ApplicationContext applicationContext)
     {
@@ -27,6 +27,11 @@ namespace Csla.Server
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
     private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Create a new business object.

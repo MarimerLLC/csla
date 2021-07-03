@@ -20,7 +20,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>
+  public class DataPortal<T> : IDataPortal<T>, Core.IUseApplicationContext
   {
     public DataPortal(ApplicationContext applicationContext)
     {
@@ -31,6 +31,11 @@ namespace Csla
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
     private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets a reference to the global context returned from

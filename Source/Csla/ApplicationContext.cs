@@ -49,7 +49,7 @@ namespace Csla
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
-      //_dataPortalActivator = null;
+      _dataPortalActivator = null;
       _dataPortalUrl = null;
       _dataPortalProxyFactory = null;
       _dataPortalProxy = null;
@@ -215,50 +215,50 @@ namespace Csla
     /// </summary>
     public static bool UseReflectionFallback { get; set; } = false;
 
-    //private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
-    //private static readonly object _dataPortalActivatorSync = new object();
+    private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
+    private static readonly object _dataPortalActivatorSync = new object();
 
-    ///// <summary>
-    ///// Gets the DataPortalActivator type from configuration.
-    ///// </summary>
-    //public static Type DataPortalActivatorType
-    //{
-    //  get
-    //  {
-    //    var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
-    //    if (!string.IsNullOrWhiteSpace(typeName))
-    //    {
-    //      return Type.GetType(typeName);
-    //    }
-    //    else
-    //    {
-    //      return typeof(Csla.Server.DefaultDataPortalActivator);
-    //    }
-    //  }
-    //}
+    /// <summary>
+    /// Gets the DataPortalActivator type from configuration.
+    /// </summary>
+    public static Type DataPortalActivatorType
+    {
+      get
+      {
+        var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
+        if (!string.IsNullOrWhiteSpace(typeName))
+        {
+          return Type.GetType(typeName);
+        }
+        else
+        {
+          return typeof(Csla.Server.DefaultDataPortalActivator);
+        }
+      }
+    }
 
-    ///// <summary>
-    ///// Gets or sets an instance of the IDataPortalActivator provider.
-    ///// </summary>
-    //public static Csla.Server.IDataPortalActivator DataPortalActivator
-    //{
-    //  get
-    //  {
-    //    if (_dataPortalActivator == null)
-    //    {
-    //      lock (_dataPortalActivatorSync)
-    //      {
-    //        if (_dataPortalActivator == null)
-    //          _dataPortalActivator = (Csla.Server.IDataPortalActivator)CreateInstance(DataPortalActivatorType);
-    //      }
-    //    }
-    //    return _dataPortalActivator;
-    //  }
-    //  set
-    //  {
-    //    _dataPortalActivator = value;
-    //  }
-    //}
+    /// <summary>
+    /// Gets or sets an instance of the IDataPortalActivator provider.
+    /// </summary>
+    public static Csla.Server.IDataPortalActivator DataPortalActivator
+    {
+      get
+      {
+        if (_dataPortalActivator == null)
+        {
+          lock (_dataPortalActivatorSync)
+          {
+            if (_dataPortalActivator == null)
+              _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(DataPortalActivatorType);
+          }
+        }
+        return _dataPortalActivator;
+      }
+      set
+      {
+        _dataPortalActivator = value;
+      }
+    }
 
     private static string _dataPortalUrl = null;
 
@@ -357,6 +357,7 @@ namespace Csla
       set
       {
         _dataPortalProxyFactory = value;
+        DataPortal.ResetProxyFactory();
       }
     }
 
@@ -423,6 +424,7 @@ namespace Csla
       set
       {
         _dataPortalProxy = value;
+        DataPortal.ResetProxyType();
       }
     }
 
@@ -777,18 +779,8 @@ namespace Csla
     /// Uses reflection to create an object using its 
     /// default constructor.
     /// </summary>
-    /// <typeparam name="T">Type of object to create.</typeparam>
-    internal T CreateInstance<T>()
-    {
-      return (T)CreateInstance(typeof(T));
-    }
-
-    /// <summary>
-    /// Uses reflection to create an object using its 
-    /// default constructor.
-    /// </summary>
     /// <param name="objectType">Type of object to create.</param>
-    internal object CreateInstance(Type objectType)
+    public object CreateInstance(Type objectType)
     {
       object result;
       if (CurrentServiceProvider != null)
@@ -803,22 +795,11 @@ namespace Csla
     }
 
     /// <summary>
-    /// Uses reflection to create an object using its 
-    /// default constructor.
-    /// </summary>
-    /// <typeparam name="T">Type of object to create.</typeparam>
-    /// <param name="parameters">Parameters for constructor</param>
-    internal T CreateInstance<T>(params object[] parameters)
-    {
-      return (T)CreateInstance(typeof(T), parameters);
-    }
-
-    /// <summary>
     /// Creates an object.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
-    internal object CreateInstance(Type objectType, params object[] parameters)
+    public object CreateInstance(Type objectType, params object[] parameters)
     {
       object result;
       if (CurrentServiceProvider != null)
@@ -839,7 +820,7 @@ namespace Csla
     /// <param name="type">Generic type to create</param>
     /// <param name="paramTypes">Type parameters</param>
     /// <returns></returns>
-    internal object CreateGenericInstance(Type type, params Type[] paramTypes)
+    public object CreateGenericInstance(Type type, params Type[] paramTypes)
     {
       var genericType = type.GetGenericTypeDefinition();
       var gt = genericType.MakeGenericType(paramTypes);

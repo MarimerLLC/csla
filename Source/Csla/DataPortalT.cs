@@ -38,6 +38,11 @@ namespace Csla
     public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Gets a reference to the global context returned from
     /// the background thread and/or server.
     /// </summary>

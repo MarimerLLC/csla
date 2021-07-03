@@ -64,17 +64,23 @@ namespace Csla.DataPortalClient
         else
           _proxyType = Type.GetType(proxyTypeName, true, true);
       }
-      if (_proxyType.Equals(typeof(HttpProxy)))
-      {
-        var httpClient = ApplicationContext.CurrentServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
-        if (httpClient == null)
-          return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType);
-        else
-          return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType, httpClient);
-      }
+      var provider = ApplicationContext.CurrentServiceProvider;
+      if (provider == null)
+        return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType);
       else
       {
-        return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType);
+        if (_proxyType.Equals(typeof(HttpProxy)))
+        {
+          var httpClient = ApplicationContext.CurrentServiceProvider.GetService(typeof(System.Net.Http.HttpClient));
+          if (httpClient == null)
+            return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType);
+          else
+            return (IDataPortalProxy)ApplicationContext.CreateInstance(_proxyType, httpClient);
+        }
+        else
+        {
+          return (IDataPortalProxy)Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance(provider, _proxyType);
+        }
       }
     }
 

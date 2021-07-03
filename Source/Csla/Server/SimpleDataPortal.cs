@@ -34,6 +34,11 @@ namespace Csla.Server
     public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Create a new business object.
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>

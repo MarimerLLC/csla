@@ -130,7 +130,6 @@ namespace Csla.Blazor
       {
         Exception = ex;
         ViewModelErrorText = ex.Message;
-        Console.Error.WriteLine(ex.ToString());
       }
     }
 

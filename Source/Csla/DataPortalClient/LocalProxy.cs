@@ -19,14 +19,20 @@ namespace Csla.DataPortalClient
   /// calls to an application server hosted locally 
   /// in the client process and AppDomain.
   /// </summary>
-  public class LocalProxy : DataPortalClient.IDataPortalProxy, Core.IUseApplicationContext
+  public class LocalProxy : DataPortalClient.IDataPortalProxy
   {
-    private Server.IDataPortalServer _portal = new Server.DataPortal();
+    public LocalProxy(Server.IDataPortalServer dataportal, ApplicationContext applicationContext)
+    {
+      _portal = dataportal;
+      ApplicationContext = applicationContext;
+    }
+
+    private readonly Server.IDataPortalServer _portal;
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a

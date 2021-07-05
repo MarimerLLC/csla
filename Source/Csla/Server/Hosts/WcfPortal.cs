@@ -22,6 +22,13 @@ namespace Csla.Server.Hosts
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
+    public WcfPortal(Server.IDataPortalServer dataPortal)
+    {
+      portal = dataPortal;
+    }
+
+    private readonly Server.IDataPortalServer portal;
+
     /// <summary>
     /// Create a new business object.
     /// </summary>
@@ -29,7 +36,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Create(CreateRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {
@@ -49,7 +55,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Fetch(FetchRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {
@@ -69,7 +74,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Update(UpdateRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {
@@ -89,7 +93,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Delete(DeleteRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {

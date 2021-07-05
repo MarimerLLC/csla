@@ -82,8 +82,8 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
       try
       {
-        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
-        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkNew();
@@ -113,7 +113,7 @@ namespace Csla.Server
         object reference = null;
         if (obj != null)
           reference = obj.Instance;
-        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+        //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -178,8 +178,8 @@ namespace Csla.Server
       try
       {
         // create an instance of the business object
-        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
-        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
@@ -204,10 +204,10 @@ namespace Csla.Server
         throw new Csla.DataPortalException(
           "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
       }
-      finally
-      {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
-      }
+      //finally
+      //{
+      //  ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+      //}
     }
 
     /// <summary>
@@ -321,8 +321,8 @@ namespace Csla.Server
 
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      DataPortalTarget lb = new DataPortalTarget(obj);
-      ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
+      DataPortalTarget lb = ApplicationContext.CreateInstance<DataPortalTarget>(obj);
+      //ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
 
       try
       {
@@ -347,10 +347,10 @@ namespace Csla.Server
         throw new Csla.DataPortalException(
           "ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
       }
-      finally
-      {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(lb.Instance);
-      }
+      //finally
+      //{
+      //  ApplicationContext.DataPortalActivator.FinalizeInstance(lb.Instance);
+      //}
     }
   }
 }

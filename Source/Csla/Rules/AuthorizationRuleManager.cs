@@ -25,7 +25,7 @@ namespace Csla.Rules
 
     internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
-      type = ApplicationContext.DataPortalActivator.ResolveType(type);
+      //type = ApplicationContext.DataPortalActivator.ResolveType(type);
 
       if (ruleSet == ApplicationContext.DefaultRuleSet)
         ruleSet = null;

@@ -43,7 +43,8 @@ namespace Csla
     Core.ExtendedBindingList<T>,
     Core.IParent,
     Server.IDataPortalTarget,
-    IBusinessObject
+    IBusinessObject,
+    IUseApplicationContext
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
     {
     /// <summary>
@@ -56,7 +57,12 @@ namespace Csla
       AllowNew = true;
     }
 
-#region Initialize
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    #region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -262,7 +268,8 @@ namespace Csla
     /// <returns>The added object</returns>
     protected override object AddNewCore()
     {
-      T item = Csla.DataPortal.Create<T>();
+      var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+      T item = dp.Create();
       Add(item);
       this.OnAddingNew(new AddingNewEventArgs(item));
       return item;
@@ -439,7 +446,7 @@ namespace Csla
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [Delete]
-		private void DataPortal_Delete(object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException(Properties.Resources.DeleteNotSupportedException);
     }

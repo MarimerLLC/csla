@@ -24,8 +24,14 @@ namespace Csla.Server.Hosts.Mobile
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
+    public WcfPortal(MobileRequestProcessor mobileRequestProcessor)
+    {
+      processor = mobileRequestProcessor;
+    }
 
-#region IWcfPortal Members
+    public MobileRequestProcessor processor { get; set; }
+
+    #region IWcfPortal Members
 
     /// <summary>
     /// Create a new business object.
@@ -46,7 +52,6 @@ namespace Csla.Server.Hosts.Mobile
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var processor = new MobileRequestProcessor();
         var createRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
@@ -93,7 +98,6 @@ namespace Csla.Server.Hosts.Mobile
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
-        var processor = new MobileRequestProcessor();
         var fetchRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
@@ -136,7 +140,6 @@ namespace Csla.Server.Hosts.Mobile
         // unpack object
         object obj = GetCriteria(request.ObjectData);
 
-        var processor = new MobileRequestProcessor();
         var updateRequest = new MobileUpdateRequest(
           obj,
           (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
@@ -182,7 +185,6 @@ namespace Csla.Server.Hosts.Mobile
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var processor = new MobileRequestProcessor();
         var deleteRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,

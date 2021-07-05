@@ -12,7 +12,7 @@ using Csla.Reflection;
 
 namespace Csla.Server
 {
-  internal class DataPortalTarget : LateBoundObject
+  internal class DataPortalTarget : LateBoundObject, Core.IUseApplicationContext
   {
     private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList =
       new ConcurrentDictionary<Type, DataPortalMethodNames>();

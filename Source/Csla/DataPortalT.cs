@@ -20,12 +20,17 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, Core.IUseApplicationContext
+  public class DataPortal<T> : IDataPortal<T>
   {
+    public DataPortal(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets a reference to the global context returned from
@@ -118,7 +123,6 @@ namespace Csla
         try
         {
           result = await proxy.Create(objectType, criteria, dpContext, isSync);
-          GlobalContext = result.GlobalContext;
           if (isSync && proxy.IsServerRemote)
             ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
         }
@@ -164,21 +168,21 @@ namespace Csla
       return (T)Create(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
-    internal static object Create(Type objectType, object criteria)
-    {
-      var dp = new DataPortal<object>();
-      try
-      {
-        return dp.DoCreateAsync(objectType, criteria, true).Result;
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
-    }
+    //internal static object Create(Type objectType, object criteria)
+    //{
+    //  var dp = new DataPortal<object>();
+    //  try
+    //  {
+    //    return dp.DoCreateAsync(objectType, criteria, true).Result;
+    //  }
+    //  catch (AggregateException ex)
+    //  {
+    //    if (ex.InnerExceptions.Count > 0)
+    //      throw ex.InnerExceptions[0];
+    //    else
+    //      throw;
+    //  }
+    //}
 
     /// <summary>
     /// Called by a factory method in a business class or
@@ -315,7 +319,6 @@ namespace Csla
         try
         {
           result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-          GlobalContext = result.GlobalContext;
           if (isSync && proxy.IsServerRemote)
             ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
         }
@@ -410,21 +413,21 @@ namespace Csla
       return (T)Fetch(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
-    internal static object Fetch(Type objectType, object criteria)
-    {
-      var dp = new DataPortal<object>();
-      try
-      {
-        return dp.DoFetchAsync(objectType, criteria, true).Result;
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
-    }
+    //internal static object Fetch(Type objectType, object criteria)
+    //{
+    //  var dp = new DataPortal<object>();
+    //  try
+    //  {
+    //    return dp.DoFetchAsync(objectType, criteria, true).Result;
+    //  }
+    //  catch (AggregateException ex)
+    //  {
+    //    if (ex.InnerExceptions.Count > 0)
+    //      throw ex.InnerExceptions[0];
+    //    else
+    //      throw;
+    //  }
+    //}
 
     /// <summary>
     /// Called by a factory method in a business class or
@@ -647,7 +650,6 @@ namespace Csla
           HandleUpdateDataPortalException(ex, isSync, proxy);
         }
 
-        GlobalContext = result.GlobalContext;
         if (proxy.IsServerRemote && isSync)
           ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
 
@@ -669,7 +671,6 @@ namespace Csla
     private void HandleDataPortalException(string operation, Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
       var result = ex.Result;
-      GlobalContext = result.GlobalContext;
       if (proxy.IsServerRemote && isSync)
         ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
       var original = ex.InnerException;
@@ -837,10 +838,6 @@ namespace Csla
           HandleDeleteDataPortalException(ex, isSync, proxy);
         }
 
-        GlobalContext = result.GlobalContext;
-        if (proxy.IsServerRemote && isSync)
-          ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
-
         DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete));
       }
       catch (Exception ex)
@@ -913,25 +910,25 @@ namespace Csla
       Delete(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
-    internal static void Delete(Type objectType, object criteria)
-    {
-      var dp = new DataPortal<object>();
-      try
-      {
-        var task = dp.DoDeleteAsync(objectType, criteria, true);
-        if (!task.IsCompleted)
-          task.RunSynchronously();
-        if (task.Exception != null)
-          throw task.Exception;
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
-    }
+    //internal static void Delete(Type objectType, object criteria)
+    //{
+    //  var dp = new DataPortal<object>();
+    //  try
+    //  {
+    //    var task = dp.DoDeleteAsync(objectType, criteria, true);
+    //    if (!task.IsCompleted)
+    //      task.RunSynchronously();
+    //    if (task.Exception != null)
+    //      throw task.Exception;
+    //  }
+    //  catch (AggregateException ex)
+    //  {
+    //    if (ex.InnerExceptions.Count > 0)
+    //      throw ex.InnerExceptions[0];
+    //    else
+    //      throw;
+    //  }
+    //}
 
     /// <summary>
     /// Called by a factory method in a business class or
@@ -1067,15 +1064,15 @@ namespace Csla
     {
       if (forceLocal || ApplicationContext.IsOffline)
       {
-        return new DataPortalClient.LocalProxy();
+        return ApplicationContext.CreateInstance<DataPortalClient.LocalProxy>();
       }
       else
       {
         // load dataportal factory if loaded 
-        if (DataPortal.ProxyFactory == null)
-          DataPortal.LoadDataPortalProxyFactory();
+        if (ProxyFactory == null)
+          LoadDataPortalProxyFactory();
 
-        return DataPortal.ProxyFactory.Create(objectType);
+        return ProxyFactory.Create(objectType);
       }
     }
 
@@ -1090,6 +1087,193 @@ namespace Csla
       {
         // we assume using the CSLA framework security
         return ApplicationContext.User;
+      }
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    public T CreateChild()
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return (T)(portal.Create(typeof(T)));
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <param name="parameters">
+    /// Parameters passed to child create method.
+    /// </param>
+    public T CreateChild(params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return (T)(portal.Create(typeof(T), parameters));
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    public async Task<T> CreateChildAsync()
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return await portal.CreateAsync<T>();
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <param name="parameters">
+    /// Parameters passed to child create method.
+    /// </param>
+    public async Task<T> CreateChildAsync(params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return await portal.CreateAsync<T>(parameters);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public void UpdateChild(object child)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      portal.Update(child);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
+    public void UpdateChild(object child, params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      portal.Update(child, parameters);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public async Task UpdateChildAsync(object child)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      await portal.UpdateAsync(child).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
+    public async Task UpdateChildAsync(object child, params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
+    }
+
+    private DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;
+
+    /// <summary>
+    /// Loads the data portal factory.
+    /// </summary>
+    internal void LoadDataPortalProxyFactory()
+    {
+      if (_dataProxyFactory == null)
+      {
+        if (String.IsNullOrEmpty(ApplicationContext.DataPortalProxyFactory) || ApplicationContext.DataPortalProxyFactory == "Default")
+        {
+          _dataProxyFactory = ApplicationContext.CreateInstance<DataPortalClient.DataPortalProxyFactory>();
+        }
+        else
+        {
+          var proxyFactoryType =
+            Type.GetType(ApplicationContext.DataPortalProxyFactory) ??
+            throw new InvalidOperationException(
+              string.Format(Resources.UnableToLoadDataPortalProxyFactory, ApplicationContext.DataPortalProxyFactory));
+
+          _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory)Activator.CreateInstance(proxyFactoryType);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets a reference to a ProxyFactory object
+    /// that is used to create an instance of the data
+    /// portal proxy object.
+    /// </summary>
+    public DataPortalClient.IDataPortalProxyFactory ProxyFactory
+    {
+      get
+      {
+        if (_dataProxyFactory == null)
+          LoadDataPortalProxyFactory();
+        return _dataProxyFactory;
+      }
+      set
+      {
+        _dataProxyFactory = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the assembly qualified type
+    /// name of the proxy object to be loaded
+    /// by the data portal. "Local" is a special
+    /// value used to indicate that the data
+    /// portal should run in local mode.
+    /// </summary>
+    /// <remarks>
+    /// Deprecated: use ApplicationContext.DataPortalProxy
+    /// </remarks>
+    public string ProxyTypeName
+    {
+      get { return ApplicationContext.DataPortalProxy; }
+      set { ApplicationContext.DataPortalProxy = value; }
+    }
+
+    /// <summary>
+    /// Resets the data portal proxy type, so the
+    /// next data portal call will reload the proxy
+    /// type based on current configuration values.
+    /// </summary>
+    public void ResetProxyFactory()
+    {
+      _dataProxyFactory = null;
+    }
+
+    /// <summary>
+    /// Resets the data portal proxy type, so the
+    /// next data portal call will reload the proxy
+    /// type based on current configuration values.
+    /// </summary>
+    public void ResetProxyType()
+    {
+      if (_dataProxyFactory != null)
+      {
+        _dataProxyFactory.ResetProxyType();
       }
     }
   }

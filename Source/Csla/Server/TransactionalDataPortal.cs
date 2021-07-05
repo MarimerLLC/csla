@@ -17,6 +17,13 @@ namespace Csla.Server
   /// </summary>
   public class TransactionalDataPortal : IDataPortalServer
   {
+    public TransactionalDataPortal(DataPortalBroker dataPortalBroker)
+    {
+      portal = dataPortalBroker;
+    }
+
+    private DataPortalBroker portal { get; set; }
+
     private readonly TransactionalAttribute _transactionalAttribute;
 
     /// <summary>
@@ -54,7 +61,6 @@ namespace Csla.Server
       DataPortalResult result;
       using (TransactionScope tr = CreateTransactionScope())
       {
-        var portal = new DataPortalBroker();
         result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
@@ -116,7 +122,6 @@ namespace Csla.Server
       DataPortalResult result;
       using (TransactionScope tr = CreateTransactionScope())
       {
-        var portal = new DataPortalBroker();
         result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
@@ -143,7 +148,6 @@ namespace Csla.Server
       DataPortalResult result;
       using (TransactionScope tr = CreateTransactionScope())
       {
-        var portal = new DataPortalBroker();
         result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
@@ -170,7 +174,6 @@ namespace Csla.Server
       DataPortalResult result;
       using (TransactionScope tr = CreateTransactionScope())
       {
-        var portal = new DataPortalBroker();
         result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }

@@ -427,7 +427,7 @@ namespace Csla
       get 
       { 
         if (_deletedList == null)
-          _deletedList = new MobileList<C>();
+          _deletedList = (MobileList<C>)ApplicationContext.CreateInstance(typeof(MobileList<C>));
         return _deletedList; 
       }
     }
@@ -477,7 +477,8 @@ namespace Csla
     /// </summary>
     protected override object AddNewCore()
     {
-      var item = DataPortal.CreateChild<C>();
+      var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+      var item = dp.CreateChild();
       Add(item);
       return item;
     }
@@ -790,12 +791,13 @@ namespace Csla
     {
       using (LoadListMode)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
         foreach (var child in DeletedList)
-          DataPortal.UpdateChild(child, parameters);
+          dp.UpdateChild(child, parameters);
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
+          if (child.IsDirty) dp.UpdateChild(child, parameters);
       }
     }
 
@@ -885,13 +887,14 @@ namespace Csla
 
       if (IsDirty)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
         if (isSync)
         {
-          result = DataPortal.Update<T>((T)this);
+          result = dp.Update((T)this);
         }
         else
         {
-          result = await DataPortal.UpdateAsync<T>((T)this);
+          result = await dp.UpdateAsync((T)this);
         }
       }
       else

@@ -316,7 +316,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType)
     {
-      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, objectType, null, applicationContext.RuleSet);
     }
@@ -330,7 +330,7 @@ namespace Csla.Rules
     /// <param name="criteria">The criteria object provided.</param>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria)
     {
-      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, objectType, criteria, applicationContext.RuleSet);
     }

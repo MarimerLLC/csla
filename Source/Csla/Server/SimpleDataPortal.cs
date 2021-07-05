@@ -16,12 +16,17 @@ namespace Csla.Server
   /// Implements the server-side DataPortal as discussed
   /// in Chapter 4.
   /// </summary>
-  public class SimpleDataPortal : IDataPortalServer, Core.IUseApplicationContext
+  public class SimpleDataPortal : IDataPortalServer
   {
+    public SimpleDataPortal(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Create a new business object.
@@ -41,8 +46,8 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
-        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
-        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkNew();
         await obj.CreateAsync(criteria, isSync);
@@ -73,7 +78,7 @@ namespace Csla.Server
         object reference = null;
         if (obj != null)
           reference = obj.Instance;
-        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+        //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -94,8 +99,8 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
-        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
-        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
         await obj.FetchAsync(criteria, isSync);
@@ -126,7 +131,7 @@ namespace Csla.Server
         object reference = null;
         if (obj != null)
           reference = obj.Instance;
-        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+        //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -144,14 +149,14 @@ namespace Csla.Server
     {
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      var lb = new DataPortalTarget(obj);
+      var lb = ApplicationContext.CreateInstance<DataPortalTarget>(obj);
       if (lb.Instance is Core.ICommandObject)
         return await Execute(lb, context, isSync);
 
       var eventArgs = new DataPortalEventArgs(context, objectType, obj, operation);
       try
       {
-        ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
+        //ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
         lb.OnDataPortalInvoke(eventArgs);
         await lb.UpdateAsync(isSync);
         lb.ThrowIfBusy();
@@ -178,7 +183,7 @@ namespace Csla.Server
         object reference = null;
         if (lb != null)
           reference = lb.Instance;
-        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+        //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -189,7 +194,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, obj, operation);
       try
       {
-        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.ExecuteAsync(isSync);
         obj.ThrowIfBusy();
@@ -218,7 +223,7 @@ namespace Csla.Server
         object reference = null;
         if (obj != null)
           reference = obj.Instance;
-        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+        //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
     /// <summary>
@@ -237,8 +242,8 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
-        obj = new DataPortalTarget(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
-        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
+        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.DeleteAsync(criteria, isSync);
         obj.ThrowIfBusy();
@@ -265,7 +270,7 @@ namespace Csla.Server
         object reference = null;
         if (obj != null)
           reference = obj.Instance;
-        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
+        //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
   }

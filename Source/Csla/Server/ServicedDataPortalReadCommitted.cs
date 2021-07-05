@@ -22,6 +22,13 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalReadCommitted : ServicedComponent, IDataPortalServer
   {
+    public ServicedDataPortalReadCommitted(DataPortalBroker dataPortalBroker)
+    {
+      portal = dataPortalBroker;
+    }
+
+    private DataPortalBroker portal { get; set; }
+
     /// <summary>
     /// Wraps a Create call in a ServicedComponent.
     /// </summary>
@@ -43,7 +50,6 @@ namespace Csla.Server
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalBroker();
       return await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
     }
 
@@ -64,7 +70,6 @@ namespace Csla.Server
     [AutoComplete(true)]
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalBroker();
       return await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
     }
 
@@ -84,7 +89,6 @@ namespace Csla.Server
     [AutoComplete(true)]
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalBroker();
       return await portal.Update(obj, context, isSync).ConfigureAwait(false);
     }
 
@@ -104,7 +108,6 @@ namespace Csla.Server
     [AutoComplete(true)]
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var portal = new DataPortalBroker();
       return await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
     }
   }

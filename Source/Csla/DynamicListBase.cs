@@ -48,7 +48,7 @@ namespace Csla
 #else
     ObservableBindingList<T>,
 #endif
-    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification, IBusinessObject
+    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification, IBusinessObject, IUseApplicationContext
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
@@ -60,6 +60,11 @@ namespace Csla
       Initialize();
       AllowNew = true;
     }
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     #region Initialize
 
@@ -179,9 +184,10 @@ namespace Csla
 
         Exception error = null;
         T result = default(T);
+        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
         try
         {
-          result = await DataPortal.UpdateAsync<T>((T)savable);
+          result = await dp.UpdateAsync((T)savable);
         }
         catch (AggregateException ex)
         {
@@ -332,7 +338,8 @@ namespace Csla
     /// <returns>The added object</returns>
     protected override T AddNewCore()
     {
-      T item = Csla.DataPortal.Create<T>();
+      var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+      T item = dp.Create();
       Add(item);
       return item;
     }
@@ -504,7 +511,7 @@ namespace Csla
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [Delete]
-		private void DataPortal_Delete(object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException(Properties.Resources.DeleteNotSupportedException);
     }

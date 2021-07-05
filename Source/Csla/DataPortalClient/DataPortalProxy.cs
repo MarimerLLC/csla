@@ -77,12 +77,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null, globalContext);
+          result = new DataPortalResult(obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -91,7 +91,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -132,12 +132,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null, globalContext);
+          result = new DataPortalResult(obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -146,7 +146,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -181,12 +181,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var newobj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(newobj, null, globalContext);
+          result = new DataPortalResult(newobj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -195,7 +195,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -236,12 +236,12 @@ namespace Csla.DataPortalClient
         var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response.ErrorData == null)
         {
-          result = new DataPortalResult(null, null, globalContext);
+          result = new DataPortalResult(null, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -250,7 +250,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;

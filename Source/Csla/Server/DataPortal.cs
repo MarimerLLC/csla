@@ -18,49 +18,32 @@ namespace Csla.Server
   /// message router as discussed
   /// in Chapter 4.
   /// </summary>
-  public class DataPortal : IDataPortalServer, Core.IUseApplicationContext
+  public class DataPortal : IDataPortalServer
   {
+    public DataPortal(ApplicationContext applicationContext, Dashboard.IDashboard dashboard)
+    {
+      ApplicationContext = applicationContext;
+      Dashboard = dashboard;
+      LoadAuthProvider();
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the data portal dashboard instance.
     /// </summary>
-    public static Dashboard.IDashboard Dashboard { get; internal set; }
-
-    static DataPortal()
-    {
-      Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
-    }
-
-    #region Constructors
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public DataPortal()
-      : this("CslaAuthorizationProvider")
-    {
-
-    }
-
-    /// <summary>
-    /// This construcor accepts the App Setting name for the Csla Authorization Provider,
-    /// therefore getting the provider type from configuration file
-    /// </summary>
-    /// <param name="cslaAuthorizationProviderAppSettingName"></param>
-    protected DataPortal(string cslaAuthorizationProviderAppSettingName)
-      : this(GetAuthProviderType(cslaAuthorizationProviderAppSettingName))
-    {
-    }
+    public Dashboard.IDashboard Dashboard { get; private set; }
 
     /// <summary>
     /// This constructor accepts the Authorization Provider Type as a parameter.
     /// </summary>
     /// <param name="authProviderType"></param>
-    protected DataPortal(Type authProviderType)
+    private void LoadAuthProvider()
     {
+      var authProviderType = GetAuthProviderType("CslaAuthorizationProvider");
       if (null == authProviderType)
         throw new ArgumentNullException(nameof(authProviderType), Resources.CslaAuthenticationProviderNotSet);
       if (!typeof(IAuthorizeDataPortal).IsAssignableFrom(authProviderType))
@@ -72,7 +55,7 @@ namespace Csla.Server
         lock (_syncRoot)
         {
           if (null == _authorizer)
-            _authorizer = (IAuthorizeDataPortal)Activator.CreateInstance(authProviderType);
+            _authorizer = (IAuthorizeDataPortal)ApplicationContext.CreateInstance(authProviderType);
         }
       }
 
@@ -83,7 +66,7 @@ namespace Csla.Server
           lock (_syncRoot)
           {
             if (_interceptor == null)
-              _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
+              _interceptor = (IInterceptDataPortal)ApplicationContext.CreateInstance(InterceptorType);
           }
         }
       }
@@ -92,7 +75,7 @@ namespace Csla.Server
     private static Type GetAuthProviderType(string cslaAuthorizationProviderAppSettingName)
     {
       if (cslaAuthorizationProviderAppSettingName == null)
-        throw new ArgumentNullException("cslaAuthorizationProviderAppSettingName", Resources.AuthorizationProviderNameNotSpecified);
+        throw new ArgumentNullException(nameof(cslaAuthorizationProviderAppSettingName), Resources.AuthorizationProviderNameNotSpecified);
 
 
       if (null == _authorizer)//not yet instantiated
@@ -108,8 +91,6 @@ namespace Csla.Server
 
     }
 
-    #endregion
-
     #region Data Access
 
 #if !NETSTANDARD2_0 && !NET5_0
@@ -118,13 +99,13 @@ namespace Csla.Server
       switch (transactionalAttribute.TransactionIsolationLevel)
       {
         case TransactionIsolationLevel.Serializable:
-          return new ServicedDataPortalSerializable();
+          return ApplicationContext.CreateInstance<ServicedDataPortalSerializable>();
         case TransactionIsolationLevel.RepeatableRead:
-          return new ServicedDataPortalRepeatableRead();
+          return ApplicationContext.CreateInstance<ServicedDataPortalRepeatableRead>();
         case TransactionIsolationLevel.ReadCommitted:
-          return new ServicedDataPortalReadCommitted();
+          return ApplicationContext.CreateInstance<ServicedDataPortalReadCommitted>();
         case TransactionIsolationLevel.ReadUncommitted:
-          return new ServicedDataPortalReadUncommitted();
+          return ApplicationContext.CreateInstance<ServicedDataPortalReadUncommitted>();
         default:
           throw new ArgumentOutOfRangeException("transactionalAttribute");
       }
@@ -137,7 +118,8 @@ namespace Csla.Server
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = 
+            (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }
@@ -191,12 +173,12 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
 
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            portal = ApplicationContext.CreateInstance<TransactionalDataPortal>(method.TransactionalAttribute);
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -284,11 +266,11 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            portal = ApplicationContext.CreateInstance<TransactionalDataPortal>(method.TransactionalAttribute);
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -415,11 +397,11 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            portal = ApplicationContext.CreateInstance<TransactionalDataPortal>(method.TransactionalAttribute);
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -515,11 +497,11 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            portal = ApplicationContext.CreateInstance<TransactionalDataPortal>(method.TransactionalAttribute);
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }

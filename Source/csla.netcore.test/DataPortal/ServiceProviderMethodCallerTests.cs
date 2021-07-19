@@ -291,7 +291,28 @@ namespace Csla.Test.DataPortal
       Assert.IsNotNull(obj, "Fetch via string array");
       Assert.AreEqual("a", obj[0].Name);
     }
+
+    [TestMethod]
+    public void Issue2287BusinessBindingListFetch()
+    {
+      var obj = new Issue2287List();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(obj, new object[] { new Issue2287List.Criteria() });
+      Assert.IsNotNull(method);
+      Assert.AreEqual(obj.GetType().BaseType, method.MethodInfo.DeclaringType);
+    }
+
+    [TestMethod]
+    public void Issue2287BusinessBaseFetch()
+    {
+      var obj = new Issue2287Edit();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, new object[] { });
+      Assert.IsNotNull(method);
+    }
   }
+
+  //
+  // End of test methods, start of support classes
+  //
 
   [Serializable]
   public class OldStyleNoOverride : BusinessBase<OldStyleNoOverride>
@@ -580,5 +601,44 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class My2109Criteria : ICriteriaBase
   {
+  }
+
+  [Serializable]
+  public class Issue2287List : Issue2287ListBase
+  {
+    public static Issue2287List FetchIssue2287List()
+    {
+      return Csla.DataPortal.Fetch<Issue2287List>(new Criteria());
+    }
+  }
+
+  [Serializable]
+  public class Issue2287ListBase : Csla.BusinessBindingListBase<Issue2287List, Issue2287Edit>
+  {
+    private void DataPortal_Fetch(Criteria criteria)
+    {
+    }
+
+    [Serializable()]
+    public class Criteria : Csla.CriteriaBase<Criteria>
+    {
+    }
+  }
+
+  [Serializable]
+  public class Issue2287Edit : Issue2287EditBase<Issue2287Edit>
+  {
+    private new void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  [Serializable]
+  public class Issue2287EditBase<T> : BusinessBase<Issue2287EditBase<T>>
+  {
+    protected void DataPortal_Create()
+    {
+    }
   }
 }

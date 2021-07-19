@@ -21,8 +21,8 @@ namespace Csla.Reflection
   /// </summary>
   public static class ServiceProviderMethodCaller
   {
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-    private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.DeclaredOnly;
+    private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
 
@@ -69,14 +69,16 @@ namespace Csla.Reflection
         if (!throwOnError || cachedMethod != null)
           return cachedMethod;
 
-      IEnumerable<System.Reflection.MethodInfo> candidates = null;
+      var candidates = new List<ScoredMethodInfo>();
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
         var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
         var ftList = new List<System.Reflection.MethodInfo>();
+        var level = 0;
         while (factoryType != null)
         {
+          ftList.Clear();
           if (typeOfOperation == typeof(CreateAttribute))
             ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName));
           else if (typeOfOperation == typeof(FetchAttribute))
@@ -90,24 +92,26 @@ namespace Csla.Reflection
           else
             ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName));
           factoryType = factoryType.BaseType;
+          candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
+          level--;
         }
-        candidates = ftList;
         if (!candidates.Any() && typeOfOperation == typeof(CreateChildAttribute))
         {
-          candidates = targetType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create");
+          var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
+          candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
         }
       }
-      else
+      else // not using factory types
       {
         var tt = targetType;
-        var ttList = new List<System.Reflection.MethodInfo>();
+        var level = 0;
         while (tt != null)
         {
-          ttList.AddRange(tt.GetMethods(_bindingAttr).
-              Where(m => m.GetCustomAttributes<T>().Any()));
+          var ttList = tt.GetMethods(_bindingAttr).Where(m => m.GetCustomAttributes<T>().Any());
+          candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           tt = tt.BaseType;
+          level--;
         }
-        candidates = ttList;
 
         // if no attribute-based methods found, look for legacy methods
         if (!candidates.Any())
@@ -117,14 +121,14 @@ namespace Csla.Reflection
               "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child")) :
               "DataPortal_" + attributeName;
           tt = targetType;
-          ttList = new List<System.Reflection.MethodInfo>();
-          while (tt != null && !ttList.Any())
+          level = 0;
+          while (tt != null)
           {
-            ttList.AddRange(tt.GetMethods(_bindingAttr).Where(
-              m => m.Name == methodName));
+            var ttList = tt.GetMethods(_bindingAttr).Where(m => m.Name == methodName);
+            candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
             tt = tt.BaseType;
+            level--;
           }
-          candidates = ttList;
         }
       }
 
@@ -146,7 +150,7 @@ namespace Csla.Reflection
           foreach (var item in candidates)
           {
             int score = 0;
-            var methodParams = GetCriteriaParameters(item);
+            var methodParams = GetCriteriaParameters(item.MethodInfo);
             if (methodParams.Length == criteriaLength)
             {
               var index = 0;
@@ -175,7 +179,7 @@ namespace Csla.Reflection
               }
 
               if (index == criteriaLength)
-                matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = score });
+                matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = score + item.Score });
             }
           }
         }
@@ -183,8 +187,8 @@ namespace Csla.Reflection
         {
           foreach (var item in candidates)
           {
-            if (GetCriteriaParameters(item).Length == 0)
-              matches.Add(new ScoredMethodInfo { MethodInfo = item });
+            if (GetCriteriaParameters(item.MethodInfo).Length == 0)
+              matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = item.Score });
           }
         }
         if (matches.Count == 0)
@@ -192,11 +196,11 @@ namespace Csla.Reflection
           // look for params array
           foreach (var item in candidates)
           {
-            var lastParam = item.GetParameters().LastOrDefault();
+            var lastParam = item.MethodInfo.GetParameters().LastOrDefault();
             if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) &&
               lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
             {
-              matches.Add(new ScoredMethodInfo { MethodInfo = item, Score = 1 });
+              matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = 1 + item.Score });
             }
           }
         }

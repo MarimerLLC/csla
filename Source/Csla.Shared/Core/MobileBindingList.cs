@@ -58,7 +58,23 @@ namespace Csla.Core
     {
       _loadListModeObject = null;
       SetLoadListMode(enabled);
+      if (_oldRLCE == null)
+        _oldRLCE = new Stack<bool>();
+      if (enabled)
+      {
+        _oldRLCE.Push(RaiseListChangedEvents);
+        RaiseListChangedEvents = false;
+      }
+      else
+      {
+        if (_oldRLCE.Count > 0)
+          RaiseListChangedEvents = _oldRLCE.Pop();
+      }
     }
+
+    [NonSerialized]
+    [NotUndoable]
+    private Stack<bool> _oldRLCE;
 
     /// <summary>
     /// Sets the load list mode for the list

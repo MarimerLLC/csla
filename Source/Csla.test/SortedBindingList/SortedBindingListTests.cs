@@ -22,179 +22,229 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace Csla.Test.SortedBindingList
 {
-    [TestClass()]
-    public class SortedBindingListTests
+  [TestClass()]
+  public class SortedBindingListTests
+  {
+    [TestMethod()]
+    public void AscendingSort()
     {
-        [TestMethod()]
-        public void AscendingSort()
-        {
-            int[] intArr = { 45, 23, 57, 56, 11, 87, 94, 44 };
-            SortedBindingList<int> sortedList = new SortedBindingList<int>(intArr);
-            sortedList.ListChanged += new ListChangedEventHandler(sortedList_ListChanged);
+      int[] intArr = { 45, 23, 57, 56, 11, 87, 94, 44 };
+      SortedBindingList<int> sortedList = new SortedBindingList<int>(intArr);
+      sortedList.ListChanged += new ListChangedEventHandler(sortedList_ListChanged);
 
-            Assert.AreEqual(false, sortedList.IsSorted);
-            Assert.AreEqual(56, intArr[3]);
-            sortedList.ApplySort("", ListSortDirection.Ascending);
-            Assert.AreEqual(44, sortedList[2]);
-            Assert.AreEqual(8, sortedList.Count);
-            Assert.AreEqual(true, sortedList.Contains(56));
-            Assert.AreEqual(4, sortedList.IndexOf(56));
-            Assert.AreEqual(true, sortedList.IsReadOnly);
-            Assert.AreEqual(true, sortedList.IsSorted);
+      Assert.AreEqual(false, sortedList.IsSorted);
+      Assert.AreEqual(56, intArr[3]);
+      sortedList.ApplySort("", ListSortDirection.Ascending);
+      Assert.AreEqual(44, sortedList[2]);
+      Assert.AreEqual(8, sortedList.Count);
+      Assert.AreEqual(true, sortedList.Contains(56));
+      Assert.AreEqual(4, sortedList.IndexOf(56));
+      Assert.AreEqual(true, sortedList.IsReadOnly);
+      Assert.AreEqual(true, sortedList.IsSorted);
 
-            foreach (int item in sortedList)
-            {
-                Console.WriteLine(item.ToString());
-            }
-
-            sortedList.RemoveSort();
-            Assert.AreEqual(false, sortedList.IsSorted);
-            Assert.AreEqual(56, sortedList[3]);
-            
-            // This list dowes not support searching 
-            Assert.IsFalse(sortedList.SupportsSearching);
-            // and Find should return -1 because underlying list dows not implement IBindingList
-            Assert.AreEqual(-1, sortedList.Find("", 56));
-        }
-
-        public void sortedList_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            //called only on applysort() and removesort() 
-            Console.WriteLine("list changed");
-        }
-
-        [TestMethod()]
-        public void DescendingSort()
-        {
-            string[] strArr = { "zandy", "alex", "Chris", "bert", "alfred", "Bert", "Jimmy", "chris", "chris", "mobbit", "myper", "Corey", "Monkey" };
-            SortedBindingList<string> sortedList = new SortedBindingList<string>(strArr);
-
-            Assert.AreEqual("Bert", sortedList[5]);
-
-            sortedList.ApplySort("", ListSortDirection.Descending);
-
-            foreach (string item in sortedList)
-            {
-                Console.WriteLine(item);
-            }
-
-            for (int i = 0; i < sortedList.Count; i++)
-            {
-                Console.WriteLine("regular loop: " + sortedList[i]);
-            }
-
-            Assert.AreEqual("Corey", sortedList[5]);
-
-            Console.WriteLine();
-            Console.WriteLine(sortedList.Count);
-        }
-
-        //[TestMethod()]
-        //public void TestFirstItemIssue()
-        //{
-        //    int[] intArray = { 10, 4, 6 };
-        //    SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
-
-        //    foreach (int item in sortedList)
-        //    {
-        //        Console.WriteLine(item.ToString());
-        //    }
-
-        //    sortedList.ApplySort("", ListSortDirection.Ascending);
-
-        //    Console.WriteLine();
-
-        //    foreach (int item in sortedList)
-        //    {
-        //        Console.WriteLine(item.ToString());
-        //    }
-
-        //    Console.WriteLine();
-
-        //    sortedList.ApplySort("", ListSortDirection.Descending);
-
-        //    foreach (int item in sortedList)
-        //    {
-        //        Console.WriteLine(item.ToString());
-        //    }
-        //}
-
-        [TestMethod()]
-        public void CopyTo()
-        {
-            int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
-            SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
-
-            int[] intArray2 = { 3, 75, 1222, 3333, 511, 443, 332 };
-
-            Assert.AreEqual(1222, intArray2[2]);
-
-            sortedList.ApplySort("", ListSortDirection.Descending);
-            Assert.AreEqual(44, sortedList[0], "Sorted values incorrect");
-
-            sortedList.CopyTo(intArray2, 0);
-
-            Assert.AreEqual(44, intArray2[0], "Copied values incorrect");
-            Assert.AreEqual(7, intArray2[2], "Copied values incorrect");
-
-            foreach (int item in intArray2)
-            {
-                Console.WriteLine(item.ToString());
-            }        
-        }
-
-      [TestMethod]
-      public void IndexOf()
+      foreach (int item in sortedList)
       {
-        List<string> list = new List<string>();
-
-        string barney = "Barney";
-        string charlie = "Charlie";
-        string zeke = "Zeke";
-
-        list.AddRange(new string[] { charlie, barney, zeke });
-
-        SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
-
-        Assert.AreEqual(1, sortedList.IndexOf(barney), "Unsorted index should be 1");
-
-        sortedList.ApplySort(string.Empty, System.ComponentModel.ListSortDirection.Ascending);
-
-        Assert.AreEqual(1, sortedList.IndexOf(charlie), "Sorted index should be 1");
+        Console.WriteLine(item.ToString());
       }
 
-      [TestMethod]
-      public void SourceList()
+      sortedList.RemoveSort();
+      Assert.AreEqual(false, sortedList.IsSorted);
+      Assert.AreEqual(56, sortedList[3]);
+
+      // This list dowes not support searching 
+      Assert.IsFalse(sortedList.SupportsSearching);
+      // and Find should return -1 because underlying list dows not implement IBindingList
+      Assert.AreEqual(-1, sortedList.Find("", 56));
+    }
+
+    public void sortedList_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      //called only on applysort() and removesort() 
+      Console.WriteLine("list changed");
+    }
+
+    [TestMethod()]
+    public void DescendingSort()
+    {
+      string[] strArr = { "zandy", "alex", "Chris", "bert", "alfred", "Bert", "Jimmy", "chris", "chris", "mobbit", "myper", "Corey", "Monkey" };
+      SortedBindingList<string> sortedList = new SortedBindingList<string>(strArr);
+
+      Assert.AreEqual("Bert", sortedList[5]);
+
+      sortedList.ApplySort("", ListSortDirection.Descending);
+
+      foreach (string item in sortedList)
       {
-        List<string> list = new List<string>();
-
-        string barney = "Barney";
-        string charlie = "Charlie";
-        string zeke = "Zeke";
-
-        list.AddRange(new string[] { charlie, barney, zeke });
-
-        SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
-
-        Assert.IsTrue(ReferenceEquals(list, sortedList.SourceList), "List references should match");
+        Console.WriteLine(item);
       }
 
-      [TestMethod]
-      [ExpectedException(typeof(ArgumentException))]
-      public void ApplySort_ThrowException_WhenPropertyNameNotFound()
+      for (int i = 0; i < sortedList.Count; i++)
       {
-        int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
-        SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
-        sortedList.ApplySort("NotAProperty", ListSortDirection.Ascending);
+        Console.WriteLine("regular loop: " + sortedList[i]);
       }
 
-      [TestMethod]
-      [ExpectedException(typeof(ArgumentException))]
-      public void Find_ThrowException_WhenPropertyNameNotFound()
+      Assert.AreEqual("Corey", sortedList[5]);
+
+      Console.WriteLine();
+      Console.WriteLine(sortedList.Count);
+    }
+
+    //[TestMethod()]
+    //public void TestFirstItemIssue()
+    //{
+    //    int[] intArray = { 10, 4, 6 };
+    //    SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+
+    //    foreach (int item in sortedList)
+    //    {
+    //        Console.WriteLine(item.ToString());
+    //    }
+
+    //    sortedList.ApplySort("", ListSortDirection.Ascending);
+
+    //    Console.WriteLine();
+
+    //    foreach (int item in sortedList)
+    //    {
+    //        Console.WriteLine(item.ToString());
+    //    }
+
+    //    Console.WriteLine();
+
+    //    sortedList.ApplySort("", ListSortDirection.Descending);
+
+    //    foreach (int item in sortedList)
+    //    {
+    //        Console.WriteLine(item.ToString());
+    //    }
+    //}
+
+    [TestMethod()]
+    public void CopyTo()
+    {
+      int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+      SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+
+      int[] intArray2 = { 3, 75, 1222, 3333, 511, 443, 332 };
+
+      Assert.AreEqual(1222, intArray2[2]);
+
+      sortedList.ApplySort("", ListSortDirection.Descending);
+      Assert.AreEqual(44, sortedList[0], "Sorted values incorrect");
+
+      sortedList.CopyTo(intArray2, 0);
+
+      Assert.AreEqual(44, intArray2[0], "Copied values incorrect");
+      Assert.AreEqual(7, intArray2[2], "Copied values incorrect");
+
+      foreach (int item in intArray2)
       {
-        int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
-        SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
-        sortedList.Find("NotAProperty", 7);
+        Console.WriteLine(item.ToString());
       }
     }
+
+    [TestMethod]
+    public void IndexOf()
+    {
+      List<string> list = new List<string>();
+
+      string barney = "Barney";
+      string charlie = "Charlie";
+      string zeke = "Zeke";
+
+      list.AddRange(new string[] { charlie, barney, zeke });
+
+      SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
+
+      Assert.AreEqual(1, sortedList.IndexOf(barney), "Unsorted index should be 1");
+
+      sortedList.ApplySort(string.Empty, System.ComponentModel.ListSortDirection.Ascending);
+
+      Assert.AreEqual(1, sortedList.IndexOf(charlie), "Sorted index should be 1");
+    }
+
+    [TestMethod]
+    public void SourceList()
+    {
+      List<string> list = new List<string>();
+
+      string barney = "Barney";
+      string charlie = "Charlie";
+      string zeke = "Zeke";
+
+      list.AddRange(new string[] { charlie, barney, zeke });
+
+      SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
+
+      Assert.IsTrue(ReferenceEquals(list, sortedList.SourceList), "List references should match");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void ApplySort_ThrowException_WhenPropertyNameNotFound()
+    {
+      int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+      SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+      sortedList.ApplySort("NotAProperty", ListSortDirection.Ascending);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Find_ThrowException_WhenPropertyNameNotFound()
+    {
+      int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+      SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+      sortedList.Find("NotAProperty", 7);
+    }
+
+    [TestMethod]
+    public void SimulateDataBindingAdd()
+    {
+      var source = Csla.DataPortal.Create<MyChildren>();
+      source.BeginEdit();
+      var sorted = new SortedBindingList<MyChild>(source);
+      sorted.ApplySort(MyChild.NameProperty.Name, ListSortDirection.Ascending);
+      var current = source.AddNew();
+      current.BeginEdit();
+      current.CancelEdit();
+      source.CancelEdit();
+    }
+  }
+
+  [Serializable]
+  public class MyChildren
+    : BusinessBindingListBase<MyChildren, MyChild>
+  {
+    protected override object AddNewCore()
+    {
+      var item = Csla.DataPortal.CreateChild<MyChild>();
+      Add(item);
+      return item;
+    }
+
+    [Create]
+    private void Create()
+    { }
+  }
+
+  [Serializable]
+  public class MyChild
+    : BusinessBase<MyChild>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
+    }
+
+    [CreateChild]
+    private void CreateChild()
+    {
+      using (BypassPropertyChecks)
+      {
+        Name = Guid.NewGuid().ToString();
+      }
+    }
+  }
 }

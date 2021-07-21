@@ -1,0 +1,240 @@
+.TH "Csla.Core.BindableBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.BindableBase \- This class implements INotifyPropertyChanged and INotifyPropertyChanging in a serialization-safe manner\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileObject\fP, INotifyPropertyChanged, and INotifyPropertyChanging\&.
+.PP
+Inherited by \fBCsla\&.Core\&.UndoableBase\fP, and \fBCsla\&.ReadOnlyBase< T >\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBindableBase\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "virtual bool \fBShouldHandlerSerialize\fP (PropertyChangedEventHandler value)"
+.br
+.RI "Override this method to change the default logic for determining if the event handler should be serialized "
+.ti -1c
+.RI "virtual void \fBOnPropertyChanged\fP (string propertyName)"
+.br
+.RI "Call this method to raise the PropertyChanged event for a specific property\&. "
+.ti -1c
+.RI "virtual void \fBOnMetaPropertyChanged\fP (string propertyName)"
+.br
+.ti -1c
+.RI "virtual void \fBOnPropertyChanged\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Call this method to raise the PropertyChanged event for a specific property\&. "
+.ti -1c
+.RI "virtual void \fBOnIsDirtyChanged\fP ()"
+.br
+.RI "Call this method to raise the PropertyChanged event for all object properties\&. "
+.ti -1c
+.RI "virtual void \fBOnUnknownPropertyChanged\fP ()"
+.br
+.RI "Call this method to raise the PropertyChanged event for all object properties\&. "
+.ti -1c
+.RI "virtual void \fBOnIsDirtyChanging\fP ()"
+.br
+.RI "Call this method to raise the PropertyChanging event for all object properties\&. "
+.ti -1c
+.RI "virtual void \fBOnUnknownPropertyChanging\fP ()"
+.br
+.RI "Call this method to raise the PropertyChanging event for all object properties\&. "
+.ti -1c
+.RI "virtual void \fBOnPropertyChanging\fP (string propertyName)"
+.br
+.RI "Call this method to raise the PropertyChanging event for a specific property\&. "
+.ti -1c
+.RI "virtual void \fBOnPropertyChanging\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Call this method to raise the PropertyChanging event for a specific property\&. "
+.ti -1c
+.RI "virtual bool \fBShouldHandlerSerialize\fP (PropertyChangingEventHandler value)"
+.br
+.RI "Override this method to change the default logic for determining if the event handler should be serialized "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "PropertyChangedEventHandler \fBPropertyChanged\fP"
+.br
+.RI "Implements a serialization-safe PropertyChanged event\&. "
+.ti -1c
+.RI "PropertyChangingEventHandler \fBPropertyChanging\fP"
+.br
+.RI "Implements a serialization-safe PropertyChanging event\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This class implements INotifyPropertyChanged and INotifyPropertyChanging in a serialization-safe manner\&. 
+
+
+.PP
+Definition at line 19 of file BindableBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.BindableBase\&.BindableBase ()\fC [protected]\fP"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 27 of file BindableBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnIsDirtyChanged ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanged event for all object properties\&. This method is for backward compatibility with CSLA \&.NET 1\&.x\&. 
+.PP
+Definition at line 141 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnIsDirtyChanging ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanging event for all object properties\&. This method is for backward compatibility with CSLA \&.NET 1\&.x\&. 
+.PP
+Definition at line 201 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnMetaPropertyChanged (string propertyName)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanged event for a MetaData (IsXYZ) property
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property that has changed\&.
+.RE
+.PP
+.PP
+This method may be called by properties in the business class to indicate the change in a specific property\&. 
+.PP
+Definition at line 106 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnPropertyChanged (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanged event for a specific property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP of the property that has changed\&.
+.RE
+.PP
+.PP
+This method may be called by properties in the business class to indicate the change in a specific property\&. 
+.PP
+Definition at line 127 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnPropertyChanged (string propertyName)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanged event for a specific property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property that has changed\&.
+.RE
+.PP
+.PP
+This method may be called by properties in the business class to indicate the change in a specific property\&. 
+.PP
+Definition at line 85 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnPropertyChanging (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanging event for a specific property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP of the property that has Changing\&.
+.RE
+.PP
+.PP
+This method may be called by properties in the business class to indicate the change in a specific property\&. 
+.PP
+Definition at line 253 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnPropertyChanging (string propertyName)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanging event for a specific property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property that has Changing\&.
+.RE
+.PP
+.PP
+This method may be called by properties in the business class to indicate the change in a specific property\&. 
+.PP
+Definition at line 232 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnUnknownPropertyChanged ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanged event for all object properties\&. This method is automatically called by MarkDirty\&. It actually raises PropertyChanged for an empty string, which tells data binding to refresh all properties\&. 
+.PP
+Definition at line 156 of file BindableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BindableBase\&.OnUnknownPropertyChanging ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Call this method to raise the PropertyChanging event for all object properties\&. This method is automatically called by MarkDirty\&. It actually raises PropertyChanging for an empty string, which tells data binding to refresh all properties\&. 
+.PP
+Definition at line 216 of file BindableBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BindableBase\&.ShouldHandlerSerialize (PropertyChangedEventHandler value)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to change the default logic for determining if the event handler should be serialized 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP the event handler to review
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 67 of file BindableBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BindableBase\&.ShouldHandlerSerialize (PropertyChangingEventHandler value)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to change the default logic for determining if the event handler should be serialized 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP the event handler to review
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 264 of file BindableBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "PropertyChangedEventHandler Csla\&.Core\&.BindableBase\&.PropertyChanged\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Implements a serialization-safe PropertyChanged event\&. 
+.PP
+Definition at line 39 of file BindableBase\&.cs\&.
+.SS "PropertyChangingEventHandler Csla\&.Core\&.BindableBase\&.PropertyChanging\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Implements a serialization-safe PropertyChanging event\&. 
+.PP
+Definition at line 170 of file BindableBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,178 @@
+.TH "Csla.DataPortalClient.DataPortalProxyFactory" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.DataPortalClient.DataPortalProxyFactory \- Default data portal proxy factory that creates the \fBIDataPortalProxy\fP instance to use for the \fBDataPortal\fP server call\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.DataPortalClient\&.IDataPortalProxyFactory\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBIDataPortalProxy\fP \fBCreate\fP (Type objectType)"
+.br
+.RI "Creates the \fBDataPortalProxy\fP to use for \fBDataPortal\fP call on the objectType\&. "
+.ti -1c
+.RI "void \fBResetProxyType\fP ()"
+.br
+.RI "Resets the data portal proxy type, so the next data portal call will reload the proxy type based on current configuration values\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBAddDescriptor\fP (Type objectType, \fBDataPortalProxyDescriptor\fP descriptor)"
+.br
+.RI "Add a proxy descriptor for the specified root business type\&. "
+.ti -1c
+.RI "static void \fBAddDescriptor\fP (string typeName, \fBDataPortalProxyDescriptor\fP descriptor)"
+.br
+.RI "Add a proxy descriptor for the specified root business type\&. "
+.ti -1c
+.RI "static void \fBAddDescriptor\fP (int resourceId, \fBDataPortalProxyDescriptor\fP descriptor)"
+.br
+.RI "Add a proxy descriptor for the specified root business type\&. "
+.ti -1c
+.RI "static string \fBGetTypeName\fP (Type objectType)"
+.br
+.RI "Returns a type name formatted to act as a key in the DataPortalTypeProxyDescriptors dictionary\&. "
+.ti -1c
+.RI "static string \fBGetTypeKey\fP (Type objectType)"
+.br
+.RI "Returns the key used by the proxy factory to locate a \fBDataPortalProxyDescriptor\fP in the DataPortalProxyDescriptors dictionary "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "static Dictionary< string, \fBDataPortalProxyDescriptor\fP > \fBDataPortalTypeProxyDescriptors\fP\fC [get]\fP"
+.br
+.RI "Gets the list of proxy-type mapping descriptors used to create specific proxy objects for specific business classes\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Default data portal proxy factory that creates the \fBIDataPortalProxy\fP instance to use for the \fBDataPortal\fP server call\&. 
+
+
+.PP
+Definition at line 21 of file DataPortalProxyFactory\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static void Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.AddDescriptor (int resourceId, \fBDataPortalProxyDescriptor\fP descriptor)\fC [static]\fP"
+
+.PP
+Add a proxy descriptor for the specified root business type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresourceId\fP \fBServer\fP resource id
+.br
+\fIdescriptor\fP \fBData\fP Portal proxy descriptor
+.RE
+.PP
+
+.PP
+Definition at line 141 of file DataPortalProxyFactory\&.cs\&.
+.SS "static void Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.AddDescriptor (string typeName, \fBDataPortalProxyDescriptor\fP descriptor)\fC [static]\fP"
+
+.PP
+Add a proxy descriptor for the specified root business type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItypeName\fP Type of the root business type
+.br
+\fIdescriptor\fP \fBData\fP Portal proxy descriptor
+.RE
+.PP
+
+.PP
+Definition at line 130 of file DataPortalProxyFactory\&.cs\&.
+.SS "static void Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.AddDescriptor (Type objectType, \fBDataPortalProxyDescriptor\fP descriptor)\fC [static]\fP"
+
+.PP
+Add a proxy descriptor for the specified root business type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Root business type
+.br
+\fIdescriptor\fP \fBData\fP Portal proxy descriptor
+.RE
+.PP
+
+.PP
+Definition at line 119 of file DataPortalProxyFactory\&.cs\&.
+.SS "\fBIDataPortalProxy\fP Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.Create (Type objectType)"
+
+.PP
+Creates the \fBDataPortalProxy\fP to use for \fBDataPortal\fP call on the objectType\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Root business object type
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.DataPortalClient\&.IDataPortalProxyFactory\fP\&.
+.PP
+Definition at line 30 of file DataPortalProxyFactory\&.cs\&.
+.SS "static string Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.GetTypeKey (Type objectType)\fC [static]\fP"
+
+.PP
+Returns the key used by the proxy factory to locate a \fBDataPortalProxyDescriptor\fP in the DataPortalProxyDescriptors dictionary 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Object type
+.RE
+.PP
+
+.PP
+Definition at line 164 of file DataPortalProxyFactory\&.cs\&.
+.SS "static string Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.GetTypeName (Type objectType)\fC [static]\fP"
+
+.PP
+Returns a type name formatted to act as a key in the DataPortalTypeProxyDescriptors dictionary\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Object type
+.RE
+.PP
+
+.PP
+Definition at line 152 of file DataPortalProxyFactory\&.cs\&.
+.SS "void Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.ResetProxyType ()"
+
+.PP
+Resets the data portal proxy type, so the next data portal call will reload the proxy type based on current configuration values\&. 
+.PP
+Implements \fBCsla\&.DataPortalClient\&.IDataPortalProxyFactory\fP\&.
+.PP
+Definition at line 85 of file DataPortalProxyFactory\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Dictionary<string, \fBDataPortalProxyDescriptor\fP> Csla\&.DataPortalClient\&.DataPortalProxyFactory\&.DataPortalTypeProxyDescriptors\fC [static]\fP, \fC [get]\fP"
+
+.PP
+Gets the list of proxy-type mapping descriptors used to create specific proxy objects for specific business classes\&. If a business type is not listed in this mapping then the default proxy and URL values from ApplicationContext are used to create a proxy\&.
+.PP
+The key value is the first two elements of an assembly qualified type name (e\&.g\&. 'System\&.String, mscorlib')\&.
+.PP
+Or the key value can be a resource id used to describe a business class via the DataPortalServerResource attribute\&. (e\&.g\&. 'Resource: 123')\&. 
+.PP
+Definition at line 105 of file DataPortalProxyFactory\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

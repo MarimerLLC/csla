@@ -1,0 +1,276 @@
+.TH "Csla.Server.ObjectFactory" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.ObjectFactory \- Base class to be used when creating a data portal factory object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Analyzers\&.IntegrationTests\&.B\fP, \fBCsla\&.Core\&.GraphMerger\fP, \fBCsla\&.Test\&.BypassPropertyChecks\&.TestObjectFactory\fP, \fBCsla\&.Test\&.CommandBase\&.CommandBaseTest\fP, \fBCsla\&.Test\&.DataPortal\&.FactoryBusyFactory\fP, \fBCsla\&.Test\&.DataPortalTest\&.SingleWithFactoryFactory\fP, \fBCsla\&.Test\&.ObjectFactory\&.CommandObjectFactory\fP, \fBCsla\&.Test\&.ObjectFactory\&.RootFactory3\fP, \fBCsla\&.Testing\&.Business\&.ObjectFactory\&.ObjectFactoryBusinessItemFactory\fP, and Csla\&.Validation\&.ObjectAccessor\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSetIsReadOnly\fP (object obj, bool value)"
+.br
+.RI "Sets the IsReadOnly property on the specified object, if possible\&. "
+.ti -1c
+.RI "void \fBCheckRules\fP (object obj)"
+.br
+.RI "Calls the ValidationRules\&.CheckRules() method on the specified object, if possible\&. "
+.ti -1c
+.RI "void \fBMarkOld\fP (object obj)"
+.br
+.RI "Calls the MarkOld method on the specified object, if possible\&. "
+.ti -1c
+.RI "void \fBMarkNew\fP (object obj)"
+.br
+.RI "Calls the MarkNew method on the specified object, if possible\&. "
+.ti -1c
+.RI "void \fBMarkAsChild\fP (object obj)"
+.br
+.RI "Calls the MarkAsChild method on the specified object, if possible\&. "
+.ti -1c
+.RI "void \fBLoadProperty< P >\fP (object obj, \fBPropertyInfo\fP< P > propertyInfo, P newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value\&. "
+.ti -1c
+.RI "void \fBLoadProperty\fP (object obj, \fBIPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value\&. "
+.ti -1c
+.RI "P \fBReadProperty< P >\fP (object obj, \fBPropertyInfo\fP< P > propertyInfo)"
+.br
+.RI "Reads a property's managed field value\&. "
+.ti -1c
+.RI "object \fBReadProperty\fP (object obj, \fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Reads a property's managed field value\&. "
+.ti -1c
+.RI "IDisposable \fBBypassPropertyChecks\fP (\fBCsla\&.Core\&.BusinessBase\fP businessObject)"
+.br
+.RI "By wrapping this property inside Using block you can set property values on \fIbusinessObject\fP business object without raising PropertyChanged events and checking user rights\&. "
+.ti -1c
+.RI "bool \fBFieldExists\fP (object obj, \fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Gets a value indicating whether a managed field exists for the specified property\&. "
+.ti -1c
+.RI "\fBCsla\&.Core\&.MobileList\fP< C > \fBGetDeletedList< C >\fP (object obj)"
+.br
+.RI "Gets the list of deleted items from an editable collection\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Base class to be used when creating a data portal factory object\&. 
+
+
+.PP
+Definition at line 22 of file ObjectFactory\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "IDisposable Csla\&.Server\&.ObjectFactory\&.BypassPropertyChecks (\fBCsla\&.Core\&.BusinessBase\fP businessObject)\fC [protected]\fP"
+
+.PP
+By wrapping this property inside Using block you can set property values on \fIbusinessObject\fP business object without raising PropertyChanged events and checking user rights\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbusinessObject\fP Object on with you would like to set property values 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+An instance of IDisposable object that allows bypassing of normal authorization checks during property setting\&. 
+.RE
+.PP
+
+.PP
+Definition at line 204 of file ObjectFactory\&.cs\&.
+.SS "void Csla\&.Server\&.ObjectFactory\&.CheckRules (object obj)\fC [protected]\fP"
+
+.PP
+Calls the ValidationRules\&.CheckRules() method on the specified object, if possible\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 44 of file ObjectFactory\&.cs\&.
+.SS "bool Csla\&.Server\&.ObjectFactory\&.FieldExists (object obj, \fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [protected]\fP"
+
+.PP
+Gets a value indicating whether a managed field exists for the specified property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object\&.
+.br
+\fIproperty\fP Property info object\&.
+.RE
+.PP
+
+.PP
+Definition at line 215 of file ObjectFactory\&.cs\&.
+.SS "\fBCsla\&.Core\&.MobileList\fP<C> Csla\&.Server\&.ObjectFactory\&.GetDeletedList< C > (object obj)\fC [protected]\fP"
+
+.PP
+Gets the list of deleted items from an editable collection\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIC\fP Type of child objects in the colletion\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Editable collection object\&.
+.RE
+.PP
+
+.PP
+Definition at line 230 of file ObjectFactory\&.cs\&.
+.SS "void Csla\&.Server\&.ObjectFactory\&.LoadProperty (object obj, \fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 141 of file ObjectFactory\&.cs\&.
+.SS "void \fBCsla\&.Server\&.ObjectFactory\&.LoadProperty\fP< P > (object obj, \fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 120 of file ObjectFactory\&.cs\&.
+.SS "void Csla\&.Server\&.ObjectFactory\&.MarkAsChild (object obj)\fC [protected]\fP"
+
+.PP
+Calls the MarkAsChild method on the specified object, if possible\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 92 of file ObjectFactory\&.cs\&.
+.SS "void Csla\&.Server\&.ObjectFactory\&.MarkNew (object obj)\fC [protected]\fP"
+
+.PP
+Calls the MarkNew method on the specified object, if possible\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 76 of file ObjectFactory\&.cs\&.
+.SS "void Csla\&.Server\&.ObjectFactory\&.MarkOld (object obj)\fC [protected]\fP"
+
+.PP
+Calls the MarkOld method on the specified object, if possible\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 60 of file ObjectFactory\&.cs\&.
+.SS "object Csla\&.Server\&.ObjectFactory\&.ReadProperty (object obj, \fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP"
+
+.PP
+Reads a property's managed field value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called\&. 
+.PP
+Definition at line 180 of file ObjectFactory\&.cs\&.
+.SS "P \fBCsla\&.Server\&.ObjectFactory\&.ReadProperty\fP< P > (object obj, \fBPropertyInfo\fP< P > propertyInfo)\fC [protected]\fP"
+
+.PP
+Reads a property's managed field value\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called\&. 
+.PP
+Definition at line 162 of file ObjectFactory\&.cs\&.
+.SS "void Csla\&.Server\&.ObjectFactory\&.SetIsReadOnly (object obj, bool value)\fC [protected]\fP"
+
+.PP
+Sets the IsReadOnly property on the specified object, if possible\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to operate\&.
+.br
+\fIvalue\fP New value for IsReadOnly\&.
+.RE
+.PP
+
+.PP
+Definition at line 30 of file ObjectFactory\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

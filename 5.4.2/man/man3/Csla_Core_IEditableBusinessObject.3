@@ -1,0 +1,80 @@
+.TH "Csla.Core.IEditableBusinessObject" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IEditableBusinessObject \- Defines the common methods required by all editable CSLA single objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.IBusinessObject\fP, \fBCsla\&.Core\&.ISupportUndo\fP, \fBCsla\&.Core\&.IUndoableObject\fP, and \fBCsla\&.Core\&.ITrackStatus\fP\&.
+.PP
+Inherited by \fBCsla\&.Core\&.BusinessBase\fP, \fBCsla\&.IBusinessBase\fP, and \fBCsla\&.Test\&.ChildrenByInterface\&.IItem\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBDeleteChild\fP ()"
+.br
+.RI "Called by a parent object to mark the child for deferred deletion\&. "
+.ti -1c
+.RI "void \fBSetParent\fP (\fBIParent\fP parent)"
+.br
+.RI "Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. "
+.ti -1c
+.RI "void \fBDelete\fP ()"
+.br
+.RI "Marks the object for deletion\&. The object will be deleted as part of the next save operation\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBEditLevelAdded\fP\fC [get, set]\fP"
+.br
+.RI "For internal use only!! "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Defines the common methods required by all editable CSLA single objects\&. 
+
+It is strongly recommended that the implementations of the methods in this interface be made Private so as to not clutter up the native interface of the collection objects\&. 
+.PP
+Definition at line 22 of file IEditableBusinessObject\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Core\&.IEditableBusinessObject\&.Delete ()"
+
+.PP
+Marks the object for deletion\&. The object will be deleted as part of the next save operation\&. 
+.PP
+Implemented in \fBCsla\&.Core\&.BusinessBase\fP\&.
+.SS "void Csla\&.Core\&.IEditableBusinessObject\&.DeleteChild ()"
+
+.PP
+Called by a parent object to mark the child for deferred deletion\&. 
+.SS "void Csla\&.Core\&.IEditableBusinessObject\&.SetParent (\fBIParent\fP parent)"
+
+.PP
+Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP A reference to the parent collection object\&.
+.RE
+.PP
+
+.SH "Property Documentation"
+.PP 
+.SS "int Csla\&.Core\&.IEditableBusinessObject\&.EditLevelAdded\fC [get]\fP, \fC [set]\fP"
+
+.PP
+For internal use only!! Altering this value will almost certainly break your code\&. This property is for use by the parent collection only! 
+.PP
+Definition at line 32 of file IEditableBusinessObject\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

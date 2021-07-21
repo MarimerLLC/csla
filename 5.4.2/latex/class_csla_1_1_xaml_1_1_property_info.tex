@@ -1,0 +1,623 @@
+\hypertarget{class_csla_1_1_xaml_1_1_property_info}{}\doxysection{Csla.\+Xaml.\+Property\+Info Class Reference}
+\label{class_csla_1_1_xaml_1_1_property_info}\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+
+
+Expose metastate information about a property.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+Property\+Info\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.854305cm]{class_csla_1_1_xaml_1_1_property_info}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}{Property\+Info}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a271369886e452befd69868f89875303d}{Property\+Info}} (bool testing)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object for testing. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a2461d6f77532b20474149e91d773df98}{Update\+State}} ()
+\begin{DoxyCompactList}\small\item\em Updates the metastate values on control based on the current state of the business object and property. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_ab8d4d15e180afa9e2113ec964880b64e}{Broken\+Rules\+Property}}
+\begin{DoxyCompactList}\small\item\em Gets the broken rules collection from the business object. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a634f233b4445c9d041b16635bed7a090}{My\+Data\+Context\+Property}}
+\begin{DoxyCompactList}\small\item\em Used to monitor for changes in the binding path. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a415e64e0d6fff75d8fee568342eb54fb}{Relative\+Binding\+Property}}
+\begin{DoxyCompactList}\small\item\em Used to monitor for changes in the binding path. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_aa7dca4ca2beb086a4397093788ac8a1f}{Property\+Property}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the source business property to which this control is bound. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual Binding\+Expression \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_ad229b9a36f7d6af171a8f8d033e36d8d}{Parse\+Relative\+Binding}} (Binding\+Expression source\+Binding)
+\begin{DoxyCompactList}\small\item\em Checks a binding expression to see if it is a relative source binding used in a control template. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a31ddffe87b698a301bab51aa828d8720}{Set\+Source}} (bool property\+Value\+Changed)
+\begin{DoxyCompactList}\small\item\em Sets the source binding and updates status. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_ae70ce0f05ed3f632a759eb6eca9b7c93}{Set\+Source}} (object data\+Item)
+\begin{DoxyCompactList}\small\item\em Sets the source binding and updates status. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_afc2178174032ae2d0d86ed845c2c4f80}{Get\+Real\+Source}} (object source, string binding\+Path)
+\begin{DoxyCompactList}\small\item\em Gets the real source helper method. \end{DoxyCompactList}\item 
+Property\+Path \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_af66267e9d3e615d0eb08cd6cc1c340b8}{Get\+Relative\+Path}} (object source, string binding\+Path)
+\begin{DoxyCompactList}\small\item\em Gets the part of the binding path relevant to the given source. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a95f366d069ad6b82b7d15f8ab778a888}{On\+Property\+Changed}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Raises the Property\+Changed event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Observable\+Collection$<$ \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rule}{Broken\+Rule}} $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_ad4c8173aa478a810e946d4264afbe415}{Broken\+Rules}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the broken rules collection from the business object. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a27f3f0c1fb7061d670d77024a7470753}{Source}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the Source. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a26341330ff0c06b38edca93f82e1ab06}{Binding\+Path}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the binding path. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_adf8127f11978837eb9e3a0e11917be19}{Property}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the source business property to which this control is bound. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a125b887ed78119d44ae3afe5cc1ce235}{Error\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the validation error messages for a property on the Model \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a0ffb507f19747ad8b02469cb259922a9}{Warning\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the validation warning messages for a property on the Model \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a205b979942af258f0fa60aae3ebfd887}{Information\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the validation information messages for a property on the Model \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a02c1656f8d396854a43a03464bb4de2a}{Value}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets and sets the value of the property on the business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a19882ff4659e4cff65a8c86f90e12c84}{Can\+Read}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the user is authorized to read the property. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a2fc7b8bd1f4d502111ab0d58127294af}{Can\+Write}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the user is authorized to write the property. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a29111b584c150d41483306b8a72d0399}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the property is busy with an asynchronous operation. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_ac701092da1c06c30cf418eebd557ae03}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the property is valid. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_csla_1_1_rules_ae8e5d0a40ed4977a9b636667d06dcb50}{Rule\+Severity}} \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a241ac9b38943122dc07696d76a5186e2}{Rule\+Severity}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating the worst severity of all broken rules for this property (if Is\+Valid is false). \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a2224997968eb253d5d668e0c0b1016b7}{Rule\+Description}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the description of the most severe broken rule for this property. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_ad9b88ea4ef76956bd2c5e24c58b7344b}{Custom\+Tag}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets an arbitrary value associated with this \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info}{Property\+Info}} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+Property\+Changed\+Event\+Handler \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a7910310eccc68815eb24e657d63d26fa}{Property\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when a property has changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Expose metastate information about a property. 
+
+
+
+Definition at line 38 of file Property\+Info.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}\label{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!PropertyInfo@{PropertyInfo}}
+\index{PropertyInfo@{PropertyInfo}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{PropertyInfo()}{PropertyInfo()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Xaml.\+Property\+Info.\+Property\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 47 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a271369886e452befd69868f89875303d}\label{class_csla_1_1_xaml_1_1_property_info_a271369886e452befd69868f89875303d}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!PropertyInfo@{PropertyInfo}}
+\index{PropertyInfo@{PropertyInfo}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{PropertyInfo()}{PropertyInfo()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Xaml.\+Property\+Info.\+Property\+Info (\begin{DoxyParamCaption}\item[{bool}]{testing }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object for testing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em testing} & \mbox{\hyperlink{namespace_csla_1_1_test}{Test}} mode parameter.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 70 of file Property\+Info.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_afc2178174032ae2d0d86ed845c2c4f80}\label{class_csla_1_1_xaml_1_1_property_info_afc2178174032ae2d0d86ed845c2c4f80}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!GetRealSource@{GetRealSource}}
+\index{GetRealSource@{GetRealSource}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{GetRealSource()}{GetRealSource()}}
+{\footnotesize\ttfamily object Csla.\+Xaml.\+Property\+Info.\+Get\+Real\+Source (\begin{DoxyParamCaption}\item[{object}]{source,  }\item[{string}]{binding\+Path }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets the real source helper method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & The source.\\
+\hline
+{\em binding\+Path} & The binding path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 457 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_af66267e9d3e615d0eb08cd6cc1c340b8}\label{class_csla_1_1_xaml_1_1_property_info_af66267e9d3e615d0eb08cd6cc1c340b8}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!GetRelativePath@{GetRelativePath}}
+\index{GetRelativePath@{GetRelativePath}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{GetRelativePath()}{GetRelativePath()}}
+{\footnotesize\ttfamily Property\+Path Csla.\+Xaml.\+Property\+Info.\+Get\+Relative\+Path (\begin{DoxyParamCaption}\item[{object}]{source,  }\item[{string}]{binding\+Path }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets the part of the binding path relevant to the given source. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & The source.\\
+\hline
+{\em binding\+Path} & The binding path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 483 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a95f366d069ad6b82b7d15f8ab778a888}\label{class_csla_1_1_xaml_1_1_property_info_a95f366d069ad6b82b7d15f8ab778a888}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!OnPropertyChanged@{OnPropertyChanged}}
+\index{OnPropertyChanged@{OnPropertyChanged}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{OnPropertyChanged()}{OnPropertyChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Property\+Info.\+On\+Property\+Changed (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Property\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the changed property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 878 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_ad229b9a36f7d6af171a8f8d033e36d8d}\label{class_csla_1_1_xaml_1_1_property_info_ad229b9a36f7d6af171a8f8d033e36d8d}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!ParseRelativeBinding@{ParseRelativeBinding}}
+\index{ParseRelativeBinding@{ParseRelativeBinding}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{ParseRelativeBinding()}{ParseRelativeBinding()}}
+{\footnotesize\ttfamily virtual Binding\+Expression Csla.\+Xaml.\+Property\+Info.\+Parse\+Relative\+Binding (\begin{DoxyParamCaption}\item[{Binding\+Expression}]{source\+Binding }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Checks a binding expression to see if it is a relative source binding used in a control template. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Binding} & The binding expression to parse.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the source binding is a relative source binding, this method finds the proper dependency property on the parent control and returns the binding expression for that property.
+\end{DoxyReturn}
+
+
+Definition at line 317 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a31ddffe87b698a301bab51aa828d8720}\label{class_csla_1_1_xaml_1_1_property_info_a31ddffe87b698a301bab51aa828d8720}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!SetSource@{SetSource}}
+\index{SetSource@{SetSource}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{SetSource()}{SetSource()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Property\+Info.\+Set\+Source (\begin{DoxyParamCaption}\item[{bool}]{property\+Value\+Changed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Sets the source binding and updates status. 
+
+
+
+Definition at line 361 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_ae70ce0f05ed3f632a759eb6eca9b7c93}\label{class_csla_1_1_xaml_1_1_property_info_ae70ce0f05ed3f632a759eb6eca9b7c93}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!SetSource@{SetSource}}
+\index{SetSource@{SetSource}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{SetSource()}{SetSource()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Property\+Info.\+Set\+Source (\begin{DoxyParamCaption}\item[{object}]{data\+Item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Sets the source binding and updates status. 
+
+
+
+Definition at line 373 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a2461d6f77532b20474149e91d773df98}\label{class_csla_1_1_xaml_1_1_property_info_a2461d6f77532b20474149e91d773df98}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!UpdateState@{UpdateState}}
+\index{UpdateState@{UpdateState}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{UpdateState()}{UpdateState()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Property\+Info.\+Update\+State (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Updates the metastate values on control based on the current state of the business object and property. 
+
+
+
+Definition at line 790 of file Property\+Info.\+cs.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_ab8d4d15e180afa9e2113ec964880b64e}\label{class_csla_1_1_xaml_1_1_property_info_ab8d4d15e180afa9e2113ec964880b64e}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!BrokenRulesProperty@{BrokenRulesProperty}}
+\index{BrokenRulesProperty@{BrokenRulesProperty}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{BrokenRulesProperty}{BrokenRulesProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Property\+Info.\+Broken\+Rules\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= DependencyProperty.Register(}
+\DoxyCodeLine{      \textcolor{stringliteral}{"{}BrokenRules"{}},}
+\DoxyCodeLine{      typeof(ObservableCollection<BrokenRule>),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}{PropertyInfo}}),}
+\DoxyCodeLine{      \textcolor{keyword}{null})}
+
+\end{DoxyCode}
+
+
+Gets the broken rules collection from the business object. 
+
+
+
+Definition at line 100 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a634f233b4445c9d041b16635bed7a090}\label{class_csla_1_1_xaml_1_1_property_info_a634f233b4445c9d041b16635bed7a090}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!MyDataContextProperty@{MyDataContextProperty}}
+\index{MyDataContextProperty@{MyDataContextProperty}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{MyDataContextProperty}{MyDataContextProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Property\+Info.\+My\+Data\+Context\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{    DependencyProperty.Register(\textcolor{stringliteral}{"{}MyDataContext"{}},}
+\DoxyCodeLine{                                typeof(Object),}
+\DoxyCodeLine{                                typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}{PropertyInfo}}),}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{                                \textcolor{keyword}{new} PropertyMetadata(MyDataContextPropertyChanged))}
+
+\end{DoxyCode}
+
+
+Used to monitor for changes in the binding path. 
+
+
+
+Definition at line 127 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_aa7dca4ca2beb086a4397093788ac8a1f}\label{class_csla_1_1_xaml_1_1_property_info_aa7dca4ca2beb086a4397093788ac8a1f}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!PropertyProperty@{PropertyProperty}}
+\index{PropertyProperty@{PropertyProperty}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{PropertyProperty}{PropertyProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Property\+Info.\+Property\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= DependencyProperty.Register(}
+\DoxyCodeLine{      \textcolor{stringliteral}{"{}Property"{}},}
+\DoxyCodeLine{      typeof(\textcolor{keywordtype}{object}),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}{PropertyInfo}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata(\textcolor{keyword}{new} \textcolor{keywordtype}{object}(), (o, e) =>}
+\DoxyCodeLine{      \{}
+\DoxyCodeLine{        \textcolor{keywordtype}{bool} changed = \textcolor{keyword}{true};}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} (e.NewValue == \textcolor{keyword}{null})}
+\DoxyCodeLine{        \{}
+\DoxyCodeLine{          if (e.OldValue == null)}
+\DoxyCodeLine{            changed = false;}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{        \textcolor{keywordflow}{else} if (e.NewValue.Equals(e.OldValue))}
+\DoxyCodeLine{        \{}
+\DoxyCodeLine{          changed = false;}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{        ((\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}{PropertyInfo}})o).SetSource(changed);}
+\DoxyCodeLine{      \}))}
+
+\end{DoxyCode}
+
+
+Gets or sets the source business property to which this control is bound. 
+
+
+
+Definition at line 273 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a415e64e0d6fff75d8fee568342eb54fb}\label{class_csla_1_1_xaml_1_1_property_info_a415e64e0d6fff75d8fee568342eb54fb}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!RelativeBindingProperty@{RelativeBindingProperty}}
+\index{RelativeBindingProperty@{RelativeBindingProperty}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{RelativeBindingProperty}{RelativeBindingProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Property\+Info.\+Relative\+Binding\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{    DependencyProperty.Register(\textcolor{stringliteral}{"{}RelativeBinding"{}},}
+\DoxyCodeLine{                                typeof(Object),}
+\DoxyCodeLine{                                typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info_a4e3d7c45bccbe47e5e8bb7ebabf9288c}{PropertyInfo}}),}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{                                \textcolor{keyword}{new} PropertyMetadata(RelativeBindingPropertyChanged))}
+
+\end{DoxyCode}
+
+
+Used to monitor for changes in the binding path. 
+
+
+
+Definition at line 153 of file Property\+Info.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a26341330ff0c06b38edca93f82e1ab06}\label{class_csla_1_1_xaml_1_1_property_info_a26341330ff0c06b38edca93f82e1ab06}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!BindingPath@{BindingPath}}
+\index{BindingPath@{BindingPath}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{BindingPath}{BindingPath}}
+{\footnotesize\ttfamily string Csla.\+Xaml.\+Property\+Info.\+Binding\+Path\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets the binding path. 
+
+The binding path.
+
+Definition at line 183 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_ad4c8173aa478a810e946d4264afbe415}\label{class_csla_1_1_xaml_1_1_property_info_ad4c8173aa478a810e946d4264afbe415}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!BrokenRules@{BrokenRules}}
+\index{BrokenRules@{BrokenRules}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{BrokenRules}{BrokenRules}}
+{\footnotesize\ttfamily Observable\+Collection$<$\mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rule}{Broken\+Rule}}$>$ Csla.\+Xaml.\+Property\+Info.\+Broken\+Rules\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the broken rules collection from the business object. 
+
+
+
+Definition at line 111 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a19882ff4659e4cff65a8c86f90e12c84}\label{class_csla_1_1_xaml_1_1_property_info_a19882ff4659e4cff65a8c86f90e12c84}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!CanRead@{CanRead}}
+\index{CanRead@{CanRead}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{CanRead}{CanRead}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Property\+Info.\+Can\+Read\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the user is authorized to read the property. 
+
+
+
+Definition at line 649 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a2fc7b8bd1f4d502111ab0d58127294af}\label{class_csla_1_1_xaml_1_1_property_info_a2fc7b8bd1f4d502111ab0d58127294af}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!CanWrite@{CanWrite}}
+\index{CanWrite@{CanWrite}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{CanWrite}{CanWrite}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Property\+Info.\+Can\+Write\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the user is authorized to write the property. 
+
+
+
+Definition at line 668 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_ad9b88ea4ef76956bd2c5e24c58b7344b}\label{class_csla_1_1_xaml_1_1_property_info_ad9b88ea4ef76956bd2c5e24c58b7344b}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!CustomTag@{CustomTag}}
+\index{CustomTag@{CustomTag}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{CustomTag}{CustomTag}}
+{\footnotesize\ttfamily object Csla.\+Xaml.\+Property\+Info.\+Custom\+Tag\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets an arbitrary value associated with this \mbox{\hyperlink{class_csla_1_1_xaml_1_1_property_info}{Property\+Info}} instance. 
+
+
+
+Definition at line 765 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a125b887ed78119d44ae3afe5cc1ce235}\label{class_csla_1_1_xaml_1_1_property_info_a125b887ed78119d44ae3afe5cc1ce235}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!ErrorText@{ErrorText}}
+\index{ErrorText@{ErrorText}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{ErrorText}{ErrorText}}
+{\footnotesize\ttfamily string Csla.\+Xaml.\+Property\+Info.\+Error\+Text\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the validation error messages for a property on the Model 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 574 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a205b979942af258f0fa60aae3ebfd887}\label{class_csla_1_1_xaml_1_1_property_info_a205b979942af258f0fa60aae3ebfd887}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!InformationText@{InformationText}}
+\index{InformationText@{InformationText}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{InformationText}{InformationText}}
+{\footnotesize\ttfamily string Csla.\+Xaml.\+Property\+Info.\+Information\+Text\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the validation information messages for a property on the Model 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 606 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a29111b584c150d41483306b8a72d0399}\label{class_csla_1_1_xaml_1_1_property_info_a29111b584c150d41483306b8a72d0399}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Property\+Info.\+Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the property is busy with an asynchronous operation. 
+
+
+
+Definition at line 687 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_ac701092da1c06c30cf418eebd557ae03}\label{class_csla_1_1_xaml_1_1_property_info_ac701092da1c06c30cf418eebd557ae03}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Property\+Info.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the property is valid. 
+
+
+
+Definition at line 706 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_adf8127f11978837eb9e3a0e11917be19}\label{class_csla_1_1_xaml_1_1_property_info_adf8127f11978837eb9e3a0e11917be19}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!Property@{Property}}
+\index{Property@{Property}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Property}{Property}}
+{\footnotesize\ttfamily object Csla.\+Xaml.\+Property\+Info.\+Property\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the source business property to which this control is bound. 
+
+
+
+Definition at line 297 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a2224997968eb253d5d668e0c0b1016b7}\label{class_csla_1_1_xaml_1_1_property_info_a2224997968eb253d5d668e0c0b1016b7}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!RuleDescription@{RuleDescription}}
+\index{RuleDescription@{RuleDescription}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{RuleDescription}{RuleDescription}}
+{\footnotesize\ttfamily string Csla.\+Xaml.\+Property\+Info.\+Rule\+Description\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the description of the most severe broken rule for this property. 
+
+
+
+Definition at line 746 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a241ac9b38943122dc07696d76a5186e2}\label{class_csla_1_1_xaml_1_1_property_info_a241ac9b38943122dc07696d76a5186e2}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!RuleSeverity@{RuleSeverity}}
+\index{RuleSeverity@{RuleSeverity}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{RuleSeverity}{RuleSeverity}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_csla_1_1_rules_ae8e5d0a40ed4977a9b636667d06dcb50}{Rule\+Severity}} Csla.\+Xaml.\+Property\+Info.\+Rule\+Severity\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating the worst severity of all broken rules for this property (if Is\+Valid is false). 
+
+
+
+Definition at line 727 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a27f3f0c1fb7061d670d77024a7470753}\label{class_csla_1_1_xaml_1_1_property_info_a27f3f0c1fb7061d670d77024a7470753}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!Source@{Source}}
+\index{Source@{Source}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Source}{Source}}
+{\footnotesize\ttfamily object Csla.\+Xaml.\+Property\+Info.\+Source\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets the Source. 
+
+The source.
+
+Definition at line 177 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a02c1656f8d396854a43a03464bb4de2a}\label{class_csla_1_1_xaml_1_1_property_info_a02c1656f8d396854a43a03464bb4de2a}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!Value@{Value}}
+\index{Value@{Value}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily object Csla.\+Xaml.\+Property\+Info.\+Value\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets and sets the value of the property on the business object. 
+
+
+
+Definition at line 626 of file Property\+Info.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a0ffb507f19747ad8b02469cb259922a9}\label{class_csla_1_1_xaml_1_1_property_info_a0ffb507f19747ad8b02469cb259922a9}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!WarningText@{WarningText}}
+\index{WarningText@{WarningText}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{WarningText}{WarningText}}
+{\footnotesize\ttfamily string Csla.\+Xaml.\+Property\+Info.\+Warning\+Text\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the validation warning messages for a property on the Model 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 590 of file Property\+Info.\+cs.
+
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_property_info_a7910310eccc68815eb24e657d63d26fa}\label{class_csla_1_1_xaml_1_1_property_info_a7910310eccc68815eb24e657d63d26fa}} 
+\index{Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}!PropertyChanged@{PropertyChanged}}
+\index{PropertyChanged@{PropertyChanged}!Csla.Xaml.PropertyInfo@{Csla.Xaml.PropertyInfo}}
+\doxysubsubsection{\texorpdfstring{PropertyChanged}{PropertyChanged}}
+{\footnotesize\ttfamily Property\+Changed\+Event\+Handler Csla.\+Xaml.\+Property\+Info.\+Property\+Changed}
+
+
+
+Event raised when a property has changed. 
+
+
+
+Definition at line 872 of file Property\+Info.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_csla_8_xaml_8_shared_2_property_info_8cs}{Property\+Info.\+cs}}\end{DoxyCompactItemize}

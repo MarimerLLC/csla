@@ -1,0 +1,121 @@
+\hypertarget{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object}{}\doxysection{Csla.\+Serialization.\+Mobile.\+IMobile\+Object Interface Reference}
+\label{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object}\index{Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}}
+
+
+Interface to be implemented by any object that supports serialization by the Serialization\+Formatter\+Factory.\+Get\+Formatter().  
+
+
+Inheritance diagram for Csla.\+Serialization.\+Mobile.\+IMobile\+Object\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a46e8b7f4faf31b5460c2837a1ca30a1b}{Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should serialize its data. The data should be serialized into the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a075ef2e4374b35dd1be405420e85aa5f}{Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should serialize its child references. The data should be serialized into the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_aa9683c8340d844e4df17ee21acf464c0}{Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should be deserialized. The data should be deserialized from the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a58c04f45902519586ee9e7f64bddc0ee}{Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should deserialize its child references. The data should be deserialized from the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface to be implemented by any object that supports serialization by the Serialization\+Formatter\+Factory.\+Get\+Formatter(). 
+
+
+
+Definition at line 15 of file IMobile\+Object.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a075ef2e4374b35dd1be405420e85aa5f}\label{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a075ef2e4374b35dd1be405420e85aa5f}} 
+\index{Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}!GetChildren@{GetChildren}}
+\index{GetChildren@{GetChildren}!Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}}
+\doxysubsubsection{\texorpdfstring{GetChildren()}{GetChildren()}}
+{\footnotesize\ttfamily void Csla.\+Serialization.\+Mobile.\+IMobile\+Object.\+Get\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})}
+
+
+
+Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should serialize its child references. The data should be serialized into the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object to contain the serialized data. \\
+\hline
+{\em formatter} & Reference to the formatter performing the serialization. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{struct_csla_1_1_smart_date_a20c5d7452036dd8fd409793385108468}{Csla.\+Smart\+Date}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_a2ba889ee13e0855b2456b5809988b3ff}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_child_data_ac329cdfacb270240a6ace259c4b1079d}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Child\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_field_data_a7df492d413e9a3dbc8e15de3717fdd89}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Field\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_null_placeholder_a9fd9e2f094835624126b3259425b276e}{Csla.\+Serialization.\+Mobile.\+Null\+Placeholder}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_primitive_criteria_a7d6c895453d4cb8f8ec891c9c05c7ff5}{Csla.\+Data\+Portal\+Client.\+Primitive\+Criteria}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a46e8b7f4faf31b5460c2837a1ca30a1b}\label{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a46e8b7f4faf31b5460c2837a1ca30a1b}} 
+\index{Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}!GetState@{GetState}}
+\index{GetState@{GetState}!Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}}
+\doxysubsubsection{\texorpdfstring{GetState()}{GetState()}}
+{\footnotesize\ttfamily void Csla.\+Serialization.\+Mobile.\+IMobile\+Object.\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})}
+
+
+
+Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should serialize its data. The data should be serialized into the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object to contain the serialized data. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{struct_csla_1_1_smart_date_a557769d94f82f10ee2d8d3ed530e9e8e}{Csla.\+Smart\+Date}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_a81d228002efac77177d2aae4699fb603}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_child_data_abe7cf8e122af3c5879134b1a9ee7ff73}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Child\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_field_data_ab4e0722bd115adc272693fc0de5c5ce6}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Field\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_null_placeholder_a8633caefb8bed01d1d00fcf24e4a3fa8}{Csla.\+Serialization.\+Mobile.\+Null\+Placeholder}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_primitive_criteria_a6420e9ca06ca2ce56865158ba11ea178}{Csla.\+Data\+Portal\+Client.\+Primitive\+Criteria}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a58c04f45902519586ee9e7f64bddc0ee}\label{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_a58c04f45902519586ee9e7f64bddc0ee}} 
+\index{Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}!SetChildren@{SetChildren}}
+\index{SetChildren@{SetChildren}!Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}}
+\doxysubsubsection{\texorpdfstring{SetChildren()}{SetChildren()}}
+{\footnotesize\ttfamily void Csla.\+Serialization.\+Mobile.\+IMobile\+Object.\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})}
+
+
+
+Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should deserialize its child references. The data should be deserialized from the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the serialized data. \\
+\hline
+{\em formatter} & Reference to the formatter performing the deserialization. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{struct_csla_1_1_smart_date_a7bcfbdba08dc528c8acb9dbcf80585a3}{Csla.\+Smart\+Date}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_ae2e19593d8e471d6d7098a1a098eecf8}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_child_data_a719409ff48c26b0012a6a69e1a3f18a1}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Child\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_field_data_a8b434e83ba8ba8916e0301e6611475ce}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Field\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_null_placeholder_a738229651bc180ee59acfd7914ebf866}{Csla.\+Serialization.\+Mobile.\+Null\+Placeholder}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_primitive_criteria_a385554fd703956c049a6608f3f49a78f}{Csla.\+Data\+Portal\+Client.\+Primitive\+Criteria}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_aa9683c8340d844e4df17ee21acf464c0}\label{interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_aa9683c8340d844e4df17ee21acf464c0}} 
+\index{Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}!SetState@{SetState}}
+\index{SetState@{SetState}!Csla.Serialization.Mobile.IMobileObject@{Csla.Serialization.Mobile.IMobileObject}}
+\doxysubsubsection{\texorpdfstring{SetState()}{SetState()}}
+{\footnotesize\ttfamily void Csla.\+Serialization.\+Mobile.\+IMobile\+Object.\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})}
+
+
+
+Method called by \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} when an object should be deserialized. The data should be deserialized from the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the serialized data. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{struct_csla_1_1_smart_date_ae5b63bff3d3e9cb538eda5821d465f16}{Csla.\+Smart\+Date}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_a9d537867e5331f8e4d000effbf25a0f4}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_child_data_a20f40ce01f2e4ea2ee4d3e938b66a65f}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Child\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_field_data_a65d01b72daa5f80d6a1cb9f2487ea0e3}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info.\+Field\+Data}}, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_null_placeholder_a57228e31a48ab10f8b7cbbb812c9847e}{Csla.\+Serialization.\+Mobile.\+Null\+Placeholder}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_primitive_criteria_a41cf09399c812624a45d299346870348}{Csla.\+Data\+Portal\+Client.\+Primitive\+Criteria}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Serialization/\+Mobile/\mbox{\hyperlink{_i_mobile_object_8cs}{IMobile\+Object.\+cs}}\end{DoxyCompactItemize}

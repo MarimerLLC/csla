@@ -1,0 +1,262 @@
+\hypertarget{class_csla_1_1_reflection_1_1_late_bound_object}{}\doxysection{Csla.\+Reflection.\+Late\+Bound\+Object Class Reference}
+\label{class_csla_1_1_reflection_1_1_late_bound_object}\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+
+
+Enables simple invocation of methods against the contained object using late binding.  
+
+
+
+
+Inherited by Csla.\+Server.\+Data\+Portal\+Target.
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_aadf05e5ef6f8229f49d97c317ce0ddc3}{Late\+Bound\+Object}} (Type object\+Type)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the specified type and contains it within a new \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object}{Late\+Bound\+Object}}. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a5f1a14195a0530c625b1e96fecdc8d7b}{Late\+Bound\+Object}} (object instance)
+\begin{DoxyCompactList}\small\item\em Contains the provided object within a new \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object}{Late\+Bound\+Object}}. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a873e4fe608a127b0a7607b4337ae9ded}{Call\+Method\+If\+Implemented}} (string method)
+\begin{DoxyCompactList}\small\item\em Uses reflection to dynamically invoke a method if that method is implemented on the target object. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a64e5c6b1b222f0a3d4d08d52dc5ddd45}{Call\+Method\+If\+Implemented}} (string method, params object\mbox{[}$\,$\mbox{]} parameters)
+\begin{DoxyCompactList}\small\item\em Uses reflection to dynamically invoke a method if that method is implemented on the target object. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a6b29e35fb897eccff689bf2945a306ef}{Call\+Method}} (string method)
+\begin{DoxyCompactList}\small\item\em Uses reflection to dynamically invoke a method, throwing an exception if it is not implemented on the target object. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_ae2ac20f6b989996eba400566e152a0de}{Call\+Method}} (string method, params object\mbox{[}$\,$\mbox{]} parameters)
+\begin{DoxyCompactList}\small\item\em Uses reflection to dynamically invoke a method, throwing an exception if it is not implemented on the target object. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a6a0b90167cac0c737bbeaed01a1ac2eb}{Call\+Method\+Try\+Async}} (string method\+Name)
+\begin{DoxyCompactList}\small\item\em Invokes a method using the await keyword if the method returns Task, otherwise synchronously invokes the method. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a12eb484465ac83009951f4a757816dbe}{Call\+Method\+Try\+Async}} (string method\+Name, params object\mbox{[}$\,$\mbox{]} parameters)
+\begin{DoxyCompactList}\small\item\em Invokes a method using the await keyword if the method returns Task, otherwise synchronously invokes the method. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_a94a7935950ec5ee8a460d12b9440a007}{Call\+Method\+Try\+Async\+DI$<$ T $>$}} (bool is\+Sync, params object\mbox{[}$\,$\mbox{]} parameters)
+\begin{DoxyCompactList}\small\item\em Invokes a method using the await keyword if the method returns Task, otherwise synchronously invokes the method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+object \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object_aeb380e0390026ee2e83e96422a26f8cd}{Instance}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Object instance managed by \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object}{Late\+Bound\+Object}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Enables simple invocation of methods against the contained object using late binding. 
+
+
+
+Definition at line 19 of file Late\+Bound\+Object.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_aadf05e5ef6f8229f49d97c317ce0ddc3}\label{class_csla_1_1_reflection_1_1_late_bound_object_aadf05e5ef6f8229f49d97c317ce0ddc3}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!LateBoundObject@{LateBoundObject}}
+\index{LateBoundObject@{LateBoundObject}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{LateBoundObject()}{LateBoundObject()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Reflection.\+Late\+Bound\+Object.\+Late\+Bound\+Object (\begin{DoxyParamCaption}\item[{Type}]{object\+Type }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the specified type and contains it within a new \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object}{Late\+Bound\+Object}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of object to create. \\
+\hline
+\end{DoxyParams}
+
+
+The specified type must implement a default constructor. 
+
+Definition at line 38 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a5f1a14195a0530c625b1e96fecdc8d7b}\label{class_csla_1_1_reflection_1_1_late_bound_object_a5f1a14195a0530c625b1e96fecdc8d7b}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!LateBoundObject@{LateBoundObject}}
+\index{LateBoundObject@{LateBoundObject}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{LateBoundObject()}{LateBoundObject()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Reflection.\+Late\+Bound\+Object.\+Late\+Bound\+Object (\begin{DoxyParamCaption}\item[{object}]{instance }\end{DoxyParamCaption})}
+
+
+
+Contains the provided object within a new \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object}{Late\+Bound\+Object}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & Object to contain. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 49 of file Late\+Bound\+Object.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a6b29e35fb897eccff689bf2945a306ef}\label{class_csla_1_1_reflection_1_1_late_bound_object_a6b29e35fb897eccff689bf2945a306ef}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethod@{CallMethod}}
+\index{CallMethod@{CallMethod}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethod()}{CallMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily object Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method (\begin{DoxyParamCaption}\item[{string}]{method }\end{DoxyParamCaption})}
+
+
+
+Uses reflection to dynamically invoke a method, throwing an exception if it is not implemented on the target object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Name of the method. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 89 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_ae2ac20f6b989996eba400566e152a0de}\label{class_csla_1_1_reflection_1_1_late_bound_object_ae2ac20f6b989996eba400566e152a0de}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethod@{CallMethod}}
+\index{CallMethod@{CallMethod}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethod()}{CallMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily object Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method (\begin{DoxyParamCaption}\item[{string}]{method,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{parameters }\end{DoxyParamCaption})}
+
+
+
+Uses reflection to dynamically invoke a method, throwing an exception if it is not implemented on the target object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Name of the method. \\
+\hline
+{\em parameters} & Parameters to pass to method. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 105 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a873e4fe608a127b0a7607b4337ae9ded}\label{class_csla_1_1_reflection_1_1_late_bound_object_a873e4fe608a127b0a7607b4337ae9ded}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethodIfImplemented@{CallMethodIfImplemented}}
+\index{CallMethodIfImplemented@{CallMethodIfImplemented}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethodIfImplemented()}{CallMethodIfImplemented()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily object Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method\+If\+Implemented (\begin{DoxyParamCaption}\item[{string}]{method }\end{DoxyParamCaption})}
+
+
+
+Uses reflection to dynamically invoke a method if that method is implemented on the target object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Name of the method. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 61 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a64e5c6b1b222f0a3d4d08d52dc5ddd45}\label{class_csla_1_1_reflection_1_1_late_bound_object_a64e5c6b1b222f0a3d4d08d52dc5ddd45}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethodIfImplemented@{CallMethodIfImplemented}}
+\index{CallMethodIfImplemented@{CallMethodIfImplemented}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethodIfImplemented()}{CallMethodIfImplemented()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily object Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method\+If\+Implemented (\begin{DoxyParamCaption}\item[{string}]{method,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{parameters }\end{DoxyParamCaption})}
+
+
+
+Uses reflection to dynamically invoke a method if that method is implemented on the target object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Name of the method. \\
+\hline
+{\em parameters} & Parameters to pass to method. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 76 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a6a0b90167cac0c737bbeaed01a1ac2eb}\label{class_csla_1_1_reflection_1_1_late_bound_object_a6a0b90167cac0c737bbeaed01a1ac2eb}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethodTryAsync@{CallMethodTryAsync}}
+\index{CallMethodTryAsync@{CallMethodTryAsync}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethodTryAsync()}{CallMethodTryAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily async Task Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method\+Try\+Async (\begin{DoxyParamCaption}\item[{string}]{method\+Name }\end{DoxyParamCaption})}
+
+
+
+Invokes a method using the await keyword if the method returns Task, otherwise synchronously invokes the method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method\+Name} & Name of the method.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 117 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a12eb484465ac83009951f4a757816dbe}\label{class_csla_1_1_reflection_1_1_late_bound_object_a12eb484465ac83009951f4a757816dbe}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethodTryAsync@{CallMethodTryAsync}}
+\index{CallMethodTryAsync@{CallMethodTryAsync}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethodTryAsync()}{CallMethodTryAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily async Task Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method\+Try\+Async (\begin{DoxyParamCaption}\item[{string}]{method\+Name,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{parameters }\end{DoxyParamCaption})}
+
+
+
+Invokes a method using the await keyword if the method returns Task, otherwise synchronously invokes the method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method\+Name} & Name of the method.\\
+\hline
+{\em parameters} & Parameters to pass to method. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 142 of file Late\+Bound\+Object.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_a94a7935950ec5ee8a460d12b9440a007}\label{class_csla_1_1_reflection_1_1_late_bound_object_a94a7935950ec5ee8a460d12b9440a007}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!CallMethodTryAsyncDI$<$ T $>$@{CallMethodTryAsyncDI$<$ T $>$}}
+\index{CallMethodTryAsyncDI$<$ T $>$@{CallMethodTryAsyncDI$<$ T $>$}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{CallMethodTryAsyncDI$<$ T $>$()}{CallMethodTryAsyncDI< T >()}}
+{\footnotesize\ttfamily async Task Csla.\+Reflection.\+Late\+Bound\+Object.\+Call\+Method\+Try\+Async\+DI$<$ T $>$ (\begin{DoxyParamCaption}\item[{bool}]{is\+Sync,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{parameters }\end{DoxyParamCaption})}
+
+
+
+Invokes a method using the await keyword if the method returns Task, otherwise synchronously invokes the method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is\+Sync} & Is client calling this synchronously\\
+\hline
+{\em parameters} & Parameters to pass to method. \\
+\hline
+\end{DoxyParams}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em Data\+Portal\+Operation\+Attribute}]\end{description}
+\end{Desc}
+
+
+Definition at line 167 of file Late\+Bound\+Object.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_reflection_1_1_late_bound_object_aeb380e0390026ee2e83e96422a26f8cd}\label{class_csla_1_1_reflection_1_1_late_bound_object_aeb380e0390026ee2e83e96422a26f8cd}} 
+\index{Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}!Instance@{Instance}}
+\index{Instance@{Instance}!Csla.Reflection.LateBoundObject@{Csla.Reflection.LateBoundObject}}
+\doxysubsubsection{\texorpdfstring{Instance}{Instance}}
+{\footnotesize\ttfamily object Csla.\+Reflection.\+Late\+Bound\+Object.\+Instance\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Object instance managed by \mbox{\hyperlink{class_csla_1_1_reflection_1_1_late_bound_object}{Late\+Bound\+Object}}. 
+
+
+
+Definition at line 24 of file Late\+Bound\+Object.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Reflection/\mbox{\hyperlink{_late_bound_object_8cs}{Late\+Bound\+Object.\+cs}}\end{DoxyCompactItemize}

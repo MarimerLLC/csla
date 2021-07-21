@@ -1,0 +1,117 @@
+.TH "Csla.Test.ChildChanged.OptimizeChildChangedTests.SimpleBO" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.ChildChanged.OptimizeChildChangedTests.SimpleBO
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< SimpleBO >\fP\&.
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBUniqueID\fP = \fBNextUniqueID\fP()"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static readonly \fBPropertyInfo\fP< string > \fBNameProperty\fP = RegisterProperty<string>(c => c\&.Name)"
+.br
+.ti -1c
+.RI "static readonly \fBPropertyInfo\fP< \fBSimpleBO\fP > \fBChildProperty\fP = RegisterProperty<\fBSimpleBO\fP>(c => c\&.Child)"
+.br
+.ti -1c
+.RI "static readonly \fBPropertyInfo\fP< \fBSimpleBOList\fP > \fBChildListProperty\fP = RegisterProperty<\fBSimpleBOList\fP>(c => c\&.ChildList)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBAddBusinessRules\fP ()"
+.br
+.ti -1c
+.RI "override void \fBOnPropertyChanged\fP (string propertyName)"
+.br
+.ti -1c
+.RI "override void \fBOnChildChanged\fP (\fBChildChangedEventArgs\fP e)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBDepth\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "string \fBName\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "\fBSimpleBO\fP \fBChild\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "\fBSimpleBOList\fP \fBChildList\fP\fC [get, set]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 46 of file OptimizeChildChangedTests\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.AddBusinessRules ()\fC [protected]\fP"
+
+.PP
+Definition at line 73 of file OptimizeChildChangedTests\&.cs\&.
+.SS "override void Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.OnChildChanged (\fBChildChangedEventArgs\fP e)\fC [protected]\fP"
+
+.PP
+Definition at line 112 of file OptimizeChildChangedTests\&.cs\&.
+.SS "override void Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.OnPropertyChanged (string propertyName)\fC [protected]\fP"
+
+.PP
+Definition at line 106 of file OptimizeChildChangedTests\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "readonly \fBPropertyInfo\fP<\fBSimpleBOList\fP> Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.ChildListProperty = RegisterProperty<\fBSimpleBOList\fP>(c => c\&.ChildList)\fC [static]\fP"
+
+.PP
+Definition at line 66 of file OptimizeChildChangedTests\&.cs\&.
+.SS "readonly \fBPropertyInfo\fP<\fBSimpleBO\fP> Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.ChildProperty = RegisterProperty<\fBSimpleBO\fP>(c => c\&.Child)\fC [static]\fP"
+
+.PP
+Definition at line 59 of file OptimizeChildChangedTests\&.cs\&.
+.SS "readonly \fBPropertyInfo\fP<string> Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.NameProperty = RegisterProperty<string>(c => c\&.Name)\fC [static]\fP"
+
+.PP
+Definition at line 52 of file OptimizeChildChangedTests\&.cs\&.
+.SS "int Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.UniqueID = \fBNextUniqueID\fP()"
+
+.PP
+Definition at line 50 of file OptimizeChildChangedTests\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBSimpleBO\fP Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.Child\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 60 of file OptimizeChildChangedTests\&.cs\&.
+.SS "\fBSimpleBOList\fP Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.ChildList\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 67 of file OptimizeChildChangedTests\&.cs\&.
+.SS "int Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.Depth\fC [get]\fP"
+
+.PP
+Definition at line 49 of file OptimizeChildChangedTests\&.cs\&.
+.SS "string Csla\&.Test\&.ChildChanged\&.OptimizeChildChangedTests\&.SimpleBO\&.Name\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 53 of file OptimizeChildChangedTests\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

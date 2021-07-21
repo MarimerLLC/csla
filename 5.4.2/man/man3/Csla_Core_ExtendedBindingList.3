@@ -1,0 +1,344 @@
+.TH "Csla.Core.ExtendedBindingList< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ExtendedBindingList< T > \- Extends BindingList of T by adding extra behaviors\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileBindingList< T >\fP, \fBCsla\&.Core\&.IExtendedBindingList\fP, \fBCsla\&.Serialization\&.Mobile\&.IMobileList\fP, \fBCsla\&.Core\&.INotifyBusy\fP, \fBCsla\&.Core\&.INotifyChildChanged\fP, and \fBCsla\&.Serialization\&.Mobile\&.ISerializationNotification\fP\&.
+.PP
+Inherited by \fBCsla\&.DynamicBindingListBase< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBAddRange\fP (System\&.Collections\&.Generic\&.IEnumerable< T > range)"
+.br
+.RI "Add a range of items to the list\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBOnRemovingItem\fP (T removedItem)"
+.br
+.RI "Raise the RemovingItem event\&. "
+.ti -1c
+.RI "override void \fBRemoveItem\fP (int index)"
+.br
+.RI "Remove the item at the specified index\&. "
+.ti -1c
+.RI "virtual void \fBOnBusyChanged\fP (\fBBusyChangedEventArgs\fP args)"
+.br
+.RI "Override this method to be notified when the IsBusy property has changed\&. "
+.ti -1c
+.RI "void \fBOnBusyChanged\fP (string propertyName, bool busy)"
+.br
+.RI "Raises the BusyChanged event for a specific property\&. "
+.ti -1c
+.RI "virtual void \fBOnUnhandledAsyncException\fP (\fBErrorEventArgs\fP error)"
+.br
+.RI "Method invoked when an unhandled async exception has occurred\&. "
+.ti -1c
+.RI "void \fBOnUnhandledAsyncException\fP (object originalSender, Exception error)"
+.br
+.RI "Raises the UnhandledAsyncException event\&. "
+.ti -1c
+.RI "override void \fBInsertItem\fP (int index, T item)"
+.br
+.RI "Invoked when an item is inserted into the list\&. "
+.ti -1c
+.RI "virtual void \fBOnAddEventHooks\fP (T item)"
+.br
+.RI "Method invoked when events are hooked for a child object\&. "
+.ti -1c
+.RI "virtual void \fBOnRemoveEventHooks\fP (T item)"
+.br
+.RI "Method invoked when events are unhooked for a child object\&. "
+.ti -1c
+.RI "virtual void \fBOnDeserialized\fP ()"
+.br
+.RI "This method is called on a newly deserialized object after deserialization is complete\&. "
+.ti -1c
+.RI "virtual void \fBOnChildChanged\fP (\fBChildChangedEventArgs\fP e)"
+.br
+.RI "Raises the ChildChanged event, indicating that a child object has been changed\&. "
+.ti -1c
+.RI "virtual void \fBChild_PropertyChanged\fP (object sender, PropertyChangedEventArgs e)"
+.br
+.RI "Handles any PropertyChanged event from a child object and echoes it up as a ChildChanged event\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBRemovingItemEventArgs\fP > \fBRemovingItem\fP"
+.br
+.RI "Implements a serialization-safe RemovingItem event\&. "
+.ti -1c
+.RI "\fBBusyChangedEventHandler\fP \fBBusyChanged\fP"
+.br
+.RI "Event indicating that the busy status of the object has changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsBusy\fP\fC [get]\fP"
+.br
+.RI "Gets the busy status for this object and its child objects\&. "
+.ti -1c
+.RI "virtual bool \fBIsSelfBusy\fP\fC [get]\fP"
+.br
+.RI "Gets the busy status for this object\&. "
+.ti -1c
+.RI "EventHandler< \fBErrorEventArgs\fP > \fBUnhandledAsyncException\fP"
+.br
+.RI "Event indicating that an exception occurred during an async operation\&. "
+.ti -1c
+.RI "EventHandler< \fBCsla\&.Core\&.ChildChangedEventArgs\fP > \fBChildChanged\fP"
+.br
+.RI "Event raised when a child object has been changed\&. "
+.ti -1c
+.RI "IDisposable \fBSuppressListChangedEvents\fP\fC [get]\fP"
+.br
+.RI "Use this object to suppress ListChangedEvents for an entire code block\&. May be nested in multiple levels for the same object\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Extends BindingList of T by adding extra behaviors\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of item contained in list\&.
+.RE
+.PP
+
+.PP
+Definition at line 24 of file ExtendedBindingList\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.AddRange (System\&.Collections\&.Generic\&.IEnumerable< T > range)"
+
+.PP
+Add a range of items to the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrange\fP List of items to add\&.
+.RE
+.PP
+
+.PP
+Definition at line 101 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.Child_PropertyChanged (object sender, PropertyChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Handles any PropertyChanged event from a child object and echoes it up as a ChildChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP Object that raised the event\&.
+.br
+\fIe\fP Property changed args\&.
+.RE
+.PP
+
+.PP
+Reimplemented in \fBCsla\&.BusinessBindingListBase< T, C >\fP\&.
+.PP
+Definition at line 384 of file ExtendedBindingList\&.cs\&.
+.SS "override void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.InsertItem (int index, T item)\fC [protected]\fP"
+
+.PP
+Invoked when an item is inserted into the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of new item\&.
+.br
+\fIitem\fP Reference to new item\&.
+.RE
+.PP
+
+.PP
+Definition at line 214 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnAddEventHooks (T item)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method invoked when events are hooked for a child object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Reference to child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 226 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnBusyChanged (\fBBusyChangedEventArgs\fP args)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to be notified when the IsBusy property has changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargs\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 126 of file ExtendedBindingList\&.cs\&.
+.SS "void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnBusyChanged (string propertyName, bool busy)\fC [protected]\fP"
+
+.PP
+Raises the BusyChanged event for a specific property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property\&.
+.br
+\fIbusy\fP New busy value\&.
+.RE
+.PP
+
+.PP
+Definition at line 137 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnChildChanged (\fBChildChangedEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the ChildChanged event, indicating that a child object has been changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP \fBChildChangedEventArgs\fP object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 327 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnDeserialized ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called on a newly deserialized object after deserialization is complete\&. 
+.PP
+Reimplemented in \fBCsla\&.DynamicBindingListBase< T >\fP, and \fBCsla\&.BusinessBindingListBase< T, C >\fP\&.
+.PP
+Definition at line 275 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnRemoveEventHooks (T item)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method invoked when events are unhooked for a child object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Reference to child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 251 of file ExtendedBindingList\&.cs\&.
+.SS "void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnRemovingItem (T removedItem)\fC [protected]\fP"
+
+.PP
+Raise the RemovingItem event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIremovedItem\fP A reference to the item that is being removed\&. 
+.RE
+.PP
+
+.PP
+Definition at line 72 of file ExtendedBindingList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnUnhandledAsyncException (\fBErrorEventArgs\fP error)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method invoked when an unhandled async exception has occurred\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 188 of file ExtendedBindingList\&.cs\&.
+.SS "void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.OnUnhandledAsyncException (object originalSender, Exception error)\fC [protected]\fP"
+
+.PP
+Raises the UnhandledAsyncException event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoriginalSender\fP Original sender of event\&.
+.br
+\fIerror\fP Exception that occurred\&.
+.RE
+.PP
+
+.PP
+Definition at line 199 of file ExtendedBindingList\&.cs\&.
+.SS "override void \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.RemoveItem (int index)\fC [protected]\fP"
+
+.PP
+Remove the item at the specified index\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP The zero-based index of the item to remove\&. 
+.RE
+.PP
+
+.PP
+Definition at line 90 of file ExtendedBindingList\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBBusyChangedEventHandler\fP \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.BusyChanged\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event indicating that the busy status of the object has changed\&. 
+.PP
+Definition at line 115 of file ExtendedBindingList\&.cs\&.
+.SS "EventHandler<\fBCsla\&.Core\&.ChildChangedEventArgs\fP> \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.ChildChanged\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event raised when a child object has been changed\&. 
+.PP
+Definition at line 305 of file ExtendedBindingList\&.cs\&.
+.SS "virtual bool \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.IsBusy\fC [get]\fP"
+
+.PP
+Gets the busy status for this object and its child objects\&. 
+.PP
+Definition at line 148 of file ExtendedBindingList\&.cs\&.
+.SS "virtual bool \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.IsSelfBusy\fC [get]\fP"
+
+.PP
+Gets the busy status for this object\&. 
+.PP
+Definition at line 159 of file ExtendedBindingList\&.cs\&.
+.SS "EventHandler<\fBRemovingItemEventArgs\fP> \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.RemovingItem\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Implements a serialization-safe RemovingItem event\&. 
+.PP
+Definition at line 38 of file ExtendedBindingList\&.cs\&.
+.SS "IDisposable \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.SuppressListChangedEvents\fC [get]\fP"
+
+.PP
+Use this object to suppress ListChangedEvents for an entire code block\&. May be nested in multiple levels for the same object\&. 
+.PP
+Definition at line 404 of file ExtendedBindingList\&.cs\&.
+.SS "EventHandler<\fBErrorEventArgs\fP> \fBCsla\&.Core\&.ExtendedBindingList\fP< T >\&.UnhandledAsyncException\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event indicating that an exception occurred during an async operation\&. 
+.PP
+Definition at line 177 of file ExtendedBindingList\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

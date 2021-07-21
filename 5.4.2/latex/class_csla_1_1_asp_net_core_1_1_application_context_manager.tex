@@ -1,0 +1,364 @@
+\hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager}{}\doxysection{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager Class Reference}
+\label{class_csla_1_1_asp_net_core_1_1_application_context_manager}\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+
+
+Application context manager that uses Http\+Context\+Accessor when resolving Http\+Context to store context values.  
+
+
+Inheritance diagram for Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_asp_net_core_1_1_application_context_manager}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a60160c3357e9d33d53716773eafed1fe}{Application\+Context\+Manager}} (IService\+Provider service\+Provider)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it with the required IService\+Provider. \end{DoxyCompactList}\item 
+System.\+Security.\+Principal.\+IPrincipal \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a8a72b5da2a96ec3169bb11e0fc0fbd81}{Get\+User}} ()
+\begin{DoxyCompactList}\small\item\em Gets the current principal. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a813dcf5b560845692f89a26621329787}{Set\+User}} (System.\+Security.\+Principal.\+IPrincipal principal)
+\begin{DoxyCompactList}\small\item\em Sets the current principal. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_ad74b004016e82342a9e8047d5e1c1fb2}{Get\+Local\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Gets the local context. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a7854bd73c0079ffcbfba6e63ada215ca}{Set\+Local\+Context}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} local\+Context)
+\begin{DoxyCompactList}\small\item\em Sets the local context. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a81158b879f8b154aaef8031060fcb996}{Get\+Client\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Gets the client context. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a98edf951fa4ac4b6eebeb02dc2bdad6f}{Set\+Client\+Context}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} client\+Context)
+\begin{DoxyCompactList}\small\item\em Sets the client context. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a03e6712cb2271ed0b4403a763c1c651a}{Get\+Global\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Gets the global context. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a6b2c71abf7720b1b64402bd4324f20c8}{Set\+Global\+Context}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} global\+Context)
+\begin{DoxyCompactList}\small\item\em Sets the global context. \end{DoxyCompactList}\item 
+IService\+Provider \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_acc36319f398fc4bcc06e6f58be3d13c8}{Get\+Default\+Service\+Provider}} ()
+\begin{DoxyCompactList}\small\item\em Gets the default IService\+Provider \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a4dcb392c44bc17e137351986353d234a}{Set\+Default\+Service\+Provider}} (IService\+Provider service\+Provider)
+\begin{DoxyCompactList}\small\item\em Sets the default IService\+Provider \end{DoxyCompactList}\item 
+IService\+Provider \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_aea4520b7ba7a72369b7a37105b919873}{Get\+Service\+Provider}} ()
+\begin{DoxyCompactList}\small\item\em Gets the service provider for current scope \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a0b167ca70bc571eb9f343544e06d049b}{Set\+Service\+Provider}} (IService\+Provider scope)
+\begin{DoxyCompactList}\small\item\em Sets the service provider for current scope \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+virtual Http\+Context \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a94f28ff8f1f6d6b7f70851a08db081a3}{Http\+Context}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the current Http\+Context instance. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_ab89b49db9bc3cbfccc8383df1f103ed6}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this context manager is valid for use in the current environment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Application context manager that uses Http\+Context\+Accessor when resolving Http\+Context to store context values. 
+
+
+
+Definition at line 21 of file Application\+Context\+Manager.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a60160c3357e9d33d53716773eafed1fe}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a60160c3357e9d33d53716773eafed1fe}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!ApplicationContextManager@{ApplicationContextManager}}
+\index{ApplicationContextManager@{ApplicationContextManager}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{ApplicationContextManager()}{ApplicationContextManager()}}
+{\footnotesize\ttfamily Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Application\+Context\+Manager (\begin{DoxyParamCaption}\item[{IService\+Provider}]{service\+Provider }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it with the required IService\+Provider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em service\+Provider} & ASP.\+NET \mbox{\hyperlink{namespace_csla_1_1_core}{Core}} IService\+Provider\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 35 of file Application\+Context\+Manager.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a81158b879f8b154aaef8031060fcb996}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a81158b879f8b154aaef8031060fcb996}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!GetClientContext@{GetClientContext}}
+\index{GetClientContext@{GetClientContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{GetClientContext()}{GetClientContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Get\+Client\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the client context. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a6cae64f00c6779590a4bfbae14769fd6}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 113 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_acc36319f398fc4bcc06e6f58be3d13c8}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_acc36319f398fc4bcc06e6f58be3d13c8}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!GetDefaultServiceProvider@{GetDefaultServiceProvider}}
+\index{GetDefaultServiceProvider@{GetDefaultServiceProvider}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{GetDefaultServiceProvider()}{GetDefaultServiceProvider()}}
+{\footnotesize\ttfamily IService\+Provider Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Get\+Default\+Service\+Provider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the default IService\+Provider 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a792895c7f95fa19879bfc2b197a84c4e}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 147 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a03e6712cb2271ed0b4403a763c1c651a}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a03e6712cb2271ed0b4403a763c1c651a}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!GetGlobalContext@{GetGlobalContext}}
+\index{GetGlobalContext@{GetGlobalContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{GetGlobalContext()}{GetGlobalContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Get\+Global\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the global context. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a785d5b1a8520c77c8435f17fd89a6ed1}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 130 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_ad74b004016e82342a9e8047d5e1c1fb2}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_ad74b004016e82342a9e8047d5e1c1fb2}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!GetLocalContext@{GetLocalContext}}
+\index{GetLocalContext@{GetLocalContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{GetLocalContext()}{GetLocalContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Get\+Local\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the local context. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_aef6249542cb94fe87af17e811a7f3543}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 96 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_aea4520b7ba7a72369b7a37105b919873}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_aea4520b7ba7a72369b7a37105b919873}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!GetServiceProvider@{GetServiceProvider}}
+\index{GetServiceProvider@{GetServiceProvider}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{GetServiceProvider()}{GetServiceProvider()}}
+{\footnotesize\ttfamily IService\+Provider Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Get\+Service\+Provider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the service provider for current scope 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_abba4b1b31572301686793986e9cc98e5}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 168 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a8a72b5da2a96ec3169bb11e0fc0fbd81}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a8a72b5da2a96ec3169bb11e0fc0fbd81}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!GetUser@{GetUser}}
+\index{GetUser@{GetUser}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{GetUser()}{GetUser()}}
+{\footnotesize\ttfamily System.\+Security.\+Principal.\+IPrincipal Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Get\+User (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the current principal. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a50378fd27cb465b60ba7e24e1f7f8437}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 73 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a98edf951fa4ac4b6eebeb02dc2bdad6f}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a98edf951fa4ac4b6eebeb02dc2bdad6f}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!SetClientContext@{SetClientContext}}
+\index{SetClientContext@{SetClientContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{SetClientContext()}{SetClientContext()}}
+{\footnotesize\ttfamily void Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Set\+Client\+Context (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{client\+Context }\end{DoxyParamCaption})}
+
+
+
+Sets the client context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em client\+Context} & Client context.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a07e829f8c8a3242b9a578b19ddf67931}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 122 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a4dcb392c44bc17e137351986353d234a}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a4dcb392c44bc17e137351986353d234a}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!SetDefaultServiceProvider@{SetDefaultServiceProvider}}
+\index{SetDefaultServiceProvider@{SetDefaultServiceProvider}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{SetDefaultServiceProvider()}{SetDefaultServiceProvider()}}
+{\footnotesize\ttfamily void Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Set\+Default\+Service\+Provider (\begin{DoxyParamCaption}\item[{IService\+Provider}]{service\+Provider }\end{DoxyParamCaption})}
+
+
+
+Sets the default IService\+Provider 
+
+
+\begin{DoxyParams}{Parameters}
+{\em service\+Provider} & IService\+Provider instance\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a7741c08ea3f57da253d33ff4522fa9d1}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 158 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a6b2c71abf7720b1b64402bd4324f20c8}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a6b2c71abf7720b1b64402bd4324f20c8}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!SetGlobalContext@{SetGlobalContext}}
+\index{SetGlobalContext@{SetGlobalContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{SetGlobalContext()}{SetGlobalContext()}}
+{\footnotesize\ttfamily void Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Set\+Global\+Context (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{global\+Context }\end{DoxyParamCaption})}
+
+
+
+Sets the global context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em global\+Context} & Global context.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a57141fb8c9497a02bb16477c12d41055}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 139 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a7854bd73c0079ffcbfba6e63ada215ca}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a7854bd73c0079ffcbfba6e63ada215ca}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!SetLocalContext@{SetLocalContext}}
+\index{SetLocalContext@{SetLocalContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{SetLocalContext()}{SetLocalContext()}}
+{\footnotesize\ttfamily void Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Set\+Local\+Context (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{local\+Context }\end{DoxyParamCaption})}
+
+
+
+Sets the local context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local\+Context} & Local context.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_aae3449af55305cf083bf13023901c170}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 105 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a0b167ca70bc571eb9f343544e06d049b}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a0b167ca70bc571eb9f343544e06d049b}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!SetServiceProvider@{SetServiceProvider}}
+\index{SetServiceProvider@{SetServiceProvider}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{SetServiceProvider()}{SetServiceProvider()}}
+{\footnotesize\ttfamily void Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Set\+Service\+Provider (\begin{DoxyParamCaption}\item[{IService\+Provider}]{scope }\end{DoxyParamCaption})}
+
+
+
+Sets the service provider for current scope 
+
+
+\begin{DoxyParams}{Parameters}
+{\em scope} & IService\+Provider instance\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_ac901f3fa97756a8a668f4105d8d16220}{Csla.\+Core.\+IContext\+Manager}}.
+
+
+
+Definition at line 177 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a813dcf5b560845692f89a26621329787}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a813dcf5b560845692f89a26621329787}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!SetUser@{SetUser}}
+\index{SetUser@{SetUser}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{SetUser()}{SetUser()}}
+{\footnotesize\ttfamily void Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Set\+User (\begin{DoxyParamCaption}\item[{System.\+Security.\+Principal.\+IPrincipal}]{principal }\end{DoxyParamCaption})}
+
+
+
+Sets the current principal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em principal} & Principal object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 88 of file Application\+Context\+Manager.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_a94f28ff8f1f6d6b7f70851a08db081a3}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_a94f28ff8f1f6d6b7f70851a08db081a3}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!HttpContext@{HttpContext}}
+\index{HttpContext@{HttpContext}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{HttpContext}{HttpContext}}
+{\footnotesize\ttfamily virtual Http\+Context Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Http\+Context\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Gets the current Http\+Context instance. 
+
+
+
+Definition at line 43 of file Application\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_asp_net_core_1_1_application_context_manager_ab89b49db9bc3cbfccc8383df1f103ed6}\label{class_csla_1_1_asp_net_core_1_1_application_context_manager_ab89b49db9bc3cbfccc8383df1f103ed6}} 
+\index{Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.AspNetCore.ApplicationContextManager@{Csla.AspNetCore.ApplicationContextManager}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily bool Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this context manager is valid for use in the current environment. 
+
+
+
+Definition at line 65 of file Application\+Context\+Manager.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Asp\+Net\+Core.\+Shared/\mbox{\hyperlink{_csla_8_asp_net_core_8_shared_2_application_context_manager_8cs}{Application\+Context\+Manager.\+cs}}\end{DoxyCompactItemize}

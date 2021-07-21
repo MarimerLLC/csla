@@ -1,0 +1,2788 @@
+\hypertarget{class_csla_1_1_core_1_1_business_base}{}\doxysection{Csla.\+Core.\+Business\+Base Class Reference}
+\label{class_csla_1_1_core_1_1_business_base}\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+
+
+This is the non-\/generic base class from which most business objects will be derived.  
+
+
+Inheritance diagram for Csla.\+Core.\+Business\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{class_csla_1_1_core_1_1_business_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries Bypass\+Property\+Checks\+Object}
+\begin{DoxyCompactList}\small\item\em Class that allows setting of property values on current business object without raising Property\+Changed events and checking user rights. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aacea128b5ba8b3e6b944227af5fef58e}{Can\+Read\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to read the calling property. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_af8211fb72aa6c00183d2f5da9a602e7a}{Can\+Read\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property, bool throw\+On\+False)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to read the calling property. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a82fd2a3c32b603f24f4b19c77bef4ccc}{Can\+Read\+Property}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to read the specified property. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aa873a4f19fa5ad9da60dc99a56a5715e}{Can\+Write\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to write the specified property. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_adaccdc95b6c443ba6c8c66052ffa2c09}{Can\+Write\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property, bool throw\+On\+False)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to write the calling property. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aea63b6143cdecc60f96d640839a68885}{Can\+Write\+Property}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to write the specified property. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a789eb999e469451029e2fc3b5381a4d0}{Can\+Execute\+Method}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}} method)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to execute the specified method. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a66a1a27906a9eae6e730698176241128}{Can\+Execute\+Method}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}} method, bool throw\+On\+False)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to execute the specified method. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a101706cc240cc8e7cde97b64a6e4d04b}{Can\+Execute\+Method}} (string method\+Name)
+\begin{DoxyCompactList}\small\item\em Returns true if the user is allowed to execute the specified method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae37029988db24d078c676e87cb3dfb37}{Begin\+Edit}} ()
+\begin{DoxyCompactList}\small\item\em Starts a nested edit on the object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7b7bd9eca1b5d5beb244af529cbbf429}{Cancel\+Edit}} ()
+\begin{DoxyCompactList}\small\item\em Cancels the current edit process, restoring the object\textquotesingle{}s state to its previous values. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Apply\+Edit}} ()
+\begin{DoxyCompactList}\small\item\em Commits the current edit process. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a12a7bf0378970e77985fbb0fc83ed616}{Delete}} ()
+\begin{DoxyCompactList}\small\item\em Marks the object for deletion. The object will be deleted as part of the next save operation. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a0867947238a7a47e348bcef4e88da0d3}{Is\+Property\+Busy}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether a specific property is busy (has a currently executing async rule). \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a392999536d44892f6cbaed4ce39278ae}{Is\+Property\+Busy}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether a specific property is busy (has a currently executing async rule). \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_collection}{Broken\+Rules\+Collection}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5db5e01a517abf2d34bbd030a9d262a3}{Get\+Broken\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Gets the broken rules for this object \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a6d8cd145c2094496b08a78ceaa520fe7}{Business\+Base}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_adb05c36b8fdd45cce705e3318c7a1f0d}{Initialize}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a974b519582aacd666375a1ee84215238}{Set\+Parent}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} parent)
+\begin{DoxyCompactList}\small\item\em Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_af74bc729d625a2e43d7a617e4e2197ee}{Mark\+New}} ()
+\begin{DoxyCompactList}\small\item\em Marks the object as being a new object. This also marks the object as being dirty and ensures that it is not marked for deletion. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9751d36d02b9be925a43cf8c4ac5f6b5}{Mark\+Old}} ()
+\begin{DoxyCompactList}\small\item\em Marks the object as being an old (not new) object. This also marks the object as being unchanged (not dirty). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a70b1f36632fc8fcc83bb21df25ccd329}{Mark\+Deleted}} ()
+\begin{DoxyCompactList}\small\item\em Marks an object for deletion. This also marks the object as being dirty. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ab28925b4c26ea78131c7cc5ec67a0969}{Mark\+Dirty}} ()
+\begin{DoxyCompactList}\small\item\em Marks an object as being dirty, or changed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a8d0b24f7608cdd488a1efa7d33385a64}{Mark\+Dirty}} (bool suppress\+Event)
+\begin{DoxyCompactList}\small\item\em Marks an object as being dirty, or changed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aa3d365b5bc893c7f9ebf178789af9ddb}{Property\+Has\+Changed}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Performs processing required when a property has changed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_abbd08839fb5ee83988d25580e37c9e1d}{Meta\+Property\+Has\+Changed}} (string name)
+\begin{DoxyCompactList}\small\item\em Raises On\+Property\+Changed for meta properties (Is\+XYZ) when Property\+Changed\+Mode is not \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ad97fe56cdfee48100245ebac74c7b069}{Check\+Property\+Rules}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Check rules for the property and notifies UI of properties that may have changed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a00050611344e7e24ec913bb638733d4e}{Check\+Object\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Check object rules and notifies UI of properties that may have changed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_adfa0c41ccb64c438baa0a8a8feac2e1d}{Mark\+Clean}} ()
+\begin{DoxyCompactList}\small\item\em Forces the object\textquotesingle{}s Is\+Dirty flag to false. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aad1c6334e8cb3a4725dd95b49275673d}{Undo\+Changes\+Complete}} ()
+\begin{DoxyCompactList}\small\item\em Called when an undo operation has completed. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ab6f1199b57a6852e15d9fe211da3c54b}{Accept\+Changes\+Complete}} ()
+\begin{DoxyCompactList}\small\item\em Notifies the parent object (if any) that this child object\textquotesingle{}s edits have been accepted. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a393826caee0b9edf7d08c37b08bcc761}{Mark\+As\+Child}} ()
+\begin{DoxyCompactList}\small\item\em Marks the object as being a child object. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a413ead90b06b4e75301d3511d7d76a5d}{Get\+Clone}} ()
+\begin{DoxyCompactList}\small\item\em Creates a clone of the object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5375c9b84bd0c67c9c4b1353ac945a67}{On\+Validation\+Complete}} ()
+\begin{DoxyCompactList}\small\item\em Raises the Validation\+Complete event \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_manager}{Business\+Rule\+Manager}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a54dec8b9056ab398e7990b4421caf962}{Get\+Registered\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Gets the registered rules. Only for unit testing and not visible to code. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a47b63d4701a820c685fc25008f09a377}{Add\+Business\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Override this method in your business class to be notified when you need to set up shared business rules. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_abff80f843abc5068f390630f10cb987d}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+\+XYZ method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ac1f6440821909fd758ad1ddbb0cc2d34}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke\+Complete}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+\+XYZ method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_adc3c84201904fd80a1d74b82dad5bffc}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e, Exception ex)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7024d5869052c4922e5ee8a2e6798487}{Child\+\_\+\+Create}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to load a new business object with default values from the database. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a2a4c7812c1e54b3fad9d9170ce395f1a}{Child\+\_\+\+On\+Data\+Portal\+Invoke}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+\+XYZ method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae80b81c0c7c62cd29880ba3fbcc1228a}{Child\+\_\+\+On\+Data\+Portal\+Invoke\+Complete}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+\+XYZ method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5c8c7582129acaf3189b37c255feb57e}{Child\+\_\+\+On\+Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e, Exception ex)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a977d9146f2e4628c7fbf54561002b026}{On\+Deserialized}} (System.\+Runtime.\+Serialization.\+Streaming\+Context context)
+\begin{DoxyCompactList}\small\item\em This method is called on a newly deserialized object after deserialization is complete. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a05fbb76b157d89ee6ad917d8764a9ca3}{Add\+Event\+Hooks}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}} child)
+\begin{DoxyCompactList}\small\item\em For internal use. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ac90ad8358c85e2e1589d8329291c3750}{On\+Add\+Event\+Hooks}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}} child)
+\begin{DoxyCompactList}\small\item\em Hook child object events. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1267929d586b955f4b0c8e8f5e6a9883}{Remove\+Event\+Hooks}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}} child)
+\begin{DoxyCompactList}\small\item\em For internal use only. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a4dea44c38a808900dc1062f175cd68a7}{On\+Remove\+Event\+Hooks}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}} child)
+\begin{DoxyCompactList}\small\item\em Unhook child object events. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_abbf7be3a5ebeec683c0ed535e9cb3590}{Get\+Property$<$ P $>$}} (string property\+Name, P field, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_acf5898da0300ce79fe2a1ec2e83f9652}{Get\+Property$<$ P $>$}} (string property\+Name, P field, P default\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ac0ce7837f11133201d57c7af3d27ca78}{Get\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P field)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a71284d29636baadd3d238e9983ff8bc7}{Get\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P field, P default\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ac6882de3ea53f6fdf3582b8fa0c9edde}{Get\+Property\+Convert$<$ F, P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$ property\+Info, F field)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aa11232a68396e251d31f34a33ff03fbc}{Get\+Property\+Convert$<$ F, P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$ property\+Info, F field, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a00d76057eaf73a627a86bce74fd4c343}{Get\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s managed field value, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9134576b6ca2f118c1dbb153fa49b59d}{Get\+Property\+Convert$<$ F, P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$ property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value from the list of managed field values, first checking authorization, and converting the value to an appropriate type. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a4e567f36d69a64db5b55a473ca83d922}{Get\+Property\+Convert$<$ F, P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$ property\+Info, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value from the list of managed field values, first checking authorization, and converting the value to an appropriate type. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9faf174cc34c0c633d8fdb522207681f}{Get\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type, first checking authorization. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Get\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a0d766e76458b5516edb64def6f6690fa}{Get\+Property$<$ P $>$}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s managed field value, first checking authorization. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a4569a42db0489ce69d90ab878be89963}{Lazy\+Get\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property, Func$<$ P $>$ value\+Generator)
+\begin{DoxyCompactList}\small\item\em Lazily initializes a property and returns the resulting value. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c211bd3313461af0600fd7a4a154cb6}{Lazy\+Get\+Property\+Async$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property, Task$<$ P $>$ factory)
+\begin{DoxyCompactList}\small\item\em Lazily initializes a property and returns the resulting value. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a827b2c10a5ad0e3b659c6c03e6586df9}{Read\+Property\+Convert$<$ F, P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$ property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value from the list of managed field values, converting the value to an appropriate type. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae8da7be15108a76e2ea688d5b1ad6125}{Read\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5a1a400afe5236d784196b5112d8452a}{Read\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a505974161fe71ac1b30569fa928f63b4}{Lazy\+Read\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property, Func$<$ P $>$ value\+Generator)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a0d04df032f17edd5ad27893a0be667e8}{Lazy\+Read\+Property\+Async$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property, Task$<$ P $>$ factory)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5adff4588700105adcf4143a09887dc6}{Set\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, ref P field, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aefd87f2d6e20c9668b06fba0cc7e48a6}{Set\+Property$<$ P $>$}} (string property\+Name, ref P field, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a4c33feb949fd4a0ae599393f259cf1ed}{Set\+Property\+Convert$<$ P, V $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, ref P field, V new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a0e6d747c2a85fbf550251e6fdc22ce7a}{Set\+Property\+Convert$<$ P, V $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, ref P field, V new\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5c0ddb00773ef489137bbca195fdff21}{Set\+Property$<$ P $>$}} (string property\+Name, ref P field, P new\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_afd2d55a0c48573f7b378c55e5aa5f8f8}{Set\+Property\+Convert$<$ P, V $>$}} (string property\+Name, ref P field, V new\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a921c6dd411ef82e5fe5b284977951d9a}{Set\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7964b5b428371f10917865c1a6b89df1}{Set\+Property\+Convert$<$ P, F $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, F new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a08feeb7a1b1e60f461fc30ed69be6e48}{Set\+Property\+Convert$<$ P, F $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, F new\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aaa370af468dbec77cfe955b077400735}{Set\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P new\+Value, \mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}} no\+Access)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Set\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, object new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s managed field with the supplied value, and then calls Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a09fa9859971b63a42c72430d85924d16}{Set\+Property$<$ P $>$}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Sets a property\textquotesingle{}s managed field with the supplied value, and then calls Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ac19b6bc0e99333f2f315b5f683814f82}{Load\+Property\+Convert$<$ P, F $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, F new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7dceae71732083421094a923ca289ac8}{Load\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ad5b43367573d8eec4e1273a5de8967f4}{Load\+Property\+Mark\+Dirty$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value and mark field as dirty if value is modified. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a820b24ffaf02bc3712ab320a37018237}{Load\+Property\+Mark\+Dirty}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, object new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7cb85058247c343679c1218cb9a1a084}{Load\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, object new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a69095cafed037f116e9876c950cf37da}{Load\+Property\+Async$<$ R $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ R $>$ property, Task$<$ R $>$ factory)
+\begin{DoxyCompactList}\small\item\em Load a property from an async method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae2752ebed972df627c8e3f853a503d14}{Mark\+Busy}} ()
+\begin{DoxyCompactList}\small\item\em Mark the object as busy (it is running an async operation). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae0f059175dafc9df7f0bd61513eaf6f3}{Mark\+Idle}} ()
+\begin{DoxyCompactList}\small\item\em Mark the object as not busy (it is not running an async operation). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a045fd0daa2bf58ffec34ae8574140a20}{On\+Busy\+Changed}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_busy_changed_event_args}{Busy\+Changed\+Event\+Args}} args)
+\begin{DoxyCompactList}\small\item\em Raise the Busy\+Changed event. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1673a7ba9f724699429920db3ff768b1}{On\+Unhandled\+Async\+Exception}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}} error)
+\begin{DoxyCompactList}\small\item\em Raises the Unhandled\+Async\+Exception event. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aca7145f0a6616846ac6a357f13506018}{On\+Unhandled\+Async\+Exception}} (object original\+Sender, Exception error)
+\begin{DoxyCompactList}\small\item\em Raises the Unhandled\+Async\+Exception event. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7db6b86cfd2d9b24b5fc2b4dac0141d1}{On\+Child\+Changed}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Child\+Changed\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Raises the Child\+Changed event, indicating that a child object has been changed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a24018b1cd462232eb4d0ab640915d584}{Edit\+Child\+Complete}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object}{Core.\+IEditable\+Business\+Object}} child)
+\begin{DoxyCompactList}\small\item\em Override this method to be notified when a child object\textquotesingle{}s \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Core.\+Business\+Base.\+Apply\+Edit}} method has completed. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_acfe0a33c40cedcf8a219f6505604adce}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}} mode)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your field values into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5b9b120bfeef8b16adf65ef11c67d66c}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}} mode)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a877dd212c0b5c8a3d965c849068a83e9}{On\+Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your child object references into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_af9c65bd493f85e3a05cbce599f95698e}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9846bc8899adbe2cdbb5c688ed26158e}{Register\+Method}} (Type object\+Type, \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{IMember\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified method belongs to the type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_method_info}{Method\+Info}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a3e09075cd06a1b8dc02950a9248b8028}{Register\+Method}} (Type object\+Type, string method\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified method belongs to the type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ac56025152273f37a85b1eb405b16da88}{Register\+Property$<$ P $>$}} (Type object\+Type, \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ info)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a05624536971e3058885a91d6100e523e}{Parent}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provide access to the parent reference for use in child object code. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a84273283b7db180b67a105c0e83427df}{Is\+New}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this is a new object, false if it is a pre-\/existing object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a342756e9cf08028186b6cecde15b4f31}{Is\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object is marked for deletion. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ad67992c09ceb801e17e64350c289a55b}{Is\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object\textquotesingle{}s data, or any of its fields or child objects data, has been changed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9b2d791adabe7f9b2beddce9fe9b846a}{Is\+Self\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object\textquotesingle{}s data has been changed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a8ef31875508c0b689d801f9b101cfe4f}{Is\+Savable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object is both dirty and valid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a459b23c8a8c710382608fd83f6f8b5be}{Disable\+IEditable\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the IEditable\+Object interface methods should be disabled for this object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ad64799a8470d5d338842479d980c39ad}{Is\+Child}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this is a child (non-\/root) object. \end{DoxyCompactList}\item 
+Event\+Handler \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a492f0d5addd4cb915f9d0540b9a11de9}{Validation\+Complete}}
+\begin{DoxyCompactList}\small\item\em Event raised when validation is complete. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules}{Business\+Rules}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a655fa46bac3e14f360943b25b7a59e5c}{Business\+Rules}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides access to the broken rules functionality. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1e368e12e88afd948b898b2c6e26dac3}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the object and its child objects are currently valid, false if the object or any of its child objects have broken rules or are otherwise invalid. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a09cf79ad6e08bce40254c2a4d6d6705b}{Is\+Self\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the object is currently valid, false if the object has broken rules or is otherwise invalid. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_collection}{Rules.\+Broken\+Rules\+Collection}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_aabd2059dd8a340cb617fcd575155ff1c}{Broken\+Rules\+Collection}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provides access to the readonly collection of broken business rules for this object. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1627655219b157bcba9f0f45504d7440}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating if this object or its child objects are busy. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5118e26c7da8aeac7017cc9905d96a86}{Is\+Self\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating if this object is busy. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_csla_1_1_core_a6e5e9144d3f05f7275d0411443def6de}{Busy\+Changed\+Event\+Handler}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a97468f64e24436446ccd35defab67923}{Busy\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event indicating that the Is\+Busy property has changed. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9f8020414b48e34a507087b10c71d1aa}{Unhandled\+Async\+Exception}}
+\begin{DoxyCompactList}\small\item\em Event indicating that an exception occurred during the processing of an async operation. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Csla.\+Core.\+Child\+Changed\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a8319269e8a0968139cbb9a5b5e83e558}{Child\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when a child object has been changed. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager}{Field\+Data\+Manager}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a0ce2c13abb6183ad11f76504c1407962}{Field\+Manager}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the Property\+Manager object for this business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+This is the non-\/generic base class from which most business objects will be derived. 
+
+
+
+Definition at line 40 of file Business\+Base.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a6d8cd145c2094496b08a78ceaa520fe7}\label{class_csla_1_1_core_1_1_business_base_a6d8cd145c2094496b08a78ceaa520fe7}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!BusinessBase@{BusinessBase}}
+\index{BusinessBase@{BusinessBase}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{BusinessBase()}{BusinessBase()}}
+{\footnotesize\ttfamily Csla.\+Core.\+Business\+Base.\+Business\+Base (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 59 of file Business\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ab6f1199b57a6852e15d9fe211da3c54b}\label{class_csla_1_1_core_1_1_business_base_ab6f1199b57a6852e15d9fe211da3c54b}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!AcceptChangesComplete@{AcceptChangesComplete}}
+\index{AcceptChangesComplete@{AcceptChangesComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{AcceptChangesComplete()}{AcceptChangesComplete()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Business\+Base.\+Accept\+Changes\+Complete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Notifies the parent object (if any) that this child object\textquotesingle{}s edits have been accepted. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_undoable_base_a8fb63ca643a0e3ac7f982446356993cb}{Csla.\+Core.\+Undoable\+Base}}.
+
+
+
+Definition at line 908 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a47b63d4701a820c685fc25008f09a377}\label{class_csla_1_1_core_1_1_business_base_a47b63d4701a820c685fc25008f09a377}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!AddBusinessRules@{AddBusinessRules}}
+\index{AddBusinessRules@{AddBusinessRules}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{AddBusinessRules()}{AddBusinessRules()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Add\+Business\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method in your business class to be notified when you need to set up shared business rules. 
+
+This method is automatically called by CSLA .NET when your object should associate per-\/type validation rules with its properties. 
+
+Definition at line 1165 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a05fbb76b157d89ee6ad917d8764a9ca3}\label{class_csla_1_1_core_1_1_business_base_a05fbb76b157d89ee6ad917d8764a9ca3}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!AddEventHooks@{AddEventHooks}}
+\index{AddEventHooks@{AddEventHooks}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{AddEventHooks()}{AddEventHooks()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Add\+Event\+Hooks (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}}}]{child }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+For internal use. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em child} & Child object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1379 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}\label{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!ApplyEdit@{ApplyEdit}}
+\index{ApplyEdit@{ApplyEdit}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{ApplyEdit()}{ApplyEdit()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Apply\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Commits the current edit process. 
+
+Calling this method causes the most recently taken snapshot of the object\textquotesingle{}s state to be discarded, thus committing any changes made to the object\textquotesingle{}s state since the last Begin\+Edit call. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_support_undo_a44016e8a072125257027e5f4313e2d8e}{Csla.\+Core.\+ISupport\+Undo}}.
+
+
+
+Definition at line 896 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ae37029988db24d078c676e87cb3dfb37}\label{class_csla_1_1_core_1_1_business_base_ae37029988db24d078c676e87cb3dfb37}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!BeginEdit@{BeginEdit}}
+\index{BeginEdit@{BeginEdit}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{BeginEdit()}{BeginEdit()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Begin\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Starts a nested edit on the object. 
+
+When this method is called the object takes a snapshot of its current state (the values of its variables). This snapshot can be restored by calling Cancel\+Edit or committed by calling Apply\+Edit. 
+
+This is a nested operation. Each call to Begin\+Edit adds a new snapshot of the object\textquotesingle{}s state to a stack. You should ensure that for each call to Begin\+Edit there is a corresponding call to either Cancel\+Edit or Apply\+Edit to remove that snapshot from the stack. 
+
+See Chapters 2 and 3 for details on n-\/level undo and state stacking. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_support_undo_ab73c78a49f4ba541bfb16a1a25c77d16}{Csla.\+Core.\+ISupport\+Undo}}.
+
+
+
+Definition at line 853 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a7b7bd9eca1b5d5beb244af529cbbf429}\label{class_csla_1_1_core_1_1_business_base_a7b7bd9eca1b5d5beb244af529cbbf429}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CancelEdit@{CancelEdit}}
+\index{CancelEdit@{CancelEdit}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CancelEdit()}{CancelEdit()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Cancel\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Cancels the current edit process, restoring the object\textquotesingle{}s state to its previous values. 
+
+Calling this method causes the most recently taken snapshot of the object\textquotesingle{}s state to be restored. This resets the object\textquotesingle{}s values to the point of the last Begin\+Edit call. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_support_undo_a08394ece8b4b0ea537ee61abc85863cb}{Csla.\+Core.\+ISupport\+Undo}}.
+
+
+
+Definition at line 867 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a789eb999e469451029e2fc3b5381a4d0}\label{class_csla_1_1_core_1_1_business_base_a789eb999e469451029e2fc3b5381a4d0}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanExecuteMethod@{CanExecuteMethod}}
+\index{CanExecuteMethod@{CanExecuteMethod}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanExecuteMethod()}{CanExecuteMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Can\+Execute\+Method (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}}}]{method }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Returns true if the user is allowed to execute the specified method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Method to execute.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if execute is allowed.
+\end{DoxyReturn}
+
+
+Definition at line 664 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a66a1a27906a9eae6e730698176241128}\label{class_csla_1_1_core_1_1_business_base_a66a1a27906a9eae6e730698176241128}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanExecuteMethod@{CanExecuteMethod}}
+\index{CanExecuteMethod@{CanExecuteMethod}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanExecuteMethod()}{CanExecuteMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Can\+Execute\+Method (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}}}]{method,  }\item[{bool}]{throw\+On\+False }\end{DoxyParamCaption})}
+
+
+
+Returns true if the user is allowed to execute the specified method. 
+
+\begin{DoxyReturn}{Returns}
+true if execute is allowed.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Method to execute.\\
+\hline
+{\em throw\+On\+False} & Indicates whether a negative result should cause an exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 691 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a101706cc240cc8e7cde97b64a6e4d04b}\label{class_csla_1_1_core_1_1_business_base_a101706cc240cc8e7cde97b64a6e4d04b}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanExecuteMethod@{CanExecuteMethod}}
+\index{CanExecuteMethod@{CanExecuteMethod}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanExecuteMethod()}{CanExecuteMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Can\+Execute\+Method (\begin{DoxyParamCaption}\item[{string}]{method\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Returns true if the user is allowed to execute the specified method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method\+Name} & Name of the method to execute.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if execute is allowed.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_security_1_1_i_authorize_read_write_aadf30d255e146170811a9545bfd0de4e}{Csla.\+Security.\+IAuthorize\+Read\+Write}}.
+
+
+
+Definition at line 713 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aacea128b5ba8b3e6b944227af5fef58e}\label{class_csla_1_1_core_1_1_business_base_aacea128b5ba8b3e6b944227af5fef58e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanReadProperty@{CanReadProperty}}
+\index{CanReadProperty@{CanReadProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanReadProperty()}{CanReadProperty()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Can\+Read\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Returns true if the user is allowed to read the calling property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to check.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 496 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_af8211fb72aa6c00183d2f5da9a602e7a}\label{class_csla_1_1_core_1_1_business_base_af8211fb72aa6c00183d2f5da9a602e7a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanReadProperty@{CanReadProperty}}
+\index{CanReadProperty@{CanReadProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanReadProperty()}{CanReadProperty()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Can\+Read\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property,  }\item[{bool}]{throw\+On\+False }\end{DoxyParamCaption})}
+
+
+
+Returns true if the user is allowed to read the calling property. 
+
+\begin{DoxyReturn}{Returns}
+true if read is allowed.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to read.\\
+\hline
+{\em throw\+On\+False} & Indicates whether a negative result should cause an exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 523 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a82fd2a3c32b603f24f4b19c77bef4ccc}\label{class_csla_1_1_core_1_1_business_base_a82fd2a3c32b603f24f4b19c77bef4ccc}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanReadProperty@{CanReadProperty}}
+\index{CanReadProperty@{CanReadProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanReadProperty()}{CanReadProperty()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Can\+Read\+Property (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})}
+
+
+
+Returns true if the user is allowed to read the specified property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the property to read.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_security_1_1_i_authorize_read_write_a0403669297006678e023ba3729742b74}{Csla.\+Security.\+IAuthorize\+Read\+Write}}.
+
+
+
+Definition at line 542 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aa873a4f19fa5ad9da60dc99a56a5715e}\label{class_csla_1_1_core_1_1_business_base_aa873a4f19fa5ad9da60dc99a56a5715e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanWriteProperty@{CanWriteProperty}}
+\index{CanWriteProperty@{CanWriteProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanWriteProperty()}{CanWriteProperty()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Can\+Write\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Returns true if the user is allowed to write the specified property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to write.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 571 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_adaccdc95b6c443ba6c8c66052ffa2c09}\label{class_csla_1_1_core_1_1_business_base_adaccdc95b6c443ba6c8c66052ffa2c09}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanWriteProperty@{CanWriteProperty}}
+\index{CanWriteProperty@{CanWriteProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanWriteProperty()}{CanWriteProperty()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Can\+Write\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property,  }\item[{bool}]{throw\+On\+False }\end{DoxyParamCaption})}
+
+
+
+Returns true if the user is allowed to write the calling property. 
+
+\begin{DoxyReturn}{Returns}
+true if write is allowed.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to write.\\
+\hline
+{\em throw\+On\+False} & Indicates whether a negative result should cause an exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 598 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aea63b6143cdecc60f96d640839a68885}\label{class_csla_1_1_core_1_1_business_base_aea63b6143cdecc60f96d640839a68885}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CanWriteProperty@{CanWriteProperty}}
+\index{CanWriteProperty@{CanWriteProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CanWriteProperty()}{CanWriteProperty()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Can\+Write\+Property (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})}
+
+
+
+Returns true if the user is allowed to write the specified property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the property to write.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_security_1_1_i_authorize_read_write_ac85b3cb538d5d4781e0999b3571ae42b}{Csla.\+Security.\+IAuthorize\+Read\+Write}}.
+
+
+
+Definition at line 616 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a00050611344e7e24ec913bb638733d4e}\label{class_csla_1_1_core_1_1_business_base_a00050611344e7e24ec913bb638733d4e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CheckObjectRules@{CheckObjectRules}}
+\index{CheckObjectRules@{CheckObjectRules}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CheckObjectRules()}{CheckObjectRules()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Check\+Object\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Check object rules and notifies UI of properties that may have changed. 
+
+
+
+Definition at line 411 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ad97fe56cdfee48100245ebac74c7b069}\label{class_csla_1_1_core_1_1_business_base_ad97fe56cdfee48100245ebac74c7b069}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!CheckPropertyRules@{CheckPropertyRules}}
+\index{CheckPropertyRules@{CheckPropertyRules}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{CheckPropertyRules()}{CheckPropertyRules()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Check\+Property\+Rules (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Check rules for the property and notifies UI of properties that may have changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & The property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 398 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a7024d5869052c4922e5ee8a2e6798487}\label{class_csla_1_1_core_1_1_business_base_a7024d5869052c4922e5ee8a2e6798487}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Child\_Create@{Child\_Create}}
+\index{Child\_Create@{Child\_Create}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Child\_Create()}{Child\_Create()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Child\+\_\+\+Create (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to load a new business object with default values from the database. 
+
+Normally you will overload this method to accept a strongly-\/typed criteria parameter, rather than overriding the method with a loosely-\/typed criteria parameter. 
+
+Definition at line 1275 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5c8c7582129acaf3189b37c255feb57e}\label{class_csla_1_1_core_1_1_business_base_a5c8c7582129acaf3189b37c255feb57e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Child\_OnDataPortalException@{Child\_OnDataPortalException}}
+\index{Child\_OnDataPortalException@{Child\_OnDataPortalException}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Child\_OnDataPortalException()}{Child\_OnDataPortalException()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Child\+\_\+\+On\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e,  }\item[{Exception}]{ex }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+{\em ex} & The Exception thrown during data access.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1305 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a2a4c7812c1e54b3fad9d9170ce395f1a}\label{class_csla_1_1_core_1_1_business_base_a2a4c7812c1e54b3fad9d9170ce395f1a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Child\_OnDataPortalInvoke@{Child\_OnDataPortalInvoke}}
+\index{Child\_OnDataPortalInvoke@{Child\_OnDataPortalInvoke}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Child\_OnDataPortalInvoke()}{Child\_OnDataPortalInvoke()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Child\+\_\+\+On\+Data\+Portal\+Invoke (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+\+XYZ method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1286 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ae80b81c0c7c62cd29880ba3fbcc1228a}\label{class_csla_1_1_core_1_1_business_base_ae80b81c0c7c62cd29880ba3fbcc1228a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Child\_OnDataPortalInvokeComplete@{Child\_OnDataPortalInvokeComplete}}
+\index{Child\_OnDataPortalInvokeComplete@{Child\_OnDataPortalInvokeComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Child\_OnDataPortalInvokeComplete()}{Child\_OnDataPortalInvokeComplete()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Child\+\_\+\+On\+Data\+Portal\+Invoke\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+\+XYZ method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1295 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_adc3c84201904fd80a1d74b82dad5bffc}\label{class_csla_1_1_core_1_1_business_base_adc3c84201904fd80a1d74b82dad5bffc}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!DataPortal\_OnDataPortalException@{DataPortal\_OnDataPortalException}}
+\index{DataPortal\_OnDataPortalException@{DataPortal\_OnDataPortalException}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalException()}{DataPortal\_OnDataPortalException()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Data\+Portal\+\_\+\+On\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e,  }\item[{Exception}]{ex }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+{\em ex} & The Exception thrown during data access.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1263 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_abff80f843abc5068f390630f10cb987d}\label{class_csla_1_1_core_1_1_business_base_abff80f843abc5068f390630f10cb987d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!DataPortal\_OnDataPortalInvoke@{DataPortal\_OnDataPortalInvoke}}
+\index{DataPortal\_OnDataPortalInvoke@{DataPortal\_OnDataPortalInvoke}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalInvoke()}{DataPortal\_OnDataPortalInvoke()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+\+XYZ method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1244 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ac1f6440821909fd758ad1ddbb0cc2d34}\label{class_csla_1_1_core_1_1_business_base_ac1f6440821909fd758ad1ddbb0cc2d34}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!DataPortal\_OnDataPortalInvokeComplete@{DataPortal\_OnDataPortalInvokeComplete}}
+\index{DataPortal\_OnDataPortalInvokeComplete@{DataPortal\_OnDataPortalInvokeComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalInvokeComplete()}{DataPortal\_OnDataPortalInvokeComplete()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+\+XYZ method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1253 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a12a7bf0378970e77985fbb0fc83ed616}\label{class_csla_1_1_core_1_1_business_base_a12a7bf0378970e77985fbb0fc83ed616}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Delete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Marks the object for deletion. The object will be deleted as part of the next save operation. 
+
+CSLA .NET supports both immediate and deferred deletion of objects. This method is part of the support for deferred deletion, where an object can be marked for deletion, but isn\textquotesingle{}t actually deleted until the object is saved to the database. This method is called by the UI developer to mark the object for deletion. 
+
+To \textquotesingle{}undelete\textquotesingle{} an object, use n-\/level undo as discussed in Chapters 2 and 3. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object_af43bfe022b9bee0f1c4f2f4223063bd7}{Csla.\+Core.\+IEditable\+Business\+Object}}.
+
+
+
+Definition at line 964 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a24018b1cd462232eb4d0ab640915d584}\label{class_csla_1_1_core_1_1_business_base_a24018b1cd462232eb4d0ab640915d584}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!EditChildComplete@{EditChildComplete}}
+\index{EditChildComplete@{EditChildComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{EditChildComplete()}{EditChildComplete()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Edit\+Child\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object}{Core.\+IEditable\+Business\+Object}}}]{child }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to be notified when a child object\textquotesingle{}s \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Core.\+Business\+Base.\+Apply\+Edit}} method has completed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em child} & The child object that was edited.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3336 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5db5e01a517abf2d34bbd030a9d262a3}\label{class_csla_1_1_core_1_1_business_base_a5db5e01a517abf2d34bbd030a9d262a3}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetBrokenRules@{GetBrokenRules}}
+\index{GetBrokenRules@{GetBrokenRules}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetBrokenRules()}{GetBrokenRules()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_collection}{Broken\+Rules\+Collection}} Csla.\+Core.\+Business\+Base.\+Get\+Broken\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the broken rules for this object 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_check_rules_a4c62c9e7d238c8107bbb22f256baf2be}{Csla.\+Core.\+ICheck\+Rules}}.
+
+
+
+Definition at line 3735 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a413ead90b06b4e75301d3511d7d76a5d}\label{class_csla_1_1_core_1_1_business_base_a413ead90b06b4e75301d3511d7d76a5d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetClone@{GetClone}}
+\index{GetClone@{GetClone}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetClone()}{GetClone()}}
+{\footnotesize\ttfamily virtual object Csla.\+Core.\+Business\+Base.\+Get\+Clone (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates a clone of the object. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the exact data of the original object. 
+\end{DoxyReturn}
+
+
+Definition at line 1033 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}\label{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty@{GetProperty}}
+\index{GetProperty@{GetProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty()}{GetProperty()}}
+{\footnotesize\ttfamily object Csla.\+Core.\+Business\+Base.\+Get\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1825 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a0d766e76458b5516edb64def6f6690fa}\label{class_csla_1_1_core_1_1_business_base_a0d766e76458b5516edb64def6f6690fa}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s managed field value, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1854 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a00d76057eaf73a627a86bce74fd4c343}\label{class_csla_1_1_core_1_1_business_base_a00d76057eaf73a627a86bce74fd4c343}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s managed field value, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1734 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ac0ce7837f11133201d57c7af3d27ca78}\label{class_csla_1_1_core_1_1_business_base_ac0ce7837f11133201d57c7af3d27ca78}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{field }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The backing field for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1643 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a71284d29636baadd3d238e9983ff8bc7}\label{class_csla_1_1_core_1_1_business_base_a71284d29636baadd3d238e9983ff8bc7}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [4/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{field,  }\item[{P}]{default\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The backing field for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em default\+Value} & Value to be returned if the user is not authorized to read the property.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to read this property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1664 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a9faf174cc34c0c633d8fdb522207681f}\label{class_csla_1_1_core_1_1_business_base_a9faf174cc34c0c633d8fdb522207681f}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [5/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to read this property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1805 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_abbf7be3a5ebeec683c0ed535e9cb3590}\label{class_csla_1_1_core_1_1_business_base_abbf7be3a5ebeec683c0ed535e9cb3590}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [6/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{P}]{field,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The backing field for the property.\\
+\hline
+{\em property\+Name} & The name of the property.\\
+\hline
+{\em default\+Value} & Value to be returned if the user is not authorized to read the property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1590 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_acf5898da0300ce79fe2a1ec2e83f9652}\label{class_csla_1_1_core_1_1_business_base_acf5898da0300ce79fe2a1ec2e83f9652}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetProperty$<$ P $>$@{GetProperty$<$ P $>$}}
+\index{GetProperty$<$ P $>$@{GetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetProperty$<$ P $>$()}{GetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [7/7]}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a35f29f49915f55bd1a427afd23578a76}{Csla.\+Core.\+Business\+Base.\+Get\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{P}]{field,  }\item[{P}]{default\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The backing field for the property.\\
+\hline
+{\em property\+Name} & The name of the property.\\
+\hline
+{\em default\+Value} & Value to be returned if the user is not authorized to read the property.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to read this property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1611 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a9134576b6ca2f118c1dbb153fa49b59d}\label{class_csla_1_1_core_1_1_business_base_a9134576b6ca2f118c1dbb153fa49b59d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}}
+\index{GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetPropertyConvert$<$ F, P $>$()}{GetPropertyConvert< F, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Get\+Property\+Convert$<$ F, P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value from the list of managed field values, first checking authorization, and converting the value to an appropriate type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em F} & Type of the field. \\
+\hline
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1757 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ac6882de3ea53f6fdf3582b8fa0c9edde}\label{class_csla_1_1_core_1_1_business_base_ac6882de3ea53f6fdf3582b8fa0c9edde}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}}
+\index{GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetPropertyConvert$<$ F, P $>$()}{GetPropertyConvert< F, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Get\+Property\+Convert$<$ F, P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$}]{property\+Info,  }\item[{F}]{field }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em F} & Type of the field. \\
+\hline
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The backing field for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1688 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aa11232a68396e251d31f34a33ff03fbc}\label{class_csla_1_1_core_1_1_business_base_aa11232a68396e251d31f34a33ff03fbc}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}}
+\index{GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetPropertyConvert$<$ F, P $>$()}{GetPropertyConvert< F, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Get\+Property\+Convert$<$ F, P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$}]{property\+Info,  }\item[{F}]{field,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type, first checking authorization. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em F} & Type of the field. \\
+\hline
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & The backing field for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to read this property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1715 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a4e567f36d69a64db5b55a473ca83d922}\label{class_csla_1_1_core_1_1_business_base_a4e567f36d69a64db5b55a473ca83d922}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}}
+\index{GetPropertyConvert$<$ F, P $>$@{GetPropertyConvert$<$ F, P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetPropertyConvert$<$ F, P $>$()}{GetPropertyConvert< F, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Get\+Property\+Convert$<$ F, P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$}]{property\+Info,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value from the list of managed field values, first checking authorization, and converting the value to an appropriate type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em F} & Type of the field. \\
+\hline
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to read this property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1783 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a54dec8b9056ab398e7990b4421caf962}\label{class_csla_1_1_core_1_1_business_base_a54dec8b9056ab398e7990b4421caf962}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!GetRegisteredRules@{GetRegisteredRules}}
+\index{GetRegisteredRules@{GetRegisteredRules}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{GetRegisteredRules()}{GetRegisteredRules()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_manager}{Business\+Rule\+Manager}} Csla.\+Core.\+Business\+Base.\+Get\+Registered\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets the registered rules. Only for unit testing and not visible to code. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1120 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_adb05c36b8fdd45cce705e3318c7a1f0d}\label{class_csla_1_1_core_1_1_business_base_adb05c36b8fdd45cce705e3318c7a1f0d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Initialize@{Initialize}}
+\index{Initialize@{Initialize}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Initialize()}{Initialize()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code. 
+
+
+
+Definition at line 73 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a0867947238a7a47e348bcef4e88da0d3}\label{class_csla_1_1_core_1_1_business_base_a0867947238a7a47e348bcef4e88da0d3}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsPropertyBusy@{IsPropertyBusy}}
+\index{IsPropertyBusy@{IsPropertyBusy}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsPropertyBusy()}{IsPropertyBusy()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Property\+Busy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a value indicating whether a specific property is busy (has a currently executing async rule). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to check. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3096 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a392999536d44892f6cbaed4ce39278ae}\label{class_csla_1_1_core_1_1_business_base_a392999536d44892f6cbaed4ce39278ae}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsPropertyBusy@{IsPropertyBusy}}
+\index{IsPropertyBusy@{IsPropertyBusy}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsPropertyBusy()}{IsPropertyBusy()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Is\+Property\+Busy (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether a specific property is busy (has a currently executing async rule). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the property. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3109 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a4569a42db0489ce69d90ab878be89963}\label{class_csla_1_1_core_1_1_business_base_a4569a42db0489ce69d90ab878be89963}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LazyGetProperty$<$ P $>$@{LazyGetProperty$<$ P $>$}}
+\index{LazyGetProperty$<$ P $>$@{LazyGetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LazyGetProperty$<$ P $>$()}{LazyGetProperty< P >()}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Lazy\+Get\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property,  }\item[{Func$<$ P $>$}]{value\+Generator }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Lazily initializes a property and returns the resulting value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property.\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em value\+Generator} & Method returning the new value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1872 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a1c211bd3313461af0600fd7a4a154cb6}\label{class_csla_1_1_core_1_1_business_base_a1c211bd3313461af0600fd7a4a154cb6}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LazyGetPropertyAsync$<$ P $>$@{LazyGetPropertyAsync$<$ P $>$}}
+\index{LazyGetPropertyAsync$<$ P $>$@{LazyGetPropertyAsync$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LazyGetPropertyAsync$<$ P $>$()}{LazyGetPropertyAsync< P >()}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Lazy\+Get\+Property\+Async$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property,  }\item[{Task$<$ P $>$}]{factory }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Lazily initializes a property and returns the resulting value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property.\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em factory} & Async method returning the new value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Note that the first value returned is almost certainly the default\+Value because the value is initialized asynchronously. The real value is provided later along with a Property\+Changed event to indicate the value has changed. 
+
+If the user is not authorized to read the property value, the default\+Value value is returned as a result. 
+
+Definition at line 1906 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a505974161fe71ac1b30569fa928f63b4}\label{class_csla_1_1_core_1_1_business_base_a505974161fe71ac1b30569fa928f63b4}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LazyReadProperty$<$ P $>$@{LazyReadProperty$<$ P $>$}}
+\index{LazyReadProperty$<$ P $>$@{LazyReadProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LazyReadProperty$<$ P $>$()}{LazyReadProperty< P >()}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Lazy\+Read\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property,  }\item[{Func$<$ P $>$}]{value\+Generator }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em value\+Generator} & Method returning the new value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 2021 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a0d04df032f17edd5ad27893a0be667e8}\label{class_csla_1_1_core_1_1_business_base_a0d04df032f17edd5ad27893a0be667e8}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LazyReadPropertyAsync$<$ P $>$@{LazyReadPropertyAsync$<$ P $>$}}
+\index{LazyReadPropertyAsync$<$ P $>$@{LazyReadPropertyAsync$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LazyReadPropertyAsync$<$ P $>$()}{LazyReadPropertyAsync< P >()}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Lazy\+Read\+Property\+Async$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property,  }\item[{Task$<$ P $>$}]{factory }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em factory} & Async method returning the new value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 2040 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a7cb85058247c343679c1218cb9a1a084}\label{class_csla_1_1_core_1_1_business_base_a7cb85058247c343679c1218cb9a1a084}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LoadProperty@{LoadProperty}}
+\index{LoadProperty@{LoadProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LoadProperty()}{LoadProperty()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Load\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info,  }\item[{object}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 2853 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a7dceae71732083421094a923ca289ac8}\label{class_csla_1_1_core_1_1_business_base_a7dceae71732083421094a923ca289ac8}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LoadProperty$<$ P $>$@{LoadProperty$<$ P $>$}}
+\index{LoadProperty$<$ P $>$@{LoadProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LoadProperty$<$ P $>$()}{LoadProperty< P >()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7cb85058247c343679c1218cb9a1a084}{Csla.\+Core.\+Business\+Base.\+Load\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 2570 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a69095cafed037f116e9876c950cf37da}\label{class_csla_1_1_core_1_1_business_base_a69095cafed037f116e9876c950cf37da}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LoadPropertyAsync$<$ R $>$@{LoadPropertyAsync$<$ R $>$}}
+\index{LoadPropertyAsync$<$ R $>$@{LoadPropertyAsync$<$ R $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LoadPropertyAsync$<$ R $>$()}{LoadPropertyAsync< R >()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Load\+Property\+Async$<$ R $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ R $>$}]{property,  }\item[{Task$<$ R $>$}]{factory }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Load a property from an async method. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em R} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property} & \\
+\hline
+{\em factory} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3000 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ac19b6bc0e99333f2f315b5f683814f82}\label{class_csla_1_1_core_1_1_business_base_ac19b6bc0e99333f2f315b5f683814f82}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LoadPropertyConvert$<$ P, F $>$@{LoadPropertyConvert$<$ P, F $>$}}
+\index{LoadPropertyConvert$<$ P, F $>$@{LoadPropertyConvert$<$ P, F $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LoadPropertyConvert$<$ P, F $>$()}{LoadPropertyConvert< P, F >()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Load\+Property\+Convert$<$ P, F $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{F}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 2515 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a820b24ffaf02bc3712ab320a37018237}\label{class_csla_1_1_core_1_1_business_base_a820b24ffaf02bc3712ab320a37018237}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LoadPropertyMarkDirty@{LoadPropertyMarkDirty}}
+\index{LoadPropertyMarkDirty@{LoadPropertyMarkDirty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LoadPropertyMarkDirty()}{LoadPropertyMarkDirty()}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Load\+Property\+Mark\+Dirty (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info,  }\item[{object}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 2770 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ad5b43367573d8eec4e1273a5de8967f4}\label{class_csla_1_1_core_1_1_business_base_ad5b43367573d8eec4e1273a5de8967f4}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!LoadPropertyMarkDirty$<$ P $>$@{LoadPropertyMarkDirty$<$ P $>$}}
+\index{LoadPropertyMarkDirty$<$ P $>$@{LoadPropertyMarkDirty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{LoadPropertyMarkDirty$<$ P $>$()}{LoadPropertyMarkDirty< P >()}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a820b24ffaf02bc3712ab320a37018237}{Csla.\+Core.\+Business\+Base.\+Load\+Property\+Mark\+Dirty}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value and mark field as dirty if value is modified. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 2615 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a393826caee0b9edf7d08c37b08bcc761}\label{class_csla_1_1_core_1_1_business_base_a393826caee0b9edf7d08c37b08bcc761}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkAsChild@{MarkAsChild}}
+\index{MarkAsChild@{MarkAsChild}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkAsChild()}{MarkAsChild()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+As\+Child (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Marks the object as being a child object. 
+
+
+
+Definition at line 939 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ae2752ebed972df627c8e3f853a503d14}\label{class_csla_1_1_core_1_1_business_base_ae2752ebed972df627c8e3f853a503d14}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkBusy@{MarkBusy}}
+\index{MarkBusy@{MarkBusy}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkBusy()}{MarkBusy()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+Busy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Mark the object as busy (it is running an async operation). 
+
+
+
+Definition at line 3018 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_adfa0c41ccb64c438baa0a8a8feac2e1d}\label{class_csla_1_1_core_1_1_business_base_adfa0c41ccb64c438baa0a8a8feac2e1d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkClean@{MarkClean}}
+\index{MarkClean@{MarkClean}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkClean()}{MarkClean()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+Clean (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Forces the object\textquotesingle{}s Is\+Dirty flag to false. 
+
+This method is normally called automatically and is not intended to be called manually. 
+
+Definition at line 433 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a70b1f36632fc8fcc83bb21df25ccd329}\label{class_csla_1_1_core_1_1_business_base_a70b1f36632fc8fcc83bb21df25ccd329}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkDeleted@{MarkDeleted}}
+\index{MarkDeleted@{MarkDeleted}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkDeleted()}{MarkDeleted()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+Deleted (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Marks an object for deletion. This also marks the object as being dirty. 
+
+You should call this method in your business logic in the case that you want to have the object deleted when it is saved to the database. 
+
+Definition at line 309 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ab28925b4c26ea78131c7cc5ec67a0969}\label{class_csla_1_1_core_1_1_business_base_ab28925b4c26ea78131c7cc5ec67a0969}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkDirty@{MarkDirty}}
+\index{MarkDirty@{MarkDirty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkDirty()}{MarkDirty()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+Dirty (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Marks an object as being dirty, or changed. 
+
+You should call this method in your business logic any time the object\textquotesingle{}s internal data changes. Any time any instance variable changes within the object, this method should be called to tell CSLA .NET that the object\textquotesingle{}s data has been changed. 
+
+Marking an object as dirty does two things. First it ensures that CSLA .NET will properly save the object as appropriate. Second, it causes CSLA .NET to tell \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms data binding that the object\textquotesingle{}s data has changed so any bound controls will update to reflect the new values. 
+
+Definition at line 333 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a8d0b24f7608cdd488a1efa7d33385a64}\label{class_csla_1_1_core_1_1_business_base_a8d0b24f7608cdd488a1efa7d33385a64}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkDirty@{MarkDirty}}
+\index{MarkDirty@{MarkDirty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkDirty()}{MarkDirty()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+Dirty (\begin{DoxyParamCaption}\item[{bool}]{suppress\+Event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Marks an object as being dirty, or changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em suppress\+Event} & true to supress the Property\+Changed event that is otherwise raised to indicate that the object\textquotesingle{}s state has changed. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 346 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ae0f059175dafc9df7f0bd61513eaf6f3}\label{class_csla_1_1_core_1_1_business_base_ae0f059175dafc9df7f0bd61513eaf6f3}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkIdle@{MarkIdle}}
+\index{MarkIdle@{MarkIdle}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkIdle()}{MarkIdle()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Mark\+Idle (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Mark the object as not busy (it is not running an async operation). 
+
+
+
+Definition at line 3032 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_af74bc729d625a2e43d7a617e4e2197ee}\label{class_csla_1_1_core_1_1_business_base_af74bc729d625a2e43d7a617e4e2197ee}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkNew@{MarkNew}}
+\index{MarkNew@{MarkNew}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkNew()}{MarkNew()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Mark\+New (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Marks the object as being a new object. This also marks the object as being dirty and ensures that it is not marked for deletion. 
+
+Newly created objects are marked new by default. You should call this method in the implementation of Data\+Portal\+\_\+\+Update when the object is deleted (due to being marked for deletion) to indicate that the object no longer reflects data in the database. 
+
+If you override this method, make sure to call the base implementation after executing your new code. 
+
+Definition at line 266 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a9751d36d02b9be925a43cf8c4ac5f6b5}\label{class_csla_1_1_core_1_1_business_base_a9751d36d02b9be925a43cf8c4ac5f6b5}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MarkOld@{MarkOld}}
+\index{MarkOld@{MarkOld}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MarkOld()}{MarkOld()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Mark\+Old (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Marks the object as being an old (not new) object. This also marks the object as being unchanged (not dirty). 
+
+You should call this method in the implementation of Data\+Portal\+\_\+\+Fetch to indicate that an existing object has been successfully retrieved from the database. 
+
+You should call this method in the implementation of Data\+Portal\+\_\+\+Update to indicate that a new object has been successfully inserted into the database. 
+
+If you override this method, make sure to call the base implementation after executing your new code. 
+
+Definition at line 293 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_abbd08839fb5ee83988d25580e37c9e1d}\label{class_csla_1_1_core_1_1_business_base_abbd08839fb5ee83988d25580e37c9e1d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!MetaPropertyHasChanged@{MetaPropertyHasChanged}}
+\index{MetaPropertyHasChanged@{MetaPropertyHasChanged}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{MetaPropertyHasChanged()}{MetaPropertyHasChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Meta\+Property\+Has\+Changed (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises On\+Property\+Changed for meta properties (Is\+XYZ) when Property\+Changed\+Mode is not \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & meta property name that has cchanged.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 387 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ac90ad8358c85e2e1589d8329291c3750}\label{class_csla_1_1_core_1_1_business_base_ac90ad8358c85e2e1589d8329291c3750}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnAddEventHooks@{OnAddEventHooks}}
+\index{OnAddEventHooks@{OnAddEventHooks}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnAddEventHooks()}{OnAddEventHooks()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Add\+Event\+Hooks (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}}}]{child }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Hook child object events. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em child} & Child object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1389 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a045fd0daa2bf58ffec34ae8574140a20}\label{class_csla_1_1_core_1_1_business_base_a045fd0daa2bf58ffec34ae8574140a20}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnBusyChanged@{OnBusyChanged}}
+\index{OnBusyChanged@{OnBusyChanged}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnBusyChanged()}{OnBusyChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Busy\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_busy_changed_event_args}{Busy\+Changed\+Event\+Args}}}]{args }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raise the Busy\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Event args.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3080 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a7db6b86cfd2d9b24b5fc2b4dac0141d1}\label{class_csla_1_1_core_1_1_business_base_a7db6b86cfd2d9b24b5fc2b4dac0141d1}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnChildChanged@{OnChildChanged}}
+\index{OnChildChanged@{OnChildChanged}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnChildChanged()}{OnChildChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Child\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Child\+Changed\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Child\+Changed event, indicating that a child object has been changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & \mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Child\+Changed\+Event\+Args}} object. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3190 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a977d9146f2e4628c7fbf54561002b026}\label{class_csla_1_1_core_1_1_business_base_a977d9146f2e4628c7fbf54561002b026}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnDeserialized@{OnDeserialized}}
+\index{OnDeserialized@{OnDeserialized}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnDeserialized()}{OnDeserialized()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Deserialized (\begin{DoxyParamCaption}\item[{System.\+Runtime.\+Serialization.\+Streaming\+Context}]{context }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called on a newly deserialized object after deserialization is complete. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} context object.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_test_1_1_silverlight_1_1_property_get_set_1_1_abstract_get_set_a1f89c895ed8d9ab78485371cf48598a6}{Csla.\+Test.\+Silverlight.\+Property\+Get\+Set.\+Abstract\+Get\+Set$<$ T $>$}}.
+
+
+
+Definition at line 1367 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a877dd212c0b5c8a3d965c849068a83e9}\label{class_csla_1_1_core_1_1_business_base_a877dd212c0b5c8a3d965c849068a83e9}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnGetChildren@{OnGetChildren}}
+\index{OnGetChildren@{OnGetChildren}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnGetChildren()}{OnGetChildren()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Business\+Base.\+On\+Get\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to insert your child object references into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em formatter} & Reference to Mobile\+Formatter instance. Use this to convert child references to/from reference id values. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3525 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_acfe0a33c40cedcf8a219f6505604adce}\label{class_csla_1_1_core_1_1_business_base_acfe0a33c40cedcf8a219f6505604adce}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Business\+Base.\+On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}}}]{mode }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to insert your field values into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em mode} & The State\+Mode indicating why this method was invoked. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3475 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a4dea44c38a808900dc1062f175cd68a7}\label{class_csla_1_1_core_1_1_business_base_a4dea44c38a808900dc1062f175cd68a7}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnRemoveEventHooks@{OnRemoveEventHooks}}
+\index{OnRemoveEventHooks@{OnRemoveEventHooks}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnRemoveEventHooks()}{OnRemoveEventHooks()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Remove\+Event\+Hooks (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}}}]{child }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Unhook child object events. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em child} & Child object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1431 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_af9c65bd493f85e3a05cbce599f95698e}\label{class_csla_1_1_core_1_1_business_base_af9c65bd493f85e3a05cbce599f95698e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Business\+Base.\+On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em formatter} & Reference to Mobile\+Formatter instance. Use this to convert child references to/from reference id values. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3555 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5b9b120bfeef8b16adf65ef11c67d66c}\label{class_csla_1_1_core_1_1_business_base_a5b9b120bfeef8b16adf65ef11c67d66c}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Business\+Base.\+On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}}}]{mode }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em mode} & The State\+Mode indicating why this method was invoked. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3499 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a1673a7ba9f724699429920db3ff768b1}\label{class_csla_1_1_core_1_1_business_base_a1673a7ba9f724699429920db3ff768b1}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnUnhandledAsyncException@{OnUnhandledAsyncException}}
+\index{OnUnhandledAsyncException@{OnUnhandledAsyncException}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnUnhandledAsyncException()}{OnUnhandledAsyncException()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Unhandled\+Async\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}}}]{error }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Unhandled\+Async\+Exception event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em error} & Args parameter.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3137 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aca7145f0a6616846ac6a357f13506018}\label{class_csla_1_1_core_1_1_business_base_aca7145f0a6616846ac6a357f13506018}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnUnhandledAsyncException@{OnUnhandledAsyncException}}
+\index{OnUnhandledAsyncException@{OnUnhandledAsyncException}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnUnhandledAsyncException()}{OnUnhandledAsyncException()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+On\+Unhandled\+Async\+Exception (\begin{DoxyParamCaption}\item[{object}]{original\+Sender,  }\item[{Exception}]{error }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Raises the Unhandled\+Async\+Exception event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em original\+Sender} & Original sender of the event.\\
+\hline
+{\em error} & Exception object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 3150 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5375c9b84bd0c67c9c4b1353ac945a67}\label{class_csla_1_1_core_1_1_business_base_a5375c9b84bd0c67c9c4b1353ac945a67}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!OnValidationComplete@{OnValidationComplete}}
+\index{OnValidationComplete@{OnValidationComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{OnValidationComplete()}{OnValidationComplete()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+On\+Validation\+Complete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Validation\+Complete event 
+
+
+
+Definition at line 1067 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aa3d365b5bc893c7f9ebf178789af9ddb}\label{class_csla_1_1_core_1_1_business_base_aa3d365b5bc893c7f9ebf178789af9ddb}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!PropertyHasChanged@{PropertyHasChanged}}
+\index{PropertyHasChanged@{PropertyHasChanged}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{PropertyHasChanged()}{PropertyHasChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Property\+Has\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Performs processing required when a property has changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property that has changed.\\
+\hline
+\end{DoxyParams}
+
+
+This method calls Check\+Rules(property\+Name), Mark\+Dirty and On\+Property\+Changed(property\+Name). Mark\+Dirty is called such that no event is raised for Is\+Dirty, so only the specific property changed event for the current property is raised. 
+
+Definition at line 372 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5a1a400afe5236d784196b5112d8452a}\label{class_csla_1_1_core_1_1_business_base_a5a1a400afe5236d784196b5112d8452a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!ReadProperty@{ReadProperty}}
+\index{ReadProperty@{ReadProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{ReadProperty()}{ReadProperty()}}
+{\footnotesize\ttfamily virtual object Csla.\+Core.\+Business\+Base.\+Read\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Gets a property\textquotesingle{}s value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1984 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ae8da7be15108a76e2ea688d5b1ad6125}\label{class_csla_1_1_core_1_1_business_base_ae8da7be15108a76e2ea688d5b1ad6125}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!ReadProperty$<$ P $>$@{ReadProperty$<$ P $>$}}
+\index{ReadProperty$<$ P $>$@{ReadProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{ReadProperty$<$ P $>$()}{ReadProperty< P >()}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5a1a400afe5236d784196b5112d8452a}{Csla.\+Core.\+Business\+Base.\+Read\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1956 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a827b2c10a5ad0e3b659c6c03e6586df9}\label{class_csla_1_1_core_1_1_business_base_a827b2c10a5ad0e3b659c6c03e6586df9}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!ReadPropertyConvert$<$ F, P $>$@{ReadPropertyConvert$<$ F, P $>$}}
+\index{ReadPropertyConvert$<$ F, P $>$@{ReadPropertyConvert$<$ F, P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{ReadPropertyConvert$<$ F, P $>$()}{ReadPropertyConvert< F, P >()}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Business\+Base.\+Read\+Property\+Convert$<$ F, P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value from the list of managed field values, converting the value to an appropriate type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em F} & Type of the field. \\
+\hline
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1943 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a9846bc8899adbe2cdbb5c688ed26158e}\label{class_csla_1_1_core_1_1_business_base_a9846bc8899adbe2cdbb5c688ed26158e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!RegisterMethod@{RegisterMethod}}
+\index{RegisterMethod@{RegisterMethod}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{RegisterMethod()}{RegisterMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}} Csla.\+Core.\+Business\+Base.\+Register\+Method (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{IMember\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified method belongs to the type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of object to which the method belongs. \\
+\hline
+{\em info} & \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{IMember\+Info}} object for the property. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{IMember\+Info}} object. 
+\end{DoxyReturn}
+
+
+Definition at line 1515 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a3e09075cd06a1b8dc02950a9248b8028}\label{class_csla_1_1_core_1_1_business_base_a3e09075cd06a1b8dc02950a9248b8028}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!RegisterMethod@{RegisterMethod}}
+\index{RegisterMethod@{RegisterMethod}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{RegisterMethod()}{RegisterMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_method_info}{Method\+Info}} Csla.\+Core.\+Business\+Base.\+Register\+Method (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{string}]{method\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified method belongs to the type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of object to which the method belongs. \\
+\hline
+{\em method\+Name} & Name of the method. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{IMember\+Info}} object. 
+\end{DoxyReturn}
+
+
+Definition at line 1536 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ac56025152273f37a85b1eb405b16da88}\label{class_csla_1_1_core_1_1_business_base_ac56025152273f37a85b1eb405b16da88}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ Csla.\+Core.\+Business\+Base.\+Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of object to which the property belongs. \\
+\hline
+{\em info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object for the property. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} object. 
+\end{DoxyReturn}
+
+
+Definition at line 1563 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a1267929d586b955f4b0c8e8f5e6a9883}\label{class_csla_1_1_core_1_1_business_base_a1267929d586b955f4b0c8e8f5e6a9883}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!RemoveEventHooks@{RemoveEventHooks}}
+\index{RemoveEventHooks@{RemoveEventHooks}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{RemoveEventHooks()}{RemoveEventHooks()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Remove\+Event\+Hooks (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_business_object}{IBusiness\+Object}}}]{child }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+For internal use only. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em child} & Child object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1421 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a974b519582aacd666375a1ee84215238}\label{class_csla_1_1_core_1_1_business_base_a974b519582aacd666375a1ee84215238}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetParent@{SetParent}}
+\index{SetParent@{SetParent}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetParent()}{SetParent()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Business\+Base.\+Set\+Parent (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}}}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & A reference to the parent collection object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 140 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}\label{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty@{SetProperty}}
+\index{SetProperty@{SetProperty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty()}{SetProperty()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Set\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info,  }\item[{object}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s managed field with the supplied value, and then calls Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property a Security\+Exception is thrown. 
+
+Definition at line 2450 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a09fa9859971b63a42c72430d85924d16}\label{class_csla_1_1_core_1_1_business_base_a09fa9859971b63a42c72430d85924d16}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty$<$ P $>$@{SetProperty$<$ P $>$}}
+\index{SetProperty$<$ P $>$@{SetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty$<$ P $>$()}{SetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/6]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Csla.\+Core.\+Business\+Base.\+Set\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s managed field with the supplied value, and then calls Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property a Security\+Exception is thrown. 
+
+Definition at line 2492 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a921c6dd411ef82e5fe5b284977951d9a}\label{class_csla_1_1_core_1_1_business_base_a921c6dd411ef82e5fe5b284977951d9a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty$<$ P $>$@{SetProperty$<$ P $>$}}
+\index{SetProperty$<$ P $>$@{SetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty$<$ P $>$()}{SetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/6]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Csla.\+Core.\+Business\+Base.\+Set\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Property type.\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property, this overload throws a Security\+Exception. 
+
+Definition at line 2313 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aaa370af468dbec77cfe955b077400735}\label{class_csla_1_1_core_1_1_business_base_aaa370af468dbec77cfe955b077400735}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty$<$ P $>$@{SetProperty$<$ P $>$}}
+\index{SetProperty$<$ P $>$@{SetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty$<$ P $>$()}{SetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/6]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Csla.\+Core.\+Business\+Base.\+Set\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{new\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to change this property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 2404 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5adff4588700105adcf4143a09887dc6}\label{class_csla_1_1_core_1_1_business_base_a5adff4588700105adcf4143a09887dc6}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty$<$ P $>$@{SetProperty$<$ P $>$}}
+\index{SetProperty$<$ P $>$@{SetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty$<$ P $>$()}{SetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [4/6]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Csla.\+Core.\+Business\+Base.\+Set\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{ref P}]{field,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & A reference to the backing field for the property.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property, this overload throws a Security\+Exception. 
+
+Definition at line 2079 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aefd87f2d6e20c9668b06fba0cc7e48a6}\label{class_csla_1_1_core_1_1_business_base_aefd87f2d6e20c9668b06fba0cc7e48a6}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty$<$ P $>$@{SetProperty$<$ P $>$}}
+\index{SetProperty$<$ P $>$@{SetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty$<$ P $>$()}{SetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [5/6]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Csla.\+Core.\+Business\+Base.\+Set\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{ref P}]{field,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & A reference to the backing field for the property.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em property\+Name} & The name of the property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property, this overload throws a Security\+Exception. 
+
+Definition at line 2099 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5c0ddb00773ef489137bbca195fdff21}\label{class_csla_1_1_core_1_1_business_base_a5c0ddb00773ef489137bbca195fdff21}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetProperty$<$ P $>$@{SetProperty$<$ P $>$}}
+\index{SetProperty$<$ P $>$@{SetProperty$<$ P $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetProperty$<$ P $>$()}{SetProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [6/6]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ae64290d033a8491e4757dadc2a6c894b}{Csla.\+Core.\+Business\+Base.\+Set\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{ref P}]{field,  }\item[{P}]{new\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & A reference to the backing field for the property.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em property\+Name} & The name of the property.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to change this property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 2173 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a7964b5b428371f10917865c1a6b89df1}\label{class_csla_1_1_core_1_1_business_base_a7964b5b428371f10917865c1a6b89df1}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetPropertyConvert$<$ P, F $>$@{SetPropertyConvert$<$ P, F $>$}}
+\index{SetPropertyConvert$<$ P, F $>$@{SetPropertyConvert$<$ P, F $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetPropertyConvert$<$ P, F $>$()}{SetPropertyConvert< P, F >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Set\+Property\+Convert$<$ P, F $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{F}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property, this overload throws a Security\+Exception. 
+
+Definition at line 2331 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a08feeb7a1b1e60f461fc30ed69be6e48}\label{class_csla_1_1_core_1_1_business_base_a08feeb7a1b1e60f461fc30ed69be6e48}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetPropertyConvert$<$ P, F $>$@{SetPropertyConvert$<$ P, F $>$}}
+\index{SetPropertyConvert$<$ P, F $>$@{SetPropertyConvert$<$ P, F $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetPropertyConvert$<$ P, F $>$()}{SetPropertyConvert< P, F >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Set\+Property\+Convert$<$ P, F $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{F}]{new\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s managed field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to change this property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 2348 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a4c33feb949fd4a0ae599393f259cf1ed}\label{class_csla_1_1_core_1_1_business_base_a4c33feb949fd4a0ae599393f259cf1ed}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetPropertyConvert$<$ P, V $>$@{SetPropertyConvert$<$ P, V $>$}}
+\index{SetPropertyConvert$<$ P, V $>$@{SetPropertyConvert$<$ P, V $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetPropertyConvert$<$ P, V $>$()}{SetPropertyConvert< P, V >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Set\+Property\+Convert$<$ P, V $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{ref P}]{field,  }\item[{V}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the field being set. \\
+\hline
+{\em V} & Type of the value provided to the field. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & A reference to the backing field for the property.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+If the user is not authorized to change the property, this overload throws a Security\+Exception. 
+
+Definition at line 2125 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a0e6d747c2a85fbf550251e6fdc22ce7a}\label{class_csla_1_1_core_1_1_business_base_a0e6d747c2a85fbf550251e6fdc22ce7a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetPropertyConvert$<$ P, V $>$@{SetPropertyConvert$<$ P, V $>$}}
+\index{SetPropertyConvert$<$ P, V $>$@{SetPropertyConvert$<$ P, V $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetPropertyConvert$<$ P, V $>$()}{SetPropertyConvert< P, V >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Set\+Property\+Convert$<$ P, V $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{ref P}]{field,  }\item[{V}]{new\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the field being set. \\
+\hline
+{\em V} & Type of the value provided to the field. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & A reference to the backing field for the property.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to change this property.\\
+\hline
+\end{DoxyParams}
+
+
+If the field value is of type string, any incoming null values are converted to string.\+Empty. 
+
+Definition at line 2154 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_afd2d55a0c48573f7b378c55e5aa5f8f8}\label{class_csla_1_1_core_1_1_business_base_afd2d55a0c48573f7b378c55e5aa5f8f8}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!SetPropertyConvert$<$ P, V $>$@{SetPropertyConvert$<$ P, V $>$}}
+\index{SetPropertyConvert$<$ P, V $>$@{SetPropertyConvert$<$ P, V $>$}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{SetPropertyConvert$<$ P, V $>$()}{SetPropertyConvert< P, V >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Business\+Base.\+Set\+Property\+Convert$<$ P, V $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{ref P}]{field,  }\item[{V}]{new\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_security_ab2154e99d9a194c1e397fbe0371c9702}{Security.\+No\+Access\+Behavior}}}]{no\+Access }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets a property\textquotesingle{}s backing field with the supplied value, first checking authorization, and then calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the field being set. \\
+\hline
+{\em V} & Type of the value provided to the field. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em field} & A reference to the backing field for the property.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+{\em property\+Name} & The name of the property.\\
+\hline
+{\em no\+Access} & True if an exception should be thrown when the user is not authorized to change this property.\\
+\hline
+\end{DoxyParams}
+
+
+If the field value is of type string, any incoming null values are converted to string.\+Empty. 
+
+Definition at line 2248 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aad1c6334e8cb3a4725dd95b49275673d}\label{class_csla_1_1_core_1_1_business_base_aad1c6334e8cb3a4725dd95b49275673d}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!UndoChangesComplete@{UndoChangesComplete}}
+\index{UndoChangesComplete@{UndoChangesComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{UndoChangesComplete()}{UndoChangesComplete()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Business\+Base.\+Undo\+Changes\+Complete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called when an undo operation has completed. 
+
+This method resets the object as a result of deserialization and raises Property\+Changed events to notify data binding that the object has changed. 
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_undoable_base_adcc23beac78f632011ea758a74498bc6}{Csla.\+Core.\+Undoable\+Base}}.
+
+
+
+Definition at line 880 of file Business\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_aabd2059dd8a340cb617fcd575155ff1c}\label{class_csla_1_1_core_1_1_business_base_aabd2059dd8a340cb617fcd575155ff1c}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!BrokenRulesCollection@{BrokenRulesCollection}}
+\index{BrokenRulesCollection@{BrokenRulesCollection}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{BrokenRulesCollection}{BrokenRulesCollection}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_collection}{Rules.\+Broken\+Rules\+Collection}} Csla.\+Core.\+Business\+Base.\+Broken\+Rules\+Collection\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the readonly collection of broken business rules for this object. 
+
+
+
+Definition at line 1229 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a655fa46bac3e14f360943b25b7a59e5c}\label{class_csla_1_1_core_1_1_business_base_a655fa46bac3e14f360943b25b7a59e5c}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!BusinessRules@{BusinessRules}}
+\index{BusinessRules@{BusinessRules}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{BusinessRules}{BusinessRules}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules}{Business\+Rules}} Csla.\+Core.\+Business\+Base.\+Business\+Rules\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Provides access to the broken rules functionality. 
+
+This property is used within your business logic so you can easily call the Add\+Rule() method to associate business rules with your object\textquotesingle{}s properties. 
+
+Definition at line 1103 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a97468f64e24436446ccd35defab67923}\label{class_csla_1_1_core_1_1_business_base_a97468f64e24436446ccd35defab67923}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!BusyChanged@{BusyChanged}}
+\index{BusyChanged@{BusyChanged}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{BusyChanged}{BusyChanged}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_csla_1_1_core_a6e5e9144d3f05f7275d0411443def6de}{Busy\+Changed\+Event\+Handler}} Csla.\+Core.\+Business\+Base.\+Busy\+Changed\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event indicating that the Is\+Busy property has changed. 
+
+
+
+Definition at line 3070 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a8319269e8a0968139cbb9a5b5e83e558}\label{class_csla_1_1_core_1_1_business_base_a8319269e8a0968139cbb9a5b5e83e558}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!ChildChanged@{ChildChanged}}
+\index{ChildChanged@{ChildChanged}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{ChildChanged}{ChildChanged}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Csla.\+Core.\+Child\+Changed\+Event\+Args}}$>$ Csla.\+Core.\+Business\+Base.\+Child\+Changed\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event raised when a child object has been changed. 
+
+
+
+Definition at line 3168 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a459b23c8a8c710382608fd83f6f8b5be}\label{class_csla_1_1_core_1_1_business_base_a459b23c8a8c710382608fd83f6f8b5be}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!DisableIEditableObject@{DisableIEditableObject}}
+\index{DisableIEditableObject@{DisableIEditableObject}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{DisableIEditableObject}{DisableIEditableObject}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Disable\+IEditable\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets a value indicating whether the IEditable\+Object interface methods should be disabled for this object. 
+
+Defaults to False, indicating that the IEditable\+Object methods will behave normally.
+
+If you disable the IEditable\+Object methods then \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms data binding will no longer automatically call Begin\+Edit, Cancel\+Edit or Apply\+Edit on your object, and you will have to call these methods manually to get proper n-\/level undo behavior. 
+
+Definition at line 755 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a0ce2c13abb6183ad11f76504c1407962}\label{class_csla_1_1_core_1_1_business_base_a0ce2c13abb6183ad11f76504c1407962}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!FieldManager@{FieldManager}}
+\index{FieldManager@{FieldManager}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{FieldManager}{FieldManager}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager}{Field\+Data\+Manager}} Csla.\+Core.\+Business\+Base.\+Field\+Manager\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Gets the Property\+Manager object for this business object. 
+
+
+
+Definition at line 3294 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a1627655219b157bcba9f0f45504d7440}\label{class_csla_1_1_core_1_1_business_base_a1627655219b157bcba9f0f45504d7440}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating if this object or its child objects are busy. 
+
+
+
+Definition at line 3046 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ad64799a8470d5d338842479d980c39ad}\label{class_csla_1_1_core_1_1_business_base_ad64799a8470d5d338842479d980c39ad}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsChild@{IsChild}}
+\index{IsChild@{IsChild}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsChild}{IsChild}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Is\+Child\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this is a child (non-\/root) object. 
+
+
+
+Definition at line 931 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a342756e9cf08028186b6cecde15b4f31}\label{class_csla_1_1_core_1_1_business_base_a342756e9cf08028186b6cecde15b4f31}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsDeleted@{IsDeleted}}
+\index{IsDeleted@{IsDeleted}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsDeleted}{IsDeleted}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Is\+Deleted\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object is marked for deletion. 
+
+CSLA .NET supports both immediate and deferred deletion of objects. This property is part of the support for deferred deletion, where an object can be marked for deletion, but isn\textquotesingle{}t actually deleted until the object is saved to the database. This property indicates whether or not the current object has been marked for deletion. If it is true , the object will be deleted when it is saved to the database, otherwise it will be inserted or updated by the save operation. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object is marked for deletion.
+\end{DoxyReturn}
+
+
+Definition at line 194 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_ad67992c09ceb801e17e64350c289a55b}\label{class_csla_1_1_core_1_1_business_base_ad67992c09ceb801e17e64350c289a55b}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsDirty@{IsDirty}}
+\index{IsDirty@{IsDirty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsDirty}{IsDirty}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Dirty\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object\textquotesingle{}s data, or any of its fields or child objects data, has been changed. 
+
+When an object\textquotesingle{}s data is changed, CSLA .NET makes note of that change and considers the object to be \textquotesingle{}dirty\textquotesingle{} or changed. This value is used to optimize data updates, since an unchanged object does not need to be updated into the database. All new objects are considered dirty. All objects marked for deletion are considered dirty. 
+
+Once an object\textquotesingle{}s data has been saved to the database (inserted or updated) the dirty flag is cleared and the object is considered unchanged. Objects newly loaded from the database are also considered unchanged. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object\textquotesingle{}s data has been changed.
+\end{DoxyReturn}
+
+
+Definition at line 221 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a84273283b7db180b67a105c0e83427df}\label{class_csla_1_1_core_1_1_business_base_a84273283b7db180b67a105c0e83427df}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsNew@{IsNew}}
+\index{IsNew@{IsNew}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsNew}{IsNew}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+Business\+Base.\+Is\+New\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this is a new object, false if it is a pre-\/existing object. 
+
+An object is considered to be new if its primary identifying (key) value doesn\textquotesingle{}t correspond to data in the database. In other words, if the data values in this particular object have not yet been saved to the database the object is considered to be new. Likewise, if the object\textquotesingle{}s data has been deleted from the database then the object is considered to be new. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object is new.
+\end{DoxyReturn}
+
+
+Definition at line 172 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a8ef31875508c0b689d801f9b101cfe4f}\label{class_csla_1_1_core_1_1_business_base_a8ef31875508c0b689d801f9b101cfe4f}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsSavable@{IsSavable}}
+\index{IsSavable@{IsSavable}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsSavable}{IsSavable}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Savable\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object is both dirty and valid. 
+
+An object is considered dirty (changed) if P\+:\+Csla.\+Business\+Base.\+Is\+Dirty returns true. It is considered valid if Is\+Valid returns true. The Is\+Savable property is a combination of these two properties. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object is both dirty and valid.
+\end{DoxyReturn}
+
+
+Definition at line 458 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a5118e26c7da8aeac7017cc9905d96a86}\label{class_csla_1_1_core_1_1_business_base_a5118e26c7da8aeac7017cc9905d96a86}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsSelfBusy@{IsSelfBusy}}
+\index{IsSelfBusy@{IsSelfBusy}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsSelfBusy}{IsSelfBusy}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Self\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating if this object is busy. 
+
+
+
+Definition at line 3058 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a9b2d791adabe7f9b2beddce9fe9b846a}\label{class_csla_1_1_core_1_1_business_base_a9b2d791adabe7f9b2beddce9fe9b846a}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsSelfDirty@{IsSelfDirty}}
+\index{IsSelfDirty@{IsSelfDirty}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsSelfDirty}{IsSelfDirty}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Self\+Dirty\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object\textquotesingle{}s data has been changed. 
+
+When an object\textquotesingle{}s data is changed, CSLA .NET makes note of that change and considers the object to be \textquotesingle{}dirty\textquotesingle{} or changed. This value is used to optimize data updates, since an unchanged object does not need to be updated into the database. All new objects are considered dirty. All objects marked for deletion are considered dirty. 
+
+Once an object\textquotesingle{}s data has been saved to the database (inserted or updated) the dirty flag is cleared and the object is considered unchanged. Objects newly loaded from the database are also considered unchanged. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object\textquotesingle{}s data has been changed.
+\end{DoxyReturn}
+
+
+Definition at line 246 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a09cf79ad6e08bce40254c2a4d6d6705b}\label{class_csla_1_1_core_1_1_business_base_a09cf79ad6e08bce40254c2a4d6d6705b}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsSelfValid@{IsSelfValid}}
+\index{IsSelfValid@{IsSelfValid}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsSelfValid}{IsSelfValid}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Self\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if the object is currently valid, false if the object has broken rules or is otherwise invalid. 
+
+By default this property relies on the underling Business\+Rules object to track whether any business rules are currently broken for this object. 
+
+You can override this property to provide more sophisticated implementations of the behavior. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if the object is currently valid.
+\end{DoxyReturn}
+
+
+Definition at line 1215 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a1e368e12e88afd948b898b2c6e26dac3}\label{class_csla_1_1_core_1_1_business_base_a1e368e12e88afd948b898b2c6e26dac3}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Business\+Base.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if the object and its child objects are currently valid, false if the object or any of its child objects have broken rules or are otherwise invalid. 
+
+By default this property relies on the underling Business\+Rules object to track whether any business rules are currently broken for this object. 
+
+You can override this property to provide more sophisticated implementations of the behavior. For instance, you should always override this method if your object has child objects, since the validity of this object is affected by the validity of all child objects. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if the object is currently valid.
+\end{DoxyReturn}
+
+
+Definition at line 1192 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a05624536971e3058885a91d6100e523e}\label{class_csla_1_1_core_1_1_business_base_a05624536971e3058885a91d6100e523e}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!Parent@{Parent}}
+\index{Parent@{Parent}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{Parent}{Parent}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} Csla.\+Core.\+Business\+Base.\+Parent\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provide access to the parent reference for use in child object code. 
+
+This value will be Nothing for root objects. 
+
+Definition at line 129 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a9f8020414b48e34a507087b10c71d1aa}\label{class_csla_1_1_core_1_1_business_base_a9f8020414b48e34a507087b10c71d1aa}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!UnhandledAsyncException@{UnhandledAsyncException}}
+\index{UnhandledAsyncException@{UnhandledAsyncException}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{UnhandledAsyncException}{UnhandledAsyncException}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}}$>$ Csla.\+Core.\+Business\+Base.\+Unhandled\+Async\+Exception\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event indicating that an exception occurred during the processing of an async operation. 
+
+
+
+Definition at line 3126 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_business_base_a492f0d5addd4cb915f9d0540b9a11de9}\label{class_csla_1_1_core_1_1_business_base_a492f0d5addd4cb915f9d0540b9a11de9}} 
+\index{Csla.Core.BusinessBase@{Csla.Core.BusinessBase}!ValidationComplete@{ValidationComplete}}
+\index{ValidationComplete@{ValidationComplete}!Csla.Core.BusinessBase@{Csla.Core.BusinessBase}}
+\doxysubsubsection{\texorpdfstring{ValidationComplete}{ValidationComplete}}
+{\footnotesize\ttfamily Event\+Handler Csla.\+Core.\+Business\+Base.\+Validation\+Complete\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event raised when validation is complete. 
+
+
+
+Definition at line 1049 of file Business\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_csla_2_core_2_business_base_8cs}{Business\+Base.\+cs}}\end{DoxyCompactItemize}

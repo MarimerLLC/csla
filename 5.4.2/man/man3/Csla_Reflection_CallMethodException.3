@@ -1,0 +1,114 @@
+.TH "Csla.Reflection.CallMethodException" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Reflection.CallMethodException \- This exception is returned from the CallMethod method in the server-side \fBDataPortal\fP and contains the exception thrown by the underlying business object method that was being invoked\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits System\&.Exception\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCallMethodException\fP (string message, Exception ex)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "override void \fBGetObjectData\fP (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "Serializes the object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCallMethodException\fP (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "Creates an instance of the object for deserialization\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "override string \fBStackTrace\fP\fC [get]\fP"
+.br
+.RI "Get the stack trace from the original exception\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This exception is returned from the CallMethod method in the server-side \fBDataPortal\fP and contains the exception thrown by the underlying business object method that was being invoked\&. 
+
+
+.PP
+Definition at line 22 of file CallMethodException\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Reflection\&.CallMethodException\&.CallMethodException (string message, Exception ex)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImessage\fP Message text describing the exception\&.
+.br
+\fIex\fP Inner exception object\&.
+.RE
+.PP
+
+.PP
+Definition at line 48 of file CallMethodException\&.cs\&.
+.SS "Csla\&.Reflection\&.CallMethodException\&.CallMethodException (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP"
+
+.PP
+Creates an instance of the object for deserialization\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info\&.
+.br
+\fIcontext\fP Serialiation context\&.
+.RE
+.PP
+
+.PP
+Definition at line 59 of file CallMethodException\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Reflection\&.CallMethodException\&.GetObjectData (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+
+.PP
+Serializes the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info\&.
+.br
+\fIcontext\fP \fBSerialization\fP context\&.
+.RE
+.PP
+
+.PP
+Definition at line 76 of file CallMethodException\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "override string Csla\&.Reflection\&.CallMethodException\&.StackTrace\fC [get]\fP"
+
+.PP
+Get the stack trace from the original exception\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 34 of file CallMethodException\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

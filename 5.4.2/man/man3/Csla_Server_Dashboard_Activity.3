@@ -1,0 +1,89 @@
+.TH "Csla.Server.Dashboard.Activity" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Dashboard.Activity \- Information about a server-side data portal invocation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBActivity\fP (\fBInterceptArgs\fP result)"
+.br
+.RI "Creates an instance of the type\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Type \fBObjectType\fP\fC [get]\fP"
+.br
+.RI "Gets the root business object type for the call "
+.ti -1c
+.RI "\fBDataPortalOperations\fP \fBOperation\fP\fC [get]\fP"
+.br
+.RI "Gets the operation type for the call "
+.ti -1c
+.RI "TimeSpan \fBRuntime\fP\fC [get]\fP"
+.br
+.RI "Gets the elapsed runtime for the call\&. Only valid upon call completion\&. "
+.ti -1c
+.RI "Exception \fBException\fP\fC [get]\fP"
+.br
+.RI "Gets the exception (if any) resulting from the call\&. Only valid upon call completion\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Information about a server-side data portal invocation\&. 
+
+
+.PP
+Definition at line 9 of file Activity\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Server\&.Dashboard\&.Activity\&.Activity (\fBInterceptArgs\fP result)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresult\fP \fBInterceptArgs\fP object from the data portal
+.RE
+.PP
+
+.PP
+Definition at line 15 of file Activity\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Exception Csla\&.Server\&.Dashboard\&.Activity\&.Exception\fC [get]\fP"
+
+.PP
+Gets the exception (if any) resulting from the call\&. Only valid upon call completion\&. 
+.PP
+Definition at line 40 of file Activity\&.cs\&.
+.SS "Type Csla\&.Server\&.Dashboard\&.Activity\&.ObjectType\fC [get]\fP"
+
+.PP
+Gets the root business object type for the call 
+.PP
+Definition at line 26 of file Activity\&.cs\&.
+.SS "\fBDataPortalOperations\fP Csla\&.Server\&.Dashboard\&.Activity\&.Operation\fC [get]\fP"
+
+.PP
+Gets the operation type for the call 
+.PP
+Definition at line 30 of file Activity\&.cs\&.
+.SS "TimeSpan Csla\&.Server\&.Dashboard\&.Activity\&.Runtime\fC [get]\fP"
+
+.PP
+Gets the elapsed runtime for the call\&. Only valid upon call completion\&. 
+.PP
+Definition at line 35 of file Activity\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

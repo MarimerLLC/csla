@@ -1,0 +1,296 @@
+.TH "Csla.Server.ChildDataPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.ChildDataPortal \- Invoke data portal methods on child objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "object \fBCreate\fP (Type objectType)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "object \fBCreate\fP (Type objectType, params object[] parameters)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< T > \fBCreateAsync< T >\fP ()"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< T > \fBCreateAsync< T >\fP (params object[] parameters)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "object \fBFetch\fP (Type objectType)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "object \fBFetch\fP (Type objectType, params object[] parameters)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< T > \fBFetchAsync< T >\fP ()"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< T > \fBFetchAsync< T >\fP (params object[] parameters)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "void \fBUpdate\fP (object obj)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "void \fBUpdate\fP (object obj, params object[] parameters)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task \fBUpdateAsync\fP (object obj)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task \fBUpdateAsync\fP (object obj, params object[] parameters)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "void \fBUpdateAll\fP (object obj)"
+.br
+.RI "Update a business object\&. Include objects which are not dirty\&. "
+.ti -1c
+.RI "void \fBUpdateAll\fP (object obj, params object[] parameters)"
+.br
+.RI "Update a business object\&. Include objects which are not dirty\&. "
+.ti -1c
+.RI "async Task \fBUpdateAllAsync\fP (object obj)"
+.br
+.RI "Update a business object\&. Include objects which are not dirty\&. "
+.ti -1c
+.RI "async Task \fBUpdateAllAsync\fP (object obj, params object[] parameters)"
+.br
+.RI "Update a business object\&. Include objects which are not dirty\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Invoke data portal methods on child objects\&. 
+
+
+.PP
+Definition at line 18 of file ChildDataPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "object Csla\&.Server\&.ChildDataPortal\&.Create (Type objectType)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.RE
+.PP
+
+.PP
+Definition at line 24 of file ChildDataPortal\&.cs\&.
+.SS "object Csla\&.Server\&.ChildDataPortal\&.Create (Type objectType, params object[] parameters)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIparameters\fP Criteria parameters passed from caller\&. 
+.RE
+.PP
+
+.PP
+Definition at line 43 of file ChildDataPortal\&.cs\&.
+.SS "async Task<T> Csla\&.Server\&.ChildDataPortal\&.CreateAsync< T > ()"
+
+.PP
+Create a new business object\&. 
+.PP
+Definition at line 58 of file ChildDataPortal\&.cs\&.
+.SS "async Task<T> Csla\&.Server\&.ChildDataPortal\&.CreateAsync< T > (params object[] parameters)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameters\fP Criteria parameters passed from caller\&. 
+.RE
+.PP
+
+.PP
+Definition at line 69 of file ChildDataPortal\&.cs\&.
+.SS "object Csla\&.Server\&.ChildDataPortal\&.Fetch (Type objectType)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to retrieve\&.
+.RE
+.PP
+
+.PP
+Definition at line 119 of file ChildDataPortal\&.cs\&.
+.SS "object Csla\&.Server\&.ChildDataPortal\&.Fetch (Type objectType, params object[] parameters)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to retrieve\&.
+.br
+\fIparameters\fP Criteria parameters passed from caller\&. 
+.RE
+.PP
+
+.PP
+Definition at line 138 of file ChildDataPortal\&.cs\&.
+.SS "async Task<T> Csla\&.Server\&.ChildDataPortal\&.FetchAsync< T > ()"
+
+.PP
+Get an existing business object\&. 
+.PP
+Definition at line 153 of file ChildDataPortal\&.cs\&.
+.SS "async Task<T> Csla\&.Server\&.ChildDataPortal\&.FetchAsync< T > (params object[] parameters)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameters\fP Criteria parameters passed from caller\&. 
+.RE
+.PP
+
+.PP
+Definition at line 164 of file ChildDataPortal\&.cs\&.
+.SS "void Csla\&.Server\&.ChildDataPortal\&.Update (object obj)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.RE
+.PP
+
+.PP
+Definition at line 212 of file ChildDataPortal\&.cs\&.
+.SS "void Csla\&.Server\&.ChildDataPortal\&.Update (object obj, params object[] parameters)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIparameters\fP Parameters passed to method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 231 of file ChildDataPortal\&.cs\&.
+.SS "void Csla\&.Server\&.ChildDataPortal\&.UpdateAll (object obj)"
+
+.PP
+Update a business object\&. Include objects which are not dirty\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.RE
+.PP
+
+.PP
+Definition at line 268 of file ChildDataPortal\&.cs\&.
+.SS "void Csla\&.Server\&.ChildDataPortal\&.UpdateAll (object obj, params object[] parameters)"
+
+.PP
+Update a business object\&. Include objects which are not dirty\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIparameters\fP Parameters passed to method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 280 of file ChildDataPortal\&.cs\&.
+.SS "async Task Csla\&.Server\&.ChildDataPortal\&.UpdateAllAsync (object obj)"
+
+.PP
+Update a business object\&. Include objects which are not dirty\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.RE
+.PP
+
+.PP
+Definition at line 289 of file ChildDataPortal\&.cs\&.
+.SS "async Task Csla\&.Server\&.ChildDataPortal\&.UpdateAllAsync (object obj, params object[] parameters)"
+
+.PP
+Update a business object\&. Include objects which are not dirty\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIparameters\fP Parameters passed to method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 301 of file ChildDataPortal\&.cs\&.
+.SS "async Task Csla\&.Server\&.ChildDataPortal\&.UpdateAsync (object obj)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.RE
+.PP
+
+.PP
+Definition at line 247 of file ChildDataPortal\&.cs\&.
+.SS "async Task Csla\&.Server\&.ChildDataPortal\&.UpdateAsync (object obj, params object[] parameters)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIparameters\fP Parameters passed to method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 259 of file ChildDataPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,128 @@
+.TH "Csla.Server.Dashboard.Dashboard" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Dashboard.Dashboard \- \fBData\fP portal server dashboard\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Server\&.Dashboard\&.IDashboard\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDashboard\fP ()"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "List< \fBActivity\fP > \fBGetRecentActivity\fP ()"
+.br
+.RI "Gets the items in the recent activity queue\&. "
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Dispose resources used by this object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBRecentActivityCount\fP = 100\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating the number of items to maintain in the recent activity list\&. Default is 100\&. "
+.ti -1c
+.RI "DateTimeOffset \fBFirstCall\fP\fC [get]\fP"
+.br
+.RI "Gets the time the data portal was first invoked "
+.ti -1c
+.RI "DateTimeOffset \fBLastCall\fP\fC [get]\fP"
+.br
+.RI "Gets the most recent time the data portal was invoked "
+.ti -1c
+.RI "long \fBTotalCalls\fP\fC [get]\fP"
+.br
+.RI "Gets the total number of times the data portal has been invoked "
+.ti -1c
+.RI "long \fBCompletedCalls\fP\fC [get]\fP"
+.br
+.RI "Gets the number of times data portal calls have successfully completed "
+.ti -1c
+.RI "long \fBFailedCalls\fP\fC [get]\fP"
+.br
+.RI "Gets the number of times data portal calls have failed "
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBData\fP portal server dashboard\&. 
+
+
+.PP
+Definition at line 20 of file Dashboard\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Server\&.Dashboard\&.Dashboard\&.Dashboard ()"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+Definition at line 34 of file Dashboard\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Server\&.Dashboard\&.Dashboard\&.Dispose ()"
+
+.PP
+Dispose resources used by this object\&. 
+.PP
+Definition at line 153 of file Dashboard\&.cs\&.
+.SS "List<\fBActivity\fP> Csla\&.Server\&.Dashboard\&.Dashboard\&.GetRecentActivity ()"
+
+.PP
+Gets the items in the recent activity queue\&. 
+.PP
+Implements \fBCsla\&.Server\&.Dashboard\&.IDashboard\fP\&.
+.PP
+Definition at line 134 of file Dashboard\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "long Csla\&.Server\&.Dashboard\&.Dashboard\&.CompletedCalls\fC [get]\fP"
+
+.PP
+Gets the number of times data portal calls have successfully completed 
+.PP
+Definition at line 116 of file Dashboard\&.cs\&.
+.SS "long Csla\&.Server\&.Dashboard\&.Dashboard\&.FailedCalls\fC [get]\fP"
+
+.PP
+Gets the number of times data portal calls have failed 
+.PP
+Definition at line 126 of file Dashboard\&.cs\&.
+.SS "DateTimeOffset Csla\&.Server\&.Dashboard\&.Dashboard\&.FirstCall\fC [get]\fP"
+
+.PP
+Gets the time the data portal was first invoked 
+.PP
+Definition at line 95 of file Dashboard\&.cs\&.
+.SS "DateTimeOffset Csla\&.Server\&.Dashboard\&.Dashboard\&.LastCall\fC [get]\fP"
+
+.PP
+Gets the most recent time the data portal was invoked 
+.PP
+Definition at line 100 of file Dashboard\&.cs\&.
+.SS "int Csla\&.Server\&.Dashboard\&.Dashboard\&.RecentActivityCount = 100\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating the number of items to maintain in the recent activity list\&. Default is 100\&. 
+.PP
+Definition at line 45 of file Dashboard\&.cs\&.
+.SS "long Csla\&.Server\&.Dashboard\&.Dashboard\&.TotalCalls\fC [get]\fP"
+
+.PP
+Gets the total number of times the data portal has been invoked 
+.PP
+Definition at line 106 of file Dashboard\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

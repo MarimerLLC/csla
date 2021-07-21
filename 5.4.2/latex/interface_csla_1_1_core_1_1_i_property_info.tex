@@ -1,0 +1,151 @@
+\hypertarget{interface_csla_1_1_core_1_1_i_property_info}{}\doxysection{Csla.\+Core.\+IProperty\+Info Interface Reference}
+\label{interface_csla_1_1_core_1_1_i_property_info}\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+
+
+Maintains metadata about a property.  
+
+
+Inheritance diagram for Csla.\+Core.\+IProperty\+Info\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{interface_csla_1_1_core_1_1_i_property_info}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{interface_csla_1_1_core_1_1_field_manager_1_1_i_field_data}{Core.\+Field\+Manager.\+IField\+Data}} \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_ab48fd9979324534cbf82345e4071dd77}{New\+Field\+Data}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a new field data container for the property. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Type \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_a866e4fea90cc02bb7ec603eb7a11b0e9}{Type}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the type of the property. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_a84ac982d078480ed1c525d331d7e62b3}{Friendly\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the friendly display name for the property. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_aee8c587b98283aabe8665e6697acab1b}{Default\+Value}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the default initial value for the property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_a42d0b6a3aec67bea06efcb61b7c98cf1}{Relationship\+Type}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the relationship between the declaring object and the object reference in the property. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_a063df03d31e98d0d6fdc66c6656bd05c}{Index}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the index position for the managed field storage behind the property. FOR INTERNAL CSLA .NET USE ONLY. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info_a923b81bc9be4e8061f3431d6a93cb81b}{Is\+Child}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this property references a child in the object graph. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Maintains metadata about a property. 
+
+
+
+Definition at line 15 of file IProperty\+Info.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_ab48fd9979324534cbf82345e4071dd77}\label{interface_csla_1_1_core_1_1_i_property_info_ab48fd9979324534cbf82345e4071dd77}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!NewFieldData@{NewFieldData}}
+\index{NewFieldData@{NewFieldData}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{NewFieldData()}{NewFieldData()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_core_1_1_field_manager_1_1_i_field_data}{Core.\+Field\+Manager.\+IField\+Data}} Csla.\+Core.\+IProperty\+Info.\+New\+Field\+Data (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a new field data container for the property. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_property_info_aca2a42eb05b43b45854a232e2bd2d213}{Csla.\+Property\+Info$<$ T $>$}}.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_aee8c587b98283aabe8665e6697acab1b}\label{interface_csla_1_1_core_1_1_i_property_info_aee8c587b98283aabe8665e6697acab1b}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!DefaultValue@{DefaultValue}}
+\index{DefaultValue@{DefaultValue}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{DefaultValue}{DefaultValue}}
+{\footnotesize\ttfamily object Csla.\+Core.\+IProperty\+Info.\+Default\+Value\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the default initial value for the property. 
+
+This value is used to initialize the property\textquotesingle{}s value, and is returned from a property get if the user is not authorized to read the property. 
+
+Definition at line 35 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_a84ac982d078480ed1c525d331d7e62b3}\label{interface_csla_1_1_core_1_1_i_property_info_a84ac982d078480ed1c525d331d7e62b3}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!FriendlyName@{FriendlyName}}
+\index{FriendlyName@{FriendlyName}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{FriendlyName}{FriendlyName}}
+{\footnotesize\ttfamily string Csla.\+Core.\+IProperty\+Info.\+Friendly\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the friendly display name for the property. 
+
+
+
+Definition at line 25 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_a063df03d31e98d0d6fdc66c6656bd05c}\label{interface_csla_1_1_core_1_1_i_property_info_a063df03d31e98d0d6fdc66c6656bd05c}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!Index@{Index}}
+\index{Index@{Index}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Index}{Index}}
+{\footnotesize\ttfamily int Csla.\+Core.\+IProperty\+Info.\+Index\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the index position for the managed field storage behind the property. FOR INTERNAL CSLA .NET USE ONLY. 
+
+
+
+Definition at line 50 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_a923b81bc9be4e8061f3431d6a93cb81b}\label{interface_csla_1_1_core_1_1_i_property_info_a923b81bc9be4e8061f3431d6a93cb81b}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!IsChild@{IsChild}}
+\index{IsChild@{IsChild}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{IsChild}{IsChild}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+IProperty\+Info.\+Is\+Child\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this property references a child in the object graph. 
+
+
+
+Definition at line 55 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_a42d0b6a3aec67bea06efcb61b7c98cf1}\label{interface_csla_1_1_core_1_1_i_property_info_a42d0b6a3aec67bea06efcb61b7c98cf1}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!RelationshipType@{RelationshipType}}
+\index{RelationshipType@{RelationshipType}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{RelationshipType}{RelationshipType}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} Csla.\+Core.\+IProperty\+Info.\+Relationship\+Type\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the relationship between the declaring object and the object reference in the property. 
+
+
+
+Definition at line 44 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_property_info_a866e4fea90cc02bb7ec603eb7a11b0e9}\label{interface_csla_1_1_core_1_1_i_property_info_a866e4fea90cc02bb7ec603eb7a11b0e9}} 
+\index{Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}!Type@{Type}}
+\index{Type@{Type}!Csla.Core.IPropertyInfo@{Csla.Core.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Type}{Type}}
+{\footnotesize\ttfamily Type Csla.\+Core.\+IProperty\+Info.\+Type\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the type of the property. 
+
+
+
+Definition at line 20 of file IProperty\+Info.\+cs.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_csla_2_core_2_i_property_info_8cs}{IProperty\+Info.\+cs}}\end{DoxyCompactItemize}

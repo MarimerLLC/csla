@@ -1,0 +1,190 @@
+\hypertarget{class_csla_1_1_core_1_1_mobile_list}{}\doxysection{Csla.\+Core.\+Mobile\+List$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_core_1_1_mobile_list}\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+
+
+Implements a list that is serializable using the Serialization\+Formatter\+Factory.\+Get\+Formatter().  
+
+
+Inheritance diagram for Csla.\+Core.\+Mobile\+List$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_core_1_1_mobile_list}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_a975eae78a77c82392891dd947229f8fc}{Mobile\+List}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the type. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_a4a78d05eeaede328821980d5309fcbfc}{Mobile\+List}} (int capacity)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the type. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_a4977cb5092aaa611c21e907a37745386}{Mobile\+List}} (IEnumerable$<$ T $>$ collection)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_ae304e26924ff6379f75d4779c95cd6e9}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to add extra field values to the serialization stream. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_a0600306c95cad2aeae0a83c2dbe8015a}{On\+Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to manually serialize child objects contained within the current object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_a5160cd9fa5df166ab4b858a2067fcd1f}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve extra field values to the serialization stream. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list_aa9fd37c8a8bf04a35d614ebdd4551508}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to manually deserialize child objects from data in the serialization stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements a list that is serializable using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of object contained in the list. \\
+\hline
+\end{DoxyTemplParams}
+
+
+Definition at line 28 of file Mobile\+List.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_a975eae78a77c82392891dd947229f8fc}\label{class_csla_1_1_core_1_1_mobile_list_a975eae78a77c82392891dd947229f8fc}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!MobileList@{MobileList}}
+\index{MobileList@{MobileList}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{MobileList()}{MobileList()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Mobile\+List}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the type. 
+
+
+
+Definition at line 33 of file Mobile\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_a4a78d05eeaede328821980d5309fcbfc}\label{class_csla_1_1_core_1_1_mobile_list_a4a78d05eeaede328821980d5309fcbfc}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!MobileList@{MobileList}}
+\index{MobileList@{MobileList}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{MobileList()}{MobileList()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Mobile\+List}} (\begin{DoxyParamCaption}\item[{int}]{capacity }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em capacity} & Capacity of the list.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 38 of file Mobile\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_a4977cb5092aaa611c21e907a37745386}\label{class_csla_1_1_core_1_1_mobile_list_a4977cb5092aaa611c21e907a37745386}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!MobileList@{MobileList}}
+\index{MobileList@{MobileList}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{MobileList()}{MobileList()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Mobile\+List}} (\begin{DoxyParamCaption}\item[{IEnumerable$<$ T $>$}]{collection }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em collection} & \mbox{\hyperlink{namespace_csla_1_1_data}{Data}} to add to list.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 43 of file Mobile\+List.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_a0600306c95cad2aeae0a83c2dbe8015a}\label{class_csla_1_1_core_1_1_mobile_list_a0600306c95cad2aeae0a83c2dbe8015a}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!OnGetChildren@{OnGetChildren}}
+\index{OnGetChildren@{OnGetChildren}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetChildren()}{OnGetChildren()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.On\+Get\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manually serialize child objects contained within the current object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing serialized values.\\
+\hline
+{\em formatter} & Reference to the current Serialization\+Formatter\+Factory.\+Get\+Formatter().\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 74 of file Mobile\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_ae304e26924ff6379f75d4779c95cd6e9}\label{class_csla_1_1_core_1_1_mobile_list_ae304e26924ff6379f75d4779c95cd6e9}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to add extra field values to the serialization stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing field values.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 62 of file Mobile\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_aa9fd37c8a8bf04a35d614ebdd4551508}\label{class_csla_1_1_core_1_1_mobile_list_aa9fd37c8a8bf04a35d614ebdd4551508}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manually deserialize child objects from data in the serialization stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing serialized values.\\
+\hline
+{\em formatter} & Reference to the current Serialization\+Formatter\+Factory.\+Get\+Formatter().\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 117 of file Mobile\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_mobile_list_a5160cd9fa5df166ab4b858a2067fcd1f}\label{class_csla_1_1_core_1_1_mobile_list_a5160cd9fa5df166ab4b858a2067fcd1f}} 
+\index{Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.Core.MobileList$<$ T $>$@{Csla.Core.MobileList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Csla.\+Core.\+Mobile\+List}}$<$ T $>$.On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to retrieve extra field values to the serialization stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing field values.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 109 of file Mobile\+List.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_mobile_list_8cs}{Mobile\+List.\+cs}}\end{DoxyCompactItemize}

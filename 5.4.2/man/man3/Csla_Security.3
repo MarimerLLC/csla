@@ -1,0 +1,76 @@
+.TH "Csla.Security" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Security
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCslaClaimsPrincipal\fP"
+.br
+.RI "ClaimsPrincipal subclass that supports serialization by SerializationFormatterFactory\&.GetFormatter()\&. "
+.ti -1c
+.RI "interface \fBIAuthorizeReadWrite\fP"
+.br
+.RI "Defines the authorization interface through which an object can indicate which properties the current user can read and write\&. "
+.ti -1c
+.RI "interface \fBICheckRoles\fP"
+.br
+.RI "Interface defining an object that checks IsInRole\&. "
+.ti -1c
+.RI "interface \fBICslaIdentity\fP"
+.br
+.RI "Provides a base type to simplify creation of a \&.NET identity object for use with \fBICslaPrincipal\fP\&. "
+.ti -1c
+.RI "interface \fBICslaPrincipal\fP"
+.br
+.RI "Defines the base requirements for the interface of any CSLA principal object\&. "
+.ti -1c
+.RI "class \fBPrincipalCache\fP"
+.br
+.RI "Provides a cache for a limited number of principal objects at the AppDomain level\&. "
+.ti -1c
+.RI "class \fBSecurityException\fP"
+.br
+.RI "\fBSecurity\fP exception\&. "
+.ti -1c
+.RI "class \fBUsernameCriteria\fP"
+.br
+.RI "Criteria class for passing a username/password pair to a custom identity class\&. "
+.ti -1c
+.RI "class \fBAuthorizationRules\fP"
+.br
+.RI "Add object level rules "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBNoAccessBehavior\fP { \fBSuppressException\fP, \fBThrowException\fP }"
+.br
+.RI "Options available for handling no access to a property due to authorization rules\&. "
+.in -1c
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBCsla\&.Security\&.NoAccessBehavior\fP\fC [strong]\fP"
+
+.PP
+Options available for handling no access to a property due to authorization rules\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISuppressException \fP\fP
+Suppress exceptions\&. 
+.TP
+\fB\fIThrowException \fP\fP
+Throw security exception\&. 
+.PP
+Definition at line 20 of file NoAccessBehavior\&.cs\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

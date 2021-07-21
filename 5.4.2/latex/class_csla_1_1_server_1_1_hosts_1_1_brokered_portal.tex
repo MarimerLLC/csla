@@ -1,0 +1,125 @@
+\hypertarget{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal}{}\doxysection{Csla.\+Server.\+Hosts.\+Brokered\+Portal Class Reference}
+\label{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal}\index{Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}}
+
+
+\mbox{\hyperlink{namespace_csla_1_1_data}{Data}} portal to be invoked by the brokered data portal proxy/host implementation.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_a275f5fe6279e0bbff2192b3411473a28}{Create}} (string object\+Type\+Name, byte\mbox{[}$\,$\mbox{]} criteria\+Data, byte\mbox{[}$\,$\mbox{]} context\+Data)
+\begin{DoxyCompactList}\small\item\em Create and initialize a business object. \end{DoxyCompactList}\item 
+async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_a122adc373b0bab3395cfc0e05c27a4af}{Fetch}} (string object\+Type\+Name, byte\mbox{[}$\,$\mbox{]} criteria\+Data, byte\mbox{[}$\,$\mbox{]} context\+Data)
+\begin{DoxyCompactList}\small\item\em Get an existing business object. \end{DoxyCompactList}\item 
+async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_ab8244617d0508f4f9ad07d7f0289a7c1}{Update}} (byte\mbox{[}$\,$\mbox{]} object\+Data, byte\mbox{[}$\,$\mbox{]} context\+Data)
+\begin{DoxyCompactList}\small\item\em Update a business object. \end{DoxyCompactList}\item 
+async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_af27a259ed50ead31944ee87addbfd344}{Delete}} (string object\+Type\+Name, byte\mbox{[}$\,$\mbox{]} criteria\+Data, byte\mbox{[}$\,$\mbox{]} context\+Data)
+\begin{DoxyCompactList}\small\item\em Delete a business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{namespace_csla_1_1_data}{Data}} portal to be invoked by the brokered data portal proxy/host implementation. 
+
+
+
+Definition at line 14 of file Brokered\+Portal.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_a275f5fe6279e0bbff2192b3411473a28}\label{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_a275f5fe6279e0bbff2192b3411473a28}} 
+\index{Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}!Create@{Create}}
+\index{Create@{Create}!Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily async Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Server.\+Hosts.\+Brokered\+Portal.\+Create (\begin{DoxyParamCaption}\item[{string}]{object\+Type\+Name,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{criteria\+Data,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{context\+Data }\end{DoxyParamCaption})}
+
+
+
+Create and initialize a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type\+Name} & Type of business object to create.\\
+\hline
+{\em criteria\+Data} & Criteria object describing business object.\\
+\hline
+{\em context\+Data} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 24 of file Brokered\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_af27a259ed50ead31944ee87addbfd344}\label{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_af27a259ed50ead31944ee87addbfd344}} 
+\index{Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily async Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Server.\+Hosts.\+Brokered\+Portal.\+Delete (\begin{DoxyParamCaption}\item[{string}]{object\+Type\+Name,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{criteria\+Data,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{context\+Data }\end{DoxyParamCaption})}
+
+
+
+Delete a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type\+Name} & Type of business object to create.\\
+\hline
+{\em criteria\+Data} & Criteria object describing business object.\\
+\hline
+{\em context\+Data} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 106 of file Brokered\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_a122adc373b0bab3395cfc0e05c27a4af}\label{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_a122adc373b0bab3395cfc0e05c27a4af}} 
+\index{Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily async Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Server.\+Hosts.\+Brokered\+Portal.\+Fetch (\begin{DoxyParamCaption}\item[{string}]{object\+Type\+Name,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{criteria\+Data,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{context\+Data }\end{DoxyParamCaption})}
+
+
+
+Get an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type\+Name} & Type of business object to retrieve.\\
+\hline
+{\em criteria\+Data} & Criteria object describing business object.\\
+\hline
+{\em context\+Data} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 52 of file Brokered\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_ab8244617d0508f4f9ad07d7f0289a7c1}\label{class_csla_1_1_server_1_1_hosts_1_1_brokered_portal_ab8244617d0508f4f9ad07d7f0289a7c1}} 
+\index{Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}!Update@{Update}}
+\index{Update@{Update}!Csla.Server.Hosts.BrokeredPortal@{Csla.Server.Hosts.BrokeredPortal}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily async Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Server.\+Hosts.\+Brokered\+Portal.\+Update (\begin{DoxyParamCaption}\item[{byte\mbox{[}$\,$\mbox{]}}]{object\+Data,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{context\+Data }\end{DoxyParamCaption})}
+
+
+
+Update a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Data} & Business object to update.\\
+\hline
+{\em context\+Data} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 79 of file Brokered\+Portal.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Brokered\+Channel/\+Csla.\+Brokered\+Data\+Portal/\mbox{\hyperlink{_brokered_portal_8cs}{Brokered\+Portal.\+cs}}\end{DoxyCompactItemize}

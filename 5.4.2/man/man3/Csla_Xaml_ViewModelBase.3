@@ -1,0 +1,665 @@
+.TH "Csla.Xaml.ViewModelBase< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Xaml.ViewModelBase< T > \- Base class used to create \fBViewModel\fP objects that implement their own commands/verbs/actions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits DependencyObject, System\&.ComponentModel\&.INotifyPropertyChanged, and \fBCsla\&.Xaml\&.IViewModel\fP\&.
+.PP
+Inherited by \fBCsla\&.Xaml\&.ViewModel< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< \fBViewModelBase\fP< T > > \fBInitAsync\fP ()"
+.br
+.RI "Method used to perform async initialization of the viewmodel\&. This method is usually invoked immediately following construction of the object instance\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static readonly DependencyProperty \fBModelProperty\fP"
+.br
+.RI "Gets or sets the Model object\&. "
+.ti -1c
+.RI "static readonly DependencyProperty \fBManageObjectLifetimeProperty\fP"
+.br
+.RI "Gets or sets a value indicating whether the \fBViewModel\fP should automatically managed the lifetime of the Model\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBViewModelBase\fP ()"
+.br
+.RI "Create new instance of base class used to create \fBViewModel\fP objects that implement their own commands/verbs/actions\&. "
+.ti -1c
+.RI "virtual async Task< T > \fBDoInitAsync\fP ()"
+.br
+.RI "Override this method to implement async initialization of the model object\&. The result of this method is used to set the Model property of the viewmodel\&. "
+.ti -1c
+.RI "virtual void \fBOnError\fP (Exception error)"
+.br
+.RI "Raises ErrorOccurred event when an error occurs during processing\&. "
+.ti -1c
+.RI "virtual void \fBDoRefresh\fP (Func< T > factoryMethod)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking a static factory method\&. "
+.ti -1c
+.RI "virtual void \fBDoRefresh\fP (string factoryMethod, params object[] factoryParameters)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking a static factory method\&. "
+.ti -1c
+.RI "virtual void \fBDoRefresh\fP (string factoryMethod)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking a static factory method\&. "
+.ti -1c
+.RI "virtual void \fBBeginRefresh\fP (Action< EventHandler< \fBDataPortalResult\fP< T >>> factoryMethod)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking a static factory method\&. "
+.ti -1c
+.RI "virtual void \fBBeginRefresh\fP (string factoryMethod, params object[] factoryParameters)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking a static factory method\&. "
+.ti -1c
+.RI "virtual void \fBBeginRefresh\fP (string factoryMethod)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking a static factory method\&. "
+.ti -1c
+.RI "virtual void \fBOnRefreshing\fP (T model)"
+.br
+.RI "Method called after a refresh operation has completed and before the model is updated\&. "
+.ti -1c
+.RI "virtual void \fBOnRefreshed\fP ()"
+.br
+.RI "Method called after a refresh operation has completed\&. "
+.ti -1c
+.RI "virtual T \fBDoSave\fP ()"
+.br
+.RI "Saves the Model, first committing changes if ManagedObjectLifetime is true\&. "
+.ti -1c
+.RI "virtual void \fBBeginSave\fP ()"
+.br
+.RI "Saves the Model, first committing changes if ManagedObjectLifetime is true\&. "
+.ti -1c
+.RI "virtual void \fBOnSaving\fP (T model)"
+.br
+.RI "Method called after a save operation has completed and before Model is updated (when successful)\&. "
+.ti -1c
+.RI "virtual void \fBOnSaved\fP ()"
+.br
+.RI "Method called after a save operation has completed (whether successful or not)\&. "
+.ti -1c
+.RI "virtual async Task< T > \fBRefreshAsync< F >\fP (Func< Task< T >> factory)"
+.br
+.RI "Creates or retrieves a new instance of the Model by invoking an action\&. "
+.ti -1c
+.RI "virtual async Task< T > \fBSaveAsync\fP ()"
+.br
+.RI "Saves the Model, first committing changes if ManagedObjectLifetime is true\&. "
+.ti -1c
+.RI "virtual void \fBDoCancel\fP ()"
+.br
+.RI "Cancels changes made to the model if ManagedObjectLifetime is true\&. "
+.ti -1c
+.RI "virtual object \fBDoAddNew\fP ()"
+.br
+.RI "Adds a new item to the Model (if it is a collection)\&. "
+.ti -1c
+.RI "virtual void \fBDoRemove\fP (object item)"
+.br
+.RI "Removes an item from the Model (if it is a collection)\&. "
+.ti -1c
+.RI "virtual void \fBDoDelete\fP ()"
+.br
+.RI "Marks the Model for deletion (if it is an editable root object)\&. "
+.ti -1c
+.RI "virtual void \fBOnModelChanged\fP (T oldValue, T newValue)"
+.br
+.RI "Invoked when the Model changes, allowing event handlers to be unhooked from the old object and hooked on the new object\&. "
+.ti -1c
+.RI "void \fBUnhookChangedEvents\fP (T model)"
+.br
+.RI "Unhooks changed event handlers from the model\&. "
+.ti -1c
+.RI "virtual void \fBOnSetProperties\fP ()"
+.br
+.RI "Override this method to hook into to logic of setting properties when model is changed or edited\&. "
+.ti -1c
+.RI "virtual void \fBOnPropertyChanged\fP (string propertyName)"
+.br
+.RI "Raise the PropertyChanged event\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Exception \fBError\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets the Error object corresponding to the last asynchronous operation\&. "
+.ti -1c
+.RI "T \fBModel\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the Model object\&. "
+.ti -1c
+.RI "bool \fBManageObjectLifetime\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether the ViewManageObjectLifetime should automatically managed the lifetime of the ManageObjectLifetime\&. "
+.ti -1c
+.RI "bool \fBIsBusy\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether this object is executing an asynchronous process\&. "
+.ti -1c
+.RI "virtual bool \fBIsDirty\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model has been changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsValid\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model is currently valid (has no broken rules)\&. "
+.ti -1c
+.RI "virtual bool \fBCanSave\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model can currently be saved\&. "
+.ti -1c
+.RI "virtual bool \fBCanCancel\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model can currently be canceled\&. "
+.ti -1c
+.RI "virtual bool \fBCanCreate\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether an instance of the Model can currently be created\&. "
+.ti -1c
+.RI "virtual bool \fBCanDelete\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model can currently be deleted\&. "
+.ti -1c
+.RI "virtual bool \fBCanFetch\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether an instance of the Model can currently be retrieved\&. "
+.ti -1c
+.RI "virtual bool \fBCanRemove\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model can currently be removed\&. "
+.ti -1c
+.RI "virtual bool \fBCanAddNew\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the Model can currently be added\&. "
+.ti -1c
+.RI "virtual bool \fBCanCreateObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the current user is authorized to create a Model\&. "
+.ti -1c
+.RI "virtual bool \fBCanGetObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the current user is authorized to retrieve a Model\&. "
+.ti -1c
+.RI "virtual bool \fBCanEditObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the current user is authorized to save (insert or update a Model\&. "
+.ti -1c
+.RI "virtual bool \fBCanDeleteObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the current user is authorized to delete a Model\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBErrorEventArgs\fP > \fBErrorOccurred\fP"
+.br
+.RI "Event raised when an error occurs during processing\&. "
+.ti -1c
+.RI "PropertyChangedEventHandler \fBPropertyChanged\fP"
+.br
+.RI "Event raised when a property changes\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Base class used to create \fBViewModel\fP objects that implement their own commands/verbs/actions\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of the Model object\&.
+.RE
+.PP
+
+.PP
+Definition at line 40 of file ViewModelBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.\fBViewModelBase\fP ()\fC [protected]\fP"
+
+.PP
+Create new instance of base class used to create \fBViewModel\fP objects that implement their own commands/verbs/actions\&. 
+.PP
+Definition at line 48 of file ViewModelBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.BeginRefresh (Action< EventHandler< \fBDataPortalResult\fP< T >>> factoryMethod)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking a static factory method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryMethod\fP Static factory method action\&.
+.RE
+.PP
+.PP
+BeginRefresh(BusinessList\&.BeginGetList)
+.PP
+BeginRefresh(handler => BusinessList\&.BeginGetList(handler))
+.PP
+BeginRefresh(handler => BusinessList\&.BeginGetList(id, handler))
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.CancellableViewModel< T >\fP\&.
+.PP
+Definition at line 218 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.BeginRefresh (string factoryMethod)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking a static factory method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryMethod\fP Name of the static factory method\&.
+.RE
+.PP
+
+.PP
+Definition at line 274 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.BeginRefresh (string factoryMethod, params object[] factoryParameters)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking a static factory method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryMethod\fP Name of the static factory method\&.
+.br
+\fIfactoryParameters\fP Factory method parameters\&.
+.RE
+.PP
+
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.CancellableViewModel< T >\fP\&.
+.PP
+Definition at line 245 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.BeginSave ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Saves the Model, first committing changes if ManagedObjectLifetime is true\&. 
+.PP
+Definition at line 371 of file ViewModelBase\&.cs\&.
+.SS "virtual object \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoAddNew ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Adds a new item to the Model (if it is a collection)\&. 
+.PP
+Definition at line 1005 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoCancel ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Cancels changes made to the model if ManagedObjectLifetime is true\&. 
+.PP
+Definition at line 955 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoDelete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Marks the Model for deletion (if it is an editable root object)\&. 
+.PP
+Definition at line 1038 of file ViewModelBase\&.cs\&.
+.SS "virtual async Task<T> \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoInitAsync ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to implement async initialization of the model object\&. The result of this method is used to set the Model property of the viewmodel\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A Task that creates the model object\&.
+.RE
+.PP
+
+.PP
+Definition at line 88 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoRefresh (Func< T > factoryMethod)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking a static factory method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryMethod\fP Static factory method function\&.
+.RE
+.PP
+.PP
+DoRefresh(BusinessList\&.GetList)
+.PP
+DoRefresh(() => BusinessList\&.GetList())
+.PP
+DoRefresh(() => BusinessList\&.GetList(id))
+.PP
+Definition at line 150 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoRefresh (string factoryMethod)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking a static factory method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryMethod\fP Name of the static factory method\&.
+.RE
+.PP
+
+.PP
+Definition at line 203 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoRefresh (string factoryMethod, params object[] factoryParameters)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking a static factory method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryMethod\fP Name of the static factory method\&.
+.br
+\fIfactoryParameters\fP Factory method parameters\&.
+.RE
+.PP
+
+.PP
+Definition at line 177 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoRemove (object item)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Removes an item from the Model (if it is a collection)\&. 
+.PP
+Definition at line 1028 of file ViewModelBase\&.cs\&.
+.SS "virtual T \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoSave ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Saves the Model, first committing changes if ManagedObjectLifetime is true\&. 
+.PP
+Definition at line 333 of file ViewModelBase\&.cs\&.
+.SS "async Task<\fBViewModelBase\fP<T> > \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.InitAsync ()"
+
+.PP
+Method used to perform async initialization of the viewmodel\&. This method is usually invoked immediately following construction of the object instance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 62 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnError (Exception error)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises ErrorOccurred event when an error occurs during processing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror\fP 
+.RE
+.PP
+
+.PP
+Definition at line 131 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnModelChanged (T oldValue, T newValue)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Invoked when the Model changes, allowing event handlers to be unhooked from the old object and hooked on the new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoldValue\fP Previous Model reference\&.
+.br
+\fInewValue\fP New Model reference\&.
+.RE
+.PP
+
+.PP
+Definition at line 1050 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnPropertyChanged (string propertyName)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raise the PropertyChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the changed property\&.
+.RE
+.PP
+
+.PP
+Definition at line 1159 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnRefreshed ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method called after a refresh operation has completed\&. 
+.PP
+Definition at line 325 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnRefreshing (T model)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method called after a refresh operation has completed and before the model is updated\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImodel\fP The model\&.
+.RE
+.PP
+
+.PP
+Definition at line 317 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnSaved ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method called after a save operation has completed (whether successful or not)\&. 
+.PP
+Definition at line 432 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnSaving (T model)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Method called after a save operation has completed and before Model is updated (when successful)\&. 
+.PP
+Definition at line 423 of file ViewModelBase\&.cs\&.
+.SS "virtual void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.OnSetProperties ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to hook into to logic of setting properties when model is changed or edited\&. 
+.PP
+Definition at line 1114 of file ViewModelBase\&.cs\&.
+.SS "virtual async Task<T> \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.RefreshAsync< F > (Func< Task< T >> factory)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates or retrieves a new instance of the Model by invoking an action\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactory\fP Factory method to invoke
+.RE
+.PP
+
+.PP
+Definition at line 903 of file ViewModelBase\&.cs\&.
+.SS "virtual async Task<T> \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.SaveAsync ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Saves the Model, first committing changes if ManagedObjectLifetime is true\&. 
+.PP
+Definition at line 923 of file ViewModelBase\&.cs\&.
+.SS "void \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.UnhookChangedEvents (T model)\fC [protected]\fP"
+
+.PP
+Unhooks changed event handlers from the model\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImodel\fP 
+.RE
+.PP
+
+.PP
+Definition at line 1082 of file ViewModelBase\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "readonly DependencyProperty \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.ManageObjectLifetimeProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+=
+        DependencyProperty\&.Register("ManageObjectLifetime", typeof(bool),
+        typeof(ViewModelBase<T>), new PropertyMetadata(true))
+.fi
+.PP
+Gets or sets a value indicating whether the \fBViewModel\fP should automatically managed the lifetime of the Model\&. 
+.PP
+Definition at line 486 of file ViewModelBase\&.cs\&.
+.SS "readonly DependencyProperty \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.ModelProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+=
+        DependencyProperty\&.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+        new PropertyMetadata((o, e) =>
+        {
+          var viewmodel = (ViewModelBase<T>)o;
+          viewmodel\&.OnModelChanged((T)e\&.OldValue, (T)e\&.NewValue);
+        }))
+.fi
+.PP
+Gets or sets the Model object\&. 
+.PP
+Definition at line 460 of file ViewModelBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanAddNew\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model can currently be added\&. 
+.PP
+Definition at line 713 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanCancel\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model can currently be canceled\&. 
+.PP
+Definition at line 601 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanCreate\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether an instance of the Model can currently be created\&. 
+.PP
+Definition at line 624 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanCreateObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the current user is authorized to create a Model\&. 
+.PP
+Definition at line 809 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanDelete\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model can currently be deleted\&. 
+.PP
+Definition at line 646 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanDeleteObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the current user is authorized to delete a Model\&. 
+.PP
+Definition at line 868 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanEditObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the current user is authorized to save (insert or update a Model\&. 
+.PP
+Definition at line 848 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanFetch\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether an instance of the Model can currently be retrieved\&. 
+.PP
+Definition at line 669 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanGetObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the current user is authorized to retrieve a Model\&. 
+.PP
+Definition at line 828 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanRemove\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model can currently be removed\&. 
+.PP
+Definition at line 691 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.CanSave\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model can currently be saved\&. 
+.PP
+Definition at line 579 of file ViewModelBase\&.cs\&.
+.SS "Exception \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.Error\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets the Error object corresponding to the last asynchronous operation\&. 
+.PP
+Definition at line 104 of file ViewModelBase\&.cs\&.
+.SS "bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.IsBusy\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether this object is executing an asynchronous process\&. 
+.PP
+Definition at line 515 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.IsDirty\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model has been changed\&. 
+.PP
+Definition at line 535 of file ViewModelBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.IsValid\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the Model is currently valid (has no broken rules)\&. 
+.PP
+Definition at line 557 of file ViewModelBase\&.cs\&.
+.SS "bool \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.ManageObjectLifetime\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether the ViewManageObjectLifetime should automatically managed the lifetime of the ManageObjectLifetime\&. 
+.PP
+Definition at line 498 of file ViewModelBase\&.cs\&.
+.SS "T \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.Model\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the Model object\&. 
+.PP
+Definition at line 471 of file ViewModelBase\&.cs\&.
+.SH "Event Documentation"
+.PP 
+.SS "EventHandler<\fBErrorEventArgs\fP> \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.ErrorOccurred"
+
+.PP
+Event raised when an error occurs during processing\&. 
+.PP
+Definition at line 123 of file ViewModelBase\&.cs\&.
+.SS "PropertyChangedEventHandler \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.PropertyChanged"
+
+.PP
+Event raised when a property changes\&. 
+.PP
+Definition at line 1153 of file ViewModelBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

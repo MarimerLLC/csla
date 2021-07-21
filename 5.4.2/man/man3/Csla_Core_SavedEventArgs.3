@@ -1,0 +1,102 @@
+.TH "Csla.Core.SavedEventArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.SavedEventArgs \- Event arguments containing a reference to the new object that was returned as a result of the Save() operation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits EventArgs\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSavedEventArgs\fP (object newObject)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBSavedEventArgs\fP (object newObject, Exception error, object userState)"
+.br
+.RI "Creates an instance of the object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "object \fBNewObject\fP\fC [get]\fP"
+.br
+.RI "Gets the object that was returned as a result of the Save() operation\&. "
+.ti -1c
+.RI "Exception \fBError\fP\fC [get]\fP"
+.br
+.RI "Gets any exception that occurred during the save\&. "
+.ti -1c
+.RI "object \fBUserState\fP\fC [get]\fP"
+.br
+.RI "Gets the user state object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Event arguments containing a reference to the new object that was returned as a result of the Save() operation\&. 
+
+
+.PP
+Definition at line 17 of file SavedEventArgs\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.SavedEventArgs\&.SavedEventArgs (object newObject)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP The object that was returned as a result of the Save() operation\&. 
+.RE
+.PP
+
+.PP
+Definition at line 57 of file SavedEventArgs\&.cs\&.
+.SS "Csla\&.Core\&.SavedEventArgs\&.SavedEventArgs (object newObject, Exception error, object userState)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP The object that was returned as a result of the Save() operation\&. 
+.br
+\fIerror\fP Exception object\&.
+.br
+\fIuserState\fP User state object\&.
+.RE
+.PP
+
+.PP
+Definition at line 73 of file SavedEventArgs\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Exception Csla\&.Core\&.SavedEventArgs\&.Error\fC [get]\fP"
+
+.PP
+Gets any exception that occurred during the save\&. 
+.PP
+Definition at line 33 of file SavedEventArgs\&.cs\&.
+.SS "object Csla\&.Core\&.SavedEventArgs\&.NewObject\fC [get]\fP"
+
+.PP
+Gets the object that was returned as a result of the Save() operation\&. 
+.PP
+Definition at line 24 of file SavedEventArgs\&.cs\&.
+.SS "object Csla\&.Core\&.SavedEventArgs\&.UserState\fC [get]\fP"
+
+.PP
+Gets the user state object\&. 
+.PP
+Definition at line 45 of file SavedEventArgs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

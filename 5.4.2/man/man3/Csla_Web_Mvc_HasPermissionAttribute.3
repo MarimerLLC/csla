@@ -1,0 +1,113 @@
+.TH "Csla.Web.Mvc.HasPermissionAttribute" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Web.Mvc.HasPermissionAttribute \- Restricts callers to an action method\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits AuthorizeAttribute\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHasPermissionAttribute\fP (\fBAuthorizationActions\fP action, Type objectType)"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "\fBHasPermissionAttribute\fP (\fBAuthorizationActions\fP action, Type objectType, string message)"
+.br
+.RI "Creates an instance of the type\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override bool \fBAuthorizeCore\fP (HttpContextBase httpContext)"
+.br
+.RI "Determines whether access to the core framework is authorized\&. "
+.ti -1c
+.RI "override void \fBHandleUnauthorizedRequest\fP (System\&.Web\&.Mvc\&.AuthorizationContext filterContext)"
+.br
+.RI "Processes HTTP requests that fail authorization and handles AJAX requests appropriately\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Restricts callers to an action method\&. 
+
+
+.PP
+Definition at line 20 of file HasPermissionAttribute\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Web\&.Mvc\&.HasPermissionAttribute\&.HasPermissionAttribute (\fBAuthorizationActions\fP action, Type objectType)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP AuthorizationActions for which the authorization is required\&.
+.br
+\fIobjectType\fP CSLA object type for which the action is applied\&.
+.RE
+.PP
+
+.PP
+Definition at line 32 of file HasPermissionAttribute\&.cs\&.
+.SS "Csla\&.Web\&.Mvc\&.HasPermissionAttribute\&.HasPermissionAttribute (\fBAuthorizationActions\fP action, Type objectType, string message)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP AuthorizationActions for which the authorization is required\&.
+.br
+\fIobjectType\fP CSLA object type for which the action is applied\&.
+.br
+\fImessage\fP Error message for resutl\&.
+.RE
+.PP
+
+.PP
+Definition at line 44 of file HasPermissionAttribute\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override bool Csla\&.Web\&.Mvc\&.HasPermissionAttribute\&.AuthorizeCore (HttpContextBase httpContext)\fC [protected]\fP"
+
+.PP
+Determines whether access to the core framework is authorized\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhttpContext\fP The HTTP context\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if access is authorized; otherwise, false\&.
+.RE
+.PP
+
+.PP
+Definition at line 55 of file HasPermissionAttribute\&.cs\&.
+.SS "override void Csla\&.Web\&.Mvc\&.HasPermissionAttribute\&.HandleUnauthorizedRequest (System\&.Web\&.Mvc\&.AuthorizationContext filterContext)\fC [protected]\fP"
+
+.PP
+Processes HTTP requests that fail authorization and handles AJAX requests appropriately\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilterContext\fP The filterContext object contains the controller, HTTP context, request context, action result, and route data\&.
+.RE
+.PP
+
+.PP
+Definition at line 68 of file HasPermissionAttribute\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

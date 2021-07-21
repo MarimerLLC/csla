@@ -1,0 +1,152 @@
+.TH "Csla.Web.CslaDataSource" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Web.CslaDataSource \- A \fBWeb\fP Forms data binding control designed to support CSLA \&.NET business objects as data sources\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits DataSourceControl\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override DataSourceView \fBGetView\fP (string viewName)"
+.br
+.RI "Returns the default view for this data control\&. "
+.ti -1c
+.RI "override System\&.Collections\&.ICollection \fBGetViewNames\fP ()"
+.br
+.RI "Returns a list of views available for this control\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBTypeAssemblyName\fP\fC [get, set]\fP"
+.br
+.RI "Get or set the name of the assembly (no longer used)\&. "
+.ti -1c
+.RI "string \fBTypeName\fP\fC [get, set]\fP"
+.br
+.RI "Get or set the full type name of the business object class to be used as a data source\&. "
+.ti -1c
+.RI "bool \fBTypeSupportsPaging\fP\fC [get, set]\fP"
+.br
+.RI "Get or set a value indicating whether the business object data source supports paging\&. "
+.ti -1c
+.RI "bool \fBTypeSupportsSorting\fP\fC [get, set]\fP"
+.br
+.RI "Get or set a value indicating whether the business object data source supports sorting\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBSelectObjectArgs\fP > \fBSelectObject\fP"
+.br
+.RI "Event raised when an object is to be created and populated with data\&. "
+.ti -1c
+.RI "EventHandler< \fBInsertObjectArgs\fP > \fBInsertObject\fP"
+.br
+.RI "Event raised when an object is to be populated with data and inserted\&. "
+.ti -1c
+.RI "EventHandler< \fBUpdateObjectArgs\fP > \fBUpdateObject\fP"
+.br
+.RI "Event raised when an object is to be updated\&. "
+.ti -1c
+.RI "EventHandler< \fBDeleteObjectArgs\fP > \fBDeleteObject\fP"
+.br
+.RI "Event raised when an object is to be deleted\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+A \fBWeb\fP Forms data binding control designed to support CSLA \&.NET business objects as data sources\&. 
+
+
+.PP
+Definition at line 25 of file CslaDataSource\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override DataSourceView Csla\&.Web\&.CslaDataSource\&.GetView (string viewName)\fC [protected]\fP"
+
+.PP
+Returns the default view for this data control\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIviewName\fP Ignored\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+.PP
+This control only contains a 'Default' view\&.
+.PP
+Definition at line 69 of file CslaDataSource\&.cs\&.
+.SS "override System\&.Collections\&.ICollection Csla\&.Web\&.CslaDataSource\&.GetViewNames ()\fC [protected]\fP"
+
+.PP
+Returns a list of views available for this control\&. This control only provides the 'Default' view\&.
+.PP
+Definition at line 175 of file CslaDataSource\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Web\&.CslaDataSource\&.TypeAssemblyName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Get or set the name of the assembly (no longer used)\&. Obsolete - do not use\&.
+.PP
+Definition at line 80 of file CslaDataSource\&.cs\&.
+.SS "string Csla\&.Web\&.CslaDataSource\&.TypeName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Get or set the full type name of the business object class to be used as a data source\&. Full type name of the business class, including assembly name\&.
+.PP
+Definition at line 92 of file CslaDataSource\&.cs\&.
+.SS "bool Csla\&.Web\&.CslaDataSource\&.TypeSupportsPaging\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Get or set a value indicating whether the business object data source supports paging\&. To support paging, the business object (collection) must implement \fBCsla\&.Core\&.IReportTotalRowCount\fP\&. 
+.PP
+Definition at line 107 of file CslaDataSource\&.cs\&.
+.SS "bool Csla\&.Web\&.CslaDataSource\&.TypeSupportsSorting\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Get or set a value indicating whether the business object data source supports sorting\&. 
+.PP
+Definition at line 117 of file CslaDataSource\&.cs\&.
+.SH "Event Documentation"
+.PP 
+.SS "EventHandler<\fBDeleteObjectArgs\fP> Csla\&.Web\&.CslaDataSource\&.DeleteObject"
+
+.PP
+Event raised when an object is to be deleted\&. Handle this event in a page to delete an object from the database\&.
+.PP
+Definition at line 61 of file CslaDataSource\&.cs\&.
+.SS "EventHandler<\fBInsertObjectArgs\fP> Csla\&.Web\&.CslaDataSource\&.InsertObject"
+
+.PP
+Event raised when an object is to be populated with data and inserted\&. Handle this event in a page to create an instance of the object, load the object with data and insert the object into the database\&.
+.PP
+Definition at line 46 of file CslaDataSource\&.cs\&.
+.SS "EventHandler<\fBSelectObjectArgs\fP> Csla\&.Web\&.CslaDataSource\&.SelectObject"
+
+.PP
+Event raised when an object is to be created and populated with data\&. Handle this event in a page and set e\&.BusinessObject to the populated business object\&. 
+.PP
+Definition at line 37 of file CslaDataSource\&.cs\&.
+.SS "EventHandler<\fBUpdateObjectArgs\fP> Csla\&.Web\&.CslaDataSource\&.UpdateObject"
+
+.PP
+Event raised when an object is to be updated\&. Handle this event in a page to update an existing instance of an object with new data and then save the object into the database\&.
+.PP
+Definition at line 54 of file CslaDataSource\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

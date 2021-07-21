@@ -1,0 +1,210 @@
+\hypertarget{interface_csla_1_1_core_1_1_i_track_status}{}\doxysection{Csla.\+Core.\+ITrack\+Status Interface Reference}
+\label{interface_csla_1_1_core_1_1_i_track_status}\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+
+
+Defines the common properties required objects that track their own status.  
+
+
+Inheritance diagram for Csla.\+Core.\+ITrack\+Status\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.437811cm]{interface_csla_1_1_core_1_1_i_track_status}
+\end{center}
+\end{figure}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a601fa5b7be79c5ed07b9e5ada86c40a1}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the object and its child objects are currently valid, false if the object or any of its child objects have broken rules or are otherwise invalid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_abdf18946dda3b40b39033c4f2bc0931a}{Is\+Self\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the object is currently valid, false if the object has broken rules or is otherwise invalid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a94aead5abe57e7dc44592447a33ae809}{Is\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object\textquotesingle{}s data, or any of its fields or child objects data, has been changed. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a2554f1641e64a3f22f3b40e1966a899c}{Is\+Self\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object\textquotesingle{}s data has been changed. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a288859e6a9cdcf3b1cbdbb92237963aa}{Is\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object is marked for deletion. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a4fe6e80ac8e93190606d35c5d4f1788a}{Is\+New}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this is a new object, false if it is a pre-\/existing object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a1a02ea2442db943684b231dd2027bbd9}{Is\+Savable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object is both dirty and valid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_track_status_a915243d4e9363803d35e8a0706715875}{Is\+Child}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this is a child object, false if it is a root object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Defines the common properties required objects that track their own status. 
+
+
+
+Definition at line 16 of file ITrack\+Status.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a915243d4e9363803d35e8a0706715875}\label{interface_csla_1_1_core_1_1_i_track_status_a915243d4e9363803d35e8a0706715875}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsChild@{IsChild}}
+\index{IsChild@{IsChild}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsChild}{IsChild}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Child\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this is a child object, false if it is a root object. 
+
+An object should be marked as a child object unless it is the top most object (root object) in a business object graph. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this a child object.
+\end{DoxyReturn}
+
+
+Definition at line 142 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a288859e6a9cdcf3b1cbdbb92237963aa}\label{interface_csla_1_1_core_1_1_i_track_status_a288859e6a9cdcf3b1cbdbb92237963aa}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsDeleted@{IsDeleted}}
+\index{IsDeleted@{IsDeleted}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsDeleted}{IsDeleted}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Deleted\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object is marked for deletion. 
+
+CSLA .NET supports both immediate and deferred deletion of objects. This property is part of the support for deferred deletion, where an object can be marked for deletion, but isn\textquotesingle{}t actually deleted until the object is saved to the database. This property indicates whether or not the current object has been marked for deletion. If it is true , the object will be deleted when it is saved to the database, otherwise it will be inserted or updated by the save operation. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object is marked for deletion.
+\end{DoxyReturn}
+
+
+Definition at line 106 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a94aead5abe57e7dc44592447a33ae809}\label{interface_csla_1_1_core_1_1_i_track_status_a94aead5abe57e7dc44592447a33ae809}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsDirty@{IsDirty}}
+\index{IsDirty@{IsDirty}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsDirty}{IsDirty}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Dirty\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object\textquotesingle{}s data, or any of its fields or child objects data, has been changed. 
+
+When an object\textquotesingle{}s data is changed, CSLA .NET makes note of that change and considers the object to be \textquotesingle{}dirty\textquotesingle{} or changed. This value is used to optimize data updates, since an unchanged object does not need to be updated into the database. All new objects are considered dirty. All objects marked for deletion are considered dirty. 
+
+Once an object\textquotesingle{}s data has been saved to the database (inserted or updated) the dirty flag is cleared and the object is considered unchanged. Objects newly loaded from the database are also considered unchanged. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object\textquotesingle{}s data has been changed.
+\end{DoxyReturn}
+
+
+Definition at line 73 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a4fe6e80ac8e93190606d35c5d4f1788a}\label{interface_csla_1_1_core_1_1_i_track_status_a4fe6e80ac8e93190606d35c5d4f1788a}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsNew@{IsNew}}
+\index{IsNew@{IsNew}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsNew}{IsNew}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+New\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this is a new object, false if it is a pre-\/existing object. 
+
+An object is considered to be new if its primary identifying (key) value doesn\textquotesingle{}t correspond to data in the database. In other words, if the data values in this particular object have not yet been saved to the database the object is considered to be new. Likewise, if the object\textquotesingle{}s data has been deleted from the database then the object is considered to be new. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object is new.
+\end{DoxyReturn}
+
+
+Definition at line 120 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a1a02ea2442db943684b231dd2027bbd9}\label{interface_csla_1_1_core_1_1_i_track_status_a1a02ea2442db943684b231dd2027bbd9}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsSavable@{IsSavable}}
+\index{IsSavable@{IsSavable}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsSavable}{IsSavable}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Savable\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object is both dirty and valid. 
+
+An object is considered dirty (changed) if P\+:\+Csla.\+Business\+Base.\+Is\+Dirty returns true. It is considered valid if Is\+Valid returns true. The Is\+Savable property is a combination of these two properties. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object is both dirty and valid.
+\end{DoxyReturn}
+
+
+Definition at line 132 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a2554f1641e64a3f22f3b40e1966a899c}\label{interface_csla_1_1_core_1_1_i_track_status_a2554f1641e64a3f22f3b40e1966a899c}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsSelfDirty@{IsSelfDirty}}
+\index{IsSelfDirty@{IsSelfDirty}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsSelfDirty}{IsSelfDirty}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Self\+Dirty\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object\textquotesingle{}s data has been changed. 
+
+When an object\textquotesingle{}s data is changed, CSLA .NET makes note of that change and considers the object to be \textquotesingle{}dirty\textquotesingle{} or changed. This value is used to optimize data updates, since an unchanged object does not need to be updated into the database. All new objects are considered dirty. All objects marked for deletion are considered dirty. 
+
+Once an object\textquotesingle{}s data has been saved to the database (inserted or updated) the dirty flag is cleared and the object is considered unchanged. Objects newly loaded from the database are also considered unchanged. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if this object\textquotesingle{}s data has been changed.
+\end{DoxyReturn}
+
+
+Definition at line 91 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_abdf18946dda3b40b39033c4f2bc0931a}\label{interface_csla_1_1_core_1_1_i_track_status_abdf18946dda3b40b39033c4f2bc0931a}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsSelfValid@{IsSelfValid}}
+\index{IsSelfValid@{IsSelfValid}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsSelfValid}{IsSelfValid}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Self\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if the object is currently valid, false if the object has broken rules or is otherwise invalid. 
+
+By default this property relies on the underling Validation\+Rules object to track whether any business rules are currently broken for this object. 
+
+You can override this property to provide more sophisticated implementations of the behavior. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if the object is currently valid.
+\end{DoxyReturn}
+
+
+Definition at line 53 of file ITrack\+Status.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_track_status_a601fa5b7be79c5ed07b9e5ada86c40a1}\label{interface_csla_1_1_core_1_1_i_track_status_a601fa5b7be79c5ed07b9e5ada86c40a1}} 
+\index{Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Core.ITrackStatus@{Csla.Core.ITrackStatus}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+ITrack\+Status.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if the object and its child objects are currently valid, false if the object or any of its child objects have broken rules or are otherwise invalid. 
+
+By default this property relies on the underling Validation\+Rules object to track whether any business rules are currently broken for this object. 
+
+You can override this property to provide more sophisticated implementations of the behavior. For instance, you should always override this method if your object has child objects, since the validity of this object is affected by the validity of all child objects. 
+
+\begin{DoxyReturn}{Returns}
+A value indicating if the object is currently valid.
+\end{DoxyReturn}
+
+
+Definition at line 37 of file ITrack\+Status.\+cs.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_i_track_status_8cs}{ITrack\+Status.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,226 @@
+.TH "Csla.Channels.RabbitMq.RabbitMqPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Channels.RabbitMq.RabbitMqPortal \- Exposes server-side \fBDataPortal\fP functionality through RabbitMQ  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDisposable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRabbitMqPortal\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBRabbitMqPortal\fP (string dataPortalUrl)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "void \fBStartListening\fP ()"
+.br
+.RI "Start processing inbound messages\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBCreate\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Create and initialize an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBFetch\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBUpdate\fP (\fBUpdateRequest\fP request)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBDelete\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Delete a business object\&. "
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Dispose this object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fBUpdateRequest\fP \fBConvertRequest\fP (\fBUpdateRequest\fP request)"
+.br
+.RI "Override to convert the request data before it is transferred over the network\&. "
+.ti -1c
+.RI "virtual \fBCriteriaRequest\fP \fBConvertRequest\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Override to convert the request data before it is transferred over the network\&. "
+.ti -1c
+.RI "virtual \fBDataPortalResponse\fP \fBConvertResponse\fP (\fBDataPortalResponse\fP response)"
+.br
+.RI "Override to convert the response data after it comes back from the network\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBDataPortalUrl\fP\fC [get]\fP"
+.br
+.RI "Gets the URI for the data portal service\&. "
+.ti -1c
+.RI "int \fBTimeout\fP = 30\fC [get, set]\fP"
+.br
+.RI "Gets or sets the timeout for network operations in seconds (default is 30 seconds)\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exposes server-side \fBDataPortal\fP functionality through RabbitMQ 
+
+
+.PP
+Definition at line 24 of file RabbitMqPortal\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.RabbitMqPortal ()"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 44 of file RabbitMqPortal\&.cs\&.
+.SS "Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.RabbitMqPortal (string dataPortalUrl)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdataPortalUrl\fP URI for the data portal
+.RE
+.PP
+
+.PP
+Definition at line 53 of file RabbitMqPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual \fBCriteriaRequest\fP Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.ConvertRequest (\fBCriteriaRequest\fP request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the request data before it is transferred over the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request object\&.
+.RE
+.PP
+
+.PP
+Definition at line 395 of file RabbitMqPortal\&.cs\&.
+.SS "virtual \fBUpdateRequest\fP Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.ConvertRequest (\fBUpdateRequest\fP request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the request data before it is transferred over the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request object\&.
+.RE
+.PP
+
+.PP
+Definition at line 385 of file RabbitMqPortal\&.cs\&.
+.SS "virtual \fBDataPortalResponse\fP Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.ConvertResponse (\fBDataPortalResponse\fP response)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the response data after it comes back from the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresponse\fP Response object\&.
+.RE
+.PP
+
+.PP
+Definition at line 405 of file RabbitMqPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.Create (\fBCriteriaRequest\fP request)"
+
+.PP
+Create and initialize an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 187 of file RabbitMqPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.Delete (\fBCriteriaRequest\fP request)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 323 of file RabbitMqPortal\&.cs\&.
+.SS "void Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.Dispose ()"
+
+.PP
+Dispose this object\&. 
+.PP
+Definition at line 415 of file RabbitMqPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.Fetch (\fBCriteriaRequest\fP request)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 234 of file RabbitMqPortal\&.cs\&.
+.SS "void Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.StartListening ()"
+
+.PP
+Start processing inbound messages\&. 
+.PP
+Definition at line 91 of file RabbitMqPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.Update (\fBUpdateRequest\fP request)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 281 of file RabbitMqPortal\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.DataPortalUrl\fC [get]\fP"
+
+.PP
+Gets the URI for the data portal service\&. 
+.PP
+Definition at line 29 of file RabbitMqPortal\&.cs\&.
+.SS "int Csla\&.Channels\&.RabbitMq\&.RabbitMqPortal\&.Timeout = 30\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the timeout for network operations in seconds (default is 30 seconds)\&. 
+.PP
+Definition at line 39 of file RabbitMqPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

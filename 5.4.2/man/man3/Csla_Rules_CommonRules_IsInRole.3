@@ -1,0 +1,134 @@
+.TH "Csla.Rules.CommonRules.IsInRole" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.CommonRules.IsInRole \- \fBIsInRole\fP authorization rule\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.AuthorizationRule\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBIsInRole\fP (\fBAuthorizationActions\fP action, List< string > roles)"
+.br
+.RI "Creates an instance of the rule\&. "
+.ti -1c
+.RI "\fBIsInRole\fP (\fBAuthorizationActions\fP action, params string[] roles)"
+.br
+.RI "Creates an instance of the rule\&. "
+.ti -1c
+.RI "\fBIsInRole\fP (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element, List< string > roles)"
+.br
+.RI "Creates an instance of the rule\&. "
+.ti -1c
+.RI "\fBIsInRole\fP (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element, params string[] roles)"
+.br
+.RI "Creates an instance of the rule\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBExecute\fP (\fBIAuthorizationContext\fP context)"
+.br
+.RI "Rule implementation\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+\fBIsInRole\fP authorization rule\&. 
+
+
+.PP
+Definition at line 18 of file AuthorizationRules\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.CommonRules\&.IsInRole\&.IsInRole (\fBAuthorizationActions\fP action, List< string > roles)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Action this rule will enforce\&.
+.br
+\fIroles\fP List of allowed roles\&.
+.RE
+.PP
+
+.PP
+Definition at line 27 of file AuthorizationRules\&.cs\&.
+.SS "Csla\&.Rules\&.CommonRules\&.IsInRole\&.IsInRole (\fBAuthorizationActions\fP action, params string[] roles)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Action this rule will enforce\&.
+.br
+\fIroles\fP List of allowed roles\&.
+.RE
+.PP
+
+.PP
+Definition at line 38 of file AuthorizationRules\&.cs\&.
+.SS "Csla\&.Rules\&.CommonRules\&.IsInRole\&.IsInRole (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element, List< string > roles)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Action this rule will enforce\&.
+.br
+\fIelement\fP Member to be authorized\&.
+.br
+\fIroles\fP List of allowed roles\&.
+.RE
+.PP
+
+.PP
+Definition at line 50 of file AuthorizationRules\&.cs\&.
+.SS "Csla\&.Rules\&.CommonRules\&.IsInRole\&.IsInRole (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element, params string[] roles)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Action this rule will enforce\&.
+.br
+\fIelement\fP Member to be authorized\&.
+.br
+\fIroles\fP List of allowed roles\&.
+.RE
+.PP
+
+.PP
+Definition at line 62 of file AuthorizationRules\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Rules\&.CommonRules\&.IsInRole\&.Execute (\fBIAuthorizationContext\fP context)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Rule implementation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP Rule context\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Rules\&.AuthorizationRule\fP\&.
+.PP
+Definition at line 72 of file AuthorizationRules\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

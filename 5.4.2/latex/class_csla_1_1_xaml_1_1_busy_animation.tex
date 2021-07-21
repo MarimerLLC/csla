@@ -1,0 +1,151 @@
+\hypertarget{class_csla_1_1_xaml_1_1_busy_animation}{}\doxysection{Csla.\+Xaml.\+Busy\+Animation Class Reference}
+\label{class_csla_1_1_xaml_1_1_busy_animation}\index{Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}}
+
+
+Displays a busy animation.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+Busy\+Animation\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_xaml_1_1_busy_animation}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_a7fd5bab21c6bde3f115417f2167011f4}{Busy\+Animation}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the control. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_ad13619f8523c53c9a9b9de804be24b4f}{Step\+Interval\+Property}}
+\begin{DoxyCompactList}\small\item\em Step\+Interval property to control speed of animation. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_a70661f74acbfe319179bf8e0b8dfa34f}{Is\+Running\+Property}}
+\begin{DoxyCompactList}\small\item\em Is\+Running property to control whether the animation is running. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Time\+Span \mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_ab8fa7966361f60e5053ad39450fe2f0f}{Step\+Interval}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a property controlling the speed of the animation. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_a03bad5d4b15dc5a7c5f307008c023518}{Is\+Running}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a property controlling whether the animation is running. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Displays a busy animation. 
+
+
+
+Definition at line 39 of file Busy\+Animation.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_busy_animation_a7fd5bab21c6bde3f115417f2167011f4}\label{class_csla_1_1_xaml_1_1_busy_animation_a7fd5bab21c6bde3f115417f2167011f4}} 
+\index{Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}!BusyAnimation@{BusyAnimation}}
+\index{BusyAnimation@{BusyAnimation}!Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}}
+\doxysubsubsection{\texorpdfstring{BusyAnimation()}{BusyAnimation()}}
+{\footnotesize\ttfamily Csla.\+Xaml.\+Busy\+Animation.\+Busy\+Animation (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the control. 
+
+
+
+Definition at line 127 of file Busy\+Animation.\+cs.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_busy_animation_a70661f74acbfe319179bf8e0b8dfa34f}\label{class_csla_1_1_xaml_1_1_busy_animation_a70661f74acbfe319179bf8e0b8dfa34f}} 
+\index{Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}!IsRunningProperty@{IsRunningProperty}}
+\index{IsRunningProperty@{IsRunningProperty}!Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}}
+\doxysubsubsection{\texorpdfstring{IsRunningProperty}{IsRunningProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Busy\+Animation.\+Is\+Running\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= DependencyProperty.Register(}
+\DoxyCodeLine{      \textcolor{stringliteral}{"{}IsRunning"{}},}
+\DoxyCodeLine{      typeof(\textcolor{keywordtype}{bool}),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_a7fd5bab21c6bde3f115417f2167011f4}{BusyAnimation}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata((o, e) => ((\mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_a7fd5bab21c6bde3f115417f2167011f4}{BusyAnimation}})o).SetupRunningState((\textcolor{keywordtype}{bool})e.NewValue)))}
+
+\end{DoxyCode}
+
+
+Is\+Running property to control whether the animation is running. 
+
+
+
+Definition at line 73 of file Busy\+Animation.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_busy_animation_ad13619f8523c53c9a9b9de804be24b4f}\label{class_csla_1_1_xaml_1_1_busy_animation_ad13619f8523c53c9a9b9de804be24b4f}} 
+\index{Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}!StepIntervalProperty@{StepIntervalProperty}}
+\index{StepIntervalProperty@{StepIntervalProperty}!Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}}
+\doxysubsubsection{\texorpdfstring{StepIntervalProperty}{StepIntervalProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Busy\+Animation.\+Step\+Interval\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= DependencyProperty.Register(}
+\DoxyCodeLine{      \textcolor{stringliteral}{"{}StepInterval"{}},}
+\DoxyCodeLine{      typeof(TimeSpan),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_busy_animation_a7fd5bab21c6bde3f115417f2167011f4}{BusyAnimation}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata(}
+\DoxyCodeLine{        \mbox{\hyperlink{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a36ccd3ba5e96096e08abdd7f1d0940fb}{TimeSpan}}.FromMilliseconds(100),}
+\DoxyCodeLine{        (o, e) => }
+\DoxyCodeLine{        \{}
+\DoxyCodeLine{          var busyAnimation = (BusyAnimation)o;}
+\DoxyCodeLine{          busyAnimation.StepInterval = (TimeSpan)e.NewValue;}
+\DoxyCodeLine{          if (busyAnimation.\_timer != null)}
+\DoxyCodeLine{            busyAnimation.\_timer.Interval = busyAnimation.StepInterval;}
+\DoxyCodeLine{        \}))}
+
+\end{DoxyCode}
+
+
+Step\+Interval property to control speed of animation. 
+
+
+
+Definition at line 55 of file Busy\+Animation.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_busy_animation_a03bad5d4b15dc5a7c5f307008c023518}\label{class_csla_1_1_xaml_1_1_busy_animation_a03bad5d4b15dc5a7c5f307008c023518}} 
+\index{Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}!IsRunning@{IsRunning}}
+\index{IsRunning@{IsRunning}!Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}}
+\doxysubsubsection{\texorpdfstring{IsRunning}{IsRunning}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Busy\+Animation.\+Is\+Running\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a property controlling whether the animation is running. 
+
+
+
+Definition at line 98 of file Busy\+Animation.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_busy_animation_ab8fa7966361f60e5053ad39450fe2f0f}\label{class_csla_1_1_xaml_1_1_busy_animation_ab8fa7966361f60e5053ad39450fe2f0f}} 
+\index{Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}!StepInterval@{StepInterval}}
+\index{StepInterval@{StepInterval}!Csla.Xaml.BusyAnimation@{Csla.Xaml.BusyAnimation}}
+\doxysubsubsection{\texorpdfstring{StepInterval}{StepInterval}}
+{\footnotesize\ttfamily Time\+Span Csla.\+Xaml.\+Busy\+Animation.\+Step\+Interval\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a property controlling the speed of the animation. 
+
+
+
+Definition at line 84 of file Busy\+Animation.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_csla_8_xaml_8_shared_2_busy_animation_8cs}{Busy\+Animation.\+cs}}\end{DoxyCompactItemize}

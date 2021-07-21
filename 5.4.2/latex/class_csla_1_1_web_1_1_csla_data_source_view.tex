@@ -1,0 +1,330 @@
+\hypertarget{class_csla_1_1_web_1_1_csla_data_source_view}{}\doxysection{Csla.\+Web.\+Csla\+Data\+Source\+View Class Reference}
+\label{class_csla_1_1_web_1_1_csla_data_source_view}\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+
+
+The object responsible for managing data binding to a specific CSLA .NET object.  
+
+
+Inheritance diagram for Csla.\+Web.\+Csla\+Data\+Source\+View\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_web_1_1_csla_data_source_view}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_ade8e842f2efac0088875f71d0d53a9a8}{Csla\+Data\+Source\+View}} (\mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source}{Csla\+Data\+Source}} owner, string view\+Name)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override System.\+Collections.\+IEnumerable \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a2e430bcc187fa0f391eb542aa62c846b}{Execute\+Select}} (Data\+Source\+Select\+Arguments arguments)
+\begin{DoxyCompactList}\small\item\em Implements the select behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_a471e7466465ab90124c142e04df3e54b}{Csla\+Data\+Source.\+Select\+Object}} event. \end{DoxyCompactList}\item 
+override int \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a24f70ac288227b875b78eab8b9282d4b}{Execute\+Insert}} (IDictionary values)
+\begin{DoxyCompactList}\small\item\em Implements the insert behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_a6857d7536d0c6b30c9d5da0f95a2e888}{Csla\+Data\+Source.\+Insert\+Object}} event. \end{DoxyCompactList}\item 
+override int \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a11483385d7e25127a943245cb98dd3a6}{Execute\+Delete}} (IDictionary keys, IDictionary old\+Values)
+\begin{DoxyCompactList}\small\item\em Implements the delete behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_a3a5220b1377d7a2b8ab0be23d8141202}{Csla\+Data\+Source.\+Delete\+Object}} event. \end{DoxyCompactList}\item 
+override int \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_ac254cb7a21211d07742fe2c3d30f84b2}{Execute\+Update}} (IDictionary keys, IDictionary values, IDictionary old\+Values)
+\begin{DoxyCompactList}\small\item\em Implements the update behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_ad33b2132456a9fe5fa22c9570eca5f5b}{Csla\+Data\+Source.\+Update\+Object}} event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a2858d83c3d12a39b62755e3c9163be7d}{Type\+Assembly\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get or set the name of the assembly (no longer used). \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_afa1bd0ab8f716bb44b171158988c8ff3}{Type\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get or set the full type name of the business object class to be used as a data source. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a6ea8adfe66dba6ef54e67127a91a53b5}{Type\+Supports\+Paging}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get or set a value indicating whether the business object data source supports paging. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_ac111c4f3f8de22de385c24dae989b59e}{Type\+Supports\+Sorting}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get or set a value indicating whether the business object data source supports sorting. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a36c7879686fb0539026b0e365f5c190a}{Can\+Insert}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the data source can insert data. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_ac21745c21eaff7c26b699ff4f6ff1ac2}{Can\+Delete}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the data source can delete data. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_abc77336a27ddc7a658badd07a12c837b}{Can\+Update}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the data source can update data. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a0ab1276bdf2c14e7ae0ccf10fd207094}{Can\+Page}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the data source supports paging of the data. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a0f4d84d6a4a65322484a1542f2ae74e9}{Can\+Retrieve\+Total\+Row\+Count}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the data source can retrieve the total number of rows of data. Always returns true. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_view_a6f6aec3e7fd66d9ec899c9377ebaa3ec}{Can\+Sort}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a alue indicating whether the data source supports sorting of the data. Always returns false. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The object responsible for managing data binding to a specific CSLA .NET object. 
+
+
+
+Definition at line 19 of file Csla\+Data\+Source\+View.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_ade8e842f2efac0088875f71d0d53a9a8}\label{class_csla_1_1_web_1_1_csla_data_source_view_ade8e842f2efac0088875f71d0d53a9a8}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CslaDataSourceView@{CslaDataSourceView}}
+\index{CslaDataSourceView@{CslaDataSourceView}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CslaDataSourceView()}{CslaDataSourceView()}}
+{\footnotesize\ttfamily Csla.\+Web.\+Csla\+Data\+Source\+View.\+Csla\+Data\+Source\+View (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source}{Csla\+Data\+Source}}}]{owner,  }\item[{string}]{view\+Name }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em owner} & The \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source}{Csla\+Data\+Source}} object that owns this view.\\
+\hline
+{\em view\+Name} & The name of the view.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 34 of file Csla\+Data\+Source\+View.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a11483385d7e25127a943245cb98dd3a6}\label{class_csla_1_1_web_1_1_csla_data_source_view_a11483385d7e25127a943245cb98dd3a6}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!ExecuteDelete@{ExecuteDelete}}
+\index{ExecuteDelete@{ExecuteDelete}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{ExecuteDelete()}{ExecuteDelete()}}
+{\footnotesize\ttfamily override int Csla.\+Web.\+Csla\+Data\+Source\+View.\+Execute\+Delete (\begin{DoxyParamCaption}\item[{IDictionary}]{keys,  }\item[{IDictionary}]{old\+Values }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Implements the delete behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_a3a5220b1377d7a2b8ab0be23d8141202}{Csla\+Data\+Source.\+Delete\+Object}} event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em keys} & The key values from the UI that are to be deleted.\\
+\hline
+{\em old\+Values} & The old values from the UI.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of rows affected.
+\end{DoxyReturn}
+
+
+Definition at line 207 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a24f70ac288227b875b78eab8b9282d4b}\label{class_csla_1_1_web_1_1_csla_data_source_view_a24f70ac288227b875b78eab8b9282d4b}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!ExecuteInsert@{ExecuteInsert}}
+\index{ExecuteInsert@{ExecuteInsert}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{ExecuteInsert()}{ExecuteInsert()}}
+{\footnotesize\ttfamily override int Csla.\+Web.\+Csla\+Data\+Source\+View.\+Execute\+Insert (\begin{DoxyParamCaption}\item[{IDictionary}]{values }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Implements the insert behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_a6857d7536d0c6b30c9d5da0f95a2e888}{Csla\+Data\+Source.\+Insert\+Object}} event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em values} & The values from the UI that are to be inserted.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of rows affected.
+\end{DoxyReturn}
+
+
+Definition at line 167 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a2e430bcc187fa0f391eb542aa62c846b}\label{class_csla_1_1_web_1_1_csla_data_source_view_a2e430bcc187fa0f391eb542aa62c846b}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!ExecuteSelect@{ExecuteSelect}}
+\index{ExecuteSelect@{ExecuteSelect}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{ExecuteSelect()}{ExecuteSelect()}}
+{\footnotesize\ttfamily override System.\+Collections.\+IEnumerable Csla.\+Web.\+Csla\+Data\+Source\+View.\+Execute\+Select (\begin{DoxyParamCaption}\item[{Data\+Source\+Select\+Arguments}]{arguments }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Implements the select behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_a471e7466465ab90124c142e04df3e54b}{Csla\+Data\+Source.\+Select\+Object}} event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arguments} & Arguments object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The data returned from the select.
+\end{DoxyReturn}
+
+
+Definition at line 96 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_ac254cb7a21211d07742fe2c3d30f84b2}\label{class_csla_1_1_web_1_1_csla_data_source_view_ac254cb7a21211d07742fe2c3d30f84b2}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!ExecuteUpdate@{ExecuteUpdate}}
+\index{ExecuteUpdate@{ExecuteUpdate}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{ExecuteUpdate()}{ExecuteUpdate()}}
+{\footnotesize\ttfamily override int Csla.\+Web.\+Csla\+Data\+Source\+View.\+Execute\+Update (\begin{DoxyParamCaption}\item[{IDictionary}]{keys,  }\item[{IDictionary}]{values,  }\item[{IDictionary}]{old\+Values }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Implements the update behavior for the control by raising the \mbox{\hyperlink{class_csla_1_1_web_1_1_csla_data_source_ad33b2132456a9fe5fa22c9570eca5f5b}{Csla\+Data\+Source.\+Update\+Object}} event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em keys} & The key values from the UI that identify the object to be updated.\\
+\hline
+{\em values} & The values from the UI that are to be inserted.\\
+\hline
+{\em old\+Values} & The old values from the UI.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of rows affected.
+\end{DoxyReturn}
+
+
+Definition at line 248 of file Csla\+Data\+Source\+View.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_ac21745c21eaff7c26b699ff4f6ff1ac2}\label{class_csla_1_1_web_1_1_csla_data_source_view_ac21745c21eaff7c26b699ff4f6ff1ac2}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CanDelete@{CanDelete}}
+\index{CanDelete@{CanDelete}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CanDelete}{CanDelete}}
+{\footnotesize\ttfamily override bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Can\+Delete\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the data source can delete data. 
+
+
+
+Definition at line 185 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a36c7879686fb0539026b0e365f5c190a}\label{class_csla_1_1_web_1_1_csla_data_source_view_a36c7879686fb0539026b0e365f5c190a}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CanInsert@{CanInsert}}
+\index{CanInsert@{CanInsert}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CanInsert}{CanInsert}}
+{\footnotesize\ttfamily override bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Can\+Insert\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the data source can insert data. 
+
+
+
+Definition at line 147 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a0ab1276bdf2c14e7ae0ccf10fd207094}\label{class_csla_1_1_web_1_1_csla_data_source_view_a0ab1276bdf2c14e7ae0ccf10fd207094}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CanPage@{CanPage}}
+\index{CanPage@{CanPage}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CanPage}{CanPage}}
+{\footnotesize\ttfamily override bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Can\+Page\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the data source supports paging of the data. 
+
+
+
+Definition at line 264 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a0f4d84d6a4a65322484a1542f2ae74e9}\label{class_csla_1_1_web_1_1_csla_data_source_view_a0f4d84d6a4a65322484a1542f2ae74e9}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CanRetrieveTotalRowCount@{CanRetrieveTotalRowCount}}
+\index{CanRetrieveTotalRowCount@{CanRetrieveTotalRowCount}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CanRetrieveTotalRowCount}{CanRetrieveTotalRowCount}}
+{\footnotesize\ttfamily override bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Can\+Retrieve\+Total\+Row\+Count\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the data source can retrieve the total number of rows of data. Always returns true. 
+
+
+
+Definition at line 277 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a6f6aec3e7fd66d9ec899c9377ebaa3ec}\label{class_csla_1_1_web_1_1_csla_data_source_view_a6f6aec3e7fd66d9ec899c9377ebaa3ec}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CanSort@{CanSort}}
+\index{CanSort@{CanSort}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CanSort}{CanSort}}
+{\footnotesize\ttfamily override bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Can\+Sort\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a alue indicating whether the data source supports sorting of the data. Always returns false. 
+
+
+
+Definition at line 286 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_abc77336a27ddc7a658badd07a12c837b}\label{class_csla_1_1_web_1_1_csla_data_source_view_abc77336a27ddc7a658badd07a12c837b}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!CanUpdate@{CanUpdate}}
+\index{CanUpdate@{CanUpdate}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{CanUpdate}{CanUpdate}}
+{\footnotesize\ttfamily override bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Can\+Update\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the data source can update data. 
+
+
+
+Definition at line 224 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a2858d83c3d12a39b62755e3c9163be7d}\label{class_csla_1_1_web_1_1_csla_data_source_view_a2858d83c3d12a39b62755e3c9163be7d}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!TypeAssemblyName@{TypeAssemblyName}}
+\index{TypeAssemblyName@{TypeAssemblyName}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{TypeAssemblyName}{TypeAssemblyName}}
+{\footnotesize\ttfamily string Csla.\+Web.\+Csla\+Data\+Source\+View.\+Type\+Assembly\+Name\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Get or set the name of the assembly (no longer used). 
+
+Obsolete -\/ do not use.
+
+Definition at line 44 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_afa1bd0ab8f716bb44b171158988c8ff3}\label{class_csla_1_1_web_1_1_csla_data_source_view_afa1bd0ab8f716bb44b171158988c8ff3}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!TypeName@{TypeName}}
+\index{TypeName@{TypeName}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{TypeName}{TypeName}}
+{\footnotesize\ttfamily string Csla.\+Web.\+Csla\+Data\+Source\+View.\+Type\+Name\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Get or set the full type name of the business object class to be used as a data source. 
+
+Full type name of the business class.
+
+Definition at line 55 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_a6ea8adfe66dba6ef54e67127a91a53b5}\label{class_csla_1_1_web_1_1_csla_data_source_view_a6ea8adfe66dba6ef54e67127a91a53b5}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!TypeSupportsPaging@{TypeSupportsPaging}}
+\index{TypeSupportsPaging@{TypeSupportsPaging}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{TypeSupportsPaging}{TypeSupportsPaging}}
+{\footnotesize\ttfamily bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Type\+Supports\+Paging\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Get or set a value indicating whether the business object data source supports paging. 
+
+To support paging, the business object (collection) must implement \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_report_total_row_count}{Csla.\+Core.\+IReport\+Total\+Row\+Count}}. 
+
+Definition at line 70 of file Csla\+Data\+Source\+View.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_csla_data_source_view_ac111c4f3f8de22de385c24dae989b59e}\label{class_csla_1_1_web_1_1_csla_data_source_view_ac111c4f3f8de22de385c24dae989b59e}} 
+\index{Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}!TypeSupportsSorting@{TypeSupportsSorting}}
+\index{TypeSupportsSorting@{TypeSupportsSorting}!Csla.Web.CslaDataSourceView@{Csla.Web.CslaDataSourceView}}
+\doxysubsubsection{\texorpdfstring{TypeSupportsSorting}{TypeSupportsSorting}}
+{\footnotesize\ttfamily bool Csla.\+Web.\+Csla\+Data\+Source\+View.\+Type\+Supports\+Sorting\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Get or set a value indicating whether the business object data source supports sorting. 
+
+
+
+Definition at line 80 of file Csla\+Data\+Source\+View.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Web.\+Shared/\mbox{\hyperlink{_csla_data_source_view_8cs}{Csla\+Data\+Source\+View.\+cs}}\end{DoxyCompactItemize}

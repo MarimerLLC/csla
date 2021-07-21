@@ -1,0 +1,184 @@
+\hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{}\doxysection{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager$<$ C $>$ Class Template Reference}
+\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+
+
+Provides an automated way to reuse Entity Framework Db\+Context objects within the context of a single data portal operation.  
+
+
+Inheritance diagram for Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager$<$ C $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a49308ac5209ee48e5dc347234b78e932}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Dispose object, dereferencing or disposing the context it is managing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}}$<$ C $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a98dc911ec24da52fe4dfe1e7ae505513}{Get\+Manager}} ()
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}} object for the /// specified database. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}}$<$ C $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_abf8d3049fa57e1c27bf29b494ff19694}{Get\+Manager}} (string database)
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}} object for the specified database. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}}$<$ C $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a2ac4eadb39f8d7259cb04abc8a8b28bd}{Get\+Manager}} (string database, string label)
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}} object for the specified database. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a8affbb297a17360b3281488743376021}{Dispose}} (bool p)
+\begin{DoxyCompactList}\small\item\em Dispose object, dereferencing or disposing the context it is managing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+C \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a0e4067f64f2eaa5fc7ff66ad7607bdec}{Db\+Context}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the Db\+Context object. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_ae13a2bcc2dba1751819faa07ad96c367}{Ref\+Count}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the current reference count for this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides an automated way to reuse Entity Framework Db\+Context objects within the context of a single data portal operation. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em C} & Type of database Db\+Context object to use. \\
+\hline
+\end{DoxyTemplParams}
+
+
+This type stores the object context object in Csla.\+Application\+Context.\+Local\+Context and uses reference counting through IDisposable to keep the data context object open for reuse by child objects, and to automatically dispose the object when the last consumer has called Dispose."{} \begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em C} : {\em \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a0e4067f64f2eaa5fc7ff66ad7607bdec}{Db\+Context}}}]\end{description}
+\end{Desc}
+
+
+Definition at line 33 of file Db\+Context\+Manager.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a49308ac5209ee48e5dc347234b78e932}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a49308ac5209ee48e5dc347234b78e932}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Dispose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Dispose object, dereferencing or disposing the context it is managing. 
+
+
+
+Definition at line 152 of file Db\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a8affbb297a17360b3281488743376021}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a8affbb297a17360b3281488743376021}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Dispose (\begin{DoxyParamCaption}\item[{bool}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Dispose object, dereferencing or disposing the context it is managing. 
+
+
+
+Definition at line 163 of file Db\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a98dc911ec24da52fe4dfe1e7ae505513}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a98dc911ec24da52fe4dfe1e7ae505513}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}}$<$C$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Get\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}} object for the /// specified database. 
+
+
+
+Definition at line 44 of file Db\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_abf8d3049fa57e1c27bf29b494ff19694}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_abf8d3049fa57e1c27bf29b494ff19694}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}}$<$C$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Get\+Manager (\begin{DoxyParamCaption}\item[{string}]{database }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}} object for the specified database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database} & Database name as shown in the config file.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 54 of file Db\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a2ac4eadb39f8d7259cb04abc8a8b28bd}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a2ac4eadb39f8d7259cb04abc8a8b28bd}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}}$<$C$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Get\+Manager (\begin{DoxyParamCaption}\item[{string}]{database,  }\item[{string}]{label }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Db\+Context\+Manager}} object for the specified database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database} & The database name or connection string. \\
+\hline
+{\em label} & Label for this context.\\
+\hline
+\end{DoxyParams}
+~\newline
+ \begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{class_csla_1_1_data_1_1_context_manager}{Context\+Manager}} object for the name.
+\end{DoxyReturn}
+
+
+Definition at line 68 of file Db\+Context\+Manager.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a0e4067f64f2eaa5fc7ff66ad7607bdec}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_a0e4067f64f2eaa5fc7ff66ad7607bdec}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!DbContext@{DbContext}}
+\index{DbContext@{DbContext}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{DbContext}{DbContext}}
+{\footnotesize\ttfamily C \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Db\+Context\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the Db\+Context object. 
+
+
+
+Definition at line 113 of file Db\+Context\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_ae13a2bcc2dba1751819faa07ad96c367}\label{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager_ae13a2bcc2dba1751819faa07ad96c367}} 
+\index{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}!RefCount@{RefCount}}
+\index{RefCount@{RefCount}!Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$@{Csla.Data.EntityFrameworkCore.DbContextManager$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{RefCount}{RefCount}}
+{\footnotesize\ttfamily int \mbox{\hyperlink{class_csla_1_1_data_1_1_entity_framework_core_1_1_db_context_manager}{Csla.\+Data.\+Entity\+Framework\+Core.\+Db\+Context\+Manager}}$<$ C $>$.Ref\+Count\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the current reference count for this object. 
+
+
+
+Definition at line 124 of file Db\+Context\+Manager.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Data.\+EFCore.\+Shared/\mbox{\hyperlink{_csla_8_data_8_e_f_core_8_shared_2_db_context_manager_8cs}{Db\+Context\+Manager.\+cs}}\end{DoxyCompactItemize}

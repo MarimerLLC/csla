@@ -1,0 +1,487 @@
+\hypertarget{class_csla_1_1_blazor_1_1_view_model}{}\doxysection{Csla.\+Blazor.\+View\+Model$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_blazor_1_1_view_model}\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+
+
+Base type for creating your own viewmodel.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_af156dffe7720492f27304fd08fff32c6}{View\+Model}} (\mbox{\hyperlink{interface_csla_1_1_i_data_portal}{IData\+Portal}}$<$ T $>$ data\+Portal)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the type \end{DoxyCompactList}\item 
+async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a0351f1748d4547a6bf50c8062e1c1b86}{Refresh\+Async}} (Func$<$ Task$<$ T $>$$>$ factory)
+\begin{DoxyCompactList}\small\item\em Refresh the Model \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a1460848397eb73b1ffd3e4bff82a9b93}{Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the Model \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a557f10aa810ac83d4b34c642b4b11a9d}{Get\+Property\+Info$<$ P $>$}} (Expression$<$ Func$<$ P $>$$>$ property)
+\begin{DoxyCompactList}\small\item\em Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a976c0dce6068d8a267a5342d42416c06}{Get\+Property\+Info$<$ P $>$}} (Expression$<$ Func$<$ P $>$$>$ property, string id)
+\begin{DoxyCompactList}\small\item\em Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a8b667252bafc3cdc26f3b52547abac74}{Get\+Property\+Info}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property of the Model. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_afe153dcee8bf3a0688ce852d2512d10d}{Get\+Property\+Info}} (string property\+Name, string id)
+\begin{DoxyCompactList}\small\item\em Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property of the Model. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_ad61d2a8ef98ed64dc599bf8c8e76a2cd}{Can\+Create\+Object}} ()
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to create an instance of the business domain type \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a9d9dcb1c29b689c6055336c5d5c16b83}{Can\+Get\+Object}} ()
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to retrieve an instance of the business domain type \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_aa9654cc876c115cdc70366936c287641}{Can\+Edit\+Object}} ()
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to edit/save an instance of the business domain type \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a1d4d67da3fceb2a0919a88a685073d61}{Can\+Delete\+Object}} ()
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to delete an instance of the business domain type \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a7e50410c44672104bdf9e60a59c2e0e8}{On\+Model\+Changing}} (T old\+Value, T new\+Value)
+\begin{DoxyCompactList}\small\item\em Raises the Model\+Changing event \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a4d8faebd94d0b03ba88f86e3b130eee6}{On\+Model\+Changed}} ()
+\begin{DoxyCompactList}\small\item\em Raises the Model\+Changed event \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_ad89869b46c9961036c927621f06cb9ca}{On\+Model\+Property\+Changed}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Raises the Model\+Property\+Changed event \end{DoxyCompactList}\item 
+virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_aa121d4706afe7cecb49f4c5272566617}{Do\+Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Override to provide custom Model save behavior \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+T \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_ab8d3a89419a71c2ea554879c39b09ffb}{Model}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the Model object. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a2f387174f13453f62c608073e33a721a}{View\+Model\+Error\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets any error text generated by refresh or save operations \end{DoxyCompactList}\item 
+virtual string \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a36865ccccbfaed83085c73c3077e0975}{Model\+Error\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the first validation error message from the Model \end{DoxyCompactList}\item 
+Exception \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a7a9a0b43e2fa39e600eaebfd77852157}{Exception}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the last exception caught by the viewmodel during refresh or save operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+Action \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_afb6ad8c3f8a7e1f2da8e0e6bfa93f49b}{Saved}}
+\begin{DoxyCompactList}\small\item\em Event raised after Model has been saved \end{DoxyCompactList}\item 
+Action$<$ T, T $>$ \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a02ed4a49de51ae13c20a16d62218a59f}{Model\+Changing}}
+\begin{DoxyCompactList}\small\item\em Event raised when Model is changing \end{DoxyCompactList}\item 
+Action \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_ad3c5127ed226c3136a72f35c95294590}{Model\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when Model has changed \end{DoxyCompactList}\item 
+Property\+Changed\+Event\+Handler \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a3e9e9e853402e3b0b0718c04d84cca3f}{Model\+Property\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when the Model object raises its Property\+Changed event \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base type for creating your own viewmodel. 
+
+
+
+Definition at line 22 of file View\+Model.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_af156dffe7720492f27304fd08fff32c6}\label{class_csla_1_1_blazor_1_1_view_model_af156dffe7720492f27304fd08fff32c6}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!ViewModel@{ViewModel}}
+\index{ViewModel@{ViewModel}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ViewModel()}{ViewModel()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{View\+Model}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_i_data_portal}{IData\+Portal}}$<$ T $>$}]{data\+Portal }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the type 
+
+
+
+Definition at line 79 of file View\+Model.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_ad61d2a8ef98ed64dc599bf8c8e76a2cd}\label{class_csla_1_1_blazor_1_1_view_model_ad61d2a8ef98ed64dc599bf8c8e76a2cd}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!CanCreateObject@{CanCreateObject}}
+\index{CanCreateObject@{CanCreateObject}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanCreateObject()}{CanCreateObject()}}
+{\footnotesize\ttfamily static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Can\+Create\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets a value indicating whether the current user is authorized to create an instance of the business domain type 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 283 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a1d4d67da3fceb2a0919a88a685073d61}\label{class_csla_1_1_blazor_1_1_view_model_a1d4d67da3fceb2a0919a88a685073d61}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!CanDeleteObject@{CanDeleteObject}}
+\index{CanDeleteObject@{CanDeleteObject}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanDeleteObject()}{CanDeleteObject()}}
+{\footnotesize\ttfamily static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Can\+Delete\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets a value indicating whether the current user is authorized to delete an instance of the business domain type 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 316 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_aa9654cc876c115cdc70366936c287641}\label{class_csla_1_1_blazor_1_1_view_model_aa9654cc876c115cdc70366936c287641}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!CanEditObject@{CanEditObject}}
+\index{CanEditObject@{CanEditObject}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanEditObject()}{CanEditObject()}}
+{\footnotesize\ttfamily static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Can\+Edit\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets a value indicating whether the current user is authorized to edit/save an instance of the business domain type 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 305 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a9d9dcb1c29b689c6055336c5d5c16b83}\label{class_csla_1_1_blazor_1_1_view_model_a9d9dcb1c29b689c6055336c5d5c16b83}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!CanGetObject@{CanGetObject}}
+\index{CanGetObject@{CanGetObject}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanGetObject()}{CanGetObject()}}
+{\footnotesize\ttfamily static bool \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Can\+Get\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets a value indicating whether the current user is authorized to retrieve an instance of the business domain type 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 294 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_aa121d4706afe7cecb49f4c5272566617}\label{class_csla_1_1_blazor_1_1_view_model_aa121d4706afe7cecb49f4c5272566617}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!DoSaveAsync@{DoSaveAsync}}
+\index{DoSaveAsync@{DoSaveAsync}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoSaveAsync()}{DoSaveAsync()}}
+{\footnotesize\ttfamily virtual async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Do\+Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override to provide custom Model save behavior 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 140 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a8b667252bafc3cdc26f3b52547abac74}\label{class_csla_1_1_blazor_1_1_view_model_a8b667252bafc3cdc26f3b52547abac74}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!GetPropertyInfo@{GetPropertyInfo}}
+\index{GetPropertyInfo@{GetPropertyInfo}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetPropertyInfo()}{GetPropertyInfo()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Get\+Property\+Info (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})}
+
+
+
+Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property of the Model. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 214 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_afe153dcee8bf3a0688ce852d2512d10d}\label{class_csla_1_1_blazor_1_1_view_model_afe153dcee8bf3a0688ce852d2512d10d}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!GetPropertyInfo@{GetPropertyInfo}}
+\index{GetPropertyInfo@{GetPropertyInfo}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetPropertyInfo()}{GetPropertyInfo()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Get\+Property\+Info (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{id }\end{DoxyParamCaption})}
+
+
+
+Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property of the Model. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name\\
+\hline
+{\em id} & Unique identifier for property in list or array\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 228 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a557f10aa810ac83d4b34c642b4b11a9d}\label{class_csla_1_1_blazor_1_1_view_model_a557f10aa810ac83d4b34c642b4b11a9d}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!GetPropertyInfo$<$ P $>$@{GetPropertyInfo$<$ P $>$}}
+\index{GetPropertyInfo$<$ P $>$@{GetPropertyInfo$<$ P $>$}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetPropertyInfo$<$ P $>$()}{GetPropertyInfo< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a8b667252bafc3cdc26f3b52547abac74}{Get\+Property\+Info}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ P $>$$>$}]{property }\end{DoxyParamCaption})}
+
+
+
+Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property expression\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 179 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a976c0dce6068d8a267a5342d42416c06}\label{class_csla_1_1_blazor_1_1_view_model_a976c0dce6068d8a267a5342d42416c06}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!GetPropertyInfo$<$ P $>$@{GetPropertyInfo$<$ P $>$}}
+\index{GetPropertyInfo$<$ P $>$@{GetPropertyInfo$<$ P $>$}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetPropertyInfo$<$ P $>$()}{GetPropertyInfo< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info}{IProperty\+Info}} \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model_a8b667252bafc3cdc26f3b52547abac74}{Get\+Property\+Info}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ P $>$$>$}]{property,  }\item[{string}]{id }\end{DoxyParamCaption})}
+
+
+
+Get a \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} object for a property. \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info}{Property\+Info}} provides access to the metastate of the property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property expression\\
+\hline
+{\em id} & Unique identifier for property in list or array\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 197 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a4d8faebd94d0b03ba88f86e3b130eee6}\label{class_csla_1_1_blazor_1_1_view_model_a4d8faebd94d0b03ba88f86e3b130eee6}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!OnModelChanged@{OnModelChanged}}
+\index{OnModelChanged@{OnModelChanged}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnModelChanged()}{OnModelChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.On\+Model\+Changed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Model\+Changed event 
+
+
+
+Definition at line 62 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a7e50410c44672104bdf9e60a59c2e0e8}\label{class_csla_1_1_blazor_1_1_view_model_a7e50410c44672104bdf9e60a59c2e0e8}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!OnModelChanging@{OnModelChanging}}
+\index{OnModelChanging@{OnModelChanging}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnModelChanging()}{OnModelChanging()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.On\+Model\+Changing (\begin{DoxyParamCaption}\item[{T}]{old\+Value,  }\item[{T}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Model\+Changing event 
+
+
+\begin{DoxyParams}{Parameters}
+{\em old\+Value} & Old Model value\\
+\hline
+{\em new\+Value} & New Model value\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 49 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_ad89869b46c9961036c927621f06cb9ca}\label{class_csla_1_1_blazor_1_1_view_model_ad89869b46c9961036c927621f06cb9ca}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!OnModelPropertyChanged@{OnModelPropertyChanged}}
+\index{OnModelPropertyChanged@{OnModelPropertyChanged}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnModelPropertyChanged()}{OnModelPropertyChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.On\+Model\+Property\+Changed (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Model\+Property\+Changed event 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 71 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a0351f1748d4547a6bf50c8062e1c1b86}\label{class_csla_1_1_blazor_1_1_view_model_a0351f1748d4547a6bf50c8062e1c1b86}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!RefreshAsync@{RefreshAsync}}
+\index{RefreshAsync@{RefreshAsync}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RefreshAsync()}{RefreshAsync()}}
+{\footnotesize\ttfamily async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Refresh\+Async (\begin{DoxyParamCaption}\item[{Func$<$ Task$<$ T $>$$>$}]{factory }\end{DoxyParamCaption})}
+
+
+
+Refresh the Model 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory} & Async data portal or factory method\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 88 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a1460848397eb73b1ffd3e4bff82a9b93}\label{class_csla_1_1_blazor_1_1_view_model_a1460848397eb73b1ffd3e4bff82a9b93}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}}
+{\footnotesize\ttfamily async Task \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the Model 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 115 of file View\+Model.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a7a9a0b43e2fa39e600eaebfd77852157}\label{class_csla_1_1_blazor_1_1_view_model_a7a9a0b43e2fa39e600eaebfd77852157}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!Exception@{Exception}}
+\index{Exception@{Exception}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Exception}{Exception}}
+{\footnotesize\ttfamily Exception \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Exception\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the last exception caught by the viewmodel during refresh or save operations. 
+
+
+
+Definition at line 275 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_ab8d3a89419a71c2ea554879c39b09ffb}\label{class_csla_1_1_blazor_1_1_view_model_ab8d3a89419a71c2ea554879c39b09ffb}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!Model@{Model}}
+\index{Model@{Model}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Model}{Model}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Model\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the Model object. 
+
+
+
+Definition at line 157 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a36865ccccbfaed83085c73c3077e0975}\label{class_csla_1_1_blazor_1_1_view_model_a36865ccccbfaed83085c73c3077e0975}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!ModelErrorText@{ModelErrorText}}
+\index{ModelErrorText@{ModelErrorText}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ModelErrorText}{ModelErrorText}}
+{\footnotesize\ttfamily virtual string \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Model\+Error\+Text\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Gets the first validation error message from the Model 
+
+
+
+Definition at line 258 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a2f387174f13453f62c608073e33a721a}\label{class_csla_1_1_blazor_1_1_view_model_a2f387174f13453f62c608073e33a721a}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!ViewModelErrorText@{ViewModelErrorText}}
+\index{ViewModelErrorText@{ViewModelErrorText}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ViewModelErrorText}{ViewModelErrorText}}
+{\footnotesize\ttfamily string \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.View\+Model\+Error\+Text\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets any error text generated by refresh or save operations 
+
+
+
+Definition at line 252 of file View\+Model.\+cs.
+
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_ad3c5127ed226c3136a72f35c95294590}\label{class_csla_1_1_blazor_1_1_view_model_ad3c5127ed226c3136a72f35c95294590}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!ModelChanged@{ModelChanged}}
+\index{ModelChanged@{ModelChanged}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ModelChanged}{ModelChanged}}
+{\footnotesize\ttfamily Action \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Model\+Changed}
+
+
+
+Event raised when Model has changed 
+
+
+
+Definition at line 37 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a02ed4a49de51ae13c20a16d62218a59f}\label{class_csla_1_1_blazor_1_1_view_model_a02ed4a49de51ae13c20a16d62218a59f}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!ModelChanging@{ModelChanging}}
+\index{ModelChanging@{ModelChanging}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ModelChanging}{ModelChanging}}
+{\footnotesize\ttfamily Action$<$T, T$>$ \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Model\+Changing}
+
+
+
+Event raised when Model is changing 
+
+
+
+Definition at line 33 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_a3e9e9e853402e3b0b0718c04d84cca3f}\label{class_csla_1_1_blazor_1_1_view_model_a3e9e9e853402e3b0b0718c04d84cca3f}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!ModelPropertyChanged@{ModelPropertyChanged}}
+\index{ModelPropertyChanged@{ModelPropertyChanged}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ModelPropertyChanged}{ModelPropertyChanged}}
+{\footnotesize\ttfamily Property\+Changed\+Event\+Handler \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Model\+Property\+Changed}
+
+
+
+Event raised when the Model object raises its Property\+Changed event 
+
+
+
+Definition at line 42 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_blazor_1_1_view_model_afb6ad8c3f8a7e1f2da8e0e6bfa93f49b}\label{class_csla_1_1_blazor_1_1_view_model_afb6ad8c3f8a7e1f2da8e0e6bfa93f49b}} 
+\index{Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}!Saved@{Saved}}
+\index{Saved@{Saved}!Csla.Blazor.ViewModel$<$ T $>$@{Csla.Blazor.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Saved}{Saved}}
+{\footnotesize\ttfamily Action \mbox{\hyperlink{class_csla_1_1_blazor_1_1_view_model}{Csla.\+Blazor.\+View\+Model}}$<$ T $>$.Saved}
+
+
+
+Event raised after Model has been saved 
+
+
+
+Definition at line 29 of file View\+Model.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Blazor/\mbox{\hyperlink{_csla_8_blazor_2_view_model_8cs}{View\+Model.\+cs}}\end{DoxyCompactItemize}

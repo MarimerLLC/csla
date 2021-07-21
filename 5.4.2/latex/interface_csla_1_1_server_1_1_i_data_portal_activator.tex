@@ -1,0 +1,120 @@
+\hypertarget{interface_csla_1_1_server_1_1_i_data_portal_activator}{}\doxysection{Csla.\+Server.\+IData\+Portal\+Activator Interface Reference}
+\label{interface_csla_1_1_server_1_1_i_data_portal_activator}\index{Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}}
+
+
+Defines a type used to activate concrete business instances.  
+
+
+Inheritance diagram for Csla.\+Server.\+IData\+Portal\+Activator\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.261261cm]{interface_csla_1_1_server_1_1_i_data_portal_activator}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+object \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_activator_a960ace192e03774bf6e85082320155bb}{Create\+Instance}} (Type requested\+Type)
+\begin{DoxyCompactList}\small\item\em Gets a new instance of the requested type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_activator_a78fc42fe195d14d94a0842c55cde64da}{Initialize\+Instance}} (object obj)
+\begin{DoxyCompactList}\small\item\em Initializes an existing business object instance. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_activator_af67712b8e19afab9f8f55babddfd4365}{Finalize\+Instance}} (object obj)
+\begin{DoxyCompactList}\small\item\em Finalizes an existing business object instance. Called after a data portal operation is complete. \end{DoxyCompactList}\item 
+Type \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_activator_a7808c01b5ae86cb74dd8e71e8c7de95f}{Resolve\+Type}} (Type requested\+Type)
+\begin{DoxyCompactList}\small\item\em Gets the actual business domain class type based on the requested type (which might be an interface). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Defines a type used to activate concrete business instances. 
+
+
+
+Definition at line 16 of file IData\+Portal\+Activator.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_activator_a960ace192e03774bf6e85082320155bb}\label{interface_csla_1_1_server_1_1_i_data_portal_activator_a960ace192e03774bf6e85082320155bb}} 
+\index{Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}!CreateInstance@{CreateInstance}}
+\index{CreateInstance@{CreateInstance}!Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}}
+\doxysubsubsection{\texorpdfstring{CreateInstance()}{CreateInstance()}}
+{\footnotesize\ttfamily object Csla.\+Server.\+IData\+Portal\+Activator.\+Create\+Instance (\begin{DoxyParamCaption}\item[{Type}]{requested\+Type }\end{DoxyParamCaption})}
+
+
+
+Gets a new instance of the requested type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em requested\+Type} & Requested business type (class or interface).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Business object instance.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_test_activator_adc6961f2d1281ee9f5051ede9cf1bd1f}{Csla.\+Test.\+Data\+Portal.\+Test\+Activator}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_authorization_1_1_per_type_auth_d_p_activator_af362cb2ea6d7e4530b296482c941b47e}{Csla.\+Test.\+Authorization.\+Per\+Type\+Auth\+DPActivator}}, and \mbox{\hyperlink{classcsla_1_1netcore_1_1test_1_1_configuration_1_1_test_activator_abb67fd6394c0a2cbd408ff0998e1c94f}{csla.\+netcore.\+test.\+Configuration.\+Test\+Activator}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_activator_af67712b8e19afab9f8f55babddfd4365}\label{interface_csla_1_1_server_1_1_i_data_portal_activator_af67712b8e19afab9f8f55babddfd4365}} 
+\index{Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}!FinalizeInstance@{FinalizeInstance}}
+\index{FinalizeInstance@{FinalizeInstance}!Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}}
+\doxysubsubsection{\texorpdfstring{FinalizeInstance()}{FinalizeInstance()}}
+{\footnotesize\ttfamily void Csla.\+Server.\+IData\+Portal\+Activator.\+Finalize\+Instance (\begin{DoxyParamCaption}\item[{object}]{obj }\end{DoxyParamCaption})}
+
+
+
+Finalizes an existing business object instance. Called after a data portal operation is complete. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Reference to the business object.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_test_activator_a59931ae7698a9e90b87a75a8c3cc9be3}{Csla.\+Test.\+Data\+Portal.\+Test\+Activator}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_authorization_1_1_per_type_auth_d_p_activator_a5a2fde1465ea796eab14c0bd0fe0f81e}{Csla.\+Test.\+Authorization.\+Per\+Type\+Auth\+DPActivator}}, and \mbox{\hyperlink{classcsla_1_1netcore_1_1test_1_1_configuration_1_1_test_activator_aaf831afb66016d84de73ae724c0b5de6}{csla.\+netcore.\+test.\+Configuration.\+Test\+Activator}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_activator_a78fc42fe195d14d94a0842c55cde64da}\label{interface_csla_1_1_server_1_1_i_data_portal_activator_a78fc42fe195d14d94a0842c55cde64da}} 
+\index{Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}!InitializeInstance@{InitializeInstance}}
+\index{InitializeInstance@{InitializeInstance}!Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}}
+\doxysubsubsection{\texorpdfstring{InitializeInstance()}{InitializeInstance()}}
+{\footnotesize\ttfamily void Csla.\+Server.\+IData\+Portal\+Activator.\+Initialize\+Instance (\begin{DoxyParamCaption}\item[{object}]{obj }\end{DoxyParamCaption})}
+
+
+
+Initializes an existing business object instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Reference to the business object.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_test_activator_a4c32f004a53b6ffc6bf65316652a9693}{Csla.\+Test.\+Data\+Portal.\+Test\+Activator}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_authorization_1_1_per_type_auth_d_p_activator_acceff183f7bb09ae8b0485e081b59c1f}{Csla.\+Test.\+Authorization.\+Per\+Type\+Auth\+DPActivator}}, and \mbox{\hyperlink{classcsla_1_1netcore_1_1test_1_1_configuration_1_1_test_activator_aa11401bef4ef3a417172dff118572bb3}{csla.\+netcore.\+test.\+Configuration.\+Test\+Activator}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_activator_a7808c01b5ae86cb74dd8e71e8c7de95f}\label{interface_csla_1_1_server_1_1_i_data_portal_activator_a7808c01b5ae86cb74dd8e71e8c7de95f}} 
+\index{Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}!ResolveType@{ResolveType}}
+\index{ResolveType@{ResolveType}!Csla.Server.IDataPortalActivator@{Csla.Server.IDataPortalActivator}}
+\doxysubsubsection{\texorpdfstring{ResolveType()}{ResolveType()}}
+{\footnotesize\ttfamily Type Csla.\+Server.\+IData\+Portal\+Activator.\+Resolve\+Type (\begin{DoxyParamCaption}\item[{Type}]{requested\+Type }\end{DoxyParamCaption})}
+
+
+
+Gets the actual business domain class type based on the requested type (which might be an interface). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em requested\+Type} & Type requested from the data portal.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_test_activator_aa9053b3c544b4e525cce8c00cb0a8a5e}{Csla.\+Test.\+Data\+Portal.\+Test\+Activator}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_authorization_1_1_per_type_auth_d_p_activator_a0dc3ff6d459249ece6efbdd2068062e4}{Csla.\+Test.\+Authorization.\+Per\+Type\+Auth\+DPActivator}}, and \mbox{\hyperlink{classcsla_1_1netcore_1_1test_1_1_configuration_1_1_test_activator_a177ef3a2e80ef6c17da0747c08ef4b3a}{csla.\+netcore.\+test.\+Configuration.\+Test\+Activator}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_i_data_portal_activator_8cs}{IData\+Portal\+Activator.\+cs}}\end{DoxyCompactItemize}

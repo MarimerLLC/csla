@@ -1,0 +1,366 @@
+.TH "Csla.Core.ISavable< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ISavable< T > \- Specifies that the object can save itself\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.BusinessBase< T >\fP, \fBCsla\&.BusinessBase< T >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.IBusinessBase\fP, and \fBCsla\&.IBusinessListBase< C >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "object \fBSave\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "object \fBSave\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "Task< object > \fBSaveAsync\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "Task< object > \fBSaveAsync\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "Task \fBSaveAndMergeAsync\fP ()"
+.br
+.RI "Saves the object to the database, merging the result into the original object graph "
+.ti -1c
+.RI "Task \fBSaveAndMergeAsync\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database, merging the result into the original object graph "
+.ti -1c
+.RI "void \fBBeginSave\fP ()"
+.br
+.RI "Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (object userState)"
+.br
+.RI "Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. "
+.ti -1c
+.RI "void \fBSaveComplete\fP (object newObject)"
+.br
+.RI "INTERNAL CSLA \&.NET USE ONLY\&. "
+.ti -1c
+.RI "T \fBSave\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "T \fBSave\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "Task< T > \fBSaveAsync\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "Task< T > \fBSaveAsync\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "Task \fBSaveAndMergeAsync\fP ()"
+.br
+.RI "Saves the object to the database, merging the result into the original object graph "
+.ti -1c
+.RI "Task \fBSaveAndMergeAsync\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database, merging the result into the original object graph "
+.ti -1c
+.RI "void \fBBeginSave\fP ()"
+.br
+.RI "Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (object userState)"
+.br
+.RI "Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. "
+.ti -1c
+.RI "void \fBSaveComplete\fP (T newObject)"
+.br
+.RI "INTERNAL CSLA \&.NET USE ONLY\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBSavedEventArgs\fP > \fBSaved\fP"
+.br
+.RI "Event raised when an object has been saved\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Specifies that the object can save itself\&. 
+
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIclass\fP
+.PP
+Definition at line 18 of file ISavableT\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.Core\&.ISavable\fP< T >\&.BeginSave ()"
+
+.PP
+Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. 
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "void \fBCsla\&.Core\&.ISavable\fP< T >\&.BeginSave ()"
+
+.PP
+Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. 
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "void \fBCsla\&.Core\&.ISavable\fP< T >\&.BeginSave (object userState)"
+
+.PP
+Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserState\fP User state object\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "void \fBCsla\&.Core\&.ISavable\fP< T >\&.BeginSave (object userState)"
+
+.PP
+Saves the object to the database asynchronously\&. The saved event will contain the new object when the save operation completes\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserState\fP User state object\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "object \fBCsla\&.Core\&.ISavable\fP< T >\&.Save ()"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "T \fBCsla\&.Core\&.ISavable\fP< T >\&.Save ()"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "object \fBCsla\&.Core\&.ISavable\fP< T >\&.Save (bool forceUpdate)"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP true to force the save to be an update\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "T \fBCsla\&.Core\&.ISavable\fP< T >\&.Save (bool forceUpdate)"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP true to force the save to be an update\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAndMergeAsync ()"
+
+.PP
+Saves the object to the database, merging the result into the original object graph 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAndMergeAsync ()"
+
+.PP
+Saves the object to the database, merging the result into the original object graph 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAndMergeAsync (bool forceUpdate)"
+
+.PP
+Saves the object to the database, merging the result into the original object graph 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP true to force the save to be an update\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAndMergeAsync (bool forceUpdate)"
+
+.PP
+Saves the object to the database, merging the result into the original object graph 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP true to force the save to be an update\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task<object> \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAsync ()"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task<T> \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAsync ()"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.BusinessBindingListBase< T, C >\fP, and \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task<object> \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAsync (bool forceUpdate)"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP true to force the save to be an update\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Task<T> \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveAsync (bool forceUpdate)"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP true to force the save to be an update\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "void \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveComplete (object newObject)"
+
+.PP
+INTERNAL CSLA \&.NET USE ONLY\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP The new object returned as a result of the save\&. 
+.RE
+.PP
+
+.SS "void \fBCsla\&.Core\&.ISavable\fP< T >\&.SaveComplete (T newObject)"
+
+.PP
+INTERNAL CSLA \&.NET USE ONLY\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP The new object returned as a result of the save\&. 
+.RE
+.PP
+
+.SH "Event Documentation"
+.PP 
+.SS "EventHandler< \fBSavedEventArgs\fP > \fBCsla\&.Core\&.ISavable\fP< T >\&.Saved"
+
+.PP
+Event raised when an object has been saved\&. 
+.PP
+Definition at line 81 of file ISavable\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

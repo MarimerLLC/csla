@@ -1,0 +1,198 @@
+.TH "Csla.Rules.RuleUri" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.RuleUri \- Parses a rule:// URI to provide easy access to the parts of the URI\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRuleUri\fP (string ruleString)"
+.br
+.RI "Creates an instance of the object by parsing the provided rule:// URI\&. "
+.ti -1c
+.RI "\fBRuleUri\fP (Uri uri)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBRuleUri\fP (\fBIBusinessRuleBase\fP rule, \fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBRuleUri\fP (string typeName, string propertyName)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Gets a string representation of the rule URI\&. "
+.ti -1c
+.RI "void \fBAddQueryParameter\fP (string key, string value)"
+.br
+.RI "Adds a query parameter to the URI\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBRuleUri\fP \fBParse\fP (string ruleString)"
+.br
+.RI "Parses a rule:// URI\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBRuleTypeName\fP\fC [get]\fP"
+.br
+.RI "Gets the name of the type containing the rule method\&. "
+.ti -1c
+.RI "string \fBPropertyName\fP\fC [get]\fP"
+.br
+.RI "Gets the name of the property with which the rule is associated\&. "
+.ti -1c
+.RI "Dictionary< string, string >? \fBArguments\fP\fC [get]\fP"
+.br
+.RI "Gets a Dictionary containing the name/value arguments provided to the rule method\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Parses a rule:// URI to provide easy access to the parts of the URI\&. 
+
+
+.PP
+Definition at line 18 of file RuleUri\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.RuleUri\&.RuleUri (string ruleString)"
+
+.PP
+Creates an instance of the object by parsing the provided rule:// URI\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIruleString\fP The rule:// URI\&.
+.RE
+.PP
+
+.PP
+Definition at line 27 of file RuleUri\&.cs\&.
+.SS "Csla\&.Rules\&.RuleUri\&.RuleUri (Uri uri)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuri\fP The rule:// URI\&.
+.RE
+.PP
+
+.PP
+Definition at line 35 of file RuleUri\&.cs\&.
+.SS "Csla\&.Rules\&.RuleUri\&.RuleUri (\fBIBusinessRuleBase\fP rule, \fBCsla\&.Core\&.IPropertyInfo\fP property)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrule\fP Rule object\&.
+.br
+\fIproperty\fP Property to which rule applies\&.
+.RE
+.PP
+
+.PP
+Definition at line 47 of file RuleUri\&.cs\&.
+.SS "Csla\&.Rules\&.RuleUri\&.RuleUri (string typeName, string propertyName)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItypeName\fP Name of the rule type\&.
+.br
+\fIpropertyName\fP Name of the business object property or the string literal 'null'\&.
+.RE
+.PP
+
+.PP
+Definition at line 57 of file RuleUri\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Rules\&.RuleUri\&.AddQueryParameter (string key, string value)"
+
+.PP
+Adds a query parameter to the URI\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Key for the parameter\&.
+.br
+\fIvalue\fP Value of the parameter\&.
+.RE
+.PP
+
+.PP
+Definition at line 113 of file RuleUri\&.cs\&.
+.SS "static \fBRuleUri\fP Csla\&.Rules\&.RuleUri\&.Parse (string ruleString)\fC [static]\fP"
+
+.PP
+Parses a rule:// URI\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIruleString\fP Text representation of a rule:// URI\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A populated RuleDescription object\&.
+.RE
+.PP
+
+.PP
+Definition at line 94 of file RuleUri\&.cs\&.
+.SS "override string Csla\&.Rules\&.RuleUri\&.ToString ()"
+
+.PP
+Gets a string representation of the rule URI\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 103 of file RuleUri\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Dictionary<string, string>? Csla\&.Rules\&.RuleUri\&.Arguments\fC [get]\fP"
+
+.PP
+Gets a Dictionary containing the name/value arguments provided to the rule method\&. 
+.PP
+Definition at line 153 of file RuleUri\&.cs\&.
+.SS "string Csla\&.Rules\&.RuleUri\&.PropertyName\fC [get]\fP"
+
+.PP
+Gets the name of the property with which the rule is associated\&. 
+.PP
+Definition at line 143 of file RuleUri\&.cs\&.
+.SS "string Csla\&.Rules\&.RuleUri\&.RuleTypeName\fC [get]\fP"
+
+.PP
+Gets the name of the type containing the rule method\&. 
+.PP
+Definition at line 127 of file RuleUri\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

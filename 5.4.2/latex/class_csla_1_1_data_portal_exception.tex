@@ -1,0 +1,321 @@
+\hypertarget{class_csla_1_1_data_portal_exception}{}\doxysection{Csla.\+Data\+Portal\+Exception Class Reference}
+\label{class_csla_1_1_data_portal_exception}\index{Csla.DataPortalException@{Csla.DataPortalException}}
+
+
+This exception is returned for any errors occurring during the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} invocation.  
+
+
+Inheritance diagram for Csla.\+Data\+Portal\+Exception\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_data_portal_exception}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_exception_af12d42db9dda3f6af7b584596435cc01}{Data\+Portal\+Exception}} (string message, object business\+Object)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_exception_acc1467e89eef43e2bdba7295a3012803}{Data\+Portal\+Exception}} (string message, Exception ex, object business\+Object)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_exception_addc18d0b438c93e0a0ca776d1c0a4959}{Data\+Portal\+Exception}} (string message, Exception ex)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_exception_acee68fb6f1d617cbff3c5342c795efee}{Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_wcf_portal_1_1_wcf_error_info}{Wcf\+Portal.\+Wcf\+Error\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_exception_a20646fd13801a4547a401e0f14c26076}{Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info}{Data\+Portal\+Error\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+override string \mbox{\hyperlink{class_csla_1_1_data_portal_exception_a0922941f755f8897712106f902cc8d18}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em Gets a string representation of this object. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_data_portal_exception_aa37d9efa4c2b784b51c94bc3a45cdb4e}{Get\+Object\+Data}} (System.\+Runtime.\+Serialization.\+Serialization\+Info info, System.\+Runtime.\+Serialization.\+Streaming\+Context context)
+\begin{DoxyCompactList}\small\item\em Serializes the object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_exception_ab6947173cfdd1dcecbd4b7814ad1660c}{Data\+Portal\+Exception}} (System.\+Runtime.\+Serialization.\+Serialization\+Info info, System.\+Runtime.\+Serialization.\+Streaming\+Context context)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object for serialization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info}{Data\+Portal\+Error\+Info}} \mbox{\hyperlink{class_csla_1_1_data_portal_exception_aac0b1bdfcd3142946529e305c2adb634}{Error\+Info}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets information about the original server-\/side exception. That exception is not an exception on the client side, but this property returns information about the exception. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info}{Data\+Portal\+Error\+Info}} \mbox{\hyperlink{class_csla_1_1_data_portal_exception_a840a2b29818565d64917fada4ec97942}{Business\+Error\+Info}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the original exception error info that caused this exception. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_data_portal_exception_a31c2fff8d76f9df25b2b3a1f6171a075}{Business\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns a reference to the business object from the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}. \end{DoxyCompactList}\item 
+Exception \mbox{\hyperlink{class_csla_1_1_data_portal_exception_acefb7bf141835d895270889ce7aa0d0b}{Business\+Exception}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the original server-\/side exception. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_data_portal_exception_a34ac27e4ecc74e11d80d6f5499d1ac82}{Business\+Exception\+Message}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the Message property from the Business\+Exception, falling back to the Message value from the top-\/level exception. \end{DoxyCompactList}\item 
+override string \mbox{\hyperlink{class_csla_1_1_data_portal_exception_a1044a10aa1fe46edc788f360cf122269}{Stack\+Trace}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get the combined stack trace from the server and client. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This exception is returned for any errors occurring during the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} invocation. 
+
+
+
+Definition at line 20 of file Data\+Portal\+Exception.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_af12d42db9dda3f6af7b584596435cc01}\label{class_csla_1_1_data_portal_exception_af12d42db9dda3f6af7b584596435cc01}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!DataPortalException@{DataPortalException}}
+\index{DataPortalException@{DataPortalException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{DataPortalException()}{DataPortalException()}\hspace{0.1cm}{\footnotesize\ttfamily [1/6]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Exception.\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{string}]{message,  }\item[{object}]{business\+Object }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Text describing the exception.\\
+\hline
+{\em business\+Object} & The business object as it was at the time of the exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 28 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_acc1467e89eef43e2bdba7295a3012803}\label{class_csla_1_1_data_portal_exception_acc1467e89eef43e2bdba7295a3012803}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!DataPortalException@{DataPortalException}}
+\index{DataPortalException@{DataPortalException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{DataPortalException()}{DataPortalException()}\hspace{0.1cm}{\footnotesize\ttfamily [2/6]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Exception.\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{string}]{message,  }\item[{Exception}]{ex,  }\item[{object}]{business\+Object }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Text describing the exception.\\
+\hline
+{\em ex} & Inner exception.\\
+\hline
+{\em business\+Object} & The business object as it was at the time of the exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 42 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_addc18d0b438c93e0a0ca776d1c0a4959}\label{class_csla_1_1_data_portal_exception_addc18d0b438c93e0a0ca776d1c0a4959}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!DataPortalException@{DataPortalException}}
+\index{DataPortalException@{DataPortalException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{DataPortalException()}{DataPortalException()}\hspace{0.1cm}{\footnotesize\ttfamily [3/6]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Exception.\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{string}]{message,  }\item[{Exception}]{ex }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Exception message. \\
+\hline
+{\em ex} & Inner exception. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 58 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_acee68fb6f1d617cbff3c5342c795efee}\label{class_csla_1_1_data_portal_exception_acee68fb6f1d617cbff3c5342c795efee}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!DataPortalException@{DataPortalException}}
+\index{DataPortalException@{DataPortalException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{DataPortalException()}{DataPortalException()}\hspace{0.1cm}{\footnotesize\ttfamily [4/6]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Exception.\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_wcf_portal_1_1_wcf_error_info}{Wcf\+Portal.\+Wcf\+Error\+Info}}}]{info }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Info about the exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 69 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_a20646fd13801a4547a401e0f14c26076}\label{class_csla_1_1_data_portal_exception_a20646fd13801a4547a401e0f14c26076}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!DataPortalException@{DataPortalException}}
+\index{DataPortalException@{DataPortalException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{DataPortalException()}{DataPortalException()}\hspace{0.1cm}{\footnotesize\ttfamily [5/6]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Exception.\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info}{Data\+Portal\+Error\+Info}}}]{info }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Info about the exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 80 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_ab6947173cfdd1dcecbd4b7814ad1660c}\label{class_csla_1_1_data_portal_exception_ab6947173cfdd1dcecbd4b7814ad1660c}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!DataPortalException@{DataPortalException}}
+\index{DataPortalException@{DataPortalException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{DataPortalException()}{DataPortalException()}\hspace{0.1cm}{\footnotesize\ttfamily [6/6]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Exception.\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{System.\+Runtime.\+Serialization.\+Serialization\+Info}]{info,  }\item[{System.\+Runtime.\+Serialization.\+Streaming\+Context}]{context }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Creates an instance of the object for serialization. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} info object.\\
+\hline
+{\em context} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} context object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 213 of file Data\+Portal\+Exception.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_aa37d9efa4c2b784b51c94bc3a45cdb4e}\label{class_csla_1_1_data_portal_exception_aa37d9efa4c2b784b51c94bc3a45cdb4e}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!GetObjectData@{GetObjectData}}
+\index{GetObjectData@{GetObjectData}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{GetObjectData()}{GetObjectData()}}
+{\footnotesize\ttfamily override void Csla.\+Data\+Portal\+Exception.\+Get\+Object\+Data (\begin{DoxyParamCaption}\item[{System.\+Runtime.\+Serialization.\+Serialization\+Info}]{info,  }\item[{System.\+Runtime.\+Serialization.\+Streaming\+Context}]{context }\end{DoxyParamCaption})}
+
+
+
+Serializes the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} info object.\\
+\hline
+{\em context} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} context object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 230 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_a0922941f755f8897712106f902cc8d18}\label{class_csla_1_1_data_portal_exception_a0922941f755f8897712106f902cc8d18}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!ToString@{ToString}}
+\index{ToString@{ToString}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{ToString()}{ToString()}}
+{\footnotesize\ttfamily override string Csla.\+Data\+Portal\+Exception.\+To\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets a string representation of this object. 
+
+
+
+Definition at line 90 of file Data\+Portal\+Exception.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_a840a2b29818565d64917fada4ec97942}\label{class_csla_1_1_data_portal_exception_a840a2b29818565d64917fada4ec97942}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!BusinessErrorInfo@{BusinessErrorInfo}}
+\index{BusinessErrorInfo@{BusinessErrorInfo}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{BusinessErrorInfo}{BusinessErrorInfo}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info}{Data\+Portal\+Error\+Info}} Csla.\+Data\+Portal\+Exception.\+Business\+Error\+Info\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the original exception error info that caused this exception. 
+
+
+
+Definition at line 123 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_acefb7bf141835d895270889ce7aa0d0b}\label{class_csla_1_1_data_portal_exception_acefb7bf141835d895270889ce7aa0d0b}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!BusinessException@{BusinessException}}
+\index{BusinessException@{BusinessException}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{BusinessException}{BusinessException}}
+{\footnotesize\ttfamily Exception Csla.\+Data\+Portal\+Exception.\+Business\+Exception\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the original server-\/side exception. 
+
+\begin{DoxyReturn}{Returns}
+An exception object.
+\end{DoxyReturn}
+
+
+Removes all \mbox{\hyperlink{class_csla_1_1_data_portal_exception}{Data\+Portal\+Exception}} and Call\+Method\+Exception instances in the exception stack to find the original exception. 
+
+Definition at line 165 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_a34ac27e4ecc74e11d80d6f5499d1ac82}\label{class_csla_1_1_data_portal_exception_a34ac27e4ecc74e11d80d6f5499d1ac82}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!BusinessExceptionMessage@{BusinessExceptionMessage}}
+\index{BusinessExceptionMessage@{BusinessExceptionMessage}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{BusinessExceptionMessage}{BusinessExceptionMessage}}
+{\footnotesize\ttfamily string Csla.\+Data\+Portal\+Exception.\+Business\+Exception\+Message\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the Message property from the Business\+Exception, falling back to the Message value from the top-\/level exception. 
+
+
+
+Definition at line 185 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_a31c2fff8d76f9df25b2b3a1f6171a075}\label{class_csla_1_1_data_portal_exception_a31c2fff8d76f9df25b2b3a1f6171a075}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!BusinessObject@{BusinessObject}}
+\index{BusinessObject@{BusinessObject}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{BusinessObject}{BusinessObject}}
+{\footnotesize\ttfamily object Csla.\+Data\+Portal\+Exception.\+Business\+Object\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns a reference to the business object from the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}. 
+
+Remember that this object may be in an invalid or undefined state. This is the business object (and any child objects) as it existed when the exception occured on the server. Thus the object state may have been altered by the server and may no longer reflect data in the database. 
+
+Definition at line 149 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_aac0b1bdfcd3142946529e305c2adb634}\label{class_csla_1_1_data_portal_exception_aac0b1bdfcd3142946529e305c2adb634}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!ErrorInfo@{ErrorInfo}}
+\index{ErrorInfo@{ErrorInfo}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{ErrorInfo}{ErrorInfo}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info}{Data\+Portal\+Error\+Info}} Csla.\+Data\+Portal\+Exception.\+Error\+Info\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets information about the original server-\/side exception. That exception is not an exception on the client side, but this property returns information about the exception. 
+
+
+
+Definition at line 117 of file Data\+Portal\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_exception_a1044a10aa1fe46edc788f360cf122269}\label{class_csla_1_1_data_portal_exception_a1044a10aa1fe46edc788f360cf122269}} 
+\index{Csla.DataPortalException@{Csla.DataPortalException}!StackTrace@{StackTrace}}
+\index{StackTrace@{StackTrace}!Csla.DataPortalException@{Csla.DataPortalException}}
+\doxysubsubsection{\texorpdfstring{StackTrace}{StackTrace}}
+{\footnotesize\ttfamily override string Csla.\+Data\+Portal\+Exception.\+Stack\+Trace\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Get the combined stack trace from the server and client. 
+
+
+
+Definition at line 203 of file Data\+Portal\+Exception.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_data_portal_exception_8cs}{Data\+Portal\+Exception.\+cs}}\end{DoxyCompactItemize}

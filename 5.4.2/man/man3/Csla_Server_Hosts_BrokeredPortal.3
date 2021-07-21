@@ -1,0 +1,108 @@
+.TH "Csla.Server.Hosts.BrokeredPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Hosts.BrokeredPortal \- \fBData\fP portal to be invoked by the brokered data portal proxy/host implementation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< byte[]> \fBCreate\fP (string objectTypeName, byte[] criteriaData, byte[] contextData)"
+.br
+.RI "Create and initialize a business object\&. "
+.ti -1c
+.RI "async Task< byte[]> \fBFetch\fP (string objectTypeName, byte[] criteriaData, byte[] contextData)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< byte[]> \fBUpdate\fP (byte[] objectData, byte[] contextData)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< byte[]> \fBDelete\fP (string objectTypeName, byte[] criteriaData, byte[] contextData)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBData\fP portal to be invoked by the brokered data portal proxy/host implementation\&. 
+
+
+.PP
+Definition at line 14 of file BrokeredPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "async Task<byte[]> Csla\&.Server\&.Hosts\&.BrokeredPortal\&.Create (string objectTypeName, byte[] criteriaData, byte[] contextData)"
+
+.PP
+Create and initialize a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectTypeName\fP Type of business object to create\&.
+.br
+\fIcriteriaData\fP Criteria object describing business object\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 24 of file BrokeredPortal\&.cs\&.
+.SS "async Task<byte[]> Csla\&.Server\&.Hosts\&.BrokeredPortal\&.Delete (string objectTypeName, byte[] criteriaData, byte[] contextData)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectTypeName\fP Type of business object to create\&.
+.br
+\fIcriteriaData\fP Criteria object describing business object\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 106 of file BrokeredPortal\&.cs\&.
+.SS "async Task<byte[]> Csla\&.Server\&.Hosts\&.BrokeredPortal\&.Fetch (string objectTypeName, byte[] criteriaData, byte[] contextData)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectTypeName\fP Type of business object to retrieve\&.
+.br
+\fIcriteriaData\fP Criteria object describing business object\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 52 of file BrokeredPortal\&.cs\&.
+.SS "async Task<byte[]> Csla\&.Server\&.Hosts\&.BrokeredPortal\&.Update (byte[] objectData, byte[] contextData)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectData\fP Business object to update\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 79 of file BrokeredPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

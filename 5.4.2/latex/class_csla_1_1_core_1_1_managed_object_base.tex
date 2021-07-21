@@ -1,0 +1,520 @@
+\hypertarget{class_csla_1_1_core_1_1_managed_object_base}{}\doxysection{Csla.\+Core.\+Managed\+Object\+Base Class Reference}
+\label{class_csla_1_1_core_1_1_managed_object_base}\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+
+
+Base class for an object that is serializable using Serialization\+Formatter\+Factory.\+Get\+Formatter().  
+
+
+Inheritance diagram for Csla.\+Core.\+Managed\+Object\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=5.000000cm]{class_csla_1_1_core_1_1_managed_object_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_aa26348e8dd578d27fb0b6a6e9f16cfc6}{Read\+Property\+Convert$<$ F, P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$ property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value from the list of managed field values, converting the value to an appropriate type. \end{DoxyCompactList}\item 
+P \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a8f741e56c7314b608cfffcedacc3cb93}{Read\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a8951bca596c3a1fd8b1296efa8835bd2}{Read\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info)
+\begin{DoxyCompactList}\small\item\em Gets a property\textquotesingle{}s value as a specified type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a51061ce24cd2d9b05b82894636e0c5e5}{Load\+Property\+Convert$<$ P, F $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, F new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a1684495a7ec051694110d8b1c079917b}{Load\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a0bbf338464626d749b6b9cf255fa86b8}{Load\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, object new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a0b37311bf58a3a6bc621c74550d1a5c1}{Load\+Property\+Mark\+Dirty}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, object new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads the property vith new value and mark field dirty if value is changed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a9377214a30d1f1529e22ce3b5599fe4f}{On\+Property\+Changed}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Raises the Property\+Changed event. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a185f5e684f1a84bde97a03264a692000}{On\+Property\+Changed}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info)
+\begin{DoxyCompactList}\small\item\em Raises the Property\+Changed event. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_ac28a49dbb382246aba8be9a6c0b78e10}{On\+Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to manually retrieve child object data from the serializations stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_ada62dae2a78212e179d5ed844149b7b8}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to manually serialize child objects into the serialization stream. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a3c8e8a573438573acdebfffe3c316595}{On\+Deserialized}} (System.\+Runtime.\+Serialization.\+Streaming\+Context context)
+\begin{DoxyCompactList}\small\item\em This method is called on a newly deserialized object after deserialization is complete. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a3a2334b29fbf4223b9715c559b33991c}{Register\+Property$<$ P $>$}} (Type object\+Type, \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ info)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a9170ece975ce6cda3019d8350b1498e1}{Register\+Property$<$ T, P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a993736ad5e2ca7295a620f007a374c7d}{Register\+Property$<$ T, P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a84033f18cdd832b1607a65e0e2f6636b}{Register\+Property$<$ T, P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a86dbd29ba9d4d039008f7fae34804bb7}{Register\+Property$<$ T, P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager}{Field\+Data\+Manager}} \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_acc7f1f037fe9ea47e1e30671df5b87de}{Field\+Manager}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a reference to the field mananger for this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Base class for an object that is serializable using Serialization\+Formatter\+Factory.\+Get\+Formatter(). 
+
+
+
+Definition at line 27 of file Managed\+Object\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a0bbf338464626d749b6b9cf255fa86b8}\label{class_csla_1_1_core_1_1_managed_object_base_a0bbf338464626d749b6b9cf255fa86b8}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!LoadProperty@{LoadProperty}}
+\index{LoadProperty@{LoadProperty}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{LoadProperty()}{LoadProperty()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Managed\+Object\+Base.\+Load\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info,  }\item[{object}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 359 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a1684495a7ec051694110d8b1c079917b}\label{class_csla_1_1_core_1_1_managed_object_base_a1684495a7ec051694110d8b1c079917b}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!LoadProperty$<$ P $>$@{LoadProperty$<$ P $>$}}
+\index{LoadProperty$<$ P $>$@{LoadProperty$<$ P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{LoadProperty$<$ P $>$()}{LoadProperty< P >()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a0bbf338464626d749b6b9cf255fa86b8}{Csla.\+Core.\+Managed\+Object\+Base.\+Load\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 277 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a51061ce24cd2d9b05b82894636e0c5e5}\label{class_csla_1_1_core_1_1_managed_object_base_a51061ce24cd2d9b05b82894636e0c5e5}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!LoadPropertyConvert$<$ P, F $>$@{LoadPropertyConvert$<$ P, F $>$}}
+\index{LoadPropertyConvert$<$ P, F $>$@{LoadPropertyConvert$<$ P, F $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{LoadPropertyConvert$<$ P, F $>$()}{LoadPropertyConvert< P, F >()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Managed\+Object\+Base.\+Load\+Property\+Convert$<$ P, F $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{F}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 232 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a0b37311bf58a3a6bc621c74550d1a5c1}\label{class_csla_1_1_core_1_1_managed_object_base_a0b37311bf58a3a6bc621c74550d1a5c1}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!LoadPropertyMarkDirty@{LoadPropertyMarkDirty}}
+\index{LoadPropertyMarkDirty@{LoadPropertyMarkDirty}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{LoadPropertyMarkDirty()}{LoadPropertyMarkDirty()}}
+{\footnotesize\ttfamily virtual bool Csla.\+Core.\+Managed\+Object\+Base.\+Load\+Property\+Mark\+Dirty (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info,  }\item[{object}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Loads the property vith new value and mark field dirty if value is changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & The property info.\\
+\hline
+{\em new\+Value} & The new value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{[}true\mbox{]} if changed, else \mbox{[}false\mbox{]} 
+\end{DoxyReturn}
+
+
+Definition at line 374 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a3c8e8a573438573acdebfffe3c316595}\label{class_csla_1_1_core_1_1_managed_object_base_a3c8e8a573438573acdebfffe3c316595}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!OnDeserialized@{OnDeserialized}}
+\index{OnDeserialized@{OnDeserialized}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{OnDeserialized()}{OnDeserialized()}}
+{\footnotesize\ttfamily virtual void Csla.\+Core.\+Managed\+Object\+Base.\+On\+Deserialized (\begin{DoxyParamCaption}\item[{System.\+Runtime.\+Serialization.\+Streaming\+Context}]{context }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called on a newly deserialized object after deserialization is complete. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} context object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 494 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_ac28a49dbb382246aba8be9a6c0b78e10}\label{class_csla_1_1_core_1_1_managed_object_base_ac28a49dbb382246aba8be9a6c0b78e10}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!OnGetChildren@{OnGetChildren}}
+\index{OnGetChildren@{OnGetChildren}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{OnGetChildren()}{OnGetChildren()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Managed\+Object\+Base.\+On\+Get\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manually retrieve child object data from the serializations stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} info.\\
+\hline
+{\em formatter} & Reference to the Serialization\+Formatter\+Factory.\+Get\+Formatter().\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_object_a8337434af99c7eb236d3daaa4bed8651}{Csla.\+Core.\+Mobile\+Object}}.
+
+
+
+Definition at line 449 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a185f5e684f1a84bde97a03264a692000}\label{class_csla_1_1_core_1_1_managed_object_base_a185f5e684f1a84bde97a03264a692000}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!OnPropertyChanged@{OnPropertyChanged}}
+\index{OnPropertyChanged@{OnPropertyChanged}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{OnPropertyChanged()}{OnPropertyChanged()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Managed\+Object\+Base.\+On\+Property\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Raises the Property\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & The property info object for the changed property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 434 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a9377214a30d1f1529e22ce3b5599fe4f}\label{class_csla_1_1_core_1_1_managed_object_base_a9377214a30d1f1529e22ce3b5599fe4f}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!OnPropertyChanged@{OnPropertyChanged}}
+\index{OnPropertyChanged@{OnPropertyChanged}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{OnPropertyChanged()}{OnPropertyChanged()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Csla.\+Core.\+Managed\+Object\+Base.\+On\+Property\+Changed (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Raises the Property\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the changed property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 423 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_ada62dae2a78212e179d5ed844149b7b8}\label{class_csla_1_1_core_1_1_managed_object_base_ada62dae2a78212e179d5ed844149b7b8}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily override void Csla.\+Core.\+Managed\+Object\+Base.\+On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manually serialize child objects into the serialization stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & \mbox{\hyperlink{namespace_csla_1_1_serialization}{Serialization}} info.\\
+\hline
+{\em formatter} & Reference to the Serialization\+Formatter\+Factory.\+Get\+Formatter().\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_object_a16198298ce18c1bf91ca8f70cb55637b}{Csla.\+Core.\+Mobile\+Object}}.
+
+
+
+Definition at line 466 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a8951bca596c3a1fd8b1296efa8835bd2}\label{class_csla_1_1_core_1_1_managed_object_base_a8951bca596c3a1fd8b1296efa8835bd2}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!ReadProperty@{ReadProperty}}
+\index{ReadProperty@{ReadProperty}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{ReadProperty()}{ReadProperty()}}
+{\footnotesize\ttfamily virtual object Csla.\+Core.\+Managed\+Object\+Base.\+Read\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}}}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 192 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a8f741e56c7314b608cfffcedacc3cb93}\label{class_csla_1_1_core_1_1_managed_object_base_a8f741e56c7314b608cfffcedacc3cb93}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!ReadProperty$<$ P $>$@{ReadProperty$<$ P $>$}}
+\index{ReadProperty$<$ P $>$@{ReadProperty$<$ P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{ReadProperty$<$ P $>$()}{ReadProperty< P >()}}
+{\footnotesize\ttfamily P \mbox{\hyperlink{class_csla_1_1_core_1_1_managed_object_base_a8951bca596c3a1fd8b1296efa8835bd2}{Csla.\+Core.\+Managed\+Object\+Base.\+Read\+Property}}$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value as a specified type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 167 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_aa26348e8dd578d27fb0b6a6e9f16cfc6}\label{class_csla_1_1_core_1_1_managed_object_base_aa26348e8dd578d27fb0b6a6e9f16cfc6}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!ReadPropertyConvert$<$ F, P $>$@{ReadPropertyConvert$<$ F, P $>$}}
+\index{ReadPropertyConvert$<$ F, P $>$@{ReadPropertyConvert$<$ F, P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{ReadPropertyConvert$<$ F, P $>$()}{ReadPropertyConvert< F, P >()}}
+{\footnotesize\ttfamily P Csla.\+Core.\+Managed\+Object\+Base.\+Read\+Property\+Convert$<$ F, P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ F $>$}]{property\+Info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gets a property\textquotesingle{}s value from the list of managed field values, converting the value to an appropriate type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em F} & Type of the field. \\
+\hline
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 154 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a3a2334b29fbf4223b9715c559b33991c}\label{class_csla_1_1_core_1_1_managed_object_base_a3a2334b29fbf4223b9715c559b33991c}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ Csla.\+Core.\+Managed\+Object\+Base.\+Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of object to which the property belongs. \\
+\hline
+{\em info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object for the property. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} object. 
+\end{DoxyReturn}
+
+
+Definition at line 67 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a9170ece975ce6cda3019d8350b1498e1}\label{class_csla_1_1_core_1_1_managed_object_base_a9170ece975ce6cda3019d8350b1498e1}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}}
+\index{RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ T, P $>$()}{RegisterProperty< T, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ Csla.\+Core.\+Managed\+Object\+Base.\+Register\+Property$<$ T, P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of object to which the property belongs.\\
+\hline
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} object.
+\end{DoxyReturn}
+
+
+Definition at line 81 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a993736ad5e2ca7295a620f007a374c7d}\label{class_csla_1_1_core_1_1_managed_object_base_a993736ad5e2ca7295a620f007a374c7d}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}}
+\index{RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ T, P $>$()}{RegisterProperty< T, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ Csla.\+Core.\+Managed\+Object\+Base.\+Register\+Property$<$ T, P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of Target\\
+\hline
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 97 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a84033f18cdd832b1607a65e0e2f6636b}\label{class_csla_1_1_core_1_1_managed_object_base_a84033f18cdd832b1607a65e0e2f6636b}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}}
+\index{RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ T, P $>$()}{RegisterProperty< T, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ Csla.\+Core.\+Managed\+Object\+Base.\+Register\+Property$<$ T, P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \\
+\hline
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} object.
+\end{DoxyReturn}
+
+
+Definition at line 113 of file Managed\+Object\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_a86dbd29ba9d4d039008f7fae34804bb7}\label{class_csla_1_1_core_1_1_managed_object_base_a86dbd29ba9d4d039008f7fae34804bb7}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}}
+\index{RegisterProperty$<$ T, P $>$@{RegisterProperty$<$ T, P $>$}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ T, P $>$()}{RegisterProperty< T, P >()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ Csla.\+Core.\+Managed\+Object\+Base.\+Register\+Property$<$ T, P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of Target\\
+\hline
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 130 of file Managed\+Object\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_managed_object_base_acc7f1f037fe9ea47e1e30671df5b87de}\label{class_csla_1_1_core_1_1_managed_object_base_acc7f1f037fe9ea47e1e30671df5b87de}} 
+\index{Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}!FieldManager@{FieldManager}}
+\index{FieldManager@{FieldManager}!Csla.Core.ManagedObjectBase@{Csla.Core.ManagedObjectBase}}
+\doxysubsubsection{\texorpdfstring{FieldManager}{FieldManager}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager}{Field\+Data\+Manager}} Csla.\+Core.\+Managed\+Object\+Base.\+Field\+Manager\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Gets a reference to the field mananger for this object. 
+
+
+
+Definition at line 37 of file Managed\+Object\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_managed_object_base_8cs}{Managed\+Object\+Base.\+cs}}\end{DoxyCompactItemize}

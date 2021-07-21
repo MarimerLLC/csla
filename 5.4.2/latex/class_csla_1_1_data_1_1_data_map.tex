@@ -1,0 +1,175 @@
+\hypertarget{class_csla_1_1_data_1_1_data_map}{}\doxysection{Csla.\+Data.\+Data\+Map Class Reference}
+\label{class_csla_1_1_data_1_1_data_map}\index{Csla.Data.DataMap@{Csla.Data.DataMap}}
+
+
+Defines a mapping between two sets of properties/fields for use by Data\+Mapper.  
+
+
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries Member\+Mapping}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_data_1_1_data_map_abc99fe8e30db9cfc3f94ba21151902ca}{Data\+Map}} (Type source\+Type, Type target\+Type)
+\begin{DoxyCompactList}\small\item\em Initializes an instance of the type. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_1_1_data_map_a6585ae5fec7de1dc575ca57210c768f0}{Data\+Map}} (Type source\+Type, Type target\+Type, IEnumerable$<$ string $>$ included\+Property\+Names)
+\begin{DoxyCompactList}\small\item\em Initializes an instance of the type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_data_map_aaffec9a34517fd3b91fbf64ce9fc3573}{Add\+Property\+Mapping}} (string source\+Property, string target\+Property)
+\begin{DoxyCompactList}\small\item\em Adds a property to property mapping. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_data_map_a9b07c61d36c3a482138bcc522758ee98}{Add\+Field\+Mapping}} (string source\+Field, string target\+Field)
+\begin{DoxyCompactList}\small\item\em Adds a field to field mapping. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_data_map_a54fada6378a417fcd6569b2145dd7fd3}{Add\+Field\+To\+Property\+Mapping}} (string source\+Field, string target\+Property)
+\begin{DoxyCompactList}\small\item\em Adds a field to property mapping. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_data_map_a2fef24058d3a54cd8b35b45ebc41fb28}{Add\+Property\+To\+Field\+Mapping}} (string source\+Property, string target\+Field)
+\begin{DoxyCompactList}\small\item\em Adds a property to field mapping. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Defines a mapping between two sets of properties/fields for use by Data\+Mapper. 
+
+
+
+Definition at line 19 of file Data\+Map.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_data_map_abc99fe8e30db9cfc3f94ba21151902ca}\label{class_csla_1_1_data_1_1_data_map_abc99fe8e30db9cfc3f94ba21151902ca}} 
+\index{Csla.Data.DataMap@{Csla.Data.DataMap}!DataMap@{DataMap}}
+\index{DataMap@{DataMap}!Csla.Data.DataMap@{Csla.Data.DataMap}}
+\doxysubsubsection{\texorpdfstring{DataMap()}{DataMap()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Data.\+Data\+Map.\+Data\+Map (\begin{DoxyParamCaption}\item[{Type}]{source\+Type,  }\item[{Type}]{target\+Type }\end{DoxyParamCaption})}
+
+
+
+Initializes an instance of the type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Type} & Type of source object. \\
+\hline
+{\em target\+Type} & Type of target object. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 50 of file Data\+Map.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_data_map_a6585ae5fec7de1dc575ca57210c768f0}\label{class_csla_1_1_data_1_1_data_map_a6585ae5fec7de1dc575ca57210c768f0}} 
+\index{Csla.Data.DataMap@{Csla.Data.DataMap}!DataMap@{DataMap}}
+\index{DataMap@{DataMap}!Csla.Data.DataMap@{Csla.Data.DataMap}}
+\doxysubsubsection{\texorpdfstring{DataMap()}{DataMap()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Data.\+Data\+Map.\+Data\+Map (\begin{DoxyParamCaption}\item[{Type}]{source\+Type,  }\item[{Type}]{target\+Type,  }\item[{IEnumerable$<$ string $>$}]{included\+Property\+Names }\end{DoxyParamCaption})}
+
+
+
+Initializes an instance of the type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Type} & Type of source object. \\
+\hline
+{\em target\+Type} & Type of target object. \\
+\hline
+{\em included\+Property\+Names} & List of property names to map 1\+:1.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 66 of file Data\+Map.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_data_map_a9b07c61d36c3a482138bcc522758ee98}\label{class_csla_1_1_data_1_1_data_map_a9b07c61d36c3a482138bcc522758ee98}} 
+\index{Csla.Data.DataMap@{Csla.Data.DataMap}!AddFieldMapping@{AddFieldMapping}}
+\index{AddFieldMapping@{AddFieldMapping}!Csla.Data.DataMap@{Csla.Data.DataMap}}
+\doxysubsubsection{\texorpdfstring{AddFieldMapping()}{AddFieldMapping()}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Data\+Map.\+Add\+Field\+Mapping (\begin{DoxyParamCaption}\item[{string}]{source\+Field,  }\item[{string}]{target\+Field }\end{DoxyParamCaption})}
+
+
+
+Adds a field to field mapping. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Field} & Name of source field. \\
+\hline
+{\em target\+Field} & Name of target field. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 104 of file Data\+Map.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_data_map_a54fada6378a417fcd6569b2145dd7fd3}\label{class_csla_1_1_data_1_1_data_map_a54fada6378a417fcd6569b2145dd7fd3}} 
+\index{Csla.Data.DataMap@{Csla.Data.DataMap}!AddFieldToPropertyMapping@{AddFieldToPropertyMapping}}
+\index{AddFieldToPropertyMapping@{AddFieldToPropertyMapping}!Csla.Data.DataMap@{Csla.Data.DataMap}}
+\doxysubsubsection{\texorpdfstring{AddFieldToPropertyMapping()}{AddFieldToPropertyMapping()}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Data\+Map.\+Add\+Field\+To\+Property\+Mapping (\begin{DoxyParamCaption}\item[{string}]{source\+Field,  }\item[{string}]{target\+Property }\end{DoxyParamCaption})}
+
+
+
+Adds a field to property mapping. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Field} & Name of source field. \\
+\hline
+{\em target\+Property} & Name of target property. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 121 of file Data\+Map.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_data_map_aaffec9a34517fd3b91fbf64ce9fc3573}\label{class_csla_1_1_data_1_1_data_map_aaffec9a34517fd3b91fbf64ce9fc3573}} 
+\index{Csla.Data.DataMap@{Csla.Data.DataMap}!AddPropertyMapping@{AddPropertyMapping}}
+\index{AddPropertyMapping@{AddPropertyMapping}!Csla.Data.DataMap@{Csla.Data.DataMap}}
+\doxysubsubsection{\texorpdfstring{AddPropertyMapping()}{AddPropertyMapping()}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Data\+Map.\+Add\+Property\+Mapping (\begin{DoxyParamCaption}\item[{string}]{source\+Property,  }\item[{string}]{target\+Property }\end{DoxyParamCaption})}
+
+
+
+Adds a property to property mapping. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Property} & Name of source property. \\
+\hline
+{\em target\+Property} & Name of target property. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 87 of file Data\+Map.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_data_map_a2fef24058d3a54cd8b35b45ebc41fb28}\label{class_csla_1_1_data_1_1_data_map_a2fef24058d3a54cd8b35b45ebc41fb28}} 
+\index{Csla.Data.DataMap@{Csla.Data.DataMap}!AddPropertyToFieldMapping@{AddPropertyToFieldMapping}}
+\index{AddPropertyToFieldMapping@{AddPropertyToFieldMapping}!Csla.Data.DataMap@{Csla.Data.DataMap}}
+\doxysubsubsection{\texorpdfstring{AddPropertyToFieldMapping()}{AddPropertyToFieldMapping()}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Data\+Map.\+Add\+Property\+To\+Field\+Mapping (\begin{DoxyParamCaption}\item[{string}]{source\+Property,  }\item[{string}]{target\+Field }\end{DoxyParamCaption})}
+
+
+
+Adds a property to field mapping. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Property} & Name of source property. \\
+\hline
+{\em target\+Field} & Name of target field. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 138 of file Data\+Map.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Data/\mbox{\hyperlink{_data_map_8cs}{Data\+Map.\+cs}}\end{DoxyCompactItemize}

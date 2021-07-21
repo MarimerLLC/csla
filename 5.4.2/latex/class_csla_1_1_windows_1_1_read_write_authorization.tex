@@ -1,0 +1,140 @@
+\hypertarget{class_csla_1_1_windows_1_1_read_write_authorization}{}\doxysection{Csla.\+Windows.\+Read\+Write\+Authorization Class Reference}
+\label{class_csla_1_1_windows_1_1_read_write_authorization}\index{Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}}
+
+
+\mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms extender control that automatically enables and disables detail form controls based on the authorization settings from a CSLA .NET business object.  
+
+
+Inheritance diagram for Csla.\+Windows.\+Read\+Write\+Authorization\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_windows_1_1_read_write_authorization}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization_aaf32fc17364f23a1e0d4137b63ebda3d}{Read\+Write\+Authorization}} (IContainer container)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization_a1ce5719829e9f822c6a06906225d20d1}{Can\+Extend}} (object extendee)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the extender control can extend the specified control. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization_a88e33320c55b81281a6ea7e2005eaf2d}{Get\+Apply\+Authorization}} (Control source)
+\begin{DoxyCompactList}\small\item\em Gets the custom Apply\+Authorization extender property added to extended controls. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization_aa88909aa83b393bfffcb8bb649069a84}{Set\+Apply\+Authorization}} (Control source, bool value)
+\begin{DoxyCompactList}\small\item\em Sets the custom Apply\+Authorization extender property added to extended controls. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization_a1b914355beea6bb580f747802db687bc}{Reset\+Control\+Authorization}} ()
+\begin{DoxyCompactList}\small\item\em Causes the \mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization}{Read\+Write\+Authorization}} control to apply authorization rules from the business object to all extended controls on the form. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms extender control that automatically enables and disables detail form controls based on the authorization settings from a CSLA .NET business object. 
+
+
+
+Definition at line 26 of file Read\+Write\+Authorization.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_read_write_authorization_aaf32fc17364f23a1e0d4137b63ebda3d}\label{class_csla_1_1_windows_1_1_read_write_authorization_aaf32fc17364f23a1e0d4137b63ebda3d}} 
+\index{Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}!ReadWriteAuthorization@{ReadWriteAuthorization}}
+\index{ReadWriteAuthorization@{ReadWriteAuthorization}!Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}}
+\doxysubsubsection{\texorpdfstring{ReadWriteAuthorization()}{ReadWriteAuthorization()}}
+{\footnotesize\ttfamily Csla.\+Windows.\+Read\+Write\+Authorization.\+Read\+Write\+Authorization (\begin{DoxyParamCaption}\item[{IContainer}]{container }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em container} & The container of the control.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 42 of file Read\+Write\+Authorization.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_read_write_authorization_a1ce5719829e9f822c6a06906225d20d1}\label{class_csla_1_1_windows_1_1_read_write_authorization_a1ce5719829e9f822c6a06906225d20d1}} 
+\index{Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}!CanExtend@{CanExtend}}
+\index{CanExtend@{CanExtend}!Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}}
+\doxysubsubsection{\texorpdfstring{CanExtend()}{CanExtend()}}
+{\footnotesize\ttfamily bool Csla.\+Windows.\+Read\+Write\+Authorization.\+Can\+Extend (\begin{DoxyParamCaption}\item[{object}]{extendee }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether the extender control can extend the specified control. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em extendee} & The control to be extended.\\
+\hline
+\end{DoxyParams}
+
+
+Any control implementing either a Read\+Only property or Enabled property can be extended. 
+
+Definition at line 54 of file Read\+Write\+Authorization.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_read_write_authorization_a88e33320c55b81281a6ea7e2005eaf2d}\label{class_csla_1_1_windows_1_1_read_write_authorization_a88e33320c55b81281a6ea7e2005eaf2d}} 
+\index{Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}!GetApplyAuthorization@{GetApplyAuthorization}}
+\index{GetApplyAuthorization@{GetApplyAuthorization}!Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}}
+\doxysubsubsection{\texorpdfstring{GetApplyAuthorization()}{GetApplyAuthorization()}}
+{\footnotesize\ttfamily bool Csla.\+Windows.\+Read\+Write\+Authorization.\+Get\+Apply\+Authorization (\begin{DoxyParamCaption}\item[{Control}]{source }\end{DoxyParamCaption})}
+
+
+
+Gets the custom Apply\+Authorization extender property added to extended controls. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & Control being extended.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 69 of file Read\+Write\+Authorization.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_read_write_authorization_a1b914355beea6bb580f747802db687bc}\label{class_csla_1_1_windows_1_1_read_write_authorization_a1b914355beea6bb580f747802db687bc}} 
+\index{Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}!ResetControlAuthorization@{ResetControlAuthorization}}
+\index{ResetControlAuthorization@{ResetControlAuthorization}!Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}}
+\doxysubsubsection{\texorpdfstring{ResetControlAuthorization()}{ResetControlAuthorization()}}
+{\footnotesize\ttfamily void Csla.\+Windows.\+Read\+Write\+Authorization.\+Reset\+Control\+Authorization (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Causes the \mbox{\hyperlink{class_csla_1_1_windows_1_1_read_write_authorization}{Read\+Write\+Authorization}} control to apply authorization rules from the business object to all extended controls on the form. 
+
+Call this method to refresh the display of detail controls on the form any time the authorization rules may have changed. Examples include\+: after a user logs in or out, and after an object has been updated, inserted, deleted or retrieved from the database. 
+
+Definition at line 109 of file Read\+Write\+Authorization.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_read_write_authorization_aa88909aa83b393bfffcb8bb649069a84}\label{class_csla_1_1_windows_1_1_read_write_authorization_aa88909aa83b393bfffcb8bb649069a84}} 
+\index{Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}!SetApplyAuthorization@{SetApplyAuthorization}}
+\index{SetApplyAuthorization@{SetApplyAuthorization}!Csla.Windows.ReadWriteAuthorization@{Csla.Windows.ReadWriteAuthorization}}
+\doxysubsubsection{\texorpdfstring{SetApplyAuthorization()}{SetApplyAuthorization()}}
+{\footnotesize\ttfamily void Csla.\+Windows.\+Read\+Write\+Authorization.\+Set\+Apply\+Authorization (\begin{DoxyParamCaption}\item[{Control}]{source,  }\item[{bool}]{value }\end{DoxyParamCaption})}
+
+
+
+Sets the custom Apply\+Authorization extender property added to extended controls. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & Control being extended.\\
+\hline
+{\em value} & New value of property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 85 of file Read\+Write\+Authorization.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Windows.\+Shared/\mbox{\hyperlink{_read_write_authorization_8cs}{Read\+Write\+Authorization.\+cs}}\end{DoxyCompactItemize}

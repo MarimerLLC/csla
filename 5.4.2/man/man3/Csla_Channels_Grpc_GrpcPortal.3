@@ -1,0 +1,211 @@
+.TH "Csla.Channels.Grpc.GrpcPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Channels.Grpc.GrpcPortal \- Exposes server-side \fBDataPortal\fP functionality through gRPC\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Csla\&.Channels\&.Grpc\&.GrpcService\&.GrpcServiceBase\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override async Task< ResponseMessage > \fBInvoke\fP (RequestMessage request, ServerCallContext context)"
+.br
+.RI "Handle inbound message\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBCreate\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Create and initialize an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBFetch\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBUpdate\fP (\fBUpdateRequest\fP request)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResponse\fP > \fBDelete\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual async Task< ResponseMessage > \fBRouteMessage\fP (string operation, string routingTag, RequestMessage request)"
+.br
+.RI "Entry point for routing tag based data portal operations\&. "
+.ti -1c
+.RI "virtual \fBUpdateRequest\fP \fBConvertRequest\fP (\fBUpdateRequest\fP request)"
+.br
+.RI "Override to convert the request data before it is transferred over the network\&. "
+.ti -1c
+.RI "virtual \fBCriteriaRequest\fP \fBConvertRequest\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Override to convert the request data before it is transferred over the network\&. "
+.ti -1c
+.RI "virtual \fBDataPortalResponse\fP \fBConvertResponse\fP (\fBDataPortalResponse\fP response)"
+.br
+.RI "Override to convert the response data after it comes back from the network\&. "
+.in -1c
+.SS "Static Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "static Dictionary< string, string > \fBRoutingTagUrls\fP = new Dictionary<string, string>()"
+.br
+.RI "Gets a dictionary containing the URLs for each data portal route, where each key is the routing tag identifying the route URL\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exposes server-side \fBDataPortal\fP functionality through gRPC\&. 
+
+
+.PP
+Definition at line 28 of file GrpcPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual \fBCriteriaRequest\fP Csla\&.Channels\&.Grpc\&.GrpcPortal\&.ConvertRequest (\fBCriteriaRequest\fP request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the request data before it is transferred over the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request object\&.
+.RE
+.PP
+
+.PP
+Definition at line 340 of file GrpcPortal\&.cs\&.
+.SS "virtual \fBUpdateRequest\fP Csla\&.Channels\&.Grpc\&.GrpcPortal\&.ConvertRequest (\fBUpdateRequest\fP request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the request data before it is transferred over the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request object\&.
+.RE
+.PP
+
+.PP
+Definition at line 330 of file GrpcPortal\&.cs\&.
+.SS "virtual \fBDataPortalResponse\fP Csla\&.Channels\&.Grpc\&.GrpcPortal\&.ConvertResponse (\fBDataPortalResponse\fP response)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the response data after it comes back from the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresponse\fP Response object\&.
+.RE
+.PP
+
+.PP
+Definition at line 350 of file GrpcPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.Create (\fBCriteriaRequest\fP request)"
+
+.PP
+Create and initialize an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 132 of file GrpcPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.Delete (\fBCriteriaRequest\fP request)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 268 of file GrpcPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.Fetch (\fBCriteriaRequest\fP request)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 179 of file GrpcPortal\&.cs\&.
+.SS "override async Task<ResponseMessage> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.Invoke (RequestMessage request, ServerCallContext context)"
+
+.PP
+Handle inbound message\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request message
+.br
+\fIcontext\fP \fBServer\fP call context
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 36 of file GrpcPortal\&.cs\&.
+.SS "virtual async Task<ResponseMessage> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.RouteMessage (string operation, string routingTag, RequestMessage request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Entry point for routing tag based data portal operations\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoperation\fP Name of the data portal operation to perform
+.br
+\fIroutingTag\fP Routing tag from caller
+.br
+\fIrequest\fP Request message
+.RE
+.PP
+
+.PP
+Definition at line 63 of file GrpcPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResponse\fP> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.Update (\fBUpdateRequest\fP request)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Definition at line 226 of file GrpcPortal\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "Dictionary<string, string> Csla\&.Channels\&.Grpc\&.GrpcPortal\&.RoutingTagUrls = new Dictionary<string, string>()\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Gets a dictionary containing the URLs for each data portal route, where each key is the routing tag identifying the route URL\&. 
+.PP
+Definition at line 55 of file GrpcPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

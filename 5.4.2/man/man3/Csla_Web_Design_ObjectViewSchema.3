@@ -1,0 +1,85 @@
+.TH "Csla.Web.Design.ObjectViewSchema" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Web.Design.ObjectViewSchema \- Object providing schema information for a business object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDataSourceViewSchema\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBObjectViewSchema\fP (\fBCslaDataSourceDesigner\fP site, string typeName)"
+.br
+.RI "Create an instance of the object\&. "
+.ti -1c
+.RI "System\&.Web\&.UI\&.Design\&.IDataSourceViewSchema[] \fBGetChildren\fP ()"
+.br
+.RI "Returns a list of child schemas belonging to the object\&. "
+.ti -1c
+.RI "System\&.Web\&.UI\&.Design\&.IDataSourceFieldSchema[] \fBGetFields\fP ()"
+.br
+.RI "Returns schema information for each property on the object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBName\fP\fC [get]\fP"
+.br
+.RI "Returns the name of the schema\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Object providing schema information for a business object\&. 
+
+
+.PP
+Definition at line 25 of file ObjectViewSchema\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Web\&.Design\&.ObjectViewSchema\&.ObjectViewSchema (\fBCslaDataSourceDesigner\fP site, string typeName)"
+
+.PP
+Create an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsite\fP Site containing the control\&.
+.br
+\fItypeName\fP The business class for which to generate the schema\&.
+.RE
+.PP
+
+.PP
+Definition at line 36 of file ObjectViewSchema\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "System\&.Web\&.UI\&.Design\&.IDataSourceViewSchema [] Csla\&.Web\&.Design\&.ObjectViewSchema\&.GetChildren ()"
+
+.PP
+Returns a list of child schemas belonging to the object\&. This schema object only returns schema for the object itself, so GetChildren will always return Nothing (null in C#)\&.
+.PP
+Definition at line 49 of file ObjectViewSchema\&.cs\&.
+.SS "System\&.Web\&.UI\&.Design\&.IDataSourceFieldSchema [] Csla\&.Web\&.Design\&.ObjectViewSchema\&.GetFields ()"
+
+.PP
+Returns schema information for each property on the object\&. All public properties on the object will be reflected in this schema list except for those properties where the \fBBrowsable\fP attribute is False\&. 
+.PP
+Definition at line 64 of file ObjectViewSchema\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Web\&.Design\&.ObjectViewSchema\&.Name\fC [get]\fP"
+
+.PP
+Returns the name of the schema\&. 
+.PP
+Definition at line 101 of file ObjectViewSchema\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

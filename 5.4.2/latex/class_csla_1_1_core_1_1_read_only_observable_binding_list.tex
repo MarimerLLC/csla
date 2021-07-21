@@ -1,0 +1,193 @@
+\hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list}{}\doxysection{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List$<$ C $>$ Class Template Reference}
+\label{class_csla_1_1_core_1_1_read_only_observable_binding_list}\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+
+
+A readonly version of \mbox{\hyperlink{class_csla_1_1_core_1_1_observable_binding_list}{Observable\+Binding\+List}}.  
+
+
+Inheritance diagram for Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List$<$ C $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_csla_1_1_core_1_1_read_only_observable_binding_list}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_ab835e60008a78b2f86d63810d9eccaa0}{Read\+Only\+Observable\+Binding\+List}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_add1cb5002c7107c8160c862161eb9b6d}{On\+Collection\+Changed}} (Notify\+Collection\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em Method invoked when collection is changed. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_a0eb4e33443df62be92e1fa6c49b68e05}{Set\+Load\+List\+Mode}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the Load\+List\+Mode for the collection \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_a559faf18ebab539680fa8612080aebeb}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your field values into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_ae31f50c020cf77b717a2063f7a8e9699}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_a4867b00140304f1d614cb9c9ebc8b9be}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list_abe0f2305afed3afa97b3761c5aa68047}{Is\+Read\+Only}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the list is readonly. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A readonly version of \mbox{\hyperlink{class_csla_1_1_core_1_1_observable_binding_list}{Observable\+Binding\+List}}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em C} & Type of item contained in the list.\\
+\hline
+\end{DoxyTemplParams}
+
+
+This is a subclass of \mbox{\hyperlink{class_csla_1_1_core_1_1_observable_binding_list}{Observable\+Binding\+List}} that implements a readonly list, preventing adding and removing of items from the list. Use the Is\+Read\+Only property to unlock the list for loading/unloading data. 
+
+Definition at line 28 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_ab835e60008a78b2f86d63810d9eccaa0}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_ab835e60008a78b2f86d63810d9eccaa0}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!ReadOnlyObservableBindingList@{ReadOnlyObservableBindingList}}
+\index{ReadOnlyObservableBindingList@{ReadOnlyObservableBindingList}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{ReadOnlyObservableBindingList()}{ReadOnlyObservableBindingList()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.\mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Read\+Only\+Observable\+Binding\+List}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 35 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_add1cb5002c7107c8160c862161eb9b6d}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_add1cb5002c7107c8160c862161eb9b6d}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!OnCollectionChanged@{OnCollectionChanged}}
+\index{OnCollectionChanged@{OnCollectionChanged}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnCollectionChanged()}{OnCollectionChanged()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.On\+Collection\+Changed (\begin{DoxyParamCaption}\item[{Notify\+Collection\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Method invoked when collection is changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & Arguments\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 52 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_a559faf18ebab539680fa8612080aebeb}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_a559faf18ebab539680fa8612080aebeb}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to insert your field values into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 104 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_a4867b00140304f1d614cb9c9ebc8b9be}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_a4867b00140304f1d614cb9c9ebc8b9be}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em formatter} & Reference to Mobile\+Formatter instance. Use this to convert child references to/from reference id values. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 134 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_ae31f50c020cf77b717a2063f7a8e9699}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_ae31f50c020cf77b717a2063f7a8e9699}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 117 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_a0eb4e33443df62be92e1fa6c49b68e05}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_a0eb4e33443df62be92e1fa6c49b68e05}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!SetLoadListMode@{SetLoadListMode}}
+\index{SetLoadListMode@{SetLoadListMode}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{SetLoadListMode()}{SetLoadListMode()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.Set\+Load\+List\+Mode (\begin{DoxyParamCaption}\item[{bool}]{enabled }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets the Load\+List\+Mode for the collection 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Enable or disable mode\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 87 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_observable_binding_list_abe0f2305afed3afa97b3761c5aa68047}\label{class_csla_1_1_core_1_1_read_only_observable_binding_list_abe0f2305afed3afa97b3761c5aa68047}} 
+\index{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}!IsReadOnly@{IsReadOnly}}
+\index{IsReadOnly@{IsReadOnly}!Csla.Core.ReadOnlyObservableBindingList$<$ C $>$@{Csla.Core.ReadOnlyObservableBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{IsReadOnly}{IsReadOnly}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_observable_binding_list}{Csla.\+Core.\+Read\+Only\+Observable\+Binding\+List}}$<$ C $>$.Is\+Read\+Only\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets or sets a value indicating whether the list is readonly. 
+
+Subclasses can set this value to unlock the collection in order to alter the collection\textquotesingle{}s data. 
+
+True indicates that the list is readonly.
+
+Definition at line 71 of file Read\+Only\+Observable\+Binding\+List.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_read_only_observable_binding_list_8cs}{Read\+Only\+Observable\+Binding\+List.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,656 @@
+.TH "Csla.Rules.BusinessRules" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.BusinessRules \- Tracks the business rules for a business object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileObject\fP, \fBCsla\&.Serialization\&.Mobile\&.ISerializationNotification\fP, and \fBCsla\&.Rules\&.IBusinessRules\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBRunRulesResult\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "string[] \fBGetRuleDescriptions\fP ()"
+.br
+.RI "Gets a list of rule:// URI values for the rules defined in the object\&. "
+.ti -1c
+.RI "\fBBusinessRules\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "void \fBAddRule\fP (\fBIBusinessRuleBase\fP rule)"
+.br
+.RI "Associates a business rule with the business object\&. "
+.ti -1c
+.RI "void \fBAddRule\fP (\fBIBusinessRuleBase\fP rule, string ruleSet)"
+.br
+.RI "Associates a business rule with the business object\&. "
+.ti -1c
+.RI "void \fBAddRule\fP (\fBIAuthorizationRule\fP rule)"
+.br
+.RI "Associates an authorization rule with the business object\&. "
+.ti -1c
+.RI "\fBBrokenRulesCollection\fP \fBGetBrokenRules\fP ()"
+.br
+.RI "Gets the broken rules list\&. "
+.ti -1c
+.RI "bool \fBGetPropertyBusy\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Gets a value indicating whether a specific property has any async rules running\&. "
+.ti -1c
+.RI "bool \fBHasPermission\fP (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element)"
+.br
+.RI "Checks per-property authorization rules\&. "
+.ti -1c
+.RI "bool \fBCachePermissionResult\fP (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element)"
+.br
+.RI "Gets a value indicating whether the permission result can be cached\&. "
+.ti -1c
+.RI "async Task< List< string > > \fBCheckRulesAsync\fP (int timeout)"
+.br
+.RI "Invokes all rules for the business type\&. "
+.ti -1c
+.RI "async Task< List< string > > \fBCheckRulesAsync\fP ()"
+.br
+.RI "Invokes all rules for the business type\&. "
+.ti -1c
+.RI "List< string > \fBCheckRules\fP ()"
+.br
+.RI "Invokes all rules for the business type\&. "
+.ti -1c
+.RI "List< string > \fBCheckObjectRules\fP ()"
+.br
+.RI "Invokes all rules attached at the class level of the business type\&. "
+.ti -1c
+.RI "List< string > \fBCheckRules\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Invokes all rules for a specific property of the business type\&. "
+.ti -1c
+.RI "void \fBAddDataAnnotations\fP ()"
+.br
+.RI "Adds validation rules corresponding to property data annotation attributes\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBAddRule\fP (Type objectType, \fBIAuthorizationRule\fP rule)"
+.br
+.RI "Associates a per-type authorization rule with the business type in the default rule set\&. "
+.ti -1c
+.RI "static void \fBAddRule\fP (Type objectType, \fBIAuthorizationRule\fP rule, string ruleSet)"
+.br
+.RI "Associates a per-type authorization rule with the business type\&. "
+.ti -1c
+.RI "static bool \fBHasPermission\fP (\fBAuthorizationActions\fP action, Type objectType)"
+.br
+.RI "Checks per-type authorization rules\&. "
+.ti -1c
+.RI "static bool \fBHasPermission\fP (\fBAuthorizationActions\fP action, Type objectType, object[] criteria)"
+.br
+.RI "Checks per-type authorization rules\&. "
+.ti -1c
+.RI "static bool \fBHasPermission\fP (\fBAuthorizationActions\fP action, Type objectType, string ruleSet)"
+.br
+.RI "Checks per-type authorization rules\&. "
+.ti -1c
+.RI "static bool \fBHasPermission\fP (\fBAuthorizationActions\fP action, object obj)"
+.br
+.RI "Checks per-instance authorization rules\&. "
+.ti -1c
+.RI "static bool \fBHasPermission\fP (\fBAuthorizationActions\fP action, object obj, string ruleSet)"
+.br
+.RI "Checks per-instance authorization rules\&. "
+.ti -1c
+.RI "static \fBBrokenRulesTree\fP \fBGetAllBrokenRules\fP (object root)"
+.br
+.RI "Gets all nodes in tree that have IsValid = false (and all parents) "
+.ti -1c
+.RI "static \fBBrokenRulesTree\fP \fBGetAllBrokenRules\fP (object root, bool errorsOnly)"
+.br
+.RI "Gets all nodes in tree that have broken rules\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to insert your field values into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Override this method to insert your child object references into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Override this method to retrieve your child object references from the MobileFormatter serialzation stream\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBSuppressRuleChecking\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether calling CheckRules should result in rule methods being invoked\&. "
+.ti -1c
+.RI "int \fBProcessThroughPriority\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the priority through which all rules will be processed\&. "
+.ti -1c
+.RI "string?? \fBRuleSet\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the rule set to use for this business object instance\&. "
+.ti -1c
+.RI "bool \fBCascadeOnDirtyProperties\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether rule engine should cacade n-leves when property value is changed from OuputPropertyValues\&. "
+.ti -1c
+.RI "bool \fBIsValid\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether there are any currently broken rules, which would mean the object is not valid\&. "
+.ti -1c
+.RI "bool \fBRunningRules\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether a CheckRules operation is in progress\&. "
+.ti -1c
+.RI "bool \fBRunningAsyncRules\fP\fC [get, set]\fP"
+.br
+.RI "Gets a value indicating whether any async rules are currently executing\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Tracks the business rules for a business object\&. 
+
+
+.PP
+Definition at line 27 of file BusinessRules\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.BusinessRules\&.BusinessRules ()"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 156 of file BusinessRules\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Rules\&.BusinessRules\&.AddDataAnnotations ()"
+
+.PP
+Adds validation rules corresponding to property data annotation attributes\&. 
+.PP
+Definition at line 900 of file BusinessRules\&.cs\&.
+.SS "void Csla\&.Rules\&.BusinessRules\&.AddRule (\fBIAuthorizationRule\fP rule)"
+
+.PP
+Associates an authorization rule with the business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrule\fP Rule object\&.
+.RE
+.PP
+
+.PP
+Definition at line 192 of file BusinessRules\&.cs\&.
+.SS "void Csla\&.Rules\&.BusinessRules\&.AddRule (\fBIBusinessRuleBase\fP rule)"
+
+.PP
+Associates a business rule with the business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrule\fP Rule object\&.
+.RE
+.PP
+
+.PP
+Definition at line 172 of file BusinessRules\&.cs\&.
+.SS "void Csla\&.Rules\&.BusinessRules\&.AddRule (\fBIBusinessRuleBase\fP rule, string ruleSet)"
+
+.PP
+Associates a business rule with the business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrule\fP Rule object\&.
+.br
+\fIruleSet\fP Rule set name\&.
+.RE
+.PP
+
+.PP
+Definition at line 182 of file BusinessRules\&.cs\&.
+.SS "static void Csla\&.Rules\&.BusinessRules\&.AddRule (Type objectType, \fBIAuthorizationRule\fP rule)\fC [static]\fP"
+
+.PP
+Associates a per-type authorization rule with the business type in the default rule set\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object\&.
+.br
+\fIrule\fP Rule object\&.
+.RE
+.PP
+
+.PP
+Definition at line 204 of file BusinessRules\&.cs\&.
+.SS "static void Csla\&.Rules\&.BusinessRules\&.AddRule (Type objectType, \fBIAuthorizationRule\fP rule, string ruleSet)\fC [static]\fP"
+
+.PP
+Associates a per-type authorization rule with the business type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object\&.
+.br
+\fIrule\fP Rule object\&.
+.br
+\fIruleSet\fP Rule set name\&.
+.RE
+.PP
+
+.PP
+Definition at line 216 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.CachePermissionResult (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element)"
+
+.PP
+Gets a value indicating whether the permission result can be cached\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIelement\fP Property or method to check\&.
+.RE
+.PP
+
+.PP
+Definition at line 423 of file BusinessRules\&.cs\&.
+.SS "List<string> Csla\&.Rules\&.BusinessRules\&.CheckObjectRules ()"
+
+.PP
+Invokes all rules attached at the class level of the business type\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Returns a list of property names affected by the invoked rules\&. The PropertyChanged event should be raised for each affected property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 507 of file BusinessRules\&.cs\&.
+.SS "List<string> Csla\&.Rules\&.BusinessRules\&.CheckRules ()"
+
+.PP
+Invokes all rules for the business type\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Returns a list of property names affected by the invoked rules\&. The PropertyChanged event should be raised for each affected property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 480 of file BusinessRules\&.cs\&.
+.SS "List<string> Csla\&.Rules\&.BusinessRules\&.CheckRules (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+
+.PP
+Invokes all rules for a specific property of the business type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to check\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Returns a list of property names affected by the invoked rules\&. The PropertyChanged event should be raised for each affected property\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fISystem\&.ArgumentNullException\fP If property is null
+.RE
+.PP
+
+.PP
+Definition at line 575 of file BusinessRules\&.cs\&.
+.SS "async Task<List<string> > Csla\&.Rules\&.BusinessRules\&.CheckRulesAsync ()"
+
+.PP
+Invokes all rules for the business type\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Returns a list of property names affected by the invoked rules\&. The PropertyChanged event should be raised for each affected property\&. Does not return until all async rules are complete\&. 
+.RE
+.PP
+
+.PP
+Definition at line 467 of file BusinessRules\&.cs\&.
+.SS "async Task<List<string> > Csla\&.Rules\&.BusinessRules\&.CheckRulesAsync (int timeout)"
+
+.PP
+Invokes all rules for the business type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItimeout\fP Timeout value in milliseconds
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Returns a list of property names affected by the invoked rules\&. The PropertyChanged event should be raised for each affected property\&. Does not return until all async rules are complete\&. 
+.RE
+.PP
+
+.PP
+Definition at line 446 of file BusinessRules\&.cs\&.
+.SS "static \fBBrokenRulesTree\fP Csla\&.Rules\&.BusinessRules\&.GetAllBrokenRules (object root)\fC [static]\fP"
+
+.PP
+Gets all nodes in tree that have IsValid = false (and all parents) 
+.PP
+\fBParameters\fP
+.RS 4
+\fIroot\fP The root\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+BrukenRulesTree list
+.RE
+.PP
+
+.PP
+Definition at line 1049 of file BusinessRules\&.cs\&.
+.SS "static \fBBrokenRulesTree\fP Csla\&.Rules\&.BusinessRules\&.GetAllBrokenRules (object root, bool errorsOnly)\fC [static]\fP"
+
+.PP
+Gets all nodes in tree that have broken rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIroot\fP The root\&.
+.br
+\fIerrorsOnly\fP if set to \fCtrue\fP will only return objects that gave IsValid = false\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1059 of file BusinessRules\&.cs\&.
+.SS "\fBBrokenRulesCollection\fP Csla\&.Rules\&.BusinessRules\&.GetBrokenRules ()"
+
+.PP
+Gets the broken rules list\&. 
+.PP
+Definition at line 247 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.GetPropertyBusy (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+
+.PP
+Gets a value indicating whether a specific property has any async rules running\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to check\&.
+.RE
+.PP
+
+.PP
+Definition at line 301 of file BusinessRules\&.cs\&.
+.SS "string [] Csla\&.Rules\&.BusinessRules\&.GetRuleDescriptions ()"
+
+.PP
+Gets a list of rule:// URI values for the rules defined in the object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 131 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.HasPermission (\fBAuthorizationActions\fP action, \fBCsla\&.Core\&.IMemberInfo\fP element)"
+
+.PP
+Checks per-property authorization rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIelement\fP Property or method to check\&.
+.RE
+.PP
+
+.PP
+Definition at line 394 of file BusinessRules\&.cs\&.
+.SS "static bool Csla\&.Rules\&.BusinessRules\&.HasPermission (\fBAuthorizationActions\fP action, object obj)\fC [static]\fP"
+
+.PP
+Checks per-instance authorization rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIobj\fP Business object instance\&.
+.RE
+.PP
+
+.PP
+Definition at line 350 of file BusinessRules\&.cs\&.
+.SS "static bool Csla\&.Rules\&.BusinessRules\&.HasPermission (\fBAuthorizationActions\fP action, object obj, string ruleSet)\fC [static]\fP"
+
+.PP
+Checks per-instance authorization rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIobj\fP Business object instance\&.
+.br
+\fIruleSet\fP The rule set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fCtrue\fP if the specified action has permission; otherwise, \fCfalse\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line 364 of file BusinessRules\&.cs\&.
+.SS "static bool Csla\&.Rules\&.BusinessRules\&.HasPermission (\fBAuthorizationActions\fP action, Type objectType)\fC [static]\fP"
+
+.PP
+Checks per-type authorization rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIobjectType\fP Type of business object\&.
+.RE
+.PP
+
+.PP
+Definition at line 311 of file BusinessRules\&.cs\&.
+.SS "static bool Csla\&.Rules\&.BusinessRules\&.HasPermission (\fBAuthorizationActions\fP action, Type objectType, object[] criteria)\fC [static]\fP"
+
+.PP
+Checks per-type authorization rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIobjectType\fP Type of business object\&.
+.br
+\fIcriteria\fP The criteria object provided\&.
+.RE
+.PP
+
+.PP
+Definition at line 324 of file BusinessRules\&.cs\&.
+.SS "static bool Csla\&.Rules\&.BusinessRules\&.HasPermission (\fBAuthorizationActions\fP action, Type objectType, string ruleSet)\fC [static]\fP"
+
+.PP
+Checks per-type authorization rules\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIaction\fP Authorization action\&.
+.br
+\fIobjectType\fP Type of business object\&.
+.br
+\fIruleSet\fP The rule set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fCtrue\fP if the specified action has permission; otherwise, \fCfalse\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line 340 of file BusinessRules\&.cs\&.
+.SS "override void Csla\&.Rules\&.BusinessRules\&.OnGetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to insert your child object references into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fIformatter\fP Reference to MobileFormatter instance\&. Use this to convert child references to/from reference id values\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 993 of file BusinessRules\&.cs\&.
+.SS "override void Csla\&.Rules\&.BusinessRules\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to insert your field values into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 956 of file BusinessRules\&.cs\&.
+.SS "override void Csla\&.Rules\&.BusinessRules\&.OnSetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve your child object references from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fIformatter\fP Reference to MobileFormatter instance\&. Use this to convert child references to/from reference id values\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 1015 of file BusinessRules\&.cs\&.
+.SS "override void Csla\&.Rules\&.BusinessRules\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 974 of file BusinessRules\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Rules\&.BusinessRules\&.CascadeOnDirtyProperties\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether rule engine should cacade n-leves when property value is changed from OuputPropertyValues\&. \fCtrue\fP if [cascade when changed]; otherwise, \fCfalse\fP\&. 
+.PP
+Definition at line 95 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.IsValid\fC [get]\fP"
+
+.PP
+Gets a value indicating whether there are any currently broken rules, which would mean the object is not valid\&. 
+.PP
+Definition at line 239 of file BusinessRules\&.cs\&.
+.SS "int Csla\&.Rules\&.BusinessRules\&.ProcessThroughPriority\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the priority through which all rules will be processed\&. 
+.PP
+Definition at line 63 of file BusinessRules\&.cs\&.
+.SS "string?? Csla\&.Rules\&.BusinessRules\&.RuleSet\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the rule set to use for this business object instance\&. 
+.PP
+Definition at line 74 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.RunningAsyncRules\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets a value indicating whether any async rules are currently executing\&. 
+.PP
+Definition at line 283 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.RunningRules\fC [get]\fP"
+
+.PP
+Gets a value indicating whether a CheckRules operation is in progress\&. 
+.PP
+Definition at line 258 of file BusinessRules\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRules\&.SuppressRuleChecking\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether calling CheckRules should result in rule methods being invoked\&. True to suppress all rule method invocation\&.
+.PP
+Definition at line 52 of file BusinessRules\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

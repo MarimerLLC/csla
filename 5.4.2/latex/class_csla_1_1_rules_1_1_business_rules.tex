@@ -1,0 +1,807 @@
+\hypertarget{class_csla_1_1_rules_1_1_business_rules}{}\doxysection{Csla.\+Rules.\+Business\+Rules Class Reference}
+\label{class_csla_1_1_rules_1_1_business_rules}\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+
+
+Tracks the business rules for a business object.  
+
+
+Inheritance diagram for Csla.\+Rules.\+Business\+Rules\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.872910cm]{class_csla_1_1_rules_1_1_business_rules}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries Run\+Rules\+Result}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+string\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_acab3692195136d5507cfdf92ffbf41bf}{Get\+Rule\+Descriptions}} ()
+\begin{DoxyCompactList}\small\item\em Gets a list of rule\+:// URI values for the rules defined in the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a0043531dbdb1d2259254cf4f42fe3df1}{Business\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ac225f885303da2f470bbcea50cd2dff6}{Add\+Rule}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}} rule)
+\begin{DoxyCompactList}\small\item\em Associates a business rule with the business object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a65292b2134ec5ccde18aac120cdad064}{Add\+Rule}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}} rule, string rule\+Set)
+\begin{DoxyCompactList}\small\item\em Associates a business rule with the business object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a530398e3e11a94131ae50aa984df01b5}{Add\+Rule}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_authorization_rule}{IAuthorization\+Rule}} rule)
+\begin{DoxyCompactList}\small\item\em Associates an authorization rule with the business object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_collection}{Broken\+Rules\+Collection}} \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_adf89b2e67d30dbf4a2400d65e388a6b1}{Get\+Broken\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Gets the broken rules list. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ab78996cbd9a5aa0c4e69fac7c1f7743b}{Get\+Property\+Busy}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether a specific property has any async rules running. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a7399b6bedec0879076264145b32880d6}{Has\+Permission}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}} element)
+\begin{DoxyCompactList}\small\item\em Checks per-\/property authorization rules. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a55a68577e2015784f07eec793663a553}{Cache\+Permission\+Result}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}} element)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the permission result can be cached. \end{DoxyCompactList}\item 
+async Task$<$ List$<$ string $>$ $>$ \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ad712a9c62b87a7199a32571fb23a8a05}{Check\+Rules\+Async}} (int timeout)
+\begin{DoxyCompactList}\small\item\em Invokes all rules for the business type. \end{DoxyCompactList}\item 
+async Task$<$ List$<$ string $>$ $>$ \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_aabbf5369fc122e34a7563018d3e5c952}{Check\+Rules\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Invokes all rules for the business type. \end{DoxyCompactList}\item 
+List$<$ string $>$ \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ac0e8a59e48ef47532adfbb1157fbb2f9}{Check\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Invokes all rules for the business type. \end{DoxyCompactList}\item 
+List$<$ string $>$ \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ab36a7515b96959ebaca0e52993550af5}{Check\+Object\+Rules}} ()
+\begin{DoxyCompactList}\small\item\em Invokes all rules attached at the class level of the business type. \end{DoxyCompactList}\item 
+List$<$ string $>$ \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a63bb5ac36b19e7a308d359b1170fc059}{Check\+Rules}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Invokes all rules for a specific property of the business type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a85880e9356f00632e6a301152fe6afb4}{Add\+Data\+Annotations}} ()
+\begin{DoxyCompactList}\small\item\em Adds validation rules corresponding to property data annotation attributes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ad2ec2c485a5da40341420b58cabcd59d}{Add\+Rule}} (Type object\+Type, \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_authorization_rule}{IAuthorization\+Rule}} rule)
+\begin{DoxyCompactList}\small\item\em Associates a per-\/type authorization rule with the business type in the default rule set. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a81ed5cab85691c6a02ed65782b106efc}{Add\+Rule}} (Type object\+Type, \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_authorization_rule}{IAuthorization\+Rule}} rule, string rule\+Set)
+\begin{DoxyCompactList}\small\item\em Associates a per-\/type authorization rule with the business type. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a0572c929b5a24970cdae4176d7b86b92}{Has\+Permission}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, Type object\+Type)
+\begin{DoxyCompactList}\small\item\em Checks per-\/type authorization rules. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a3933c24eec00f4cbc41f0b88bcc5fa11}{Has\+Permission}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, Type object\+Type, object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Checks per-\/type authorization rules. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_addf5fb73a964e44399e0d7e2e35ce5fe}{Has\+Permission}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, Type object\+Type, string rule\+Set)
+\begin{DoxyCompactList}\small\item\em Checks per-\/type authorization rules. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_afa8ea262ce66c3149b0347574a75a147}{Has\+Permission}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, object obj)
+\begin{DoxyCompactList}\small\item\em Checks per-\/instance authorization rules. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a646f4ba30feb86e9db72dd9d20739a10}{Has\+Permission}} (\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}} action, object obj, string rule\+Set)
+\begin{DoxyCompactList}\small\item\em Checks per-\/instance authorization rules. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_tree}{Broken\+Rules\+Tree}} \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a836bbc5a21404c2d941a4bd66e77580a}{Get\+All\+Broken\+Rules}} (object root)
+\begin{DoxyCompactList}\small\item\em Gets all nodes in tree that have Is\+Valid = false (and all parents) \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_tree}{Broken\+Rules\+Tree}} \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a2acc85600fafb9d33bbf6d95e90a44db}{Get\+All\+Broken\+Rules}} (object root, bool errors\+Only)
+\begin{DoxyCompactList}\small\item\em Gets all nodes in tree that have broken rules. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a93da9938a9791cfe7db95b2cc9ff90a1}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}} mode)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your field values into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ace8c1e585ff4b0bcae8fd142e77f0af3}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}} mode)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_afef637150c0f36528a1ac84a75b93977}{On\+Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your child object references into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a1e6061750038580858dc34e8fbdc63a0}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a3316f66dbd742883e6db87160fcce1a1}{Suppress\+Rule\+Checking}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether calling Check\+Rules should result in rule methods being invoked. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a0dc92632a794eb593f68516e4cd34b4d}{Process\+Through\+Priority}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the priority through which all rules will be processed. \end{DoxyCompactList}\item 
+string?? \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a057a06e25ba8c41099f75a3ebbdffc42}{Rule\+Set}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the rule set to use for this business object instance. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a75671b4588385a975e4646cb59a1e745}{Cascade\+On\+Dirty\+Properties}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether rule engine should cacade n-\/leves when property value is changed from Ouput\+Property\+Values. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a3ccdac5dc85f92c03eb087331956beeb}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether there are any currently broken rules, which would mean the object is not valid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_a6cb0bbc9d74de2a02d3463b6e1772ff0}{Running\+Rules}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether a Check\+Rules operation is in progress. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rules_ac5e6d9e691f46acf2eabc70bb42daecc}{Running\+Async\+Rules}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether any async rules are currently executing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Tracks the business rules for a business object. 
+
+
+
+Definition at line 27 of file Business\+Rules.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a0043531dbdb1d2259254cf4f42fe3df1}\label{class_csla_1_1_rules_1_1_business_rules_a0043531dbdb1d2259254cf4f42fe3df1}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!BusinessRules@{BusinessRules}}
+\index{BusinessRules@{BusinessRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{BusinessRules()}{BusinessRules()}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Business\+Rules.\+Business\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 156 of file Business\+Rules.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a85880e9356f00632e6a301152fe6afb4}\label{class_csla_1_1_rules_1_1_business_rules_a85880e9356f00632e6a301152fe6afb4}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!AddDataAnnotations@{AddDataAnnotations}}
+\index{AddDataAnnotations@{AddDataAnnotations}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{AddDataAnnotations()}{AddDataAnnotations()}}
+{\footnotesize\ttfamily void Csla.\+Rules.\+Business\+Rules.\+Add\+Data\+Annotations (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Adds validation rules corresponding to property data annotation attributes. 
+
+
+
+Definition at line 900 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a530398e3e11a94131ae50aa984df01b5}\label{class_csla_1_1_rules_1_1_business_rules_a530398e3e11a94131ae50aa984df01b5}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!AddRule@{AddRule}}
+\index{AddRule@{AddRule}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{AddRule()}{AddRule()}\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
+{\footnotesize\ttfamily void Csla.\+Rules.\+Business\+Rules.\+Add\+Rule (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_authorization_rule}{IAuthorization\+Rule}}}]{rule }\end{DoxyParamCaption})}
+
+
+
+Associates an authorization rule with the business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rule} & Rule object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 192 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ac225f885303da2f470bbcea50cd2dff6}\label{class_csla_1_1_rules_1_1_business_rules_ac225f885303da2f470bbcea50cd2dff6}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!AddRule@{AddRule}}
+\index{AddRule@{AddRule}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{AddRule()}{AddRule()}\hspace{0.1cm}{\footnotesize\ttfamily [2/5]}}
+{\footnotesize\ttfamily void Csla.\+Rules.\+Business\+Rules.\+Add\+Rule (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}}}]{rule }\end{DoxyParamCaption})}
+
+
+
+Associates a business rule with the business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rule} & Rule object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 172 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a65292b2134ec5ccde18aac120cdad064}\label{class_csla_1_1_rules_1_1_business_rules_a65292b2134ec5ccde18aac120cdad064}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!AddRule@{AddRule}}
+\index{AddRule@{AddRule}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{AddRule()}{AddRule()}\hspace{0.1cm}{\footnotesize\ttfamily [3/5]}}
+{\footnotesize\ttfamily void Csla.\+Rules.\+Business\+Rules.\+Add\+Rule (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}}}]{rule,  }\item[{string}]{rule\+Set }\end{DoxyParamCaption})}
+
+
+
+Associates a business rule with the business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rule} & Rule object.\\
+\hline
+{\em rule\+Set} & Rule set name.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 182 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ad2ec2c485a5da40341420b58cabcd59d}\label{class_csla_1_1_rules_1_1_business_rules_ad2ec2c485a5da40341420b58cabcd59d}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!AddRule@{AddRule}}
+\index{AddRule@{AddRule}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{AddRule()}{AddRule()}\hspace{0.1cm}{\footnotesize\ttfamily [4/5]}}
+{\footnotesize\ttfamily static void Csla.\+Rules.\+Business\+Rules.\+Add\+Rule (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_authorization_rule}{IAuthorization\+Rule}}}]{rule }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Associates a per-\/type authorization rule with the business type in the default rule set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object.\\
+\hline
+{\em rule} & Rule object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 204 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a81ed5cab85691c6a02ed65782b106efc}\label{class_csla_1_1_rules_1_1_business_rules_a81ed5cab85691c6a02ed65782b106efc}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!AddRule@{AddRule}}
+\index{AddRule@{AddRule}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{AddRule()}{AddRule()}\hspace{0.1cm}{\footnotesize\ttfamily [5/5]}}
+{\footnotesize\ttfamily static void Csla.\+Rules.\+Business\+Rules.\+Add\+Rule (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_authorization_rule}{IAuthorization\+Rule}}}]{rule,  }\item[{string}]{rule\+Set }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Associates a per-\/type authorization rule with the business type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object.\\
+\hline
+{\em rule} & Rule object.\\
+\hline
+{\em rule\+Set} & Rule set name.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 216 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a55a68577e2015784f07eec793663a553}\label{class_csla_1_1_rules_1_1_business_rules_a55a68577e2015784f07eec793663a553}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CachePermissionResult@{CachePermissionResult}}
+\index{CachePermissionResult@{CachePermissionResult}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CachePermissionResult()}{CachePermissionResult()}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Cache\+Permission\+Result (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}}}]{element }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether the permission result can be cached. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em element} & Property or method to check.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 423 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ab36a7515b96959ebaca0e52993550af5}\label{class_csla_1_1_rules_1_1_business_rules_ab36a7515b96959ebaca0e52993550af5}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CheckObjectRules@{CheckObjectRules}}
+\index{CheckObjectRules@{CheckObjectRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CheckObjectRules()}{CheckObjectRules()}}
+{\footnotesize\ttfamily List$<$string$>$ Csla.\+Rules.\+Business\+Rules.\+Check\+Object\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Invokes all rules attached at the class level of the business type. 
+
+\begin{DoxyReturn}{Returns}
+Returns a list of property names affected by the invoked rules. The Property\+Changed event should be raised for each affected property. 
+\end{DoxyReturn}
+
+
+Definition at line 507 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ac0e8a59e48ef47532adfbb1157fbb2f9}\label{class_csla_1_1_rules_1_1_business_rules_ac0e8a59e48ef47532adfbb1157fbb2f9}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CheckRules@{CheckRules}}
+\index{CheckRules@{CheckRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CheckRules()}{CheckRules()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily List$<$string$>$ Csla.\+Rules.\+Business\+Rules.\+Check\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Invokes all rules for the business type. 
+
+\begin{DoxyReturn}{Returns}
+Returns a list of property names affected by the invoked rules. The Property\+Changed event should be raised for each affected property. 
+\end{DoxyReturn}
+
+
+Definition at line 480 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a63bb5ac36b19e7a308d359b1170fc059}\label{class_csla_1_1_rules_1_1_business_rules_a63bb5ac36b19e7a308d359b1170fc059}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CheckRules@{CheckRules}}
+\index{CheckRules@{CheckRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CheckRules()}{CheckRules()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily List$<$string$>$ Csla.\+Rules.\+Business\+Rules.\+Check\+Rules (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})}
+
+
+
+Invokes all rules for a specific property of the business type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to check.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a list of property names affected by the invoked rules. The Property\+Changed event should be raised for each affected property. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em System.\+Argument\+Null\+Exception} & If property is null\\
+\hline
+\end{DoxyExceptions}
+
+
+Definition at line 575 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_aabbf5369fc122e34a7563018d3e5c952}\label{class_csla_1_1_rules_1_1_business_rules_aabbf5369fc122e34a7563018d3e5c952}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CheckRulesAsync@{CheckRulesAsync}}
+\index{CheckRulesAsync@{CheckRulesAsync}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CheckRulesAsync()}{CheckRulesAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily async Task$<$List$<$string$>$ $>$ Csla.\+Rules.\+Business\+Rules.\+Check\+Rules\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Invokes all rules for the business type. 
+
+\begin{DoxyReturn}{Returns}
+Returns a list of property names affected by the invoked rules. The Property\+Changed event should be raised for each affected property. Does not return until all async rules are complete. 
+\end{DoxyReturn}
+
+
+Definition at line 467 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ad712a9c62b87a7199a32571fb23a8a05}\label{class_csla_1_1_rules_1_1_business_rules_ad712a9c62b87a7199a32571fb23a8a05}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CheckRulesAsync@{CheckRulesAsync}}
+\index{CheckRulesAsync@{CheckRulesAsync}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CheckRulesAsync()}{CheckRulesAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily async Task$<$List$<$string$>$ $>$ Csla.\+Rules.\+Business\+Rules.\+Check\+Rules\+Async (\begin{DoxyParamCaption}\item[{int}]{timeout }\end{DoxyParamCaption})}
+
+
+
+Invokes all rules for the business type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em timeout} & Timeout value in milliseconds\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a list of property names affected by the invoked rules. The Property\+Changed event should be raised for each affected property. Does not return until all async rules are complete. 
+\end{DoxyReturn}
+
+
+Definition at line 446 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a836bbc5a21404c2d941a4bd66e77580a}\label{class_csla_1_1_rules_1_1_business_rules_a836bbc5a21404c2d941a4bd66e77580a}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!GetAllBrokenRules@{GetAllBrokenRules}}
+\index{GetAllBrokenRules@{GetAllBrokenRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{GetAllBrokenRules()}{GetAllBrokenRules()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_tree}{Broken\+Rules\+Tree}} Csla.\+Rules.\+Business\+Rules.\+Get\+All\+Broken\+Rules (\begin{DoxyParamCaption}\item[{object}]{root }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets all nodes in tree that have Is\+Valid = false (and all parents) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & The root.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Bruken\+Rules\+Tree list
+\end{DoxyReturn}
+
+
+Definition at line 1049 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a2acc85600fafb9d33bbf6d95e90a44db}\label{class_csla_1_1_rules_1_1_business_rules_a2acc85600fafb9d33bbf6d95e90a44db}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!GetAllBrokenRules@{GetAllBrokenRules}}
+\index{GetAllBrokenRules@{GetAllBrokenRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{GetAllBrokenRules()}{GetAllBrokenRules()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_tree}{Broken\+Rules\+Tree}} Csla.\+Rules.\+Business\+Rules.\+Get\+All\+Broken\+Rules (\begin{DoxyParamCaption}\item[{object}]{root,  }\item[{bool}]{errors\+Only }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets all nodes in tree that have broken rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & The root.\\
+\hline
+{\em errors\+Only} & if set to {\ttfamily true} will only return objects that gave Is\+Valid = false.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1059 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_adf89b2e67d30dbf4a2400d65e388a6b1}\label{class_csla_1_1_rules_1_1_business_rules_adf89b2e67d30dbf4a2400d65e388a6b1}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!GetBrokenRules@{GetBrokenRules}}
+\index{GetBrokenRules@{GetBrokenRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{GetBrokenRules()}{GetBrokenRules()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_rules_1_1_broken_rules_collection}{Broken\+Rules\+Collection}} Csla.\+Rules.\+Business\+Rules.\+Get\+Broken\+Rules (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the broken rules list. 
+
+
+
+Definition at line 247 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ab78996cbd9a5aa0c4e69fac7c1f7743b}\label{class_csla_1_1_rules_1_1_business_rules_ab78996cbd9a5aa0c4e69fac7c1f7743b}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!GetPropertyBusy@{GetPropertyBusy}}
+\index{GetPropertyBusy@{GetPropertyBusy}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{GetPropertyBusy()}{GetPropertyBusy()}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Get\+Property\+Busy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether a specific property has any async rules running. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property} & Property to check.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 301 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_acab3692195136d5507cfdf92ffbf41bf}\label{class_csla_1_1_rules_1_1_business_rules_acab3692195136d5507cfdf92ffbf41bf}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!GetRuleDescriptions@{GetRuleDescriptions}}
+\index{GetRuleDescriptions@{GetRuleDescriptions}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{GetRuleDescriptions()}{GetRuleDescriptions()}}
+{\footnotesize\ttfamily string \mbox{[}$\,$\mbox{]} Csla.\+Rules.\+Business\+Rules.\+Get\+Rule\+Descriptions (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets a list of rule\+:// URI values for the rules defined in the object. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 131 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a7399b6bedec0879076264145b32880d6}\label{class_csla_1_1_rules_1_1_business_rules_a7399b6bedec0879076264145b32880d6}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}\hspace{0.1cm}{\footnotesize\ttfamily [1/6]}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Has\+Permission (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_member_info}{Csla.\+Core.\+IMember\+Info}}}]{element }\end{DoxyParamCaption})}
+
+
+
+Checks per-\/property authorization rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em element} & Property or method to check.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 394 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_afa8ea262ce66c3149b0347574a75a147}\label{class_csla_1_1_rules_1_1_business_rules_afa8ea262ce66c3149b0347574a75a147}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}\hspace{0.1cm}{\footnotesize\ttfamily [2/6]}}
+{\footnotesize\ttfamily static bool Csla.\+Rules.\+Business\+Rules.\+Has\+Permission (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{object}]{obj }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Checks per-\/instance authorization rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em obj} & Business object instance.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 350 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a646f4ba30feb86e9db72dd9d20739a10}\label{class_csla_1_1_rules_1_1_business_rules_a646f4ba30feb86e9db72dd9d20739a10}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}\hspace{0.1cm}{\footnotesize\ttfamily [3/6]}}
+{\footnotesize\ttfamily static bool Csla.\+Rules.\+Business\+Rules.\+Has\+Permission (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{object}]{obj,  }\item[{string}]{rule\+Set }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Checks per-\/instance authorization rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em obj} & Business object instance.\\
+\hline
+{\em rule\+Set} & The rule set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the specified action has permission; otherwise, {\ttfamily false}. 
+\end{DoxyReturn}
+
+
+Definition at line 364 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a0572c929b5a24970cdae4176d7b86b92}\label{class_csla_1_1_rules_1_1_business_rules_a0572c929b5a24970cdae4176d7b86b92}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}\hspace{0.1cm}{\footnotesize\ttfamily [4/6]}}
+{\footnotesize\ttfamily static bool Csla.\+Rules.\+Business\+Rules.\+Has\+Permission (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{Type}]{object\+Type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Checks per-\/type authorization rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em object\+Type} & Type of business object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 311 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a3933c24eec00f4cbc41f0b88bcc5fa11}\label{class_csla_1_1_rules_1_1_business_rules_a3933c24eec00f4cbc41f0b88bcc5fa11}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}\hspace{0.1cm}{\footnotesize\ttfamily [5/6]}}
+{\footnotesize\ttfamily static bool Csla.\+Rules.\+Business\+Rules.\+Has\+Permission (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{Type}]{object\+Type,  }\item[{object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Checks per-\/type authorization rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em object\+Type} & Type of business object.\\
+\hline
+{\em criteria} & The criteria object provided.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 324 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_addf5fb73a964e44399e0d7e2e35ce5fe}\label{class_csla_1_1_rules_1_1_business_rules_addf5fb73a964e44399e0d7e2e35ce5fe}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!HasPermission@{HasPermission}}
+\index{HasPermission@{HasPermission}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{HasPermission()}{HasPermission()}\hspace{0.1cm}{\footnotesize\ttfamily [6/6]}}
+{\footnotesize\ttfamily static bool Csla.\+Rules.\+Business\+Rules.\+Has\+Permission (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_csla_1_1_rules_a8b45275c8ab606df9a31ac685344b243}{Authorization\+Actions}}}]{action,  }\item[{Type}]{object\+Type,  }\item[{string}]{rule\+Set }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Checks per-\/type authorization rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Authorization action.\\
+\hline
+{\em object\+Type} & Type of business object.\\
+\hline
+{\em rule\+Set} & The rule set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the specified action has permission; otherwise, {\ttfamily false}. 
+\end{DoxyReturn}
+
+
+Definition at line 340 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_afef637150c0f36528a1ac84a75b93977}\label{class_csla_1_1_rules_1_1_business_rules_afef637150c0f36528a1ac84a75b93977}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!OnGetChildren@{OnGetChildren}}
+\index{OnGetChildren@{OnGetChildren}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{OnGetChildren()}{OnGetChildren()}}
+{\footnotesize\ttfamily override void Csla.\+Rules.\+Business\+Rules.\+On\+Get\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to insert your child object references into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em formatter} & Reference to Mobile\+Formatter instance. Use this to convert child references to/from reference id values. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_object_a8337434af99c7eb236d3daaa4bed8651}{Csla.\+Core.\+Mobile\+Object}}.
+
+
+
+Definition at line 993 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a93da9938a9791cfe7db95b2cc9ff90a1}\label{class_csla_1_1_rules_1_1_business_rules_a93da9938a9791cfe7db95b2cc9ff90a1}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily override void Csla.\+Rules.\+Business\+Rules.\+On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}}}]{mode }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to insert your field values into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em mode} & The State\+Mode indicating why this method was invoked. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_object_a91f1df09d816da1e013f4632f5b8ff90}{Csla.\+Core.\+Mobile\+Object}}.
+
+
+
+Definition at line 956 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a1e6061750038580858dc34e8fbdc63a0}\label{class_csla_1_1_rules_1_1_business_rules_a1e6061750038580858dc34e8fbdc63a0}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily override void Csla.\+Rules.\+Business\+Rules.\+On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em formatter} & Reference to Mobile\+Formatter instance. Use this to convert child references to/from reference id values. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_object_a16198298ce18c1bf91ca8f70cb55637b}{Csla.\+Core.\+Mobile\+Object}}.
+
+
+
+Definition at line 1015 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ace8c1e585ff4b0bcae8fd142e77f0af3}\label{class_csla_1_1_rules_1_1_business_rules_ace8c1e585ff4b0bcae8fd142e77f0af3}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily override void Csla.\+Rules.\+Business\+Rules.\+On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{namespace_csla_1_1_core_ae4d1bfe03690e28c9ac1bd7066cd5c59}{State\+Mode}}}]{mode }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em mode} & The State\+Mode indicating why this method was invoked. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_object_aa16c2e3689d540da304e2854406c39fd}{Csla.\+Core.\+Mobile\+Object}}.
+
+
+
+Definition at line 974 of file Business\+Rules.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a75671b4588385a975e4646cb59a1e745}\label{class_csla_1_1_rules_1_1_business_rules_a75671b4588385a975e4646cb59a1e745}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!CascadeOnDirtyProperties@{CascadeOnDirtyProperties}}
+\index{CascadeOnDirtyProperties@{CascadeOnDirtyProperties}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{CascadeOnDirtyProperties}{CascadeOnDirtyProperties}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Cascade\+On\+Dirty\+Properties\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a value indicating whether rule engine should cacade n-\/leves when property value is changed from Ouput\+Property\+Values. 
+
+{\ttfamily true} if \mbox{[}cascade when changed\mbox{]}; otherwise, {\ttfamily false}. 
+
+Definition at line 95 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a3ccdac5dc85f92c03eb087331956beeb}\label{class_csla_1_1_rules_1_1_business_rules_a3ccdac5dc85f92c03eb087331956beeb}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether there are any currently broken rules, which would mean the object is not valid. 
+
+
+
+Definition at line 239 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a0dc92632a794eb593f68516e4cd34b4d}\label{class_csla_1_1_rules_1_1_business_rules_a0dc92632a794eb593f68516e4cd34b4d}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!ProcessThroughPriority@{ProcessThroughPriority}}
+\index{ProcessThroughPriority@{ProcessThroughPriority}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{ProcessThroughPriority}{ProcessThroughPriority}}
+{\footnotesize\ttfamily int Csla.\+Rules.\+Business\+Rules.\+Process\+Through\+Priority\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the priority through which all rules will be processed. 
+
+
+
+Definition at line 63 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a057a06e25ba8c41099f75a3ebbdffc42}\label{class_csla_1_1_rules_1_1_business_rules_a057a06e25ba8c41099f75a3ebbdffc42}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!RuleSet@{RuleSet}}
+\index{RuleSet@{RuleSet}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{RuleSet}{RuleSet}}
+{\footnotesize\ttfamily string?? Csla.\+Rules.\+Business\+Rules.\+Rule\+Set\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the rule set to use for this business object instance. 
+
+
+
+Definition at line 74 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_ac5e6d9e691f46acf2eabc70bb42daecc}\label{class_csla_1_1_rules_1_1_business_rules_ac5e6d9e691f46acf2eabc70bb42daecc}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!RunningAsyncRules@{RunningAsyncRules}}
+\index{RunningAsyncRules@{RunningAsyncRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{RunningAsyncRules}{RunningAsyncRules}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Running\+Async\+Rules\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets a value indicating whether any async rules are currently executing. 
+
+
+
+Definition at line 283 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a6cb0bbc9d74de2a02d3463b6e1772ff0}\label{class_csla_1_1_rules_1_1_business_rules_a6cb0bbc9d74de2a02d3463b6e1772ff0}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!RunningRules@{RunningRules}}
+\index{RunningRules@{RunningRules}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{RunningRules}{RunningRules}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Running\+Rules\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether a Check\+Rules operation is in progress. 
+
+
+
+Definition at line 258 of file Business\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rules_a3316f66dbd742883e6db87160fcce1a1}\label{class_csla_1_1_rules_1_1_business_rules_a3316f66dbd742883e6db87160fcce1a1}} 
+\index{Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}!SuppressRuleChecking@{SuppressRuleChecking}}
+\index{SuppressRuleChecking@{SuppressRuleChecking}!Csla.Rules.BusinessRules@{Csla.Rules.BusinessRules}}
+\doxysubsubsection{\texorpdfstring{SuppressRuleChecking}{SuppressRuleChecking}}
+{\footnotesize\ttfamily bool Csla.\+Rules.\+Business\+Rules.\+Suppress\+Rule\+Checking\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a value indicating whether calling Check\+Rules should result in rule methods being invoked. 
+
+True to suppress all rule method invocation.
+
+Definition at line 52 of file Business\+Rules.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Rules/\mbox{\hyperlink{_business_rules_8cs}{Business\+Rules.\+cs}}\end{DoxyCompactItemize}

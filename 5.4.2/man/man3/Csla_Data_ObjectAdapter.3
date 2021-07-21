@@ -1,0 +1,85 @@
+.TH "Csla.Data.ObjectAdapter" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Data.ObjectAdapter \- An \fBObjectAdapter\fP is used to convert data in an object or collection into a DataTable\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBFill\fP (DataSet ds, object source)"
+.br
+.RI "Fills the DataSet with data from an object or collection\&. "
+.ti -1c
+.RI "void \fBFill\fP (DataSet ds, string tableName, object source)"
+.br
+.RI "Fills the DataSet with data from an object or collection\&. "
+.ti -1c
+.RI "void \fBFill\fP (DataTable dt, object source)"
+.br
+.RI "Fills a DataTable with data values from an object or collection\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+An \fBObjectAdapter\fP is used to convert data in an object or collection into a DataTable\&. 
+
+
+.PP
+Definition at line 23 of file ObjectAdapter\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Data\&.ObjectAdapter\&.Fill (DataSet ds, object source)"
+
+.PP
+Fills the DataSet with data from an object or collection\&. The name of the DataTable being filled is will be the class name of the object acting as the data source\&. The DataTable will be inserted if it doesn't already exist in the DataSet\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIds\fP A reference to the DataSet to be filled\&.
+.br
+\fIsource\fP A reference to the object or collection acting as a data source\&.
+.RE
+.PP
+
+.PP
+Definition at line 35 of file ObjectAdapter\&.cs\&.
+.SS "void Csla\&.Data\&.ObjectAdapter\&.Fill (DataSet ds, string tableName, object source)"
+
+.PP
+Fills the DataSet with data from an object or collection\&. The name of the DataTable being filled is specified as a parameter\&. The DataTable will be inserted if it doesn't already exist in the DataSet\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIds\fP A reference to the DataSet to be filled\&.
+.br
+\fItableName\fP 
+.br
+\fIsource\fP A reference to the object or collection acting as a data source\&.
+.RE
+.PP
+
+.PP
+Definition at line 51 of file ObjectAdapter\&.cs\&.
+.SS "void Csla\&.Data\&.ObjectAdapter\&.Fill (DataTable dt, object source)"
+
+.PP
+Fills a DataTable with data values from an object or collection\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdt\fP A reference to the DataTable to be filled\&.
+.br
+\fIsource\fP A reference to the object or collection acting as a data source\&.
+.RE
+.PP
+
+.PP
+Definition at line 73 of file ObjectAdapter\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

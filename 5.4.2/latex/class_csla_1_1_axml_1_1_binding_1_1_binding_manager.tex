@@ -1,0 +1,273 @@
+\hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager}{}\doxysection{Csla.\+Axml.\+Binding.\+Binding\+Manager Class Reference}
+\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager}\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+
+
+Provides the ability to bing properties on \mbox{\hyperlink{namespace_csla_1_1_axml}{Axml}} controls to properties on CSLA objects. Bindinds update normally when the control looses focus.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_afe818ca02bb05937eb6dd04c61856e20}{Binding\+Manager}} (Activity activity)
+\begin{DoxyCompactList}\small\item\em Creates a new instance of the binding manager. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a467ef453c28beda0e252fcd527a6076f}{Add}} (int view\+Id, string target\+Property, object source, string source\+Property)
+\begin{DoxyCompactList}\small\item\em Adds a new binding to be managed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ab1bf3597f6c5a7f18785ef0bc29180c8}{Add}} (View target, string target\+Property, object source, string source\+Property)
+\begin{DoxyCompactList}\small\item\em Adds a new binding to be managed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ab08a1775df897b8c64b5c4106f883dda}{Add}} (\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}} binding)
+\begin{DoxyCompactList}\small\item\em Adds a new binding to be managed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a3a99ba6ff7a4026ea1cd01acd9be4beb}{Remove}} (View target, string target\+Property, object source, string source\+Property)
+\begin{DoxyCompactList}\small\item\em Removes the binding matching the supplied parameters from the binding manager. If no bindings matched the method does nothing. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a5d5d9df120dbc45944689b17dfee76d0}{Remove}} (\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}} binding)
+\begin{DoxyCompactList}\small\item\em Removes the supplied binding from the binding manager. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_af9a2d4219218ba4d00c0d11cabf28647}{Remove\+All}} ()
+\begin{DoxyCompactList}\small\item\em Removes all bindings from the binding manager. \end{DoxyCompactList}\item 
+IEnumerable$<$ \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}} $>$ \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a8e9d8b32b27b1a3fea7d5c395850d527}{Get\+Bindings\+For\+View}} (View view)
+\begin{DoxyCompactList}\small\item\em Returns all bindings for the supplied view. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a822a17c19c9b04cff5b5e4e9afef634b}{Update\+Source\+For\+View}} (View view)
+\begin{DoxyCompactList}\small\item\em Updates bindings with the current values in the supplied view. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ae474c9e4447df630ff8ccabc86ede55b}{Update\+Source\+For\+Last\+View}} ()
+\begin{DoxyCompactList}\small\item\em Updates bindings on the view that is in current focus on the activity supplied to the \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager}{Binding\+Manager}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+List$<$ \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}} $>$ \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_aec37b7b75c14912810ac3939cde32440}{Bindings}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A list of bindings that have been added to the manager. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides the ability to bing properties on \mbox{\hyperlink{namespace_csla_1_1_axml}{Axml}} controls to properties on CSLA objects. Bindinds update normally when the control looses focus. 
+
+
+
+Definition at line 20 of file Binding\+Manager.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_afe818ca02bb05937eb6dd04c61856e20}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_afe818ca02bb05937eb6dd04c61856e20}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!BindingManager@{BindingManager}}
+\index{BindingManager@{BindingManager}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{BindingManager()}{BindingManager()}}
+{\footnotesize\ttfamily Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Binding\+Manager (\begin{DoxyParamCaption}\item[{Activity}]{activity }\end{DoxyParamCaption})}
+
+
+
+Creates a new instance of the binding manager. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em activity} & The Android activity that is using the view with the controls to bind to.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 28 of file Binding\+Manager.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ab08a1775df897b8c64b5c4106f883dda}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ab08a1775df897b8c64b5c4106f883dda}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!Add@{Add}}
+\index{Add@{Add}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{Add()}{Add()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Add (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}}}]{binding }\end{DoxyParamCaption})}
+
+
+
+Adds a new binding to be managed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em binding} & The new binding to add.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 68 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a467ef453c28beda0e252fcd527a6076f}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a467ef453c28beda0e252fcd527a6076f}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!Add@{Add}}
+\index{Add@{Add}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{Add()}{Add()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Add (\begin{DoxyParamCaption}\item[{int}]{view\+Id,  }\item[{string}]{target\+Property,  }\item[{object}]{source,  }\item[{string}]{source\+Property }\end{DoxyParamCaption})}
+
+
+
+Adds a new binding to be managed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em view\+Id} & The id of the control to bind to.\\
+\hline
+{\em target\+Property} & The name of the property on the view to bind to.\\
+\hline
+{\em source} & A reference to the object that will be bound to the control.\\
+\hline
+{\em source\+Property} & The name of the property on the object that will be bound to the target property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 46 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ab1bf3597f6c5a7f18785ef0bc29180c8}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ab1bf3597f6c5a7f18785ef0bc29180c8}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!Add@{Add}}
+\index{Add@{Add}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{Add()}{Add()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Add (\begin{DoxyParamCaption}\item[{View}]{target,  }\item[{string}]{target\+Property,  }\item[{object}]{source,  }\item[{string}]{source\+Property }\end{DoxyParamCaption})}
+
+
+
+Adds a new binding to be managed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & A reference to the control to bind to.\\
+\hline
+{\em target\+Property} & The name of the property on the view to bind to.\\
+\hline
+{\em source} & A reference to the object that will be bound to the control.\\
+\hline
+{\em source\+Property} & The name of the property on the object that will be bound to the target property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 59 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a8e9d8b32b27b1a3fea7d5c395850d527}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a8e9d8b32b27b1a3fea7d5c395850d527}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!GetBindingsForView@{GetBindingsForView}}
+\index{GetBindingsForView@{GetBindingsForView}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{GetBindingsForView()}{GetBindingsForView()}}
+{\footnotesize\ttfamily IEnumerable$<$\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}}$>$ Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Get\+Bindings\+For\+View (\begin{DoxyParamCaption}\item[{View}]{view }\end{DoxyParamCaption})}
+
+
+
+Returns all bindings for the supplied view. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em view} & A reference to the view to return bindings for.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A enumerable containing the bindings for the supplied view.
+\end{DoxyReturn}
+
+
+Definition at line 117 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a5d5d9df120dbc45944689b17dfee76d0}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a5d5d9df120dbc45944689b17dfee76d0}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!Remove@{Remove}}
+\index{Remove@{Remove}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{Remove()}{Remove()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Remove (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}}}]{binding }\end{DoxyParamCaption})}
+
+
+
+Removes the supplied binding from the binding manager. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em binding} & The binding to remove.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 95 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a3a99ba6ff7a4026ea1cd01acd9be4beb}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a3a99ba6ff7a4026ea1cd01acd9be4beb}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!Remove@{Remove}}
+\index{Remove@{Remove}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{Remove()}{Remove()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Remove (\begin{DoxyParamCaption}\item[{View}]{target,  }\item[{string}]{target\+Property,  }\item[{object}]{source,  }\item[{string}]{source\+Property }\end{DoxyParamCaption})}
+
+
+
+Removes the binding matching the supplied parameters from the binding manager. If no bindings matched the method does nothing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & A reference to the bound control.\\
+\hline
+{\em target\+Property} & The name of the property on the view that is bound to.\\
+\hline
+{\em source} & A reference to the object that is bound to.\\
+\hline
+{\em source\+Property} & The name of the property on the object that that is bound to the target property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 81 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_af9a2d4219218ba4d00c0d11cabf28647}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_af9a2d4219218ba4d00c0d11cabf28647}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!RemoveAll@{RemoveAll}}
+\index{RemoveAll@{RemoveAll}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{RemoveAll()}{RemoveAll()}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Remove\+All (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Removes all bindings from the binding manager. 
+
+
+
+Definition at line 104 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ae474c9e4447df630ff8ccabc86ede55b}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_ae474c9e4447df630ff8ccabc86ede55b}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!UpdateSourceForLastView@{UpdateSourceForLastView}}
+\index{UpdateSourceForLastView@{UpdateSourceForLastView}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{UpdateSourceForLastView()}{UpdateSourceForLastView()}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Update\+Source\+For\+Last\+View (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Updates bindings on the view that is in current focus on the activity supplied to the \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager}{Binding\+Manager}}. 
+
+
+
+Definition at line 135 of file Binding\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a822a17c19c9b04cff5b5e4e9afef634b}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_a822a17c19c9b04cff5b5e4e9afef634b}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!UpdateSourceForView@{UpdateSourceForView}}
+\index{UpdateSourceForView@{UpdateSourceForView}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{UpdateSourceForView()}{UpdateSourceForView()}}
+{\footnotesize\ttfamily void Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Update\+Source\+For\+View (\begin{DoxyParamCaption}\item[{View}]{view }\end{DoxyParamCaption})}
+
+
+
+Updates bindings with the current values in the supplied view. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em view} & The view to update bindings for.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 126 of file Binding\+Manager.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_aec37b7b75c14912810ac3939cde32440}\label{class_csla_1_1_axml_1_1_binding_1_1_binding_manager_aec37b7b75c14912810ac3939cde32440}} 
+\index{Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}!Bindings@{Bindings}}
+\index{Bindings@{Bindings}!Csla.Axml.Binding.BindingManager@{Csla.Axml.Binding.BindingManager}}
+\doxysubsubsection{\texorpdfstring{Bindings}{Bindings}}
+{\footnotesize\ttfamily List$<$\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding}{Binding}}$>$ Csla.\+Axml.\+Binding.\+Binding\+Manager.\+Bindings\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+A list of bindings that have been added to the manager. 
+
+
+
+Definition at line 37 of file Binding\+Manager.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Axml.\+Android/\+Binding/\mbox{\hyperlink{_csla_8_axml_8_android_2_binding_2_binding_manager_8cs}{Binding\+Manager.\+cs}}\end{DoxyCompactItemize}

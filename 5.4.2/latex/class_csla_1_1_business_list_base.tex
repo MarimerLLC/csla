@@ -1,0 +1,1029 @@
+\hypertarget{class_csla_1_1_business_list_base}{}\doxysection{Csla.\+Business\+List\+Base$<$ T, C $>$ Class Template Reference}
+\label{class_csla_1_1_business_list_base}\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+
+
+This is the base class from which most business collections or lists will be derived.  
+
+
+Inheritance diagram for Csla.\+Business\+List\+Base$<$ T, C $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=10.000000cm]{class_csla_1_1_business_list_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+T \mbox{\hyperlink{class_csla_1_1_business_list_base_ae487269ad42dab6b027193bbacb34ffc}{Clone}} ()
+\begin{DoxyCompactList}\small\item\em Creates a clone of the object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_business_list_base_aec5ccdc674a72972d451b4d3a8aaec7a}{Contains\+Deleted}} (C item)
+\begin{DoxyCompactList}\small\item\em Returns true if the internal deleted list contains the specified child object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_acbaba16aabfd8bd666d915521e70190c}{Begin\+Edit}} ()
+\begin{DoxyCompactList}\small\item\em Starts a nested edit on the object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_a3e446d7f808013ca6db99bd3f8322527}{Cancel\+Edit}} ()
+\begin{DoxyCompactList}\small\item\em Cancels the current edit process, restoring the object\textquotesingle{}s state to its previous values. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_a339f72b3e5d521ab664998e6c5f47e7c}{Apply\+Edit}} ()
+\begin{DoxyCompactList}\small\item\em Commits the current edit process. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_business_list_base_aadd2f22e81723fd219b10811acc24b9b}{Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_business_list_base_a359f33a613777beb3eaef5dd0ad68eab}{Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_business_list_base_afda7451ac3992aa0acee123c0893b8bb}{Save\+And\+Merge\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging any resulting updates into the existing object graph. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_a68f65744a78dd316ffef289d09d7b476}{Begin\+Save}} ()
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_a944fa1095a0d10f16e84278b328c45f7}{Begin\+Save}} (object user\+State)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_a70ac645e04d9300590a5a51c745e1197}{Begin\+Save}} (Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ handler)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+async void \mbox{\hyperlink{class_csla_1_1_business_list_base_a3a4c29c62456547ce03ac5c96558ae07}{Begin\+Save}} (Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ handler, object user\+State)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_business_list_base_a1131aaec114dca0c46399b12db7ebd21}{Business\+List\+Base}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a0462dd7fafa5290a6564b2f5790b00bc}{Initialize}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_business_list_base_a9e1320830baea76370db02dda7e61c26}{Get\+Clone}} ()
+\begin{DoxyCompactList}\small\item\em Creates a clone of the object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_ac5e310ca016bcc04554eb7503cc842a7}{Edit\+Child\+Complete}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object}{Core.\+IEditable\+Business\+Object}} child)
+\begin{DoxyCompactList}\small\item\em Override this method to be notified when a child object\textquotesingle{}s \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Core.\+Business\+Base.\+Apply\+Edit}} method has completed. \end{DoxyCompactList}\item 
+override C \mbox{\hyperlink{class_csla_1_1_business_list_base_afbde3c8b07aa683bc41232d8b489b46a}{Add\+New\+Core}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to create a new object that is added to the collection. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_abd340fe5bb3ca69c9c1187b29c5efcf7}{Insert\+Item}} (int index, C item)
+\begin{DoxyCompactList}\small\item\em Sets the edit level of the child object as it is added. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a219758cdd9ad60c9604326238b8b4b4f}{Remove\+Item}} (int index)
+\begin{DoxyCompactList}\small\item\em Marks the child object for deletion and moves it to the collection of deleted objects. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a7d6a808c7a9a1c733f06ff3aeb183e02}{Set\+Item}} (int index, C item)
+\begin{DoxyCompactList}\small\item\em Replaces the item at the specified index with the specified item, first moving the original item to the deleted list. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a9625c785af09dbf2f6b9cc5a84f96bff}{Clear\+Items}} ()
+\begin{DoxyCompactList}\small\item\em Clears the collection, moving all active items to the deleted list. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_aa51c801c1cce057a9a1b3683e56b5515}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should serialize its data. The data should be serialized into the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a5008c3db22fef1f5ed4b5584d18b3b2d}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should be deserialized. The data should be deserialized from the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a18c21f32331d78f537b7c24b784669a3}{On\+Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should serialize its child references. The data should be serialized into the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a0101126d73ae226d0c63d74832389598}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should deserialize its child references. The data should be deserialized from the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_list_base_ac599a3beddd4214698dde218891c3ad4}{Mark\+As\+Child}} ()
+\begin{DoxyCompactList}\small\item\em Marks the object as being a child object. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_business_list_base_a84846d2a7a4fcc9de71d72c8a6d7b281}{On\+Deserialized}} ()
+\begin{DoxyCompactList}\small\item\em Reset parent references on deserialization. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a9adc7a8f623b78ad45ee181b4598b367}{Child\+\_\+\+Create}} ()
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the object with default values. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a44336099db954fec211ad134a7a9fce7}{Child\+\_\+\+Update}} (params object\mbox{[}$\,$\mbox{]} parameters)
+\begin{DoxyCompactList}\small\item\em Saves all items in the list, automatically performing insert, update or delete operations as necessary. \end{DoxyCompactList}\item 
+virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_business_list_base_ada6e8ecb2535e5d6d77777a8dc64fef1}{Save\+Async}} (object user\+State, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a3f8d5f6b6abeda4c29fd0d8cb7a4758d}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+xyz method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a0d4f60f9ef96102e11ba345b459f2ad5}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke\+Complete}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+xyz method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_aa2e5c3d689c1def888eadcd0f7df2b81}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e, Exception ex)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a4921d4bf9e2a7d7fcfc6c3dfadbd565a}{Child\+\_\+\+On\+Data\+Portal\+Invoke}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+\+XYZ method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_ae31123266ddb3dfe4cea5086aca5d816}{Child\+\_\+\+On\+Data\+Portal\+Invoke\+Complete}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+\+XYZ method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a4f51d973d0d5b4b7e210a41ef5c70c42}{Child\+\_\+\+On\+Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e, Exception ex)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a287024d20ad2d1e233a41d434a311060}{On\+Saved}} (T new\+Object, Exception e, object user\+State)
+\begin{DoxyCompactList}\small\item\em Raises the \mbox{\hyperlink{class_csla_1_1_business_list_base_a31f024ed956cd059c07e59492193e2e7}{Saved}} event, indicating that the object has been saved, and providing a reference to the new object instance. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base_a436239f61e45f88957a84584b2740f6a}{Set\+Parent}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} parent)
+\begin{DoxyCompactList}\small\item\em Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Mobile\+List}}$<$ C $>$ \mbox{\hyperlink{class_csla_1_1_business_list_base_a9fd959ac2a12c43843889df03f035a78}{Deleted\+List}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A collection containing all child objects marked for deletion. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_business_list_base_a367618f26f46fd16ea8c28dda76919c1}{Edit\+Level}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the current edit level of the object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_business_list_base_ad854645493cb7a8273554e7b41777a87}{Is\+Child}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Indicates whether this collection object is a child object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_business_list_base_a2f3278f8c166bc434260d7a1b49274fb}{Is\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this object\textquotesingle{}s data has been changed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_business_list_base_aa07aca9ea5c43756451265e26ac77b8a}{Is\+Self\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this object is currently in a valid state (has no broken validation rules). \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_business_list_base_a8096c2f031b64ff194041a4449f971db}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this object is currently in a valid state (has no broken validation rules). \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_business_list_base_a2482d6caa5baffafa330077e835726e6}{Is\+Savable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if this object has changes, is valid, the user is authorized and the object is not busy. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_business_list_base_a1a306ee443692869cc73ccc24e9bdd1a}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the busy status for this object and its child objects. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Csla.\+Core.\+Saved\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_business_list_base_a31f024ed956cd059c07e59492193e2e7}{Saved}}
+\begin{DoxyCompactList}\small\item\em Event raised when an object has been saved. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} \mbox{\hyperlink{class_csla_1_1_business_list_base_a2cee20b73299df4a292da669956b3ff1}{Parent}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Provide access to the parent reference for use in child object code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+This is the base class from which most business collections or lists will be derived. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the business object being defined.\\
+\hline
+{\em C} & Type of the child objects contained in the list.\\
+\hline
+\end{DoxyTemplParams}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}}}]\item[{\em T} : {\em T}]\item[{\em T} : {\em C}]\item[{\em C} : {\em \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object}{Core.\+IEditable\+Business\+Object}}}]\end{description}
+\end{Desc}
+
+
+Definition at line 33 of file Business\+List\+Base.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a1131aaec114dca0c46399b12db7ebd21}\label{class_csla_1_1_business_list_base_a1131aaec114dca0c46399b12db7ebd21}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!BusinessListBase@{BusinessListBase}}
+\index{BusinessListBase@{BusinessListBase}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{BusinessListBase()}{BusinessListBase()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.\mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 45 of file Business\+List\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_afbde3c8b07aa683bc41232d8b489b46a}\label{class_csla_1_1_business_list_base_afbde3c8b07aa683bc41232d8b489b46a}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!AddNewCore@{AddNewCore}}
+\index{AddNewCore@{AddNewCore}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{AddNewCore()}{AddNewCore()}}
+{\footnotesize\ttfamily override C \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Add\+New\+Core (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to create a new object that is added to the collection. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_observable_binding_list_aa12735ff45f24f057f3aa946ccf8ef7e}{Csla.\+Core.\+Observable\+Binding\+List$<$ C $>$}}.
+
+
+
+Definition at line 289 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a339f72b3e5d521ab664998e6c5f47e7c}\label{class_csla_1_1_business_list_base_a339f72b3e5d521ab664998e6c5f47e7c}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!ApplyEdit@{ApplyEdit}}
+\index{ApplyEdit@{ApplyEdit}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{ApplyEdit()}{ApplyEdit()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Apply\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Commits the current edit process. 
+
+Calling this method causes the most recently taken snapshot of the object\textquotesingle{}s state to be discarded, thus committing any changes made to the object\textquotesingle{}s state since the last \mbox{\hyperlink{class_csla_1_1_business_list_base_acbaba16aabfd8bd666d915521e70190c}{Begin\+Edit}} call. 
+
+This method triggers an \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Core.\+Business\+Base.\+Apply\+Edit}} in all child objects. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_support_undo_a44016e8a072125257027e5f4313e2d8e}{Csla.\+Core.\+ISupport\+Undo}}.
+
+
+
+Definition at line 250 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_acbaba16aabfd8bd666d915521e70190c}\label{class_csla_1_1_business_list_base_acbaba16aabfd8bd666d915521e70190c}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!BeginEdit@{BeginEdit}}
+\index{BeginEdit@{BeginEdit}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{BeginEdit()}{BeginEdit()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Begin\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Starts a nested edit on the object. 
+
+When this method is called the object takes a snapshot of its current state (the values of its variables). This snapshot can be restored by calling \mbox{\hyperlink{class_csla_1_1_business_list_base_a3e446d7f808013ca6db99bd3f8322527}{Cancel\+Edit}} or committed by calling \mbox{\hyperlink{class_csla_1_1_business_list_base_a339f72b3e5d521ab664998e6c5f47e7c}{Apply\+Edit}}. 
+
+This is a nested operation. Each call to Begin\+Edit adds a new snapshot of the object\textquotesingle{}s state to a stack. You should ensure that for each call to Begin\+Edit there is a corresponding call to either Cancel\+Edit or Apply\+Edit to remove that snapshot from the stack. 
+
+See Chapters 2 and 3 for details on n-\/level undo and state stacking. 
+
+This method triggers the copying of all child object states. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_support_undo_ab73c78a49f4ba541bfb16a1a25c77d16}{Csla.\+Core.\+ISupport\+Undo}}.
+
+
+
+Definition at line 208 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a68f65744a78dd316ffef289d09d7b476}\label{class_csla_1_1_business_list_base_a68f65744a78dd316ffef289d09d7b476}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Begin\+Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 989 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a70ac645e04d9300590a5a51c745e1197}\label{class_csla_1_1_business_list_base_a70ac645e04d9300590a5a51c745e1197}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$}]{handler }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handler} & Method called when the operation is complete. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1011 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a3a4c29c62456547ce03ac5c96558ae07}\label{class_csla_1_1_business_list_base_a3a4c29c62456547ce03ac5c96558ae07}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily async void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$}]{handler,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handler} & Method called when the operation is complete. \\
+\hline
+{\em user\+State} & User state object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1024 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a944fa1095a0d10f16e84278b328c45f7}\label{class_csla_1_1_business_list_base_a944fa1095a0d10f16e84278b328c45f7}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+State} & User state object.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 999 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a3e446d7f808013ca6db99bd3f8322527}\label{class_csla_1_1_business_list_base_a3e446d7f808013ca6db99bd3f8322527}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!CancelEdit@{CancelEdit}}
+\index{CancelEdit@{CancelEdit}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{CancelEdit()}{CancelEdit()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Cancel\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Cancels the current edit process, restoring the object\textquotesingle{}s state to its previous values. 
+
+Calling this method causes the most recently taken snapshot of the object\textquotesingle{}s state to be restored. This resets the object\textquotesingle{}s values to the point of the last \mbox{\hyperlink{class_csla_1_1_business_list_base_acbaba16aabfd8bd666d915521e70190c}{Begin\+Edit}} call. 
+
+This method triggers an undo in all child objects. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_support_undo_a08394ece8b4b0ea537ee61abc85863cb}{Csla.\+Core.\+ISupport\+Undo}}.
+
+
+
+Definition at line 229 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a9adc7a8f623b78ad45ee181b4598b367}\label{class_csla_1_1_business_list_base_a9adc7a8f623b78ad45ee181b4598b367}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Child\_Create@{Child\_Create}}
+\index{Child\_Create@{Child\_Create}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_Create()}{Child\_Create()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Child\+\_\+\+Create (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Initializes a new instance of the object with default values. 
+
+
+
+Definition at line 856 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a4f51d973d0d5b4b7e210a41ef5c70c42}\label{class_csla_1_1_business_list_base_a4f51d973d0d5b4b7e210a41ef5c70c42}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Child\_OnDataPortalException@{Child\_OnDataPortalException}}
+\index{Child\_OnDataPortalException@{Child\_OnDataPortalException}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_OnDataPortalException()}{Child\_OnDataPortalException()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Child\+\_\+\+On\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e,  }\item[{Exception}]{ex }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+{\em ex} & The Exception thrown during data access.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1100 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a4921d4bf9e2a7d7fcfc6c3dfadbd565a}\label{class_csla_1_1_business_list_base_a4921d4bf9e2a7d7fcfc6c3dfadbd565a}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Child\_OnDataPortalInvoke@{Child\_OnDataPortalInvoke}}
+\index{Child\_OnDataPortalInvoke@{Child\_OnDataPortalInvoke}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_OnDataPortalInvoke()}{Child\_OnDataPortalInvoke()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Child\+\_\+\+On\+Data\+Portal\+Invoke (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+\+XYZ method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1081 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_ae31123266ddb3dfe4cea5086aca5d816}\label{class_csla_1_1_business_list_base_ae31123266ddb3dfe4cea5086aca5d816}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Child\_OnDataPortalInvokeComplete@{Child\_OnDataPortalInvokeComplete}}
+\index{Child\_OnDataPortalInvokeComplete@{Child\_OnDataPortalInvokeComplete}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_OnDataPortalInvokeComplete()}{Child\_OnDataPortalInvokeComplete()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Child\+\_\+\+On\+Data\+Portal\+Invoke\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+\+XYZ method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1090 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a44336099db954fec211ad134a7a9fce7}\label{class_csla_1_1_business_list_base_a44336099db954fec211ad134a7a9fce7}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Child\_Update@{Child\_Update}}
+\index{Child\_Update@{Child\_Update}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_Update()}{Child\_Update()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Child\+\_\+\+Update (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{parameters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Saves all items in the list, automatically performing insert, update or delete operations as necessary. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & Optional parameters passed to child update methods. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 869 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a9625c785af09dbf2f6b9cc5a84f96bff}\label{class_csla_1_1_business_list_base_a9625c785af09dbf2f6b9cc5a84f96bff}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!ClearItems@{ClearItems}}
+\index{ClearItems@{ClearItems}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{ClearItems()}{ClearItems()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Clear\+Items (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Clears the collection, moving all active items to the deleted list. 
+
+
+
+Definition at line 409 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_ae487269ad42dab6b027193bbacb34ffc}\label{class_csla_1_1_business_list_base_ae487269ad42dab6b027193bbacb34ffc}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Clone@{Clone}}
+\index{Clone@{Clone}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Clone()}{Clone()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Clone (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates a clone of the object. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the exact data of the original object.
+\end{DoxyReturn}
+
+
+Definition at line 119 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_aec5ccdc674a72972d451b4d3a8aaec7a}\label{class_csla_1_1_business_list_base_aec5ccdc674a72972d451b4d3a8aaec7a}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!ContainsDeleted@{ContainsDeleted}}
+\index{ContainsDeleted@{ContainsDeleted}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{ContainsDeleted()}{ContainsDeleted()}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Contains\+Deleted (\begin{DoxyParamCaption}\item[{C}]{item }\end{DoxyParamCaption})}
+
+
+
+Returns true if the internal deleted list contains the specified child object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & Child object to check.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 179 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_aa2e5c3d689c1def888eadcd0f7df2b81}\label{class_csla_1_1_business_list_base_aa2e5c3d689c1def888eadcd0f7df2b81}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!DataPortal\_OnDataPortalException@{DataPortal\_OnDataPortalException}}
+\index{DataPortal\_OnDataPortalException@{DataPortal\_OnDataPortalException}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalException()}{DataPortal\_OnDataPortalException()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Data\+Portal\+\_\+\+On\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e,  }\item[{Exception}]{ex }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+{\em ex} & The Exception thrown during data access.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1072 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a3f8d5f6b6abeda4c29fd0d8cb7a4758d}\label{class_csla_1_1_business_list_base_a3f8d5f6b6abeda4c29fd0d8cb7a4758d}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!DataPortal\_OnDataPortalInvoke@{DataPortal\_OnDataPortalInvoke}}
+\index{DataPortal\_OnDataPortalInvoke@{DataPortal\_OnDataPortalInvoke}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalInvoke()}{DataPortal\_OnDataPortalInvoke()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+xyz method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1053 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a0d4f60f9ef96102e11ba345b459f2ad5}\label{class_csla_1_1_business_list_base_a0d4f60f9ef96102e11ba345b459f2ad5}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!DataPortal\_OnDataPortalInvokeComplete@{DataPortal\_OnDataPortalInvokeComplete}}
+\index{DataPortal\_OnDataPortalInvokeComplete@{DataPortal\_OnDataPortalInvokeComplete}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalInvokeComplete()}{DataPortal\_OnDataPortalInvokeComplete()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+xyz method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1062 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_ac5e310ca016bcc04554eb7503cc842a7}\label{class_csla_1_1_business_list_base_ac5e310ca016bcc04554eb7503cc842a7}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!EditChildComplete@{EditChildComplete}}
+\index{EditChildComplete@{EditChildComplete}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{EditChildComplete()}{EditChildComplete()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Edit\+Child\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object}{Core.\+IEditable\+Business\+Object}}}]{child }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to be notified when a child object\textquotesingle{}s \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Core.\+Business\+Base.\+Apply\+Edit}} method has completed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em child} & The child object that was edited.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 274 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a9e1320830baea76370db02dda7e61c26}\label{class_csla_1_1_business_list_base_a9e1320830baea76370db02dda7e61c26}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!GetClone@{GetClone}}
+\index{GetClone@{GetClone}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{GetClone()}{GetClone()}}
+{\footnotesize\ttfamily virtual object \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Get\+Clone (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates a clone of the object. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the exact data of the original object.
+\end{DoxyReturn}
+
+
+Definition at line 110 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a0462dd7fafa5290a6564b2f5790b00bc}\label{class_csla_1_1_business_list_base_a0462dd7fafa5290a6564b2f5790b00bc}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Initialize@{Initialize}}
+\index{Initialize@{Initialize}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Initialize()}{Initialize()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code. 
+
+
+
+Definition at line 59 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_abd340fe5bb3ca69c9c1187b29c5efcf7}\label{class_csla_1_1_business_list_base_abd340fe5bb3ca69c9c1187b29c5efcf7}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!InsertItem@{InsertItem}}
+\index{InsertItem@{InsertItem}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{InsertItem()}{InsertItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Insert\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{C}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets the edit level of the child object as it is added. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item to insert.\\
+\hline
+{\em item} & Item to insert.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 326 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_ac599a3beddd4214698dde218891c3ad4}\label{class_csla_1_1_business_list_base_ac599a3beddd4214698dde218891c3ad4}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!MarkAsChild@{MarkAsChild}}
+\index{MarkAsChild@{MarkAsChild}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{MarkAsChild()}{MarkAsChild()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Mark\+As\+Child (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Marks the object as being a child object. 
+
+By default all business objects are \textquotesingle{}parent\textquotesingle{} objects. This means that they can be directly retrieved and updated into the database. 
+
+We often also need child objects. These are objects which are contained within other objects. For instance, a parent Invoice object will contain child Line\+Item objects. 
+
+To create a child object, the Mark\+As\+Child method must be called as the object is created. Please see Chapter 7 for details on the use of the Mark\+As\+Child method. 
+
+Definition at line 702 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a84846d2a7a4fcc9de71d72c8a6d7b281}\label{class_csla_1_1_business_list_base_a84846d2a7a4fcc9de71d72c8a6d7b281}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!OnDeserialized@{OnDeserialized}}
+\index{OnDeserialized@{OnDeserialized}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{OnDeserialized()}{OnDeserialized()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.On\+Deserialized (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reset parent references on deserialization. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_observable_binding_list_a96fecb3a1a09fd95589c21a06e0ec37d}{Csla.\+Core.\+Observable\+Binding\+List$<$ C $>$}}.
+
+
+
+Definition at line 837 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a18c21f32331d78f537b7c24b784669a3}\label{class_csla_1_1_business_list_base_a18c21f32331d78f537b7c24b784669a3}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!OnGetChildren@{OnGetChildren}}
+\index{OnGetChildren@{OnGetChildren}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetChildren()}{OnGetChildren()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.On\+Get\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Method called by Mobile\+Formatter when an object should serialize its child references. The data should be serialized into the Serialization\+Info parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object to contain the serialized data. \\
+\hline
+{\em formatter} & Reference to the formatter performing the serialization. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 638 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_aa51c801c1cce057a9a1b3683e56b5515}\label{class_csla_1_1_business_list_base_aa51c801c1cce057a9a1b3683e56b5515}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Method called by Mobile\+Formatter when an object should serialize its data. The data should be serialized into the Serialization\+Info parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object to contain the serialized data. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 603 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a287024d20ad2d1e233a41d434a311060}\label{class_csla_1_1_business_list_base_a287024d20ad2d1e233a41d434a311060}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!OnSaved@{OnSaved}}
+\index{OnSaved@{OnSaved}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSaved()}{OnSaved()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.On\+Saved (\begin{DoxyParamCaption}\item[{T}]{new\+Object,  }\item[{Exception}]{e,  }\item[{object}]{user\+State }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the \mbox{\hyperlink{class_csla_1_1_business_list_base_a31f024ed956cd059c07e59492193e2e7}{Saved}} event, indicating that the object has been saved, and providing a reference to the new object instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Object} & The new object instance.\\
+\hline
+{\em e} & Execption that occurred during the operation.\\
+\hline
+{\em user\+State} & User state object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1195 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a0101126d73ae226d0c63d74832389598}\label{class_csla_1_1_business_list_base_a0101126d73ae226d0c63d74832389598}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Method called by Mobile\+Formatter when an object should deserialize its child references. The data should be deserialized from the Serialization\+Info parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the serialized data. \\
+\hline
+{\em formatter} & Reference to the formatter performing the deserialization. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 659 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a5008c3db22fef1f5ed4b5584d18b3b2d}\label{class_csla_1_1_business_list_base_a5008c3db22fef1f5ed4b5584d18b3b2d}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Method called by Mobile\+Formatter when an object should be deserialized. The data should be deserialized from the Serialization\+Info parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the serialized data. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 619 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a219758cdd9ad60c9604326238b8b4b4f}\label{class_csla_1_1_business_list_base_a219758cdd9ad60c9604326238b8b4b4f}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!RemoveItem@{RemoveItem}}
+\index{RemoveItem@{RemoveItem}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{RemoveItem()}{RemoveItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Remove\+Item (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Marks the child object for deletion and moves it to the collection of deleted objects. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item to remove.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 352 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_aadd2f22e81723fd219b10811acc24b9b}\label{class_csla_1_1_business_list_base_aadd2f22e81723fd219b10811acc24b9b}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+Calling this method starts the save operation, causing the all child objects to be inserted, updated or deleted within the database based on the each object\textquotesingle{}s current state. 
+
+All this is contingent on \mbox{\hyperlink{class_csla_1_1_business_list_base_a2f3278f8c166bc434260d7a1b49274fb}{Is\+Dirty}}. If this value is false, no data operation occurs. It is also contingent on \mbox{\hyperlink{class_csla_1_1_business_list_base_a8096c2f031b64ff194041a4449f971db}{Is\+Valid}}. If this value is false an exception will be thrown to indicate that the UI attempted to save an invalid object. 
+
+It is important to note that this method returns a new version of the business collection that contains any data updated during the save operation. You MUST update all object references to use this new version of the business collection in order to have access to the correct object data. 
+
+You can override this method to add your own custom behaviors to the save operation. For instance, you may add some security checks to make sure the user can save the object. If all security checks pass, you would then invoke the base Save method via {\ttfamily My\+Base.\+Save()}. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ab6a02a94f4adaa2c15eb411db9704b18}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 913 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_afda7451ac3992aa0acee123c0893b8bb}\label{class_csla_1_1_business_list_base_afda7451ac3992aa0acee123c0893b8bb}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}}
+{\footnotesize\ttfamily async Task \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging any resulting updates into the existing object graph. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 980 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a359f33a613777beb3eaef5dd0ad68eab}\label{class_csla_1_1_business_list_base_a359f33a613777beb3eaef5dd0ad68eab}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a0f361725f0d5c89d7fc3e22070417644}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 931 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_ada6e8ecb2535e5d6d77777a8dc64fef1}\label{class_csla_1_1_business_list_base_ada6e8ecb2535e5d6d77777a8dc64fef1}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Save\+Async (\begin{DoxyParamCaption}\item[{object}]{user\+State,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Saves the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+State} & User state data.\\
+\hline
+{\em is\+Sync} & True if the save operation should be synchronous.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 941 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a7d6a808c7a9a1c733f06ff3aeb183e02}\label{class_csla_1_1_business_list_base_a7d6a808c7a9a1c733f06ff3aeb183e02}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!SetItem@{SetItem}}
+\index{SetItem@{SetItem}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{SetItem()}{SetItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Set\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{C}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Replaces the item at the specified index with the specified item, first moving the original item to the deleted list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The zero-\/based index of the item to replace.\\
+\hline
+{\em item} & The new value for the item at the specified index. The value can be null for reference types. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 382 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a436239f61e45f88957a84584b2740f6a}\label{class_csla_1_1_business_list_base_a436239f61e45f88957a84584b2740f6a}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!SetParent@{SetParent}}
+\index{SetParent@{SetParent}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{SetParent()}{SetParent()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Set\+Parent (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}}}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & A reference to the parent collection object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1233 of file Business\+List\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a9fd959ac2a12c43843889df03f035a78}\label{class_csla_1_1_business_list_base_a9fd959ac2a12c43843889df03f035a78}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!DeletedList@{DeletedList}}
+\index{DeletedList@{DeletedList}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{DeletedList}{DeletedList}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_list}{Mobile\+List}}$<$C$>$ \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Deleted\+List\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+A collection containing all child objects marked for deletion. 
+
+
+
+Definition at line 137 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a367618f26f46fd16ea8c28dda76919c1}\label{class_csla_1_1_business_list_base_a367618f26f46fd16ea8c28dda76919c1}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!EditLevel@{EditLevel}}
+\index{EditLevel@{EditLevel}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{EditLevel}{EditLevel}}
+{\footnotesize\ttfamily int \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Edit\+Level\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Returns the current edit level of the object. 
+
+
+
+Definition at line 430 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a1a306ee443692869cc73ccc24e9bdd1a}\label{class_csla_1_1_business_list_base_a1a306ee443692869cc73ccc24e9bdd1a}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily override bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the busy status for this object and its child objects. 
+
+
+
+Definition at line 790 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_ad854645493cb7a8273554e7b41777a87}\label{class_csla_1_1_business_list_base_ad854645493cb7a8273554e7b41777a87}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!IsChild@{IsChild}}
+\index{IsChild@{IsChild}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{IsChild}{IsChild}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Is\+Child\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Indicates whether this collection object is a child object. 
+
+\begin{DoxyReturn}{Returns}
+True if this is a child object.
+\end{DoxyReturn}
+
+
+Definition at line 680 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a2f3278f8c166bc434260d7a1b49274fb}\label{class_csla_1_1_business_list_base_a2f3278f8c166bc434260d7a1b49274fb}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!IsDirty@{IsDirty}}
+\index{IsDirty@{IsDirty}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{IsDirty}{IsDirty}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Is\+Dirty\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this object\textquotesingle{}s data has been changed. 
+
+
+
+Definition at line 723 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a2482d6caa5baffafa330077e835726e6}\label{class_csla_1_1_business_list_base_a2482d6caa5baffafa330077e835726e6}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!IsSavable@{IsSavable}}
+\index{IsSavable@{IsSavable}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{IsSavable}{IsSavable}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Is\+Savable\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if this object has changes, is valid, the user is authorized and the object is not busy. 
+
+
+
+Definition at line 778 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_aa07aca9ea5c43756451265e26ac77b8a}\label{class_csla_1_1_business_list_base_aa07aca9ea5c43756451265e26ac77b8a}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!IsSelfValid@{IsSelfValid}}
+\index{IsSelfValid@{IsSelfValid}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{IsSelfValid}{IsSelfValid}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Is\+Self\+Valid\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Gets a value indicating whether this object is currently in a valid state (has no broken validation rules). 
+
+
+
+Definition at line 751 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a8096c2f031b64ff194041a4449f971db}\label{class_csla_1_1_business_list_base_a8096c2f031b64ff194041a4449f971db}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this object is currently in a valid state (has no broken validation rules). 
+
+
+
+Definition at line 760 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a2cee20b73299df4a292da669956b3ff1}\label{class_csla_1_1_business_list_base_a2cee20b73299df4a292da669956b3ff1}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Parent@{Parent}}
+\index{Parent@{Parent}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Parent}{Parent}}
+{\footnotesize\ttfamily \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Parent\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provide access to the parent reference for use in child object code. 
+
+This value will be Nothing for root objects. 
+
+Definition at line 1219 of file Business\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_list_base_a31f024ed956cd059c07e59492193e2e7}\label{class_csla_1_1_business_list_base_a31f024ed956cd059c07e59492193e2e7}} 
+\index{Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}!Saved@{Saved}}
+\index{Saved@{Saved}!Csla.BusinessListBase$<$ T, C $>$@{Csla.BusinessListBase$<$ T, C $>$}}
+\doxysubsubsection{\texorpdfstring{Saved}{Saved}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Csla.\+Core.\+Saved\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_business_list_base}{Csla.\+Business\+List\+Base}}$<$ T, C $>$.Saved\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event raised when an object has been saved. 
+
+
+
+Definition at line 1172 of file Business\+List\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_business_list_base_8cs}{Business\+List\+Base.\+cs}}\end{DoxyCompactItemize}

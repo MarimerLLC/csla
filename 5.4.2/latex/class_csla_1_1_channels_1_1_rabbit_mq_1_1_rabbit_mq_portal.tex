@@ -1,0 +1,293 @@
+\hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal}{}\doxysection{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal Class Reference}
+\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal}\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+
+
+Exposes server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} functionality through Rabbit\+MQ  
+
+
+Inheritance diagram for Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_af67c831867f32113ad3a96c625968c0c}{Rabbit\+Mq\+Portal}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a5d4f0b6cc8cddbcf1cc444cd095c92dc}{Rabbit\+Mq\+Portal}} (string data\+Portal\+Url)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a4559addffe7a189104a4dafefb2ac872}{Start\+Listening}} ()
+\begin{DoxyCompactList}\small\item\em Start processing inbound messages. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a7dd754d9999baa63dbaf3d994c1768e9}{Create}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Create and initialize an existing business object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a494b56b55a0f2d0dfb4b5c0b663a96cc}{Fetch}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Get an existing business object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_ae9665ed6cf5231a27cc17a0f9406b16f}{Update}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Update a business object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a8b081efb06e776feef17e2797e428ee4}{Delete}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Delete a business object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a3b5bd9eb1ae0a554958883a02c7f7996}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Dispose this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a5dd2c8c040bcd4d2a3d39e0ea48558d1}{Convert\+Request}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Override to convert the request data before it is transferred over the network. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_ac11943506cf110820669097ba7b604f6}{Convert\+Request}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Override to convert the request data before it is transferred over the network. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a8e576c17e933bf637fc85964d755d1ee}{Convert\+Response}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} response)
+\begin{DoxyCompactList}\small\item\em Override to convert the response data after it comes back from the network. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a6f06cbd9bff70d741ccb1e66d8811578}{Data\+Portal\+Url}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the URI for the data portal service. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a92f42f8db584a47b422f57a28a867987}{Timeout}} = 30\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the timeout for network operations in seconds (default is 30 seconds). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Exposes server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} functionality through Rabbit\+MQ 
+
+
+
+Definition at line 24 of file Rabbit\+Mq\+Portal.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_af67c831867f32113ad3a96c625968c0c}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_af67c831867f32113ad3a96c625968c0c}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!RabbitMqPortal@{RabbitMqPortal}}
+\index{RabbitMqPortal@{RabbitMqPortal}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{RabbitMqPortal()}{RabbitMqPortal()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Rabbit\+Mq\+Portal (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 44 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a5d4f0b6cc8cddbcf1cc444cd095c92dc}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a5d4f0b6cc8cddbcf1cc444cd095c92dc}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!RabbitMqPortal@{RabbitMqPortal}}
+\index{RabbitMqPortal@{RabbitMqPortal}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{RabbitMqPortal()}{RabbitMqPortal()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Rabbit\+Mq\+Portal (\begin{DoxyParamCaption}\item[{string}]{data\+Portal\+Url }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Portal\+Url} & URI for the data portal\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 53 of file Rabbit\+Mq\+Portal.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_ac11943506cf110820669097ba7b604f6}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_ac11943506cf110820669097ba7b604f6}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!ConvertRequest@{ConvertRequest}}
+\index{ConvertRequest@{ConvertRequest}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{ConvertRequest()}{ConvertRequest()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Convert\+Request (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}}}]{request }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override to convert the request data before it is transferred over the network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & Request object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 395 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a5dd2c8c040bcd4d2a3d39e0ea48558d1}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a5dd2c8c040bcd4d2a3d39e0ea48558d1}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!ConvertRequest@{ConvertRequest}}
+\index{ConvertRequest@{ConvertRequest}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{ConvertRequest()}{ConvertRequest()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Convert\+Request (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}}}]{request }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override to convert the request data before it is transferred over the network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & Request object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 385 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a8e576c17e933bf637fc85964d755d1ee}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a8e576c17e933bf637fc85964d755d1ee}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!ConvertResponse@{ConvertResponse}}
+\index{ConvertResponse@{ConvertResponse}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{ConvertResponse()}{ConvertResponse()}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Convert\+Response (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}}}]{response }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override to convert the response data after it comes back from the network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response} & Response object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 405 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a7dd754d9999baa63dbaf3d994c1768e9}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a7dd754d9999baa63dbaf3d994c1768e9}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!Create@{Create}}
+\index{Create@{Create}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Create (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}}}]{request }\end{DoxyParamCaption})}
+
+
+
+Create and initialize an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & The request parameter object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 187 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a8b081efb06e776feef17e2797e428ee4}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a8b081efb06e776feef17e2797e428ee4}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}}}]{request }\end{DoxyParamCaption})}
+
+
+
+Delete a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & The request parameter object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 323 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a3b5bd9eb1ae0a554958883a02c7f7996}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a3b5bd9eb1ae0a554958883a02c7f7996}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}}
+{\footnotesize\ttfamily void Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Dispose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Dispose this object. 
+
+
+
+Definition at line 415 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a494b56b55a0f2d0dfb4b5c0b663a96cc}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a494b56b55a0f2d0dfb4b5c0b663a96cc}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Fetch (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}}}]{request }\end{DoxyParamCaption})}
+
+
+
+Get an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & The request parameter object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 234 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a4559addffe7a189104a4dafefb2ac872}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a4559addffe7a189104a4dafefb2ac872}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!StartListening@{StartListening}}
+\index{StartListening@{StartListening}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{StartListening()}{StartListening()}}
+{\footnotesize\ttfamily void Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Start\+Listening (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Start processing inbound messages. 
+
+
+
+Definition at line 91 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_ae9665ed6cf5231a27cc17a0f9406b16f}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_ae9665ed6cf5231a27cc17a0f9406b16f}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!Update@{Update}}
+\index{Update@{Update}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Update (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}}}]{request }\end{DoxyParamCaption})}
+
+
+
+Update a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & The request parameter object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 281 of file Rabbit\+Mq\+Portal.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a6f06cbd9bff70d741ccb1e66d8811578}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a6f06cbd9bff70d741ccb1e66d8811578}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!DataPortalUrl@{DataPortalUrl}}
+\index{DataPortalUrl@{DataPortalUrl}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{DataPortalUrl}{DataPortalUrl}}
+{\footnotesize\ttfamily string Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Data\+Portal\+Url\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the URI for the data portal service. 
+
+
+
+Definition at line 29 of file Rabbit\+Mq\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a92f42f8db584a47b422f57a28a867987}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_portal_a92f42f8db584a47b422f57a28a867987}} 
+\index{Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}!Timeout@{Timeout}}
+\index{Timeout@{Timeout}!Csla.Channels.RabbitMq.RabbitMqPortal@{Csla.Channels.RabbitMq.RabbitMqPortal}}
+\doxysubsubsection{\texorpdfstring{Timeout}{Timeout}}
+{\footnotesize\ttfamily int Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Portal.\+Timeout = 30\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the timeout for network operations in seconds (default is 30 seconds). 
+
+
+
+Definition at line 39 of file Rabbit\+Mq\+Portal.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Channels.\+Rabbit\+Mq/\mbox{\hyperlink{_rabbit_mq_portal_8cs}{Rabbit\+Mq\+Portal.\+cs}}\end{DoxyCompactItemize}

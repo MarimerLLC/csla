@@ -1,0 +1,157 @@
+\hypertarget{class_csla_1_1_xaml_1_1_cancellable_view_model}{}\doxysection{Csla.\+Xaml.\+Cancellable\+View\+Model$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_xaml_1_1_cancellable_view_model}\index{Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}}
+
+
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} without multithreading (concurrency) bugs.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+Cancellable\+View\+Model$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.472406cm]{class_csla_1_1_xaml_1_1_cancellable_view_model}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_a8ce3729b72a7888143373f08faa86a41}{Cancel\+Refresh}} ()
+\begin{DoxyCompactList}\small\item\em Cancel refresh operation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_a826c45b5848914ab8383e2cca33e2167}{Cancellable\+View\+Model}} ()
+\item 
+new void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_a60b71e04535fb26760974551c7579de2}{Begin\+Refresh}} (Action$<$ Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$$>$$>$ factory\+Method)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_aa85a661f7fabb6e54afa2536ed02bede}{Begin\+Refresh}} (string factory\+Method, params object\mbox{[}$\,$\mbox{]} factory\+Parameters)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_a4e13d849664e7fa1fa7dd16590ff5021}{Is\+Concurent\+Refreshes\+Allowed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Allows more than one refresh operations in one time. Anyway, only the last refresh request will set the Model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} without multithreading (concurrency) bugs. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \\
+\hline
+\end{DoxyTemplParams}
+
+
+Definition at line 21 of file Cancellable\+View\+Model.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_cancellable_view_model_a826c45b5848914ab8383e2cca33e2167}\label{class_csla_1_1_xaml_1_1_cancellable_view_model_a826c45b5848914ab8383e2cca33e2167}} 
+\index{Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}!CancellableViewModel@{CancellableViewModel}}
+\index{CancellableViewModel@{CancellableViewModel}!Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CancellableViewModel()}{CancellableViewModel()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model}{Csla.\+Xaml.\+Cancellable\+View\+Model}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model}{Cancellable\+View\+Model}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+
+
+
+
+Definition at line 28 of file Cancellable\+View\+Model.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_cancellable_view_model_a60b71e04535fb26760974551c7579de2}\label{class_csla_1_1_xaml_1_1_cancellable_view_model_a60b71e04535fb26760974551c7579de2}} 
+\index{Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}!BeginRefresh@{BeginRefresh}}
+\index{BeginRefresh@{BeginRefresh}!Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginRefresh()}{BeginRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily new void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model}{Csla.\+Xaml.\+Cancellable\+View\+Model}}$<$ T $>$.Begin\+Refresh (\begin{DoxyParamCaption}\item[{Action$<$ Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$$>$$>$}]{factory\+Method }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Static factory method action.\\
+\hline
+\end{DoxyParams}
+
+
+Begin\+Refresh(Business\+List.\+Begin\+Get\+List)
+
+Begin\+Refresh(handler =$>$ Business\+List.\+Begin\+Get\+List(handler))
+
+Begin\+Refresh(handler =$>$ Business\+List.\+Begin\+Get\+List(id, handler))
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_abeaa9934860a0d2d170d3bc48c28f5d1}{Csla.\+Xaml.\+View\+Model\+Base$<$ T $>$}}.
+
+
+
+Definition at line 48 of file Cancellable\+View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_cancellable_view_model_aa85a661f7fabb6e54afa2536ed02bede}\label{class_csla_1_1_xaml_1_1_cancellable_view_model_aa85a661f7fabb6e54afa2536ed02bede}} 
+\index{Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}!BeginRefresh@{BeginRefresh}}
+\index{BeginRefresh@{BeginRefresh}!Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginRefresh()}{BeginRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model}{Csla.\+Xaml.\+Cancellable\+View\+Model}}$<$ T $>$.Begin\+Refresh (\begin{DoxyParamCaption}\item[{string}]{factory\+Method,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{factory\+Parameters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Name of the static factory method.\\
+\hline
+{\em factory\+Parameters} & Factory method parameters.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ae3c93a483ebd97c038f9566f0d57ad03}{Csla.\+Xaml.\+View\+Model\+Base$<$ T $>$}}.
+
+
+
+Definition at line 60 of file Cancellable\+View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_cancellable_view_model_a8ce3729b72a7888143373f08faa86a41}\label{class_csla_1_1_xaml_1_1_cancellable_view_model_a8ce3729b72a7888143373f08faa86a41}} 
+\index{Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}!CancelRefresh@{CancelRefresh}}
+\index{CancelRefresh@{CancelRefresh}!Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CancelRefresh()}{CancelRefresh()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model}{Csla.\+Xaml.\+Cancellable\+View\+Model}}$<$ T $>$.Cancel\+Refresh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Cancel refresh operation. 
+
+
+
+Definition at line 69 of file Cancellable\+View\+Model.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_cancellable_view_model_a4e13d849664e7fa1fa7dd16590ff5021}\label{class_csla_1_1_xaml_1_1_cancellable_view_model_a4e13d849664e7fa1fa7dd16590ff5021}} 
+\index{Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}!IsConcurentRefreshesAllowed@{IsConcurentRefreshesAllowed}}
+\index{IsConcurentRefreshesAllowed@{IsConcurentRefreshesAllowed}!Csla.Xaml.CancellableViewModel$<$ T $>$@{Csla.Xaml.CancellableViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsConcurentRefreshesAllowed}{IsConcurentRefreshesAllowed}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model}{Csla.\+Xaml.\+Cancellable\+View\+Model}}$<$ T $>$.Is\+Concurent\+Refreshes\+Allowed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Allows more than one refresh operations in one time. Anyway, only the last refresh request will set the Model. 
+
+
+
+Definition at line 37 of file Cancellable\+View\+Model.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_cancellable_view_model_8cs}{Cancellable\+View\+Model.\+cs}}\end{DoxyCompactItemize}

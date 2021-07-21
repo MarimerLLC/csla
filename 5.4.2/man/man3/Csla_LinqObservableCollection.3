@@ -1,0 +1,453 @@
+.TH "Csla.LinqObservableCollection< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.LinqObservableCollection< T > \- Synchronized view over a source list, filtered, sorted and ordered based on a query result\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IList< T >, ICollection< T >, IEnumerable< T >, IList, ICollection, and INotifyCollectionChanged\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLinqObservableCollection\fP (System\&.Collections\&.ObjectModel\&.ObservableCollection< T > source, IEnumerable< T > queryResult)"
+.br
+.ti -1c
+.RI "\fBLinqObservableCollection\fP (System\&.Collections\&.ObjectModel\&.ObservableCollection< T > source, List< T > queryResult)"
+.br
+.RI "Creates a new instance of the observable view\&. "
+.ti -1c
+.RI "int \fBIndexOf\fP (T item)"
+.br
+.RI "Gets the positional index of the item\&. "
+.ti -1c
+.RI "void \fBInsert\fP (int index, T item)"
+.br
+.RI "Inserts item into specified position in list\&. "
+.ti -1c
+.RI "void \fBRemoveAt\fP (int index)"
+.br
+.RI "Removes item at specified index\&. "
+.ti -1c
+.RI "void \fBAdd\fP (T item)"
+.br
+.RI "Adds an item to the end of the list\&. "
+.ti -1c
+.RI "void \fBClear\fP ()"
+.br
+.RI "Clears the list\&. "
+.ti -1c
+.RI "bool \fBContains\fP (T item)"
+.br
+.RI "Gets a value indicating whether the list contains the specified item\&. "
+.ti -1c
+.RI "void \fBCopyTo\fP (T[] array, int arrayIndex)"
+.br
+.RI "Copies the contents of the list to an array\&. "
+.ti -1c
+.RI "bool \fBRemove\fP (T item)"
+.br
+.RI "Removes specified item from the list\&. "
+.ti -1c
+.RI "IEnumerator< T > \fBGetEnumerator\fP ()"
+.br
+.RI "Gets an enumerator for the list\&. "
+.ti -1c
+.RI "int \fBAdd\fP (object value)"
+.br
+.RI "Adds an item to the end of the list\&. "
+.ti -1c
+.RI "bool \fBContains\fP (object value)"
+.br
+.RI "Gets a value indicating whether the list contains the specified item\&. "
+.ti -1c
+.RI "int \fBIndexOf\fP (object value)"
+.br
+.RI "Gets the positional index of the item\&. "
+.ti -1c
+.RI "void \fBInsert\fP (int index, object value)"
+.br
+.RI "Inserts item into specified position in list\&. "
+.ti -1c
+.RI "void \fBRemove\fP (object value)"
+.br
+.RI "Removes specified item from the list\&. "
+.ti -1c
+.RI "void \fBCopyTo\fP (Array array, int index)"
+.br
+.RI "Copies the contents of the list to an array\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBOnCollectionChanged\fP (NotifyCollectionChangedEventArgs e)"
+.br
+.RI "Raises the CollectionChanged event\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "IList< T > \fBSource\fP\fC [get]\fP"
+.br
+.RI "Gets the source list (usually a \fBBusinessListBase\fP) object that contains/manages all data items\&. "
+.ti -1c
+.RI "List< T > \fBQueryResult\fP\fC [get]\fP"
+.br
+.RI "Gets the query result object used to filter the view\&. "
+.ti -1c
+.RI "T \fBthis[int index]\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the value at the specified index\&. "
+.ti -1c
+.RI "int \fBCount\fP\fC [get]\fP"
+.br
+.RI "Gets the number of items in the list\&. "
+.ti -1c
+.RI "bool \fBIsReadOnly\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the source list is read-only\&. "
+.ti -1c
+.RI "bool \fBIsFixedSize\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the source list has a fixed size\&. "
+.ti -1c
+.RI "bool \fBIsSynchronized\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the source list is synchronized\&. "
+.ti -1c
+.RI "object \fBSyncRoot\fP\fC [get]\fP"
+.br
+.RI "Gets the SyncRoot from the source list\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "System\&.Collections\&.Specialized\&.NotifyCollectionChangedEventHandler \fBCollectionChanged\fP"
+.br
+.RI "Event raised when the underlying source list is changed\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Synchronized view over a source list, filtered, sorted and ordered based on a query result\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of objects contained in the list/collection\&.
+.RE
+.PP
+
+.PP
+Definition at line 23 of file LinqObservableCollection\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.LinqObservableCollection\fP< T >\&.\fBLinqObservableCollection\fP (System\&.Collections\&.ObjectModel\&.ObservableCollection< T > source, IEnumerable< T > queryResult)"
+
+.PP
+Creates a new instance of the observable view\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIsource\fP Source list containing/managing all items\&.
+.br
+\fIqueryResult\fP Filtered query result over source list\&.
+.RE
+.PP
+
+.PP
+Definition at line 40 of file LinqObservableCollection\&.cs\&.
+.SS "\fBCsla\&.LinqObservableCollection\fP< T >\&.\fBLinqObservableCollection\fP (System\&.Collections\&.ObjectModel\&.ObservableCollection< T > source, List< T > queryResult)"
+
+.PP
+Creates a new instance of the observable view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsource\fP Source list containing/managing all items\&.
+.br
+\fIqueryResult\fP Filtered query result over source list\&.
+.RE
+.PP
+
+.PP
+Definition at line 50 of file LinqObservableCollection\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "int \fBCsla\&.LinqObservableCollection\fP< T >\&.Add (object value)"
+
+.PP
+Adds an item to the end of the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Item to add\&.
+.RE
+.PP
+
+.PP
+Definition at line 283 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.Add (T item)"
+
+.PP
+Adds an item to the end of the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item to add\&.
+.RE
+.PP
+
+.PP
+Definition at line 186 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.Clear ()"
+
+.PP
+Clears the list\&. Items in the \fBLinqObservableCollection\fP are cleared, and are also removed from the source list\&. Other items in the source list are unaffected\&. 
+.PP
+Definition at line 199 of file LinqObservableCollection\&.cs\&.
+.SS "bool \fBCsla\&.LinqObservableCollection\fP< T >\&.Contains (object value)"
+
+.PP
+Gets a value indicating whether the list contains the specified item\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Item to find\&.
+.RE
+.PP
+
+.PP
+Definition at line 293 of file LinqObservableCollection\&.cs\&.
+.SS "bool \fBCsla\&.LinqObservableCollection\fP< T >\&.Contains (T item)"
+
+.PP
+Gets a value indicating whether the list contains the specified item\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item to find\&.
+.RE
+.PP
+
+.PP
+Definition at line 215 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.CopyTo (Array array, int index)"
+
+.PP
+Copies the contents of the list to an array\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIarray\fP Target array\&.
+.br
+\fIindex\fP Index in array where copying begins\&.
+.RE
+.PP
+
+.PP
+Definition at line 352 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.CopyTo (T[] array, int arrayIndex)"
+
+.PP
+Copies the contents of the list to an array\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIarray\fP Target array\&.
+.br
+\fIarrayIndex\fP Index in array where copying begins\&.
+.RE
+.PP
+
+.PP
+Definition at line 225 of file LinqObservableCollection\&.cs\&.
+.SS "IEnumerator<T> \fBCsla\&.LinqObservableCollection\fP< T >\&.GetEnumerator ()"
+
+.PP
+Gets an enumerator for the list\&. 
+.PP
+Definition at line 266 of file LinqObservableCollection\&.cs\&.
+.SS "int \fBCsla\&.LinqObservableCollection\fP< T >\&.IndexOf (object value)"
+
+.PP
+Gets the positional index of the item\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Item to find\&.
+.RE
+.PP
+
+.PP
+Definition at line 302 of file LinqObservableCollection\&.cs\&.
+.SS "int \fBCsla\&.LinqObservableCollection\fP< T >\&.IndexOf (T item)"
+
+.PP
+Gets the positional index of the item\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item to find\&.
+.RE
+.PP
+
+.PP
+Definition at line 140 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.Insert (int index, object value)"
+
+.PP
+Inserts item into specified position in list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Location to insert item\&.
+.br
+\fIvalue\fP Item to insert\&.
+.RE
+.PP
+
+.PP
+Definition at line 312 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.Insert (int index, T item)"
+
+.PP
+Inserts item into specified position in list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Location to insert item\&.
+.br
+\fIitem\fP Item to insert\&.
+.RE
+.PP
+
+.PP
+Definition at line 150 of file LinqObservableCollection\&.cs\&.
+.SS "virtual void \fBCsla\&.LinqObservableCollection\fP< T >\&.OnCollectionChanged (NotifyCollectionChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the CollectionChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP EventArgs for event\&.
+.RE
+.PP
+
+.PP
+Definition at line 111 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.Remove (object value)"
+
+.PP
+Removes specified item from the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Item to remove\&.
+.RE
+.PP
+
+.PP
+Definition at line 330 of file LinqObservableCollection\&.cs\&.
+.SS "bool \fBCsla\&.LinqObservableCollection\fP< T >\&.Remove (T item)"
+
+.PP
+Removes specified item from the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item to remove\&.
+.RE
+.PP
+
+.PP
+Definition at line 258 of file LinqObservableCollection\&.cs\&.
+.SS "void \fBCsla\&.LinqObservableCollection\fP< T >\&.RemoveAt (int index)"
+
+.PP
+Removes item at specified index\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of item to remove\&.
+.RE
+.PP
+
+.PP
+Definition at line 159 of file LinqObservableCollection\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "int \fBCsla\&.LinqObservableCollection\fP< T >\&.Count\fC [get]\fP"
+
+.PP
+Gets the number of items in the list\&. 
+.PP
+Definition at line 233 of file LinqObservableCollection\&.cs\&.
+.SS "bool \fBCsla\&.LinqObservableCollection\fP< T >\&.IsFixedSize\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the source list has a fixed size\&. 
+.PP
+Definition at line 321 of file LinqObservableCollection\&.cs\&.
+.SS "bool \fBCsla\&.LinqObservableCollection\fP< T >\&.IsReadOnly\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the source list is read-only\&. 
+.PP
+Definition at line 242 of file LinqObservableCollection\&.cs\&.
+.SS "bool \fBCsla\&.LinqObservableCollection\fP< T >\&.IsSynchronized\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the source list is synchronized\&. 
+.PP
+Definition at line 361 of file LinqObservableCollection\&.cs\&.
+.SS "List<T> \fBCsla\&.LinqObservableCollection\fP< T >\&.QueryResult\fC [get]\fP"
+
+.PP
+Gets the query result object used to filter the view\&. 
+.PP
+Definition at line 131 of file LinqObservableCollection\&.cs\&.
+.SS "IList<T> \fBCsla\&.LinqObservableCollection\fP< T >\&.Source\fC [get]\fP"
+
+.PP
+Gets the source list (usually a \fBBusinessListBase\fP) object that contains/manages all data items\&. 
+.PP
+Definition at line 122 of file LinqObservableCollection\&.cs\&.
+.SS "object \fBCsla\&.LinqObservableCollection\fP< T >\&.SyncRoot\fC [get]\fP"
+
+.PP
+Gets the SyncRoot from the source list\&. 
+.PP
+Definition at line 369 of file LinqObservableCollection\&.cs\&.
+.SS "T \fBCsla\&.LinqObservableCollection\fP< T >\&.this[int index]\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the value at the specified index\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index location\&.
+.RE
+.PP
+
+.PP
+Definition at line 169 of file LinqObservableCollection\&.cs\&.
+.SH "Event Documentation"
+.PP 
+.SS "System\&.Collections\&.Specialized\&.NotifyCollectionChangedEventHandler \fBCsla\&.LinqObservableCollection\fP< T >\&.CollectionChanged"
+
+.PP
+Event raised when the underlying source list is changed\&. 
+.PP
+Definition at line 29 of file LinqObservableCollection\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

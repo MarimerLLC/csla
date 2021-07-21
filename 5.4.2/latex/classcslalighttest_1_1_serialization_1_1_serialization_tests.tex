@@ -1,0 +1,307 @@
+\hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests}{}\doxysection{cslalighttest.\+Serialization.\+Serialization\+Tests Class Reference}
+\label{classcslalighttest_1_1_serialization_1_1_serialization_tests}\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+Inheritance diagram for cslalighttest.\+Serialization.\+Serialization\+Tests\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classcslalighttest_1_1_serialization_1_1_serialization_tests}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_1_1_string_criteria}{String\+Criteria}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a0cd0f8130c0ed5540cd4e742f7547de5}{Serialize\+With\+Null\+Argument\+Should\+Not\+Throw\+Exception}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_af4b67eeb0a6d386144a17072dbd8c22e}{Serialize\+Criteria\+Success}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_aae49703a9b5dcd7cc3802c3b6e52ac97}{Business\+Object\+Without\+Child\+List}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae5fb6fcbce789b69782586438e5b1536}{Business\+Object\+With\+Child\+List}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_aab399be15ed04596e01ba3ba6974e89a}{Serialize\+And\+Deserialize\+Read\+Only}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_aee0fe7cff5cea6a4ab1a4b24f8834362}{Serialize\+Mobile\+List\+With\+Primitive\+Types}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a3b76b3def580be493b04c03b483d8fc4}{Mobile\+List\+With\+Non\+Business\+Object\+Reference\+Type}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_af30ce3202ccc843ffc93d5cc7df12e4e}{Read\+Only\+Base\+Test}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae2193e09ec8e5529cdced853b8fd74fd}{Read\+Only\+List\+Base\+Test}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a30ca287872488404f68cc6b62fae6b4e}{Mobile\+List\+Serialization\+Success}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_ace68a1f6f39e875fdad37dbf65f9aa4c}{Mobile\+List\+Empty\+Serialization\+Success}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a8ebce2916bcc15a8d299ba98e9a2d267}{Mobile\+List\+Of\+Mobile\+Objects\+Serialization\+Success}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a4c7d61e70436660b63127050cf89a53e}{Mobile\+Dictionary\+\_\+\+Primitive\+Key\+\_\+\+Primitive\+Value}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_add6deaad0f0a08d041afb76dbfd1cfb0}{Mobile\+Dictionary\+\_\+\+Primitive\+Key\+\_\+\+Primitive\+Value\+\_\+\+BF}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a1ae391e066e21a28803772e6069f2623}{Mobile\+Dictionary\+\_\+\+Primitive\+Key\+\_\+\+Mobile\+Value}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_abd421ba78b9012a5d53522f74bedd4e0}{Mobile\+Dictionary\+\_\+\+Mobile\+Key\+\_\+\+Primitive\+Value}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a82a128e5b3f8920d92a66bee0155725e}{Mobile\+Dictionary\+\_\+\+Mobile\+Key\+\_\+\+Mobile\+Value}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_adcf1573e4ebfe2759a6e3d766ef37acf}{Logically\+Identical\+Child\+Objects}} ()
+\begin{DoxyCompactList}\small\item\em Verifies that serializing an object graph with sibling complex objects that implement Equals and are logically identical, produces an identical object graph upon deserialization (eg. the two siblings are separate instances post-\/deserialization). It should also be noted that the tested objects implement custom serialization methods. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a1b1f262005a042296a461a0b41981f44}{Null\+Child\+Object}} ()
+\begin{DoxyCompactList}\small\item\em Verifies that serializing/deserializing an object graph with null references of a type that is complex (eg. is a separate child object) works. It should also be noted that the tested objects implement custom serialization methods. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_ad1262864e0762f072a0a31fa388b8d12}{Business\+Object\+With\+Enum}} ()
+\begin{DoxyCompactList}\small\item\em Verifies that serialization/deserialization works for business objects that have an property storing an enum. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae881e59696be5fef48e4fb43698bd3d1}{Test\+Serialization\+Csla\+Binary\+Reader\+Writer\+List}} ()
+\item 
+void \mbox{\hyperlink{classcslalighttest_1_1_serialization_1_1_serialization_tests_a075e41d43e2655bc82f675550b92da03}{Test\+Serialization\+Csla\+Binary\+Reader\+Writer}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line 33 of file Serialization\+Tests.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae5fb6fcbce789b69782586438e5b1536}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae5fb6fcbce789b69782586438e5b1536}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!BusinessObjectWithChildList@{BusinessObjectWithChildList}}
+\index{BusinessObjectWithChildList@{BusinessObjectWithChildList}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{BusinessObjectWithChildList()}{BusinessObjectWithChildList()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Business\+Object\+With\+Child\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 106 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_ad1262864e0762f072a0a31fa388b8d12}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_ad1262864e0762f072a0a31fa388b8d12}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!BusinessObjectWithEnum@{BusinessObjectWithEnum}}
+\index{BusinessObjectWithEnum@{BusinessObjectWithEnum}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{BusinessObjectWithEnum()}{BusinessObjectWithEnum()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Business\+Object\+With\+Enum (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Verifies that serialization/deserialization works for business objects that have an property storing an enum. 
+
+
+
+Definition at line 490 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_aae49703a9b5dcd7cc3802c3b6e52ac97}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_aae49703a9b5dcd7cc3802c3b6e52ac97}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!BusinessObjectWithoutChildList@{BusinessObjectWithoutChildList}}
+\index{BusinessObjectWithoutChildList@{BusinessObjectWithoutChildList}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{BusinessObjectWithoutChildList()}{BusinessObjectWithoutChildList()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Business\+Object\+Without\+Child\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 75 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_adcf1573e4ebfe2759a6e3d766ef37acf}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_adcf1573e4ebfe2759a6e3d766ef37acf}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!LogicallyIdenticalChildObjects@{LogicallyIdenticalChildObjects}}
+\index{LogicallyIdenticalChildObjects@{LogicallyIdenticalChildObjects}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{LogicallyIdenticalChildObjects()}{LogicallyIdenticalChildObjects()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Logically\+Identical\+Child\+Objects (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Verifies that serializing an object graph with sibling complex objects that implement Equals and are logically identical, produces an identical object graph upon deserialization (eg. the two siblings are separate instances post-\/deserialization). It should also be noted that the tested objects implement custom serialization methods. 
+
+
+
+Definition at line 417 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a82a128e5b3f8920d92a66bee0155725e}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a82a128e5b3f8920d92a66bee0155725e}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileDictionary\_MobileKey\_MobileValue@{MobileDictionary\_MobileKey\_MobileValue}}
+\index{MobileDictionary\_MobileKey\_MobileValue@{MobileDictionary\_MobileKey\_MobileValue}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileDictionary\_MobileKey\_MobileValue()}{MobileDictionary\_MobileKey\_MobileValue()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+Dictionary\+\_\+\+Mobile\+Key\+\_\+\+Mobile\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 391 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_abd421ba78b9012a5d53522f74bedd4e0}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_abd421ba78b9012a5d53522f74bedd4e0}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileDictionary\_MobileKey\_PrimitiveValue@{MobileDictionary\_MobileKey\_PrimitiveValue}}
+\index{MobileDictionary\_MobileKey\_PrimitiveValue@{MobileDictionary\_MobileKey\_PrimitiveValue}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileDictionary\_MobileKey\_PrimitiveValue()}{MobileDictionary\_MobileKey\_PrimitiveValue()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+Dictionary\+\_\+\+Mobile\+Key\+\_\+\+Primitive\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 371 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a1ae391e066e21a28803772e6069f2623}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a1ae391e066e21a28803772e6069f2623}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileDictionary\_PrimitiveKey\_MobileValue@{MobileDictionary\_PrimitiveKey\_MobileValue}}
+\index{MobileDictionary\_PrimitiveKey\_MobileValue@{MobileDictionary\_PrimitiveKey\_MobileValue}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileDictionary\_PrimitiveKey\_MobileValue()}{MobileDictionary\_PrimitiveKey\_MobileValue()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+Dictionary\+\_\+\+Primitive\+Key\+\_\+\+Mobile\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 342 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a4c7d61e70436660b63127050cf89a53e}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a4c7d61e70436660b63127050cf89a53e}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileDictionary\_PrimitiveKey\_PrimitiveValue@{MobileDictionary\_PrimitiveKey\_PrimitiveValue}}
+\index{MobileDictionary\_PrimitiveKey\_PrimitiveValue@{MobileDictionary\_PrimitiveKey\_PrimitiveValue}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileDictionary\_PrimitiveKey\_PrimitiveValue()}{MobileDictionary\_PrimitiveKey\_PrimitiveValue()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+Dictionary\+\_\+\+Primitive\+Key\+\_\+\+Primitive\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 281 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_add6deaad0f0a08d041afb76dbfd1cfb0}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_add6deaad0f0a08d041afb76dbfd1cfb0}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileDictionary\_PrimitiveKey\_PrimitiveValue\_BF@{MobileDictionary\_PrimitiveKey\_PrimitiveValue\_BF}}
+\index{MobileDictionary\_PrimitiveKey\_PrimitiveValue\_BF@{MobileDictionary\_PrimitiveKey\_PrimitiveValue\_BF}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileDictionary\_PrimitiveKey\_PrimitiveValue\_BF()}{MobileDictionary\_PrimitiveKey\_PrimitiveValue\_BF()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+Dictionary\+\_\+\+Primitive\+Key\+\_\+\+Primitive\+Value\+\_\+\+BF (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 310 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_ace68a1f6f39e875fdad37dbf65f9aa4c}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_ace68a1f6f39e875fdad37dbf65f9aa4c}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileListEmptySerializationSuccess@{MobileListEmptySerializationSuccess}}
+\index{MobileListEmptySerializationSuccess@{MobileListEmptySerializationSuccess}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileListEmptySerializationSuccess()}{MobileListEmptySerializationSuccess()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+List\+Empty\+Serialization\+Success (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 249 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a8ebce2916bcc15a8d299ba98e9a2d267}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a8ebce2916bcc15a8d299ba98e9a2d267}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileListOfMobileObjectsSerializationSuccess@{MobileListOfMobileObjectsSerializationSuccess}}
+\index{MobileListOfMobileObjectsSerializationSuccess@{MobileListOfMobileObjectsSerializationSuccess}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileListOfMobileObjectsSerializationSuccess()}{MobileListOfMobileObjectsSerializationSuccess()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+List\+Of\+Mobile\+Objects\+Serialization\+Success (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 263 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a30ca287872488404f68cc6b62fae6b4e}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a30ca287872488404f68cc6b62fae6b4e}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileListSerializationSuccess@{MobileListSerializationSuccess}}
+\index{MobileListSerializationSuccess@{MobileListSerializationSuccess}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileListSerializationSuccess()}{MobileListSerializationSuccess()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+List\+Serialization\+Success (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 231 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a3b76b3def580be493b04c03b483d8fc4}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a3b76b3def580be493b04c03b483d8fc4}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!MobileListWithNonBusinessObjectReferenceType@{MobileListWithNonBusinessObjectReferenceType}}
+\index{MobileListWithNonBusinessObjectReferenceType@{MobileListWithNonBusinessObjectReferenceType}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{MobileListWithNonBusinessObjectReferenceType()}{MobileListWithNonBusinessObjectReferenceType()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Mobile\+List\+With\+Non\+Business\+Object\+Reference\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 190 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a1b1f262005a042296a461a0b41981f44}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a1b1f262005a042296a461a0b41981f44}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!NullChildObject@{NullChildObject}}
+\index{NullChildObject@{NullChildObject}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{NullChildObject()}{NullChildObject()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Null\+Child\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Verifies that serializing/deserializing an object graph with null references of a type that is complex (eg. is a separate child object) works. It should also be noted that the tested objects implement custom serialization methods. 
+
+
+
+Definition at line 459 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_af30ce3202ccc843ffc93d5cc7df12e4e}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_af30ce3202ccc843ffc93d5cc7df12e4e}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!ReadOnlyBaseTest@{ReadOnlyBaseTest}}
+\index{ReadOnlyBaseTest@{ReadOnlyBaseTest}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{ReadOnlyBaseTest()}{ReadOnlyBaseTest()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Read\+Only\+Base\+Test (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 202 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae2193e09ec8e5529cdced853b8fd74fd}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae2193e09ec8e5529cdced853b8fd74fd}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!ReadOnlyListBaseTest@{ReadOnlyListBaseTest}}
+\index{ReadOnlyListBaseTest@{ReadOnlyListBaseTest}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{ReadOnlyListBaseTest()}{ReadOnlyListBaseTest()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Read\+Only\+List\+Base\+Test (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 216 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_aab399be15ed04596e01ba3ba6974e89a}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_aab399be15ed04596e01ba3ba6974e89a}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!SerializeAndDeserializeReadOnly@{SerializeAndDeserializeReadOnly}}
+\index{SerializeAndDeserializeReadOnly@{SerializeAndDeserializeReadOnly}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{SerializeAndDeserializeReadOnly()}{SerializeAndDeserializeReadOnly()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Serialize\+And\+Deserialize\+Read\+Only (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 157 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_af4b67eeb0a6d386144a17072dbd8c22e}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_af4b67eeb0a6d386144a17072dbd8c22e}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!SerializeCriteriaSuccess@{SerializeCriteriaSuccess}}
+\index{SerializeCriteriaSuccess@{SerializeCriteriaSuccess}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{SerializeCriteriaSuccess()}{SerializeCriteriaSuccess()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Serialize\+Criteria\+Success (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 61 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_aee0fe7cff5cea6a4ab1a4b24f8834362}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_aee0fe7cff5cea6a4ab1a4b24f8834362}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!SerializeMobileListWithPrimitiveTypes@{SerializeMobileListWithPrimitiveTypes}}
+\index{SerializeMobileListWithPrimitiveTypes@{SerializeMobileListWithPrimitiveTypes}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{SerializeMobileListWithPrimitiveTypes()}{SerializeMobileListWithPrimitiveTypes()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Serialize\+Mobile\+List\+With\+Primitive\+Types (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 177 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a0cd0f8130c0ed5540cd4e742f7547de5}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a0cd0f8130c0ed5540cd4e742f7547de5}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!SerializeWithNullArgumentShouldNotThrowException@{SerializeWithNullArgumentShouldNotThrowException}}
+\index{SerializeWithNullArgumentShouldNotThrowException@{SerializeWithNullArgumentShouldNotThrowException}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{SerializeWithNullArgumentShouldNotThrowException()}{SerializeWithNullArgumentShouldNotThrowException()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Serialize\+With\+Null\+Argument\+Should\+Not\+Throw\+Exception (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 36 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_a075e41d43e2655bc82f675550b92da03}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_a075e41d43e2655bc82f675550b92da03}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!TestSerializationCslaBinaryReaderWriter@{TestSerializationCslaBinaryReaderWriter}}
+\index{TestSerializationCslaBinaryReaderWriter@{TestSerializationCslaBinaryReaderWriter}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{TestSerializationCslaBinaryReaderWriter()}{TestSerializationCslaBinaryReaderWriter()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Test\+Serialization\+Csla\+Binary\+Reader\+Writer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 577 of file Serialization\+Tests.\+cs.
+
+\mbox{\Hypertarget{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae881e59696be5fef48e4fb43698bd3d1}\label{classcslalighttest_1_1_serialization_1_1_serialization_tests_ae881e59696be5fef48e4fb43698bd3d1}} 
+\index{cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}!TestSerializationCslaBinaryReaderWriterList@{TestSerializationCslaBinaryReaderWriterList}}
+\index{TestSerializationCslaBinaryReaderWriterList@{TestSerializationCslaBinaryReaderWriterList}!cslalighttest.Serialization.SerializationTests@{cslalighttest.Serialization.SerializationTests}}
+\doxysubsubsection{\texorpdfstring{TestSerializationCslaBinaryReaderWriterList()}{TestSerializationCslaBinaryReaderWriterList()}}
+{\footnotesize\ttfamily void cslalighttest.\+Serialization.\+Serialization\+Tests.\+Test\+Serialization\+Csla\+Binary\+Reader\+Writer\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 512 of file Serialization\+Tests.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+test/\+Silverlight/\+Serialization/\mbox{\hyperlink{_csla_8test_2_silverlight_2_serialization_2_serialization_tests_8cs}{Serialization\+Tests.\+cs}}\end{DoxyCompactItemize}

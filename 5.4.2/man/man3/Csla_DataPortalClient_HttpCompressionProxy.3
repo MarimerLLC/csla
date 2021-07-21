@@ -1,0 +1,72 @@
+.TH "Csla.DataPortalClient.HttpCompressionProxy" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.DataPortalClient.HttpCompressionProxy \- Implements a data portal proxy to relay data portal calls to a remote application server by using http\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.DataPortalClient\&.HttpProxy\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override HttpClientHandler \fBGetHttpClientHandler\fP ()"
+.br
+.RI "Gets an HttpClientHandler for use in initializing the HttpClient instance\&. "
+.ti -1c
+.RI "override void \fBSetHttpRequestHeaders\fP (HttpRequestMessage request)"
+.br
+.RI "Override to set headers or other properties of the HttpRequestMessage before it is sent to the server\&. "
+.ti -1c
+.RI "override WebClient \fBGetWebClient\fP ()"
+.br
+.RI "Gets an WebClient object for use in communication with the server\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Implements a data portal proxy to relay data portal calls to a remote application server by using http\&. 
+
+
+.PP
+Definition at line 18 of file HttpCompressionProxy\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override HttpClientHandler Csla\&.DataPortalClient\&.HttpCompressionProxy\&.GetHttpClientHandler ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Gets an HttpClientHandler for use in initializing the HttpClient instance\&. 
+.PP
+Reimplemented from \fBCsla\&.DataPortalClient\&.HttpProxy\fP\&.
+.PP
+Definition at line 24 of file HttpCompressionProxy\&.cs\&.
+.SS "override WebClient Csla\&.DataPortalClient\&.HttpCompressionProxy\&.GetWebClient ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Gets an WebClient object for use in communication with the server\&. 
+.PP
+Reimplemented from \fBCsla\&.DataPortalClient\&.HttpProxy\fP\&.
+.PP
+Definition at line 47 of file HttpCompressionProxy\&.cs\&.
+.SS "override void Csla\&.DataPortalClient\&.HttpCompressionProxy\&.SetHttpRequestHeaders (HttpRequestMessage request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to set headers or other properties of the HttpRequestMessage before it is sent to the server\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP HttpRequestMessage instance
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.DataPortalClient\&.HttpProxy\fP\&.
+.PP
+Definition at line 37 of file HttpCompressionProxy\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

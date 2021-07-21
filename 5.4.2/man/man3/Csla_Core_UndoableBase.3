@@ -1,0 +1,175 @@
+.TH "Csla.Core.UndoableBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.UndoableBase \- Implements n-level undo capabilities as described in Chapters 2 and 3\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.BindableBase\fP, and \fBCsla\&.Core\&.IUndoableObject\fP\&.
+.PP
+Inherited by \fBCsla\&.Core\&.BusinessBase\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBUndoableBase\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "virtual void \fBCopyingState\fP ()"
+.br
+.RI "This method is invoked before the CopyState operation begins\&. "
+.ti -1c
+.RI "virtual void \fBCopyStateComplete\fP ()"
+.br
+.RI "This method is invoked after the CopyState operation is complete\&. "
+.ti -1c
+.RI "virtual void \fBUndoChangesComplete\fP ()"
+.br
+.RI "This method is invoked before the UndoChanges operation begins\&. "
+.ti -1c
+.RI "virtual void \fBUndoingChanges\fP ()"
+.br
+.RI "This method is invoked after the UndoChanges operation is complete\&. "
+.ti -1c
+.RI "virtual void \fBAcceptingChanges\fP ()"
+.br
+.RI "This method is invoked before the AcceptChanges operation begins\&. "
+.ti -1c
+.RI "virtual void \fBAcceptChangesComplete\fP ()"
+.br
+.RI "This method is invoked after the AcceptChanges operation is complete\&. "
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to insert your field values into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBBindingEdit\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether n-level undo was invoked through IEditableObject\&. FOR INTERNAL CSLA \&.NET USE ONLY! "
+.ti -1c
+.RI "int \fBEditLevel\fP\fC [get]\fP"
+.br
+.RI "Returns the current edit level of the object\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Implements n-level undo capabilities as described in Chapters 2 and 3\&. 
+
+
+.PP
+Definition at line 26 of file UndoableBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.UndoableBase\&.UndoableBase ()\fC [protected]\fP"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 38 of file UndoableBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Csla\&.Core\&.UndoableBase\&.AcceptChangesComplete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is invoked after the AcceptChanges operation is complete\&. 
+.PP
+Reimplemented in \fBCsla\&.Core\&.BusinessBase\fP\&.
+.PP
+Definition at line 301 of file UndoableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.UndoableBase\&.AcceptingChanges ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is invoked before the AcceptChanges operation begins\&. 
+.PP
+Definition at line 292 of file UndoableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.UndoableBase\&.CopyingState ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is invoked before the CopyState operation begins\&. 
+.PP
+Definition at line 98 of file UndoableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.UndoableBase\&.CopyStateComplete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is invoked after the CopyState operation is complete\&. 
+.PP
+Definition at line 107 of file UndoableBase\&.cs\&.
+.SS "override void Csla\&.Core\&.UndoableBase\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to insert your field values into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 409 of file UndoableBase\&.cs\&.
+.SS "override void Csla\&.Core\&.UndoableBase\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 433 of file UndoableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.UndoableBase\&.UndoChangesComplete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is invoked before the UndoChanges operation begins\&. 
+.PP
+Reimplemented in \fBCsla\&.Core\&.BusinessBase\fP\&.
+.PP
+Definition at line 185 of file UndoableBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.UndoableBase\&.UndoingChanges ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is invoked after the UndoChanges operation is complete\&. 
+.PP
+Definition at line 194 of file UndoableBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Core\&.UndoableBase\&.BindingEdit\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
+
+.PP
+Gets or sets a value indicating whether n-level undo was invoked through IEditableObject\&. FOR INTERNAL CSLA \&.NET USE ONLY! 
+.PP
+Definition at line 49 of file UndoableBase\&.cs\&.
+.SS "int Csla\&.Core\&.UndoableBase\&.EditLevel\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Returns the current edit level of the object\&. 
+.PP
+Definition at line 70 of file UndoableBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

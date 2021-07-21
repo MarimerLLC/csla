@@ -1,0 +1,204 @@
+.TH "Csla.Server.MobileFactoryAttribute" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.MobileFactoryAttribute \- Specifies that the WCF data portal should invoke a factory object rather than the business object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Attribute\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMobileFactoryAttribute\fP (string factoryType)"
+.br
+.RI "Creates an instance of the attribute\&. "
+.ti -1c
+.RI "\fBMobileFactoryAttribute\fP (string factoryType, string createMethod, string fetchMethod)"
+.br
+.RI "Creates an instance of the attribute\&. "
+.ti -1c
+.RI "\fBMobileFactoryAttribute\fP (string factoryType, string fetchMethod)"
+.br
+.RI "Creates an instance of the attribute\&. "
+.ti -1c
+.RI "\fBMobileFactoryAttribute\fP (string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)"
+.br
+.RI "Creates an instance of the attribute\&. "
+.ti -1c
+.RI "\fBMobileFactoryAttribute\fP (string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)"
+.br
+.RI "Creates an instance of the attribute\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBFactoryTypeName\fP\fC [get]\fP"
+.br
+.RI "Assembly qualified type name of the factory object\&. "
+.ti -1c
+.RI "string \fBCreateMethodName\fP\fC [get]\fP"
+.br
+.RI "Name of the method to call for a create operation\&. "
+.ti -1c
+.RI "string \fBFetchMethodName\fP\fC [get]\fP"
+.br
+.RI "Name of the method to call for a fetch operation\&. "
+.ti -1c
+.RI "string \fBUpdateMethodName\fP\fC [get]\fP"
+.br
+.RI "Name of the method to call for a update operation\&. "
+.ti -1c
+.RI "string \fBDeleteMethodName\fP\fC [get]\fP"
+.br
+.RI "Name of the method to call for a delete operation\&. "
+.ti -1c
+.RI "string \fBExecuteMethodName\fP\fC [get]\fP"
+.br
+.RI "Name of the method to call for a execute operation\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Specifies that the WCF data portal should invoke a factory object rather than the business object\&. 
+
+
+.PP
+Definition at line 22 of file MobileFactoryAttribute\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Server\&.MobileFactoryAttribute\&.MobileFactoryAttribute (string factoryType)"
+
+.PP
+Creates an instance of the attribute\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryType\fP Assembly qualified type name of the factory object\&. 
+.RE
+.PP
+.PP
+The default names for the factory methods are Create(), Fetch(), Update() and Delete()\&. 
+.PP
+Definition at line 83 of file MobileFactoryAttribute\&.cs\&.
+.SS "Csla\&.Server\&.MobileFactoryAttribute\&.MobileFactoryAttribute (string factoryType, string createMethod, string fetchMethod)"
+
+.PP
+Creates an instance of the attribute\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryType\fP Assembly qualified type name of the factory object\&. 
+.br
+\fIcreateMethod\fP Name of the method to call for a create operation\&.
+.br
+\fIfetchMethod\fP Name of the method to call for a fetch operation\&. 
+.RE
+.PP
+
+.PP
+Definition at line 104 of file MobileFactoryAttribute\&.cs\&.
+.SS "Csla\&.Server\&.MobileFactoryAttribute\&.MobileFactoryAttribute (string factoryType, string fetchMethod)"
+
+.PP
+Creates an instance of the attribute\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryType\fP Assembly qualified type name of the factory object\&. 
+.br
+\fIfetchMethod\fP Name of the method to call for a fetch operation\&. 
+.RE
+.PP
+
+.PP
+Definition at line 123 of file MobileFactoryAttribute\&.cs\&.
+.SS "Csla\&.Server\&.MobileFactoryAttribute\&.MobileFactoryAttribute (string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)"
+
+.PP
+Creates an instance of the attribute\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryType\fP Assembly qualified type name of the factory object\&. 
+.br
+\fIcreateMethod\fP Name of the method to call for a create operation\&.
+.br
+\fIfetchMethod\fP Name of the method to call for a fetch operation\&. 
+.br
+\fIupdateMethod\fP Name of the method to call for a update operation\&.
+.br
+\fIdeleteMethod\fP Name of the method to call for a delete operation\&.
+.RE
+.PP
+
+.PP
+Definition at line 148 of file MobileFactoryAttribute\&.cs\&.
+.SS "Csla\&.Server\&.MobileFactoryAttribute\&.MobileFactoryAttribute (string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)"
+
+.PP
+Creates an instance of the attribute\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryType\fP Assembly qualified type name of the factory object\&. 
+.br
+\fIcreateMethod\fP Name of the method to call for a create operation\&.
+.br
+\fIfetchMethod\fP Name of the method to call for a fetch operation\&. 
+.br
+\fIupdateMethod\fP Name of the method to call for a update operation\&.
+.br
+\fIdeleteMethod\fP Name of the method to call for a delete operation\&.
+.br
+\fIexecuteMethod\fP Name of the method to call for a execute operation\&.
+.RE
+.PP
+
+.PP
+Definition at line 176 of file MobileFactoryAttribute\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Server\&.MobileFactoryAttribute\&.CreateMethodName\fC [get]\fP"
+
+.PP
+Name of the method to call for a create operation\&. The appropriate overload of this method will be invoked based on the parameters passed from the client\&. 
+.PP
+Definition at line 39 of file MobileFactoryAttribute\&.cs\&.
+.SS "string Csla\&.Server\&.MobileFactoryAttribute\&.DeleteMethodName\fC [get]\fP"
+
+.PP
+Name of the method to call for a delete operation\&. The appropriate overload of this method will be invoked based on the parameters passed from the client\&. 
+.PP
+Definition at line 63 of file MobileFactoryAttribute\&.cs\&.
+.SS "string Csla\&.Server\&.MobileFactoryAttribute\&.ExecuteMethodName\fC [get]\fP"
+
+.PP
+Name of the method to call for a execute operation\&. The appropriate overload of this method will be invoked based on the parameters passed from the client\&. 
+.PP
+Definition at line 71 of file MobileFactoryAttribute\&.cs\&.
+.SS "string Csla\&.Server\&.MobileFactoryAttribute\&.FactoryTypeName\fC [get]\fP"
+
+.PP
+Assembly qualified type name of the factory object\&. Factory class must have a parameterless default constructor\&. 
+.PP
+Definition at line 31 of file MobileFactoryAttribute\&.cs\&.
+.SS "string Csla\&.Server\&.MobileFactoryAttribute\&.FetchMethodName\fC [get]\fP"
+
+.PP
+Name of the method to call for a fetch operation\&. The appropriate overload of this method will be invoked based on the parameters passed from the client\&. 
+.PP
+Definition at line 47 of file MobileFactoryAttribute\&.cs\&.
+.SS "string Csla\&.Server\&.MobileFactoryAttribute\&.UpdateMethodName\fC [get]\fP"
+
+.PP
+Name of the method to call for a update operation\&. The appropriate overload of this method will be invoked based on the parameters passed from the client\&. 
+.PP
+Definition at line 55 of file MobileFactoryAttribute\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,36 @@
+.TH "Csla.Core.IReportTotalRowCount" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IReportTotalRowCount \- Implement this interface in a collection to report a total row count to \fBCsla\&.Web\&.CslaDataSource\fP, where that row count is different from the collection's normal Count property value\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBTotalRowCount\fP\fC [get]\fP"
+.br
+.RI "The total number of rows of available data\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implement this interface in a collection to report a total row count to \fBCsla\&.Web\&.CslaDataSource\fP, where that row count is different from the collection's normal Count property value\&. 
+
+This interface is used to provide paging support for web data binding through \fBCsla\&.Web\&.CslaDataSource\fP\&. You should implement this interface in your business collection class, along with windowed data loading, to provide efficient paging support\&. 
+.PP
+Definition at line 28 of file IReportTotalRowCount\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "int Csla\&.Core\&.IReportTotalRowCount\&.TotalRowCount\fC [get]\fP"
+
+.PP
+The total number of rows of available data\&. 
+.PP
+Definition at line 34 of file IReportTotalRowCount\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

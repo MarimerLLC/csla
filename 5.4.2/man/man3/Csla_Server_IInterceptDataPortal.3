@@ -1,0 +1,58 @@
+.TH "Csla.Server.IInterceptDataPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.IInterceptDataPortal \- Implement this interface to create a data portal interceptor that is notified each time the data portal is invoked and completes processing\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Test\&.DataPortal\&.TestInterceptor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBInitialize\fP (\fBInterceptArgs\fP e)"
+.br
+.RI "Invoked at the start of each server-side data portal invocation, immediately after the context has been set, and before authorization\&. "
+.ti -1c
+.RI "void \fBComplete\fP (\fBInterceptArgs\fP e)"
+.br
+.RI "Invoked at the end of each server-side data portal invocation for success and exception scenarios\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implement this interface to create a data portal interceptor that is notified each time the data portal is invoked and completes processing\&. 
+
+
+.PP
+Definition at line 15 of file IInterceptDataPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Server\&.IInterceptDataPortal\&.Complete (\fBInterceptArgs\fP e)"
+
+.PP
+Invoked at the end of each server-side data portal invocation for success and exception scenarios\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP 
+.RE
+.PP
+
+.SS "void Csla\&.Server\&.IInterceptDataPortal\&.Initialize (\fBInterceptArgs\fP e)"
+
+.PP
+Invoked at the start of each server-side data portal invocation, immediately after the context has been set, and before authorization\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

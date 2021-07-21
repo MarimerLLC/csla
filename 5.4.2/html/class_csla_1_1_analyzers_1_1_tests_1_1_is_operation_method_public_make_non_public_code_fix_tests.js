@@ -1,0 +1,6 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_make_non_public_code_fix_tests =
+[
+    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_make_non_public_code_fix_tests.html#a09f29a6345dec1b4733da0fbc73b939a", null ],
+    [ "VerifyGetFixesWhenClassIsNotSealed", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_make_non_public_code_fix_tests.html#a3c08ce06d53bc16749d7dd059a23d235", null ],
+    [ "VerifyGetFixesWhenClassIsSealed", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_make_non_public_code_fix_tests.html#a3baf6d1c6885fd1448462127d8c73935", null ]
+];

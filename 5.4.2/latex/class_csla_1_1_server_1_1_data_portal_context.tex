@@ -1,0 +1,205 @@
+\hypertarget{class_csla_1_1_server_1_1_data_portal_context}{}\doxysection{Csla.\+Server.\+Data\+Portal\+Context Class Reference}
+\label{class_csla_1_1_server_1_1_data_portal_context}\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+
+
+Provides consistent context information between the client and server \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} objects.  
+
+
+Inheritance diagram for Csla.\+Server.\+Data\+Portal\+Context\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_server_1_1_data_portal_context}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_a848be5c6c98019aefa6c24baafcff54d}{Data\+Portal\+Context}} (IPrincipal principal, bool is\+Remote\+Portal)
+\begin{DoxyCompactList}\small\item\em Creates a new \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_afec489bb274d3c89fd62a81dc76a092f}{Data\+Portal\+Context}} (IPrincipal principal, bool is\+Remote\+Portal, string client\+Culture, string client\+UICulture, \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} client\+Context, \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} global\+Context)
+\begin{DoxyCompactList}\small\item\em Creates a new \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_aca288d24b577fa56bd5c98af3a4b0e76}{Data\+Portal\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Default constructor for use by Serialization\+Formatter\+Factory.\+Get\+Formatter(). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+IPrincipal \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_a4b213ef17a3b4235ba313e932e4e9912}{Principal}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The current principal object if CSLA security is being used. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_a00740baf47ff19284456620ba9933a06}{Is\+Remote\+Portal}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns true if the server-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} is running on a remote server via remoting. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_a004a96acc7f774b7c028dbc4155db6de}{Client\+Culture}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The culture setting on the client workstation. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_a30c70c5ace9cf2f10426a3c995d5078c}{Client\+UICulture}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The culture setting on the client workstation. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_csla_a7a94b01a8b9a756c9e5316ca03a6137a}{Transactional\+Types}} \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_aed4270bdb04cb7dee445757757ff98c7}{Transactional\+Type}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the current transactional type. Only valid in the server-\/side data portal methods after the transactional type has been determined. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory_attribute}{Object\+Factory\+Attribute}} \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context_a5015018802afea53e1fd4603e0a3f9dc}{Factory\+Info}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the current \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} attribute value (if any). Only valid in the server-\/side data portal methods after the attribute value has been determined. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides consistent context information between the client and server \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} objects. 
+
+
+
+Definition at line 20 of file Data\+Portal\+Context.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_a848be5c6c98019aefa6c24baafcff54d}\label{class_csla_1_1_server_1_1_data_portal_context_a848be5c6c98019aefa6c24baafcff54d}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!DataPortalContext@{DataPortalContext}}
+\index{DataPortalContext@{DataPortalContext}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{DataPortalContext()}{DataPortalContext()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily Csla.\+Server.\+Data\+Portal\+Context.\+Data\+Portal\+Context (\begin{DoxyParamCaption}\item[{IPrincipal}]{principal,  }\item[{bool}]{is\+Remote\+Portal }\end{DoxyParamCaption})}
+
+
+
+Creates a new \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em principal} & The current Principal object.\\
+\hline
+{\em is\+Remote\+Portal} & Indicates whether the \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} is remote.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 107 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_afec489bb274d3c89fd62a81dc76a092f}\label{class_csla_1_1_server_1_1_data_portal_context_afec489bb274d3c89fd62a81dc76a092f}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!DataPortalContext@{DataPortalContext}}
+\index{DataPortalContext@{DataPortalContext}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{DataPortalContext()}{DataPortalContext()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily Csla.\+Server.\+Data\+Portal\+Context.\+Data\+Portal\+Context (\begin{DoxyParamCaption}\item[{IPrincipal}]{principal,  }\item[{bool}]{is\+Remote\+Portal,  }\item[{string}]{client\+Culture,  }\item[{string}]{client\+UICulture,  }\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{client\+Context,  }\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{global\+Context }\end{DoxyParamCaption})}
+
+
+
+Creates a new \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em principal} & The current Principal object.\\
+\hline
+{\em is\+Remote\+Portal} & Indicates whether the \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} is remote.\\
+\hline
+{\em client\+Context} & Client context.\\
+\hline
+{\em client\+Culture} & Client culture.\\
+\hline
+{\em client\+UICulture} & Client UI culture.\\
+\hline
+{\em global\+Context} & Global context.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 141 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_aca288d24b577fa56bd5c98af3a4b0e76}\label{class_csla_1_1_server_1_1_data_portal_context_aca288d24b577fa56bd5c98af3a4b0e76}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!DataPortalContext@{DataPortalContext}}
+\index{DataPortalContext@{DataPortalContext}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{DataPortalContext()}{DataPortalContext()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily Csla.\+Server.\+Data\+Portal\+Context.\+Data\+Portal\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor for use by Serialization\+Formatter\+Factory.\+Get\+Formatter(). 
+
+
+
+Definition at line 154 of file Data\+Portal\+Context.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_a004a96acc7f774b7c028dbc4155db6de}\label{class_csla_1_1_server_1_1_data_portal_context_a004a96acc7f774b7c028dbc4155db6de}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!ClientCulture@{ClientCulture}}
+\index{ClientCulture@{ClientCulture}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{ClientCulture}{ClientCulture}}
+{\footnotesize\ttfamily string Csla.\+Server.\+Data\+Portal\+Context.\+Client\+Culture\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The culture setting on the client workstation. 
+
+
+
+Definition at line 56 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_a30c70c5ace9cf2f10426a3c995d5078c}\label{class_csla_1_1_server_1_1_data_portal_context_a30c70c5ace9cf2f10426a3c995d5078c}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!ClientUICulture@{ClientUICulture}}
+\index{ClientUICulture@{ClientUICulture}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{ClientUICulture}{ClientUICulture}}
+{\footnotesize\ttfamily string Csla.\+Server.\+Data\+Portal\+Context.\+Client\+UICulture\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The culture setting on the client workstation. 
+
+
+
+Definition at line 65 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_a5015018802afea53e1fd4603e0a3f9dc}\label{class_csla_1_1_server_1_1_data_portal_context_a5015018802afea53e1fd4603e0a3f9dc}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!FactoryInfo@{FactoryInfo}}
+\index{FactoryInfo@{FactoryInfo}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{FactoryInfo}{FactoryInfo}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory_attribute}{Object\+Factory\+Attribute}} Csla.\+Server.\+Data\+Portal\+Context.\+Factory\+Info\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets the current \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} attribute value (if any). Only valid in the server-\/side data portal methods after the attribute value has been determined. 
+
+
+
+Definition at line 96 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_a00740baf47ff19284456620ba9933a06}\label{class_csla_1_1_server_1_1_data_portal_context_a00740baf47ff19284456620ba9933a06}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!IsRemotePortal@{IsRemotePortal}}
+\index{IsRemotePortal@{IsRemotePortal}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{IsRemotePortal}{IsRemotePortal}}
+{\footnotesize\ttfamily bool Csla.\+Server.\+Data\+Portal\+Context.\+Is\+Remote\+Portal\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns true if the server-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} is running on a remote server via remoting. 
+
+
+
+Definition at line 47 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_a4b213ef17a3b4235ba313e932e4e9912}\label{class_csla_1_1_server_1_1_data_portal_context_a4b213ef17a3b4235ba313e932e4e9912}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!Principal@{Principal}}
+\index{Principal@{Principal}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{Principal}{Principal}}
+{\footnotesize\ttfamily IPrincipal Csla.\+Server.\+Data\+Portal\+Context.\+Principal\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The current principal object if CSLA security is being used. 
+
+
+
+Definition at line 37 of file Data\+Portal\+Context.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_context_aed4270bdb04cb7dee445757757ff98c7}\label{class_csla_1_1_server_1_1_data_portal_context_aed4270bdb04cb7dee445757757ff98c7}} 
+\index{Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}!TransactionalType@{TransactionalType}}
+\index{TransactionalType@{TransactionalType}!Csla.Server.DataPortalContext@{Csla.Server.DataPortalContext}}
+\doxysubsubsection{\texorpdfstring{TransactionalType}{TransactionalType}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_csla_a7a94b01a8b9a756c9e5316ca03a6137a}{Transactional\+Types}} Csla.\+Server.\+Data\+Portal\+Context.\+Transactional\+Type\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets the current transactional type. Only valid in the server-\/side data portal methods after the transactional type has been determined. 
+
+
+
+Definition at line 84 of file Data\+Portal\+Context.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_data_portal_context_8cs}{Data\+Portal\+Context.\+cs}}\end{DoxyCompactItemize}

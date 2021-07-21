@@ -1,0 +1,278 @@
+.TH "Csla.Xaml.InvokeMethod" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Xaml.InvokeMethod \- Invokes a method on a target object when a trigger event is raised from the attached UI control\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits FrameworkElement\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBInvokeMethod\fP (UIElement ctrl)"
+.br
+.RI "Invokes the target method if all required attached property values have been set\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBSetTarget\fP (UIElement ctrl, object value)"
+.br
+.RI "Sets the object containing the method to be invoked\&. "
+.ti -1c
+.RI "static object \fBGetTarget\fP (UIElement ctrl)"
+.br
+.RI "Gets the object containing the method to be invoked\&. "
+.ti -1c
+.RI "static void \fBSetMethodName\fP (UIElement ctrl, string value)"
+.br
+.RI "Sets the name of method to be invoked\&. "
+.ti -1c
+.RI "static string \fBGetMethodName\fP (UIElement ctrl)"
+.br
+.RI "Gets the name of method to be invoked\&. "
+.ti -1c
+.RI "static void \fBSetTriggerEvent\fP (UIElement ctrl, string value)"
+.br
+.RI "Sets the name of event raised by UI control that triggers invoking the target method\&. "
+.ti -1c
+.RI "static string \fBGetTriggerEvent\fP (UIElement ctrl)"
+.br
+.RI "Gets the name of event raised by UI control that triggers invoking the target method\&. "
+.ti -1c
+.RI "static void \fBSetMethodParameter\fP (UIElement ctrl, object value)"
+.br
+.RI "Sets the parameter value to be passed to invoked method\&. "
+.ti -1c
+.RI "static object \fBGetMethodParameter\fP (UIElement ctrl)"
+.br
+.RI "Gets the parameter value to be passed to invoked method\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static readonly DependencyProperty \fBTargetProperty\fP"
+.br
+.RI "Object containing the method to be invoked\&. "
+.ti -1c
+.RI "static readonly DependencyProperty \fBMethodNameProperty\fP"
+.br
+.RI "Name of method to be invoked\&. "
+.ti -1c
+.RI "static readonly DependencyProperty \fBTriggerEventProperty\fP"
+.br
+.RI "Name of event raised by UI control that triggers invoking the target method\&. "
+.ti -1c
+.RI "static readonly DependencyProperty \fBMethodParameterProperty\fP"
+.br
+.RI "Parameter value to be passed to invoked method\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Invokes a method on a target object when a trigger event is raised from the attached UI control\&. 
+
+
+.PP
+Definition at line 23 of file InvokeMethod\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Xaml\&.InvokeMethod\&.InvokeMethod (UIElement ctrl)"
+
+.PP
+Invokes the target method if all required attached property values have been set\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached UI control
+.RE
+.PP
+
+.PP
+Definition at line 188 of file InvokeMethod\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static string Csla\&.Xaml\&.InvokeMethod\&.GetMethodName (UIElement ctrl)\fC [static]\fP"
+
+.PP
+Gets the name of method to be invoked\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.RE
+.PP
+
+.PP
+Definition at line 89 of file InvokeMethod\&.cs\&.
+.SS "static object Csla\&.Xaml\&.InvokeMethod\&.GetMethodParameter (UIElement ctrl)\fC [static]\fP"
+
+.PP
+Gets the parameter value to be passed to invoked method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.RE
+.PP
+
+.PP
+Definition at line 153 of file InvokeMethod\&.cs\&.
+.SS "static object Csla\&.Xaml\&.InvokeMethod\&.GetTarget (UIElement ctrl)\fC [static]\fP"
+
+.PP
+Gets the object containing the method to be invoked\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.RE
+.PP
+
+.PP
+Definition at line 50 of file InvokeMethod\&.cs\&.
+.SS "static string Csla\&.Xaml\&.InvokeMethod\&.GetTriggerEvent (UIElement ctrl)\fC [static]\fP"
+
+.PP
+Gets the name of event raised by UI control that triggers invoking the target method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.RE
+.PP
+
+.PP
+Definition at line 125 of file InvokeMethod\&.cs\&.
+.SS "static void Csla\&.Xaml\&.InvokeMethod\&.SetMethodName (UIElement ctrl, string value)\fC [static]\fP"
+
+.PP
+Sets the name of method to be invoked\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.br
+\fIvalue\fP New value
+.RE
+.PP
+
+.PP
+Definition at line 80 of file InvokeMethod\&.cs\&.
+.SS "static void Csla\&.Xaml\&.InvokeMethod\&.SetMethodParameter (UIElement ctrl, object value)\fC [static]\fP"
+
+.PP
+Sets the parameter value to be passed to invoked method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.br
+\fIvalue\fP New value
+.RE
+.PP
+
+.PP
+Definition at line 144 of file InvokeMethod\&.cs\&.
+.SS "static void Csla\&.Xaml\&.InvokeMethod\&.SetTarget (UIElement ctrl, object value)\fC [static]\fP"
+
+.PP
+Sets the object containing the method to be invoked\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.br
+\fIvalue\fP New value
+.RE
+.PP
+
+.PP
+Definition at line 41 of file InvokeMethod\&.cs\&.
+.SS "static void Csla\&.Xaml\&.InvokeMethod\&.SetTriggerEvent (UIElement ctrl, string value)\fC [static]\fP"
+
+.PP
+Sets the name of event raised by UI control that triggers invoking the target method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrl\fP Attached control
+.br
+\fIvalue\fP New value
+.RE
+.PP
+
+.PP
+Definition at line 115 of file InvokeMethod\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "readonly DependencyProperty Csla\&.Xaml\&.InvokeMethod\&.MethodNameProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+=
+      DependencyProperty\&.RegisterAttached("MethodName",
+      typeof(string),
+      typeof(InvokeMethod),
+      new PropertyMetadata(null))
+.fi
+.PP
+Name of method to be invoked\&. 
+.PP
+Definition at line 69 of file InvokeMethod\&.cs\&.
+.SS "readonly DependencyProperty Csla\&.Xaml\&.InvokeMethod\&.MethodParameterProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+=
+      DependencyProperty\&.RegisterAttached("MethodParameter",
+      typeof(object),
+      typeof(InvokeMethod),
+      new PropertyMetadata(null))
+.fi
+.PP
+Parameter value to be passed to invoked method\&. 
+.PP
+Definition at line 133 of file InvokeMethod\&.cs\&.
+.SS "readonly DependencyProperty Csla\&.Xaml\&.InvokeMethod\&.TargetProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+=
+      DependencyProperty\&.RegisterAttached("Target",
+      typeof(object),
+      typeof(InvokeMethod),
+      new PropertyMetadata(null))
+.fi
+.PP
+Object containing the method to be invoked\&. 
+.PP
+Definition at line 30 of file InvokeMethod\&.cs\&.
+.SS "readonly DependencyProperty Csla\&.Xaml\&.InvokeMethod\&.TriggerEventProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+=
+      DependencyProperty\&.RegisterAttached("TriggerEvent",
+      typeof(string),
+      typeof(InvokeMethod),
+      new PropertyMetadata((o, e) =>
+      {
+        var ctrl = o as UIElement;
+        if (ctrl != null)
+          new InvokeMethod(ctrl);
+      }))
+.fi
+.PP
+Name of event raised by UI control that triggers invoking the target method\&. 
+.PP
+Definition at line 98 of file InvokeMethod\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

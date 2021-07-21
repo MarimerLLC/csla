@@ -1,0 +1,782 @@
+.TH "Csla.BusinessListBase< T, C >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.BusinessListBase< T, C > \- This is the base class from which most business collections or lists will be derived\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.ObservableBindingList< C >\fP, \fBCsla\&.Core\&.IEditableCollection\fP, \fBCsla\&.Core\&.IUndoableObject\fP, ICloneable, \fBCsla\&.Core\&.ISavable< T >\fP, \fBCsla\&.Core\&.ISavable< T >\fP, \fBCsla\&.Core\&.IParent\fP, Csla\&.Server\&.IDataPortalTarget, \fBCsla\&.Core\&.INotifyBusy\fP, and \fBCsla\&.IBusinessListBase< C >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "T \fBClone\fP ()"
+.br
+.RI "Creates a clone of the object\&. "
+.ti -1c
+.RI "bool \fBContainsDeleted\fP (C item)"
+.br
+.RI "Returns true if the internal deleted list contains the specified child object\&. "
+.ti -1c
+.RI "void \fBBeginEdit\fP ()"
+.br
+.RI "Starts a nested edit on the object\&. "
+.ti -1c
+.RI "void \fBCancelEdit\fP ()"
+.br
+.RI "Cancels the current edit process, restoring the object's state to its previous values\&. "
+.ti -1c
+.RI "void \fBApplyEdit\fP ()"
+.br
+.RI "Commits the current edit process\&. "
+.ti -1c
+.RI "T \fBSave\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "async Task< T > \fBSaveAsync\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "async Task \fBSaveAndMergeAsync\fP ()"
+.br
+.RI "Saves the object to the database, merging any resulting updates into the existing object graph\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP ()"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (object userState)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (EventHandler< \fBSavedEventArgs\fP > handler)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "async void \fBBeginSave\fP (EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBusinessListBase\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "virtual void \fBInitialize\fP ()"
+.br
+.RI "Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. "
+.ti -1c
+.RI "virtual object \fBGetClone\fP ()"
+.br
+.RI "Creates a clone of the object\&. "
+.ti -1c
+.RI "virtual void \fBEditChildComplete\fP (\fBCore\&.IEditableBusinessObject\fP child)"
+.br
+.RI "Override this method to be notified when a child object's \fBCore\&.BusinessBase\&.ApplyEdit\fP method has completed\&. "
+.ti -1c
+.RI "override C \fBAddNewCore\fP ()"
+.br
+.RI "Override this method to create a new object that is added to the collection\&. "
+.ti -1c
+.RI "override void \fBInsertItem\fP (int index, C item)"
+.br
+.RI "Sets the edit level of the child object as it is added\&. "
+.ti -1c
+.RI "override void \fBRemoveItem\fP (int index)"
+.br
+.RI "Marks the child object for deletion and moves it to the collection of deleted objects\&. "
+.ti -1c
+.RI "override void \fBSetItem\fP (int index, C item)"
+.br
+.RI "Replaces the item at the specified index with the specified item, first moving the original item to the deleted list\&. "
+.ti -1c
+.RI "override void \fBClearItems\fP ()"
+.br
+.RI "Clears the collection, moving all active items to the deleted list\&. "
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&. "
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)"
+.br
+.RI "Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&. "
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)"
+.br
+.RI "Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&. "
+.ti -1c
+.RI "void \fBMarkAsChild\fP ()"
+.br
+.RI "Marks the object as being a child object\&. "
+.ti -1c
+.RI "override void \fBOnDeserialized\fP ()"
+.br
+.RI "Reset parent references on deserialization\&. "
+.ti -1c
+.RI "virtual void \fBChild_Create\fP ()"
+.br
+.RI "Initializes a new instance of the object with default values\&. "
+.ti -1c
+.RI "virtual void \fBChild_Update\fP (params object[] parameters)"
+.br
+.RI "Saves all items in the list, automatically performing insert, update or delete operations as necessary\&. "
+.ti -1c
+.RI "virtual async Task< T > \fBSaveAsync\fP (object userState, bool isSync)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_xyz method\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_xyz method\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalException\fP (\fBDataPortalEventArgs\fP e, Exception ex)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. "
+.ti -1c
+.RI "virtual void \fBChild_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_XYZ method\&. "
+.ti -1c
+.RI "virtual void \fBChild_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_XYZ method\&. "
+.ti -1c
+.RI "virtual void \fBChild_OnDataPortalException\fP (\fBDataPortalEventArgs\fP e, Exception ex)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. "
+.ti -1c
+.RI "virtual void \fBOnSaved\fP (T newObject, Exception e, object userState)"
+.br
+.RI "Raises the \fBSaved\fP event, indicating that the object has been saved, and providing a reference to the new object instance\&. "
+.ti -1c
+.RI "virtual void \fBSetParent\fP (\fBCore\&.IParent\fP parent)"
+.br
+.RI "Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBMobileList\fP< C > \fBDeletedList\fP\fC [get]\fP"
+.br
+.RI "A collection containing all child objects marked for deletion\&. "
+.ti -1c
+.RI "int \fBEditLevel\fP\fC [get]\fP"
+.br
+.RI "Returns the current edit level of the object\&. "
+.ti -1c
+.RI "bool \fBIsChild\fP\fC [get]\fP"
+.br
+.RI "Indicates whether this collection object is a child object\&. "
+.ti -1c
+.RI "bool \fBIsDirty\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this object's data has been changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsSelfValid\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this object is currently in a valid state (has no broken validation rules)\&. "
+.ti -1c
+.RI "virtual bool \fBIsValid\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this object is currently in a valid state (has no broken validation rules)\&. "
+.ti -1c
+.RI "virtual bool \fBIsSavable\fP\fC [get]\fP"
+.br
+.RI "Returns true if this object has changes, is valid, the user is authorized and the object is not busy\&. "
+.ti -1c
+.RI "override bool \fBIsBusy\fP\fC [get]\fP"
+.br
+.RI "Gets the busy status for this object and its child objects\&. "
+.ti -1c
+.RI "EventHandler< \fBCsla\&.Core\&.SavedEventArgs\fP > \fBSaved\fP"
+.br
+.RI "Event raised when an object has been saved\&. "
+.ti -1c
+.RI "\fBCore\&.IParent\fP \fBParent\fP\fC [get]\fP"
+.br
+.RI "Provide access to the parent reference for use in child object code\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the base class from which most business collections or lists will be derived\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of the business object being defined\&.
+.br
+\fIC\fP Type of the child objects contained in the list\&.
+.RE
+.PP
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fI\fBBusinessListBase\fP\fP
+.TP
+\fIT\fP : \fIT\fP
+.TP
+\fIT\fP : \fIC\fP
+.TP
+\fIC\fP : \fI\fBCore\&.IEditableBusinessObject\fP\fP
+.PP
+Definition at line 33 of file BusinessListBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.BusinessListBase\fP< T, C >\&.\fBBusinessListBase\fP ()\fC [protected]\fP"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 45 of file BusinessListBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override C \fBCsla\&.BusinessListBase\fP< T, C >\&.AddNewCore ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to create a new object that is added to the collection\&. 
+.PP
+Reimplemented from \fBCsla\&.Core\&.ObservableBindingList< C >\fP\&.
+.PP
+Definition at line 289 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.ApplyEdit ()"
+
+.PP
+Commits the current edit process\&. Calling this method causes the most recently taken snapshot of the object's state to be discarded, thus committing any changes made to the object's state since the last \fBBeginEdit\fP call\&. 
+.PP
+This method triggers an \fBCore\&.BusinessBase\&.ApplyEdit\fP in all child objects\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
+.PP
+Definition at line 250 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.BeginEdit ()"
+
+.PP
+Starts a nested edit on the object\&. When this method is called the object takes a snapshot of its current state (the values of its variables)\&. This snapshot can be restored by calling \fBCancelEdit\fP or committed by calling \fBApplyEdit\fP\&. 
+.PP
+This is a nested operation\&. Each call to BeginEdit adds a new snapshot of the object's state to a stack\&. You should ensure that for each call to BeginEdit there is a corresponding call to either CancelEdit or ApplyEdit to remove that snapshot from the stack\&. 
+.PP
+See Chapters 2 and 3 for details on n-level undo and state stacking\&. 
+.PP
+This method triggers the copying of all child object states\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
+.PP
+Definition at line 208 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.BeginSave ()"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 989 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.BeginSave (EventHandler< \fBSavedEventArgs\fP > handler)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandler\fP Method called when the operation is complete\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1011 of file BusinessListBase\&.cs\&.
+.SS "async void \fBCsla\&.BusinessListBase\fP< T, C >\&.BeginSave (EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandler\fP Method called when the operation is complete\&. 
+.br
+\fIuserState\fP User state object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1024 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.BeginSave (object userState)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserState\fP User state object\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 999 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.CancelEdit ()"
+
+.PP
+Cancels the current edit process, restoring the object's state to its previous values\&. Calling this method causes the most recently taken snapshot of the object's state to be restored\&. This resets the object's values to the point of the last \fBBeginEdit\fP call\&. 
+.PP
+This method triggers an undo in all child objects\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
+.PP
+Definition at line 229 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.Child_Create ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Initializes a new instance of the object with default values\&. 
+.PP
+Definition at line 856 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.Child_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.br
+\fIex\fP The Exception thrown during data access\&.
+.RE
+.PP
+
+.PP
+Definition at line 1100 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.Child_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_XYZ method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1081 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.Child_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_XYZ method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1090 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.Child_Update (params object[] parameters)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Saves all items in the list, automatically performing insert, update or delete operations as necessary\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameters\fP Optional parameters passed to child update methods\&. 
+.RE
+.PP
+
+.PP
+Definition at line 869 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.ClearItems ()\fC [protected]\fP"
+
+.PP
+Clears the collection, moving all active items to the deleted list\&. 
+.PP
+Definition at line 409 of file BusinessListBase\&.cs\&.
+.SS "T \fBCsla\&.BusinessListBase\fP< T, C >\&.Clone ()"
+
+.PP
+Creates a clone of the object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the exact data of the original object\&.
+.RE
+.PP
+
+.PP
+Definition at line 119 of file BusinessListBase\&.cs\&.
+.SS "bool \fBCsla\&.BusinessListBase\fP< T, C >\&.ContainsDeleted (C item)"
+
+.PP
+Returns true if the internal deleted list contains the specified child object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Child object to check\&.
+.RE
+.PP
+
+.PP
+Definition at line 179 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.DataPortal_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.br
+\fIex\fP The Exception thrown during data access\&.
+.RE
+.PP
+
+.PP
+Definition at line 1072 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.DataPortal_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_xyz method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1053 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.DataPortal_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_xyz method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1062 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.EditChildComplete (\fBCore\&.IEditableBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to be notified when a child object's \fBCore\&.BusinessBase\&.ApplyEdit\fP method has completed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP The child object that was edited\&.
+.RE
+.PP
+
+.PP
+Definition at line 274 of file BusinessListBase\&.cs\&.
+.SS "virtual object \fBCsla\&.BusinessListBase\fP< T, C >\&.GetClone ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates a clone of the object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the exact data of the original object\&.
+.RE
+.PP
+
+.PP
+Definition at line 110 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.Initialize ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. 
+.PP
+Definition at line 59 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.InsertItem (int index, C item)\fC [protected]\fP"
+
+.PP
+Sets the edit level of the child object as it is added\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the item to insert\&.
+.br
+\fIitem\fP Item to insert\&.
+.RE
+.PP
+
+.PP
+Definition at line 326 of file BusinessListBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessListBase\fP< T, C >\&.MarkAsChild ()\fC [protected]\fP"
+
+.PP
+Marks the object as being a child object\&. By default all business objects are 'parent' objects\&. This means that they can be directly retrieved and updated into the database\&. 
+.PP
+We often also need child objects\&. These are objects which are contained within other objects\&. For instance, a parent Invoice object will contain child LineItem objects\&. 
+.PP
+To create a child object, the MarkAsChild method must be called as the object is created\&. Please see Chapter 7 for details on the use of the MarkAsChild method\&. 
+.PP
+Definition at line 702 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnDeserialized ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reset parent references on deserialization\&. 
+.PP
+Reimplemented from \fBCsla\&.Core\&.ObservableBindingList< C >\fP\&.
+.PP
+Definition at line 837 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnGetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the serialization\&. 
+.RE
+.PP
+
+.PP
+Definition at line 638 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnGetState (\fBSerializationInfo\fP info)\fC [protected]\fP"
+
+.PP
+Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.RE
+.PP
+
+.PP
+Definition at line 603 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnSaved (T newObject, Exception e, object userState)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the \fBSaved\fP event, indicating that the object has been saved, and providing a reference to the new object instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP The new object instance\&.
+.br
+\fIe\fP Execption that occurred during the operation\&.
+.br
+\fIuserState\fP User state object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1195 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnSetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the deserialization\&. 
+.RE
+.PP
+
+.PP
+Definition at line 659 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnSetState (\fBSerializationInfo\fP info)\fC [protected]\fP"
+
+.PP
+Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.RE
+.PP
+
+.PP
+Definition at line 619 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.RemoveItem (int index)\fC [protected]\fP"
+
+.PP
+Marks the child object for deletion and moves it to the collection of deleted objects\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the item to remove\&.
+.RE
+.PP
+
+.PP
+Definition at line 352 of file BusinessListBase\&.cs\&.
+.SS "T \fBCsla\&.BusinessListBase\fP< T, C >\&.Save ()"
+
+.PP
+Saves the object to the database\&. Calling this method starts the save operation, causing the all child objects to be inserted, updated or deleted within the database based on the each object's current state\&. 
+.PP
+All this is contingent on \fBIsDirty\fP\&. If this value is false, no data operation occurs\&. It is also contingent on \fBIsValid\fP\&. If this value is false an exception will be thrown to indicate that the UI attempted to save an invalid object\&. 
+.PP
+It is important to note that this method returns a new version of the business collection that contains any data updated during the save operation\&. You MUST update all object references to use this new version of the business collection in order to have access to the correct object data\&. 
+.PP
+You can override this method to add your own custom behaviors to the save operation\&. For instance, you may add some security checks to make sure the user can save the object\&. If all security checks pass, you would then invoke the base Save method via \fCMyBase\&.Save()\fP\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 913 of file BusinessListBase\&.cs\&.
+.SS "async Task \fBCsla\&.BusinessListBase\fP< T, C >\&.SaveAndMergeAsync ()"
+
+.PP
+Saves the object to the database, merging any resulting updates into the existing object graph\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 980 of file BusinessListBase\&.cs\&.
+.SS "async Task<T> \fBCsla\&.BusinessListBase\fP< T, C >\&.SaveAsync ()"
+
+.PP
+Saves the object to the database\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 931 of file BusinessListBase\&.cs\&.
+.SS "virtual async Task<T> \fBCsla\&.BusinessListBase\fP< T, C >\&.SaveAsync (object userState, bool isSync)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserState\fP User state data\&.
+.br
+\fIisSync\fP True if the save operation should be synchronous\&.
+.RE
+.PP
+
+.PP
+Definition at line 941 of file BusinessListBase\&.cs\&.
+.SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.SetItem (int index, C item)\fC [protected]\fP"
+
+.PP
+Replaces the item at the specified index with the specified item, first moving the original item to the deleted list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP The zero-based index of the item to replace\&.
+.br
+\fIitem\fP The new value for the item at the specified index\&. The value can be null for reference types\&. 
+.RE
+.PP
+
+.PP
+Definition at line 382 of file BusinessListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessListBase\fP< T, C >\&.SetParent (\fBCore\&.IParent\fP parent)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP A reference to the parent collection object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1233 of file BusinessListBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBMobileList\fP<C> \fBCsla\&.BusinessListBase\fP< T, C >\&.DeletedList\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+A collection containing all child objects marked for deletion\&. 
+.PP
+Definition at line 137 of file BusinessListBase\&.cs\&.
+.SS "int \fBCsla\&.BusinessListBase\fP< T, C >\&.EditLevel\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Returns the current edit level of the object\&. 
+.PP
+Definition at line 430 of file BusinessListBase\&.cs\&.
+.SS "override bool \fBCsla\&.BusinessListBase\fP< T, C >\&.IsBusy\fC [get]\fP"
+
+.PP
+Gets the busy status for this object and its child objects\&. 
+.PP
+Definition at line 790 of file BusinessListBase\&.cs\&.
+.SS "bool \fBCsla\&.BusinessListBase\fP< T, C >\&.IsChild\fC [get]\fP"
+
+.PP
+Indicates whether this collection object is a child object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if this is a child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 680 of file BusinessListBase\&.cs\&.
+.SS "bool \fBCsla\&.BusinessListBase\fP< T, C >\&.IsDirty\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this object's data has been changed\&. 
+.PP
+Definition at line 723 of file BusinessListBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.BusinessListBase\fP< T, C >\&.IsSavable\fC [get]\fP"
+
+.PP
+Returns true if this object has changes, is valid, the user is authorized and the object is not busy\&. 
+.PP
+Definition at line 778 of file BusinessListBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.BusinessListBase\fP< T, C >\&.IsSelfValid\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Gets a value indicating whether this object is currently in a valid state (has no broken validation rules)\&. 
+.PP
+Definition at line 751 of file BusinessListBase\&.cs\&.
+.SS "virtual bool \fBCsla\&.BusinessListBase\fP< T, C >\&.IsValid\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this object is currently in a valid state (has no broken validation rules)\&. 
+.PP
+Definition at line 760 of file BusinessListBase\&.cs\&.
+.SS "\fBCore\&.IParent\fP \fBCsla\&.BusinessListBase\fP< T, C >\&.Parent\fC [get]\fP"
+
+.PP
+Provide access to the parent reference for use in child object code\&. This value will be Nothing for root objects\&. 
+.PP
+Definition at line 1219 of file BusinessListBase\&.cs\&.
+.SS "EventHandler<\fBCsla\&.Core\&.SavedEventArgs\fP> \fBCsla\&.BusinessListBase\fP< T, C >\&.Saved\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event raised when an object has been saved\&. 
+.PP
+Definition at line 1172 of file BusinessListBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

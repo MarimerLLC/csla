@@ -1,0 +1,518 @@
+.TH "Csla.SortedBindingList< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.SortedBindingList< T > \- Provides a sorted view into an existing IList(Of T)\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IList< T >, IBindingList, IEnumerable< T >, and ICancelAddNew\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "IEnumerator< T > \fBGetEnumerator\fP ()"
+.br
+.RI "Returns an enumerator for the list, honoring any sort that is active at the time\&. "
+.ti -1c
+.RI "void \fBAddIndex\fP (PropertyDescriptor property)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "object \fBAddNew\fP ()"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBApplySort\fP (string propertyName, ListSortDirection direction)"
+.br
+.RI "Applies a sort to the view\&. "
+.ti -1c
+.RI "void \fBApplySort\fP (PropertyDescriptor property, ListSortDirection direction)"
+.br
+.RI "Applies a sort to the view\&. "
+.ti -1c
+.RI "int \fBFind\fP (string propertyName, object key)"
+.br
+.RI "Finds an item in the view "
+.ti -1c
+.RI "int \fBFind\fP (PropertyDescriptor property, object key)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBRemoveIndex\fP (PropertyDescriptor property)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBRemoveSort\fP ()"
+.br
+.RI "Removes any sort currently applied to the view\&. "
+.ti -1c
+.RI "void \fBCopyTo\fP (T[] array, int arrayIndex)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBAdd\fP (T item)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBClear\fP ()"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBContains\fP (T item)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "int \fBIndexOf\fP (T item)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBInsert\fP (int index, T item)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBRemove\fP (T item)"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "void \fBRemoveAt\fP (int index)"
+.br
+.RI "Removes the child object at the specified index in the list, resorting the display as needed\&. "
+.ti -1c
+.RI "\fBSortedBindingList\fP (IList< T > list)"
+.br
+.RI "Creates a new view based on the provided IList object\&. "
+.ti -1c
+.RI "T[] \fBToArray\fP ()"
+.br
+.RI "Get an array containing all items in the list\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBOnListChanged\fP (ListChangedEventArgs e)"
+.br
+.RI "Raises the \fBListChanged\fP event\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBAllowEdit\fP\fC [get]\fP"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBAllowNew\fP\fC [get]\fP"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBAllowRemove\fP\fC [get]\fP"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBIsSorted\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the view is currently sorted\&. "
+.ti -1c
+.RI "ListSortDirection \fBSortDirection\fP\fC [get]\fP"
+.br
+.RI "Returns the direction of the current sort\&. "
+.ti -1c
+.RI "PropertyDescriptor \fBSortProperty\fP\fC [get]\fP"
+.br
+.RI "Returns the PropertyDescriptor of the current sort\&. "
+.ti -1c
+.RI "bool \fBSupportsChangeNotification\fP\fC [get]\fP"
+.br
+.RI "Returns true since this object does raise the ListChanged event\&. "
+.ti -1c
+.RI "bool \fBSupportsSearching\fP\fC [get]\fP"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBSupportsSorting\fP\fC [get]\fP"
+.br
+.RI "Returns true\&. Sorting is supported\&. "
+.ti -1c
+.RI "int \fBCount\fP\fC [get]\fP"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "bool \fBIsReadOnly\fP\fC [get]\fP"
+.br
+.RI "Implemented by IList source object\&. "
+.ti -1c
+.RI "T \fBthis[int index]\fP\fC [get, set]\fP"
+.br
+.RI "Gets the child item at the specified index in the list, honoring the sort order of the items\&. "
+.ti -1c
+.RI "IList< T > \fBSourceList\fP\fC [get]\fP"
+.br
+.RI "Gets the source list over which this \fBSortedBindingList\fP is a view\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "ListChangedEventHandler \fBListChanged\fP"
+.br
+.RI "Raised to indicate that the list's data has changed\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides a sorted view into an existing IList(Of T)\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of child object contained by the original list or collection\&. 
+.RE
+.PP
+
+.PP
+Definition at line 25 of file SortedBindingList\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.SortedBindingList\fP< T >\&.\fBSortedBindingList\fP (IList< T > list)"
+
+.PP
+Creates a new view based on the provided IList object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP The IList (collection) containing the data\&.
+.RE
+.PP
+
+.PP
+Definition at line 736 of file SortedBindingList\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.Add (T item)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item to add to the list\&.
+.RE
+.PP
+
+.PP
+Definition at line 551 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.AddIndex (PropertyDescriptor property)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property on which to build the index\&.
+.RE
+.PP
+
+.PP
+Definition at line 258 of file SortedBindingList\&.cs\&.
+.SS "object \fBCsla\&.SortedBindingList\fP< T >\&.AddNew ()"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 267 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.ApplySort (PropertyDescriptor property, ListSortDirection direction)"
+
+.PP
+Applies a sort to the view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP A PropertyDescriptor for the property on which to sort\&.
+.br
+\fIdirection\fP The direction to sort the data\&.
+.RE
+.PP
+
+.PP
+Definition at line 344 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.ApplySort (string propertyName, ListSortDirection direction)"
+
+.PP
+Applies a sort to the view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The text name of the property on which to sort\&.
+.br
+\fIdirection\fP The direction to sort the data\&.
+.RE
+.PP
+
+.PP
+Definition at line 332 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.Clear ()"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 565 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.Contains (T item)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item for which to search\&.
+.RE
+.PP
+
+.PP
+Definition at line 574 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.CopyTo (T[] array, int arrayIndex)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIarray\fP Array to receive the data\&.
+.br
+\fIarrayIndex\fP Starting array index\&.
+.RE
+.PP
+
+.PP
+Definition at line 507 of file SortedBindingList\&.cs\&.
+.SS "int \fBCsla\&.SortedBindingList\fP< T >\&.Find (PropertyDescriptor property, object key)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Key value for which to search\&.
+.br
+\fIproperty\fP Property to search for the key value\&.
+.RE
+.PP
+
+.PP
+Definition at line 395 of file SortedBindingList\&.cs\&.
+.SS "int \fBCsla\&.SortedBindingList\fP< T >\&.Find (string propertyName, object key)"
+
+.PP
+Finds an item in the view 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to search
+.br
+\fIkey\fP Value to find
+.RE
+.PP
+
+.PP
+Definition at line 357 of file SortedBindingList\&.cs\&.
+.SS "IEnumerator<T> \fBCsla\&.SortedBindingList\fP< T >\&.GetEnumerator ()"
+
+.PP
+Returns an enumerator for the list, honoring any sort that is active at the time\&. 
+.PP
+Definition at line 241 of file SortedBindingList\&.cs\&.
+.SS "int \fBCsla\&.SortedBindingList\fP< T >\&.IndexOf (T item)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item for which to search\&.
+.RE
+.PP
+
+.PP
+Definition at line 588 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.Insert (int index, T item)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index at which to insert the item\&.
+.br
+\fIitem\fP Item to insert\&.
+.RE
+.PP
+
+.PP
+Definition at line 604 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.OnListChanged (ListChangedEventArgs e)\fC [protected]\fP"
+
+.PP
+Raises the \fBListChanged\fP event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 430 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.Remove (T item)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Item to be removed\&.
+.RE
+.PP
+
+.PP
+Definition at line 643 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.RemoveAt (int index)"
+
+.PP
+Removes the child object at the specified index in the list, resorting the display as needed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP The index of the object to remove\&.
+.RE
+.PP
+.PP
+See Chapter 5 for details on how and why the list is altered during the remove process\&. 
+.PP
+Definition at line 662 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.RemoveIndex (PropertyDescriptor property)"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property for which the index should be removed\&.
+.RE
+.PP
+
+.PP
+Definition at line 441 of file SortedBindingList\&.cs\&.
+.SS "void \fBCsla\&.SortedBindingList\fP< T >\&.RemoveSort ()"
+
+.PP
+Removes any sort currently applied to the view\&. 
+.PP
+Definition at line 450 of file SortedBindingList\&.cs\&.
+.SS "T [] \fBCsla\&.SortedBindingList\fP< T >\&.ToArray ()"
+
+.PP
+Get an array containing all items in the list\&. 
+.PP
+Definition at line 909 of file SortedBindingList\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.AllowEdit\fC [get]\fP"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 288 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.AllowNew\fC [get]\fP"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 302 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.AllowRemove\fC [get]\fP"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 316 of file SortedBindingList\&.cs\&.
+.SS "int \fBCsla\&.SortedBindingList\fP< T >\&.Count\fC [get]\fP"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 527 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.IsReadOnly\fC [get]\fP"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 622 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.IsSorted\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the view is currently sorted\&. 
+.PP
+Definition at line 409 of file SortedBindingList\&.cs\&.
+.SS "ListSortDirection \fBCsla\&.SortedBindingList\fP< T >\&.SortDirection\fC [get]\fP"
+
+.PP
+Returns the direction of the current sort\&. 
+.PP
+Definition at line 458 of file SortedBindingList\&.cs\&.
+.SS "PropertyDescriptor \fBCsla\&.SortedBindingList\fP< T >\&.SortProperty\fC [get]\fP"
+
+.PP
+Returns the PropertyDescriptor of the current sort\&. 
+.PP
+Definition at line 466 of file SortedBindingList\&.cs\&.
+.SS "IList<T> \fBCsla\&.SortedBindingList\fP< T >\&.SourceList\fC [get]\fP"
+
+.PP
+Gets the source list over which this \fBSortedBindingList\fP is a view\&. 
+.PP
+Definition at line 710 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.SupportsChangeNotification\fC [get]\fP"
+
+.PP
+Returns true since this object does raise the ListChanged event\&. 
+.PP
+Definition at line 475 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.SupportsSearching\fC [get]\fP"
+
+.PP
+Implemented by IList source object\&. 
+.PP
+Definition at line 483 of file SortedBindingList\&.cs\&.
+.SS "bool \fBCsla\&.SortedBindingList\fP< T >\&.SupportsSorting\fC [get]\fP"
+
+.PP
+Returns true\&. Sorting is supported\&. 
+.PP
+Definition at line 497 of file SortedBindingList\&.cs\&.
+.SS "T \fBCsla\&.SortedBindingList\fP< T >\&.this[int index]\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the child item at the specified index in the list, honoring the sort order of the items\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP The index of the item in the sorted list\&.
+.RE
+.PP
+
+.PP
+Definition at line 683 of file SortedBindingList\&.cs\&.
+.SH "Event Documentation"
+.PP 
+.SS "ListChangedEventHandler \fBCsla\&.SortedBindingList\fP< T >\&.ListChanged"
+
+.PP
+Raised to indicate that the list's data has changed\&. This event is raised if the underling IList object's data changes (assuming the underling IList also implements the IBindingList interface)\&. It is also raised if the sort property or direction is changed to indicate that the view's data has changed\&. See Chapter 5 for details\&. 
+.PP
+Definition at line 424 of file SortedBindingList\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

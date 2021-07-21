@@ -1,0 +1,119 @@
+.TH "Csla.Test.AppContext.AppContextTests" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.AppContext.AppContextTests
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSimpleTest\fP ()"
+.br
+.ti -1c
+.RI "void \fBApplicationContextProperties\fP ()"
+.br
+.ti -1c
+.RI "void \fBTestAppContextAcrossDifferentThreads\fP ()"
+.br
+.ti -1c
+.RI "void \fBClientContext\fP ()"
+.br
+.RI "\fBTest\fP the Client Context "
+.ti -1c
+.RI "void \fBGlobalContext\fP ()"
+.br
+.RI "\fBTest\fP the Global Context "
+.ti -1c
+.RI "void \fBDataPortalEvents\fP ()"
+.br
+.RI "\fBTest\fP the dataportal events "
+.ti -1c
+.RI "void \fBFailCreateContext\fP ()"
+.br
+.RI "\fBTest\fP the FaileCreate Context "
+.ti -1c
+.RI "void \fBFailFetchContext\fP ()"
+.br
+.ti -1c
+.RI "void \fBFailUpdateContext\fP ()"
+.br
+.ti -1c
+.RI "void \fBFailDeleteContext\fP ()"
+.br
+.ti -1c
+.RI "void \fBClearContextsAfterEachTest\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetScopedSp\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 27 of file AppContextTests\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.ApplicationContextProperties ()"
+
+.PP
+Definition at line 48 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.ClearContextsAfterEachTest ()"
+
+.PP
+Definition at line 346 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.ClientContext ()"
+
+.PP
+\fBTest\fP the Client Context Clearing the GlobalContext clears the ClientContext also? Should the ClientContext be cleared explicitly also? 
+.PP
+Definition at line 114 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.DataPortalEvents ()"
+
+.PP
+\fBTest\fP the dataportal events How does the GlobalContext get the keys 'dpinvoke' and 'dpinvokecomplete'?
+.PP
+In the vb version of this test it calls RemoveHandler in VB\&. Unfortunately removing handlers aren't quite that easy in C# I had to declare EventHandlers that could be added and removed\&. Also I found out that the VB library does not seem to contain the DataPortalInvokeEventHandler object so I put a conditional compile flag around this method and set a warning message\&. 
+.PP
+Definition at line 189 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.FailCreateContext ()"
+
+.PP
+\fBTest\fP the FaileCreate Context 
+.PP
+Definition at line 227 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.FailDeleteContext ()"
+
+.PP
+Definition at line 323 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.FailFetchContext ()"
+
+.PP
+Definition at line 251 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.FailUpdateContext ()"
+
+.PP
+Definition at line 277 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.GlobalContext ()"
+
+.PP
+\fBTest\fP the Global Context 
+.PP
+Definition at line 148 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.SetScopedSp ()"
+
+.PP
+Definition at line 353 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.SimpleTest ()"
+
+.PP
+Definition at line 32 of file AppContextTests\&.cs\&.
+.SS "void Csla\&.Test\&.AppContext\&.AppContextTests\&.TestAppContextAcrossDifferentThreads ()"
+
+.PP
+Definition at line 57 of file AppContextTests\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

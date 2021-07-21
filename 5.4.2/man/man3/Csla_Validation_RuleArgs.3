@@ -1,0 +1,323 @@
+.TH "Csla.Validation.RuleArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Validation.RuleArgs \- Object providing extra information to methods that implement business rules\&. As imlemented in \fBCsla\fP 3\&.8\&.x so older style rules will compile\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Validation\&.CommonRules\&.DataAnnotationRuleArgs\fP, and \fBCsla\&.Validation\&.DecoratedRuleArgs\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRuleArgs\fP (string propertyName)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (string propertyName, string friendlyName)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (string propertyName, \fBRuleSeverity\fP severity)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, \fBRuleSeverity\fP severity)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (string propertyName, string friendlyName, \fBRuleSeverity\fP severity)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (string propertyName, \fBRuleSeverity\fP severity, bool stopProcessing)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, \fBRuleSeverity\fP severity, bool stopProcessing)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "\fBRuleArgs\fP (string propertyName, string friendlyName, \fBRuleSeverity\fP severity, bool stopProcessing)"
+.br
+.RI "Creates an instance of \fBRuleArgs\fP\&. "
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Returns a string representation of the object\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static string \fBGetPropertyName\fP (\fBRuleArgs\fP e)"
+.br
+.RI "Gets the property name from the \fBRuleArgs\fP object, using the friendly name if one is defined\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBPropertyName\fP\fC [get]\fP"
+.br
+.RI "The name of the property to be validated\&. "
+.ti -1c
+.RI "string \fBPropertyFriendlyName\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&. "
+.ti -1c
+.RI "string \fBDescription\fP\fC [get, set]\fP"
+.br
+.RI "Set by the rule handler method to describe the broken rule\&. "
+.ti -1c
+.RI "\fBRuleSeverity\fP \fBSeverity\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the severity of the broken rule\&. "
+.ti -1c
+.RI "bool \fBStopProcessing\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether this broken rule should stop the processing of subsequent rules for this property\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Object providing extra information to methods that implement business rules\&. As imlemented in \fBCsla\fP 3\&.8\&.x so older style rules will compile\&. 
+
+
+.PP
+Definition at line 21 of file RuleArgs\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (string propertyName)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The name of the property to be validated\&.
+.RE
+.PP
+
+.PP
+Definition at line 102 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The \fBPropertyInfo\fP object for the property\&.
+.RE
+.PP
+
+.PP
+Definition at line 113 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (string propertyName, string friendlyName)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The name of the property to be validated\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.RE
+.PP
+
+.PP
+Definition at line 126 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (string propertyName, \fBRuleSeverity\fP severity)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The name of the property to be validated\&.
+.br
+\fIseverity\fP Initial default severity for the rule\&.
+.RE
+.PP
+.PP
+The \fBseverity\fP parameter defines only the initial default severity value\&. If the rule changes this value by setting e\&.Severity, then that new value will become the default for all subsequent rule invocations\&. 
+.PP
+To avoid confusion, it is recommended that the \fBseverity\fP constructor parameter only be used for rule methods that do not explicitly set e\&.Severity\&. 
+.PP
+Definition at line 150 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, \fBRuleSeverity\fP severity)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The \fBPropertyInfo\fP for the property\&.
+.br
+\fIseverity\fP Initial default severity for the rule\&.
+.RE
+.PP
+.PP
+The \fBseverity\fP parameter defines only the initial default severity value\&. If the rule changes this value by setting e\&.Severity, then that new value will become the default for all subsequent rule invocations\&. 
+.PP
+To avoid confusion, it is recommended that the \fBseverity\fP constructor parameter only be used for rule methods that do not explicitly set e\&.Severity\&. 
+.PP
+Definition at line 174 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (string propertyName, string friendlyName, \fBRuleSeverity\fP severity)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The name of the property to be validated\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIseverity\fP Initial default severity for the rule\&.
+.RE
+.PP
+.PP
+The \fBseverity\fP parameter defines only the initial default severity value\&. If the rule changes this value by setting e\&.Severity, then that new value will become the default for all subsequent rule invocations\&. 
+.PP
+To avoid confusion, it is recommended that the \fBseverity\fP constructor parameter only be used for rule methods that do not explicitly set e\&.Severity\&. 
+.PP
+Definition at line 201 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (string propertyName, \fBRuleSeverity\fP severity, bool stopProcessing)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The name of the property to be validated\&.
+.br
+\fIseverity\fP The default severity for the rule\&.
+.br
+\fIstopProcessing\fP Initial default value for the StopProcessing property\&. 
+.RE
+.PP
+.PP
+The \fBseverity\fP and \fBstopProcessing\fP parameters define only the initial default values\&. If the rule changes these values by setting e\&.Severity or e\&.StopProcessing, then the new values will become the default for all subsequent rule invocations\&. 
+.PP
+To avoid confusion, It is recommended that the \fBseverity\fP and \fBstopProcessing\fP constructor parameters only be used for rule methods that do not explicitly set e\&.Severity or e\&.StopProcessing\&. 
+.PP
+Definition at line 229 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, \fBRuleSeverity\fP severity, bool stopProcessing)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The \fBPropertyInfo\fP for the property\&.
+.br
+\fIseverity\fP The default severity for the rule\&.
+.br
+\fIstopProcessing\fP Initial default value for the StopProcessing property\&. 
+.RE
+.PP
+.PP
+The \fBseverity\fP and \fBstopProcessing\fP parameters define only the initial default values\&. If the rule changes these values by setting e\&.Severity or e\&.StopProcessing, then the new values will become the default for all subsequent rule invocations\&. 
+.PP
+To avoid confusion, It is recommended that the \fBseverity\fP and \fBstopProcessing\fP constructor parameters only be used for rule methods that do not explicitly set e\&.Severity or e\&.StopProcessing\&. 
+.PP
+Definition at line 257 of file RuleArgs\&.cs\&.
+.SS "Csla\&.Validation\&.RuleArgs\&.RuleArgs (string propertyName, string friendlyName, \fBRuleSeverity\fP severity, bool stopProcessing)"
+
+.PP
+Creates an instance of \fBRuleArgs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP The name of the property to be validated\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIseverity\fP The default severity for the rule\&.
+.br
+\fIstopProcessing\fP Initial default value for the StopProcessing property\&. 
+.RE
+.PP
+.PP
+The \fBseverity\fP and \fBstopProcessing\fP parameters define only the initial default values\&. If the rule changes these values by setting e\&.Severity or e\&.StopProcessing, then the new values will become the default for all subsequent rule invocations\&. 
+.PP
+To avoid confusion, It is recommended that the \fBseverity\fP and \fBstopProcessing\fP constructor parameters only be used for rule methods that do not explicitly set e\&.Severity or e\&.StopProcessing\&. 
+.PP
+Definition at line 288 of file RuleArgs\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static string Csla\&.Validation\&.RuleArgs\&.GetPropertyName (\fBRuleArgs\fP e)\fC [static]\fP"
+
+.PP
+Gets the property name from the \fBRuleArgs\fP object, using the friendly name if one is defined\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Object from which to extract the name\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The friendly property name if it exists, otherwise the property name itself\&. 
+.RE
+.PP
+
+.PP
+Definition at line 313 of file RuleArgs\&.cs\&.
+.SS "override string Csla\&.Validation\&.RuleArgs\&.ToString ()"
+
+.PP
+Returns a string representation of the object\&. 
+.PP
+Definition at line 297 of file RuleArgs\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Validation\&.RuleArgs\&.Description\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Set by the rule handler method to describe the broken rule\&. A human-readable description of the broken rule\&.
+.PP
+Setting this property only has an effect if the rule method returns false\&. 
+.PP
+Definition at line 58 of file RuleArgs\&.cs\&.
+.SS "string Csla\&.Validation\&.RuleArgs\&.PropertyFriendlyName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&. 
+.PP
+Definition at line 42 of file RuleArgs\&.cs\&.
+.SS "string Csla\&.Validation\&.RuleArgs\&.PropertyName\fC [get]\fP"
+
+.PP
+The name of the property to be validated\&. 
+.PP
+Definition at line 32 of file RuleArgs\&.cs\&.
+.SS "\fBRuleSeverity\fP Csla\&.Validation\&.RuleArgs\&.Severity\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the severity of the broken rule\&. The severity of the broken rule\&.
+.PP
+Setting this property only has an effect if the rule method returns false\&. 
+.PP
+Definition at line 74 of file RuleArgs\&.cs\&.
+.SS "bool Csla\&.Validation\&.RuleArgs\&.StopProcessing\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether this broken rule should stop the processing of subsequent rules for this property\&. true if no further rules should be process for this property\&.
+.PP
+Setting this property only has an effect if the rule method returns false\&. 
+.PP
+Definition at line 91 of file RuleArgs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

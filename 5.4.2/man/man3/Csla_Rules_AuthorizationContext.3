@@ -1,0 +1,115 @@
+.TH "Csla.Rules.AuthorizationContext" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.AuthorizationContext \- Context information provided to an authorization rule when it is invoked\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.IAuthorizationContext\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAuthorizationContext\fP ()"
+.br
+.RI "Initializes a new instance of the \fBAuthorizationContext\fP class\&. "
+.ti -1c
+.RI "\fBAuthorizationContext\fP (\fBIAuthorizationRule\fP rule, object target, Type targetType)"
+.br
+.RI "Creates a \fBAuthorizationContext\fP instance for unit testing\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBIAuthorizationRule\fP \fBRule\fP\fC [get, set]\fP"
+.br
+.RI "Gets the rule object\&. "
+.ti -1c
+.RI "object \fBTarget\fP\fC [get, set]\fP"
+.br
+.RI "Gets a reference to the target business object\&. "
+.ti -1c
+.RI "Type \fBTargetType\fP\fC [get, set]\fP"
+.br
+.RI "Gets the type of the target business class\&. "
+.ti -1c
+.RI "bool \fBHasPermission\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether the current user has permission to perform the requested action\&. "
+.ti -1c
+.RI "object[] \fBCriteria\fP\fC [get, set]\fP"
+.br
+.RI "Gets an object which is the criteria specified in the data portal call, if any\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Context information provided to an authorization rule when it is invoked\&. 
+
+
+.PP
+Definition at line 17 of file AuthorizationContext\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.AuthorizationContext\&.AuthorizationContext ()"
+
+.PP
+Initializes a new instance of the \fBAuthorizationContext\fP class\&. 
+.PP
+Definition at line 47 of file AuthorizationContext\&.cs\&.
+.SS "Csla\&.Rules\&.AuthorizationContext\&.AuthorizationContext (\fBIAuthorizationRule\fP rule, object target, Type targetType)"
+
+.PP
+Creates a \fBAuthorizationContext\fP instance for unit testing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrule\fP The rule\&.
+.br
+\fItarget\fP The target\&.
+.br
+\fItargetType\fP Type of the target\&.
+.RE
+.PP
+
+.PP
+Definition at line 57 of file AuthorizationContext\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "object [] Csla\&.Rules\&.AuthorizationContext\&.Criteria\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets an object which is the criteria specified in the data portal call, if any\&. 
+.PP
+Definition at line 42 of file AuthorizationContext\&.cs\&.
+.SS "bool Csla\&.Rules\&.AuthorizationContext\&.HasPermission\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether the current user has permission to perform the requested action\&. 
+.PP
+Definition at line 37 of file AuthorizationContext\&.cs\&.
+.SS "\fBIAuthorizationRule\fP Csla\&.Rules\&.AuthorizationContext\&.Rule\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the rule object\&. 
+.PP
+Definition at line 23 of file AuthorizationContext\&.cs\&.
+.SS "object Csla\&.Rules\&.AuthorizationContext\&.Target\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets a reference to the target business object\&. 
+.PP
+Definition at line 27 of file AuthorizationContext\&.cs\&.
+.SS "Type Csla\&.Rules\&.AuthorizationContext\&.TargetType\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the type of the target business class\&. 
+.PP
+Definition at line 31 of file AuthorizationContext\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

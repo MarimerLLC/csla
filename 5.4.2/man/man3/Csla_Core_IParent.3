@@ -1,0 +1,94 @@
+.TH "Csla.Core.IParent" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IParent \- Defines the interface that must be implemented by any business object that contains child objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.BusinessBindingListBase< T, C >\fP, \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.Core\&.BusinessBase\fP, \fBCsla\&.DynamicBindingListBase< T >\fP, \fBCsla\&.DynamicListBase< T >\fP, \fBCsla\&.IBusinessBase\fP, and \fBCsla\&.IBusinessListBase< C >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBRemoveChild\fP (\fBCore\&.IEditableBusinessObject\fP child)"
+.br
+.RI "This method is called by a child object when it wants to be removed from the collection\&. "
+.ti -1c
+.RI "void \fBApplyEditChild\fP (\fBCore\&.IEditableBusinessObject\fP child)"
+.br
+.RI "Override this method to be notified when a child object's \fBCore\&.BusinessBase\&.ApplyEdit\fP method has completed\&. "
+.ti -1c
+.RI "int \fBGetNextIdentity\fP (int current)"
+.br
+.RI "Gets and consumes the next available unique identity value for an object instance in the object graph\&. Implemented by the root object of the graph\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBIParent\fP \fBParent\fP\fC [get]\fP"
+.br
+.RI "Provide access to the parent reference for use in child object code\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines the interface that must be implemented by any business object that contains child objects\&. 
+
+
+.PP
+Definition at line 17 of file IParent\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Core\&.IParent\&.ApplyEditChild (\fBCore\&.IEditableBusinessObject\fP child)"
+
+.PP
+Override this method to be notified when a child object's \fBCore\&.BusinessBase\&.ApplyEdit\fP method has completed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP The child object that was edited\&.
+.RE
+.PP
+
+.SS "int Csla\&.Core\&.IParent\&.GetNextIdentity (int current)"
+
+.PP
+Gets and consumes the next available unique identity value for an object instance in the object graph\&. Implemented by the root object of the graph\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcurrent\fP Current identity
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The next available identity value\&.
+.RE
+.PP
+
+.SS "void Csla\&.Core\&.IParent\&.RemoveChild (\fBCore\&.IEditableBusinessObject\fP child)"
+
+.PP
+This method is called by a child object when it wants to be removed from the collection\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP The child object to remove\&.
+.RE
+.PP
+
+.SH "Property Documentation"
+.PP 
+.SS "\fBIParent\fP Csla\&.Core\&.IParent\&.Parent\fC [get]\fP"
+
+.PP
+Provide access to the parent reference for use in child object code\&. This value will be Nothing for root objects and DynamicLists\&. 
+.PP
+Definition at line 39 of file IParent\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,45 @@
+.TH "Csla.Server.IAuthorizeDataPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.IAuthorizeDataPortal \- Interface to be implemented by a custom authorization provider\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Server\&.DataPortal\&.NullAuthorizer\fP, \fBCsla\&.Testing\&.Business\&.DataPortal\&.AuthorizeDataPortalStub\fP, and \fBCsla\&.Testing\&.Business\&.DataPortal\&.DontAuthorizeDataPortalStub\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBAuthorize\fP (\fBAuthorizeRequest\fP clientRequest)"
+.br
+.RI "Implement this method to perform custom authorization on every data portal call\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Interface to be implemented by a custom authorization provider\&. 
+
+
+.PP
+Definition at line 19 of file IAuthorizeDataPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Server\&.IAuthorizeDataPortal\&.Authorize (\fBAuthorizeRequest\fP clientRequest)"
+
+.PP
+Implement this method to perform custom authorization on every data portal call\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclientRequest\fP Object containing information about the client request\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Server\&.DataPortal\&.NullAuthorizer\fP, \fBCsla\&.Testing\&.Business\&.DataPortal\&.DontAuthorizeDataPortalStub\fP, and \fBCsla\&.Testing\&.Business\&.DataPortal\&.AuthorizeDataPortalStub\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

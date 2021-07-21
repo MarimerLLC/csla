@@ -1,0 +1,122 @@
+.TH "Csla.Reflection" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Reflection
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCallMethodException\fP"
+.br
+.RI "This exception is returned from the CallMethod method in the server-side \fBDataPortal\fP and contains the exception thrown by the underlying business object method that was being invoked\&. "
+.ti -1c
+.RI "class \fBDynamicMemberHandle\fP"
+.br
+.ti -1c
+.RI "class \fBDynamicMethodHandle\fP"
+.br
+.ti -1c
+.RI "class \fBDynamicMethodHandlerFactory\fP"
+.br
+.ti -1c
+.RI "class \fBExpressionExtensions\fP"
+.br
+.RI "Extension methods for Expression types\&. "
+.ti -1c
+.RI "class \fBLateBoundObject\fP"
+.br
+.RI "Enables simple invocation of methods against the contained object using late binding\&. "
+.ti -1c
+.RI "class \fBMethodCacheKey\fP"
+.br
+.ti -1c
+.RI "class \fBMethodCaller\fP"
+.br
+.RI "Provides methods to dynamically find and call methods\&. "
+.ti -1c
+.RI "class \fBReflect\fP"
+.br
+.RI "Provides strong-typed reflection of the \fITTarget\fP  type\&. "
+.ti -1c
+.RI "class \fBServiceProviderMethodCaller\fP"
+.br
+.RI "Methods to dynamically find/invoke methods with data portal and DI provided params "
+.ti -1c
+.RI "class \fBServiceProviderMethodInfo\fP"
+.br
+.RI "Class that contains cached metadata about data portal method to be invoked "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate object \fBDynamicCtorDelegate\fP ()"
+.br
+.RI "Delegate for a dynamic constructor method\&. "
+.ti -1c
+.RI "delegate object \fBDynamicMethodDelegate\fP (object target, object[] args)"
+.br
+.RI "Delegate for a dynamic method\&. "
+.ti -1c
+.RI "delegate object \fBDynamicMemberGetDelegate\fP (object target)"
+.br
+.RI "Delegate for getting a value\&. "
+.ti -1c
+.RI "delegate void \fBDynamicMemberSetDelegate\fP (object target, object arg)"
+.br
+.RI "Delegate for setting a value\&. "
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "delegate object Csla\&.Reflection\&.DynamicCtorDelegate ()"
+
+.PP
+Delegate for a dynamic constructor method\&. 
+.SS "delegate object Csla\&.Reflection\&.DynamicMemberGetDelegate (object target)"
+
+.PP
+Delegate for getting a value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP Target object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "delegate void Csla\&.Reflection\&.DynamicMemberSetDelegate (object target, object arg)"
+
+.PP
+Delegate for setting a value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP Target object\&.
+.br
+\fIarg\fP Argument value\&.
+.RE
+.PP
+
+.SS "delegate object Csla\&.Reflection\&.DynamicMethodDelegate (object target, object[] args)"
+
+.PP
+Delegate for a dynamic method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP Object containg method to invoke\&. 
+.br
+\fIargs\fP Parameters passed to method\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

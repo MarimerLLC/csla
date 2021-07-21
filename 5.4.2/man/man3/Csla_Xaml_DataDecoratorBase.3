@@ -1,0 +1,139 @@
+.TH "Csla.Xaml.DataDecoratorBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Xaml.DataDecoratorBase \- Base class for creating WPF panel controls that react when the DataContext, data object and data property values are changed\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Decorator\&.
+.PP
+Inherited by \fBCsla\&.Xaml\&.ObjectStatus\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataDecoratorBase\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBDataPropertyChanged\fP (PropertyChangedEventArgs e)"
+.br
+.RI "This method is called when a property of the data object to which the control is bound has changed\&. "
+.ti -1c
+.RI "virtual void \fBDataBindingListChanged\fP (ListChangedEventArgs e)"
+.br
+.RI "This method is called if the data object is an IBindingList, and the ListChanged event was raised by the data object\&. "
+.ti -1c
+.RI "virtual void \fBDataObservableCollectionChanged\fP (NotifyCollectionChangedEventArgs e)"
+.br
+.RI "This method is called if the data object is an INotifyCollectionChanged, and the CollectionChanged event was raised by the data object\&. "
+.ti -1c
+.RI "virtual void \fBDataObjectChanged\fP ()"
+.br
+.RI "This method is called when the data object to which the control is bound has changed\&. "
+.ti -1c
+.RI "void \fBFindChildBindings\fP ()"
+.br
+.RI "Scans all child controls of this panel for object bindings, and calls \fBFoundBinding\fP for each binding found\&. "
+.ti -1c
+.RI "virtual void \fBFoundBinding\fP (Binding bnd, FrameworkElement control, DependencyProperty prop)"
+.br
+.RI "Called by \fBFindChildBindings\fP each time an object binding is found\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "object \fBDataObject\fP\fC [get]\fP"
+.br
+.RI "Gets a reference to the current data object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Base class for creating WPF panel controls that react when the DataContext, data object and data property values are changed\&. 
+
+
+.PP
+Definition at line 26 of file DataDecoratorBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Xaml\&.DataDecoratorBase\&.DataDecoratorBase ()"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 52 of file DataDecoratorBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Csla\&.Xaml\&.DataDecoratorBase\&.DataBindingListChanged (ListChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called if the data object is an IBindingList, and the ListChanged event was raised by the data object\&. 
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.ObjectStatus\fP\&.
+.PP
+Definition at line 257 of file DataDecoratorBase\&.cs\&.
+.SS "virtual void Csla\&.Xaml\&.DataDecoratorBase\&.DataObjectChanged ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called when the data object to which the control is bound has changed\&. 
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.ObjectStatus\fP\&.
+.PP
+Definition at line 277 of file DataDecoratorBase\&.cs\&.
+.SS "virtual void Csla\&.Xaml\&.DataDecoratorBase\&.DataObservableCollectionChanged (NotifyCollectionChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called if the data object is an INotifyCollectionChanged, and the CollectionChanged event was raised by the data object\&. 
+.PP
+Definition at line 268 of file DataDecoratorBase\&.cs\&.
+.SS "virtual void Csla\&.Xaml\&.DataDecoratorBase\&.DataPropertyChanged (PropertyChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called when a property of the data object to which the control is bound has changed\&. 
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.ObjectStatus\fP\&.
+.PP
+Definition at line 246 of file DataDecoratorBase\&.cs\&.
+.SS "void Csla\&.Xaml\&.DataDecoratorBase\&.FindChildBindings ()\fC [protected]\fP"
+
+.PP
+Scans all child controls of this panel for object bindings, and calls \fBFoundBinding\fP for each binding found\&. 
+.PP
+Definition at line 292 of file DataDecoratorBase\&.cs\&.
+.SS "virtual void Csla\&.Xaml\&.DataDecoratorBase\&.FoundBinding (Binding bnd, FrameworkElement control, DependencyProperty prop)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by \fBFindChildBindings\fP each time an object binding is found\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbnd\fP The Binding object\&.
+.br
+\fIcontrol\fP The control containing the binding\&.
+.br
+\fIprop\fP The data bound DependencyProperty\&.
+.RE
+.PP
+
+.PP
+Definition at line 331 of file DataDecoratorBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "object Csla\&.Xaml\&.DataDecoratorBase\&.DataObject\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Gets a reference to the current data object\&. The DataContext may not be the data object\&. The DataContext may be a DataSourceProvider control\&. This property returns a reference to the actual \fBdata object\fP, not necessarily the DataContext itself\&. 
+.PP
+Definition at line 41 of file DataDecoratorBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

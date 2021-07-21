@@ -1,0 +1,166 @@
+.TH "Csla.Configuration.CslaConfigurationOptions" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Configuration.CslaConfigurationOptions \- Contains configuration options which can be loaded using dot net core configuration subsystem  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBPropertyChangedMode\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value specifying how CSLA \&.NET should raise PropertyChanged events\&. "
+.ti -1c
+.RI "string \fBVersionRoutingTag\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value representing the application version for use in server-side data portal routing\&. "
+.ti -1c
+.RI "string \fBPropertyInfoFactory\fP\fC [get, set]\fP"
+.br
+.RI "Sets the factory type that creates \fBPropertyInfo\fP objects\&. "
+.ti -1c
+.RI "string \fBSerializationFormatter\fP\fC [get, set]\fP"
+.br
+.RI "Gets the serialization formatter type used by CSLA \&.NET for all explicit object serialization (such as cloning, n-level undo, etc)\&. "
+.ti -1c
+.RI "string \fBReader\fP\fC [get, set]\fP"
+.br
+.RI "Sets type of the writer that is used to read data to serialization stream in SerializationFormatterFactory\&.GetFormatter()\&. "
+.ti -1c
+.RI "string \fBMobileFactoryLoader\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a delegate reference to the method called to create instances of factory objects as requested by the MobileFactory attribute on a CSLA Light business object\&. "
+.ti -1c
+.RI "string \fBObjectFactoryLoader\fP\fC [get, set]\fP"
+.br
+.RI "Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. "
+.ti -1c
+.RI "string \fBDefaultTransactionIsolationLevel\fP\fC [get, set]\fP"
+.br
+.RI "Sets the default transaction isolation level\&. "
+.ti -1c
+.RI "int?? \fBDefaultTransactionTimeoutInSeconds\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the default transaction timeout in seconds\&. "
+.ti -1c
+.RI "string \fBDefaultTransactionAsyncFlowOption\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the default transaction async flow option used to create new TransactionScope objects\&. (Enabled or Suppress) "
+.ti -1c
+.RI "int \fBPrincipalCacheSize\fP\fC [get, set]\fP"
+.br
+.RI "Gets the maximum cache size "
+.ti -1c
+.RI "string \fBMobileWriter\fP\fC [get, set]\fP"
+.br
+.RI "Get an instance of the writer that is used to write data to serialization stream Instance has to implement ICslaWriter\&. "
+.ti -1c
+.RI "string \fBCslaDbProvider\fP\fC [get, set]\fP"
+.br
+.RI "CslaDbProvider Instance has to implement ICslaWriter\&. "
+.ti -1c
+.RI "\fBCslaDataPortalConfigurationOptions\fP \fBDataPortal\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the data portal configuration options "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains configuration options which can be loaded using dot net core configuration subsystem 
+
+
+.PP
+Definition at line 19 of file CslaConfigurationOptions\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.CslaDbProvider\fC [get]\fP, \fC [set]\fP"
+
+.PP
+CslaDbProvider Instance has to implement ICslaWriter\&. 
+.PP
+Definition at line 177 of file CslaConfigurationOptions\&.cs\&.
+.SS "\fBCslaDataPortalConfigurationOptions\fP Csla\&.Configuration\&.CslaConfigurationOptions\&.DataPortal\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the data portal configuration options 
+.PP
+Definition at line 186 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.DefaultTransactionAsyncFlowOption\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the default transaction async flow option used to create new TransactionScope objects\&. (Enabled or Suppress) 
+.PP
+Definition at line 139 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.DefaultTransactionIsolationLevel\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Sets the default transaction isolation level\&. 
+.PP
+Definition at line 117 of file CslaConfigurationOptions\&.cs\&.
+.SS "int?? Csla\&.Configuration\&.CslaConfigurationOptions\&.DefaultTransactionTimeoutInSeconds\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the default transaction timeout in seconds\&. The default transaction timeout in seconds\&. 
+.PP
+Definition at line 129 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.MobileFactoryLoader\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a delegate reference to the method called to create instances of factory objects as requested by the MobileFactory attribute on a CSLA Light business object\&. 
+.PP
+Definition at line 96 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.MobileWriter\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Get an instance of the writer that is used to write data to serialization stream Instance has to implement ICslaWriter\&. 
+.PP
+Definition at line 167 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.ObjectFactoryLoader\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. 
+.PP
+Definition at line 108 of file CslaConfigurationOptions\&.cs\&.
+.SS "int Csla\&.Configuration\&.CslaConfigurationOptions\&.PrincipalCacheSize\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the maximum cache size 
+.PP
+Definition at line 148 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.PropertyChangedMode\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value specifying how CSLA \&.NET should raise PropertyChanged events\&. 
+.PP
+Definition at line 25 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.PropertyInfoFactory\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Sets the factory type that creates \fBPropertyInfo\fP objects\&. 
+.PP
+Definition at line 60 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.Reader\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Sets type of the writer that is used to read data to serialization stream in SerializationFormatterFactory\&.GetFormatter()\&. 
+.PP
+Definition at line 84 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.SerializationFormatter\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the serialization formatter type used by CSLA \&.NET for all explicit object serialization (such as cloning, n-level undo, etc)\&. 
+.PP
+Definition at line 74 of file CslaConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaConfigurationOptions\&.VersionRoutingTag\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value representing the application version for use in server-side data portal routing\&. Application version used to create data portal routing tag (can not contain '-')\&. If this value is set then you must use the \&.NET \fBCore\fP server-side Http data portal endpoint as a router so the request can be routed to another app server that is running the correct version of the application's assemblies\&. 
+.PP
+Definition at line 44 of file CslaConfigurationOptions\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,139 @@
+\hypertarget{interface_csla_1_1_server_1_1_i_data_portal_server}{}\doxysection{Csla.\+Server.\+IData\+Portal\+Server Interface Reference}
+\label{interface_csla_1_1_server_1_1_i_data_portal_server}\index{Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}}
+
+
+Interface implemented by server-\/side data portal components.  
+
+
+Inheritance diagram for Csla.\+Server.\+IData\+Portal\+Server\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{interface_csla_1_1_server_1_1_i_data_portal_server}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}{Create}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Create a new business object. \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}{Fetch}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Get an existing business object. \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}{Update}} (object obj, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Update a business object. \end{DoxyCompactList}\item 
+Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}{Delete}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Delete a business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface implemented by server-\/side data portal components. 
+
+
+
+Definition at line 17 of file IData\+Portal\+Server.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}\label{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}} 
+\index{Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}!Create@{Create}}
+\index{Create@{Create}!Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+IData\+Portal\+Server.\+Create (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Create a new business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a266486aa5f9651eea9f9835d744f4f57}{Csla.\+Server.\+Transactional\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_a183123c2a2d1c6d62392327efbddee78}{Csla.\+Server.\+Simple\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_serializable_af50f15dc815e8d49675e507d7080f33a}{Csla.\+Server.\+Serviced\+Data\+Portal\+Serializable}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_repeatable_read_ad8f4c3e30101523d00d56e4157370fad}{Csla.\+Server.\+Serviced\+Data\+Portal\+Repeatable\+Read}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_uncommitted_ab2faa280ddc318d67a9c768a0deb530c}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Uncommitted}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a0a93387ff7f0517a4cf0eba1a9bad8e9}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_factory_data_portal_a41bffeca183ff4ffa7bd9c9829f23249}{Csla.\+Server.\+Factory\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_selector_ab07ade81fb05ed3ce70343e693659220}{Csla.\+Server.\+Data\+Portal\+Selector}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_broker_ab26ab9e2a66f22e4b72bd89e163483b3}{Csla.\+Server.\+Data\+Portal\+Broker}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_a0db38c2b103a9a988e58037014b027ff}{Csla.\+Server.\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_wcf_proxy_ad4b0a591d6aa638ec62c2107bd9a7fda}{Csla.\+Data\+Portal\+Client.\+Wcf\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_local_proxy_a2966b82b2b977eb05878913047969ac6}{Csla.\+Data\+Portal\+Client.\+Local\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a70a47d95422e48db758c123c94e29717}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_testing_1_1_business_1_1_test_proxies_1_1_app_domain_proxy_a47ada0e4567883630a320fa24e6aba2d}{Csla.\+Testing.\+Business.\+Test\+Proxies.\+App\+Domain\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_custom_data_portal_server_adf0f3705784125ce1f9c77c1307e0ccc}{Csla.\+Test.\+Data\+Portal.\+Custom\+Data\+Portal\+Server}}, \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a6eeec4965da371f02328db65256de9ba}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_brokered_proxy_aac75502df880b4911c5d9924a919a8c9}{Csla.\+Data\+Portal\+Client.\+Brokered\+Proxy}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}\label{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}} 
+\index{Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+IData\+Portal\+Server.\+Delete (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Delete a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a4eac72b8e65f8465bfda0b12cdfa0611}{Csla.\+Server.\+Transactional\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_a04ad950082e7dcf2f0431bd695c86582}{Csla.\+Server.\+Simple\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_serializable_ae011ee5725bcf24f21f89c510f3f60b2}{Csla.\+Server.\+Serviced\+Data\+Portal\+Serializable}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_repeatable_read_a0048a61d891d2f41d11bcae108ed71ff}{Csla.\+Server.\+Serviced\+Data\+Portal\+Repeatable\+Read}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_uncommitted_a71d38cc9797d5a0ca606a1b03f8d98ab}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Uncommitted}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a612c1c62edde96279d77f814796a00c8}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_factory_data_portal_acd56cf4e424e24b3de73414dbce3db52}{Csla.\+Server.\+Factory\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_selector_aa68ebf78df84a61c2e8ea7febd3aa576}{Csla.\+Server.\+Data\+Portal\+Selector}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_broker_a512dcc24f7f8f5765ac66fef5a8c3f85}{Csla.\+Server.\+Data\+Portal\+Broker}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_a385dc19fdc1480f3384fa623db5f6ff4}{Csla.\+Server.\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_wcf_proxy_aec0cb9bcb01beb494279e3b44644b6ab}{Csla.\+Data\+Portal\+Client.\+Wcf\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_local_proxy_ad84f1011a567125970c20e2f1b7471f7}{Csla.\+Data\+Portal\+Client.\+Local\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a17c02949e5653b8e094049b336e8cdd3}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_testing_1_1_business_1_1_test_proxies_1_1_app_domain_proxy_ab032e2e74cb2d754f99481f26fbbac5d}{Csla.\+Testing.\+Business.\+Test\+Proxies.\+App\+Domain\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_custom_data_portal_server_a63d49e5d6041c890b029187527051768}{Csla.\+Test.\+Data\+Portal.\+Custom\+Data\+Portal\+Server}}, \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8b18390de8fc625f7767eae1ff9ca117}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_brokered_proxy_aa3ac035261eda5200d2da4254a6fe584}{Csla.\+Data\+Portal\+Client.\+Brokered\+Proxy}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}\label{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}} 
+\index{Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+IData\+Portal\+Server.\+Fetch (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Get an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to retrieve.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_ac1e3e39c9d0a18ff8d3da4e6e25df639}{Csla.\+Server.\+Transactional\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_ab8565ed3a51836b8b494c6466a7374d5}{Csla.\+Server.\+Simple\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_serializable_a7ccae2896f9d5c38a720ea8c66bae10c}{Csla.\+Server.\+Serviced\+Data\+Portal\+Serializable}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_repeatable_read_a31d8f6f7cc0cd785609a9d1a5b939e93}{Csla.\+Server.\+Serviced\+Data\+Portal\+Repeatable\+Read}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_uncommitted_a6a06c5f34fd37ce81ea3a4e41d64005b}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Uncommitted}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a4233b01645e54b98b137df714ebdfcee}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_factory_data_portal_af4b679d2d454675be2d49fa5448a30fe}{Csla.\+Server.\+Factory\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_selector_af51bb37e24a34b91d8fbd160c3d7e10f}{Csla.\+Server.\+Data\+Portal\+Selector}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_broker_abe5400e3e8e0d6d2d68ba2f4267dec62}{Csla.\+Server.\+Data\+Portal\+Broker}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_af4722d036e1fd39b4f2cf7f4af6c3f85}{Csla.\+Server.\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_wcf_proxy_a1b756b438b108a8f597f6090ac61475b}{Csla.\+Data\+Portal\+Client.\+Wcf\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_local_proxy_a184912e527883b49da3d9e5e718d07d6}{Csla.\+Data\+Portal\+Client.\+Local\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a7e3c50ca9b7eb3066dc129e766cfcd60}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_testing_1_1_business_1_1_test_proxies_1_1_app_domain_proxy_a395ccaa88687f19313862dc54ed41b27}{Csla.\+Testing.\+Business.\+Test\+Proxies.\+App\+Domain\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_custom_data_portal_server_a8adf79c1ef9728e86fe76ee10ddd1f16}{Csla.\+Test.\+Data\+Portal.\+Custom\+Data\+Portal\+Server}}, \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a86643d37a852ca1dd477cfd1b2570742}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_brokered_proxy_a9f20fd1da114a7e6ed5ed1f169d7edf4}{Csla.\+Data\+Portal\+Client.\+Brokered\+Proxy}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}\label{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}} 
+\index{Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}!Update@{Update}}
+\index{Update@{Update}!Csla.Server.IDataPortalServer@{Csla.Server.IDataPortalServer}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+IData\+Portal\+Server.\+Update (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Update a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Business object to update.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a03d8694aee902df3aba8533b4b0ed819}{Csla.\+Server.\+Transactional\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_a867eeba447ceac25458922f5618bd131}{Csla.\+Server.\+Simple\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_serializable_adf3b4c6022912b93e820b82c3dabda6c}{Csla.\+Server.\+Serviced\+Data\+Portal\+Serializable}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_repeatable_read_a566c911e142233dcec6977ff59050794}{Csla.\+Server.\+Serviced\+Data\+Portal\+Repeatable\+Read}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_uncommitted_aa70015bfb881b08de1ad9a066a0c993e}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Uncommitted}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a3d59f38087c768044d413e4379bdeb50}{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_factory_data_portal_a00b2fbdf0ca7d8e485b48f2ef25edb59}{Csla.\+Server.\+Factory\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_selector_a8e1351e140fbf41503150438deca15b8}{Csla.\+Server.\+Data\+Portal\+Selector}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_broker_af903d6309247f1f9c8fe9238429bc8fe}{Csla.\+Server.\+Data\+Portal\+Broker}}, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_a7a76c56f55d45786b754f1e536d751ec}{Csla.\+Server.\+Data\+Portal}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_wcf_proxy_aa93728b36d144709cda789af9249bdb0}{Csla.\+Data\+Portal\+Client.\+Wcf\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_local_proxy_af80cb62774b0634d10d746a122b77df5}{Csla.\+Data\+Portal\+Client.\+Local\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae85c52ef65cc5b2d6b3b15f3377e171f}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_testing_1_1_business_1_1_test_proxies_1_1_app_domain_proxy_ad8775d85464a8420f2b8fd0acae17c8d}{Csla.\+Testing.\+Business.\+Test\+Proxies.\+App\+Domain\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_1_1_custom_data_portal_server_ac8abbf11fb18b94fbc0c0aba22b9cbca}{Csla.\+Test.\+Data\+Portal.\+Custom\+Data\+Portal\+Server}}, \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a111e8964f97ca1b88db4a8f249f37c90}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}, and \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_brokered_proxy_af9150f7c78507cec12169e610bf071bb}{Csla.\+Data\+Portal\+Client.\+Brokered\+Proxy}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_i_data_portal_server_8cs}{IData\+Portal\+Server.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,144 @@
+.TH "Csla.Server.Hosts.Mobile.MobileRequestProcessor" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Hosts.Mobile.MobileRequestProcessor \- Object that processes all the requests from a client  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< \fBMobileResponse\fP > \fBCreate\fP (\fBMobileCriteriaRequest\fP request)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< \fBMobileResponse\fP > \fBFetch\fP (\fBMobileCriteriaRequest\fP request)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBMobileResponse\fP > \fBUpdate\fP (\fBMobileUpdateRequest\fP request)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBMobileResponse\fP > \fBDelete\fP (\fBMobileCriteriaRequest\fP request)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBClearContext\fP ()"
+.br
+.RI "Clears the application context and current principal\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "static \fBIMobileFactoryLoader\fP \fBFactoryLoader\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a delegate reference to the method called to create instances of factory objects as requested by the MobileFactory attribute on a CSLA Light business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Object that processes all the requests from a client 
+
+
+.PP
+Definition at line 20 of file MobileRequestProcessor\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static void Csla\&.Server\&.Hosts\&.Mobile\&.MobileRequestProcessor\&.ClearContext ()\fC [static]\fP"
+
+.PP
+Clears the application context and current principal\&. 
+.PP
+Definition at line 364 of file MobileRequestProcessor\&.cs\&.
+.SS "async Task<\fBMobileResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.MobileRequestProcessor\&.Create (\fBMobileCriteriaRequest\fP request)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Resulf of the create operation - an instance of a business object
+.RE
+.PP
+
+.PP
+Definition at line 62 of file MobileRequestProcessor\&.cs\&.
+.SS "async Task<\fBMobileResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.MobileRequestProcessor\&.Delete (\fBMobileCriteriaRequest\fP request)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of the delete operation
+.RE
+.PP
+
+.PP
+Definition at line 274 of file MobileRequestProcessor\&.cs\&.
+.SS "async Task<\fBMobileResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.MobileRequestProcessor\&.Fetch (\fBMobileCriteriaRequest\fP request)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of the fetch operation - an instance of a business object
+.RE
+.PP
+
+.PP
+Definition at line 133 of file MobileRequestProcessor\&.cs\&.
+.SS "async Task<\fBMobileResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.MobileRequestProcessor\&.Update (\fBMobileUpdateRequest\fP request)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of the update operation - updated object
+.RE
+.PP
+
+.PP
+Definition at line 206 of file MobileRequestProcessor\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBIMobileFactoryLoader\fP Csla\&.Server\&.Hosts\&.Mobile\&.MobileRequestProcessor\&.FactoryLoader\fC [static]\fP, \fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a delegate reference to the method called to create instances of factory objects as requested by the MobileFactory attribute on a CSLA Light business object\&. 
+.PP
+Definition at line 32 of file MobileRequestProcessor\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

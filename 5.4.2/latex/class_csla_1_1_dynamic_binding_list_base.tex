@@ -1,0 +1,477 @@
+\hypertarget{class_csla_1_1_dynamic_binding_list_base}{}\doxysection{Csla.\+Dynamic\+Binding\+List\+Base$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_dynamic_binding_list_base}\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+
+
+This is the base class from which collections of editable root business objects should be derived.  
+
+
+Inheritance diagram for Csla.\+Dynamic\+Binding\+List\+Base$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.337793cm]{class_csla_1_1_dynamic_binding_list_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a902aa2b27d7c54e1ab0d37eb9c1fa748}{Dynamic\+Binding\+List\+Base}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_adf51d6af6222eaf8b9ac5497b92c73d0}{Save\+Item}} (T item)
+\begin{DoxyCompactList}\small\item\em Saves the specified item in the list. \end{DoxyCompactList}\item 
+virtual T \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_af6b71dc16c9044e4eff1521e31e8d1a2}{Save\+Item}} (int index)
+\begin{DoxyCompactList}\small\item\em Saves the specified item in the list. \end{DoxyCompactList}\item 
+T\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a3871ba4e5ed6e488a640f8e242aa97f9}{To\+Array}} ()
+\begin{DoxyCompactList}\small\item\em Get an array containing all items in the list. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a61500d59ddeb52dbaae77ce782f6f7bc}{Initialize}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a35be8c25a88a5de728e609040572591c}{On\+Saved}} (T new\+Object, Exception e)
+\begin{DoxyCompactList}\small\item\em Raises the Saved event. \end{DoxyCompactList}\item 
+override object \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_ae703fa2b7cd8835b69d43ca0e3773ef6}{Add\+New\+Core}} ()
+\begin{DoxyCompactList}\small\item\em Adds a new item to the list. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_abc7a9d4deae12941f26df7fabae8c9fe}{Insert\+Item}} (int index, T item)
+\begin{DoxyCompactList}\small\item\em Gives the new object a parent reference to this list. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_ae7081d2817dba39b9ed5321247527118}{Remove\+Item}} (int index)
+\begin{DoxyCompactList}\small\item\em Removes an item from the list. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_aa95b4804bab88d63b4d994ea59bf0dca}{Set\+Item}} (int index, T item)
+\begin{DoxyCompactList}\small\item\em Replaces item in the list. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a03a7839f86f1ae23eb37de1ee0b90e37}{Child\+\_\+\+Property\+Changed}} (object sender, System.\+Component\+Model.\+Property\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em Handles any Property\+Changed event from a child object and echoes it up as a Child\+Changed event. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a0fa58b2c12daacafb7145751f2d8d9d4}{On\+Child\+Property\+Changed}} (object sender, System.\+Component\+Model.\+Property\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em Override this method to be notified when a child object has been changed. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_ad12a62aa77e5567447f05beffec50082}{On\+Deserialized}} ()
+\begin{DoxyCompactList}\small\item\em This method is called on a newly deserialized object after deserialization is complete. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a69ce1cc40192e9da4323208002826956}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+xyz method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a342fe1f383c2ff194db61b7e4055e30a}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke\+Complete}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+xyz method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a3b0ed3d06677d03ceaa9080f44baae1f}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Exception}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e, Exception ex)
+\begin{DoxyCompactList}\small\item\em Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a897351a37e126c712c147480bcd5bd6c}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your field values into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a74dc25f9672498c722ab9a919c591b6f}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Csla.\+Core.\+Saved\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a037b55293934382081f7ecefdaf2c521}{Saved}}
+\begin{DoxyCompactList}\small\item\em Event raised when an object has been saved. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_a1d609bb1773f1ee43a36ea4681ede284}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this object is currently running an async operation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+This is the base class from which collections of editable root business objects should be derived. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of editable root object to contain within the collection. \\
+\hline
+\end{DoxyTemplParams}
+
+
+Your subclass should implement a factory method and should override or overload Data\+Portal\+\_\+\+Fetch() to implement data retrieval. 
+
+Saving (inserts or updates) of items in the collection should be handled through the \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_adf51d6af6222eaf8b9ac5497b92c73d0}{Save\+Item()}} method on the collection. 
+
+Removing an item from the collection through Remove() or Remove\+At() causes immediate deletion of the object, by calling the object\textquotesingle{}s Delete() and Save() methods. \begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object}{Core.\+IEditable\+Business\+Object}}}]\item[{\em T} : {\em \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_undoable_object}{Core.\+IUndoable\+Object}}}]\item[{\em T} : {\em \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Core.\+ISavable}}}]\item[{\em T} : {\em IMobile\+Object}]\item[{\em T} : {\em IBusiness\+Object}]\end{description}
+\end{Desc}
+
+
+Definition at line 42 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a902aa2b27d7c54e1ab0d37eb9c1fa748}\label{class_csla_1_1_dynamic_binding_list_base_a902aa2b27d7c54e1ab0d37eb9c1fa748}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!DynamicBindingListBase@{DynamicBindingListBase}}
+\index{DynamicBindingListBase@{DynamicBindingListBase}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DynamicBindingListBase()}{DynamicBindingListBase()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Dynamic\+Binding\+List\+Base}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 52 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_ae703fa2b7cd8835b69d43ca0e3773ef6}\label{class_csla_1_1_dynamic_binding_list_base_ae703fa2b7cd8835b69d43ca0e3773ef6}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!AddNewCore@{AddNewCore}}
+\index{AddNewCore@{AddNewCore}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{AddNewCore()}{AddNewCore()}}
+{\footnotesize\ttfamily override object \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Add\+New\+Core (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Adds a new item to the list. 
+
+\begin{DoxyReturn}{Returns}
+The added object
+\end{DoxyReturn}
+
+
+Definition at line 263 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a03a7839f86f1ae23eb37de1ee0b90e37}\label{class_csla_1_1_dynamic_binding_list_base_a03a7839f86f1ae23eb37de1ee0b90e37}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!Child\_PropertyChanged@{Child\_PropertyChanged}}
+\index{Child\_PropertyChanged@{Child\_PropertyChanged}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_PropertyChanged()}{Child\_PropertyChanged()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Child\+\_\+\+Property\+Changed (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{System.\+Component\+Model.\+Property\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Handles any Property\+Changed event from a child object and echoes it up as a Child\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender} & Object that raised the event.\\
+\hline
+{\em e} & Property changed args.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 355 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a3b0ed3d06677d03ceaa9080f44baae1f}\label{class_csla_1_1_dynamic_binding_list_base_a3b0ed3d06677d03ceaa9080f44baae1f}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!DataPortal\_OnDataPortalException@{DataPortal\_OnDataPortalException}}
+\index{DataPortal\_OnDataPortalException@{DataPortal\_OnDataPortalException}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalException()}{DataPortal\_OnDataPortalException()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Data\+Portal\+\_\+\+On\+Data\+Portal\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e,  }\item[{Exception}]{ex }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} if an exception occurs during data access. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+{\em ex} & The Exception thrown during data access.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 476 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a69ce1cc40192e9da4323208002826956}\label{class_csla_1_1_dynamic_binding_list_base_a69ce1cc40192e9da4323208002826956}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!DataPortal\_OnDataPortalInvoke@{DataPortal\_OnDataPortalInvoke}}
+\index{DataPortal\_OnDataPortalInvoke@{DataPortal\_OnDataPortalInvoke}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalInvoke()}{DataPortal\_OnDataPortalInvoke()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} prior to calling the requested Data\+Portal\+\_\+xyz method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 453 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a342fe1f383c2ff194db61b7e4055e30a}\label{class_csla_1_1_dynamic_binding_list_base_a342fe1f383c2ff194db61b7e4055e30a}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!DataPortal\_OnDataPortalInvokeComplete@{DataPortal\_OnDataPortalInvokeComplete}}
+\index{DataPortal\_OnDataPortalInvokeComplete@{DataPortal\_OnDataPortalInvokeComplete}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DataPortal\_OnDataPortalInvokeComplete()}{DataPortal\_OnDataPortalInvokeComplete()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke\+Complete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} after calling the requested Data\+Portal\+\_\+xyz method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The Data\+Portal\+Context object passed to the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 464 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a61500d59ddeb52dbaae77ce782f6f7bc}\label{class_csla_1_1_dynamic_binding_list_base_a61500d59ddeb52dbaae77ce782f6f7bc}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!Initialize@{Initialize}}
+\index{Initialize@{Initialize}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Initialize()}{Initialize()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code. 
+
+
+
+Definition at line 66 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_abc7a9d4deae12941f26df7fabae8c9fe}\label{class_csla_1_1_dynamic_binding_list_base_abc7a9d4deae12941f26df7fabae8c9fe}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!InsertItem@{InsertItem}}
+\index{InsertItem@{InsertItem}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{InsertItem()}{InsertItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Insert\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{T}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Gives the new object a parent reference to this list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index at which to insert the item.\\
+\hline
+{\em item} & Item to insert.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 277 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a0fa58b2c12daacafb7145751f2d8d9d4}\label{class_csla_1_1_dynamic_binding_list_base_a0fa58b2c12daacafb7145751f2d8d9d4}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!OnChildPropertyChanged@{OnChildPropertyChanged}}
+\index{OnChildPropertyChanged@{OnChildPropertyChanged}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnChildPropertyChanged()}{OnChildPropertyChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.On\+Child\+Property\+Changed (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{System.\+Component\+Model.\+Property\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to be notified when a child object has been changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender} & Child object where the Property\+Changed event originated. \\
+\hline
+{\em e} & Property\+Changed\+Event\+Args from the child object. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 391 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_ad12a62aa77e5567447f05beffec50082}\label{class_csla_1_1_dynamic_binding_list_base_ad12a62aa77e5567447f05beffec50082}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!OnDeserialized@{OnDeserialized}}
+\index{OnDeserialized@{OnDeserialized}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnDeserialized()}{OnDeserialized()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.On\+Deserialized (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called on a newly deserialized object after deserialization is complete. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a10468923421bb16b104d7359fa683a20}{Csla.\+Core.\+Extended\+Binding\+List$<$ T $>$}}.
+
+
+
+Definition at line 419 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a897351a37e126c712c147480bcd5bd6c}\label{class_csla_1_1_dynamic_binding_list_base_a897351a37e126c712c147480bcd5bd6c}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to insert your field values into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_binding_list_a7fdb2e7949869bcc5f586dc0663df65e}{Csla.\+Core.\+Mobile\+Binding\+List$<$ T $>$}}.
+
+
+
+Definition at line 570 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a35be8c25a88a5de728e609040572591c}\label{class_csla_1_1_dynamic_binding_list_base_a35be8c25a88a5de728e609040572591c}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!OnSaved@{OnSaved}}
+\index{OnSaved@{OnSaved}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSaved()}{OnSaved()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.On\+Saved (\begin{DoxyParamCaption}\item[{T}]{new\+Object,  }\item[{Exception}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Saved event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Object} & Reference to object returned from the save. \\
+\hline
+{\em e} & Reference to any exception that occurred during the save. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 246 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a74dc25f9672498c722ab9a919c591b6f}\label{class_csla_1_1_dynamic_binding_list_base_a74dc25f9672498c722ab9a919c591b6f}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_core_1_1_mobile_binding_list_a5b33eb58aace43ed9d5ec4a9a1828b5e}{Csla.\+Core.\+Mobile\+Binding\+List$<$ T $>$}}.
+
+
+
+Definition at line 583 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_ae7081d2817dba39b9ed5321247527118}\label{class_csla_1_1_dynamic_binding_list_base_ae7081d2817dba39b9ed5321247527118}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!RemoveItem@{RemoveItem}}
+\index{RemoveItem@{RemoveItem}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RemoveItem()}{RemoveItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Remove\+Item (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Removes an item from the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item to be removed.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 288 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_af6b71dc16c9044e4eff1521e31e8d1a2}\label{class_csla_1_1_dynamic_binding_list_base_af6b71dc16c9044e4eff1521e31e8d1a2}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!SaveItem@{SaveItem}}
+\index{SaveItem@{SaveItem}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveItem()}{SaveItem()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual T \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Save\+Item (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Saves the specified item in the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item to be saved. \\
+\hline
+\end{DoxyParams}
+
+
+This method properly saves the child item, by making sure the item in the collection is properly replaced by the result of the Save() method call. 
+
+Definition at line 139 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_adf51d6af6222eaf8b9ac5497b92c73d0}\label{class_csla_1_1_dynamic_binding_list_base_adf51d6af6222eaf8b9ac5497b92c73d0}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!SaveItem@{SaveItem}}
+\index{SaveItem@{SaveItem}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveItem()}{SaveItem()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Save\+Item (\begin{DoxyParamCaption}\item[{T}]{item }\end{DoxyParamCaption})}
+
+
+
+Saves the specified item in the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & Reference to the item to be saved. \\
+\hline
+\end{DoxyParams}
+
+
+This method properly saves the child item, by making sure the item in the collection is properly replaced by the result of the Save() method call. 
+
+Definition at line 122 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_aa95b4804bab88d63b4d994ea59bf0dca}\label{class_csla_1_1_dynamic_binding_list_base_aa95b4804bab88d63b4d994ea59bf0dca}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!SetItem@{SetItem}}
+\index{SetItem@{SetItem}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SetItem()}{SetItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Set\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{T}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Replaces item in the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item that was replaced.\\
+\hline
+{\em item} & New item.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 316 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a3871ba4e5ed6e488a640f8e242aa97f9}\label{class_csla_1_1_dynamic_binding_list_base_a3871ba4e5ed6e488a640f8e242aa97f9}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!ToArray@{ToArray}}
+\index{ToArray@{ToArray}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ToArray()}{ToArray()}}
+{\footnotesize\ttfamily T \mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.To\+Array (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get an array containing all items in the list. 
+
+
+
+Definition at line 488 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a1d609bb1773f1ee43a36ea4681ede284}\label{class_csla_1_1_dynamic_binding_list_base_a1d609bb1773f1ee43a36ea4681ede284}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily override bool \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this object is currently running an async operation. 
+
+
+
+Definition at line 544 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_dynamic_binding_list_base_a037b55293934382081f7ecefdaf2c521}\label{class_csla_1_1_dynamic_binding_list_base_a037b55293934382081f7ecefdaf2c521}} 
+\index{Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}!Saved@{Saved}}
+\index{Saved@{Saved}!Csla.DynamicBindingListBase$<$ T $>$@{Csla.DynamicBindingListBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Saved}{Saved}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Csla.\+Core.\+Saved\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base}{Csla.\+Dynamic\+Binding\+List\+Base}}$<$ T $>$.Saved\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event raised when an object has been saved. 
+
+
+
+Definition at line 209 of file Dynamic\+Binding\+List\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_dynamic_binding_list_base_8cs}{Dynamic\+Binding\+List\+Base.\+cs}}\end{DoxyCompactItemize}

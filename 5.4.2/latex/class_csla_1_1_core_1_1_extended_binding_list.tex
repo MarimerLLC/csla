@@ -1,0 +1,444 @@
+\hypertarget{class_csla_1_1_core_1_1_extended_binding_list}{}\doxysection{Csla.\+Core.\+Extended\+Binding\+List$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_core_1_1_extended_binding_list}\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+
+
+Extends Binding\+List of T by adding extra behaviors.  
+
+
+Inheritance diagram for Csla.\+Core.\+Extended\+Binding\+List$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.337793cm]{class_csla_1_1_core_1_1_extended_binding_list}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_af55135f8e17c235308ce70f5ad981557}{Add\+Range}} (System.\+Collections.\+Generic.\+IEnumerable$<$ T $>$ range)
+\begin{DoxyCompactList}\small\item\em Add a range of items to the list. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a2a9b357ae603ed53055905a0b6a6d7ed}{On\+Removing\+Item}} (T removed\+Item)
+\begin{DoxyCompactList}\small\item\em Raise the Removing\+Item event. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a73a0c77f483a770f046747f4a32e4d3d}{Remove\+Item}} (int index)
+\begin{DoxyCompactList}\small\item\em Remove the item at the specified index. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_ab3a8ae80af1913dfdf077704db9d0d33}{On\+Busy\+Changed}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_busy_changed_event_args}{Busy\+Changed\+Event\+Args}} args)
+\begin{DoxyCompactList}\small\item\em Override this method to be notified when the Is\+Busy property has changed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a3042799fdbcb2d0162684c8f20c2afdf}{On\+Busy\+Changed}} (string property\+Name, bool busy)
+\begin{DoxyCompactList}\small\item\em Raises the Busy\+Changed event for a specific property. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a2b531368ac96d700c1f4c2e18a59b6df}{On\+Unhandled\+Async\+Exception}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}} error)
+\begin{DoxyCompactList}\small\item\em Method invoked when an unhandled async exception has occurred. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_ad717a78ff44e45b5e8106e7d822bf30e}{On\+Unhandled\+Async\+Exception}} (object original\+Sender, Exception error)
+\begin{DoxyCompactList}\small\item\em Raises the Unhandled\+Async\+Exception event. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a2e94c99255115111011a55250c668286}{Insert\+Item}} (int index, T item)
+\begin{DoxyCompactList}\small\item\em Invoked when an item is inserted into the list. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a9e27bdebeb5d456b566ba91b3fd89349}{On\+Add\+Event\+Hooks}} (T item)
+\begin{DoxyCompactList}\small\item\em Method invoked when events are hooked for a child object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_ad0ab38be6a7006a600f691f73d9fea37}{On\+Remove\+Event\+Hooks}} (T item)
+\begin{DoxyCompactList}\small\item\em Method invoked when events are unhooked for a child object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a10468923421bb16b104d7359fa683a20}{On\+Deserialized}} ()
+\begin{DoxyCompactList}\small\item\em This method is called on a newly deserialized object after deserialization is complete. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_aa98e4fc5cc42f36378f66e0eb7c856db}{On\+Child\+Changed}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Child\+Changed\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Raises the Child\+Changed event, indicating that a child object has been changed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a59b21f285996fdbd5f66884c3b4d5805}{Child\+\_\+\+Property\+Changed}} (object sender, Property\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em Handles any Property\+Changed event from a child object and echoes it up as a Child\+Changed event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_removing_item_event_args}{Removing\+Item\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a6a4a6683783dc9cf76a7e4e593f2bf08}{Removing\+Item}}
+\begin{DoxyCompactList}\small\item\em Implements a serialization-\/safe Removing\+Item event. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_csla_1_1_core_a6e5e9144d3f05f7275d0411443def6de}{Busy\+Changed\+Event\+Handler}} \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a326a03dba5bc5faacf23d4232f46e01f}{Busy\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event indicating that the busy status of the object has changed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a676b056492b3fc04355970d783dd431b}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the busy status for this object and its child objects. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a3fdcc9105ccefa4bf67cbd4374b97e77}{Is\+Self\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the busy status for this object. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_add316d3a196c031b102480935415f5f5}{Unhandled\+Async\+Exception}}
+\begin{DoxyCompactList}\small\item\em Event indicating that an exception occurred during an async operation. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Csla.\+Core.\+Child\+Changed\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a413cffcffde58a604130b03c0e41d034}{Child\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when a child object has been changed. \end{DoxyCompactList}\item 
+IDisposable \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list_a13c53c5d5e32d163fcc16bebe9be82cb}{Suppress\+List\+Changed\+Events}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Use this object to suppress List\+Changed\+Events for an entire code block. May be nested in multiple levels for the same object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Extends Binding\+List of T by adding extra behaviors. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of item contained in list.\\
+\hline
+\end{DoxyTemplParams}
+
+
+Definition at line 24 of file Extended\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_af55135f8e17c235308ce70f5ad981557}\label{class_csla_1_1_core_1_1_extended_binding_list_af55135f8e17c235308ce70f5ad981557}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!AddRange@{AddRange}}
+\index{AddRange@{AddRange}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{AddRange()}{AddRange()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Add\+Range (\begin{DoxyParamCaption}\item[{System.\+Collections.\+Generic.\+IEnumerable$<$ T $>$}]{range }\end{DoxyParamCaption})}
+
+
+
+Add a range of items to the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em range} & List of items to add.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 101 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a59b21f285996fdbd5f66884c3b4d5805}\label{class_csla_1_1_core_1_1_extended_binding_list_a59b21f285996fdbd5f66884c3b4d5805}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!Child\_PropertyChanged@{Child\_PropertyChanged}}
+\index{Child\_PropertyChanged@{Child\_PropertyChanged}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Child\_PropertyChanged()}{Child\_PropertyChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Child\+\_\+\+Property\+Changed (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{Property\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Handles any Property\+Changed event from a child object and echoes it up as a Child\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender} & Object that raised the event.\\
+\hline
+{\em e} & Property changed args.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a9afeb2b58416c1437bf686085c56ddfe}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}.
+
+
+
+Definition at line 384 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a2e94c99255115111011a55250c668286}\label{class_csla_1_1_core_1_1_extended_binding_list_a2e94c99255115111011a55250c668286}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!InsertItem@{InsertItem}}
+\index{InsertItem@{InsertItem}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{InsertItem()}{InsertItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Insert\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{T}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Invoked when an item is inserted into the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of new item.\\
+\hline
+{\em item} & Reference to new item.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 214 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a9e27bdebeb5d456b566ba91b3fd89349}\label{class_csla_1_1_core_1_1_extended_binding_list_a9e27bdebeb5d456b566ba91b3fd89349}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnAddEventHooks@{OnAddEventHooks}}
+\index{OnAddEventHooks@{OnAddEventHooks}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnAddEventHooks()}{OnAddEventHooks()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Add\+Event\+Hooks (\begin{DoxyParamCaption}\item[{T}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method invoked when events are hooked for a child object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & Reference to child object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 226 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_ab3a8ae80af1913dfdf077704db9d0d33}\label{class_csla_1_1_core_1_1_extended_binding_list_ab3a8ae80af1913dfdf077704db9d0d33}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnBusyChanged@{OnBusyChanged}}
+\index{OnBusyChanged@{OnBusyChanged}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnBusyChanged()}{OnBusyChanged()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Busy\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_busy_changed_event_args}{Busy\+Changed\+Event\+Args}}}]{args }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to be notified when the Is\+Busy property has changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Event arguments.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 126 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a3042799fdbcb2d0162684c8f20c2afdf}\label{class_csla_1_1_core_1_1_extended_binding_list_a3042799fdbcb2d0162684c8f20c2afdf}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnBusyChanged@{OnBusyChanged}}
+\index{OnBusyChanged@{OnBusyChanged}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnBusyChanged()}{OnBusyChanged()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Busy\+Changed (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{bool}]{busy }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Raises the Busy\+Changed event for a specific property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the property.\\
+\hline
+{\em busy} & New busy value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 137 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_aa98e4fc5cc42f36378f66e0eb7c856db}\label{class_csla_1_1_core_1_1_extended_binding_list_aa98e4fc5cc42f36378f66e0eb7c856db}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnChildChanged@{OnChildChanged}}
+\index{OnChildChanged@{OnChildChanged}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnChildChanged()}{OnChildChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Child\+Changed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Child\+Changed\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Child\+Changed event, indicating that a child object has been changed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & \mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Child\+Changed\+Event\+Args}} object. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 327 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a10468923421bb16b104d7359fa683a20}\label{class_csla_1_1_core_1_1_extended_binding_list_a10468923421bb16b104d7359fa683a20}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnDeserialized@{OnDeserialized}}
+\index{OnDeserialized@{OnDeserialized}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnDeserialized()}{OnDeserialized()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Deserialized (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called on a newly deserialized object after deserialization is complete. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_dynamic_binding_list_base_ad12a62aa77e5567447f05beffec50082}{Csla.\+Dynamic\+Binding\+List\+Base$<$ T $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a3afe17a3fe04c239974bbe47e73dcb9f}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}.
+
+
+
+Definition at line 275 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_ad0ab38be6a7006a600f691f73d9fea37}\label{class_csla_1_1_core_1_1_extended_binding_list_ad0ab38be6a7006a600f691f73d9fea37}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnRemoveEventHooks@{OnRemoveEventHooks}}
+\index{OnRemoveEventHooks@{OnRemoveEventHooks}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnRemoveEventHooks()}{OnRemoveEventHooks()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Remove\+Event\+Hooks (\begin{DoxyParamCaption}\item[{T}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method invoked when events are unhooked for a child object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & Reference to child object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 251 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a2a9b357ae603ed53055905a0b6a6d7ed}\label{class_csla_1_1_core_1_1_extended_binding_list_a2a9b357ae603ed53055905a0b6a6d7ed}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnRemovingItem@{OnRemovingItem}}
+\index{OnRemovingItem@{OnRemovingItem}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnRemovingItem()}{OnRemovingItem()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Removing\+Item (\begin{DoxyParamCaption}\item[{T}]{removed\+Item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Raise the Removing\+Item event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em removed\+Item} & A reference to the item that is being removed. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 72 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a2b531368ac96d700c1f4c2e18a59b6df}\label{class_csla_1_1_core_1_1_extended_binding_list_a2b531368ac96d700c1f4c2e18a59b6df}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnUnhandledAsyncException@{OnUnhandledAsyncException}}
+\index{OnUnhandledAsyncException@{OnUnhandledAsyncException}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnUnhandledAsyncException()}{OnUnhandledAsyncException()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Unhandled\+Async\+Exception (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}}}]{error }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method invoked when an unhandled async exception has occurred. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em error} & Event arguments.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 188 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_ad717a78ff44e45b5e8106e7d822bf30e}\label{class_csla_1_1_core_1_1_extended_binding_list_ad717a78ff44e45b5e8106e7d822bf30e}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!OnUnhandledAsyncException@{OnUnhandledAsyncException}}
+\index{OnUnhandledAsyncException@{OnUnhandledAsyncException}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnUnhandledAsyncException()}{OnUnhandledAsyncException()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.On\+Unhandled\+Async\+Exception (\begin{DoxyParamCaption}\item[{object}]{original\+Sender,  }\item[{Exception}]{error }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Raises the Unhandled\+Async\+Exception event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em original\+Sender} & Original sender of event.\\
+\hline
+{\em error} & Exception that occurred.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 199 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a73a0c77f483a770f046747f4a32e4d3d}\label{class_csla_1_1_core_1_1_extended_binding_list_a73a0c77f483a770f046747f4a32e4d3d}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!RemoveItem@{RemoveItem}}
+\index{RemoveItem@{RemoveItem}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RemoveItem()}{RemoveItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Remove\+Item (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Remove the item at the specified index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The zero-\/based index of the item to remove. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 90 of file Extended\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a326a03dba5bc5faacf23d4232f46e01f}\label{class_csla_1_1_core_1_1_extended_binding_list_a326a03dba5bc5faacf23d4232f46e01f}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!BusyChanged@{BusyChanged}}
+\index{BusyChanged@{BusyChanged}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BusyChanged}{BusyChanged}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_csla_1_1_core_a6e5e9144d3f05f7275d0411443def6de}{Busy\+Changed\+Event\+Handler}} \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Busy\+Changed\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event indicating that the busy status of the object has changed. 
+
+
+
+Definition at line 115 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a413cffcffde58a604130b03c0e41d034}\label{class_csla_1_1_core_1_1_extended_binding_list_a413cffcffde58a604130b03c0e41d034}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!ChildChanged@{ChildChanged}}
+\index{ChildChanged@{ChildChanged}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ChildChanged}{ChildChanged}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_child_changed_event_args}{Csla.\+Core.\+Child\+Changed\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Child\+Changed\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event raised when a child object has been changed. 
+
+
+
+Definition at line 305 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a676b056492b3fc04355970d783dd431b}\label{class_csla_1_1_core_1_1_extended_binding_list_a676b056492b3fc04355970d783dd431b}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the busy status for this object and its child objects. 
+
+
+
+Definition at line 148 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a3fdcc9105ccefa4bf67cbd4374b97e77}\label{class_csla_1_1_core_1_1_extended_binding_list_a3fdcc9105ccefa4bf67cbd4374b97e77}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!IsSelfBusy@{IsSelfBusy}}
+\index{IsSelfBusy@{IsSelfBusy}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsSelfBusy}{IsSelfBusy}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Is\+Self\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the busy status for this object. 
+
+
+
+Definition at line 159 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a6a4a6683783dc9cf76a7e4e593f2bf08}\label{class_csla_1_1_core_1_1_extended_binding_list_a6a4a6683783dc9cf76a7e4e593f2bf08}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!RemovingItem@{RemovingItem}}
+\index{RemovingItem@{RemovingItem}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RemovingItem}{RemovingItem}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_removing_item_event_args}{Removing\+Item\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Removing\+Item\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Implements a serialization-\/safe Removing\+Item event. 
+
+
+
+Definition at line 38 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_a13c53c5d5e32d163fcc16bebe9be82cb}\label{class_csla_1_1_core_1_1_extended_binding_list_a13c53c5d5e32d163fcc16bebe9be82cb}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!SuppressListChangedEvents@{SuppressListChangedEvents}}
+\index{SuppressListChangedEvents@{SuppressListChangedEvents}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SuppressListChangedEvents}{SuppressListChangedEvents}}
+{\footnotesize\ttfamily IDisposable \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Suppress\+List\+Changed\+Events\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Use this object to suppress List\+Changed\+Events for an entire code block. May be nested in multiple levels for the same object. 
+
+
+
+Definition at line 404 of file Extended\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_extended_binding_list_add316d3a196c031b102480935415f5f5}\label{class_csla_1_1_core_1_1_extended_binding_list_add316d3a196c031b102480935415f5f5}} 
+\index{Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}!UnhandledAsyncException@{UnhandledAsyncException}}
+\index{UnhandledAsyncException@{UnhandledAsyncException}!Csla.Core.ExtendedBindingList$<$ T $>$@{Csla.Core.ExtendedBindingList$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{UnhandledAsyncException}{UnhandledAsyncException}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_error_event_args}{Error\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_core_1_1_extended_binding_list}{Csla.\+Core.\+Extended\+Binding\+List}}$<$ T $>$.Unhandled\+Async\+Exception\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event indicating that an exception occurred during an async operation. 
+
+
+
+Definition at line 177 of file Extended\+Binding\+List.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_extended_binding_list_8cs}{Extended\+Binding\+List.\+cs}}\end{DoxyCompactItemize}

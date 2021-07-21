@@ -1,0 +1,924 @@
+\hypertarget{class_csla_1_1_xaml_1_1_view_model_base}{}\doxysection{Csla.\+Xaml.\+View\+Model\+Base$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_xaml_1_1_view_model_base}\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+
+
+Base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects that implement their own commands/verbs/actions.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+View\+Model\+Base$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.472406cm]{class_csla_1_1_xaml_1_1_view_model_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{View\+Model\+Base}}$<$ T $>$ $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a932e58543a60afaece26501682735b21}{Init\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Method used to perform async initialization of the viewmodel. This method is usually invoked immediately following construction of the object instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ad146dca8a6abdb59c92f74eb80ca7f50}{Model\+Property}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the Model object. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a31297bc79a15c2929d6e8c836f92a25b}{Manage\+Object\+Lifetime\+Property}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} should automatically managed the lifetime of the Model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a96a1e467f52bd1cbe8e48d055ed7e971}{View\+Model\+Base}} ()
+\begin{DoxyCompactList}\small\item\em Create new instance of base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects that implement their own commands/verbs/actions. \end{DoxyCompactList}\item 
+virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a42c156c8a69d439e9eaf5963689a388d}{Do\+Init\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to implement async initialization of the model object. The result of this method is used to set the Model property of the viewmodel. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a56e3bb17d1a0da1d8920210d16b717c9}{On\+Error}} (Exception error)
+\begin{DoxyCompactList}\small\item\em Raises Error\+Occurred event when an error occurs during processing. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a5465ffe0a66e46bc4838661acc759cfb}{Do\+Refresh}} (Func$<$ T $>$ factory\+Method)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a7eba07a1e5feafa76bf6eb61de7dc290}{Do\+Refresh}} (string factory\+Method, params object\mbox{[}$\,$\mbox{]} factory\+Parameters)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ac2454eb29e8e5a5c00d2d25ba0f68414}{Do\+Refresh}} (string factory\+Method)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_abeaa9934860a0d2d170d3bc48c28f5d1}{Begin\+Refresh}} (Action$<$ Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$$>$$>$ factory\+Method)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ae3c93a483ebd97c038f9566f0d57ad03}{Begin\+Refresh}} (string factory\+Method, params object\mbox{[}$\,$\mbox{]} factory\+Parameters)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_acbf6d45d8140a02af888daef826fbcbc}{Begin\+Refresh}} (string factory\+Method)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking a static factory method. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ab868ad49a7f713fa35974f3af561c7bd}{On\+Refreshing}} (T model)
+\begin{DoxyCompactList}\small\item\em Method called after a refresh operation has completed and before the model is updated. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a3ef335912ad18b2427dd6719942ccd6a}{On\+Refreshed}} ()
+\begin{DoxyCompactList}\small\item\em Method called after a refresh operation has completed. \end{DoxyCompactList}\item 
+virtual T \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a4fb585a51175e6914a01859ad044947f}{Do\+Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a2d9f60365aced7692cefa29091f45cfe}{Begin\+Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a4f9d3fd7990f77bbe46cd322bd52366b}{On\+Saving}} (T model)
+\begin{DoxyCompactList}\small\item\em Method called after a save operation has completed and before Model is updated (when successful). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a5d92ed14f47841ef9dc896653460adcb}{On\+Saved}} ()
+\begin{DoxyCompactList}\small\item\em Method called after a save operation has completed (whether successful or not). \end{DoxyCompactList}\item 
+virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_adcd8071c3213d24f6dee59b4f04a846e}{Refresh\+Async$<$ F $>$}} (Func$<$ Task$<$ T $>$$>$ factory)
+\begin{DoxyCompactList}\small\item\em Creates or retrieves a new instance of the Model by invoking an action. \end{DoxyCompactList}\item 
+virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aa4d0cfdcf9b571855f4c2701508a4636}{Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a364b8db46469549ee263ff911af753c3}{Do\+Cancel}} ()
+\begin{DoxyCompactList}\small\item\em Cancels changes made to the model if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ae5831fa733fabd549ff252ec3fae9b96}{Do\+Add\+New}} ()
+\begin{DoxyCompactList}\small\item\em Adds a new item to the Model (if it is a collection). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a01f8fab0c9d6552760e75e571708fe1a}{Do\+Remove}} (object item)
+\begin{DoxyCompactList}\small\item\em Removes an item from the Model (if it is a collection). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a3c7371f3b9fb714a44f57756db77ae72}{Do\+Delete}} ()
+\begin{DoxyCompactList}\small\item\em Marks the Model for deletion (if it is an editable root object). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a12be47fb873a3a355b54a35a237dae86}{On\+Model\+Changed}} (T old\+Value, T new\+Value)
+\begin{DoxyCompactList}\small\item\em Invoked when the Model changes, allowing event handlers to be unhooked from the old object and hooked on the new object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a5ca89ef7aa92c8b5f4822652035df941}{Unhook\+Changed\+Events}} (T model)
+\begin{DoxyCompactList}\small\item\em Unhooks changed event handlers from the model. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a31119ac611228b18b1c2a95e5e08da95}{On\+Set\+Properties}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to hook into to logic of setting properties when model is changed or edited. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aeb821465e2e58eb72ddf756afa0afccd}{On\+Property\+Changed}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Raise the Property\+Changed event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Exception \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aba219ccdf779bcfe5e5122acc1693c8c}{Error}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the Error object corresponding to the last asynchronous operation. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a2a3e80e2db8cbf8850b21f930c1e4f21}{Model}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the Model object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a775eb821a52e513c6e3a33ea24e7e648}{Manage\+Object\+Lifetime}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the View\+Manage\+Object\+Lifetime should automatically managed the lifetime of the Manage\+Object\+Lifetime. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aa33d0b8345f720bd5c54fbb1c21116b9}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this object is executing an asynchronous process. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a014389848f01524b247de4c2fe986b9a}{Is\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model has been changed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aa090d4385fae6b24a769941663b20d8c}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model is currently valid (has no broken rules). \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a1415b52bc8a64d9d32169c3d3e0bfdff}{Can\+Save}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model can currently be saved. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a1cc94eccebe4e2da8aa2f736a4a44cc0}{Can\+Cancel}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model can currently be canceled. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a76ac55db8a502f3fb1ae03677a19300c}{Can\+Create}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether an instance of the Model can currently be created. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aaea3b82462c010a609ef6d23c9e923e9}{Can\+Delete}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model can currently be deleted. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a77e7ebf5cab99b255e8fba2872e40e1c}{Can\+Fetch}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether an instance of the Model can currently be retrieved. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a8b80eb28e3a6797578354cce5271da0f}{Can\+Remove}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model can currently be removed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a56c7cca51551f89c212fd80242ef6c70}{Can\+Add\+New}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the Model can currently be added. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a18367050a3eeaa57918724f5a46ebd69}{Can\+Create\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to create a Model. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ac5c9569d252c47a31cc08ac1675265bd}{Can\+Get\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to retrieve a Model. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_ac5466f46c7bdd9252e708feee633f3c2}{Can\+Edit\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to save (insert or update a Model. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a7f827e7ca7dc7c4f1edb0df9209ee6e7}{Can\+Delete\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to delete a Model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_error_event_args}{Error\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_aa30669d3e094c27dbe24362c848b6f71}{Error\+Occurred}}
+\begin{DoxyCompactList}\small\item\em Event raised when an error occurs during processing. \end{DoxyCompactList}\item 
+Property\+Changed\+Event\+Handler \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a1192c79428a61826fde0ff8f303cf278}{Property\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when a property changes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects that implement their own commands/verbs/actions. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the Model object.\\
+\hline
+\end{DoxyTemplParams}
+
+
+Definition at line 40 of file View\+Model\+Base.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a96a1e467f52bd1cbe8e48d055ed7e971}\label{class_csla_1_1_xaml_1_1_view_model_base_a96a1e467f52bd1cbe8e48d055ed7e971}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!ViewModelBase@{ViewModelBase}}
+\index{ViewModelBase@{ViewModelBase}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ViewModelBase()}{ViewModelBase()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{View\+Model\+Base}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Create new instance of base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects that implement their own commands/verbs/actions. 
+
+
+
+Definition at line 48 of file View\+Model\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_abeaa9934860a0d2d170d3bc48c28f5d1}\label{class_csla_1_1_xaml_1_1_view_model_base_abeaa9934860a0d2d170d3bc48c28f5d1}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!BeginRefresh@{BeginRefresh}}
+\index{BeginRefresh@{BeginRefresh}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginRefresh()}{BeginRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Begin\+Refresh (\begin{DoxyParamCaption}\item[{Action$<$ Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$$>$$>$}]{factory\+Method }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Static factory method action.\\
+\hline
+\end{DoxyParams}
+
+
+Begin\+Refresh(Business\+List.\+Begin\+Get\+List)
+
+Begin\+Refresh(handler =$>$ Business\+List.\+Begin\+Get\+List(handler))
+
+Begin\+Refresh(handler =$>$ Business\+List.\+Begin\+Get\+List(id, handler))
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_a60b71e04535fb26760974551c7579de2}{Csla.\+Xaml.\+Cancellable\+View\+Model$<$ T $>$}}.
+
+
+
+Definition at line 218 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_acbf6d45d8140a02af888daef826fbcbc}\label{class_csla_1_1_xaml_1_1_view_model_base_acbf6d45d8140a02af888daef826fbcbc}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!BeginRefresh@{BeginRefresh}}
+\index{BeginRefresh@{BeginRefresh}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginRefresh()}{BeginRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Begin\+Refresh (\begin{DoxyParamCaption}\item[{string}]{factory\+Method }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Name of the static factory method.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 274 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ae3c93a483ebd97c038f9566f0d57ad03}\label{class_csla_1_1_xaml_1_1_view_model_base_ae3c93a483ebd97c038f9566f0d57ad03}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!BeginRefresh@{BeginRefresh}}
+\index{BeginRefresh@{BeginRefresh}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginRefresh()}{BeginRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Begin\+Refresh (\begin{DoxyParamCaption}\item[{string}]{factory\+Method,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{factory\+Parameters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Name of the static factory method.\\
+\hline
+{\em factory\+Parameters} & Factory method parameters.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_xaml_1_1_cancellable_view_model_aa85a661f7fabb6e54afa2536ed02bede}{Csla.\+Xaml.\+Cancellable\+View\+Model$<$ T $>$}}.
+
+
+
+Definition at line 245 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a2d9f60365aced7692cefa29091f45cfe}\label{class_csla_1_1_xaml_1_1_view_model_base_a2d9f60365aced7692cefa29091f45cfe}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 371 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ae5831fa733fabd549ff252ec3fae9b96}\label{class_csla_1_1_xaml_1_1_view_model_base_ae5831fa733fabd549ff252ec3fae9b96}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoAddNew@{DoAddNew}}
+\index{DoAddNew@{DoAddNew}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoAddNew()}{DoAddNew()}}
+{\footnotesize\ttfamily virtual object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Add\+New (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Adds a new item to the Model (if it is a collection). 
+
+
+
+Definition at line 1005 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a364b8db46469549ee263ff911af753c3}\label{class_csla_1_1_xaml_1_1_view_model_base_a364b8db46469549ee263ff911af753c3}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoCancel@{DoCancel}}
+\index{DoCancel@{DoCancel}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoCancel()}{DoCancel()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Cancel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Cancels changes made to the model if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 955 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a3c7371f3b9fb714a44f57756db77ae72}\label{class_csla_1_1_xaml_1_1_view_model_base_a3c7371f3b9fb714a44f57756db77ae72}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoDelete@{DoDelete}}
+\index{DoDelete@{DoDelete}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoDelete()}{DoDelete()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Delete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Marks the Model for deletion (if it is an editable root object). 
+
+
+
+Definition at line 1038 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a42c156c8a69d439e9eaf5963689a388d}\label{class_csla_1_1_xaml_1_1_view_model_base_a42c156c8a69d439e9eaf5963689a388d}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoInitAsync@{DoInitAsync}}
+\index{DoInitAsync@{DoInitAsync}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoInitAsync()}{DoInitAsync()}}
+{\footnotesize\ttfamily virtual async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Init\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to implement async initialization of the model object. The result of this method is used to set the Model property of the viewmodel. 
+
+\begin{DoxyReturn}{Returns}
+A Task that creates the model object.
+\end{DoxyReturn}
+
+
+Definition at line 88 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a5465ffe0a66e46bc4838661acc759cfb}\label{class_csla_1_1_xaml_1_1_view_model_base_a5465ffe0a66e46bc4838661acc759cfb}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoRefresh@{DoRefresh}}
+\index{DoRefresh@{DoRefresh}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoRefresh()}{DoRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Refresh (\begin{DoxyParamCaption}\item[{Func$<$ T $>$}]{factory\+Method }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Static factory method function.\\
+\hline
+\end{DoxyParams}
+
+
+Do\+Refresh(Business\+List.\+Get\+List)
+
+Do\+Refresh(() =$>$ Business\+List.\+Get\+List())
+
+Do\+Refresh(() =$>$ Business\+List.\+Get\+List(id))
+
+Definition at line 150 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ac2454eb29e8e5a5c00d2d25ba0f68414}\label{class_csla_1_1_xaml_1_1_view_model_base_ac2454eb29e8e5a5c00d2d25ba0f68414}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoRefresh@{DoRefresh}}
+\index{DoRefresh@{DoRefresh}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoRefresh()}{DoRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Refresh (\begin{DoxyParamCaption}\item[{string}]{factory\+Method }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Name of the static factory method.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 203 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a7eba07a1e5feafa76bf6eb61de7dc290}\label{class_csla_1_1_xaml_1_1_view_model_base_a7eba07a1e5feafa76bf6eb61de7dc290}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoRefresh@{DoRefresh}}
+\index{DoRefresh@{DoRefresh}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoRefresh()}{DoRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Refresh (\begin{DoxyParamCaption}\item[{string}]{factory\+Method,  }\item[{params object\mbox{[}$\,$\mbox{]}}]{factory\+Parameters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking a static factory method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Method} & Name of the static factory method.\\
+\hline
+{\em factory\+Parameters} & Factory method parameters.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 177 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a01f8fab0c9d6552760e75e571708fe1a}\label{class_csla_1_1_xaml_1_1_view_model_base_a01f8fab0c9d6552760e75e571708fe1a}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoRemove@{DoRemove}}
+\index{DoRemove@{DoRemove}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoRemove()}{DoRemove()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Remove (\begin{DoxyParamCaption}\item[{object}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Removes an item from the Model (if it is a collection). 
+
+
+
+Definition at line 1028 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a4fb585a51175e6914a01859ad044947f}\label{class_csla_1_1_xaml_1_1_view_model_base_a4fb585a51175e6914a01859ad044947f}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!DoSave@{DoSave}}
+\index{DoSave@{DoSave}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DoSave()}{DoSave()}}
+{\footnotesize\ttfamily virtual T \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Do\+Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 333 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a932e58543a60afaece26501682735b21}\label{class_csla_1_1_xaml_1_1_view_model_base_a932e58543a60afaece26501682735b21}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!InitAsync@{InitAsync}}
+\index{InitAsync@{InitAsync}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{InitAsync()}{InitAsync()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{View\+Model\+Base}}$<$T$>$ $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Init\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Method used to perform async initialization of the viewmodel. This method is usually invoked immediately following construction of the object instance. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 62 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a56e3bb17d1a0da1d8920210d16b717c9}\label{class_csla_1_1_xaml_1_1_view_model_base_a56e3bb17d1a0da1d8920210d16b717c9}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnError@{OnError}}
+\index{OnError@{OnError}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnError()}{OnError()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Error (\begin{DoxyParamCaption}\item[{Exception}]{error }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises Error\+Occurred event when an error occurs during processing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em error} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 131 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a12be47fb873a3a355b54a35a237dae86}\label{class_csla_1_1_xaml_1_1_view_model_base_a12be47fb873a3a355b54a35a237dae86}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnModelChanged@{OnModelChanged}}
+\index{OnModelChanged@{OnModelChanged}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnModelChanged()}{OnModelChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Model\+Changed (\begin{DoxyParamCaption}\item[{T}]{old\+Value,  }\item[{T}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Invoked when the Model changes, allowing event handlers to be unhooked from the old object and hooked on the new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em old\+Value} & Previous Model reference.\\
+\hline
+{\em new\+Value} & New Model reference.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1050 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aeb821465e2e58eb72ddf756afa0afccd}\label{class_csla_1_1_xaml_1_1_view_model_base_aeb821465e2e58eb72ddf756afa0afccd}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnPropertyChanged@{OnPropertyChanged}}
+\index{OnPropertyChanged@{OnPropertyChanged}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnPropertyChanged()}{OnPropertyChanged()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Property\+Changed (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raise the Property\+Changed event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Name of the changed property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1159 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a3ef335912ad18b2427dd6719942ccd6a}\label{class_csla_1_1_xaml_1_1_view_model_base_a3ef335912ad18b2427dd6719942ccd6a}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnRefreshed@{OnRefreshed}}
+\index{OnRefreshed@{OnRefreshed}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnRefreshed()}{OnRefreshed()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Refreshed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method called after a refresh operation has completed. 
+
+
+
+Definition at line 325 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ab868ad49a7f713fa35974f3af561c7bd}\label{class_csla_1_1_xaml_1_1_view_model_base_ab868ad49a7f713fa35974f3af561c7bd}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnRefreshing@{OnRefreshing}}
+\index{OnRefreshing@{OnRefreshing}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnRefreshing()}{OnRefreshing()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Refreshing (\begin{DoxyParamCaption}\item[{T}]{model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method called after a refresh operation has completed and before the model is updated. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em model} & The model.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 317 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a5d92ed14f47841ef9dc896653460adcb}\label{class_csla_1_1_xaml_1_1_view_model_base_a5d92ed14f47841ef9dc896653460adcb}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnSaved@{OnSaved}}
+\index{OnSaved@{OnSaved}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSaved()}{OnSaved()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Saved (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method called after a save operation has completed (whether successful or not). 
+
+
+
+Definition at line 432 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a4f9d3fd7990f77bbe46cd322bd52366b}\label{class_csla_1_1_xaml_1_1_view_model_base_a4f9d3fd7990f77bbe46cd322bd52366b}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnSaving@{OnSaving}}
+\index{OnSaving@{OnSaving}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSaving()}{OnSaving()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Saving (\begin{DoxyParamCaption}\item[{T}]{model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method called after a save operation has completed and before Model is updated (when successful). 
+
+
+
+Definition at line 423 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a31119ac611228b18b1c2a95e5e08da95}\label{class_csla_1_1_xaml_1_1_view_model_base_a31119ac611228b18b1c2a95e5e08da95}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!OnSetProperties@{OnSetProperties}}
+\index{OnSetProperties@{OnSetProperties}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetProperties()}{OnSetProperties()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.On\+Set\+Properties (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to hook into to logic of setting properties when model is changed or edited. 
+
+
+
+Definition at line 1114 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_adcd8071c3213d24f6dee59b4f04a846e}\label{class_csla_1_1_xaml_1_1_view_model_base_adcd8071c3213d24f6dee59b4f04a846e}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!RefreshAsync$<$ F $>$@{RefreshAsync$<$ F $>$}}
+\index{RefreshAsync$<$ F $>$@{RefreshAsync$<$ F $>$}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RefreshAsync$<$ F $>$()}{RefreshAsync< F >()}}
+{\footnotesize\ttfamily virtual async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Refresh\+Async$<$ F $>$ (\begin{DoxyParamCaption}\item[{Func$<$ Task$<$ T $>$$>$}]{factory }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Creates or retrieves a new instance of the Model by invoking an action. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory} & Factory method to invoke\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 903 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aa4d0cfdcf9b571855f4c2701508a4636}\label{class_csla_1_1_xaml_1_1_view_model_base_aa4d0cfdcf9b571855f4c2701508a4636}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}}
+{\footnotesize\ttfamily virtual async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 923 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a5ca89ef7aa92c8b5f4822652035df941}\label{class_csla_1_1_xaml_1_1_view_model_base_a5ca89ef7aa92c8b5f4822652035df941}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!UnhookChangedEvents@{UnhookChangedEvents}}
+\index{UnhookChangedEvents@{UnhookChangedEvents}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{UnhookChangedEvents()}{UnhookChangedEvents()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Unhook\+Changed\+Events (\begin{DoxyParamCaption}\item[{T}]{model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Unhooks changed event handlers from the model. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em model} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1082 of file View\+Model\+Base.\+cs.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a31297bc79a15c2929d6e8c836f92a25b}\label{class_csla_1_1_xaml_1_1_view_model_base_a31297bc79a15c2929d6e8c836f92a25b}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!ManageObjectLifetimeProperty@{ManageObjectLifetimeProperty}}
+\index{ManageObjectLifetimeProperty@{ManageObjectLifetimeProperty}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ManageObjectLifetimeProperty}{ManageObjectLifetimeProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Manage\+Object\+Lifetime\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{        DependencyProperty.Register(\textcolor{stringliteral}{"{}ManageObjectLifetime"{}}, typeof(\textcolor{keywordtype}{bool}),}
+\DoxyCodeLine{        typeof(ViewModelBase<T>), \textcolor{keyword}{new} PropertyMetadata(\textcolor{keyword}{true}))}
+
+\end{DoxyCode}
+
+
+Gets or sets a value indicating whether the \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} should automatically managed the lifetime of the Model. 
+
+
+
+Definition at line 486 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ad146dca8a6abdb59c92f74eb80ca7f50}\label{class_csla_1_1_xaml_1_1_view_model_base_ad146dca8a6abdb59c92f74eb80ca7f50}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!ModelProperty@{ModelProperty}}
+\index{ModelProperty@{ModelProperty}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ModelProperty}{ModelProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Model\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{        DependencyProperty.Register(\textcolor{stringliteral}{"{}Model"{}}, typeof(T), typeof(ViewModelBase<T>),}
+\DoxyCodeLine{        \textcolor{keyword}{new} PropertyMetadata((o, e) =>}
+\DoxyCodeLine{        \{}
+\DoxyCodeLine{          var viewmodel = (ViewModelBase<T>)o;}
+\DoxyCodeLine{          viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);}
+\DoxyCodeLine{        \}))}
+
+\end{DoxyCode}
+
+
+Gets or sets the Model object. 
+
+
+
+Definition at line 460 of file View\+Model\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a56c7cca51551f89c212fd80242ef6c70}\label{class_csla_1_1_xaml_1_1_view_model_base_a56c7cca51551f89c212fd80242ef6c70}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanAddNew@{CanAddNew}}
+\index{CanAddNew@{CanAddNew}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanAddNew}{CanAddNew}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Add\+New\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model can currently be added. 
+
+
+
+Definition at line 713 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a1cc94eccebe4e2da8aa2f736a4a44cc0}\label{class_csla_1_1_xaml_1_1_view_model_base_a1cc94eccebe4e2da8aa2f736a4a44cc0}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanCancel@{CanCancel}}
+\index{CanCancel@{CanCancel}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanCancel}{CanCancel}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Cancel\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model can currently be canceled. 
+
+
+
+Definition at line 601 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a76ac55db8a502f3fb1ae03677a19300c}\label{class_csla_1_1_xaml_1_1_view_model_base_a76ac55db8a502f3fb1ae03677a19300c}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanCreate@{CanCreate}}
+\index{CanCreate@{CanCreate}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanCreate}{CanCreate}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Create\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether an instance of the Model can currently be created. 
+
+
+
+Definition at line 624 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a18367050a3eeaa57918724f5a46ebd69}\label{class_csla_1_1_xaml_1_1_view_model_base_a18367050a3eeaa57918724f5a46ebd69}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanCreateObject@{CanCreateObject}}
+\index{CanCreateObject@{CanCreateObject}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanCreateObject}{CanCreateObject}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Create\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the current user is authorized to create a Model. 
+
+
+
+Definition at line 809 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aaea3b82462c010a609ef6d23c9e923e9}\label{class_csla_1_1_xaml_1_1_view_model_base_aaea3b82462c010a609ef6d23c9e923e9}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanDelete@{CanDelete}}
+\index{CanDelete@{CanDelete}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanDelete}{CanDelete}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Delete\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model can currently be deleted. 
+
+
+
+Definition at line 646 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a7f827e7ca7dc7c4f1edb0df9209ee6e7}\label{class_csla_1_1_xaml_1_1_view_model_base_a7f827e7ca7dc7c4f1edb0df9209ee6e7}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanDeleteObject@{CanDeleteObject}}
+\index{CanDeleteObject@{CanDeleteObject}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanDeleteObject}{CanDeleteObject}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Delete\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the current user is authorized to delete a Model. 
+
+
+
+Definition at line 868 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ac5466f46c7bdd9252e708feee633f3c2}\label{class_csla_1_1_xaml_1_1_view_model_base_ac5466f46c7bdd9252e708feee633f3c2}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanEditObject@{CanEditObject}}
+\index{CanEditObject@{CanEditObject}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanEditObject}{CanEditObject}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Edit\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the current user is authorized to save (insert or update a Model. 
+
+
+
+Definition at line 848 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a77e7ebf5cab99b255e8fba2872e40e1c}\label{class_csla_1_1_xaml_1_1_view_model_base_a77e7ebf5cab99b255e8fba2872e40e1c}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanFetch@{CanFetch}}
+\index{CanFetch@{CanFetch}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanFetch}{CanFetch}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Fetch\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether an instance of the Model can currently be retrieved. 
+
+
+
+Definition at line 669 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_ac5c9569d252c47a31cc08ac1675265bd}\label{class_csla_1_1_xaml_1_1_view_model_base_ac5c9569d252c47a31cc08ac1675265bd}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanGetObject@{CanGetObject}}
+\index{CanGetObject@{CanGetObject}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanGetObject}{CanGetObject}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Get\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the current user is authorized to retrieve a Model. 
+
+
+
+Definition at line 828 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a8b80eb28e3a6797578354cce5271da0f}\label{class_csla_1_1_xaml_1_1_view_model_base_a8b80eb28e3a6797578354cce5271da0f}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanRemove@{CanRemove}}
+\index{CanRemove@{CanRemove}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanRemove}{CanRemove}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Remove\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model can currently be removed. 
+
+
+
+Definition at line 691 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a1415b52bc8a64d9d32169c3d3e0bfdff}\label{class_csla_1_1_xaml_1_1_view_model_base_a1415b52bc8a64d9d32169c3d3e0bfdff}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!CanSave@{CanSave}}
+\index{CanSave@{CanSave}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CanSave}{CanSave}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Can\+Save\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model can currently be saved. 
+
+
+
+Definition at line 579 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aba219ccdf779bcfe5e5122acc1693c8c}\label{class_csla_1_1_xaml_1_1_view_model_base_aba219ccdf779bcfe5e5122acc1693c8c}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!Error@{Error}}
+\index{Error@{Error}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Error}{Error}}
+{\footnotesize\ttfamily Exception \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Error\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets the Error object corresponding to the last asynchronous operation. 
+
+
+
+Definition at line 104 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aa33d0b8345f720bd5c54fbb1c21116b9}\label{class_csla_1_1_xaml_1_1_view_model_base_aa33d0b8345f720bd5c54fbb1c21116b9}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Is\+Busy\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether this object is executing an asynchronous process. 
+
+
+
+Definition at line 515 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a014389848f01524b247de4c2fe986b9a}\label{class_csla_1_1_xaml_1_1_view_model_base_a014389848f01524b247de4c2fe986b9a}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!IsDirty@{IsDirty}}
+\index{IsDirty@{IsDirty}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsDirty}{IsDirty}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Is\+Dirty\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model has been changed. 
+
+
+
+Definition at line 535 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aa090d4385fae6b24a769941663b20d8c}\label{class_csla_1_1_xaml_1_1_view_model_base_aa090d4385fae6b24a769941663b20d8c}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Is\+Valid\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the Model is currently valid (has no broken rules). 
+
+
+
+Definition at line 557 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a775eb821a52e513c6e3a33ea24e7e648}\label{class_csla_1_1_xaml_1_1_view_model_base_a775eb821a52e513c6e3a33ea24e7e648}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!ManageObjectLifetime@{ManageObjectLifetime}}
+\index{ManageObjectLifetime@{ManageObjectLifetime}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ManageObjectLifetime}{ManageObjectLifetime}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Manage\+Object\+Lifetime\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a value indicating whether the View\+Manage\+Object\+Lifetime should automatically managed the lifetime of the Manage\+Object\+Lifetime. 
+
+
+
+Definition at line 498 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a2a3e80e2db8cbf8850b21f930c1e4f21}\label{class_csla_1_1_xaml_1_1_view_model_base_a2a3e80e2db8cbf8850b21f930c1e4f21}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!Model@{Model}}
+\index{Model@{Model}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Model}{Model}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Model\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the Model object. 
+
+
+
+Definition at line 471 of file View\+Model\+Base.\+cs.
+
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_aa30669d3e094c27dbe24362c848b6f71}\label{class_csla_1_1_xaml_1_1_view_model_base_aa30669d3e094c27dbe24362c848b6f71}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!ErrorOccurred@{ErrorOccurred}}
+\index{ErrorOccurred@{ErrorOccurred}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ErrorOccurred}{ErrorOccurred}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_xaml_1_1_error_event_args}{Error\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Error\+Occurred}
+
+
+
+Event raised when an error occurs during processing. 
+
+
+
+Definition at line 123 of file View\+Model\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_base_a1192c79428a61826fde0ff8f303cf278}\label{class_csla_1_1_xaml_1_1_view_model_base_a1192c79428a61826fde0ff8f303cf278}} 
+\index{Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}!PropertyChanged@{PropertyChanged}}
+\index{PropertyChanged@{PropertyChanged}!Csla.Xaml.ViewModelBase$<$ T $>$@{Csla.Xaml.ViewModelBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{PropertyChanged}{PropertyChanged}}
+{\footnotesize\ttfamily Property\+Changed\+Event\+Handler \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{Csla.\+Xaml.\+View\+Model\+Base}}$<$ T $>$.Property\+Changed}
+
+
+
+Event raised when a property changes. 
+
+
+
+Definition at line 1153 of file View\+Model\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_csla_8_xaml_8_shared_2_view_model_base_8cs}{View\+Model\+Base.\+cs}}\end{DoxyCompactItemize}

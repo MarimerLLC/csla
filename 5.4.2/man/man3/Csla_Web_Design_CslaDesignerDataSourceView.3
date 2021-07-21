@@ -1,0 +1,135 @@
+.TH "Csla.Web.Design.CslaDesignerDataSourceView" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Web.Design.CslaDesignerDataSourceView \- Object responsible for providing details about data binding to a specific CSLA \&.NET object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits DesignerDataSourceView\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCslaDesignerDataSourceView\fP (\fBCslaDataSourceDesigner\fP owner, string viewName)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "override IEnumerable \fBGetDesignTimeData\fP (int minimumRows, out bool isSampleData)"
+.br
+.RI "Returns a set of sample data used to populate controls at design time\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "override IDataSourceViewSchema \fBSchema\fP\fC [get]\fP"
+.br
+.RI "Returns schema information corresponding to the properties of the CSLA \&.NET business object\&. "
+.ti -1c
+.RI "override bool \fBCanRetrieveTotalRowCount\fP\fC [get]\fP"
+.br
+.RI "Get a value indicating whether data binding can retrieve the total number of rows of data\&. "
+.ti -1c
+.RI "override bool \fBCanDelete\fP\fC [get]\fP"
+.br
+.RI "Get a value indicating whether data binding can directly delete the object\&. "
+.ti -1c
+.RI "override bool \fBCanInsert\fP\fC [get]\fP"
+.br
+.RI "Get a value indicating whether data binding can directly insert an instance of the object\&. "
+.ti -1c
+.RI "override bool \fBCanUpdate\fP\fC [get]\fP"
+.br
+.RI "Get a value indicating whether data binding can directly update or edit the object\&. "
+.ti -1c
+.RI "override bool \fBCanPage\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the data source supports paging\&. "
+.ti -1c
+.RI "override bool \fBCanSort\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the data source supports sorting\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Object responsible for providing details about data binding to a specific CSLA \&.NET object\&. 
+
+
+.PP
+Definition at line 21 of file CslaDesignerDataSourceView\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CslaDesignerDataSourceView (\fBCslaDataSourceDesigner\fP owner, string viewName)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 29 of file CslaDesignerDataSourceView\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override IEnumerable Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.GetDesignTimeData (int minimumRows, out bool isSampleData)"
+
+.PP
+Returns a set of sample data used to populate controls at design time\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIminimumRows\fP Minimum number of sample rows to create\&.
+.br
+\fIisSampleData\fP Returns True if the data is sample data\&.
+.RE
+.PP
+
+.PP
+Definition at line 43 of file CslaDesignerDataSourceView\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "override bool Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CanDelete\fC [get]\fP"
+
+.PP
+Get a value indicating whether data binding can directly delete the object\&. If this returns true, the web page must handle the \fBDeleteObject\fP event\&. 
+.PP
+Definition at line 142 of file CslaDesignerDataSourceView\&.cs\&.
+.SS "override bool Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CanInsert\fC [get]\fP"
+
+.PP
+Get a value indicating whether data binding can directly insert an instance of the object\&. If this returns true, the web page must handle the \fBInsertObject\fP event\&. 
+.PP
+Definition at line 171 of file CslaDesignerDataSourceView\&.cs\&.
+.SS "override bool Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CanPage\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the data source supports paging\&. 
+.PP
+Definition at line 216 of file CslaDesignerDataSourceView\&.cs\&.
+.SS "override bool Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CanRetrieveTotalRowCount\fC [get]\fP"
+
+.PP
+Get a value indicating whether data binding can retrieve the total number of rows of data\&. 
+.PP
+Definition at line 109 of file CslaDesignerDataSourceView\&.cs\&.
+.SS "override bool Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CanSort\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the data source supports sorting\&. 
+.PP
+Definition at line 228 of file CslaDesignerDataSourceView\&.cs\&.
+.SS "override bool Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.CanUpdate\fC [get]\fP"
+
+.PP
+Get a value indicating whether data binding can directly update or edit the object\&. If this returns true, the web page must handle the \fBUpdateObject\fP event\&. 
+.PP
+Definition at line 196 of file CslaDesignerDataSourceView\&.cs\&.
+.SS "override IDataSourceViewSchema Csla\&.Web\&.Design\&.CslaDesignerDataSourceView\&.Schema\fC [get]\fP"
+
+.PP
+Returns schema information corresponding to the properties of the CSLA \&.NET business object\&. All public properties are returned except for those marked with the \fBBrowsable attribute\fP as False\&. 
+.PP
+Definition at line 95 of file CslaDesignerDataSourceView\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

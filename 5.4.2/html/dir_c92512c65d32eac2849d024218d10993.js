@@ -1,0 +1,4 @@
+var dir_c92512c65d32eac2849d024218d10993 =
+[
+    [ "netstandard2.0", "dir_5201016b5658efa27f625f1df52f6360.html", "dir_5201016b5658efa27f625f1df52f6360" ]
+];

@@ -1,0 +1,471 @@
+\hypertarget{class_csla_1_1_criteria_base}{}\doxysection{Csla.\+Criteria\+Base$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_criteria_base}\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+
+
+Base type from which Criteria classes can be derived in a business class.  
+
+
+Inheritance diagram for Csla.\+Criteria\+Base$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_csla_1_1_criteria_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_criteria_base_ab3c352c9e4aee583804c62c540afc211}{Criteria\+Base}} ()
+\begin{DoxyCompactList}\small\item\em Initializes empty \mbox{\hyperlink{class_csla_1_1_criteria_base}{Criteria\+Base}}. The type of business object to be created by the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} MUST be supplied by the subclass. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a204b7c72abd54d95623c6d797ee9a897}{Register\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ info)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_ae87f89b1bad79972d12aecd1d9df68ed}{Register\+Property$<$ P $>$}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a443a756dafbe02748ad2291a0c5c836e}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a6ece4acc53716e34cc85f1375499cdb0}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_aa27940da69d10b4ea2fef9e9b14ff0d9}{Register\+Property$<$ P $>$}} (string property\+Name, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_aeb921663caf6aa602d05dde00da8b9ed}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a10497a658edb191ff79382260b1b4754}{Register\+Property$<$ P $>$}} (string property\+Name, string friendly\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_adf5d16ab1caf53ec83c0a7d16bcbb9a5}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a9598b28622359896261113e0844ada9b}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a37629476ac6d710b6ef6bf33c1739164}{Register\+Property$<$ P $>$}} (string property\+Name, string friendly\+Name, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a9fc23cc9709b777e62551d6bcedf1df7}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a12d46250443d84b092ca75a268711143}{Register\+Property$<$ P $>$}} (string property\+Name, string friendly\+Name, P default\+Value, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_criteria_base_a81a067090b53c03478b7b2a388386196}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, P default\+Value, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Base type from which Criteria classes can be derived in a business class. 
+
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em \mbox{\hyperlink{class_csla_1_1_criteria_base}{Criteria\+Base}}$<$T$>$}]\end{description}
+\end{Desc}
+
+
+Definition at line 23 of file Criteria\+Base.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_ab3c352c9e4aee583804c62c540afc211}\label{class_csla_1_1_criteria_base_ab3c352c9e4aee583804c62c540afc211}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!CriteriaBase@{CriteriaBase}}
+\index{CriteriaBase@{CriteriaBase}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CriteriaBase()}{CriteriaBase()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_criteria_base}{Criteria\+Base}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Initializes empty \mbox{\hyperlink{class_csla_1_1_criteria_base}{Criteria\+Base}}. The type of business object to be created by the \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} MUST be supplied by the subclass. 
+
+
+
+Definition at line 31 of file Criteria\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a443a756dafbe02748ad2291a0c5c836e}\label{class_csla_1_1_criteria_base_a443a756dafbe02748ad2291a0c5c836e}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 73 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a6ece4acc53716e34cc85f1375499cdb0}\label{class_csla_1_1_criteria_base_a6ece4acc53716e34cc85f1375499cdb0}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 88 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_aeb921663caf6aa602d05dde00da8b9ed}\label{class_csla_1_1_criteria_base_aeb921663caf6aa602d05dde00da8b9ed}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em relationship} & Relationship with referenced object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 118 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_adf5d16ab1caf53ec83c0a7d16bcbb9a5}\label{class_csla_1_1_criteria_base_adf5d16ab1caf53ec83c0a7d16bcbb9a5}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [4/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 145 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a9fc23cc9709b777e62551d6bcedf1df7}\label{class_csla_1_1_criteria_base_a9fc23cc9709b777e62551d6bcedf1df7}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [5/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 192 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a81a067090b53c03478b7b2a388386196}\label{class_csla_1_1_criteria_base_a81a067090b53c03478b7b2a388386196}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [6/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+{\em relationship} & Relationship with referenced object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 225 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a9598b28622359896261113e0844ada9b}\label{class_csla_1_1_criteria_base_a9598b28622359896261113e0844ada9b}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [7/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em relationship} & Relationship with referenced object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 162 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a204b7c72abd54d95623c6d797ee9a897}\label{class_csla_1_1_criteria_base_a204b7c72abd54d95623c6d797ee9a897}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [8/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object for the property. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided IProperty\+Info object. 
+\end{DoxyReturn}
+
+
+Definition at line 49 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_ae87f89b1bad79972d12aecd1d9df68ed}\label{class_csla_1_1_criteria_base_ae87f89b1bad79972d12aecd1d9df68ed}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [9/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 61 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_aa27940da69d10b4ea2fef9e9b14ff0d9}\label{class_csla_1_1_criteria_base_aa27940da69d10b4ea2fef9e9b14ff0d9}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [10/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em relationship} & Relationship with referenced object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 104 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a10497a658edb191ff79382260b1b4754}\label{class_csla_1_1_criteria_base_a10497a658edb191ff79382260b1b4754}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [11/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{friendly\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 132 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a37629476ac6d710b6ef6bf33c1739164}\label{class_csla_1_1_criteria_base_a37629476ac6d710b6ef6bf33c1739164}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [12/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 178 of file Criteria\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_criteria_base_a12d46250443d84b092ca75a268711143}\label{class_csla_1_1_criteria_base_a12d46250443d84b092ca75a268711143}} 
+\index{Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.CriteriaBase$<$ T $>$@{Csla.CriteriaBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [13/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_criteria_base}{Csla.\+Criteria\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+{\em relationship} & Relationship with referenced object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 209 of file Criteria\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_criteria_base_8cs}{Criteria\+Base.\+cs}}\end{DoxyCompactItemize}

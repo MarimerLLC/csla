@@ -1,0 +1,206 @@
+.TH "Csla.Core.IContextManager" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IContextManager \- Defines the interface for an application context manager type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.Web\&.ApplicationContextManager\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "IPrincipal \fBGetUser\fP ()"
+.br
+.RI "Gets the current principal\&. "
+.ti -1c
+.RI "void \fBSetUser\fP (IPrincipal principal)"
+.br
+.RI "Sets the current principal\&. "
+.ti -1c
+.RI "\fBContextDictionary\fP \fBGetLocalContext\fP ()"
+.br
+.RI "Gets the local context\&. "
+.ti -1c
+.RI "void \fBSetLocalContext\fP (\fBContextDictionary\fP localContext)"
+.br
+.RI "Sets the local context\&. "
+.ti -1c
+.RI "\fBContextDictionary\fP \fBGetClientContext\fP ()"
+.br
+.RI "Gets the client context\&. "
+.ti -1c
+.RI "void \fBSetClientContext\fP (\fBContextDictionary\fP clientContext)"
+.br
+.RI "Sets the client context\&. "
+.ti -1c
+.RI "\fBContextDictionary\fP \fBGetGlobalContext\fP ()"
+.br
+.RI "Gets the global context\&. "
+.ti -1c
+.RI "void \fBSetGlobalContext\fP (\fBContextDictionary\fP globalContext)"
+.br
+.RI "Sets the global context\&. "
+.ti -1c
+.RI "IServiceProvider \fBGetDefaultServiceProvider\fP ()"
+.br
+.RI "Gets the default IServiceProvider "
+.ti -1c
+.RI "void \fBSetDefaultServiceProvider\fP (IServiceProvider serviceProvider)"
+.br
+.RI "Sets the default IServiceProvider "
+.ti -1c
+.RI "IServiceProvider \fBGetServiceProvider\fP ()"
+.br
+.RI "Gets the service provider scope for current scope\&. "
+.ti -1c
+.RI "void \fBSetServiceProvider\fP (IServiceProvider scope)"
+.br
+.RI "Sets the service provider for current scope\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBIsValid\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this context manager is valid for use in the current environment\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines the interface for an application context manager type\&. 
+
+
+.PP
+Definition at line 17 of file IContextManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBContextDictionary\fP Csla\&.Core\&.IContextManager\&.GetClientContext ()"
+
+.PP
+Gets the client context\&. 
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "IServiceProvider Csla\&.Core\&.IContextManager\&.GetDefaultServiceProvider ()"
+
+.PP
+Gets the default IServiceProvider 
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "\fBContextDictionary\fP Csla\&.Core\&.IContextManager\&.GetGlobalContext ()"
+
+.PP
+Gets the global context\&. 
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "\fBContextDictionary\fP Csla\&.Core\&.IContextManager\&.GetLocalContext ()"
+
+.PP
+Gets the local context\&. 
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "IServiceProvider Csla\&.Core\&.IContextManager\&.GetServiceProvider ()"
+
+.PP
+Gets the service provider scope for current scope\&. 
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "IPrincipal Csla\&.Core\&.IContextManager\&.GetUser ()"
+
+.PP
+Gets the current principal\&. 
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Xaml\&.ApplicationContextManager\fP, \fBCsla\&.Windows\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "void Csla\&.Core\&.IContextManager\&.SetClientContext (\fBContextDictionary\fP clientContext)"
+
+.PP
+Sets the client context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclientContext\fP Client context\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "void Csla\&.Core\&.IContextManager\&.SetDefaultServiceProvider (IServiceProvider serviceProvider)"
+
+.PP
+Sets the default IServiceProvider 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserviceProvider\fP IServiceProvider instance
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "void Csla\&.Core\&.IContextManager\&.SetGlobalContext (\fBContextDictionary\fP globalContext)"
+
+.PP
+Sets the global context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglobalContext\fP Global context\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "void Csla\&.Core\&.IContextManager\&.SetLocalContext (\fBContextDictionary\fP localContext)"
+
+.PP
+Sets the local context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocalContext\fP Local context\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "void Csla\&.Core\&.IContextManager\&.SetServiceProvider (IServiceProvider scope)"
+
+.PP
+Sets the service provider for current scope\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIscope\fP IServiceProvider instance
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Web\&.ApplicationContextManager\fP, \fBCsla\&.Test\&.AppContext\&.TestContext\fP, and \fBCsla\&.AspNetCore\&.ApplicationContextManager\fP\&.
+.SS "void Csla\&.Core\&.IContextManager\&.SetUser (IPrincipal principal)"
+
+.PP
+Sets the current principal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprincipal\fP Principal object\&.
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.ApplicationContextManagerTls\fP, \fBCsla\&.Core\&.ApplicationContextManagerStatic\fP, \fBCsla\&.Core\&.ApplicationContextManager\fP, \fBCsla\&.Xaml\&.ApplicationContextManager\fP, \fBCsla\&.Windows\&.ApplicationContextManager\fP, and \fBCsla\&.Test\&.AppContext\&.TestContext\fP\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Core\&.IContextManager\&.IsValid\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this context manager is valid for use in the current environment\&. 
+.PP
+Definition at line 24 of file IContextManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

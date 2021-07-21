@@ -1,0 +1,447 @@
+.TH "Csla.Core.ManagedObjectBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ManagedObjectBase \- Base class for an object that is serializable using SerializationFormatterFactory\&.GetFormatter()\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileObject\fP, and INotifyPropertyChanged\&.
+.PP
+Inherited by \fBCsla\&.CommandBase< T >\fP, and \fBCsla\&.CriteriaBase< T >\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "P \fBReadPropertyConvert< F, P >\fP (\fBPropertyInfo\fP< F > propertyInfo)"
+.br
+.RI "Gets a property's value from the list of managed field values, converting the value to an appropriate type\&. "
+.ti -1c
+.RI "P \fBReadProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo)"
+.br
+.RI "Gets a property's value as a specified type\&. "
+.ti -1c
+.RI "virtual object \fBReadProperty\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Gets a property's value as a specified type\&. "
+.ti -1c
+.RI "void \fBLoadPropertyConvert< P, F >\fP (\fBPropertyInfo\fP< P > propertyInfo, F newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBLoadProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "virtual void \fBLoadProperty\fP (\fBIPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "virtual bool \fBLoadPropertyMarkDirty\fP (\fBIPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Loads the property vith new value and mark field dirty if value is changed\&. "
+.ti -1c
+.RI "void \fBOnPropertyChanged\fP (string propertyName)"
+.br
+.RI "Raises the PropertyChanged event\&. "
+.ti -1c
+.RI "void \fBOnPropertyChanged\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Raises the PropertyChanged event\&. "
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Override this method to manually retrieve child object data from the serializations stream\&. "
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Override this method to manually serialize child objects into the serialization stream\&. "
+.ti -1c
+.RI "virtual void \fBOnDeserialized\fP (System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "This method is called on a newly deserialized object after deserialization is complete\&. "
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Type objectType, \fBPropertyInfo\fP< P > info)"
+.br
+.RI "Indicates that the specified property belongs to the type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< T, P >\fP (Expression< Func< T, object >> propertyLambdaExpression)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< T, P >\fP (Expression< Func< T, object >> propertyLambdaExpression, P defaultValue)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< T, P >\fP (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< T, P >\fP (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBFieldDataManager\fP \fBFieldManager\fP\fC [get]\fP"
+.br
+.RI "Gets a reference to the field mananger for this object\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Base class for an object that is serializable using SerializationFormatterFactory\&.GetFormatter()\&. 
+
+
+.PP
+Definition at line 27 of file ManagedObjectBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Csla\&.Core\&.ManagedObjectBase\&.LoadProperty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 359 of file ManagedObjectBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.ManagedObjectBase\&.LoadProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 277 of file ManagedObjectBase\&.cs\&.
+.SS "void Csla\&.Core\&.ManagedObjectBase\&.LoadPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 232 of file ManagedObjectBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.ManagedObjectBase\&.LoadPropertyMarkDirty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Loads the property vith new value and mark field dirty if value is changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The property info\&.
+.br
+\fInewValue\fP The new value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+[true] if changed, else [false] 
+.RE
+.PP
+
+.PP
+Definition at line 374 of file ManagedObjectBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.ManagedObjectBase\&.OnDeserialized (System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called on a newly deserialized object after deserialization is complete\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP \fBSerialization\fP context object\&.
+.RE
+.PP
+
+.PP
+Definition at line 494 of file ManagedObjectBase\&.cs\&.
+.SS "override void Csla\&.Core\&.ManagedObjectBase\&.OnGetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to manually retrieve child object data from the serializations stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info\&.
+.br
+\fIformatter\fP Reference to the SerializationFormatterFactory\&.GetFormatter()\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 449 of file ManagedObjectBase\&.cs\&.
+.SS "void Csla\&.Core\&.ManagedObjectBase\&.OnPropertyChanged (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP"
+
+.PP
+Raises the PropertyChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The property info object for the changed property\&.
+.RE
+.PP
+
+.PP
+Definition at line 434 of file ManagedObjectBase\&.cs\&.
+.SS "void Csla\&.Core\&.ManagedObjectBase\&.OnPropertyChanged (string propertyName)\fC [protected]\fP"
+
+.PP
+Raises the PropertyChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the changed property\&.
+.RE
+.PP
+
+.PP
+Definition at line 423 of file ManagedObjectBase\&.cs\&.
+.SS "override void Csla\&.Core\&.ManagedObjectBase\&.OnSetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to manually serialize child objects into the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info\&.
+.br
+\fIformatter\fP Reference to the SerializationFormatterFactory\&.GetFormatter()\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 466 of file ManagedObjectBase\&.cs\&.
+.SS "virtual object Csla\&.Core\&.ManagedObjectBase\&.ReadProperty (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Gets a property's value as a specified type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+
+.PP
+Definition at line 192 of file ManagedObjectBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.ManagedObjectBase\&.ReadProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+
+.PP
+Definition at line 167 of file ManagedObjectBase\&.cs\&.
+.SS "P Csla\&.Core\&.ManagedObjectBase\&.ReadPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's value from the list of managed field values, converting the value to an appropriate type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIF\fP Type of the field\&. 
+.br
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+
+.PP
+Definition at line 154 of file ManagedObjectBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.ManagedObjectBase\&.RegisterProperty< P > (Type objectType, \fBPropertyInfo\fP< P > info)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of object to which the property belongs\&. 
+.br
+\fIinfo\fP \fBPropertyInfo\fP object for the property\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided \fBIPropertyInfo\fP object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 67 of file ManagedObjectBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.ManagedObjectBase\&.RegisterProperty< T, P > (Expression< Func< T, object >> propertyLambdaExpression)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of object to which the property belongs\&.
+.br
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided \fBIPropertyInfo\fP object\&.
+.RE
+.PP
+
+.PP
+Definition at line 81 of file ManagedObjectBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.ManagedObjectBase\&.RegisterProperty< T, P > (Expression< Func< T, object >> propertyLambdaExpression, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of Target
+.br
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIdefaultValue\fP Default Value for the property
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 97 of file ManagedObjectBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.ManagedObjectBase\&.RegisterProperty< T, P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP 
+.br
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided \fBIPropertyInfo\fP object\&.
+.RE
+.PP
+
+.PP
+Definition at line 113 of file ManagedObjectBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.ManagedObjectBase\&.RegisterProperty< T, P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of Target
+.br
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.br
+\fIdefaultValue\fP Default Value for the property
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 130 of file ManagedObjectBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBFieldDataManager\fP Csla\&.Core\&.ManagedObjectBase\&.FieldManager\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Gets a reference to the field mananger for this object\&. 
+.PP
+Definition at line 37 of file ManagedObjectBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

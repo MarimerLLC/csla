@@ -1,0 +1,233 @@
+\hypertarget{class_csla_1_1_data_1_1_transaction_manager}{}\doxysection{Csla.\+Data.\+Transaction\+Manager$<$ C, T $>$ Class Template Reference}
+\label{class_csla_1_1_data_1_1_transaction_manager}\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+
+
+Provides an automated way to reuse open database connections and associated ADO.\+NET transactions within the context of a single data portal operation.  
+
+
+Inheritance diagram for Csla.\+Data.\+Transaction\+Manager$<$ C, T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_data_1_1_transaction_manager}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_a2808537e6b07819a3c332ba949abbbd2}{Commit}} ()
+\begin{DoxyCompactList}\small\item\em Indicates that the current transactional scope has completed successfully. If all transactional scopes complete successfully the transaction will commit when the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object is disposed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_aeb8eacb1a7e4e18bcb385a7084e0c995}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Dispose object, dereferencing or disposing the connection it is managing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$ C, T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_a91c26d13e03dffe529b79f1d203a9615}{Get\+Manager}} (string database)
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$ C, T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_a5e6b2981c91fa05097e6e77f65931e3a}{Get\+Manager}} (string database, string label)
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$ C, T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_aa74505e88f51b42d22e2cc7043213ddc}{Get\+Manager}} (string database, bool is\+Database\+Name)
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$ C, T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_a1094f29dccd75c70bc242fa5e45e47b5}{Get\+Manager}} (string database, bool is\+Database\+Name, string label)
+\begin{DoxyCompactList}\small\item\em Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+T \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_a96b50bc5a53e84a2e944aee9b5574cfe}{Transaction}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a reference to the current ADO.\+NET transaction object. \end{DoxyCompactList}\item 
+C \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_ada0397e9d9bcc9ac666069b54216c361}{Connection}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a reference to the current ADO.\+NET connection object that is associated with current trasnaction. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager_a5f6220ea179ee9be394df1f5deab52b2}{Ref\+Count}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the current reference count for this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides an automated way to reuse open database connections and associated ADO.\+NET transactions within the context of a single data portal operation. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em C} & Type of database connection object to use. \\
+\hline
+{\em T} & Type of ADO.\+NET transaction object to use. \\
+\hline
+\end{DoxyTemplParams}
+
+
+This type stores the open ADO.\+NET transaction in Csla.\+Application\+Context.\+Local\+Context and uses reference counting through IDisposable to keep the transaction open for reuse by child objects, and to automatically dispose the transaction when the last consumer has called Dispose."{} \begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em C} : {\em IDb\+Connection}]\item[{\em C} : {\em new()}]\item[{\em T} : {\em IDb\+Transaction}]\end{description}
+\end{Desc}
+
+
+Definition at line 37 of file Transaction\+Manager.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_a2808537e6b07819a3c332ba949abbbd2}\label{class_csla_1_1_data_1_1_transaction_manager_a2808537e6b07819a3c332ba949abbbd2}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!Commit@{Commit}}
+\index{Commit@{Commit}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{Commit()}{Commit()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Commit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Indicates that the current transactional scope has completed successfully. If all transactional scopes complete successfully the transaction will commit when the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object is disposed. 
+
+
+
+Definition at line 196 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_aeb8eacb1a7e4e18bcb385a7084e0c995}\label{class_csla_1_1_data_1_1_transaction_manager_aeb8eacb1a7e4e18bcb385a7084e0c995}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Dispose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Dispose object, dereferencing or disposing the connection it is managing. 
+
+
+
+Definition at line 254 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_a91c26d13e03dffe529b79f1d203a9615}\label{class_csla_1_1_data_1_1_transaction_manager_a91c26d13e03dffe529b79f1d203a9615}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$C, T$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Get\+Manager (\begin{DoxyParamCaption}\item[{string}]{database }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database} & Database name as shown in the config file. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 54 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_aa74505e88f51b42d22e2cc7043213ddc}\label{class_csla_1_1_data_1_1_transaction_manager_aa74505e88f51b42d22e2cc7043213ddc}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$C, T$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Get\+Manager (\begin{DoxyParamCaption}\item[{string}]{database,  }\item[{bool}]{is\+Database\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database} & The database name or connection string. \\
+\hline
+{\em is\+Database\+Name} & True to indicate that the Transaction string should be retrieved from the config file. If False, the database parameter is directly used as a Transaction string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the name.
+\end{DoxyReturn}
+
+
+Definition at line 86 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_a1094f29dccd75c70bc242fa5e45e47b5}\label{class_csla_1_1_data_1_1_transaction_manager_a1094f29dccd75c70bc242fa5e45e47b5}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$C, T$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Get\+Manager (\begin{DoxyParamCaption}\item[{string}]{database,  }\item[{bool}]{is\+Database\+Name,  }\item[{string}]{label }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database} & The database name or connection string. \\
+\hline
+{\em is\+Database\+Name} & True to indicate that the Transaction string should be retrieved from the config file. If False, the database parameter is directly used as a Transaction string. \\
+\hline
+{\em label} & Label for this transaction.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the name.
+\end{DoxyReturn}
+
+
+Definition at line 106 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_a5e6b2981c91fa05097e6e77f65931e3a}\label{class_csla_1_1_data_1_1_transaction_manager_a5e6b2981c91fa05097e6e77f65931e3a}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!GetManager@{GetManager}}
+\index{GetManager@{GetManager}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{GetManager()}{GetManager()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}}$<$C, T$>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Get\+Manager (\begin{DoxyParamCaption}\item[{string}]{database,  }\item[{string}]{label }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Transaction\+Manager}} object for the specified database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em database} & Database name as shown in the config file. \\
+\hline
+{\em label} & Label for this transaction.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 67 of file Transaction\+Manager.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_ada0397e9d9bcc9ac666069b54216c361}\label{class_csla_1_1_data_1_1_transaction_manager_ada0397e9d9bcc9ac666069b54216c361}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!Connection@{Connection}}
+\index{Connection@{Connection}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{Connection}{Connection}}
+{\footnotesize\ttfamily C \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Connection\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a reference to the current ADO.\+NET connection object that is associated with current trasnaction. 
+
+
+
+Definition at line 179 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_a5f6220ea179ee9be394df1f5deab52b2}\label{class_csla_1_1_data_1_1_transaction_manager_a5f6220ea179ee9be394df1f5deab52b2}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!RefCount@{RefCount}}
+\index{RefCount@{RefCount}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{RefCount}{RefCount}}
+{\footnotesize\ttfamily int \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Ref\+Count\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the current reference count for this object. 
+
+
+
+Definition at line 210 of file Transaction\+Manager.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_transaction_manager_a96b50bc5a53e84a2e944aee9b5574cfe}\label{class_csla_1_1_data_1_1_transaction_manager_a96b50bc5a53e84a2e944aee9b5574cfe}} 
+\index{Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}!Transaction@{Transaction}}
+\index{Transaction@{Transaction}!Csla.Data.TransactionManager$<$ C, T $>$@{Csla.Data.TransactionManager$<$ C, T $>$}}
+\doxysubsubsection{\texorpdfstring{Transaction}{Transaction}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_data_1_1_transaction_manager}{Csla.\+Data.\+Transaction\+Manager}}$<$ C, T $>$.Transaction\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a reference to the current ADO.\+NET transaction object. 
+
+
+
+Definition at line 166 of file Transaction\+Manager.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Data/\mbox{\hyperlink{_transaction_manager_8cs}{Transaction\+Manager.\+cs}}\end{DoxyCompactItemize}

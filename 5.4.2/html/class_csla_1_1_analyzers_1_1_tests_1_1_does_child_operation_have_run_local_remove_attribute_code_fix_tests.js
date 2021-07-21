@@ -1,0 +1,6 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_remove_attribute_code_fix_tests =
+[
+    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_remove_attribute_code_fix_tests.html#a52067015569601a746a3b76d3221400a", null ],
+    [ "VerifyGetFixesWhenRunLocalIsEmbeddedInList", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_remove_attribute_code_fix_tests.html#a7dbdc4bb550008142cb498337f534ebd", null ],
+    [ "VerifyGetFixesWhenRunLocalIsStandalone", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_remove_attribute_code_fix_tests.html#a9bfc077eda9d8ef101139eb720f24464", null ]
+];

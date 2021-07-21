@@ -1,0 +1,334 @@
+\hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy}{}\doxysection{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy Class Reference}
+\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy}\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+
+
+Implements a data portal proxy to relay data portal calls to a remote application server by using Rabbit\+MQ.  
+
+
+Inheritance diagram for Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_ac4836c458ab877746277ba647609030c}{Rabbit\+Mq\+Proxy}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it to use the Default\+Url value. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a42a9f5b9ea6ea0c72cb944041a6676bd}{Rabbit\+Mq\+Proxy}} (string data\+Portal\+Url)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it to use the supplied URL. \end{DoxyCompactList}\item 
+override async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a6eeec4965da371f02328db65256de9ba}{Create}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to create a new business object. \end{DoxyCompactList}\item 
+override async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a86643d37a852ca1dd477cfd1b2570742}{Fetch}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to load an existing business object. \end{DoxyCompactList}\item 
+override async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a111e8964f97ca1b88db4a8f249f37c90}{Update}} (object obj, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to update a business object. \end{DoxyCompactList}\item 
+override async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8b18390de8fc625f7767eae1ff9ca117}{Delete}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to delete a business object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a67899892b077ffdeeb61b1930325f216}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Dispose this object and its resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a5751ebdc19b5b2107474ffeeba5d2829}{Initialize\+Rabbit\+MQ}} ()
+\begin{DoxyCompactList}\small\item\em Method responsible for creating the Connection, Channel, Reply\+Queue, and Data\+Portal\+Queue\+Name values used for bi-\/directional communication. \end{DoxyCompactList}\item 
+override async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_aeaa97687ba49955d9f3f5df983d71e1d}{Call\+Data\+Portal\+Server}} (byte\mbox{[}$\,$\mbox{]} serialized, string operation, string routing\+Token, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Create message and send to Rabbit MQ server. Return Response from server \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+override int \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8d7e917cf3236b48fbff0d1f0170ef5e}{Timeout}} = 30\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the timeout for network operations in seconds (default is 30 seconds). \end{DoxyCompactList}\item 
+IConnection \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a56ae8c9b9c8e25491f7882a81cd9dd07}{Connection}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the connection to the Rabbit\+MQ service. \end{DoxyCompactList}\item 
+IModel \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_ac26ab8f6661746616c017f59a535cd55}{Channel}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the channel (model) for Rabbit\+MQ. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a1407917df47e40896aaf783d6f579657}{Data\+Portal\+Queue\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the name of the data portal service queue. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements a data portal proxy to relay data portal calls to a remote application server by using Rabbit\+MQ. 
+
+
+
+Definition at line 24 of file Rabbit\+Mq\+Proxy.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_ac4836c458ab877746277ba647609030c}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_ac4836c458ab877746277ba647609030c}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!RabbitMqProxy@{RabbitMqProxy}}
+\index{RabbitMqProxy@{RabbitMqProxy}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{RabbitMqProxy()}{RabbitMqProxy()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Rabbit\+Mq\+Proxy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it to use the Default\+Url value. 
+
+
+
+Definition at line 30 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a42a9f5b9ea6ea0c72cb944041a6676bd}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a42a9f5b9ea6ea0c72cb944041a6676bd}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!RabbitMqProxy@{RabbitMqProxy}}
+\index{RabbitMqProxy@{RabbitMqProxy}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{RabbitMqProxy()}{RabbitMqProxy()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Rabbit\+Mq\+Proxy (\begin{DoxyParamCaption}\item[{string}]{data\+Portal\+Url }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it to use the supplied URL. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Portal\+Url} & Rabbit\+MQ service URL\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 39 of file Rabbit\+Mq\+Proxy.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_aeaa97687ba49955d9f3f5df983d71e1d}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_aeaa97687ba49955d9f3f5df983d71e1d}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!CallDataPortalServer@{CallDataPortalServer}}
+\index{CallDataPortalServer@{CallDataPortalServer}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{CallDataPortalServer()}{CallDataPortalServer()}}
+{\footnotesize\ttfamily override async Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Call\+Data\+Portal\+Server (\begin{DoxyParamCaption}\item[{byte\mbox{[}$\,$\mbox{]}}]{serialized,  }\item[{string}]{operation,  }\item[{string}]{routing\+Token,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Create message and send to Rabbit MQ server. Return Response from server 
+
+
+\begin{DoxyParams}{Parameters}
+{\em serialized} & Serialised request\\
+\hline
+{\em operation} & \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} operation\\
+\hline
+{\em routing\+Token} & Routing Tag for server\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Serialised response from server
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_aa6451b20c63f5f953e0f81e2e3394ce2}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}.
+
+
+
+Definition at line 191 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a6eeec4965da371f02328db65256de9ba}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a6eeec4965da371f02328db65256de9ba}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Create@{Create}}
+\index{Create@{Create}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily override async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Create (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to create a new business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & Data\+Portal\+Context object passed to the server.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a70a47d95422e48db758c123c94e29717}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}.
+
+
+
+Definition at line 117 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8b18390de8fc625f7767eae1ff9ca117}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8b18390de8fc625f7767eae1ff9ca117}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily override async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Delete (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to delete a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a17c02949e5653b8e094049b336e8cdd3}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}.
+
+
+
+Definition at line 173 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a67899892b077ffdeeb61b1930325f216}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a67899892b077ffdeeb61b1930325f216}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}}
+{\footnotesize\ttfamily void Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Dispose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Dispose this object and its resources. 
+
+
+
+Definition at line 223 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a86643d37a852ca1dd477cfd1b2570742}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a86643d37a852ca1dd477cfd1b2570742}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily override async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Fetch (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to load an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a7e3c50ca9b7eb3066dc129e766cfcd60}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}.
+
+
+
+Definition at line 136 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a5751ebdc19b5b2107474ffeeba5d2829}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a5751ebdc19b5b2107474ffeeba5d2829}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!InitializeRabbitMQ@{InitializeRabbitMQ}}
+\index{InitializeRabbitMQ@{InitializeRabbitMQ}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{InitializeRabbitMQ()}{InitializeRabbitMQ()}}
+{\footnotesize\ttfamily virtual void Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Initialize\+Rabbit\+MQ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Method responsible for creating the Connection, Channel, Reply\+Queue, and Data\+Portal\+Queue\+Name values used for bi-\/directional communication. 
+
+
+
+Definition at line 77 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a111e8964f97ca1b88db4a8f249f37c90}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a111e8964f97ca1b88db4a8f249f37c90}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Update@{Update}}
+\index{Update@{Update}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily override async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Update (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to update a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & The business object to update.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae85c52ef65cc5b2d6b3b15f3377e171f}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}.
+
+
+
+Definition at line 154 of file Rabbit\+Mq\+Proxy.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_ac26ab8f6661746616c017f59a535cd55}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_ac26ab8f6661746616c017f59a535cd55}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Channel@{Channel}}
+\index{Channel@{Channel}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Channel}{Channel}}
+{\footnotesize\ttfamily IModel Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Channel\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets the channel (model) for Rabbit\+MQ. 
+
+
+
+Definition at line 58 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a56ae8c9b9c8e25491f7882a81cd9dd07}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a56ae8c9b9c8e25491f7882a81cd9dd07}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Connection@{Connection}}
+\index{Connection@{Connection}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Connection}{Connection}}
+{\footnotesize\ttfamily IConnection Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Connection\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets the connection to the Rabbit\+MQ service. 
+
+
+
+Definition at line 53 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a1407917df47e40896aaf783d6f579657}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a1407917df47e40896aaf783d6f579657}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!DataPortalQueueName@{DataPortalQueueName}}
+\index{DataPortalQueueName@{DataPortalQueueName}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{DataPortalQueueName}{DataPortalQueueName}}
+{\footnotesize\ttfamily string Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Data\+Portal\+Queue\+Name\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets the name of the data portal service queue. 
+
+
+
+Definition at line 64 of file Rabbit\+Mq\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8d7e917cf3236b48fbff0d1f0170ef5e}\label{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8d7e917cf3236b48fbff0d1f0170ef5e}} 
+\index{Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}!Timeout@{Timeout}}
+\index{Timeout@{Timeout}!Csla.Channels.RabbitMq.RabbitMqProxy@{Csla.Channels.RabbitMq.RabbitMqProxy}}
+\doxysubsubsection{\texorpdfstring{Timeout}{Timeout}}
+{\footnotesize\ttfamily override int Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy.\+Timeout = 30\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the timeout for network operations in seconds (default is 30 seconds). 
+
+
+
+Definition at line 48 of file Rabbit\+Mq\+Proxy.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Channels.\+Rabbit\+Mq/\mbox{\hyperlink{_rabbit_mq_proxy_8cs}{Rabbit\+Mq\+Proxy.\+cs}}\end{DoxyCompactItemize}

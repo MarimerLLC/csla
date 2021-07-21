@@ -1,0 +1,225 @@
+\hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh}{}\doxysection{Csla.\+Windows.\+Binding\+Source\+Refresh Class Reference}
+\label{class_csla_1_1_windows_1_1_binding_source_refresh}\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+
+
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh}{Binding\+Source\+Refresh}} contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data binding errors that occur in Host.  
+
+
+Inheritance diagram for Csla.\+Windows.\+Binding\+Source\+Refresh\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.623188cm]{class_csla_1_1_windows_1_1_binding_source_refresh}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a001955c7544f0c96dff4e5348348bb04}{Binding\+Source\+Refresh}} ()
+\begin{DoxyCompactList}\small\item\em Constructor creates a new \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh}{Binding\+Source\+Refresh}} component then initialises all the different sub components. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a8366409ee31a8758e64b97dcaf9488d2}{Binding\+Source\+Refresh}} (IContainer container)
+\begin{DoxyCompactList}\small\item\em Constructor creates a new \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh}{Binding\+Source\+Refresh}} component, adds the component to the container supplied before initialising all the different sub components. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a8c0714e057e116eecff884a367652ffc}{Can\+Extend}} (object extendee)
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a8c0714e057e116eecff884a367652ffc}{Can\+Extend()}} returns true if extendee is a binding source. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a86090f13ce72365720f9e1afa8a98155}{Get\+Read\+Values\+On\+Change}} (Binding\+Source source)
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a86090f13ce72365720f9e1afa8a98155}{Get\+Read\+Values\+On\+Change()}} gets the value of the custom Read\+Values\+On\+Change extender property added to extended controls. property added to extended controls. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a34448a44530997ff872eab68178ceb62}{Set\+Read\+Values\+On\+Change}} (Binding\+Source source, bool value)
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a34448a44530997ff872eab68178ceb62}{Set\+Read\+Values\+On\+Change()}} sets the value of the custom Read\+Values\+On\+Change extender property added to extended controls. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a26c72f16d605626d55368a9a28f609d2}{Dispose}} (bool disposing)
+\begin{DoxyCompactList}\small\item\em Clean up any resources being used. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Container\+Control \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_aa37ddee7b97e92970ef8247ee43fa636}{Host}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Not in use -\/ kept for backward compatibility \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a8ddd72ad87d9476ec7d2527d2bb6a09e}{Refresh\+On\+Exception}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Forces the binding to re-\/read after an exception is thrown when changing the binding value \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespace_csla_1_1_windows_acd335b59effa3b2606cc2162b115ee95}{Binding\+Error\+Event\+Handler}} \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_ac1fae1b69d4a655b385d89c54e9b9e9e}{Binding\+Error}} = null
+\begin{DoxyCompactList}\small\item\em Binding\+Error event is raised when a data binding error occurs due to a exception. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh}{Binding\+Source\+Refresh}} contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data binding errors that occur in Host. 
+
+\mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms extender control that resolves the data refresh issue with data bound detail controls as discussed in Chapter 5.
+
+Definition at line 29 of file Binding\+Source\+Refresh.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a001955c7544f0c96dff4e5348348bb04}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a001955c7544f0c96dff4e5348348bb04}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!BindingSourceRefresh@{BindingSourceRefresh}}
+\index{BindingSourceRefresh@{BindingSourceRefresh}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{BindingSourceRefresh()}{BindingSourceRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Windows.\+Binding\+Source\+Refresh.\+Binding\+Source\+Refresh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Constructor creates a new \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh}{Binding\+Source\+Refresh}} component then initialises all the different sub components. 
+
+
+
+Definition at line 44 of file Binding\+Source\+Refresh.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a8366409ee31a8758e64b97dcaf9488d2}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a8366409ee31a8758e64b97dcaf9488d2}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!BindingSourceRefresh@{BindingSourceRefresh}}
+\index{BindingSourceRefresh@{BindingSourceRefresh}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{BindingSourceRefresh()}{BindingSourceRefresh()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Windows.\+Binding\+Source\+Refresh.\+Binding\+Source\+Refresh (\begin{DoxyParamCaption}\item[{IContainer}]{container }\end{DoxyParamCaption})}
+
+
+
+Constructor creates a new \mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh}{Binding\+Source\+Refresh}} component, adds the component to the container supplied before initialising all the different sub components. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em container} & The container the component is to be added to.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 52 of file Binding\+Source\+Refresh.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a8c0714e057e116eecff884a367652ffc}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a8c0714e057e116eecff884a367652ffc}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!CanExtend@{CanExtend}}
+\index{CanExtend@{CanExtend}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{CanExtend()}{CanExtend()}}
+{\footnotesize\ttfamily bool Csla.\+Windows.\+Binding\+Source\+Refresh.\+Can\+Extend (\begin{DoxyParamCaption}\item[{object}]{extendee }\end{DoxyParamCaption})}
+
+
+
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a8c0714e057e116eecff884a367652ffc}{Can\+Extend()}} returns true if extendee is a binding source. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em extendee} & The control to be extended.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the control is a binding source, else false.
+\end{DoxyReturn}
+
+
+Definition at line 94 of file Binding\+Source\+Refresh.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a26c72f16d605626d55368a9a28f609d2}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a26c72f16d605626d55368a9a28f609d2}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}}
+{\footnotesize\ttfamily override void Csla.\+Windows.\+Binding\+Source\+Refresh.\+Dispose (\begin{DoxyParamCaption}\item[{bool}]{disposing }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Clean up any resources being used. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em disposing} & true if managed resources should be disposed; otherwise, false.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 68 of file Binding\+Source\+Refresh.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a86090f13ce72365720f9e1afa8a98155}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a86090f13ce72365720f9e1afa8a98155}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!GetReadValuesOnChange@{GetReadValuesOnChange}}
+\index{GetReadValuesOnChange@{GetReadValuesOnChange}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{GetReadValuesOnChange()}{GetReadValuesOnChange()}}
+{\footnotesize\ttfamily bool Csla.\+Windows.\+Binding\+Source\+Refresh.\+Get\+Read\+Values\+On\+Change (\begin{DoxyParamCaption}\item[{Binding\+Source}]{source }\end{DoxyParamCaption})}
+
+
+
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a86090f13ce72365720f9e1afa8a98155}{Get\+Read\+Values\+On\+Change()}} gets the value of the custom Read\+Values\+On\+Change extender property added to extended controls. property added to extended controls. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & Control being extended.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 104 of file Binding\+Source\+Refresh.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a34448a44530997ff872eab68178ceb62}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a34448a44530997ff872eab68178ceb62}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!SetReadValuesOnChange@{SetReadValuesOnChange}}
+\index{SetReadValuesOnChange@{SetReadValuesOnChange}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{SetReadValuesOnChange()}{SetReadValuesOnChange()}}
+{\footnotesize\ttfamily void Csla.\+Windows.\+Binding\+Source\+Refresh.\+Set\+Read\+Values\+On\+Change (\begin{DoxyParamCaption}\item[{Binding\+Source}]{source,  }\item[{bool}]{value }\end{DoxyParamCaption})}
+
+
+
+\mbox{\hyperlink{class_csla_1_1_windows_1_1_binding_source_refresh_a34448a44530997ff872eab68178ceb62}{Set\+Read\+Values\+On\+Change()}} sets the value of the custom Read\+Values\+On\+Change extender property added to extended controls. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & Control being extended.\\
+\hline
+{\em value} & New value of property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 120 of file Binding\+Source\+Refresh.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_aa37ddee7b97e92970ef8247ee43fa636}\label{class_csla_1_1_windows_1_1_binding_source_refresh_aa37ddee7b97e92970ef8247ee43fa636}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!Host@{Host}}
+\index{Host@{Host}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{Host}{Host}}
+{\footnotesize\ttfamily Container\+Control Csla.\+Windows.\+Binding\+Source\+Refresh.\+Host\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Not in use -\/ kept for backward compatibility 
+
+
+
+Definition at line 141 of file Binding\+Source\+Refresh.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_a8ddd72ad87d9476ec7d2527d2bb6a09e}\label{class_csla_1_1_windows_1_1_binding_source_refresh_a8ddd72ad87d9476ec7d2527d2bb6a09e}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!RefreshOnException@{RefreshOnException}}
+\index{RefreshOnException@{RefreshOnException}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{RefreshOnException}{RefreshOnException}}
+{\footnotesize\ttfamily bool Csla.\+Windows.\+Binding\+Source\+Refresh.\+Refresh\+On\+Exception\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Forces the binding to re-\/read after an exception is thrown when changing the binding value 
+
+
+
+Definition at line 148 of file Binding\+Source\+Refresh.\+cs.
+
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{class_csla_1_1_windows_1_1_binding_source_refresh_ac1fae1b69d4a655b385d89c54e9b9e9e}\label{class_csla_1_1_windows_1_1_binding_source_refresh_ac1fae1b69d4a655b385d89c54e9b9e9e}} 
+\index{Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}!BindingError@{BindingError}}
+\index{BindingError@{BindingError}!Csla.Windows.BindingSourceRefresh@{Csla.Windows.BindingSourceRefresh}}
+\doxysubsubsection{\texorpdfstring{BindingError}{BindingError}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_csla_1_1_windows_acd335b59effa3b2606cc2162b115ee95}{Binding\+Error\+Event\+Handler}} Csla.\+Windows.\+Binding\+Source\+Refresh.\+Binding\+Error = null}
+
+
+
+Binding\+Error event is raised when a data binding error occurs due to a exception. 
+
+
+
+Definition at line 38 of file Binding\+Source\+Refresh.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Windows.\+Shared/\mbox{\hyperlink{_binding_source_refresh_8cs}{Binding\+Source\+Refresh.\+cs}}\end{DoxyCompactItemize}

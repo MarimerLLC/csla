@@ -1,0 +1,347 @@
+\hypertarget{class_csla_1_1_xaml_1_1_invoke_method}{}\doxysection{Csla.\+Xaml.\+Invoke\+Method Class Reference}
+\label{class_csla_1_1_xaml_1_1_invoke_method}\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+
+
+Invokes a method on a target object when a trigger event is raised from the attached UI control.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+Invoke\+Method\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_xaml_1_1_invoke_method}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}{Invoke\+Method}} (UIElement ctrl)
+\begin{DoxyCompactList}\small\item\em Invokes the target method if all required attached property values have been set. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a6bdc06fe0866d6a57d315a84f85a73a9}{Set\+Target}} (UIElement ctrl, object value)
+\begin{DoxyCompactList}\small\item\em Sets the object containing the method to be invoked. \end{DoxyCompactList}\item 
+static object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a8e2b0022341a95f58fc9f7cb125262d8}{Get\+Target}} (UIElement ctrl)
+\begin{DoxyCompactList}\small\item\em Gets the object containing the method to be invoked. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a6273fe1c39cfc1012b0035c33bbc793b}{Set\+Method\+Name}} (UIElement ctrl, string value)
+\begin{DoxyCompactList}\small\item\em Sets the name of method to be invoked. \end{DoxyCompactList}\item 
+static string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a8347dde4ecb7d137615db9e7ca2c4ad1}{Get\+Method\+Name}} (UIElement ctrl)
+\begin{DoxyCompactList}\small\item\em Gets the name of method to be invoked. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a571e3daec4c1b53016aca4dddac35d20}{Set\+Trigger\+Event}} (UIElement ctrl, string value)
+\begin{DoxyCompactList}\small\item\em Sets the name of event raised by UI control that triggers invoking the target method. \end{DoxyCompactList}\item 
+static string \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_aa7bb0bd2989992b73e1e7016f072aac9}{Get\+Trigger\+Event}} (UIElement ctrl)
+\begin{DoxyCompactList}\small\item\em Gets the name of event raised by UI control that triggers invoking the target method. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a39d5a3182ee6e3675d90e3bef0e5d5e2}{Set\+Method\+Parameter}} (UIElement ctrl, object value)
+\begin{DoxyCompactList}\small\item\em Sets the parameter value to be passed to invoked method. \end{DoxyCompactList}\item 
+static object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_acd56b93e69b9ca90437020312d5d17cb}{Get\+Method\+Parameter}} (UIElement ctrl)
+\begin{DoxyCompactList}\small\item\em Gets the parameter value to be passed to invoked method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a9aa0ac826ac187eeb93e230b3810511c}{Target\+Property}}
+\begin{DoxyCompactList}\small\item\em Object containing the method to be invoked. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_af2d4368453729a4b0f62f017f6a1947b}{Method\+Name\+Property}}
+\begin{DoxyCompactList}\small\item\em Name of method to be invoked. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a1ffb6d23971d586c44ff53073a79909f}{Trigger\+Event\+Property}}
+\begin{DoxyCompactList}\small\item\em Name of event raised by UI control that triggers invoking the target method. \end{DoxyCompactList}\item 
+static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_ad0bf276d61b62cecd1fefdf67ab8ed48}{Method\+Parameter\+Property}}
+\begin{DoxyCompactList}\small\item\em Parameter value to be passed to invoked method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Invokes a method on a target object when a trigger event is raised from the attached UI control. 
+
+
+
+Definition at line 23 of file Invoke\+Method.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}\label{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!InvokeMethod@{InvokeMethod}}
+\index{InvokeMethod@{InvokeMethod}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{InvokeMethod()}{InvokeMethod()}}
+{\footnotesize\ttfamily Csla.\+Xaml.\+Invoke\+Method.\+Invoke\+Method (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl }\end{DoxyParamCaption})}
+
+
+
+Invokes the target method if all required attached property values have been set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached UI control\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 188 of file Invoke\+Method.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a8347dde4ecb7d137615db9e7ca2c4ad1}\label{class_csla_1_1_xaml_1_1_invoke_method_a8347dde4ecb7d137615db9e7ca2c4ad1}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!GetMethodName@{GetMethodName}}
+\index{GetMethodName@{GetMethodName}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{GetMethodName()}{GetMethodName()}}
+{\footnotesize\ttfamily static string Csla.\+Xaml.\+Invoke\+Method.\+Get\+Method\+Name (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the name of method to be invoked. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 89 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_acd56b93e69b9ca90437020312d5d17cb}\label{class_csla_1_1_xaml_1_1_invoke_method_acd56b93e69b9ca90437020312d5d17cb}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!GetMethodParameter@{GetMethodParameter}}
+\index{GetMethodParameter@{GetMethodParameter}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{GetMethodParameter()}{GetMethodParameter()}}
+{\footnotesize\ttfamily static object Csla.\+Xaml.\+Invoke\+Method.\+Get\+Method\+Parameter (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the parameter value to be passed to invoked method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 153 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a8e2b0022341a95f58fc9f7cb125262d8}\label{class_csla_1_1_xaml_1_1_invoke_method_a8e2b0022341a95f58fc9f7cb125262d8}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!GetTarget@{GetTarget}}
+\index{GetTarget@{GetTarget}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{GetTarget()}{GetTarget()}}
+{\footnotesize\ttfamily static object Csla.\+Xaml.\+Invoke\+Method.\+Get\+Target (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the object containing the method to be invoked. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 50 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_aa7bb0bd2989992b73e1e7016f072aac9}\label{class_csla_1_1_xaml_1_1_invoke_method_aa7bb0bd2989992b73e1e7016f072aac9}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!GetTriggerEvent@{GetTriggerEvent}}
+\index{GetTriggerEvent@{GetTriggerEvent}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{GetTriggerEvent()}{GetTriggerEvent()}}
+{\footnotesize\ttfamily static string Csla.\+Xaml.\+Invoke\+Method.\+Get\+Trigger\+Event (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Gets the name of event raised by UI control that triggers invoking the target method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 125 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a6273fe1c39cfc1012b0035c33bbc793b}\label{class_csla_1_1_xaml_1_1_invoke_method_a6273fe1c39cfc1012b0035c33bbc793b}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!SetMethodName@{SetMethodName}}
+\index{SetMethodName@{SetMethodName}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{SetMethodName()}{SetMethodName()}}
+{\footnotesize\ttfamily static void Csla.\+Xaml.\+Invoke\+Method.\+Set\+Method\+Name (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl,  }\item[{string}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the name of method to be invoked. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+{\em value} & New value\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 80 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a39d5a3182ee6e3675d90e3bef0e5d5e2}\label{class_csla_1_1_xaml_1_1_invoke_method_a39d5a3182ee6e3675d90e3bef0e5d5e2}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!SetMethodParameter@{SetMethodParameter}}
+\index{SetMethodParameter@{SetMethodParameter}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{SetMethodParameter()}{SetMethodParameter()}}
+{\footnotesize\ttfamily static void Csla.\+Xaml.\+Invoke\+Method.\+Set\+Method\+Parameter (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl,  }\item[{object}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the parameter value to be passed to invoked method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+{\em value} & New value\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 144 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a6bdc06fe0866d6a57d315a84f85a73a9}\label{class_csla_1_1_xaml_1_1_invoke_method_a6bdc06fe0866d6a57d315a84f85a73a9}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!SetTarget@{SetTarget}}
+\index{SetTarget@{SetTarget}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{SetTarget()}{SetTarget()}}
+{\footnotesize\ttfamily static void Csla.\+Xaml.\+Invoke\+Method.\+Set\+Target (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl,  }\item[{object}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the object containing the method to be invoked. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+{\em value} & New value\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 41 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a571e3daec4c1b53016aca4dddac35d20}\label{class_csla_1_1_xaml_1_1_invoke_method_a571e3daec4c1b53016aca4dddac35d20}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!SetTriggerEvent@{SetTriggerEvent}}
+\index{SetTriggerEvent@{SetTriggerEvent}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{SetTriggerEvent()}{SetTriggerEvent()}}
+{\footnotesize\ttfamily static void Csla.\+Xaml.\+Invoke\+Method.\+Set\+Trigger\+Event (\begin{DoxyParamCaption}\item[{UIElement}]{ctrl,  }\item[{string}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the name of event raised by UI control that triggers invoking the target method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctrl} & Attached control\\
+\hline
+{\em value} & New value\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 115 of file Invoke\+Method.\+cs.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_af2d4368453729a4b0f62f017f6a1947b}\label{class_csla_1_1_xaml_1_1_invoke_method_af2d4368453729a4b0f62f017f6a1947b}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!MethodNameProperty@{MethodNameProperty}}
+\index{MethodNameProperty@{MethodNameProperty}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{MethodNameProperty}{MethodNameProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Invoke\+Method.\+Method\+Name\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{      DependencyProperty.RegisterAttached(\textcolor{stringliteral}{"{}MethodName"{}},}
+\DoxyCodeLine{      typeof(\textcolor{keywordtype}{string}),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}{InvokeMethod}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata(\textcolor{keyword}{null}))}
+
+\end{DoxyCode}
+
+
+Name of method to be invoked. 
+
+
+
+Definition at line 69 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_ad0bf276d61b62cecd1fefdf67ab8ed48}\label{class_csla_1_1_xaml_1_1_invoke_method_ad0bf276d61b62cecd1fefdf67ab8ed48}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!MethodParameterProperty@{MethodParameterProperty}}
+\index{MethodParameterProperty@{MethodParameterProperty}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{MethodParameterProperty}{MethodParameterProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Invoke\+Method.\+Method\+Parameter\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{      DependencyProperty.RegisterAttached(\textcolor{stringliteral}{"{}MethodParameter"{}},}
+\DoxyCodeLine{      typeof(\textcolor{keywordtype}{object}),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}{InvokeMethod}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata(\textcolor{keyword}{null}))}
+
+\end{DoxyCode}
+
+
+Parameter value to be passed to invoked method. 
+
+
+
+Definition at line 133 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a9aa0ac826ac187eeb93e230b3810511c}\label{class_csla_1_1_xaml_1_1_invoke_method_a9aa0ac826ac187eeb93e230b3810511c}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!TargetProperty@{TargetProperty}}
+\index{TargetProperty@{TargetProperty}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{TargetProperty}{TargetProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Invoke\+Method.\+Target\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{      DependencyProperty.RegisterAttached(\textcolor{stringliteral}{"{}Target"{}},}
+\DoxyCodeLine{      typeof(\textcolor{keywordtype}{object}),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}{InvokeMethod}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata(\textcolor{keyword}{null}))}
+
+\end{DoxyCode}
+
+
+Object containing the method to be invoked. 
+
+
+
+Definition at line 30 of file Invoke\+Method.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_invoke_method_a1ffb6d23971d586c44ff53073a79909f}\label{class_csla_1_1_xaml_1_1_invoke_method_a1ffb6d23971d586c44ff53073a79909f}} 
+\index{Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}!TriggerEventProperty@{TriggerEventProperty}}
+\index{TriggerEventProperty@{TriggerEventProperty}!Csla.Xaml.InvokeMethod@{Csla.Xaml.InvokeMethod}}
+\doxysubsubsection{\texorpdfstring{TriggerEventProperty}{TriggerEventProperty}}
+{\footnotesize\ttfamily readonly Dependency\+Property Csla.\+Xaml.\+Invoke\+Method.\+Trigger\+Event\+Property\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{      DependencyProperty.RegisterAttached(\textcolor{stringliteral}{"{}TriggerEvent"{}},}
+\DoxyCodeLine{      typeof(\textcolor{keywordtype}{string}),}
+\DoxyCodeLine{      typeof(\mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}{InvokeMethod}}),}
+\DoxyCodeLine{      \textcolor{keyword}{new} PropertyMetadata((o, e) =>}
+\DoxyCodeLine{      \{}
+\DoxyCodeLine{        var ctrl = o as UIElement;}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} (ctrl != \textcolor{keyword}{null})}
+\DoxyCodeLine{          \textcolor{keyword}{new} \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method_a0fe66cfa4960755c58c240fd345349c0}{InvokeMethod}}(ctrl);}
+\DoxyCodeLine{      \}))}
+
+\end{DoxyCode}
+
+
+Name of event raised by UI control that triggers invoking the target method. 
+
+
+
+Definition at line 98 of file Invoke\+Method.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_invoke_method_8cs}{Invoke\+Method.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,159 @@
+.TH "Csla.Server.Hosts.Mobile.WcfPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Hosts.Mobile.WcfPortal \- Exposes server-side \fBDataPortal\fP functionality through WCF\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Server\&.Hosts\&.Mobile\&.IWcfPortal\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< \fBWcfResponse\fP > \fBCreate\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< \fBWcfResponse\fP > \fBFetch\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBWcfResponse\fP > \fBUpdate\fP (\fBUpdateRequest\fP request)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBWcfResponse\fP > \fBDelete\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fBUpdateRequest\fP \fBConvertRequest\fP (\fBUpdateRequest\fP request)"
+.br
+.RI "Override to convert the request data before it is transferred over the network\&. "
+.ti -1c
+.RI "virtual \fBCriteriaRequest\fP \fBConvertRequest\fP (\fBCriteriaRequest\fP request)"
+.br
+.RI "Override to convert the request data before it is transferred over the network\&. "
+.ti -1c
+.RI "virtual \fBWcfResponse\fP \fBConvertResponse\fP (\fBWcfResponse\fP response)"
+.br
+.RI "Override to convert the response data after it comes back from the network\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exposes server-side \fBDataPortal\fP functionality through WCF\&. 
+
+
+.PP
+Definition at line 25 of file WcfPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual \fBCriteriaRequest\fP Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.ConvertRequest (\fBCriteriaRequest\fP request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the request data before it is transferred over the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request object\&.
+.RE
+.PP
+
+.PP
+Definition at line 245 of file WcfPortal\&.cs\&.
+.SS "virtual \fBUpdateRequest\fP Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.ConvertRequest (\fBUpdateRequest\fP request)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the request data before it is transferred over the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP Request object\&.
+.RE
+.PP
+
+.PP
+Definition at line 235 of file WcfPortal\&.cs\&.
+.SS "virtual \fBWcfResponse\fP Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.ConvertResponse (\fBWcfResponse\fP response)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override to convert the response data after it comes back from the network\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresponse\fP Response object\&.
+.RE
+.PP
+
+.PP
+Definition at line 255 of file WcfPortal\&.cs\&.
+.SS "async Task<\fBWcfResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.Create (\fBCriteriaRequest\fP request)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.Hosts\&.Mobile\&.IWcfPortal\fP\&.
+.PP
+Definition at line 35 of file WcfPortal\&.cs\&.
+.SS "async Task<\fBWcfResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.Delete (\fBCriteriaRequest\fP request)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.Hosts\&.Mobile\&.IWcfPortal\fP\&.
+.PP
+Definition at line 172 of file WcfPortal\&.cs\&.
+.SS "async Task<\fBWcfResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.Fetch (\fBCriteriaRequest\fP request)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.Hosts\&.Mobile\&.IWcfPortal\fP\&.
+.PP
+Definition at line 84 of file WcfPortal\&.cs\&.
+.SS "async Task<\fBWcfResponse\fP> Csla\&.Server\&.Hosts\&.Mobile\&.WcfPortal\&.Update (\fBUpdateRequest\fP request)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrequest\fP The request parameter object\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.Hosts\&.Mobile\&.IWcfPortal\fP\&.
+.PP
+Definition at line 130 of file WcfPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

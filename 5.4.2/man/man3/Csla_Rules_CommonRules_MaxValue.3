@@ -1,0 +1,156 @@
+.TH "Csla.Rules.CommonRules.MaxValue< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.CommonRules.MaxValue< T > \- Business rule for a maximum value\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.CommonRules\&.CommonBusinessRule\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMaxValue\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, T max)"
+.br
+.RI "Creates an instance of the rule\&. "
+.ti -1c
+.RI "\fBMaxValue\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, T max, string message)"
+.br
+.RI "Creates an instance of the rule\&. "
+.ti -1c
+.RI "\fBMaxValue\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, T max, Func< string > messageDelegate)"
+.br
+.RI "Creates an instance of the rule\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override string \fBGetMessage\fP ()"
+.br
+.RI "Gets the error message\&. "
+.ti -1c
+.RI "override void \fBExecute\fP (\fBIRuleContext\fP context)"
+.br
+.RI "Rule implementation\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "T \fBMax\fP\fC [get]\fP"
+.br
+.RI "Gets the max value\&. "
+.ti -1c
+.RI "string \fBFormat\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the format string used to format the Max value\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Business rule for a maximum value\&. 
+
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComparable\fP
+.PP
+Definition at line 397 of file CommonRules\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.\fBMaxValue\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, T max)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprimaryProperty\fP Property to which the rule applies\&.
+.br
+\fImax\fP Max length value\&.
+.RE
+.PP
+
+.PP
+Definition at line 415 of file CommonRules\&.cs\&.
+.SS "\fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.\fBMaxValue\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, T max, string message)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprimaryProperty\fP Property to which the rule applies\&.
+.br
+\fImax\fP Max value\&.
+.br
+\fImessage\fP The message\&.
+.RE
+.PP
+
+.PP
+Definition at line 429 of file CommonRules\&.cs\&.
+.SS "\fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.\fBMaxValue\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, T max, Func< string > messageDelegate)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprimaryProperty\fP Property to which the rule applies\&.
+.br
+\fImax\fP Max value\&.
+.br
+\fImessageDelegate\fP The localizable message\&.
+.RE
+.PP
+
+.PP
+Definition at line 441 of file CommonRules\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void \fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.Execute (\fBIRuleContext\fP context)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Rule implementation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP Rule context\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Rules\&.BusinessRule\fP\&.
+.PP
+Definition at line 460 of file CommonRules\&.cs\&.
+.SS "override string \fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.GetMessage ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Gets the error message\&. 
+.PP
+Reimplemented from \fBCsla\&.Rules\&.PropertyRule\fP\&.
+.PP
+Definition at line 451 of file CommonRules\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string \fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.Format\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the format string used to format the Max value\&. 
+.PP
+Definition at line 408 of file CommonRules\&.cs\&.
+.SS "T \fBCsla\&.Rules\&.CommonRules\&.MaxValue\fP< T >\&.Max\fC [get]\fP"
+
+.PP
+Gets the max value\&. 
+.PP
+Definition at line 403 of file CommonRules\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

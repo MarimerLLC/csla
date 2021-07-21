@@ -1,0 +1,184 @@
+.TH "Csla.Xaml.ObjectStatus" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Xaml.ObjectStatus \- Container for other UI controls that exposes various status values from the CSLA \&.NET business object acting as DataContext\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Xaml\&.DataDecoratorBase\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBRefresh\fP ()"
+.br
+.RI "Refreshes the control's property values to reflect the values of the underlying business object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBDataObjectChanged\fP ()"
+.br
+.RI "This method is called when the data object to which the control is bound has changed\&. "
+.ti -1c
+.RI "override void \fBDataPropertyChanged\fP (PropertyChangedEventArgs e)"
+.br
+.RI "This method is called when a property of the data object to which the control is bound has changed\&. "
+.ti -1c
+.RI "override void \fBDataBindingListChanged\fP (ListChangedEventArgs e)"
+.br
+.RI "This method is called if the data object is an IBindingList, and the ListChanged event was raised by the data object\&. "
+.ti -1c
+.RI "override void \fBDataObservableCollectionChanged\fP (System\&.Collections\&.Specialized\&.NotifyCollectionChangedEventArgs e)"
+.br
+.RI "This method is called if the data object is an INotifyCollectionChanged, and the CollectionChanged event was raised by the data object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBCanCreateObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the CanCreateObject property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBCanGetObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the CanGetObject property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBCanEditObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the CanEditObject property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBCanDeleteObject\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the CanDeleteObject property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBIsDeleted\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the IsDeleted property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBIsDirty\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the IsDirty property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBIsNew\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the IsNew property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBIsSavable\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the IsSavable property of the DataContext business object\&. "
+.ti -1c
+.RI "bool \fBIsValid\fP\fC [get, protected set]\fP"
+.br
+.RI "Exposes the IsValid property of the DataContext business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Container for other UI controls that exposes various status values from the CSLA \&.NET business object acting as DataContext\&. 
+
+This control provides access to the IsDirty, IsNew, IsDeleted, IsValid and IsSavable properties of a business object\&. The purpose behind this control is to expose those properties in a way that supports WFP data binding against those values\&. 
+.PP
+Definition at line 29 of file ObjectStatus\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Xaml\&.ObjectStatus\&.DataBindingListChanged (ListChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called if the data object is an IBindingList, and the ListChanged event was raised by the data object\&. 
+.PP
+Reimplemented from \fBCsla\&.Xaml\&.DataDecoratorBase\fP\&.
+.PP
+Definition at line 239 of file ObjectStatus\&.cs\&.
+.SS "override void Csla\&.Xaml\&.ObjectStatus\&.DataObjectChanged ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called when the data object to which the control is bound has changed\&. 
+.PP
+Reimplemented from \fBCsla\&.Xaml\&.DataDecoratorBase\fP\&.
+.PP
+Definition at line 218 of file ObjectStatus\&.cs\&.
+.SS "override void Csla\&.Xaml\&.ObjectStatus\&.DataObservableCollectionChanged (System\&.Collections\&.Specialized\&.NotifyCollectionChangedEventArgs e)\fC [protected]\fP"
+
+.PP
+This method is called if the data object is an INotifyCollectionChanged, and the CollectionChanged event was raised by the data object\&. 
+.PP
+Definition at line 250 of file ObjectStatus\&.cs\&.
+.SS "override void Csla\&.Xaml\&.ObjectStatus\&.DataPropertyChanged (PropertyChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called when a property of the data object to which the control is bound has changed\&. 
+.PP
+Reimplemented from \fBCsla\&.Xaml\&.DataDecoratorBase\fP\&.
+.PP
+Definition at line 228 of file ObjectStatus\&.cs\&.
+.SS "void Csla\&.Xaml\&.ObjectStatus\&.Refresh ()"
+
+.PP
+Refreshes the control's property values to reflect the values of the underlying business object\&. 
+.PP
+Definition at line 260 of file ObjectStatus\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.CanCreateObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the CanCreateObject property of the DataContext business object\&. 
+.PP
+Definition at line 46 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.CanDeleteObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the CanDeleteObject property of the DataContext business object\&. 
+.PP
+Definition at line 97 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.CanEditObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the CanEditObject property of the DataContext business object\&. 
+.PP
+Definition at line 80 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.CanGetObject\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the CanGetObject property of the DataContext business object\&. 
+.PP
+Definition at line 63 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.IsDeleted\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the IsDeleted property of the DataContext business object\&. 
+.PP
+Definition at line 129 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.IsDirty\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the IsDirty property of the DataContext business object\&. 
+.PP
+Definition at line 145 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.IsNew\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the IsNew property of the DataContext business object\&. 
+.PP
+Definition at line 162 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.IsSavable\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the IsSavable property of the DataContext business object\&. 
+.PP
+Definition at line 179 of file ObjectStatus\&.cs\&.
+.SS "bool Csla\&.Xaml\&.ObjectStatus\&.IsValid\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Exposes the IsValid property of the DataContext business object\&. 
+.PP
+Definition at line 196 of file ObjectStatus\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

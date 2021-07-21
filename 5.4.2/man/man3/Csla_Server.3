@@ -1,0 +1,163 @@
+.TH "Csla.Server" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBDashboard\fP"
+.br
+.ti -1c
+.RI "namespace \fBHosts\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBAuthorizeRequest\fP"
+.br
+.RI "Object containing information about the client request to the data portal\&. "
+.ti -1c
+.RI "class \fBChildDataPortal\fP"
+.br
+.RI "Invoke data portal methods on child objects\&. "
+.ti -1c
+.RI "class \fBDataPortal\fP"
+.br
+.RI "Implements the server-side \fBDataPortal\fP message router as discussed in Chapter 4\&. "
+.ti -1c
+.RI "class \fBDataPortalBroker\fP"
+.br
+.RI "Allows the \fBData\fP Portal call to be intercepted by a custom \fBIDataPortalServer\fP implementation\&. "
+.ti -1c
+.RI "class \fBDataPortalContext\fP"
+.br
+.RI "Provides consistent context information between the client and server \fBDataPortal\fP objects\&. "
+.ti -1c
+.RI "class \fBDataPortalException\fP"
+.br
+.RI "This exception is returned from the server-side \fBDataPortal\fP and contains the exception and context data from the server\&. "
+.ti -1c
+.RI "class \fBDataPortalExceptionHandler\fP"
+.br
+.RI "This class provides a hoook for developers to add custom error handling in the \fBDataPortal\fP\&. "
+.ti -1c
+.RI "class \fBDataPortalMethodCache\fP"
+.br
+.ti -1c
+.RI "class \fBDataPortalMethodInfo\fP"
+.br
+.ti -1c
+.RI "class \fBDataPortalResult\fP"
+.br
+.RI "Returns data from the server-side \fBDataPortal\fP to the client-side \fBDataPortal\fP\&. Intended for internal CSLA \&.NET use only\&. "
+.ti -1c
+.RI "class \fBDataPortalSelector\fP"
+.br
+.RI "Selects the appropriate data portal implementation to invoke based on the object and configuration\&. "
+.ti -1c
+.RI "class \fBDataPortalTarget\fP"
+.br
+.ti -1c
+.RI "class \fBDataPortalMethodNames\fP"
+.br
+.ti -1c
+.RI "class \fBDefaultDataPortalActivator\fP"
+.br
+.ti -1c
+.RI "class \fBEmptyCriteria\fP"
+.br
+.RI "Empty criteria used by the data portal as a placeholder for a create/fetch request that has no criteria\&. "
+.ti -1c
+.RI "class \fBFactoryDataPortal\fP"
+.br
+.RI "Server-side data portal implementation that invokes an object factory rather than directly interacting with the business object\&. "
+.ti -1c
+.RI "class \fBGenericBusinessException\fP"
+.br
+.RI "This exception is returned as BusinessException in \fBDataPortalException\fP when the serverside/inner exception is not serializable "
+.ti -1c
+.RI "interface \fBIAuthorizeDataPortal\fP"
+.br
+.RI "Interface to be implemented by a custom authorization provider\&. "
+.ti -1c
+.RI "interface \fBIDataPortalActivator\fP"
+.br
+.RI "Defines a type used to activate concrete business instances\&. "
+.ti -1c
+.RI "interface \fBIDataPortalExceptionInspector\fP"
+.br
+.RI "Implement this interface to check a \fBDataPortalException\fP before returning Exception to the client\&. "
+.ti -1c
+.RI "interface \fBIDataPortalServer\fP"
+.br
+.RI "Interface implemented by server-side data portal components\&. "
+.ti -1c
+.RI "interface \fBIDataPortalTarget\fP"
+.br
+.ti -1c
+.RI "interface \fBIInterceptDataPortal\fP"
+.br
+.RI "Implement this interface to create a data portal interceptor that is notified each time the data portal is invoked and completes processing\&. "
+.ti -1c
+.RI "class \fBInterceptArgs\fP"
+.br
+.RI "Arguments parameter passed to the interceptor methods\&. "
+.ti -1c
+.RI "interface \fBIObjectFactoryLoader\fP"
+.br
+.RI "Defines an interface to be implemented by a factory loader object that returns \fBObjectFactory\fP objects based on the \fBObjectFactory\fP attributes used to decorate CSLA \&.NET business objects\&. "
+.ti -1c
+.RI "class \fBMobileFactoryAttribute\fP"
+.br
+.RI "Specifies that the WCF data portal should invoke a factory object rather than the business object\&. "
+.ti -1c
+.RI "class \fBNullCriteria\fP"
+.br
+.RI "Null criteria used by the data portal as a placeholder for a create/fetch request that has a single null criteria parameter\&. "
+.ti -1c
+.RI "class \fBObjectFactory\fP"
+.br
+.RI "Base class to be used when creating a data portal factory object\&. "
+.ti -1c
+.RI "class \fBObjectFactoryAttribute\fP"
+.br
+.RI "Specifies that the data portal should invoke a factory object rather than the business object\&. "
+.ti -1c
+.RI "class \fBObjectFactoryLoader\fP"
+.br
+.RI "Class containing the default implementation for the FactoryLoader delegate used by the data portal host\&. "
+.ti -1c
+.RI "class \fBServicedDataPortalReadCommitted\fP"
+.br
+.RI "Implements the server-side Serviced \fBDataPortal\fP described in Chapter 4\&. "
+.ti -1c
+.RI "class \fBServicedDataPortalReadUncommitted\fP"
+.br
+.RI "Implements the server-side Serviced \fBDataPortal\fP described in Chapter 4\&. "
+.ti -1c
+.RI "class \fBServicedDataPortalRepeatableRead\fP"
+.br
+.RI "Implements the server-side Serviced \fBDataPortal\fP described in Chapter 4\&. "
+.ti -1c
+.RI "class \fBServicedDataPortalSerializable\fP"
+.br
+.RI "Implements the server-side Serviced \fBDataPortal\fP described in Chapter 4\&. "
+.ti -1c
+.RI "class \fBSimpleDataPortal\fP"
+.br
+.RI "Implements the server-side \fBDataPortal\fP as discussed in Chapter 4\&. "
+.ti -1c
+.RI "class \fBTransactionalDataPortal\fP"
+.br
+.RI "Implements the server-side Serviced \fBDataPortal\fP described in Chapter 4\&. "
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

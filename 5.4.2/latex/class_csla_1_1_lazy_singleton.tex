@@ -1,0 +1,111 @@
+\hypertarget{class_csla_1_1_lazy_singleton}{}\doxysection{Csla.\+Lazy\+Singleton$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_lazy_singleton}\index{Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}}
+
+
+An alternative to Lazy$<$T$>$  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}{Lazy\+Singleton}} ()
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}{Lazy\+Singleton$<$\+T$>$}} class. Will use the default public constructor to create an instance of T (the vlaue) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_lazy_singleton_a7b2afa2b6f9aff3dcd384d7b62684cfd}{Lazy\+Singleton}} (Func$<$ T $>$ @delegate)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}{Lazy\+Singleton$<$\+T$>$}} class. Will call the supplied delegate to create an instance of T (the value) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_lazy_singleton_a7adcdf9ccad989f6c44c0006fa55ed09}{Is\+Value\+Created}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this instance is initilized and contains a value. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_lazy_singleton_a7a02dbc8aab09c8e215837c6a0f2b29c}{Value}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+An alternative to Lazy$<$T$>$ 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em class}]\end{description}
+\end{Desc}
+
+
+Definition at line 10 of file Lazy\+Singleton.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}\label{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}} 
+\index{Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}!LazySingleton@{LazySingleton}}
+\index{LazySingleton@{LazySingleton}!Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{LazySingleton()}{LazySingleton()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_lazy_singleton}{Csla.\+Lazy\+Singleton}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_lazy_singleton}{Lazy\+Singleton}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}{Lazy\+Singleton$<$\+T$>$}} class. Will use the default public constructor to create an instance of T (the vlaue) 
+
+
+
+Definition at line 22 of file Lazy\+Singleton.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_lazy_singleton_a7b2afa2b6f9aff3dcd384d7b62684cfd}\label{class_csla_1_1_lazy_singleton_a7b2afa2b6f9aff3dcd384d7b62684cfd}} 
+\index{Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}!LazySingleton@{LazySingleton}}
+\index{LazySingleton@{LazySingleton}!Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{LazySingleton()}{LazySingleton()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_lazy_singleton}{Csla.\+Lazy\+Singleton}}$<$ T $>$.\mbox{\hyperlink{class_csla_1_1_lazy_singleton}{Lazy\+Singleton}} (\begin{DoxyParamCaption}\item[{Func$<$ T $>$ @}]{delegate }\end{DoxyParamCaption})}
+
+
+
+Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_lazy_singleton_a64f145c1603cab6e2528af9d50334250}{Lazy\+Singleton$<$\+T$>$}} class. Will call the supplied delegate to create an instance of T (the value) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em delegate} & The @delegate.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 30 of file Lazy\+Singleton.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_lazy_singleton_a7adcdf9ccad989f6c44c0006fa55ed09}\label{class_csla_1_1_lazy_singleton_a7adcdf9ccad989f6c44c0006fa55ed09}} 
+\index{Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}!IsValueCreated@{IsValueCreated}}
+\index{IsValueCreated@{IsValueCreated}!Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{IsValueCreated}{IsValueCreated}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_lazy_singleton}{Csla.\+Lazy\+Singleton}}$<$ T $>$.Is\+Value\+Created\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this instance is initilized and contains a value. 
+
+{\ttfamily true} if this instance is value created; otherwise, {\ttfamily false}. 
+
+Definition at line 41 of file Lazy\+Singleton.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_lazy_singleton_a7a02dbc8aab09c8e215837c6a0f2b29c}\label{class_csla_1_1_lazy_singleton_a7a02dbc8aab09c8e215837c6a0f2b29c}} 
+\index{Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}!Value@{Value}}
+\index{Value@{Value}!Csla.LazySingleton$<$ T $>$@{Csla.LazySingleton$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_lazy_singleton}{Csla.\+Lazy\+Singleton}}$<$ T $>$.Value\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the instance. 
+
+The instance.
+
+Definition at line 50 of file Lazy\+Singleton.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_lazy_singleton_8cs}{Lazy\+Singleton.\+cs}}\end{DoxyCompactItemize}

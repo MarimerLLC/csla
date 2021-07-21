@@ -1,0 +1,71 @@
+.TH "Csla.Server.ObjectFactoryLoader" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.ObjectFactoryLoader \- Class containing the default implementation for the FactoryLoader delegate used by the data portal host\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Server\&.IObjectFactoryLoader\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "Type \fBGetFactoryType\fP (string factoryName)"
+.br
+.RI "Gets the type of the object factory\&. "
+.ti -1c
+.RI "object \fBGetFactory\fP (string factoryName)"
+.br
+.RI "Creates an instance of an object factory object for use by the data portal\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Class containing the default implementation for the FactoryLoader delegate used by the data portal host\&. 
+
+
+.PP
+Definition at line 18 of file ObjectFactoryLoader\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "object Csla\&.Server\&.ObjectFactoryLoader\&.GetFactory (string factoryName)"
+
+.PP
+Creates an instance of an object factory object for use by the data portal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryName\fP Assembly qualified type name for the object factory class as provided from the \fBObjectFactory\fP attribute on the business object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+An instance of the type specified by the type name parameter\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IObjectFactoryLoader\fP\&.
+.PP
+Definition at line 48 of file ObjectFactoryLoader\&.cs\&.
+.SS "Type Csla\&.Server\&.ObjectFactoryLoader\&.GetFactoryType (string factoryName)"
+
+.PP
+Gets the type of the object factory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfactoryName\fP Assembly qualified type name for the object factory class as provided from the \fBObjectFactory\fP attribute on the business object\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IObjectFactoryLoader\fP\&.
+.PP
+Definition at line 29 of file ObjectFactoryLoader\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

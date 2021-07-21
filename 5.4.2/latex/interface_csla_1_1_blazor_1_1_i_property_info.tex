@@ -1,0 +1,221 @@
+\hypertarget{interface_csla_1_1_blazor_1_1_i_property_info}{}\doxysection{Csla.\+Blazor.\+IProperty\+Info Interface Reference}
+\label{interface_csla_1_1_blazor_1_1_i_property_info}\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+
+
+Exposes metastate for a property.  
+
+
+Inheritance diagram for Csla.\+Blazor.\+IProperty\+Info\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_csla_1_1_blazor_1_1_i_property_info}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_a4fda56e0903881c40116ad0ae7beac81}{Refresh}} ()
+\begin{DoxyCompactList}\small\item\em Indicate that all properties have changed to trigger a UI refresh of all values. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+object \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_acaa50c4db87333d4341ffa01dd637d8d}{Value}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the value of the property \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_ab6eb2e6df6c80a77e522d50a1acf215c}{Friendly\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the friendly name for the property. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_afeb1a31be12a108c125976458acb06c6}{Property\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the property name for the property. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_af7bdfda0bbed1f97b8d83ce2ac5519bf}{Error\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the validation error messages for a property on the Model \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_a660d5406c996a95e49a8ce3ce9b24c69}{Warning\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the validation warning messages for a property on the Model \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_a0359d5517b8626708d55d8874aafed09}{Information\+Text}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the validation information messages for a property on the Model \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_adf58b11431420361a0fb80f753baa431}{Can\+Read}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to read the property on the Model \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_ae11d70a55b4c539ffc0fb9eaaa3c299f}{Can\+Write}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the current user is authorized to change the property on the Model \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_a9d84ac22a69526f9ff093b8f7b3ee2c1}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the property on the Model is busy \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+Property\+Changed\+Event\+Handler \mbox{\hyperlink{interface_csla_1_1_blazor_1_1_i_property_info_ac74fe23180078109c32d087ccf8bc27d}{Property\+Changed}}
+\begin{DoxyCompactList}\small\item\em Event raised when a property changes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Exposes metastate for a property. 
+
+
+
+Definition at line 11 of file IProperty\+Info.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_a4fda56e0903881c40116ad0ae7beac81}\label{interface_csla_1_1_blazor_1_1_i_property_info_a4fda56e0903881c40116ad0ae7beac81}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!Refresh@{Refresh}}
+\index{Refresh@{Refresh}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Refresh()}{Refresh()}}
+{\footnotesize\ttfamily void Csla.\+Blazor.\+IProperty\+Info.\+Refresh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Indicate that all properties have changed to trigger a UI refresh of all values. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_blazor_1_1_property_info_a8f866872d30faad00683b623e0030dfe}{Csla.\+Blazor.\+Property\+Info}}.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_adf58b11431420361a0fb80f753baa431}\label{interface_csla_1_1_blazor_1_1_i_property_info_adf58b11431420361a0fb80f753baa431}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!CanRead@{CanRead}}
+\index{CanRead@{CanRead}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{CanRead}{CanRead}}
+{\footnotesize\ttfamily bool Csla.\+Blazor.\+IProperty\+Info.\+Can\+Read\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the current user is authorized to read the property on the Model 
+
+
+
+Definition at line 49 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_ae11d70a55b4c539ffc0fb9eaaa3c299f}\label{interface_csla_1_1_blazor_1_1_i_property_info_ae11d70a55b4c539ffc0fb9eaaa3c299f}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!CanWrite@{CanWrite}}
+\index{CanWrite@{CanWrite}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{CanWrite}{CanWrite}}
+{\footnotesize\ttfamily bool Csla.\+Blazor.\+IProperty\+Info.\+Can\+Write\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the current user is authorized to change the property on the Model 
+
+
+
+Definition at line 54 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_af7bdfda0bbed1f97b8d83ce2ac5519bf}\label{interface_csla_1_1_blazor_1_1_i_property_info_af7bdfda0bbed1f97b8d83ce2ac5519bf}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!ErrorText@{ErrorText}}
+\index{ErrorText@{ErrorText}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{ErrorText}{ErrorText}}
+{\footnotesize\ttfamily string Csla.\+Blazor.\+IProperty\+Info.\+Error\+Text\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the validation error messages for a property on the Model 
+
+
+
+Definition at line 34 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_ab6eb2e6df6c80a77e522d50a1acf215c}\label{interface_csla_1_1_blazor_1_1_i_property_info_ab6eb2e6df6c80a77e522d50a1acf215c}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!FriendlyName@{FriendlyName}}
+\index{FriendlyName@{FriendlyName}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{FriendlyName}{FriendlyName}}
+{\footnotesize\ttfamily string Csla.\+Blazor.\+IProperty\+Info.\+Friendly\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the friendly name for the property. 
+
+
+
+Definition at line 25 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_a0359d5517b8626708d55d8874aafed09}\label{interface_csla_1_1_blazor_1_1_i_property_info_a0359d5517b8626708d55d8874aafed09}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!InformationText@{InformationText}}
+\index{InformationText@{InformationText}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{InformationText}{InformationText}}
+{\footnotesize\ttfamily string Csla.\+Blazor.\+IProperty\+Info.\+Information\+Text\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the validation information messages for a property on the Model 
+
+
+
+Definition at line 44 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_a9d84ac22a69526f9ff093b8f7b3ee2c1}\label{interface_csla_1_1_blazor_1_1_i_property_info_a9d84ac22a69526f9ff093b8f7b3ee2c1}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily bool Csla.\+Blazor.\+IProperty\+Info.\+Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the property on the Model is busy 
+
+
+
+Definition at line 59 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_afeb1a31be12a108c125976458acb06c6}\label{interface_csla_1_1_blazor_1_1_i_property_info_afeb1a31be12a108c125976458acb06c6}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!PropertyName@{PropertyName}}
+\index{PropertyName@{PropertyName}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{PropertyName}{PropertyName}}
+{\footnotesize\ttfamily string Csla.\+Blazor.\+IProperty\+Info.\+Property\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the property name for the property. 
+
+
+
+Definition at line 29 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_acaa50c4db87333d4341ffa01dd637d8d}\label{interface_csla_1_1_blazor_1_1_i_property_info_acaa50c4db87333d4341ffa01dd637d8d}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!Value@{Value}}
+\index{Value@{Value}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily object Csla.\+Blazor.\+IProperty\+Info.\+Value\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the value of the property 
+
+
+
+Definition at line 21 of file IProperty\+Info.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_a660d5406c996a95e49a8ce3ce9b24c69}\label{interface_csla_1_1_blazor_1_1_i_property_info_a660d5406c996a95e49a8ce3ce9b24c69}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!WarningText@{WarningText}}
+\index{WarningText@{WarningText}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{WarningText}{WarningText}}
+{\footnotesize\ttfamily string Csla.\+Blazor.\+IProperty\+Info.\+Warning\+Text\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the validation warning messages for a property on the Model 
+
+
+
+Definition at line 39 of file IProperty\+Info.\+cs.
+
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_blazor_1_1_i_property_info_ac74fe23180078109c32d087ccf8bc27d}\label{interface_csla_1_1_blazor_1_1_i_property_info_ac74fe23180078109c32d087ccf8bc27d}} 
+\index{Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}!PropertyChanged@{PropertyChanged}}
+\index{PropertyChanged@{PropertyChanged}!Csla.Blazor.IPropertyInfo@{Csla.Blazor.IPropertyInfo}}
+\doxysubsubsection{\texorpdfstring{PropertyChanged}{PropertyChanged}}
+{\footnotesize\ttfamily Property\+Changed\+Event\+Handler Csla.\+Blazor.\+IProperty\+Info.\+Property\+Changed}
+
+
+
+Event raised when a property changes. 
+
+
+
+Definition at line 63 of file IProperty\+Info.\+cs.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Blazor/\mbox{\hyperlink{_csla_8_blazor_2_i_property_info_8cs}{IProperty\+Info.\+cs}}\end{DoxyCompactItemize}

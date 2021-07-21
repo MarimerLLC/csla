@@ -1,0 +1,301 @@
+\hypertarget{class_csla_1_1_core_1_1_read_only_binding_list}{}\doxysection{Csla.\+Core.\+Read\+Only\+Binding\+List$<$ C $>$ Class Template Reference}
+\label{class_csla_1_1_core_1_1_read_only_binding_list}\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+
+
+A readonly version of Binding\+List(\+Of T)  
+
+
+Inheritance diagram for Csla.\+Core.\+Read\+Only\+Binding\+List$<$ C $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_csla_1_1_core_1_1_read_only_binding_list}
+\end{center}
+\end{figure}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a53698780c9f152e089038bdd2aed5c2a}{Set\+Load\+List\+Mode}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the Load\+List\+Mode for the collection \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a3e9c80f213c01c2fe4972c8fdabcfc82}{Read\+Only\+Binding\+List}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a8d5d74ceb06ce1b8556d3b5f1b2d97bf}{Clear\+Items}} ()
+\begin{DoxyCompactList}\small\item\em Prevents clearing the collection. \end{DoxyCompactList}\item 
+override object \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a02e2f5aac8b581688fa58176cc1e6566}{Add\+New\+Core}} ()
+\begin{DoxyCompactList}\small\item\em Prevents insertion of items into the collection. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a0025d73fa53a86cdc578722f61fa719e}{Insert\+Item}} (int index, C item)
+\begin{DoxyCompactList}\small\item\em Prevents insertion of items into the collection. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a470be7b9d8d27123e9979d398f86c75c}{Remove\+Item}} (int index)
+\begin{DoxyCompactList}\small\item\em Removes the item at the specified index if the collection is not in readonly mode. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a29ad89cab8d11f4de6c61fa6c79614fa}{Set\+Item}} (int index, C item)
+\begin{DoxyCompactList}\small\item\em Replaces the item at the specified index with the specified item if the collection is not in readonly mode. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a3abb29420434ed4bfdb86aeb1d7ca012}{On\+Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to insert your field values into the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a1f272d113a037805e97e4f6a74774f12}{On\+Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a3fa3c79672c4917185e9c0e3d25333c9}{On\+Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}} formatter)
+\begin{DoxyCompactList}\small\item\em Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_ae31d0a4cbcf98261176e0c4eb39461de}{Is\+Read\+Only}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the list is readonly. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_ae7515172a27f40728e0bb6eb7c905ab9}{Is\+Read\+Only\+Core}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the list is readonly. \end{DoxyCompactList}\item 
+override bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list_a6935aca5c4e9b8a9f9406521112ff780}{Is\+Busy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this object or its child objects are busy. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A readonly version of Binding\+List(\+Of T) 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em C} & Type of item contained in the list.\\
+\hline
+\end{DoxyTemplParams}
+
+
+This is a subclass of Binding\+List(\+Of T) that implements a readonly list, preventing adding and removing of items from the list. Use the Is\+Read\+Only property to unlock the list for loading/unloading data. 
+
+Definition at line 26 of file Read\+Only\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a3e9c80f213c01c2fe4972c8fdabcfc82}\label{class_csla_1_1_core_1_1_read_only_binding_list_a3e9c80f213c01c2fe4972c8fdabcfc82}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!ReadOnlyBindingList@{ReadOnlyBindingList}}
+\index{ReadOnlyBindingList@{ReadOnlyBindingList}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{ReadOnlyBindingList()}{ReadOnlyBindingList()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.\mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Read\+Only\+Binding\+List}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 83 of file Read\+Only\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a02e2f5aac8b581688fa58176cc1e6566}\label{class_csla_1_1_core_1_1_read_only_binding_list_a02e2f5aac8b581688fa58176cc1e6566}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!AddNewCore@{AddNewCore}}
+\index{AddNewCore@{AddNewCore}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{AddNewCore()}{AddNewCore()}}
+{\footnotesize\ttfamily override object \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Add\+New\+Core (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Prevents insertion of items into the collection. 
+
+
+
+Definition at line 120 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a8d5d74ceb06ce1b8556d3b5f1b2d97bf}\label{class_csla_1_1_core_1_1_read_only_binding_list_a8d5d74ceb06ce1b8556d3b5f1b2d97bf}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!ClearItems@{ClearItems}}
+\index{ClearItems@{ClearItems}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{ClearItems()}{ClearItems()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Clear\+Items (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Prevents clearing the collection. 
+
+
+
+Definition at line 95 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a0025d73fa53a86cdc578722f61fa719e}\label{class_csla_1_1_core_1_1_read_only_binding_list_a0025d73fa53a86cdc578722f61fa719e}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!InsertItem@{InsertItem}}
+\index{InsertItem@{InsertItem}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{InsertItem()}{InsertItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Insert\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{C}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Prevents insertion of items into the collection. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index at which to insert the item.\\
+\hline
+{\em item} & Item to insert.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 134 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a3abb29420434ed4bfdb86aeb1d7ca012}\label{class_csla_1_1_core_1_1_read_only_binding_list_a3abb29420434ed4bfdb86aeb1d7ca012}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!OnGetState@{OnGetState}}
+\index{OnGetState@{OnGetState}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnGetState()}{OnGetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.On\+Get\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to insert your field values into the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 214 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a3fa3c79672c4917185e9c0e3d25333c9}\label{class_csla_1_1_core_1_1_read_only_binding_list_a3fa3c79672c4917185e9c0e3d25333c9}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!OnSetChildren@{OnSetChildren}}
+\index{OnSetChildren@{OnSetChildren}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetChildren()}{OnSetChildren()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.On\+Set\+Children (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info,  }\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Csla.\+Serialization.\+Mobile.\+Mobile\+Formatter}}}]{formatter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to retrieve your child object references from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+{\em formatter} & Reference to Mobile\+Formatter instance. Use this to convert child references to/from reference id values. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 244 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a1f272d113a037805e97e4f6a74774f12}\label{class_csla_1_1_core_1_1_read_only_binding_list_a1f272d113a037805e97e4f6a74774f12}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!OnSetState@{OnSetState}}
+\index{OnSetState@{OnSetState}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{OnSetState()}{OnSetState()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.On\+Set\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Csla.\+Serialization.\+Mobile.\+Serialization\+Info}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Override this method to retrieve your field values from the Mobile\+Formatter serialzation stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & Object containing the data to serialize. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 227 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a470be7b9d8d27123e9979d398f86c75c}\label{class_csla_1_1_core_1_1_read_only_binding_list_a470be7b9d8d27123e9979d398f86c75c}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!RemoveItem@{RemoveItem}}
+\index{RemoveItem@{RemoveItem}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{RemoveItem()}{RemoveItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Remove\+Item (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Removes the item at the specified index if the collection is not in readonly mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item to remove.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 149 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a29ad89cab8d11f4de6c61fa6c79614fa}\label{class_csla_1_1_core_1_1_read_only_binding_list_a29ad89cab8d11f4de6c61fa6c79614fa}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!SetItem@{SetItem}}
+\index{SetItem@{SetItem}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{SetItem()}{SetItem()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Set\+Item (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{C}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Replaces the item at the specified index with the specified item if the collection is not in readonly mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the item to replace.\\
+\hline
+{\em item} & New item for the list.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 169 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a53698780c9f152e089038bdd2aed5c2a}\label{class_csla_1_1_core_1_1_read_only_binding_list_a53698780c9f152e089038bdd2aed5c2a}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!SetLoadListMode@{SetLoadListMode}}
+\index{SetLoadListMode@{SetLoadListMode}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{SetLoadListMode()}{SetLoadListMode()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Set\+Load\+List\+Mode (\begin{DoxyParamCaption}\item[{bool}]{enabled }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Sets the Load\+List\+Mode for the collection 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Enable or disable mode\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 74 of file Read\+Only\+Binding\+List.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_a6935aca5c4e9b8a9f9406521112ff780}\label{class_csla_1_1_core_1_1_read_only_binding_list_a6935aca5c4e9b8a9f9406521112ff780}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!IsBusy@{IsBusy}}
+\index{IsBusy@{IsBusy}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{IsBusy}{IsBusy}}
+{\footnotesize\ttfamily override bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Is\+Busy\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this object or its child objects are busy. 
+
+
+
+Definition at line 185 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_ae31d0a4cbcf98261176e0c4eb39461de}\label{class_csla_1_1_core_1_1_read_only_binding_list_ae31d0a4cbcf98261176e0c4eb39461de}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!IsReadOnly@{IsReadOnly}}
+\index{IsReadOnly@{IsReadOnly}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{IsReadOnly}{IsReadOnly}}
+{\footnotesize\ttfamily bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Is\+Read\+Only\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets or sets a value indicating whether the list is readonly. 
+
+Subclasses can set this value to unlock the collection in order to alter the collection\textquotesingle{}s data. 
+
+True indicates that the list is readonly.
+
+Definition at line 48 of file Read\+Only\+Binding\+List.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_core_1_1_read_only_binding_list_ae7515172a27f40728e0bb6eb7c905ab9}\label{class_csla_1_1_core_1_1_read_only_binding_list_ae7515172a27f40728e0bb6eb7c905ab9}} 
+\index{Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}!IsReadOnlyCore@{IsReadOnlyCore}}
+\index{IsReadOnlyCore@{IsReadOnlyCore}!Csla.Core.ReadOnlyBindingList$<$ C $>$@{Csla.Core.ReadOnlyBindingList$<$ C $>$}}
+\doxysubsubsection{\texorpdfstring{IsReadOnlyCore}{IsReadOnlyCore}}
+{\footnotesize\ttfamily virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_read_only_binding_list}{Csla.\+Core.\+Read\+Only\+Binding\+List}}$<$ C $>$.Is\+Read\+Only\+Core\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}, {\ttfamily [protected]}}
+
+
+
+Gets or sets a value indicating whether the list is readonly. 
+
+
+
+Definition at line 58 of file Read\+Only\+Binding\+List.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_read_only_binding_list_8cs}{Read\+Only\+Binding\+List.\+cs}}\end{DoxyCompactItemize}

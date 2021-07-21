@@ -1,0 +1,644 @@
+\hypertarget{interface_csla_1_1_i_data_portal}{}\doxysection{Csla.\+IData\+Portal$<$ T $>$ Interface Template Reference}
+\label{interface_csla_1_1_i_data_portal}\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+
+
+Interface defining the members of the data portal type.  
+
+
+Inheritance diagram for Csla.\+IData\+Portal$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{interface_csla_1_1_i_data_portal}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Task$<$ T $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a1cd3007999912c7dea98c610e5b30e12}{Create\+Async}} (params object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Starts an asynchronous data portal operation to create a business object. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a64f73464d7deb429702c0ea6a2f963ab}{Fetch\+Async}} (params object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Starts an asynchronous data portal operation to create a business object. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_aa69bb6c561ac2fb5a3d8f9c21f94174c}{Update\+Async}} (T obj)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to update an object. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_ad06fe95b8137a89d0234c0568f39672b}{Execute\+Async}} (T command)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to execute a command object. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a0e8e35eccd7fa9508d83671035f87099}{Delete\+Async}} (params object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to delete an object. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{interface_csla_1_1_i_data_portal_af8cc0507c42cc2780d60201cb64aee79}{Create}} (params object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class to create a new object, which is loaded with default values from the database. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{interface_csla_1_1_i_data_portal_ad2aab6a41bf959001ed59c6b1a415920}{Fetch}} (params object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class to retrieve an object, which is loaded with values from the database. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a4768b9c9946e144f41fec8c42294a8a9}{Execute}} (T obj)
+\begin{DoxyCompactList}\small\item\em Called to execute a Command object on the server. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a4f8941385184deaf187bc2c8df7466db}{Update}} (T obj)
+\begin{DoxyCompactList}\small\item\em Called by the business object\textquotesingle{}s Save() method to insert, update or delete an object in the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a3b968512efef7982139733b9fd0e89de}{Delete}} (params object\mbox{[}$\,$\mbox{]} criteria)
+\begin{DoxyCompactList}\small\item\em Called by a Shared (static in C\#) method in the business class to cause immediate deletion of a specific object from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a06c1e4d8c5c8a333f3bf85f1d4cee005}{Begin\+Create}} ()
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to create a new object, which is loaded with default values from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_af939dd4eaf4b99e6f6aa4640de7f0aaf}{Begin\+Create}} (object criteria)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to create a new object, which is loaded with default values from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a4728c7ec1a62e5fd43e71871455228cd}{Begin\+Create}} (object criteria, object user\+State)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to create a new object, which is loaded with default values from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a9dbfea7f4df10924769b7fc3b0021643}{Begin\+Fetch}} ()
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to retrieve an existing object, which is loaded with values from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_ab3c0ab0c64a5c6b77c2d567b342bf7fe}{Begin\+Fetch}} (object criteria)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to retrieve an existing object, which is loaded with values from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a9e9405565683012a4d9fbb22c0b8167d}{Begin\+Fetch}} (object criteria, object user\+State)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to retrieve an existing object, which is loaded with values from the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_acf2333887a50957acb9c12d7fc0fbf2e}{Begin\+Update}} (T obj)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to update an object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a3ccd618e3084f28ed48659bb63fce8b3}{Begin\+Update}} (T obj, object user\+State)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to update an object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_af0594bd69f2adb1cfb183ef936026f3d}{Begin\+Delete}} (object criteria)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to delete an object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a3148176295f205d9ab6766d9fc4420a8}{Begin\+Delete}} (object criteria, object user\+State)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to delete an object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a8ef3e1a4fa88605909ea07d920bcd720}{Begin\+Execute}} (T command)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to execute a command object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_i_data_portal_ac7689388ed5e1b48abadc3387e95a065}{Begin\+Execute}} (T command, object user\+State)
+\begin{DoxyCompactList}\small\item\em Called by a factory method in a business class or by the UI to execute a command object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Csla.\+Core.\+Context\+Dictionary}} \mbox{\hyperlink{interface_csla_1_1_i_data_portal_abb2e24dc0cff63274d017b89cebfb5ec}{Global\+Context}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a reference to the global context returned from the background thread and/or server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a0427355984c6bae61e61b875b288eb9f}{Create\+Completed}}
+\begin{DoxyCompactList}\small\item\em Event raised when the operation has completed. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_a8275c9302e2448d82e4353c7fd1a6956}{Fetch\+Completed}}
+\begin{DoxyCompactList}\small\item\em Event raised when the operation has completed. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_afb51a56a3e73efba8fe71300794fdbba}{Update\+Completed}}
+\begin{DoxyCompactList}\small\item\em Event raised when the operation has completed. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_af077c741c8d918957f06e446af1b048f}{Delete\+Completed}}
+\begin{DoxyCompactList}\small\item\em Event raised when the operation has completed. \end{DoxyCompactList}\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$ T $>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal_afaf303b472390373c88656180f1771c6}{Execute\+Completed}}
+\begin{DoxyCompactList}\small\item\em Event indicating an execute operation is complete. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface defining the members of the data portal type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \\
+\hline
+\end{DoxyTemplParams}
+
+
+Definition at line 20 of file IData\+Portal.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a06c1e4d8c5c8a333f3bf85f1d4cee005}\label{interface_csla_1_1_i_data_portal_a06c1e4d8c5c8a333f3bf85f1d4cee005}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginCreate@{BeginCreate}}
+\index{BeginCreate@{BeginCreate}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginCreate()}{BeginCreate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Create (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to create a new object, which is loaded with default values from the database. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_ab4d857210b7a1a6c2a5dd6f0c1821fcc}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_af939dd4eaf4b99e6f6aa4640de7f0aaf}\label{interface_csla_1_1_i_data_portal_af939dd4eaf4b99e6f6aa4640de7f0aaf}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginCreate@{BeginCreate}}
+\index{BeginCreate@{BeginCreate}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginCreate()}{BeginCreate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Create (\begin{DoxyParamCaption}\item[{object}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to create a new object, which is loaded with default values from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a0537970ad4c043e82660b979e54e763b}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a4728c7ec1a62e5fd43e71871455228cd}\label{interface_csla_1_1_i_data_portal_a4728c7ec1a62e5fd43e71871455228cd}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginCreate@{BeginCreate}}
+\index{BeginCreate@{BeginCreate}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginCreate()}{BeginCreate()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Create (\begin{DoxyParamCaption}\item[{object}]{criteria,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to create a new object, which is loaded with default values from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_ac9147862c0049a1dab7c1e8576566415}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_af0594bd69f2adb1cfb183ef936026f3d}\label{interface_csla_1_1_i_data_portal_af0594bd69f2adb1cfb183ef936026f3d}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginDelete@{BeginDelete}}
+\index{BeginDelete@{BeginDelete}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginDelete()}{BeginDelete()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Delete (\begin{DoxyParamCaption}\item[{object}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to delete an object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_adf923c6b665130eba282260319d02f66}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a3148176295f205d9ab6766d9fc4420a8}\label{interface_csla_1_1_i_data_portal_a3148176295f205d9ab6766d9fc4420a8}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginDelete@{BeginDelete}}
+\index{BeginDelete@{BeginDelete}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginDelete()}{BeginDelete()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Delete (\begin{DoxyParamCaption}\item[{object}]{criteria,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to delete an object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_afc3624c495eed645ec911be7999dab63}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a8ef3e1a4fa88605909ea07d920bcd720}\label{interface_csla_1_1_i_data_portal_a8ef3e1a4fa88605909ea07d920bcd720}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginExecute@{BeginExecute}}
+\index{BeginExecute@{BeginExecute}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginExecute()}{BeginExecute()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Execute (\begin{DoxyParamCaption}\item[{T}]{command }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to execute a command object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & Command object to execute.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a35ed2f60f79a2029a41d4d4ab9213444}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_ac7689388ed5e1b48abadc3387e95a065}\label{interface_csla_1_1_i_data_portal_ac7689388ed5e1b48abadc3387e95a065}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginExecute@{BeginExecute}}
+\index{BeginExecute@{BeginExecute}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginExecute()}{BeginExecute()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Execute (\begin{DoxyParamCaption}\item[{T}]{command,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to execute a command object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & Command object to execute.\\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a0992ca00e069e1948add8b62d4ed3218}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a9dbfea7f4df10924769b7fc3b0021643}\label{interface_csla_1_1_i_data_portal_a9dbfea7f4df10924769b7fc3b0021643}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginFetch@{BeginFetch}}
+\index{BeginFetch@{BeginFetch}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginFetch()}{BeginFetch()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Fetch (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to retrieve an existing object, which is loaded with values from the database. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a8c49aa181de0fd2b8e9ecf66052fdf70}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_ab3c0ab0c64a5c6b77c2d567b342bf7fe}\label{interface_csla_1_1_i_data_portal_ab3c0ab0c64a5c6b77c2d567b342bf7fe}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginFetch@{BeginFetch}}
+\index{BeginFetch@{BeginFetch}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginFetch()}{BeginFetch()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Fetch (\begin{DoxyParamCaption}\item[{object}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to retrieve an existing object, which is loaded with values from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_ae9b14590da686292e719b4978d9375f7}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a9e9405565683012a4d9fbb22c0b8167d}\label{interface_csla_1_1_i_data_portal_a9e9405565683012a4d9fbb22c0b8167d}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginFetch@{BeginFetch}}
+\index{BeginFetch@{BeginFetch}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginFetch()}{BeginFetch()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Fetch (\begin{DoxyParamCaption}\item[{object}]{criteria,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to retrieve an existing object, which is loaded with values from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a0b01192b1e535d6f248525d4cc285192}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_acf2333887a50957acb9c12d7fc0fbf2e}\label{interface_csla_1_1_i_data_portal_acf2333887a50957acb9c12d7fc0fbf2e}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginUpdate@{BeginUpdate}}
+\index{BeginUpdate@{BeginUpdate}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginUpdate()}{BeginUpdate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Update (\begin{DoxyParamCaption}\item[{T}]{obj }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to update an object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Object to update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a3e9b3ee8c4b3786a28ca66f399eadec8}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a3ccd618e3084f28ed48659bb63fce8b3}\label{interface_csla_1_1_i_data_portal_a3ccd618e3084f28ed48659bb63fce8b3}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!BeginUpdate@{BeginUpdate}}
+\index{BeginUpdate@{BeginUpdate}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginUpdate()}{BeginUpdate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Begin\+Update (\begin{DoxyParamCaption}\item[{T}]{obj,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to update an object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Object to update.\\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a0e82e66aba2e3ff87ea9802b2d2231a2}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_af8cc0507c42cc2780d60201cb64aee79}\label{interface_csla_1_1_i_data_portal_af8cc0507c42cc2780d60201cb64aee79}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!Create@{Create}}
+\index{Create@{Create}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Create (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class to create a new object, which is loaded with default values from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new object, populated with default values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a47a5443287355867ad39dacc652522cd}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a1cd3007999912c7dea98c610e5b30e12}\label{interface_csla_1_1_i_data_portal_a1cd3007999912c7dea98c610e5b30e12}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!CreateAsync@{CreateAsync}}
+\index{CreateAsync@{CreateAsync}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CreateAsync()}{CreateAsync()}}
+{\footnotesize\ttfamily Task$<$T$>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Create\+Async (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Starts an asynchronous data portal operation to create a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Criteria describing the object to create. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_af207a43a475c636a170dba79b49c147c}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a3b968512efef7982139733b9fd0e89de}\label{interface_csla_1_1_i_data_portal_a3b968512efef7982139733b9fd0e89de}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Delete (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a Shared (static in C\#) method in the business class to cause immediate deletion of a specific object from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a0b19881ebc39eb89d49c44c75bf26c91}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a0e8e35eccd7fa9508d83671035f87099}\label{interface_csla_1_1_i_data_portal_a0e8e35eccd7fa9508d83671035f87099}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!DeleteAsync@{DeleteAsync}}
+\index{DeleteAsync@{DeleteAsync}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DeleteAsync()}{DeleteAsync()}}
+{\footnotesize\ttfamily Task \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Delete\+Async (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to delete an object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a2901c5e9102afa0e0a707949fb30b1b4}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a4768b9c9946e144f41fec8c42294a8a9}\label{interface_csla_1_1_i_data_portal_a4768b9c9946e144f41fec8c42294a8a9}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!Execute@{Execute}}
+\index{Execute@{Execute}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Execute()}{Execute()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Execute (\begin{DoxyParamCaption}\item[{T}]{obj }\end{DoxyParamCaption})}
+
+
+
+Called to execute a Command object on the server. 
+
+To be a Command object, the object must inherit from \mbox{\hyperlink{class_csla_1_1_command_base}{Command\+Base}}. 
+
+Note that this method returns a reference to the updated business object. If the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} is running remotely, this will be a new and different object from the original, and all object references MUST be updated to use this new object. 
+
+On the server, the Command object\textquotesingle{}s Data\+Portal\+\_\+\+Execute() method will be invoked and on an Object\+Factory the Execute method will be invoked. Write any server-\/side code in that method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & A reference to the Command object to be executed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the updated Command object.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a0d2f718119594a2fc306a32f2c11e168}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_ad06fe95b8137a89d0234c0568f39672b}\label{interface_csla_1_1_i_data_portal_ad06fe95b8137a89d0234c0568f39672b}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!ExecuteAsync@{ExecuteAsync}}
+\index{ExecuteAsync@{ExecuteAsync}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ExecuteAsync()}{ExecuteAsync()}}
+{\footnotesize\ttfamily Task$<$T$>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Execute\+Async (\begin{DoxyParamCaption}\item[{T}]{command }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to execute a command object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & Command object to execute.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a465a7593a5a8482680216cbd56478bd7}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_ad2aab6a41bf959001ed59c6b1a415920}\label{interface_csla_1_1_i_data_portal_ad2aab6a41bf959001ed59c6b1a415920}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Fetch (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class to retrieve an object, which is loaded with values from the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An object populated with values from the database.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a7dec3e10b3ea213995cbbddf6ba6b7db}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a64f73464d7deb429702c0ea6a2f963ab}\label{interface_csla_1_1_i_data_portal_a64f73464d7deb429702c0ea6a2f963ab}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!FetchAsync@{FetchAsync}}
+\index{FetchAsync@{FetchAsync}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{FetchAsync()}{FetchAsync()}}
+{\footnotesize\ttfamily Task$<$T$>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Fetch\+Async (\begin{DoxyParamCaption}\item[{params object\mbox{[}$\,$\mbox{]}}]{criteria }\end{DoxyParamCaption})}
+
+
+
+Starts an asynchronous data portal operation to create a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em criteria} & Criteria describing the object to create. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a25e2592d83f3d08cd09aec8ca9ee9cf9}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a4f8941385184deaf187bc2c8df7466db}\label{interface_csla_1_1_i_data_portal_a4f8941385184deaf187bc2c8df7466db}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!Update@{Update}}
+\index{Update@{Update}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Update (\begin{DoxyParamCaption}\item[{T}]{obj }\end{DoxyParamCaption})}
+
+
+
+Called by the business object\textquotesingle{}s Save() method to insert, update or delete an object in the database. 
+
+Note that this method returns a reference to the updated business object. If the server-\/side \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} is running remotely, this will be a new and different object from the original, and all object references MUST be updated to use this new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & A reference to the business object to be updated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the updated business object.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a379daa6ce85836095e12d97329c4dfd6}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_aa69bb6c561ac2fb5a3d8f9c21f94174c}\label{interface_csla_1_1_i_data_portal_aa69bb6c561ac2fb5a3d8f9c21f94174c}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!UpdateAsync@{UpdateAsync}}
+\index{UpdateAsync@{UpdateAsync}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{UpdateAsync()}{UpdateAsync()}}
+{\footnotesize\ttfamily Task$<$T$>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Update\+Async (\begin{DoxyParamCaption}\item[{T}]{obj }\end{DoxyParamCaption})}
+
+
+
+Called by a factory method in a business class or by the UI to update an object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Object to update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_a222753f239af612302ef32738cb33841}{Csla.\+Data\+Portal$<$ T $>$}}.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_abb2e24dc0cff63274d017b89cebfb5ec}\label{interface_csla_1_1_i_data_portal_abb2e24dc0cff63274d017b89cebfb5ec}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!GlobalContext@{GlobalContext}}
+\index{GlobalContext@{GlobalContext}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GlobalContext}{GlobalContext}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Csla.\+Core.\+Context\+Dictionary}} \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Global\+Context\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a reference to the global context returned from the background thread and/or server. 
+
+
+
+Definition at line 115 of file IData\+Portal.\+cs.
+
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a0427355984c6bae61e61b875b288eb9f}\label{interface_csla_1_1_i_data_portal_a0427355984c6bae61e61b875b288eb9f}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!CreateCompleted@{CreateCompleted}}
+\index{CreateCompleted@{CreateCompleted}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CreateCompleted}{CreateCompleted}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$T$>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Create\+Completed}
+
+
+
+Event raised when the operation has completed. 
+
+If your application is running in WPF, this event will be raised on the UI thread automatically. 
+
+If your application is running in \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms, this event will be raised on a background thread. If you also set Data\+Portal.\+Synchronization\+Object to a \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms form or control, then the event will be raised on the UI thread automatically. 
+
+In any other environment (such as ASP.\+NET), this event will be raised on a background thread. 
+
+Definition at line 135 of file IData\+Portal.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_af077c741c8d918957f06e446af1b048f}\label{interface_csla_1_1_i_data_portal_af077c741c8d918957f06e446af1b048f}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!DeleteCompleted@{DeleteCompleted}}
+\index{DeleteCompleted@{DeleteCompleted}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DeleteCompleted}{DeleteCompleted}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$T$>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Delete\+Completed}
+
+
+
+Event raised when the operation has completed. 
+
+If your application is running in WPF, this event will be raised on the UI thread automatically. 
+
+If your application is running in \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms, this event will be raised on a background thread. If you also set Data\+Portal.\+Synchronization\+Object to a \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms form or control, then the event will be raised on the UI thread automatically. 
+
+In any other environment (such as ASP.\+NET), this event will be raised on a background thread. 
+
+Definition at line 258 of file IData\+Portal.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_afaf303b472390373c88656180f1771c6}\label{interface_csla_1_1_i_data_portal_afaf303b472390373c88656180f1771c6}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!ExecuteCompleted@{ExecuteCompleted}}
+\index{ExecuteCompleted@{ExecuteCompleted}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ExecuteCompleted}{ExecuteCompleted}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$T$>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Execute\+Completed}
+
+
+
+Event indicating an execute operation is complete. 
+
+
+
+Definition at line 278 of file IData\+Portal.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_a8275c9302e2448d82e4353c7fd1a6956}\label{interface_csla_1_1_i_data_portal_a8275c9302e2448d82e4353c7fd1a6956}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!FetchCompleted@{FetchCompleted}}
+\index{FetchCompleted@{FetchCompleted}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{FetchCompleted}{FetchCompleted}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$T$>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Fetch\+Completed}
+
+
+
+Event raised when the operation has completed. 
+
+If your application is running in WPF, this event will be raised on the UI thread automatically. 
+
+If your application is running in \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms, this event will be raised on a background thread. If you also set Data\+Portal.\+Synchronization\+Object to a \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms form or control, then the event will be raised on the UI thread automatically. 
+
+In any other environment (such as ASP.\+NET), this event will be raised on a background thread. 
+
+Definition at line 179 of file IData\+Portal.\+cs.
+
+\mbox{\Hypertarget{interface_csla_1_1_i_data_portal_afb51a56a3e73efba8fe71300794fdbba}\label{interface_csla_1_1_i_data_portal_afb51a56a3e73efba8fe71300794fdbba}} 
+\index{Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}!UpdateCompleted@{UpdateCompleted}}
+\index{UpdateCompleted@{UpdateCompleted}!Csla.IDataPortal$<$ T $>$@{Csla.IDataPortal$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{UpdateCompleted}{UpdateCompleted}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$<$T$>$ $>$ \mbox{\hyperlink{interface_csla_1_1_i_data_portal}{Csla.\+IData\+Portal}}$<$ T $>$.Update\+Completed}
+
+
+
+Event raised when the operation has completed. 
+
+If your application is running in WPF, this event will be raised on the UI thread automatically. 
+
+If your application is running in \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms, this event will be raised on a background thread. If you also set Data\+Portal.\+Synchronization\+Object to a \mbox{\hyperlink{namespace_csla_1_1_windows}{Windows}} Forms form or control, then the event will be raised on the UI thread automatically. 
+
+In any other environment (such as ASP.\+NET), this event will be raised on a background thread. 
+
+Definition at line 223 of file IData\+Portal.\+cs.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_i_data_portal_8cs}{IData\+Portal.\+cs}}\end{DoxyCompactItemize}

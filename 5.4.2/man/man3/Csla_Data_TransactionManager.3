@@ -1,0 +1,192 @@
+.TH "Csla.Data.TransactionManager< C, T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Data.TransactionManager< C, T > \- Provides an automated way to reuse open database connections and associated ADO\&.NET transactions within the context of a single data portal operation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDisposable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBCommit\fP ()"
+.br
+.RI "Indicates that the current transactional scope has completed successfully\&. If all transactional scopes complete successfully the transaction will commit when the \fBTransactionManager\fP object is disposed\&. "
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Dispose object, dereferencing or disposing the connection it is managing\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBTransactionManager\fP< C, T > \fBGetManager\fP (string database)"
+.br
+.RI "Gets the \fBTransactionManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBTransactionManager\fP< C, T > \fBGetManager\fP (string database, string label)"
+.br
+.RI "Gets the \fBTransactionManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBTransactionManager\fP< C, T > \fBGetManager\fP (string database, bool isDatabaseName)"
+.br
+.RI "Gets the \fBTransactionManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBTransactionManager\fP< C, T > \fBGetManager\fP (string database, bool isDatabaseName, string label)"
+.br
+.RI "Gets the \fBTransactionManager\fP object for the specified database\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "T \fBTransaction\fP\fC [get]\fP"
+.br
+.RI "Gets a reference to the current ADO\&.NET transaction object\&. "
+.ti -1c
+.RI "C \fBConnection\fP\fC [get]\fP"
+.br
+.RI "Gets a reference to the current ADO\&.NET connection object that is associated with current trasnaction\&. "
+.ti -1c
+.RI "int \fBRefCount\fP\fC [get]\fP"
+.br
+.RI "Gets the current reference count for this object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides an automated way to reuse open database connections and associated ADO\&.NET transactions within the context of a single data portal operation\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIC\fP Type of database connection object to use\&. 
+.br
+\fIT\fP Type of ADO\&.NET transaction object to use\&. 
+.RE
+.PP
+.PP
+This type stores the open ADO\&.NET transaction in Csla\&.ApplicationContext\&.LocalContext and uses reference counting through IDisposable to keep the transaction open for reuse by child objects, and to automatically dispose the transaction when the last consumer has called Dispose\&." 
+.PP
+\fBType Constraints\fP
+.TP
+\fIC\fP : \fIIDbConnection\fP
+.TP
+\fIC\fP : \fInew()\fP
+.TP
+\fIT\fP : \fIIDbTransaction\fP
+.PP
+Definition at line 37 of file TransactionManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.Commit ()"
+
+.PP
+Indicates that the current transactional scope has completed successfully\&. If all transactional scopes complete successfully the transaction will commit when the \fBTransactionManager\fP object is disposed\&. 
+.PP
+Definition at line 196 of file TransactionManager\&.cs\&.
+.SS "void \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.Dispose ()"
+
+.PP
+Dispose object, dereferencing or disposing the connection it is managing\&. 
+.PP
+Definition at line 254 of file TransactionManager\&.cs\&.
+.SS "static \fBTransactionManager\fP<C, T> \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.GetManager (string database)\fC [static]\fP"
+
+.PP
+Gets the \fBTransactionManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&. 
+.RE
+.PP
+
+.PP
+Definition at line 54 of file TransactionManager\&.cs\&.
+.SS "static \fBTransactionManager\fP<C, T> \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.GetManager (string database, bool isDatabaseName)\fC [static]\fP"
+
+.PP
+Gets the \fBTransactionManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP The database name or connection string\&. 
+.br
+\fIisDatabaseName\fP True to indicate that the Transaction string should be retrieved from the config file\&. If False, the database parameter is directly used as a Transaction string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBTransactionManager\fP object for the name\&.
+.RE
+.PP
+
+.PP
+Definition at line 86 of file TransactionManager\&.cs\&.
+.SS "static \fBTransactionManager\fP<C, T> \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.GetManager (string database, bool isDatabaseName, string label)\fC [static]\fP"
+
+.PP
+Gets the \fBTransactionManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP The database name or connection string\&. 
+.br
+\fIisDatabaseName\fP True to indicate that the Transaction string should be retrieved from the config file\&. If False, the database parameter is directly used as a Transaction string\&. 
+.br
+\fIlabel\fP Label for this transaction\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBTransactionManager\fP object for the name\&.
+.RE
+.PP
+
+.PP
+Definition at line 106 of file TransactionManager\&.cs\&.
+.SS "static \fBTransactionManager\fP<C, T> \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.GetManager (string database, string label)\fC [static]\fP"
+
+.PP
+Gets the \fBTransactionManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&. 
+.br
+\fIlabel\fP Label for this transaction\&.
+.RE
+.PP
+
+.PP
+Definition at line 67 of file TransactionManager\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "C \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.Connection\fC [get]\fP"
+
+.PP
+Gets a reference to the current ADO\&.NET connection object that is associated with current trasnaction\&. 
+.PP
+Definition at line 179 of file TransactionManager\&.cs\&.
+.SS "int \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.RefCount\fC [get]\fP"
+
+.PP
+Gets the current reference count for this object\&. 
+.PP
+Definition at line 210 of file TransactionManager\&.cs\&.
+.SS "T \fBCsla\&.Data\&.TransactionManager\fP< C, T >\&.Transaction\fC [get]\fP"
+
+.PP
+Gets a reference to the current ADO\&.NET transaction object\&. 
+.PP
+Definition at line 166 of file TransactionManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

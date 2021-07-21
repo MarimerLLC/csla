@@ -1,0 +1,102 @@
+\hypertarget{class_csla_1_1_data_1_1_object_adapter}{}\doxysection{Csla.\+Data.\+Object\+Adapter Class Reference}
+\label{class_csla_1_1_data_1_1_object_adapter}\index{Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}}
+
+
+An \mbox{\hyperlink{class_csla_1_1_data_1_1_object_adapter}{Object\+Adapter}} is used to convert data in an object or collection into a Data\+Table.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_object_adapter_a19b31f5c98f6b0feb3c84294408ce91a}{Fill}} (Data\+Set ds, object source)
+\begin{DoxyCompactList}\small\item\em Fills the Data\+Set with data from an object or collection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_object_adapter_a8aa2de70adda88c136039c48ced70416}{Fill}} (Data\+Set ds, string table\+Name, object source)
+\begin{DoxyCompactList}\small\item\em Fills the Data\+Set with data from an object or collection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_object_adapter_a30d7b3daac21dfea28dbd6021cf35280}{Fill}} (Data\+Table dt, object source)
+\begin{DoxyCompactList}\small\item\em Fills a Data\+Table with data values from an object or collection. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+An \mbox{\hyperlink{class_csla_1_1_data_1_1_object_adapter}{Object\+Adapter}} is used to convert data in an object or collection into a Data\+Table. 
+
+
+
+Definition at line 23 of file Object\+Adapter.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_object_adapter_a19b31f5c98f6b0feb3c84294408ce91a}\label{class_csla_1_1_data_1_1_object_adapter_a19b31f5c98f6b0feb3c84294408ce91a}} 
+\index{Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}!Fill@{Fill}}
+\index{Fill@{Fill}!Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}}
+\doxysubsubsection{\texorpdfstring{Fill()}{Fill()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Object\+Adapter.\+Fill (\begin{DoxyParamCaption}\item[{Data\+Set}]{ds,  }\item[{object}]{source }\end{DoxyParamCaption})}
+
+
+
+Fills the Data\+Set with data from an object or collection. 
+
+The name of the Data\+Table being filled is will be the class name of the object acting as the data source. The Data\+Table will be inserted if it doesn\textquotesingle{}t already exist in the Data\+Set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ds} & A reference to the Data\+Set to be filled.\\
+\hline
+{\em source} & A reference to the object or collection acting as a data source.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 35 of file Object\+Adapter.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_object_adapter_a8aa2de70adda88c136039c48ced70416}\label{class_csla_1_1_data_1_1_object_adapter_a8aa2de70adda88c136039c48ced70416}} 
+\index{Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}!Fill@{Fill}}
+\index{Fill@{Fill}!Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}}
+\doxysubsubsection{\texorpdfstring{Fill()}{Fill()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Object\+Adapter.\+Fill (\begin{DoxyParamCaption}\item[{Data\+Set}]{ds,  }\item[{string}]{table\+Name,  }\item[{object}]{source }\end{DoxyParamCaption})}
+
+
+
+Fills the Data\+Set with data from an object or collection. 
+
+The name of the Data\+Table being filled is specified as a parameter. The Data\+Table will be inserted if it doesn\textquotesingle{}t already exist in the Data\+Set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ds} & A reference to the Data\+Set to be filled.\\
+\hline
+{\em table\+Name} & \\
+\hline
+{\em source} & A reference to the object or collection acting as a data source.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 51 of file Object\+Adapter.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_object_adapter_a30d7b3daac21dfea28dbd6021cf35280}\label{class_csla_1_1_data_1_1_object_adapter_a30d7b3daac21dfea28dbd6021cf35280}} 
+\index{Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}!Fill@{Fill}}
+\index{Fill@{Fill}!Csla.Data.ObjectAdapter@{Csla.Data.ObjectAdapter}}
+\doxysubsubsection{\texorpdfstring{Fill()}{Fill()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Object\+Adapter.\+Fill (\begin{DoxyParamCaption}\item[{Data\+Table}]{dt,  }\item[{object}]{source }\end{DoxyParamCaption})}
+
+
+
+Fills a Data\+Table with data values from an object or collection. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dt} & A reference to the Data\+Table to be filled.\\
+\hline
+{\em source} & A reference to the object or collection acting as a data source.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 73 of file Object\+Adapter.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Data/\mbox{\hyperlink{_object_adapter_8cs}{Object\+Adapter.\+cs}}\end{DoxyCompactItemize}

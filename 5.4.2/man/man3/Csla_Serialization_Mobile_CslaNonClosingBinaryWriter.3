@@ -1,0 +1,68 @@
+.TH "Csla.Serialization.Mobile.CslaNonClosingBinaryWriter" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Serialization.Mobile.CslaNonClosingBinaryWriter \- This class is used to get around the issue in \&.NET framework, where underlying stream is closed by a writer that writes to that stream when said writer is disposed  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits BinaryWriter\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCslaNonClosingBinaryWriter\fP (Stream stream)"
+.br
+.RI "New instance of \fBCslaNonClosingBinaryWriter\fP "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBDispose\fP (bool disposing)"
+.br
+.RI "Overwrite the Dispose method of the base class in order to keep the stream open "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class is used to get around the issue in \&.NET framework, where underlying stream is closed by a writer that writes to that stream when said writer is disposed 
+
+
+.PP
+Definition at line 10 of file CslaNonClosingBinaryWriter\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Serialization\&.Mobile\&.CslaNonClosingBinaryWriter\&.CslaNonClosingBinaryWriter (Stream stream)"
+
+.PP
+New instance of \fBCslaNonClosingBinaryWriter\fP 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstream\fP Stream that the writer will write to
+.RE
+.PP
+
+.PP
+Definition at line 16 of file CslaNonClosingBinaryWriter\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Serialization\&.Mobile\&.CslaNonClosingBinaryWriter\&.Dispose (bool disposing)\fC [protected]\fP"
+
+.PP
+Overwrite the Dispose method of the base class in order to keep the stream open 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdisposing\fP 
+.RE
+.PP
+
+.PP
+Definition at line 26 of file CslaNonClosingBinaryWriter\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

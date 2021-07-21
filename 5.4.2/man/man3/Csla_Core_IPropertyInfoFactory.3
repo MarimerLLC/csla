@@ -1,0 +1,129 @@
+.TH "Csla.Core.IPropertyInfoFactory" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IPropertyInfoFactory \- Defines the interface for a factory object that creates \fBIPropertyInfo\fP objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by Csla\&.Core\&.FieldManager\&.DefaultPropertyInfoFactory\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCsla\&.PropertyInfo\fP< T > \fBCreate< T >\fP (Type containingType, string name)"
+.br
+.RI "Creates a new instance of \fBPropertyInfo\fP\&. "
+.ti -1c
+.RI "\fBCsla\&.PropertyInfo\fP< T > \fBCreate< T >\fP (Type containingType, string name, string friendlyName)"
+.br
+.RI "Creates a new instance of \fBPropertyInfo\fP\&. "
+.ti -1c
+.RI "\fBCsla\&.PropertyInfo\fP< T > \fBCreate< T >\fP (Type containingType, string name, string friendlyName, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Creates a new instance of \fBPropertyInfo\fP\&. "
+.ti -1c
+.RI "\fBCsla\&.PropertyInfo\fP< T > \fBCreate< T >\fP (Type containingType, string name, string friendlyName, T defaultValue)"
+.br
+.RI "Creates a new instance of \fBPropertyInfo\fP\&. "
+.ti -1c
+.RI "\fBCsla\&.PropertyInfo\fP< T > \fBCreate< T >\fP (Type containingType, string name, string friendlyName, T defaultValue, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Creates a new instance of \fBPropertyInfo\fP\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines the interface for a factory object that creates \fBIPropertyInfo\fP objects\&. 
+
+
+.PP
+Definition at line 19 of file IPropertyInfoFactory\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBCsla\&.PropertyInfo\fP<T> Csla\&.Core\&.IPropertyInfoFactory\&.Create< T > (Type containingType, string name)"
+
+.PP
+Creates a new instance of \fBPropertyInfo\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontainingType\fP Type of business class that contains the property declaration\&. 
+.br
+\fIname\fP Name of the property\&.
+.RE
+.PP
+
+.SS "\fBCsla\&.PropertyInfo\fP<T> Csla\&.Core\&.IPropertyInfoFactory\&.Create< T > (Type containingType, string name, string friendlyName)"
+
+.PP
+Creates a new instance of \fBPropertyInfo\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontainingType\fP Type of business class that contains the property declaration\&. 
+.br
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.RE
+.PP
+
+.SS "\fBCsla\&.PropertyInfo\fP<T> Csla\&.Core\&.IPropertyInfoFactory\&.Create< T > (Type containingType, string name, string friendlyName, \fBRelationshipTypes\fP relationship)"
+
+.PP
+Creates a new instance of \fBPropertyInfo\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontainingType\fP Type of business class that contains the property declaration\&. 
+.br
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIrelationship\fP Relationship with referenced object\&.
+.RE
+.PP
+
+.SS "\fBCsla\&.PropertyInfo\fP<T> Csla\&.Core\&.IPropertyInfoFactory\&.Create< T > (Type containingType, string name, string friendlyName, T defaultValue)"
+
+.PP
+Creates a new instance of \fBPropertyInfo\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontainingType\fP Type of business class that contains the property declaration\&. 
+.br
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIdefaultValue\fP Default value for the property\&. 
+.RE
+.PP
+
+.SS "\fBCsla\&.PropertyInfo\fP<T> Csla\&.Core\&.IPropertyInfoFactory\&.Create< T > (Type containingType, string name, string friendlyName, T defaultValue, \fBRelationshipTypes\fP relationship)"
+
+.PP
+Creates a new instance of \fBPropertyInfo\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontainingType\fP Type of business class that contains the property declaration\&. 
+.br
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIdefaultValue\fP Default value for the property\&. 
+.br
+\fIrelationship\fP Relationship with referenced object\&.
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

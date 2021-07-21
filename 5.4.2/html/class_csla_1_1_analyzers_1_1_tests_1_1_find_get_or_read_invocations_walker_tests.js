@@ -1,0 +1,13 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests =
+[
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsGetProperty", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#aaf7a4072e02a841a635e87e60e2ada5c", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsGetPropertyConvert", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#a8e953ad107e5a5b2d2431676f3852112", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetProperty", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#ab2103a2606f3c2733e861970960c1cdb", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetPropertyAsync", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#a552ea25b27ce5e252d4da6a3170637f4", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadProperty", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#a798fb3fe11f80863e5ce9571c04ce749", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadPropertyAsync", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#a3519ee7d9281e35af9ba5a4f4d311fca", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#a5ee57a3952cf647e5288ff1d7cf3a58a", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadProperty", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#a363ad66a4c6146248e7662ee1d639d2b", null ],
+    [ "WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadPropertyConvert", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#ac44203fca3dafa3c1d4374b219b72c3f", null ],
+    [ "WalkWhenContainingTypeIsNotBusinessBase", "class_csla_1_1_analyzers_1_1_tests_1_1_find_get_or_read_invocations_walker_tests.html#ab770c795b4b7ed2338ae5236544002b1", null ]
+];

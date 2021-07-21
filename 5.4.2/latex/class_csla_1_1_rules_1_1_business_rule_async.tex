@@ -1,0 +1,125 @@
+\hypertarget{class_csla_1_1_rules_1_1_business_rule_async}{}\doxysection{Csla.\+Rules.\+Business\+Rule\+Async Class Reference}
+\label{class_csla_1_1_rules_1_1_business_rule_async}\index{Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}}
+
+
+Base class used to create async business and validation rules.  
+
+
+Inheritance diagram for Csla.\+Rules.\+Business\+Rule\+Async\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.201072cm]{class_csla_1_1_rules_1_1_business_rule_async}
+\end{center}
+\end{figure}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_async_a228956167ee925c2f676511342571610}{Business\+Rule\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the rule that applies to a business object as a whole. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_async_ab5c5b3ad0555b3e7f746aacce86e2686}{Business\+Rule\+Async}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} primary\+Property)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the rule that applies to a specfic property. \end{DoxyCompactList}\item 
+virtual Task \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_async_afb58daaf5679227977275eebac52a445}{Execute\+Async}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context}{IRule\+Context}} context)
+\begin{DoxyCompactList}\small\item\em Business or validation rule implementation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+override bool \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_async_ae800b1fdf0d5dd2f456f4eb555e270ad}{Is\+Async}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the rule will run on a background thread. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Base class used to create async business and validation rules. 
+
+
+
+Definition at line 21 of file Business\+Rule\+Async.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rule_async_a228956167ee925c2f676511342571610}\label{class_csla_1_1_rules_1_1_business_rule_async_a228956167ee925c2f676511342571610}} 
+\index{Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}!BusinessRuleAsync@{BusinessRuleAsync}}
+\index{BusinessRuleAsync@{BusinessRuleAsync}!Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}}
+\doxysubsubsection{\texorpdfstring{BusinessRuleAsync()}{BusinessRuleAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Business\+Rule\+Async.\+Business\+Rule\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Creates an instance of the rule that applies to a business object as a whole. 
+
+
+
+Definition at line 37 of file Business\+Rule\+Async.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rule_async_ab5c5b3ad0555b3e7f746aacce86e2686}\label{class_csla_1_1_rules_1_1_business_rule_async_ab5c5b3ad0555b3e7f746aacce86e2686}} 
+\index{Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}!BusinessRuleAsync@{BusinessRuleAsync}}
+\index{BusinessRuleAsync@{BusinessRuleAsync}!Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}}
+\doxysubsubsection{\texorpdfstring{BusinessRuleAsync()}{BusinessRuleAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Business\+Rule\+Async.\+Business\+Rule\+Async (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{primary\+Property }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Creates an instance of the rule that applies to a specfic property. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em primary\+Property} & Primary property for this rule.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 46 of file Business\+Rule\+Async.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rule_async_afb58daaf5679227977275eebac52a445}\label{class_csla_1_1_rules_1_1_business_rule_async_afb58daaf5679227977275eebac52a445}} 
+\index{Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}!ExecuteAsync@{ExecuteAsync}}
+\index{ExecuteAsync@{ExecuteAsync}!Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}}
+\doxysubsubsection{\texorpdfstring{ExecuteAsync()}{ExecuteAsync()}}
+{\footnotesize\ttfamily virtual Task Csla.\+Rules.\+Business\+Rule\+Async.\+Execute\+Async (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context}{IRule\+Context}}}]{context }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Business or validation rule implementation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & Rule context object.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_async_a57e27eaddaab697b6faf66bf83d0fd68}{Csla.\+Rules.\+IBusiness\+Rule\+Async}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_analyzers_1_1_integration_tests_1_1_calling_complete_with_nameof_a408a974b0e63420c41cadafb04bbce5e}{Csla.\+Analyzers.\+Integration\+Tests.\+Calling\+Complete\+With\+Nameof}}, \mbox{\hyperlink{class_csla_1_1_analyzers_1_1_integration_tests_1_1_calling_complete_a0f1f288d3ae6418c9ab80a6edb8004f4}{Csla.\+Analyzers.\+Integration\+Tests.\+Calling\+Complete}}, and \mbox{\hyperlink{class_csla_1_1_analyzers_1_1_integration_tests_1_1_asynchronous_rule_new_school_a8db1f67934dba038d8cc09d6f6352195}{Csla.\+Analyzers.\+Integration\+Tests.\+Asynchronous\+Rule\+New\+School}}.
+
+
+
+Definition at line 54 of file Business\+Rule\+Async.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_business_rule_async_ae800b1fdf0d5dd2f456f4eb555e270ad}\label{class_csla_1_1_rules_1_1_business_rule_async_ae800b1fdf0d5dd2f456f4eb555e270ad}} 
+\index{Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}!IsAsync@{IsAsync}}
+\index{IsAsync@{IsAsync}!Csla.Rules.BusinessRuleAsync@{Csla.Rules.BusinessRuleAsync}}
+\doxysubsubsection{\texorpdfstring{IsAsync}{IsAsync}}
+{\footnotesize\ttfamily override bool Csla.\+Rules.\+Business\+Rule\+Async.\+Is\+Async\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets a value indicating whether the rule will run on a background thread. 
+
+
+
+Definition at line 27 of file Business\+Rule\+Async.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Rules/\mbox{\hyperlink{_business_rule_async_8cs}{Business\+Rule\+Async.\+cs}}\end{DoxyCompactItemize}

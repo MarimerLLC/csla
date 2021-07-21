@@ -1,0 +1,126 @@
+.TH "Csla.Windows.HasBrokenRulesEventArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Windows.HasBrokenRulesEventArgs \- Event args object containing information about a broken rule\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Windows\&.CslaActionCancelEventArgs\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHasBrokenRulesEventArgs\fP (string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)"
+.br
+.RI "Creates a new instance of the object\&. "
+.ti -1c
+.RI "\fBHasBrokenRulesEventArgs\fP (bool cancel, string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)"
+.br
+.RI "Creates a new instance of the object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBHasErrors\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether an error severity rule exists\&. "
+.ti -1c
+.RI "bool \fBHasWarning\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether a warning severity rule exists\&. "
+.ti -1c
+.RI "bool \fBHasInformation\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether an information severity rule exists\&. "
+.ti -1c
+.RI "bool \fBAutoShowBrokenRules\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether to show broken rules\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Event args object containing information about a broken rule\&. 
+
+
+.PP
+Definition at line 16 of file HasBrokenRulesEventArgs\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Windows\&.HasBrokenRulesEventArgs\&.HasBrokenRulesEventArgs (string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)"
+
+.PP
+Creates a new instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcommandName\fP Name of the command\&. 
+.br
+\fIhasErrors\fP Indicates whether error severity exists\&. 
+.br
+\fIhasWarnings\fP Indicates whether warning severity exists\&. 
+.br
+\fIhasInformation\fP Indicates whether information severity exists\&. 
+.br
+\fIautoShowBrokenRules\fP Indicates whether to automatically show broken rules\&. 
+.RE
+.PP
+
+.PP
+Definition at line 36 of file HasBrokenRulesEventArgs\&.cs\&.
+.SS "Csla\&.Windows\&.HasBrokenRulesEventArgs\&.HasBrokenRulesEventArgs (bool cancel, string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)"
+
+.PP
+Creates a new instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcancel\fP Indicates whether to cancel\&. 
+.br
+\fIcommandName\fP Name of the command\&. 
+.br
+\fIhasErrors\fP Indicates whether error severity exists\&. 
+.br
+\fIhasWarnings\fP Indicates whether warning severity exists\&. 
+.br
+\fIhasInformation\fP Indicates whether information severity exists\&. 
+.br
+\fIautoShowBrokenRules\fP Indicates whether to automatically show broken rules\&. 
+.RE
+.PP
+
+.PP
+Definition at line 66 of file HasBrokenRulesEventArgs\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Windows\&.HasBrokenRulesEventArgs\&.AutoShowBrokenRules\fC [get]\fP"
+
+.PP
+Gets a value indicating whether to show broken rules\&. 
+.PP
+Definition at line 111 of file HasBrokenRulesEventArgs\&.cs\&.
+.SS "bool Csla\&.Windows\&.HasBrokenRulesEventArgs\&.HasErrors\fC [get]\fP"
+
+.PP
+Gets a value indicating whether an error severity rule exists\&. 
+.PP
+Definition at line 84 of file HasBrokenRulesEventArgs\&.cs\&.
+.SS "bool Csla\&.Windows\&.HasBrokenRulesEventArgs\&.HasInformation\fC [get]\fP"
+
+.PP
+Gets a value indicating whether an information severity rule exists\&. 
+.PP
+Definition at line 102 of file HasBrokenRulesEventArgs\&.cs\&.
+.SS "bool Csla\&.Windows\&.HasBrokenRulesEventArgs\&.HasWarning\fC [get]\fP"
+
+.PP
+Gets a value indicating whether a warning severity rule exists\&. 
+.PP
+Definition at line 93 of file HasBrokenRulesEventArgs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

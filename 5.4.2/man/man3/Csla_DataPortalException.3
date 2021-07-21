@@ -1,0 +1,249 @@
+.TH "Csla.DataPortalException" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.DataPortalException \- This exception is returned for any errors occurring during the server-side \fBDataPortal\fP invocation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits System\&.Exception\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalException\fP (string message, object businessObject)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBDataPortalException\fP (string message, Exception ex, object businessObject)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBDataPortalException\fP (string message, Exception ex)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBDataPortalException\fP (\fBWcfPortal\&.WcfErrorInfo\fP info)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBDataPortalException\fP (\fBDataPortalErrorInfo\fP info)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Gets a string representation of this object\&. "
+.ti -1c
+.RI "override void \fBGetObjectData\fP (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "Serializes the object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalException\fP (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "Creates an instance of the object for serialization\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalErrorInfo\fP \fBErrorInfo\fP\fC [get]\fP"
+.br
+.RI "Gets information about the original server-side exception\&. That exception is not an exception on the client side, but this property returns information about the exception\&. "
+.ti -1c
+.RI "\fBDataPortalErrorInfo\fP \fBBusinessErrorInfo\fP\fC [get]\fP"
+.br
+.RI "Gets the original exception error info that caused this exception\&. "
+.ti -1c
+.RI "object \fBBusinessObject\fP\fC [get]\fP"
+.br
+.RI "Returns a reference to the business object from the server-side \fBDataPortal\fP\&. "
+.ti -1c
+.RI "Exception \fBBusinessException\fP\fC [get]\fP"
+.br
+.RI "Gets the original server-side exception\&. "
+.ti -1c
+.RI "string \fBBusinessExceptionMessage\fP\fC [get]\fP"
+.br
+.RI "Gets the Message property from the BusinessException, falling back to the Message value from the top-level exception\&. "
+.ti -1c
+.RI "override string \fBStackTrace\fP\fC [get]\fP"
+.br
+.RI "Get the combined stack trace from the server and client\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This exception is returned for any errors occurring during the server-side \fBDataPortal\fP invocation\&. 
+
+
+.PP
+Definition at line 20 of file DataPortalException\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.DataPortalException\&.DataPortalException (string message, object businessObject)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImessage\fP Text describing the exception\&.
+.br
+\fIbusinessObject\fP The business object as it was at the time of the exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 28 of file DataPortalException\&.cs\&.
+.SS "Csla\&.DataPortalException\&.DataPortalException (string message, Exception ex, object businessObject)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImessage\fP Text describing the exception\&.
+.br
+\fIex\fP Inner exception\&.
+.br
+\fIbusinessObject\fP The business object as it was at the time of the exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 42 of file DataPortalException\&.cs\&.
+.SS "Csla\&.DataPortalException\&.DataPortalException (string message, Exception ex)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImessage\fP Exception message\&. 
+.br
+\fIex\fP Inner exception\&. 
+.RE
+.PP
+
+.PP
+Definition at line 58 of file DataPortalException\&.cs\&.
+.SS "Csla\&.DataPortalException\&.DataPortalException (\fBWcfPortal\&.WcfErrorInfo\fP info)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Info about the exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 69 of file DataPortalException\&.cs\&.
+.SS "Csla\&.DataPortalException\&.DataPortalException (\fBDataPortalErrorInfo\fP info)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Info about the exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 80 of file DataPortalException\&.cs\&.
+.SS "Csla\&.DataPortalException\&.DataPortalException (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP"
+
+.PP
+Creates an instance of the object for serialization\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info object\&.
+.br
+\fIcontext\fP \fBSerialization\fP context object\&.
+.RE
+.PP
+
+.PP
+Definition at line 213 of file DataPortalException\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.DataPortalException\&.GetObjectData (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+
+.PP
+Serializes the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info object\&.
+.br
+\fIcontext\fP \fBSerialization\fP context object\&.
+.RE
+.PP
+
+.PP
+Definition at line 230 of file DataPortalException\&.cs\&.
+.SS "override string Csla\&.DataPortalException\&.ToString ()"
+
+.PP
+Gets a string representation of this object\&. 
+.PP
+Definition at line 90 of file DataPortalException\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBDataPortalErrorInfo\fP Csla\&.DataPortalException\&.BusinessErrorInfo\fC [get]\fP"
+
+.PP
+Gets the original exception error info that caused this exception\&. 
+.PP
+Definition at line 123 of file DataPortalException\&.cs\&.
+.SS "Exception Csla\&.DataPortalException\&.BusinessException\fC [get]\fP"
+
+.PP
+Gets the original server-side exception\&. 
+.PP
+\fBReturns\fP
+.RS 4
+An exception object\&.
+.RE
+.PP
+.PP
+Removes all \fBDataPortalException\fP and CallMethodException instances in the exception stack to find the original exception\&. 
+.PP
+Definition at line 165 of file DataPortalException\&.cs\&.
+.SS "string Csla\&.DataPortalException\&.BusinessExceptionMessage\fC [get]\fP"
+
+.PP
+Gets the Message property from the BusinessException, falling back to the Message value from the top-level exception\&. 
+.PP
+Definition at line 185 of file DataPortalException\&.cs\&.
+.SS "object Csla\&.DataPortalException\&.BusinessObject\fC [get]\fP"
+
+.PP
+Returns a reference to the business object from the server-side \fBDataPortal\fP\&. Remember that this object may be in an invalid or undefined state\&. This is the business object (and any child objects) as it existed when the exception occured on the server\&. Thus the object state may have been altered by the server and may no longer reflect data in the database\&. 
+.PP
+Definition at line 149 of file DataPortalException\&.cs\&.
+.SS "\fBDataPortalErrorInfo\fP Csla\&.DataPortalException\&.ErrorInfo\fC [get]\fP"
+
+.PP
+Gets information about the original server-side exception\&. That exception is not an exception on the client side, but this property returns information about the exception\&. 
+.PP
+Definition at line 117 of file DataPortalException\&.cs\&.
+.SS "override string Csla\&.DataPortalException\&.StackTrace\fC [get]\fP"
+
+.PP
+Get the combined stack trace from the server and client\&. 
+.PP
+Definition at line 203 of file DataPortalException\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

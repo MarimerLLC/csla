@@ -1,0 +1,214 @@
+.TH "Csla.Rules.BusinessRuleBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.BusinessRuleBase \- Base class used to create business and validation rules\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.IBusinessRuleBase\fP\&.
+.PP
+Inherited by \fBCsla\&.Rules\&.BusinessRule\fP, and \fBCsla\&.Rules\&.BusinessRuleAsync\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBCanWriteProperty\fP (string argument)"
+.br
+.RI "Allows or blocks changing a property value\&. "
+.ti -1c
+.RI "\fBBusinessRuleBase\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty)"
+.br
+.RI "Creates an instance of the rule that applies to a specfic property\&. "
+.ti -1c
+.RI "void \fBLoadProperty\fP (object obj, \fBCsla\&.Core\&.IPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "object \fBReadProperty\fP (object obj, \fBCsla\&.Core\&.IPropertyInfo\fP propertyInfo)"
+.br
+.RI "Reads a property's field value\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBPropertiesLocked\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether property values should be locked because an async operation is running\&. "
+.ti -1c
+.RI "virtual \fBCsla\&.Core\&.IPropertyInfo\fP \fBPrimaryProperty\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the primary property affected by this rule\&. "
+.ti -1c
+.RI "List< \fBCsla\&.Core\&.IPropertyInfo\fP > \fBAffectedProperties\fP\fC [get]\fP"
+.br
+.RI "Gets a list of properties affected by this rule\&. \fBRules\fP for these properties are executed after rules for the primary property\&. "
+.ti -1c
+.RI "List< \fBCsla\&.Core\&.IPropertyInfo\fP > \fBInputProperties\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a list of secondary property values to be supplied to the rule when it is executed\&. "
+.ti -1c
+.RI "abstract bool \fBIsAsync\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the rule will run on a background thread\&. "
+.ti -1c
+.RI "bool \fBProvideTargetWhenAsync\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating that the Target property should be set even for an async rule (note that using Target from a background thread will cause major problems)\&. "
+.ti -1c
+.RI "string \fBRuleName\fP\fC [get]\fP"
+.br
+.RI "Gets a unique rule:// URI for the specific instance of the rule within the context of the business object where the rule is used\&. "
+.ti -1c
+.RI "\fBRuleUri\fP \fBRuleUri\fP\fC [get, set]\fP"
+.br
+.RI "Sets or gets the rule:// URI object for this rule\&. "
+.ti -1c
+.RI "int \fBPriority\fP\fC [get, set]\fP"
+.br
+.RI "Gets the rule priority\&. "
+.ti -1c
+.RI "\fBRunModes\fP \fBRunMode\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the run in context\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Base class used to create business and validation rules\&. 
+
+
+.PP
+Definition at line 18 of file BusinessRuleBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.BusinessRuleBase\&.BusinessRuleBase (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty)\fC [protected]\fP"
+
+.PP
+Creates an instance of the rule that applies to a specfic property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprimaryProperty\fP Primary property for this rule\&.
+.RE
+.PP
+
+.PP
+Definition at line 145 of file BusinessRuleBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Rules\&.BusinessRuleBase\&.CanWriteProperty (string argument)\fC [protected]\fP"
+
+.PP
+Allows or blocks changing a property value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargument\fP 
+.RE
+.PP
+
+.PP
+Definition at line 134 of file BusinessRuleBase\&.cs\&.
+.SS "void Csla\&.Rules\&.BusinessRuleBase\&.LoadProperty (object obj, \fBCsla\&.Core\&.IPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 172 of file BusinessRuleBase\&.cs\&.
+.SS "object Csla\&.Rules\&.BusinessRuleBase\&.ReadProperty (object obj, \fBCsla\&.Core\&.IPropertyInfo\fP propertyInfo)\fC [protected]\fP"
+
+.PP
+Reads a property's field value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object on which to call the method\&. 
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called\&. 
+.PP
+Definition at line 191 of file BusinessRuleBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "List<\fBCsla\&.Core\&.IPropertyInfo\fP> Csla\&.Rules\&.BusinessRuleBase\&.AffectedProperties\fC [get]\fP"
+
+.PP
+Gets a list of properties affected by this rule\&. \fBRules\fP for these properties are executed after rules for the primary property\&. 
+.PP
+Definition at line 54 of file BusinessRuleBase\&.cs\&.
+.SS "List<\fBCsla\&.Core\&.IPropertyInfo\fP> Csla\&.Rules\&.BusinessRuleBase\&.InputProperties\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a list of secondary property values to be supplied to the rule when it is executed\&. 
+.PP
+Definition at line 60 of file BusinessRuleBase\&.cs\&.
+.SS "abstract bool Csla\&.Rules\&.BusinessRuleBase\&.IsAsync\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the rule will run on a background thread\&. 
+.PP
+Definition at line 66 of file BusinessRuleBase\&.cs\&.
+.SS "virtual \fBCsla\&.Core\&.IPropertyInfo\fP Csla\&.Rules\&.BusinessRuleBase\&.PrimaryProperty\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the primary property affected by this rule\&. 
+.PP
+Definition at line 36 of file BusinessRuleBase\&.cs\&.
+.SS "int Csla\&.Rules\&.BusinessRuleBase\&.Priority\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the rule priority\&. 
+.PP
+Definition at line 106 of file BusinessRuleBase\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRuleBase\&.PropertiesLocked\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
+
+.PP
+Gets or sets a value indicating whether property values should be locked because an async operation is running\&. 
+.PP
+Definition at line 31 of file BusinessRuleBase\&.cs\&.
+.SS "bool Csla\&.Rules\&.BusinessRuleBase\&.ProvideTargetWhenAsync\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating that the Target property should be set even for an async rule (note that using Target from a background thread will cause major problems)\&. 
+.PP
+Definition at line 73 of file BusinessRuleBase\&.cs\&.
+.SS "string Csla\&.Rules\&.BusinessRuleBase\&.RuleName\fC [get]\fP"
+
+.PP
+Gets a unique rule:// URI for the specific instance of the rule within the context of the business object where the rule is used\&. 
+.PP
+Definition at line 88 of file BusinessRuleBase\&.cs\&.
+.SS "\fBRuleUri\fP Csla\&.Rules\&.BusinessRuleBase\&.RuleUri\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
+
+.PP
+Sets or gets the rule:// URI object for this rule\&. 
+.PP
+Definition at line 93 of file BusinessRuleBase\&.cs\&.
+.SS "\fBRunModes\fP Csla\&.Rules\&.BusinessRuleBase\&.RunMode\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the run in context\&. The run in context\&.
+.PP
+Definition at line 120 of file BusinessRuleBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

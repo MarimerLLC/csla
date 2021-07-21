@@ -1,0 +1,69 @@
+.TH "Csla.Core.LoadManager.AsyncLoadException" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.LoadManager.AsyncLoadException \- Exception class to add the \fBPropertyInfo\fP and better nmessage to an async exception  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits System\&.Exception\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAsyncLoadException\fP (\fBIPropertyInfo\fP property, string message, Exception ex)"
+.br
+.RI "Constructor for \fBAsyncLoadException\fP "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBIPropertyInfo\fP \fBProperty\fP\fC [get, set]\fP"
+.br
+.RI "The property that Async LazyLoad failed on\&. 
+.br
+ "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exception class to add the \fBPropertyInfo\fP and better nmessage to an async exception 
+
+
+.PP
+Definition at line 13 of file AsyncLoadException\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.LoadManager\&.AsyncLoadException\&.AsyncLoadException (\fBIPropertyInfo\fP property, string message, Exception ex)"
+
+.PP
+Constructor for \fBAsyncLoadException\fP 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP the \fBIPropertyInfo\fP that desccribes the property
+.br
+\fImessage\fP Clear text message for user
+.br
+\fIex\fP the actual exception
+.RE
+.PP
+
+.PP
+Definition at line 30 of file AsyncLoadException\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBIPropertyInfo\fP Csla\&.Core\&.LoadManager\&.AsyncLoadException\&.Property\fC [get]\fP, \fC [set]\fP"
+
+.PP
+The property that Async LazyLoad failed on\&. 
+.br
+ The property\&. 
+.PP
+Definition at line 22 of file AsyncLoadException\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

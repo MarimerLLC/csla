@@ -1,0 +1,142 @@
+.TH "Csla.Server.FactoryDataPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.FactoryDataPortal \- Server-side data portal implementation that invokes an object factory rather than directly interacting with the business object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBCreate\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBFetch\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBUpdate\fP (object obj, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBDelete\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "static \fBIObjectFactoryLoader\fP \fBFactoryLoader\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a delegate reference to the method called to create instances of factory objects as requested by the \fBObjectFactory\fP attribute on a CSLA \&.NET business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Server-side data portal implementation that invokes an object factory rather than directly interacting with the business object\&. 
+
+
+.PP
+Definition at line 20 of file FactoryDataPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.FactoryDataPortal\&.Create (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 131 of file FactoryDataPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.FactoryDataPortal\&.Delete (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 221 of file FactoryDataPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.FactoryDataPortal\&.Fetch (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to retrieve\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 160 of file FactoryDataPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.FactoryDataPortal\&.Update (object obj, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 188 of file FactoryDataPortal\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBIObjectFactoryLoader\fP Csla\&.Server\&.FactoryDataPortal\&.FactoryLoader\fC [static]\fP, \fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a delegate reference to the method called to create instances of factory objects as requested by the \fBObjectFactory\fP attribute on a CSLA \&.NET business object\&. 
+.PP
+Definition at line 32 of file FactoryDataPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,386 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.AppServerCore\\ProjectTracker.AppServerCore.csproj": {}
+  },
+  "projects": {
+    "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.AppServerCore\\ProjectTracker.AppServerCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.AppServerCore\\ProjectTracker.AppServerCore.csproj",
+        "projectName": "ProjectTracker.AppServerCore",
+        "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.AppServerCore\\ProjectTracker.AppServerCore.csproj",
+        "packagesPath": "C:\\Users\\korye\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.AppServerCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\korye\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.BusinessLibrary.Netstandard\\ProjectTracker.BusinessLibrary.Netstandard.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.BusinessLibrary.Netstandard\\ProjectTracker.BusinessLibrary.Netstandard.csproj"
+              },
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalEfCore\\ProjectTracker.DalEfCore.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalEfCore\\ProjectTracker.DalEfCore.csproj"
+              },
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalMock\\ProjectTracker.DalMock.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalMock\\ProjectTracker.DalMock.csproj"
+              },
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Csla.AspNetCore": {
+              "target": "Package",
+              "version": "[5.4.0-R20111805, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.10.8, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.BusinessLibrary.Netstandard\\ProjectTracker.BusinessLibrary.Netstandard.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.BusinessLibrary.Netstandard\\ProjectTracker.BusinessLibrary.Netstandard.csproj",
+        "projectName": "ProjectTracker.BusinessLibrary",
+        "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.BusinessLibrary.Netstandard\\ProjectTracker.BusinessLibrary.Netstandard.csproj",
+        "packagesPath": "C:\\Users\\korye\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.BusinessLibrary.Netstandard\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\korye\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Csla": {
+              "target": "Package",
+              "version": "[5.4.0-R20111805, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalEfCore\\ProjectTracker.DalEfCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalEfCore\\ProjectTracker.DalEfCore.csproj",
+        "projectName": "ProjectTracker.DalEfCore",
+        "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalEfCore\\ProjectTracker.DalEfCore.csproj",
+        "packagesPath": "C:\\Users\\korye\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalEfCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\korye\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalMock\\ProjectTracker.DalMock.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalMock\\ProjectTracker.DalMock.csproj",
+        "projectName": "ProjectTracker.DalMock",
+        "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalMock\\ProjectTracker.DalMock.csproj",
+        "packagesPath": "C:\\Users\\korye\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.DalMock\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\korye\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {
+              "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj": {
+                "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Csla": {
+              "target": "Package",
+              "version": "[5.4.0-R20111805, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj",
+        "projectName": "ProjectTracker.Dal",
+        "projectPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\ProjectTracker.Dal.csproj",
+        "packagesPath": "C:\\Users\\korye\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\csla\\Samples\\ProjectTracker\\ProjectTracker.Dal\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\korye\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Csla": {
+              "target": "Package",
+              "version": "[5.4.0-R20111805, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

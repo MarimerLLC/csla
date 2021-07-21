@@ -1,0 +1,170 @@
+\hypertarget{class_csla_1_1_axml_1_1_activity_base}{}\doxysection{Csla.\+Axml.\+Activity\+Base$<$ T, Z $>$ Class Template Reference}
+\label{class_csla_1_1_axml_1_1_activity_base}\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+
+
+CSLA helper to be used in place of the normal Xamarin Android activity that contains a reference to a CSLA View\+Model and a Binding\+Manager.  
+
+
+Inheritance diagram for Csla.\+Axml.\+Activity\+Base$<$ T, Z $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_axml_1_1_activity_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_acbd00da3394e117b9409dc91993d91f5}{On\+Create}} (Bundle bundle)
+\begin{DoxyCompactList}\small\item\em Event that occurs when the activity is created. \end{DoxyCompactList}\item 
+byte\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a62844c59545db2bb2fb68a23d19859b4}{Serilize\+Model\+For\+Parameter}} ()
+\begin{DoxyCompactList}\small\item\em Serializes the View\+Model\textquotesingle{}s model property using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. \end{DoxyCompactList}\item 
+byte\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a59079b6491bd728aabacc1a1b4b82e92}{Serilize\+Model\+For\+Parameter}} (object model)
+\begin{DoxyCompactList}\small\item\em Serialized the provided model using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a5c8ae08f50daaf96f527cb6c3c52a13e}{Deserialize\+From\+Parameter}} (byte\mbox{[}$\,$\mbox{]} parameter)
+\begin{DoxyCompactList}\small\item\em Takes a byte array and uses the Mobile\+Formatter to reconstitute it into a model reference. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+T \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a638f58d855a5688e40ececfa4a340048}{view\+Model}} = null
+\begin{DoxyCompactList}\small\item\em A reference to the view model. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager}{Binding\+Manager}} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a632570c2642b91833f0458bbb6c7127f}{Bindings}} = null
+\begin{DoxyCompactList}\small\item\em The Binding\+Manager for this Activity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+CSLA helper to be used in place of the normal Xamarin Android activity that contains a reference to a CSLA View\+Model and a Binding\+Manager. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & A type that inherits from the View\+Model.\\
+\hline
+{\em Z} & The type that is defined as used by T.\\
+\hline
+\end{DoxyTemplParams}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em View\+Model$<$Z$>$}]\end{description}
+\end{Desc}
+
+
+Definition at line 22 of file Activity\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_activity_base_a5c8ae08f50daaf96f527cb6c3c52a13e}\label{class_csla_1_1_axml_1_1_activity_base_a5c8ae08f50daaf96f527cb6c3c52a13e}} 
+\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}!DeserializeFromParameter@{DeserializeFromParameter}}
+\index{DeserializeFromParameter@{DeserializeFromParameter}!Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+\doxysubsubsection{\texorpdfstring{DeserializeFromParameter()}{DeserializeFromParameter()}}
+{\footnotesize\ttfamily object \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base}{Csla.\+Axml.\+Activity\+Base}}$<$ T, Z $>$.Deserialize\+From\+Parameter (\begin{DoxyParamCaption}\item[{byte\mbox{[}$\,$\mbox{]}}]{parameter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Takes a byte array and uses the Mobile\+Formatter to reconstitute it into a model reference. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameter} & An array of bytes to deserialized.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the deserialized object. An exception will be thrown if the supplied byte array is not valid for deserializaiton.
+\end{DoxyReturn}
+
+
+Definition at line 68 of file Activity\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_activity_base_acbd00da3394e117b9409dc91993d91f5}\label{class_csla_1_1_axml_1_1_activity_base_acbd00da3394e117b9409dc91993d91f5}} 
+\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}!OnCreate@{OnCreate}}
+\index{OnCreate@{OnCreate}!Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+\doxysubsubsection{\texorpdfstring{OnCreate()}{OnCreate()}}
+{\footnotesize\ttfamily override void \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base}{Csla.\+Axml.\+Activity\+Base}}$<$ T, Z $>$.On\+Create (\begin{DoxyParamCaption}\item[{Bundle}]{bundle }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Event that occurs when the activity is created. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bundle} & Information about the activities creation.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 38 of file Activity\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_activity_base_a62844c59545db2bb2fb68a23d19859b4}\label{class_csla_1_1_axml_1_1_activity_base_a62844c59545db2bb2fb68a23d19859b4}} 
+\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}!SerilizeModelForParameter@{SerilizeModelForParameter}}
+\index{SerilizeModelForParameter@{SerilizeModelForParameter}!Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+\doxysubsubsection{\texorpdfstring{SerilizeModelForParameter()}{SerilizeModelForParameter()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily byte \mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base}{Csla.\+Axml.\+Activity\+Base}}$<$ T, Z $>$.Serilize\+Model\+For\+Parameter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Serializes the View\+Model\textquotesingle{}s model property using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. 
+
+\begin{DoxyReturn}{Returns}
+An array of bytes that contains the serialized model.
+\end{DoxyReturn}
+
+
+Definition at line 48 of file Activity\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_activity_base_a59079b6491bd728aabacc1a1b4b82e92}\label{class_csla_1_1_axml_1_1_activity_base_a59079b6491bd728aabacc1a1b4b82e92}} 
+\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}!SerilizeModelForParameter@{SerilizeModelForParameter}}
+\index{SerilizeModelForParameter@{SerilizeModelForParameter}!Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+\doxysubsubsection{\texorpdfstring{SerilizeModelForParameter()}{SerilizeModelForParameter()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily byte \mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base}{Csla.\+Axml.\+Activity\+Base}}$<$ T, Z $>$.Serilize\+Model\+For\+Parameter (\begin{DoxyParamCaption}\item[{object}]{model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Serialized the provided model using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em model} & A reference to the model to serialize.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An array of bytes that contains the serialized model.
+\end{DoxyReturn}
+
+
+Definition at line 58 of file Activity\+Base.\+cs.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_activity_base_a632570c2642b91833f0458bbb6c7127f}\label{class_csla_1_1_axml_1_1_activity_base_a632570c2642b91833f0458bbb6c7127f}} 
+\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}!Bindings@{Bindings}}
+\index{Bindings@{Bindings}!Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+\doxysubsubsection{\texorpdfstring{Bindings}{Bindings}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_axml_1_1_binding_1_1_binding_manager}{Binding\+Manager}} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base}{Csla.\+Axml.\+Activity\+Base}}$<$ T, Z $>$.Bindings = null\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The Binding\+Manager for this Activity. 
+
+
+
+Definition at line 32 of file Activity\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_axml_1_1_activity_base_a638f58d855a5688e40ececfa4a340048}\label{class_csla_1_1_axml_1_1_activity_base_a638f58d855a5688e40ececfa4a340048}} 
+\index{Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}!viewModel@{viewModel}}
+\index{viewModel@{viewModel}!Csla.Axml.ActivityBase$<$ T, Z $>$@{Csla.Axml.ActivityBase$<$ T, Z $>$}}
+\doxysubsubsection{\texorpdfstring{viewModel}{viewModel}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base}{Csla.\+Axml.\+Activity\+Base}}$<$ T, Z $>$.view\+Model = null\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+A reference to the view model. 
+
+
+
+Definition at line 27 of file Activity\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Axml.\+Android/\mbox{\hyperlink{_activity_base_8cs}{Activity\+Base.\+cs}}\end{DoxyCompactItemize}

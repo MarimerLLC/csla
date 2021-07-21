@@ -1,0 +1,234 @@
+\hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match}{}\doxysection{Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match Class Reference}
+\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match}\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+
+
+Business rule that evaluates a regular expression.  
+
+
+Inheritance diagram for Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=5.793103cm]{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0}{Null\+Result\+Options}} \{ \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0aa4b3ffad6cf34921193b7ec96978b0d8}{Return\+False}}
+, \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0a3d629d96d126602881a861000afe0caf}{Return\+True}}
+, \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0a1fcb1ec39952d7491b7fcf7de58bf3b2}{Convert\+To\+Empty\+String}}
+ \}
+\begin{DoxyCompactList}\small\item\em List of options for the Null\+Result property. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a20bed59255babdffd046abb5fc4c434b}{Reg\+Ex\+Match}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} primary\+Property, string expression)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the rule. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_aa66c266e1a687153008ced5512589c58}{Reg\+Ex\+Match}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} primary\+Property, string expression, string message)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the rule. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a6597eb2dc5dcb9c11e3f3cd6abd38bd0}{Reg\+Ex\+Match}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} primary\+Property, string expression, Func$<$ string $>$ message\+Delegate)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the rule. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override string \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_aa79b781130afc5b5f36ded82fc6d7eb7}{Get\+Message}} ()
+\begin{DoxyCompactList}\small\item\em Gets the error message. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a9af941eec2e0d40d3ca3008e81db18e2}{Execute}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context}{IRule\+Context}} context)
+\begin{DoxyCompactList}\small\item\em Rule implementation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_af09d786141076a7ecf1a197f3493f8a1}{Expression}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the regular expression to be evaluated. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0}{Null\+Result\+Options}} \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a72122697abaeca2ea4662e6e3c0a8b75}{Null\+Option}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value that controls how null input values are handled. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Business rule that evaluates a regular expression. 
+
+
+
+Definition at line 485 of file Common\+Rules.\+cs.
+
+
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!NullResultOptions@{NullResultOptions}}
+\index{NullResultOptions@{NullResultOptions}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{NullResultOptions}{NullResultOptions}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0}{Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Null\+Result\+Options}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+List of options for the Null\+Result property. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ReturnFalse@{ReturnFalse}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!ReturnFalse@{ReturnFalse}}}\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0aa4b3ffad6cf34921193b7ec96978b0d8}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0aa4b3ffad6cf34921193b7ec96978b0d8}} 
+Return\+False&Indicates that a null value should always result in the rule returning false. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ReturnTrue@{ReturnTrue}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!ReturnTrue@{ReturnTrue}}}\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0a3d629d96d126602881a861000afe0caf}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0a3d629d96d126602881a861000afe0caf}} 
+Return\+True&Indicates that a null value should always result in the rule returning true. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ConvertToEmptyString@{ConvertToEmptyString}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!ConvertToEmptyString@{ConvertToEmptyString}}}\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0a1fcb1ec39952d7491b7fcf7de58bf3b2}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0a1fcb1ec39952d7491b7fcf7de58bf3b2}} 
+Convert\+To\+Empty\+String&Indicates that a null value should be converted to an empty string before the regular expression is evaluated. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 493 of file Common\+Rules.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a20bed59255babdffd046abb5fc4c434b}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a20bed59255babdffd046abb5fc4c434b}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!RegExMatch@{RegExMatch}}
+\index{RegExMatch@{RegExMatch}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{RegExMatch()}{RegExMatch()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Reg\+Ex\+Match (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{primary\+Property,  }\item[{string}]{expression }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the rule. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em primary\+Property} & Primary property.\\
+\hline
+{\em expression} & Regular expression.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 536 of file Common\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_aa66c266e1a687153008ced5512589c58}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_aa66c266e1a687153008ced5512589c58}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!RegExMatch@{RegExMatch}}
+\index{RegExMatch@{RegExMatch}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{RegExMatch()}{RegExMatch()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Reg\+Ex\+Match (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{primary\+Property,  }\item[{string}]{expression,  }\item[{string}]{message }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the rule. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em primary\+Property} & Property to which the rule applies.\\
+\hline
+{\em expression} & Regular expression.\\
+\hline
+{\em message} & The message.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 550 of file Common\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a6597eb2dc5dcb9c11e3f3cd6abd38bd0}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a6597eb2dc5dcb9c11e3f3cd6abd38bd0}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!RegExMatch@{RegExMatch}}
+\index{RegExMatch@{RegExMatch}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{RegExMatch()}{RegExMatch()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Reg\+Ex\+Match (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{primary\+Property,  }\item[{string}]{expression,  }\item[{Func$<$ string $>$}]{message\+Delegate }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the rule. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em primary\+Property} & Property to which the rule applies.\\
+\hline
+{\em expression} & Regular expression.\\
+\hline
+{\em message\+Delegate} & The localizable message.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 563 of file Common\+Rules.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a9af941eec2e0d40d3ca3008e81db18e2}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a9af941eec2e0d40d3ca3008e81db18e2}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!Execute@{Execute}}
+\index{Execute@{Execute}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{Execute()}{Execute()}}
+{\footnotesize\ttfamily override void Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Execute (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context}{IRule\+Context}}}]{context }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Rule implementation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & Rule context.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_a3c44a156b3a8485f3f94964ee6f4ec4f}{Csla.\+Rules.\+Business\+Rule}}.
+
+
+
+Definition at line 582 of file Common\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_aa79b781130afc5b5f36ded82fc6d7eb7}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_aa79b781130afc5b5f36ded82fc6d7eb7}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!GetMessage@{GetMessage}}
+\index{GetMessage@{GetMessage}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{GetMessage()}{GetMessage()}}
+{\footnotesize\ttfamily override string Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Get\+Message (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Gets the error message. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_rules_1_1_property_rule_afbb2e8f1e5d536900c4b2537d8fddd6a}{Csla.\+Rules.\+Property\+Rule}}.
+
+
+
+Definition at line 573 of file Common\+Rules.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_af09d786141076a7ecf1a197f3493f8a1}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_af09d786141076a7ecf1a197f3493f8a1}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!Expression@{Expression}}
+\index{Expression@{Expression}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{Expression}{Expression}}
+{\footnotesize\ttfamily string Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Expression\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the regular expression to be evaluated. 
+
+
+
+Definition at line 523 of file Common\+Rules.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a72122697abaeca2ea4662e6e3c0a8b75}\label{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_a72122697abaeca2ea4662e6e3c0a8b75}} 
+\index{Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}!NullOption@{NullOption}}
+\index{NullOption@{NullOption}!Csla.Rules.CommonRules.RegExMatch@{Csla.Rules.CommonRules.RegExMatch}}
+\doxysubsubsection{\texorpdfstring{NullOption}{NullOption}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match_ad6d247a844dbaf98c89dd207067e3ca0}{Null\+Result\+Options}} Csla.\+Rules.\+Common\+Rules.\+Reg\+Ex\+Match.\+Null\+Option\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a value that controls how null input values are handled. 
+
+
+
+Definition at line 529 of file Common\+Rules.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Rules/\mbox{\hyperlink{_csla_2_rules_2_common_rules_8cs}{Common\+Rules.\+cs}}\end{DoxyCompactItemize}

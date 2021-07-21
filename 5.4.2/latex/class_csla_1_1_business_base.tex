@@ -1,0 +1,956 @@
+\hypertarget{class_csla_1_1_business_base}{}\doxysection{Csla.\+Business\+Base$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_business_base}\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+
+
+This is the base class from which most business objects will be derived.  
+
+
+Inheritance diagram for Csla.\+Business\+Base$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=7.466667cm]{class_csla_1_1_business_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override string \mbox{\hyperlink{class_csla_1_1_business_base_a3fe7b2c4ce49d189bed0f7919647e49d}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em Returns a text representation of this object by returning the \mbox{\hyperlink{class_csla_1_1_business_base_a541ff8365c8fcae69ad26456d45d00ad}{Get\+Id\+Value}} value in text form. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_business_base_a64e9ad7b4556ec3d4147263ee1b767f6}{Clone}} ()
+\begin{DoxyCompactList}\small\item\em Creates a clone of the object. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_business_base_aefbf27f106929fdc88a316bd9f20d9e1}{Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a2adbd641bf6589a998c6970b7d23b768}{Save\+Async}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_csla_1_1_business_base_a0794f477dc841a23b9eb1f6cc46127b8}{Save}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, forcing Is\+New to false and Is\+Dirty to True. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_business_base_af7f63f4ea83e94f149ef612cd4cc1a7a}{Save\+And\+Merge\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging any resulting updates into the existing object graph. \end{DoxyCompactList}\item 
+async Task \mbox{\hyperlink{class_csla_1_1_business_base_a83546a008921472f852c4e77bb3a4655}{Save\+And\+Merge\+Async}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging any resulting updates into the existing object graph. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_base_ae9bb2107ce5f1bf8204430eb5d363e4b}{Begin\+Save}} ()
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_base_a20f73bcd8bfaa1ce3911437c9046ea01}{Begin\+Save}} (object user\+State)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_base_a3ef0cc9ec043139ff6ceeb296b86fc57}{Begin\+Save}} (Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ handler)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+async void \mbox{\hyperlink{class_csla_1_1_business_base_a90534b7b7628055007e4c231e8ef27a6}{Begin\+Save}} (bool force\+Update, Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ handler, object user\+State)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_base_ac38b7ee24ad159de57a70a71b7791e6a}{Begin\+Save}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_base_a05ebd0a2395d0671a4eabe170dca96e2}{Begin\+Save}} (bool force\+Update, Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ handler)
+\begin{DoxyCompactList}\small\item\em Starts an async operation to save the object to the database. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_business_base_aefe54be24b8cacd7a602d680bf06dd48}{Begin\+Save}} (Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ handler, object user\+State)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, forcing Is\+New to false and Is\+Dirty to True. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_business_base_a541ff8365c8fcae69ad26456d45d00ad}{Get\+Id\+Value}} ()
+\begin{DoxyCompactList}\small\item\em Override this method to return a unique identifying value for this object. \end{DoxyCompactList}\item 
+virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a7f357d738faa44cd6ce16679d8fc637f}{Save\+Async}} (bool force\+Update, object user\+State, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_business_base_a8e2968e966678ee4a7d9b09981cde779}{On\+Saved}} (T new\+Object, Exception e, object user\+State)
+\begin{DoxyCompactList}\small\item\em Raises the Saved event, indicating that the object has been saved, and providing a reference to the new object instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_ab2e6837703e3eda6429eabfb605ab65e}{Register\+Property$<$ P $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ info)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a2ba2b66b4b6770a5d538798bfd3be25f}{Register\+Property$<$ P $>$}} (string property\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_ab0b3903371a3e1b5341429db77c9b000}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_ac59623a36c65e66ccdd664f56251151b}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_ac8196be7f4b3245a820eb56b3698e15e}{Register\+Property$<$ P $>$}} (string property\+Name, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a0e1abe7dfe19db377ea157583f767148}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a1bb52b4e403765b55b4044078245dfaa}{Register\+Property$<$ P $>$}} (string property\+Name, string friendly\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_aa834e93baa84e9335749ee62a72684c9}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_ab1f380b35d9a7a2ecbb895df25574b27}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a71dce1694518313197aa7591afc05ff3}{Register\+Property$<$ P $>$}} (string property\+Name, string friendly\+Name, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a9f8cdec18fe1d58cab324417c260d760}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, P default\+Value)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_abfdcfd1911a2f77923afb0a295f0d637}{Register\+Property$<$ P $>$}} (string property\+Name, string friendly\+Name, P default\+Value, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a587cdfe0ef8e604c3654b979e0d537cb}{Register\+Property$<$ P $>$}} (Expression$<$ Func$<$ T, object $>$$>$ property\+Lambda\+Expression, string friendly\+Name, P default\+Value, \mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}} relationship)
+\begin{DoxyCompactList}\small\item\em Indicates that the specified property belongs to the business object type. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_method_info}{Method\+Info}} \mbox{\hyperlink{class_csla_1_1_business_base_a1ff90b73a7a82518351e4602da2c9b03}{Register\+Method}} (string method\+Name)
+\begin{DoxyCompactList}\small\item\em Registers a method for use in Authorization. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_csla_1_1_method_info}{Method\+Info}} \mbox{\hyperlink{class_csla_1_1_business_base_a81d91542238e2eabe96df759c008923b}{Register\+Method}} (Expression$<$ Action$<$ T $>$$>$ method\+Lambda\+Expression)
+\begin{DoxyCompactList}\small\item\em Registers a method for use in Authorization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Csla.\+Core.\+Saved\+Event\+Args}} $>$ \mbox{\hyperlink{class_csla_1_1_business_base_a22c57cb2e227bac263f487b6283b672e}{Saved}}
+\begin{DoxyCompactList}\small\item\em Event raised when an object has been saved. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+This is the base class from which most business objects will be derived. 
+
+This class is the core of the CSLA .NET framework. To create a business object, inherit from this class. 
+
+Please refer to \textquotesingle{}Expert C\# 2008 Business Objects\textquotesingle{} for full details on the use of this base class to create business objects. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the business object being defined.\\
+\hline
+\end{DoxyTemplParams}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em \mbox{\hyperlink{class_csla_1_1_business_base}{Business\+Base}}$<$T$>$}]\end{description}
+\end{Desc}
+
+
+Definition at line 36 of file Business\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_business_base_ae9bb2107ce5f1bf8204430eb5d363e4b}\label{class_csla_1_1_business_base_ae9bb2107ce5f1bf8204430eb5d363e4b}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [1/7]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 272 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_ac38b7ee24ad159de57a70a71b7791e6a}\label{class_csla_1_1_business_base_ac38b7ee24ad159de57a70a71b7791e6a}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [2/7]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save()}}. \\
+\hline
+\end{DoxyParams}
+
+
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object. 
+
+Definition at line 349 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a05ebd0a2395d0671a4eabe170dca96e2}\label{class_csla_1_1_business_base_a05ebd0a2395d0671a4eabe170dca96e2}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [3/7]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{bool}]{force\+Update,  }\item[{Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$}]{handler }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save()}}. \\
+\hline
+{\em handler} & Delegate reference to a callback handler that will be invoked when the async operation is complete. \\
+\hline
+\end{DoxyParams}
+
+
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object. 
+
+Definition at line 371 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a90534b7b7628055007e4c231e8ef27a6}\label{class_csla_1_1_business_base_a90534b7b7628055007e4c231e8ef27a6}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [4/7]}}
+{\footnotesize\ttfamily async void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{bool}]{force\+Update,  }\item[{Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$}]{handler,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save()}}. \\
+\hline
+{\em handler} & Method called when the operation is complete. \\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 311 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a3ef0cc9ec043139ff6ceeb296b86fc57}\label{class_csla_1_1_business_base_a3ef0cc9ec043139ff6ceeb296b86fc57}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [5/7]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$}]{handler }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handler} & Method called when the operation is complete. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 294 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_aefe54be24b8cacd7a602d680bf06dd48}\label{class_csla_1_1_business_base_aefe54be24b8cacd7a602d680bf06dd48}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [6/7]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$}]{handler,  }\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, forcing Is\+New to false and Is\+Dirty to True. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handler} & Delegate reference to a callback handler that will be invoked when the async operation is complete. \\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object. 
+
+Definition at line 391 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a20f73bcd8bfaa1ce3911437c9046ea01}\label{class_csla_1_1_business_base_a20f73bcd8bfaa1ce3911437c9046ea01}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [7/7]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Starts an async operation to save the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+State} & User state data.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 282 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a64e9ad7b4556ec3d4147263ee1b767f6}\label{class_csla_1_1_business_base_a64e9ad7b4556ec3d4147263ee1b767f6}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!Clone@{Clone}}
+\index{Clone@{Clone}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Clone()}{Clone()}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Clone (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates a clone of the object. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the exact data of the original object. 
+\end{DoxyReturn}
+
+
+Definition at line 79 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a541ff8365c8fcae69ad26456d45d00ad}\label{class_csla_1_1_business_base_a541ff8365c8fcae69ad26456d45d00ad}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!GetIdValue@{GetIdValue}}
+\index{GetIdValue@{GetIdValue}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetIdValue()}{GetIdValue()}}
+{\footnotesize\ttfamily virtual object \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Get\+Id\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to return a unique identifying value for this object. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_test_1_1_data_portal_test_1_1_primitive_criteria_single_acf6c578fb6f0b2760ab1a30715e834c4}{Csla.\+Test.\+Data\+Portal\+Test.\+Primitive\+Criteria\+Single}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_roll_back_1_1_rollback_root_af963243044362dc9a258d215b1958d4b}{Csla.\+Test.\+Roll\+Back.\+Rollback\+Root}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_nullable_1_1_nullable_object_a82dffa563e8442fd566d577b996116f6}{Csla.\+Test.\+Nullable.\+Nullable\+Object}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_i_o_1_1_test_biz_obj_a5967e3febc43544a67167fa3ed9c34eb}{Csla.\+Test.\+IO.\+Test\+Biz\+Obj}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_data_binding_1_1_child_entity_a54d5c88cf9e108c264939cd11b7ea2cd}{Csla.\+Test.\+Data\+Binding.\+Child\+Entity}}, \mbox{\hyperlink{class_data_binding_app_1_1_list_object_1_1_data_object_a22bbe93dd67c808bc49f67c204feb03e}{Data\+Binding\+App.\+List\+Object.\+Data\+Object}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_children_by_interface_1_1_item2_a02e60a114d85c605f7459de16fed76a6}{Csla.\+Test.\+Children\+By\+Interface.\+Item2}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_children_by_interface_1_1_item1_ad44d9876f2329c0adf00d60be35201bf}{Csla.\+Test.\+Children\+By\+Interface.\+Item1}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_basic_1_1_grand_child_ab0f53fa76fc87e14f5d571609ad90513}{Csla.\+Test.\+Basic.\+Grand\+Child}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_basic_1_1_gen_root_base_aa3aa83cd8c43c238992738ed85fad293}{Csla.\+Test.\+Basic.\+Gen\+Root\+Base}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_basic_1_1_child_a1f338aa22c52c8b1904acb9f33611740}{Csla.\+Test.\+Basic.\+Child}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_security_1_1_permissions_root2_ab57b32ed03796201d55165ad3355c4d3}{Csla.\+Test.\+Security.\+Permissions\+Root2}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_security_1_1_permissions_root_ae797770953e02e89ee648b62dc526c60}{Csla.\+Test.\+Security.\+Permissions\+Root}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_simple_root_a5936c66c4b1c826f7c25ec967f400204}{Csla.\+Test.\+App\+Context.\+Simple\+Root}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_exception_root_a3ec57511a06ca4a40f1abbdda8962f66}{Csla.\+Test.\+App\+Context.\+Exception\+Root}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_data_binding_1_1_child_entity_a54d5c88cf9e108c264939cd11b7ea2cd}{Csla.\+Test.\+Data\+Binding.\+Child\+Entity}}, and \mbox{\hyperlink{class_csla_1_1_test_1_1_basic_1_1_gen_root_base_aa3aa83cd8c43c238992738ed85fad293}{Csla.\+Test.\+Basic.\+Gen\+Root\+Base}}.
+
+
+
+Definition at line 46 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a8e2968e966678ee4a7d9b09981cde779}\label{class_csla_1_1_business_base_a8e2968e966678ee4a7d9b09981cde779}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!OnSaved@{OnSaved}}
+\index{OnSaved@{OnSaved}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OnSaved()}{OnSaved()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.On\+Saved (\begin{DoxyParamCaption}\item[{T}]{new\+Object,  }\item[{Exception}]{e,  }\item[{object}]{user\+State }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Raises the Saved event, indicating that the object has been saved, and providing a reference to the new object instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Object} & The new object instance.\\
+\hline
+{\em e} & Exception that occurred during operation.\\
+\hline
+{\em user\+State} & User state object.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 476 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a81d91542238e2eabe96df759c008923b}\label{class_csla_1_1_business_base_a81d91542238e2eabe96df759c008923b}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterMethod@{RegisterMethod}}
+\index{RegisterMethod@{RegisterMethod}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterMethod()}{RegisterMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_method_info}{Method\+Info}} \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Method (\begin{DoxyParamCaption}\item[{Expression$<$ Action$<$ T $>$$>$}]{method\+Lambda\+Expression }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Registers a method for use in Authorization. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method\+Lambda\+Expression} & The method lambda expression.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 694 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a1ff90b73a7a82518351e4602da2c9b03}\label{class_csla_1_1_business_base_a1ff90b73a7a82518351e4602da2c9b03}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterMethod@{RegisterMethod}}
+\index{RegisterMethod@{RegisterMethod}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterMethod()}{RegisterMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_method_info}{Method\+Info}} \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Method (\begin{DoxyParamCaption}\item[{string}]{method\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Registers a method for use in Authorization. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method\+Name} & Method name from nameof()\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 684 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_ab0b3903371a3e1b5341429db77c9b000}\label{class_csla_1_1_business_base_ab0b3903371a3e1b5341429db77c9b000}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 526 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_ac59623a36c65e66ccdd664f56251151b}\label{class_csla_1_1_business_base_ac59623a36c65e66ccdd664f56251151b}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 541 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a0e1abe7dfe19db377ea157583f767148}\label{class_csla_1_1_business_base_a0e1abe7dfe19db377ea157583f767148}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [3/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em relationship} & Relationship with property value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 569 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_aa834e93baa84e9335749ee62a72684c9}\label{class_csla_1_1_business_base_aa834e93baa84e9335749ee62a72684c9}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [4/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 596 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a9f8cdec18fe1d58cab324417c260d760}\label{class_csla_1_1_business_base_a9f8cdec18fe1d58cab324417c260d760}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [5/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 642 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a587cdfe0ef8e604c3654b979e0d537cb}\label{class_csla_1_1_business_base_a587cdfe0ef8e604c3654b979e0d537cb}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [6/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+{\em relationship} & Relationship with property value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 673 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_ab1f380b35d9a7a2ecbb895df25574b27}\label{class_csla_1_1_business_base_ab1f380b35d9a7a2ecbb895df25574b27}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [7/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{Expression$<$ Func$<$ T, object $>$$>$}]{property\+Lambda\+Expression,  }\item[{string}]{friendly\+Name,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Lambda\+Expression} & Property Expression\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em relationship} & Relationship with property value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 612 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_ab2e6837703e3eda6429eabfb605ab65e}\label{class_csla_1_1_business_base_ab2e6837703e3eda6429eabfb605ab65e}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [8/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object for the property. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The provided IProperty\+Info object. 
+\end{DoxyReturn}
+
+
+Definition at line 502 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a2ba2b66b4b6770a5d538798bfd3be25f}\label{class_csla_1_1_business_base_a2ba2b66b4b6770a5d538798bfd3be25f}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [9/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 514 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_ac8196be7f4b3245a820eb56b3698e15e}\label{class_csla_1_1_business_base_ac8196be7f4b3245a820eb56b3698e15e}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [10/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em relationship} & Relationship with property value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 556 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a1bb52b4e403765b55b4044078245dfaa}\label{class_csla_1_1_business_base_a1bb52b4e403765b55b4044078245dfaa}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [11/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{friendly\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 583 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a71dce1694518313197aa7591afc05ff3}\label{class_csla_1_1_business_base_a71dce1694518313197aa7591afc05ff3}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [12/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 628 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_abfdcfd1911a2f77923afb0a295f0d637}\label{class_csla_1_1_business_base_abfdcfd1911a2f77923afb0a295f0d637}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}}
+\index{RegisterProperty$<$ P $>$@{RegisterProperty$<$ P $>$}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{RegisterProperty$<$ P $>$()}{RegisterProperty< P >()}\hspace{0.1cm}{\footnotesize\ttfamily [13/13]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$P$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Register\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{string}]{property\+Name,  }\item[{string}]{friendly\+Name,  }\item[{P}]{default\+Value,  }\item[{\mbox{\hyperlink{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4}{Relationship\+Types}}}]{relationship }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Indicates that the specified property belongs to the business object type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of property\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em property\+Name} & Property name from nameof()\\
+\hline
+{\em friendly\+Name} & Friendly description for a property to be used in databinding\\
+\hline
+{\em default\+Value} & Default Value for the property\\
+\hline
+{\em relationship} & Relationship with property value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 658 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}\label{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+Calling this method starts the save operation, causing the object to be inserted, updated or deleted within the database based on the object\textquotesingle{}s current state. 
+
+If \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a342756e9cf08028186b6cecde15b4f31}{Core.\+Business\+Base.\+Is\+Deleted}} is true the object will be deleted. Otherwise, if \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a84273283b7db180b67a105c0e83427df}{Core.\+Business\+Base.\+Is\+New}} is true the object will be inserted. Otherwise the object\textquotesingle{}s data will be updated in the database. 
+
+All this is contingent on \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ad67992c09ceb801e17e64350c289a55b}{Core.\+Business\+Base.\+Is\+Dirty}}. If this value is false, no data operation occurs. It is also contingent on \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1e368e12e88afd948b898b2c6e26dac3}{Core.\+Business\+Base.\+Is\+Valid}}. If this value is false an exception will be thrown to indicate that the UI attempted to save an invalid object. 
+
+It is important to note that this method returns a new version of the business object that contains any data updated during the save operation. You MUST update all object references to use this new version of the business object in order to have access to the correct object data. 
+
+You can override this method to add your own custom behaviors to the save operation. For instance, you may add some security checks to make sure the user can save the object. If all security checks pass, you would then invoke the base Save method via {\ttfamily base.\+Save()}. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ab6a02a94f4adaa2c15eb411db9704b18}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 121 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a0794f477dc841a23b9eb1f6cc46127b8}\label{class_csla_1_1_business_base_a0794f477dc841a23b9eb1f6cc46127b8}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, forcing Is\+New to false and Is\+Dirty to True. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save()}}. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object. 
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aad79a6eb4885fe363764c056254fa9fc}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 231 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_af7f63f4ea83e94f149ef612cd4cc1a7a}\label{class_csla_1_1_business_base_af7f63f4ea83e94f149ef612cd4cc1a7a}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily async Task \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging any resulting updates into the existing object graph. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 249 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a83546a008921472f852c4e77bb3a4655}\label{class_csla_1_1_business_base_a83546a008921472f852c4e77bb3a4655}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily async Task \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging any resulting updates into the existing object graph. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_af7f63f4ea83e94f149ef612cd4cc1a7a}{Save\+And\+Merge\+Async()}}. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 263 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_aefbf27f106929fdc88a316bd9f20d9e1}\label{class_csla_1_1_business_base_aefbf27f106929fdc88a316bd9f20d9e1}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a0f361725f0d5c89d7fc3e22070417644}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 139 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a2adbd641bf6589a998c6970b7d23b768}\label{class_csla_1_1_business_base_a2adbd641bf6589a998c6970b7d23b768}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save()}}. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aed34b4f9d808bece2dcbc759ffdf941e}{Csla.\+Core.\+ISavable$<$ T $>$}}.
+
+
+
+Definition at line 151 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a7f357d738faa44cd6ce16679d8fc637f}\label{class_csla_1_1_business_base_a7f357d738faa44cd6ce16679d8fc637f}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily virtual async Task$<$T$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update,  }\item[{object}]{user\+State,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Saves the object to the database. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & If true, triggers overriding Is\+New and Is\+Dirty. If false then it is the same as calling \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Save()}}. \\
+\hline
+{\em user\+State} & User state data.\\
+\hline
+{\em is\+Sync} & True if the save operation should be synchronous.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 165 of file Business\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_business_base_a3fe7b2c4ce49d189bed0f7919647e49d}\label{class_csla_1_1_business_base_a3fe7b2c4ce49d189bed0f7919647e49d}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!ToString@{ToString}}
+\index{ToString@{ToString}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ToString()}{ToString()}}
+{\footnotesize\ttfamily override string \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.To\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Returns a text representation of this object by returning the \mbox{\hyperlink{class_csla_1_1_business_base_a541ff8365c8fcae69ad26456d45d00ad}{Get\+Id\+Value}} value in text form. 
+
+
+
+Definition at line 60 of file Business\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_business_base_a22c57cb2e227bac263f487b6283b672e}\label{class_csla_1_1_business_base_a22c57cb2e227bac263f487b6283b672e}} 
+\index{Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}!Saved@{Saved}}
+\index{Saved@{Saved}!Csla.BusinessBase$<$ T $>$@{Csla.BusinessBase$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Saved}{Saved}}
+{\footnotesize\ttfamily Event\+Handler$<$\mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Csla.\+Core.\+Saved\+Event\+Args}}$>$ \mbox{\hyperlink{class_csla_1_1_business_base}{Csla.\+Business\+Base}}$<$ T $>$.Saved\hspace{0.3cm}{\ttfamily [add]}, {\ttfamily [remove]}}
+
+
+
+Event raised when an object has been saved. 
+
+
+
+Definition at line 431 of file Business\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\mbox{\hyperlink{_csla_2_business_base_8cs}{Business\+Base.\+cs}}\end{DoxyCompactItemize}

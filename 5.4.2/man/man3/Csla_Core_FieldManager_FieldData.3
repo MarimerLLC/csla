@@ -1,0 +1,153 @@
+.TH "Csla.Core.FieldManager.FieldData< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.FieldManager.FieldData< T > \- Contains a field value and related metadata\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.FieldManager\&.IFieldData< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFieldData\fP ()"
+.br
+.RI "Creates a new instance of the object\&. "
+.ti -1c
+.RI "\fBFieldData\fP (string name)"
+.br
+.RI "Creates a new instance of the object\&. "
+.ti -1c
+.RI "virtual void \fBMarkClean\fP ()"
+.br
+.RI "Marks the field as unchanged\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBName\fP\fC [get]\fP"
+.br
+.RI "Gets the name of the field\&. "
+.ti -1c
+.RI "virtual T \fBValue\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the value of the field\&. "
+.ti -1c
+.RI "virtual bool \fBIsSelfDirty\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the field has been changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsDirty\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the field has been changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsValid\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this field is considered valid\&. "
+.ti -1c
+.RI "bool \fBIsBusy\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this object or any of its child objects are busy\&. "
+.ti -1c
+.RI "EventHandler< \fBErrorEventArgs\fP > \fBUnhandledAsyncException\fP"
+.br
+.RI "Event indicating that an exception occurred on a background thread\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Contains a field value and related metadata\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of field value contained\&.
+.RE
+.PP
+
+.PP
+Definition at line 20 of file FieldData\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.\fBFieldData\fP ()"
+
+.PP
+Creates a new instance of the object\&. 
+.PP
+Definition at line 31 of file FieldData\&.cs\&.
+.SS "\fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.\fBFieldData\fP (string name)"
+
+.PP
+Creates a new instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.RE
+.PP
+
+.PP
+Definition at line 39 of file FieldData\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.MarkClean ()\fC [virtual]\fP"
+
+.PP
+Marks the field as unchanged\&. 
+.PP
+Implements \fBCsla\&.Core\&.FieldManager\&.IFieldData< T >\fP\&.
+.PP
+Definition at line 134 of file FieldData\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.IsBusy\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this object or any of its child objects are busy\&. 
+.PP
+Definition at line 188 of file FieldData\&.cs\&.
+.SS "virtual bool \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.IsDirty\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the field has been changed\&. 
+.PP
+Definition at line 120 of file FieldData\&.cs\&.
+.SS "virtual bool \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.IsSelfDirty\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the field has been changed\&. 
+.PP
+Definition at line 111 of file FieldData\&.cs\&.
+.SS "virtual bool \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.IsValid\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Gets a value indicating whether this field is considered valid\&. 
+.PP
+Definition at line 164 of file FieldData\&.cs\&.
+.SS "string \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.Name\fC [get]\fP"
+
+.PP
+Gets the name of the field\&. 
+.PP
+Definition at line 47 of file FieldData\&.cs\&.
+.SS "EventHandler<\fBErrorEventArgs\fP> \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.UnhandledAsyncException\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event indicating that an exception occurred on a background thread\&. 
+.PP
+Definition at line 223 of file FieldData\&.cs\&.
+.SS "virtual T \fBCsla\&.Core\&.FieldManager\&.FieldData\fP< T >\&.Value\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the value of the field\&. 
+.PP
+Definition at line 52 of file FieldData\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

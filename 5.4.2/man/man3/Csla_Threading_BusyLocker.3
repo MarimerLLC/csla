@@ -1,0 +1,69 @@
+.TH "Csla.Threading.BusyLocker" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Threading.BusyLocker \- Implementation of a lock that waits while a target object is busy\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDisposable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBusyLocker\fP (\fBINotifyBusy\fP target, TimeSpan timeout)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "void \fBWaitOne\fP ()"
+.br
+.RI "Waits for the target object to become not busy\&. "
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Disposes the object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implementation of a lock that waits while a target object is busy\&. 
+
+
+.PP
+Definition at line 52 of file BusyLock\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Threading\&.BusyLocker\&.BusyLocker (\fBINotifyBusy\fP target, TimeSpan timeout)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP Target object\&.
+.br
+\fItimeout\fP Timeout value\&.
+.RE
+.PP
+
+.PP
+Definition at line 63 of file BusyLock\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Threading\&.BusyLocker\&.Dispose ()"
+
+.PP
+Disposes the object\&. 
+.PP
+Definition at line 108 of file BusyLock\&.cs\&.
+.SS "void Csla\&.Threading\&.BusyLocker\&.WaitOne ()"
+
+.PP
+Waits for the target object to become not busy\&. 
+.PP
+Definition at line 73 of file BusyLock\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,126 @@
+.TH "Csla.Server.Dashboard.IDashboard" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Dashboard.IDashboard \- \fBData\fP portal server dashboard\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDisposable\&.
+.PP
+Inherited by \fBCsla\&.Server\&.Dashboard\&.Dashboard\fP, and \fBCsla\&.Server\&.Dashboard\&.NullDashboard\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "List< \fBActivity\fP > \fBGetRecentActivity\fP ()"
+.br
+.RI "Gets the items in the recent activity queue\&. "
+.ti -1c
+.RI "void \fBInitializeCall\fP (\fBInterceptArgs\fP e)"
+.br
+.RI "Called by the data portal to indicate a call has been inititalized\&. "
+.ti -1c
+.RI "void \fBCompleteCall\fP (\fBInterceptArgs\fP e)"
+.br
+.RI "Called by the data portal to indicate a call has been completed\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "DateTimeOffset \fBFirstCall\fP\fC [get]\fP"
+.br
+.RI "Gets the time the data portal was first invoked "
+.ti -1c
+.RI "DateTimeOffset \fBLastCall\fP\fC [get]\fP"
+.br
+.RI "Gets the most recent time the data portal was invoked "
+.ti -1c
+.RI "long \fBTotalCalls\fP\fC [get]\fP"
+.br
+.RI "Gets the total number of times the data portal has been invoked "
+.ti -1c
+.RI "long \fBFailedCalls\fP\fC [get]\fP"
+.br
+.RI "Gets the number of times data portal calls have failed "
+.ti -1c
+.RI "long \fBCompletedCalls\fP\fC [get]\fP"
+.br
+.RI "Gets the number of times data portal calls have successfully completed "
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBData\fP portal server dashboard\&. 
+
+
+.PP
+Definition at line 16 of file IDashboard\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Server\&.Dashboard\&.IDashboard\&.CompleteCall (\fBInterceptArgs\fP e)"
+
+.PP
+Called by the data portal to indicate a call has been completed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Interceptor arguments
+.RE
+.PP
+
+.SS "List<\fBActivity\fP> Csla\&.Server\&.Dashboard\&.IDashboard\&.GetRecentActivity ()"
+
+.PP
+Gets the items in the recent activity queue\&. 
+.PP
+Implemented in \fBCsla\&.Server\&.Dashboard\&.Dashboard\fP\&.
+.SS "void Csla\&.Server\&.Dashboard\&.IDashboard\&.InitializeCall (\fBInterceptArgs\fP e)"
+
+.PP
+Called by the data portal to indicate a call has been inititalized\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Interceptor arguments
+.RE
+.PP
+
+.SH "Property Documentation"
+.PP 
+.SS "long Csla\&.Server\&.Dashboard\&.IDashboard\&.CompletedCalls\fC [get]\fP"
+
+.PP
+Gets the number of times data portal calls have successfully completed 
+.PP
+Definition at line 45 of file IDashboard\&.cs\&.
+.SS "long Csla\&.Server\&.Dashboard\&.IDashboard\&.FailedCalls\fC [get]\fP"
+
+.PP
+Gets the number of times data portal calls have failed 
+.PP
+Definition at line 36 of file IDashboard\&.cs\&.
+.SS "DateTimeOffset Csla\&.Server\&.Dashboard\&.IDashboard\&.FirstCall\fC [get]\fP"
+
+.PP
+Gets the time the data portal was first invoked 
+.PP
+Definition at line 21 of file IDashboard\&.cs\&.
+.SS "DateTimeOffset Csla\&.Server\&.Dashboard\&.IDashboard\&.LastCall\fC [get]\fP"
+
+.PP
+Gets the most recent time the data portal was invoked 
+.PP
+Definition at line 26 of file IDashboard\&.cs\&.
+.SS "long Csla\&.Server\&.Dashboard\&.IDashboard\&.TotalCalls\fC [get]\fP"
+
+.PP
+Gets the total number of times the data portal has been invoked 
+.PP
+Definition at line 31 of file IDashboard\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

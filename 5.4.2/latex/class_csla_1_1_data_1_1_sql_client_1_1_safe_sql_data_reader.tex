@@ -1,0 +1,273 @@
+\hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader}{}\doxysection{Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader Class Reference}
+\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader}\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+
+
+This is a Sql\+Data\+Reader that \textquotesingle{}fixes\textquotesingle{} any null values before they are returned to our business code.  
+
+
+Inheritance diagram for Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a51a6a67a2f881a98bda17160f75ed04e}{Safe\+Sql\+Data\+Reader}} (IData\+Reader data\+Reader)
+\begin{DoxyCompactList}\small\item\em Initializes the \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader}{Safe\+Data\+Reader}} object to use data from the provided Data\+Reader object. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a8d743e5e29a95d05eba613e02979009c}{Get\+Field\+Value\+Async$<$ T $>$}} (int ordinal)
+\begin{DoxyCompactList}\small\item\em Asynchronously gets the data value as a type. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a500f40ac35056ac772f271f1a8dbfc4c}{Get\+Field\+Value\+Async$<$ T $>$}} (int ordinal, System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Asynchronously gets the data value as a type. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_af7c7e95443589313292d8b41c8f27b89}{Is\+Db\+Null\+Async}} (int ordinal)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the column has a null or missing value. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_afc4b6377d0fef092a9472d999560853a}{Is\+Db\+Null\+Async}} (int ordinal, System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the column has a null or missing value. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_aa00dc629a51b62baaa0fee5e4cea89c7}{Next\+Result\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Advances the reader to the next result. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_ae5cc9ebb997045b8769fcb5a733c9c7c}{Next\+Result\+Async}} (System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Advances the reader to the next result. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a1c20051472458a6ef8bc1d30dddc699d}{Read\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Advances to the next record in a recordset. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a68255ca7ddd30bdd00849f736598a94e}{Read\+Async}} (System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Advances to the next record in a recordset. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Sql\+Data\+Reader \mbox{\hyperlink{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a188c906ecbb54ce07765fcfc657eabc4}{Sql\+Data\+Reader}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get a reference to the underlying Sql\+Data\+Reader if present. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+This is a Sql\+Data\+Reader that \textquotesingle{}fixes\textquotesingle{} any null values before they are returned to our business code. 
+
+
+
+Definition at line 23 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a51a6a67a2f881a98bda17160f75ed04e}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a51a6a67a2f881a98bda17160f75ed04e}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!SafeSqlDataReader@{SafeSqlDataReader}}
+\index{SafeSqlDataReader@{SafeSqlDataReader}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{SafeSqlDataReader()}{SafeSqlDataReader()}}
+{\footnotesize\ttfamily Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Safe\+Sql\+Data\+Reader (\begin{DoxyParamCaption}\item[{IData\+Reader}]{data\+Reader }\end{DoxyParamCaption})}
+
+
+
+Initializes the \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader}{Safe\+Data\+Reader}} object to use data from the provided Data\+Reader object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Reader} & The source Data\+Reader object containing the data.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 36 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a8d743e5e29a95d05eba613e02979009c}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a8d743e5e29a95d05eba613e02979009c}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}}
+\index{GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFieldValueAsync$<$ T $>$()}{GetFieldValueAsync< T >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$T$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Get\+Field\+Value\+Async$<$ T $>$ (\begin{DoxyParamCaption}\item[{int}]{ordinal }\end{DoxyParamCaption})}
+
+
+
+Asynchronously gets the data value as a type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of value\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 48 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a500f40ac35056ac772f271f1a8dbfc4c}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a500f40ac35056ac772f271f1a8dbfc4c}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}}
+\index{GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFieldValueAsync$<$ T $>$()}{GetFieldValueAsync< T >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$T$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Get\+Field\+Value\+Async$<$ T $>$ (\begin{DoxyParamCaption}\item[{int}]{ordinal,  }\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Asynchronously gets the data value as a type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of value\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 61 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_af7c7e95443589313292d8b41c8f27b89}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_af7c7e95443589313292d8b41c8f27b89}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!IsDbNullAsync@{IsDbNullAsync}}
+\index{IsDbNullAsync@{IsDbNullAsync}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{IsDbNullAsync()}{IsDbNullAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Is\+Db\+Null\+Async (\begin{DoxyParamCaption}\item[{int}]{ordinal }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether the column has a null or missing value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 74 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_afc4b6377d0fef092a9472d999560853a}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_afc4b6377d0fef092a9472d999560853a}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!IsDbNullAsync@{IsDbNullAsync}}
+\index{IsDbNullAsync@{IsDbNullAsync}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{IsDbNullAsync()}{IsDbNullAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Is\+Db\+Null\+Async (\begin{DoxyParamCaption}\item[{int}]{ordinal,  }\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether the column has a null or missing value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 88 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_aa00dc629a51b62baaa0fee5e4cea89c7}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_aa00dc629a51b62baaa0fee5e4cea89c7}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!NextResultAsync@{NextResultAsync}}
+\index{NextResultAsync@{NextResultAsync}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{NextResultAsync()}{NextResultAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Next\+Result\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Advances the reader to the next result. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 99 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_ae5cc9ebb997045b8769fcb5a733c9c7c}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_ae5cc9ebb997045b8769fcb5a733c9c7c}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!NextResultAsync@{NextResultAsync}}
+\index{NextResultAsync@{NextResultAsync}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{NextResultAsync()}{NextResultAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Next\+Result\+Async (\begin{DoxyParamCaption}\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Advances the reader to the next result. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 111 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a1c20051472458a6ef8bc1d30dddc699d}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a1c20051472458a6ef8bc1d30dddc699d}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!ReadAsync@{ReadAsync}}
+\index{ReadAsync@{ReadAsync}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{ReadAsync()}{ReadAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Read\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Advances to the next record in a recordset. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 122 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a68255ca7ddd30bdd00849f736598a94e}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a68255ca7ddd30bdd00849f736598a94e}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!ReadAsync@{ReadAsync}}
+\index{ReadAsync@{ReadAsync}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{ReadAsync()}{ReadAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Read\+Async (\begin{DoxyParamCaption}\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Advances to the next record in a recordset. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 134 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a188c906ecbb54ce07765fcfc657eabc4}\label{class_csla_1_1_data_1_1_sql_client_1_1_safe_sql_data_reader_a188c906ecbb54ce07765fcfc657eabc4}} 
+\index{Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}!SqlDataReader@{SqlDataReader}}
+\index{SqlDataReader@{SqlDataReader}!Csla.Data.SqlClient.SafeSqlDataReader@{Csla.Data.SqlClient.SafeSqlDataReader}}
+\doxysubsubsection{\texorpdfstring{SqlDataReader}{SqlDataReader}}
+{\footnotesize\ttfamily Sql\+Data\+Reader Csla.\+Data.\+Sql\+Client.\+Safe\+Sql\+Data\+Reader.\+Sql\+Data\+Reader\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Get a reference to the underlying Sql\+Data\+Reader if present. 
+
+
+
+Definition at line 29 of file Safe\+Sql\+Data\+Reader.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Data.\+Sql\+Client.\+Fx/\mbox{\hyperlink{_safe_sql_data_reader_8cs}{Safe\+Sql\+Data\+Reader.\+cs}}\end{DoxyCompactItemize}

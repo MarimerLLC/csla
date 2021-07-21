@@ -1,0 +1,86 @@
+.TH "Csla.Server.Hosts.WcfChannel.NetDataContractOperationBehavior" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Hosts.WcfChannel.NetDataContractOperationBehavior \- Override the DataContract serialization behavior to use the NetDataContractSerializer\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits DataContractSerializerOperationBehavior\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNetDataContractOperationBehavior\fP (OperationDescription operation)"
+.br
+.RI "Create new instance of object\&. "
+.ti -1c
+.RI "\fBNetDataContractOperationBehavior\fP (OperationDescription operation, DataContractFormatAttribute dataContractFormatAttribute)"
+.br
+.RI "Create new instance of object\&. "
+.ti -1c
+.RI "override XmlObjectSerializer \fBCreateSerializer\fP (Type type, string name, string ns, IList< Type > knownTypes)"
+.br
+.RI "Overrided CreateSerializer to return an XmlObjectSerializer which is capable of preserving the object references\&. "
+.ti -1c
+.RI "override XmlObjectSerializer \fBCreateSerializer\fP (Type type, XmlDictionaryString name, XmlDictionaryString ns, IList< Type > knownTypes)"
+.br
+.RI "Overrided CreateSerializer to return an XmlObjectSerializer which is capable of preserving the object references\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Override the DataContract serialization behavior to use the NetDataContractSerializer\&. 
+
+
+.PP
+Definition at line 22 of file NetDataContractOperationBehavior\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Server\&.Hosts\&.WcfChannel\&.NetDataContractOperationBehavior\&.NetDataContractOperationBehavior (OperationDescription operation)"
+
+.PP
+Create new instance of object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoperation\fP Operation description\&.
+.RE
+.PP
+
+.PP
+Definition at line 30 of file NetDataContractOperationBehavior\&.cs\&.
+.SS "Csla\&.Server\&.Hosts\&.WcfChannel\&.NetDataContractOperationBehavior\&.NetDataContractOperationBehavior (OperationDescription operation, DataContractFormatAttribute dataContractFormatAttribute)"
+
+.PP
+Create new instance of object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoperation\fP Operation description\&.
+.br
+\fIdataContractFormatAttribute\fP \fBData\fP contract attribute object\&.
+.RE
+.PP
+
+.PP
+Definition at line 40 of file NetDataContractOperationBehavior\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override XmlObjectSerializer Csla\&.Server\&.Hosts\&.WcfChannel\&.NetDataContractOperationBehavior\&.CreateSerializer (Type type, string name, string ns, IList< Type > knownTypes)"
+
+.PP
+Overrided CreateSerializer to return an XmlObjectSerializer which is capable of preserving the object references\&. 
+.PP
+Definition at line 53 of file NetDataContractOperationBehavior\&.cs\&.
+.SS "override XmlObjectSerializer Csla\&.Server\&.Hosts\&.WcfChannel\&.NetDataContractOperationBehavior\&.CreateSerializer (Type type, XmlDictionaryString name, XmlDictionaryString ns, IList< Type > knownTypes)"
+
+.PP
+Overrided CreateSerializer to return an XmlObjectSerializer which is capable of preserving the object references\&. 
+.PP
+Definition at line 63 of file NetDataContractOperationBehavior\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

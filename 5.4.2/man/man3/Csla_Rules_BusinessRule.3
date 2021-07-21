@@ -1,0 +1,97 @@
+.TH "Csla.Rules.BusinessRule" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.BusinessRule \- Base class used to create business and validation rules\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.BusinessRuleBase\fP, and \fBCsla\&.Rules\&.IBusinessRule\fP\&.
+.PP
+Inherited by \fBCsla\&.Analyzers\&.IntegrationTests\&.AsynchronousRuleOldSchool\fP, \fBCsla\&.Analyzers\&.IntegrationTests\&.ExecuteWithAdd\fP, \fBCsla\&.Analyzers\&.IntegrationTests\&.ExecuteWithAddAndNameof\fP, \fBCsla\&.Analyzers\&.IntegrationTests\&.ExecuteWithoutAdd\fP, \fBCsla\&.Rules\&.CommonRules\&.DataAnnotation\fP, \fBCsla\&.Rules\&.CommonRules\&.Dependency\fP, \fBCsla\&.Rules\&.CommonRules\&.InfoMessage\fP, \fBCsla\&.Rules\&.CommonRules\&.Lambda\fP, \fBCsla\&.Rules\&.ObjectRule\fP, \fBCsla\&.Rules\&.PropertyRule\fP, \fBCsla\&.Test\&.LogicalExecutionLocation\&.LocationBusinessBase\&.CheckRule\fP, \fBCsla\&.Test\&.ValidationRules\&.BrokenRulesMergeRoot\&.RuleBroken\fP, \fBCsla\&.Test\&.ValidationRules\&.CheckLazyInputFieldExists\fP, \fBCsla\&.Test\&.ValidationRules\&.HasAsyncRule\&.Rule1\fP, \fBCsla\&.Test\&.ValidationRules\&.HasAsyncRule\&.Rule2\fP, \fBCsla\&.Test\&.ValidationRules\&.HasAsyncRule\&.Rule3\fP, \fBCsla\&.Test\&.ValidationRules\&.HasBadSharedRule\&.BadRule\fP, \fBCsla\&.Test\&.ValidationRules\&.HasChildren\&.OneItem< T >\fP, \fBCsla\&.Test\&.ValidationRules\&.HasInvalidAsyncRule\&.InvalidAsyncValidationRule\fP, Csla\&.Test\&.ValidationRules\&.Increment, \fBCsla\&.Test\&.ValidationRules\&.MyRule\fP, \fBCsla\&.Test\&.ValidationRules\&.NoErrorRoot\&.AlwaysInfo\fP, \fBCsla\&.Test\&.ValidationRules\&.NoErrorRoot\&.AlwaysWarns\fP, \fBCsla\&.Test\&.ValidationRules\&.SeverityRoot\&.AlwaysError\fP, \fBCsla\&.Test\&.ValidationRules\&.SeverityRoot\&.AlwaysInfo\fP, \fBCsla\&.Test\&.ValidationRules\&.SeverityRoot\&.AlwaysWarns\fP, \fBCsla\&.Test\&.ValidationRules\&.ShortCircuit\&.AlwaysFails\fP, \fBCsla\&.Test\&.ValidationRules\&.ShortCircuit\&.AlwaysWarns\fP, \fBCsla\&.Test\&.ValidationRules\&.TwoProps\fP, \fBCsla\&.Testing\&.Business\&.BusyStatus\&.ItemWithAsynchRule\&.FiveSecondsLongRule\fP, and \fBCsla\&.Testing\&.Business\&.Validation\&.ИзилдрRule\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBusinessRule\fP ()"
+.br
+.RI "Creates an instance of the rule that applies to a business object as a whole\&. "
+.ti -1c
+.RI "\fBBusinessRule\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty)"
+.br
+.RI "Creates an instance of the rule that applies to a specfic property\&. "
+.ti -1c
+.RI "virtual void \fBExecute\fP (\fBIRuleContext\fP context)"
+.br
+.RI "Business or validation rule implementation\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "override bool \fBIsAsync\fP\fC [get, protected set]\fP"
+.br
+.RI "Gets a value indicating whether the rule will run on a background thread\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Base class used to create business and validation rules\&. 
+
+
+.PP
+Definition at line 14 of file BusinessRule\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.BusinessRule\&.BusinessRule ()\fC [protected]\fP"
+
+.PP
+Creates an instance of the rule that applies to a business object as a whole\&. 
+.PP
+Definition at line 36 of file BusinessRule\&.cs\&.
+.SS "Csla\&.Rules\&.BusinessRule\&.BusinessRule (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty)\fC [protected]\fP"
+
+.PP
+Creates an instance of the rule that applies to a specfic property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprimaryProperty\fP Primary property for this rule\&.
+.RE
+.PP
+
+.PP
+Definition at line 45 of file BusinessRule\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Csla\&.Rules\&.BusinessRule\&.Execute (\fBIRuleContext\fP context)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Business or validation rule implementation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP Rule context object\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Rules\&.IBusinessRule\fP\&.
+.PP
+Reimplemented in \fBCsla\&.Rules\&.CommonRules\&.Lambda\fP, \fBCsla\&.Rules\&.CommonRules\&.InfoMessage\fP, \fBCsla\&.Rules\&.CommonRules\&.RegExMatch\fP, \fBCsla\&.Rules\&.CommonRules\&.MaxValue< T >\fP, \fBCsla\&.Rules\&.CommonRules\&.MinValue< T >\fP, \fBCsla\&.Rules\&.CommonRules\&.MinLength\fP, \fBCsla\&.Rules\&.CommonRules\&.MaxLength\fP, \fBCsla\&.Rules\&.CommonRules\&.Required\fP, \fBCsla\&.Rules\&.CommonRules\&.DataAnnotation\fP, \fBCsla\&.Test\&.ValidationRules\&.LookupCustomer\fP, \fBCsla\&.Test\&.ValidationRules\&.LessThan\fP, \fBCsla\&.Test\&.ValidationRules\&.ValidateRootObject\fP, \fBCsla\&.Test\&.ValidationRules\&.CalcSum\fP, \fBCsla\&.Test\&.ValidationRules\&.HasInvalidAsyncRule\&.InvalidAsyncValidationRule\fP, \fBCsla\&.Test\&.ValidationRules\&.HasAsyncRule\&.Rule3\fP, \fBCsla\&.Test\&.ValidationRules\&.HasAsyncRule\&.Rule2\fP, \fBCsla\&.Test\&.ValidationRules\&.HasAsyncRule\&.Rule1\fP, \fBCsla\&.Test\&.ValidationRules\&.CalcSumRule\fP, \fBCsla\&.Test\&.ValidationRules\&.CalculateFractionRule\fP, \fBCsla\&.Test\&.ValidationRules\&.BrokenRulesMergeRoot\&.RuleBroken\fP, \fBCsla\&.Testing\&.Business\&.BusyStatus\&.ItemWithAsynchRule\&.FiveSecondsLongRule\fP, \fBCsla\&.Blazor\&.Test\&.Rules\&.OneOfSeveralStringsRequiredRule\fP, \fBCsla\&.Analyzers\&.IntegrationTests\&.AsynchronousRuleOldSchool\fP, \fBCsla\&.Analyzers\&.IntegrationTests\&.ExecuteWithAddAndNameof\fP, \fBCsla\&.Analyzers\&.IntegrationTests\&.ExecuteWithAdd\fP, and \fBCsla\&.Analyzers\&.IntegrationTests\&.ExecuteWithoutAdd\fP\&.
+.PP
+Definition at line 53 of file BusinessRule\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "override bool Csla\&.Rules\&.BusinessRule\&.IsAsync\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Gets a value indicating whether the rule will run on a background thread\&. 
+.PP
+Definition at line 22 of file BusinessRule\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,426 @@
+\hypertarget{interface_csla_1_1_core_1_1_i_savable}{}\doxysection{Csla.\+Core.\+ISavable$<$ T $>$ Interface Template Reference}
+\label{interface_csla_1_1_core_1_1_i_savable}\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+
+
+Specifies that the object can save itself.  
+
+
+Inheritance diagram for Csla.\+Core.\+ISavable$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=9.000000cm]{interface_csla_1_1_core_1_1_i_savable}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+object \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ab6a02a94f4adaa2c15eb411db9704b18}{Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aad79a6eb4885fe363764c056254fa9fc}{Save}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+Task$<$ object $>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a0f361725f0d5c89d7fc3e22070417644}{Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+Task$<$ object $>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aed34b4f9d808bece2dcbc759ffdf941e}{Save\+Async}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}{Save\+And\+Merge\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging the result into the original object graph \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}{Save\+And\+Merge\+Async}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging the result into the original object graph \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}{Begin\+Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}{Begin\+Save}} (object user\+State)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a02d05b009e48ba21971349733f3ee09c}{Save\+Complete}} (object new\+Object)
+\begin{DoxyCompactList}\small\item\em INTERNAL CSLA .NET USE ONLY. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a99cf6194d27266cc9b12ea68a6b24a0d}{Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ae462b1406f7a09d0b1cc4cb3545823dc}{Save}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ab098713df4118b3f930c5b03f455aa09}{Save\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a3db84be0648b8d3848f8b5981ceabab5}{Save\+Async}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database. \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}{Save\+And\+Merge\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging the result into the original object graph \end{DoxyCompactList}\item 
+Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}{Save\+And\+Merge\+Async}} (bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database, merging the result into the original object graph \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}{Begin\+Save}} ()
+\begin{DoxyCompactList}\small\item\em Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}{Begin\+Save}} (object user\+State)
+\begin{DoxyCompactList}\small\item\em Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_ad81c86d9c982f639a11e075aabe5687e}{Save\+Complete}} (T new\+Object)
+\begin{DoxyCompactList}\small\item\em INTERNAL CSLA .NET USE ONLY. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable_a1904caafcf249c844fd131400da45f94}{Saved}}
+\begin{DoxyCompactList}\small\item\em Event raised when an object has been saved. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Specifies that the object can save itself. 
+
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em class}]\end{description}
+\end{Desc}
+
+
+Definition at line 18 of file ISavable\+T.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}\label{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_a68f65744a78dd316ffef289d09d7b476}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a1fa039783525a6eca0c2dc1a9bb490d2}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_ae9bb2107ce5f1bf8204430eb5d363e4b}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}\label{interface_csla_1_1_core_1_1_i_savable_ac92bbfe48fb1129ebb874706c48f507f}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_a68f65744a78dd316ffef289d09d7b476}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a1fa039783525a6eca0c2dc1a9bb490d2}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_ae9bb2107ce5f1bf8204430eb5d363e4b}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}\label{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+State} & User state object. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_a944fa1095a0d10f16e84278b328c45f7}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_ae059fff8512561f4578faba3be516091}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_a20f73bcd8bfaa1ce3911437c9046ea01}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}\label{interface_csla_1_1_core_1_1_i_savable_a41a37999982a4c50177232ea7250c29d}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!BeginSave@{BeginSave}}
+\index{BeginSave@{BeginSave}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{BeginSave()}{BeginSave()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Begin\+Save (\begin{DoxyParamCaption}\item[{object}]{user\+State }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+State} & User state object. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_a944fa1095a0d10f16e84278b328c45f7}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_ae059fff8512561f4578faba3be516091}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_a20f73bcd8bfaa1ce3911437c9046ea01}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_ab6a02a94f4adaa2c15eb411db9704b18}\label{interface_csla_1_1_core_1_1_i_savable_ab6a02a94f4adaa2c15eb411db9704b18}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily object \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_aadd2f22e81723fd219b10811acc24b9b}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a71306b1155562048049142cdc249ee12}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a99cf6194d27266cc9b12ea68a6b24a0d}\label{interface_csla_1_1_core_1_1_i_savable_a99cf6194d27266cc9b12ea68a6b24a0d}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_aadd2f22e81723fd219b10811acc24b9b}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a71306b1155562048049142cdc249ee12}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_a63230d9c8d021ee7ac688ae4c84f3f74}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_aad79a6eb4885fe363764c056254fa9fc}\label{interface_csla_1_1_core_1_1_i_savable_aad79a6eb4885fe363764c056254fa9fc}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily object \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & true to force the save to be an update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_base_a0794f477dc841a23b9eb1f6cc46127b8}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_ae462b1406f7a09d0b1cc4cb3545823dc}\label{interface_csla_1_1_core_1_1_i_savable_ae462b1406f7a09d0b1cc4cb3545823dc}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily T \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & true to force the save to be an update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_base_a0794f477dc841a23b9eb1f6cc46127b8}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}\label{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging the result into the original object graph 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_afda7451ac3992aa0acee123c0893b8bb}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a21d8e859218d73499ba7b6a6d1cf5ee5}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_af7f63f4ea83e94f149ef612cd4cc1a7a}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}\label{interface_csla_1_1_core_1_1_i_savable_a25693302cb458bcc11ee254e2bb61870}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging the result into the original object graph 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_afda7451ac3992aa0acee123c0893b8bb}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a21d8e859218d73499ba7b6a6d1cf5ee5}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_af7f63f4ea83e94f149ef612cd4cc1a7a}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}\label{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging the result into the original object graph 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & true to force the save to be an update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_base_a83546a008921472f852c4e77bb3a4655}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}\label{interface_csla_1_1_core_1_1_i_savable_aed8f31660b5889ab1f65ebea9cb141f9}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAndMergeAsync@{SaveAndMergeAsync}}
+\index{SaveAndMergeAsync@{SaveAndMergeAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAndMergeAsync()}{SaveAndMergeAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Task \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+And\+Merge\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database, merging the result into the original object graph 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & true to force the save to be an update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_base_a83546a008921472f852c4e77bb3a4655}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a0f361725f0d5c89d7fc3e22070417644}\label{interface_csla_1_1_core_1_1_i_savable_a0f361725f0d5c89d7fc3e22070417644}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Task$<$object$>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_a359f33a613777beb3eaef5dd0ad68eab}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a68dba1340acea44d2564980aa1c4c133}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_aefbf27f106929fdc88a316bd9f20d9e1}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_ab098713df4118b3f930c5b03f455aa09}\label{interface_csla_1_1_core_1_1_i_savable_ab098713df4118b3f930c5b03f455aa09}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Task$<$T$>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_list_base_a359f33a613777beb3eaef5dd0ad68eab}{Csla.\+Business\+List\+Base$<$ T, C $>$}}, \mbox{\hyperlink{class_csla_1_1_business_binding_list_base_a68dba1340acea44d2564980aa1c4c133}{Csla.\+Business\+Binding\+List\+Base$<$ T, C $>$}}, and \mbox{\hyperlink{class_csla_1_1_business_base_aefbf27f106929fdc88a316bd9f20d9e1}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_aed34b4f9d808bece2dcbc759ffdf941e}\label{interface_csla_1_1_core_1_1_i_savable_aed34b4f9d808bece2dcbc759ffdf941e}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Task$<$object$>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & true to force the save to be an update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_base_a2adbd641bf6589a998c6970b7d23b768}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a3db84be0648b8d3848f8b5981ceabab5}\label{interface_csla_1_1_core_1_1_i_savable_a3db84be0648b8d3848f8b5981ceabab5}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Task$<$T$>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}\item[{bool}]{force\+Update }\end{DoxyParamCaption})}
+
+
+
+Saves the object to the database. 
+
+\begin{DoxyReturn}{Returns}
+A new object containing the saved values.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em force\+Update} & true to force the save to be an update.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_business_base_a2adbd641bf6589a998c6970b7d23b768}{Csla.\+Business\+Base$<$ T $>$}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a02d05b009e48ba21971349733f3ee09c}\label{interface_csla_1_1_core_1_1_i_savable_a02d05b009e48ba21971349733f3ee09c}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveComplete@{SaveComplete}}
+\index{SaveComplete@{SaveComplete}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveComplete()}{SaveComplete()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+Complete (\begin{DoxyParamCaption}\item[{object}]{new\+Object }\end{DoxyParamCaption})}
+
+
+
+INTERNAL CSLA .NET USE ONLY. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Object} & The new object returned as a result of the save. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_ad81c86d9c982f639a11e075aabe5687e}\label{interface_csla_1_1_core_1_1_i_savable_ad81c86d9c982f639a11e075aabe5687e}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!SaveComplete@{SaveComplete}}
+\index{SaveComplete@{SaveComplete}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveComplete()}{SaveComplete()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Save\+Complete (\begin{DoxyParamCaption}\item[{T}]{new\+Object }\end{DoxyParamCaption})}
+
+
+
+INTERNAL CSLA .NET USE ONLY. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Object} & The new object returned as a result of the save. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Event Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_savable_a1904caafcf249c844fd131400da45f94}\label{interface_csla_1_1_core_1_1_i_savable_a1904caafcf249c844fd131400da45f94}} 
+\index{Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}!Saved@{Saved}}
+\index{Saved@{Saved}!Csla.Core.ISavable$<$ T $>$@{Csla.Core.ISavable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Saved}{Saved}}
+{\footnotesize\ttfamily Event\+Handler$<$ \mbox{\hyperlink{class_csla_1_1_core_1_1_saved_event_args}{Saved\+Event\+Args}} $>$ \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_savable}{Csla.\+Core.\+ISavable}}$<$ T $>$.Saved}
+
+
+
+Event raised when an object has been saved. 
+
+
+
+Definition at line 81 of file ISavable.\+cs.
+
+
+
+The documentation for this interface was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_i_savable_8cs}{ISavable.\+cs}}\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_i_savable_t_8cs}{ISavable\+T.\+cs}}\end{DoxyCompactItemize}

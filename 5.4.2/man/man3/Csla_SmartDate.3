@@ -1,0 +1,1795 @@
+.TH "Csla.SmartDate" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.SmartDate \- Provides a date data type that understands the concept of an empty date value\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.ISmartField\fP, IConvertible, IComparable, IFormattable, and \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBEmptyValue\fP { \fBMinDate\fP, \fBMaxDate\fP }"
+.br
+.RI "Indicates the empty value of a \fBSmartDate\fP\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSmartDate\fP (bool emptyIsMin)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (\fBEmptyValue\fP emptyValue)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime value)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime value, bool emptyIsMin)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime value, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime value, \fBEmptyValue\fP emptyValue, DateTimeKind kind)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime? value)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime? value, bool emptyIsMin)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTime? value, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTimeOffset value)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTimeOffset value, bool emptyIsMin)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (DateTimeOffset value, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (string value)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (string value, bool emptyIsMin)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "\fBSmartDate\fP (string value, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Creates a new \fBSmartDate\fP object\&. "
+.ti -1c
+.RI "DateTimeOffset \fBToDateTimeOffset\fP ()"
+.br
+.RI "Gets the value as a DateTimeOffset\&. "
+.ti -1c
+.RI "DateTime? \fBToNullableDate\fP ()"
+.br
+.RI "Gets the value as a DateTime?\&. "
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Returns a text representation of the date value\&. "
+.ti -1c
+.RI "string \fBToString\fP (string format)"
+.br
+.RI "Returns a text representation of the date value\&. "
+.ti -1c
+.RI "override bool \fBEquals\fP (object obj)"
+.br
+.RI "Compares this object to another \fBSmartDate\fP for equality\&. "
+.ti -1c
+.RI "override int \fBGetHashCode\fP ()"
+.br
+.RI "Returns a hash code for this object\&. "
+.ti -1c
+.RI "int \fBCompareTo\fP (\fBSmartDate\fP value)"
+.br
+.RI "Compares one \fBSmartDate\fP to another\&. "
+.ti -1c
+.RI "int IComparable\&. \fBCompareTo\fP (object value)"
+.br
+.RI "Compares one \fBSmartDate\fP to another\&. "
+.ti -1c
+.RI "int \fBCompareTo\fP (string value)"
+.br
+.RI "Compares a \fBSmartDate\fP to a text date value\&. "
+.ti -1c
+.RI "int \fBCompareTo\fP (DateTimeOffset value)"
+.br
+.RI "Compares a \fBSmartDate\fP to a date value\&. "
+.ti -1c
+.RI "int \fBCompareTo\fP (DateTime value)"
+.br
+.RI "Compares a \fBSmartDate\fP to a date value\&. "
+.ti -1c
+.RI "DateTime \fBAdd\fP (TimeSpan value)"
+.br
+.RI "Adds a TimeSpan onto the object\&. "
+.ti -1c
+.RI "DateTime \fBSubtract\fP (TimeSpan value)"
+.br
+.RI "Subtracts a TimeSpan from the object\&. "
+.ti -1c
+.RI "TimeSpan \fBSubtract\fP (DateTimeOffset value)"
+.br
+.RI "Subtracts a DateTimeOffset from the object\&. "
+.ti -1c
+.RI "TimeSpan \fBSubtract\fP (DateTime value)"
+.br
+.RI "Subtracts a DateTime from the object\&. "
+.ti -1c
+.RI "System\&.TypeCode IConvertible\&. \fBGetTypeCode\fP ()"
+.br
+.ti -1c
+.RI "bool IConvertible\&. \fBToBoolean\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "byte IConvertible\&. \fBToByte\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "char IConvertible\&. \fBToChar\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "System\&.DateTime IConvertible\&. \fBToDateTime\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "decimal IConvertible\&. \fBToDecimal\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "double IConvertible\&. \fBToDouble\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "short IConvertible\&. \fBToInt16\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "int IConvertible\&. \fBToInt32\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "long IConvertible\&. \fBToInt64\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "sbyte IConvertible\&. \fBToSByte\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "float IConvertible\&. \fBToSingle\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "string IConvertible\&. \fBToString\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "object IConvertible\&. \fBToType\fP (System\&.Type conversionType, System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "ushort IConvertible\&. \fBToUInt16\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "uint IConvertible\&. \fBToUInt32\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "ulong IConvertible\&. \fBToUInt64\fP (System\&.IFormatProvider provider)"
+.br
+.ti -1c
+.RI "string IFormattable\&. \fBToString\fP (string format, IFormatProvider formatProvider)"
+.br
+.ti -1c
+.RI "void IMobileObject\&. \fBGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&. "
+.ti -1c
+.RI "void IMobileObject\&. \fBSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&. "
+.ti -1c
+.RI "void IMobileObject\&. \fBSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&. "
+.ti -1c
+.RI "void IMobileObject\&. \fBGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBSmartDate\fP ()"
+.br
+.ti -1c
+.RI "static void \fBSetDefaultFormatString\fP (string formatString)"
+.br
+.RI "Sets the global default format string used by all new \fBSmartDate\fP values going forward\&. "
+.ti -1c
+.RI "static \fBSmartDate\fP \fBParse\fP (string value)"
+.br
+.RI "Converts a string value into a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static \fBSmartDate\fP \fBParse\fP (string value, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Converts a string value into a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static \fBSmartDate\fP \fBParse\fP (string value, bool emptyIsMin)"
+.br
+.RI "Converts a string value into a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static bool \fBTryParse\fP (string value, ref \fBSmartDate\fP result)"
+.br
+.RI "Converts a string value into a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static bool \fBTryParse\fP (string value, \fBEmptyValue\fP emptyValue, ref \fBSmartDate\fP result)"
+.br
+.RI "Converts a string value into a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static DateTime \fBStringToDate\fP (string value)"
+.br
+.RI "Converts a text date representation into a Date value\&. "
+.ti -1c
+.RI "static DateTime \fBStringToDate\fP (string value, bool emptyIsMin)"
+.br
+.ti -1c
+.RI "static DateTime \fBStringToDate\fP (string value, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Converts a text date representation into a Date value\&. "
+.ti -1c
+.RI "static string \fBDateToString\fP (DateTime value, string formatString)"
+.br
+.RI "Converts a date value into a text representation\&. "
+.ti -1c
+.RI "static string \fBDateToString\fP (DateTime value, string formatString, bool emptyIsMin)"
+.br
+.RI "Converts a date value into a text representation\&. "
+.ti -1c
+.RI "static string \fBDateToString\fP (DateTime value, string formatString, \fBEmptyValue\fP emptyValue)"
+.br
+.RI "Converts a date value into a text representation\&. "
+.ti -1c
+.RI "static bool \fBoperator==\fP (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)"
+.br
+.RI "Equality operator "
+.ti -1c
+.RI "static bool \fBoperator!=\fP (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)"
+.br
+.RI "Inequality operator "
+.ti -1c
+.RI "static implicit \fBoperator string\fP (\fBSmartDate\fP obj1)"
+.br
+.RI "Convert a \fBSmartDate\fP to a String\&. "
+.ti -1c
+.RI "static implicit \fBoperator System\&.DateTime\fP (\fBSmartDate\fP obj1)"
+.br
+.RI "Convert a \fBSmartDate\fP to a DateTime\&. "
+.ti -1c
+.RI "static implicit \fBoperator System\&.DateTime?\fP (\fBSmartDate\fP obj1)"
+.br
+.RI "Convert a \fBSmartDate\fP to a nullable DateTime\&. "
+.ti -1c
+.RI "static implicit \fBoperator DateTimeOffset\fP (\fBSmartDate\fP obj1)"
+.br
+.RI "Convert a \fBSmartDate\fP to a DateTimeOffset\&. "
+.ti -1c
+.RI "static \fBoperator SmartDate\fP (string dateValue)"
+.br
+.RI "Convert a value to a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static implicit \fBoperator SmartDate\fP (System\&.DateTime dateValue)"
+.br
+.RI "Convert a value to a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static implicit \fBoperator SmartDate\fP (System\&.DateTime? dateValue)"
+.br
+.RI "Convert a value to a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static \fBoperator SmartDate\fP (DateTimeOffset dateValue)"
+.br
+.RI "Convert a value to a \fBSmartDate\fP\&. "
+.ti -1c
+.RI "static bool \fBoperator==\fP (\fBSmartDate\fP obj1, DateTime obj2)"
+.br
+.RI "Equality operator "
+.ti -1c
+.RI "static bool \fBoperator!=\fP (\fBSmartDate\fP obj1, DateTime obj2)"
+.br
+.RI "Inequality operator "
+.ti -1c
+.RI "static bool \fBoperator==\fP (\fBSmartDate\fP obj1, string obj2)"
+.br
+.RI "Equality operator "
+.ti -1c
+.RI "static bool \fBoperator!=\fP (\fBSmartDate\fP obj1, string obj2)"
+.br
+.RI "Inequality operator "
+.ti -1c
+.RI "static \fBSmartDate\fP \fBoperator+\fP (\fBSmartDate\fP start, TimeSpan span)"
+.br
+.RI "Addition operator "
+.ti -1c
+.RI "static \fBSmartDate\fP \fBoperator\-\fP (\fBSmartDate\fP start, TimeSpan span)"
+.br
+.RI "Subtraction operator "
+.ti -1c
+.RI "static TimeSpan \fBoperator\-\fP (\fBSmartDate\fP start, \fBSmartDate\fP finish)"
+.br
+.RI "Subtraction operator "
+.ti -1c
+.RI "static bool \fBoperator>\fP (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)"
+.br
+.RI "Greater than operator "
+.ti -1c
+.RI "static bool \fBoperator<\fP (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)"
+.br
+.RI "Less than operator "
+.ti -1c
+.RI "static bool \fBoperator>\fP (\fBSmartDate\fP obj1, DateTime obj2)"
+.br
+.RI "Greater than operator "
+.ti -1c
+.RI "static bool \fBoperator<\fP (\fBSmartDate\fP obj1, DateTime obj2)"
+.br
+.RI "Less than operator "
+.ti -1c
+.RI "static bool \fBoperator>\fP (\fBSmartDate\fP obj1, string obj2)"
+.br
+.RI "Greater than operator "
+.ti -1c
+.RI "static bool \fBoperator<\fP (\fBSmartDate\fP obj1, string obj2)"
+.br
+.RI "Less than operator "
+.ti -1c
+.RI "static bool \fBoperator>=\fP (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)"
+.br
+.RI "Greater than or equals operator "
+.ti -1c
+.RI "static bool \fBoperator<=\fP (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)"
+.br
+.RI "Less than or equals operator "
+.ti -1c
+.RI "static bool \fBoperator>=\fP (\fBSmartDate\fP obj1, DateTime obj2)"
+.br
+.RI "Greater than or equals operator "
+.ti -1c
+.RI "static bool \fBoperator<=\fP (\fBSmartDate\fP obj1, DateTime obj2)"
+.br
+.RI "Less than or equals operator "
+.ti -1c
+.RI "static bool \fBoperator>=\fP (\fBSmartDate\fP obj1, string obj2)"
+.br
+.RI "Greater than or equals operator "
+.ti -1c
+.RI "static bool \fBoperator<=\fP (\fBSmartDate\fP obj1, string obj2)"
+.br
+.RI "Less than or equals operator "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBFormatString\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the format string used to format a date value when it is returned as text\&. "
+.ti -1c
+.RI "string \fBText\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the date value\&. "
+.ti -1c
+.RI "DateTime? \fBDate\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the date value\&. "
+.ti -1c
+.RI "object \fBDBValue\fP\fC [get]\fP"
+.br
+.RI "Gets a database-friendly version of the date value\&. "
+.ti -1c
+.RI "bool \fBIsEmpty\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this object contains an empty date\&. "
+.ti -1c
+.RI "bool \fBEmptyIsMin\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether an empty date is the min or max possible date value\&. "
+.ti -1c
+.RI "static Func< string, DateTime?> \fBCustomParser\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the custom parser\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides a date data type that understands the concept of an empty date value\&. 
+
+See Chapter 5 for a full discussion of the need for this data type and the design choices behind it\&. 
+.PP
+Definition at line 27 of file SmartDate\&.cs\&.
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBCsla\&.SmartDate\&.EmptyValue\fP\fC [strong]\fP"
+
+.PP
+Indicates the empty value of a \fBSmartDate\fP\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMinDate \fP\fP
+Indicates that an empty \fBSmartDate\fP is the smallest date\&. 
+.TP
+\fB\fIMaxDate \fP\fP
+Indicates that an empty \fBSmartDate\fP is the largest date\&. 
+.PP
+Definition at line 51 of file SmartDate\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "static Csla\&.SmartDate\&.SmartDate ()\fC [static]\fP"
+
+.PP
+Definition at line 69 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (bool emptyIsMin)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 78 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (\fBEmptyValue\fP emptyValue)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 92 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime value)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. The \fBSmartDate\fP created will use the min possible date to represent an empty date\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.RE
+.PP
+
+.PP
+Definition at line 110 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime value, bool emptyIsMin)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 124 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime value, \fBEmptyValue\fP emptyValue)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 138 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime value, \fBEmptyValue\fP emptyValue, DateTimeKind kind)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.br
+\fIkind\fP One of the DateTimeKind values\&.
+.RE
+.PP
+
+.PP
+Definition at line 153 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime? value)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. The \fBSmartDate\fP created will use the min possible date to represent an empty date\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.RE
+.PP
+
+.PP
+Definition at line 170 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime? value, bool emptyIsMin)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 185 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTime? value, \fBEmptyValue\fP emptyValue)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 200 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTimeOffset value)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. The \fBSmartDate\fP created will use the min possible date to represent an empty date\&. 
+.PP
+\fBSmartDate\fP maintains the date value as a DateTime, so the provided DateTimeOffset is converted to a DateTime in this constructor\&. You should be aware that this can lead to a loss of precision in some cases\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.RE
+.PP
+
+.PP
+Definition at line 226 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTimeOffset value, bool emptyIsMin)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+.PP
+\fBSmartDate\fP maintains the date value as a DateTime, so the provided DateTimeOffset is converted to a DateTime in this constructor\&. You should be aware that this can lead to a loss of precision in some cases\&. 
+.PP
+Definition at line 247 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (DateTimeOffset value, \fBEmptyValue\fP emptyValue)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+.PP
+\fBSmartDate\fP maintains the date value as a DateTime, so the provided DateTimeOffset is converted to a DateTime in this constructor\&. You should be aware that this can lead to a loss of precision in some cases\&. 
+.PP
+Definition at line 268 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (string value)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. The \fBSmartDate\fP created will use the min possible date to represent an empty date\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object (as text)\&.
+.RE
+.PP
+
+.PP
+Definition at line 285 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (string value, bool emptyIsMin)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object (as text)\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 299 of file SmartDate\&.cs\&.
+.SS "Csla\&.SmartDate\&.SmartDate (string value, \fBEmptyValue\fP emptyValue)"
+
+.PP
+Creates a new \fBSmartDate\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The initial value of the object (as text)\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 313 of file SmartDate\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "DateTime Csla\&.SmartDate\&.Add (TimeSpan value)"
+
+.PP
+Adds a TimeSpan onto the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Span to add to the date\&.
+.RE
+.PP
+
+.PP
+Definition at line 910 of file SmartDate\&.cs\&.
+.SS "int Csla\&.SmartDate\&.CompareTo (DateTime value)"
+
+.PP
+Compares a \fBSmartDate\fP to a date value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date to which we are being compared\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the comparison date is less than, equal to or greater than this date\&.
+.RE
+.PP
+
+.PP
+Definition at line 901 of file SmartDate\&.cs\&.
+.SS "int Csla\&.SmartDate\&.CompareTo (DateTimeOffset value)"
+
+.PP
+Compares a \fBSmartDate\fP to a date value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date to which we are being compared\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the comparison date is less than, equal to or greater than this date\&.
+.RE
+.PP
+.PP
+\fBSmartDate\fP maintains the date value as a DateTime, so the provided DateTimeOffset is converted to a DateTime for this comparison\&. You should be aware that this can lead to a loss of precision in some cases\&. 
+.PP
+Definition at line 891 of file SmartDate\&.cs\&.
+.SS "int IComparable\&. Csla\&.SmartDate\&.CompareTo (object value)"
+
+.PP
+Compares one \fBSmartDate\fP to another\&. This method works the same as the DateTime\&.CompareTo method on the Date datetype, with the exception that it understands the concept of empty date values\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date to which we are being compared\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the comparison date is less than, equal to or greater than this date\&.
+.RE
+.PP
+
+.PP
+Definition at line 861 of file SmartDate\&.cs\&.
+.SS "int Csla\&.SmartDate\&.CompareTo (\fBSmartDate\fP value)"
+
+.PP
+Compares one \fBSmartDate\fP to another\&. This method works the same as the DateTime\&.CompareTo method on the Date datetype, with the exception that it understands the concept of empty date values\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date to which we are being compared\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the comparison date is less than, equal to or greater than this date\&.
+.RE
+.PP
+
+.PP
+Definition at line 843 of file SmartDate\&.cs\&.
+.SS "int Csla\&.SmartDate\&.CompareTo (string value)"
+
+.PP
+Compares a \fBSmartDate\fP to a text date value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date to which we are being compared\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the comparison date is less than, equal to or greater than this date\&.
+.RE
+.PP
+
+.PP
+Definition at line 874 of file SmartDate\&.cs\&.
+.SS "static string Csla\&.SmartDate\&.DateToString (DateTime value, string formatString)\fC [static]\fP"
+
+.PP
+Converts a date value into a text representation\&. The date is considered empty if it matches the min value for the Date datatype\&. If the date is empty, this method returns an empty string\&. Otherwise it returns the date value formatted based on the FormatString parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date value to convert\&.
+.br
+\fIformatString\fP The format string used to format the date into text\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Text representation of the date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 775 of file SmartDate\&.cs\&.
+.SS "static string Csla\&.SmartDate\&.DateToString (DateTime value, string formatString, bool emptyIsMin)\fC [static]\fP"
+
+.PP
+Converts a date value into a text representation\&. Whether the date value is considered empty is determined by the EmptyIsMin parameter value\&. If the date is empty, this method returns an empty string\&. Otherwise it returns the date value formatted based on the FormatString parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date value to convert\&.
+.br
+\fIformatString\fP The format string used to format the date into text\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Text representation of the date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 794 of file SmartDate\&.cs\&.
+.SS "static string Csla\&.SmartDate\&.DateToString (DateTime value, string formatString, \fBEmptyValue\fP emptyValue)\fC [static]\fP"
+
+.PP
+Converts a date value into a text representation\&. Whether the date value is considered empty is determined by the EmptyIsMin parameter value\&. If the date is empty, this method returns an empty string\&. Otherwise it returns the date value formatted based on the FormatString parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The date value to convert\&.
+.br
+\fIformatString\fP The format string used to format the date into text\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Text representation of the date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 813 of file SmartDate\&.cs\&.
+.SS "override bool Csla\&.SmartDate\&.Equals (object obj)"
+
+.PP
+Compares this object to another \fBSmartDate\fP for equality\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Object to compare for equality\&.
+.RE
+.PP
+
+.PP
+Definition at line 480 of file SmartDate\&.cs\&.
+.SS "void IMobileObject\&. Csla\&.SmartDate\&.GetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the serialization\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 1401 of file SmartDate\&.cs\&.
+.SS "override int Csla\&.SmartDate\&.GetHashCode ()"
+
+.PP
+Returns a hash code for this object\&. 
+.PP
+Definition at line 501 of file SmartDate\&.cs\&.
+.SS "void IMobileObject\&. Csla\&.SmartDate\&.GetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 1378 of file SmartDate\&.cs\&.
+.SS "System\&.TypeCode IConvertible\&. Csla\&.SmartDate\&.GetTypeCode ()"
+
+.PP
+Definition at line 1273 of file SmartDate\&.cs\&.
+.SS "static implicit Csla\&.SmartDate\&.operator DateTimeOffset (\fBSmartDate\fP obj1)\fC [static]\fP"
+
+.PP
+Convert a \fBSmartDate\fP to a DateTimeOffset\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP \fBSmartDate\fP value\&.
+.RE
+.PP
+
+.PP
+Definition at line 1018 of file SmartDate\&.cs\&.
+.SS "static Csla\&.SmartDate\&.operator \fBSmartDate\fP (DateTimeOffset dateValue)\fC [explicit]\fP, \fC [static]\fP"
+
+.PP
+Convert a value to a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdateValue\fP Value to convert\&.
+.RE
+.PP
+
+.PP
+Definition at line 1054 of file SmartDate\&.cs\&.
+.SS "static Csla\&.SmartDate\&.operator \fBSmartDate\fP (string dateValue)\fC [explicit]\fP, \fC [static]\fP"
+
+.PP
+Convert a value to a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdateValue\fP Value to convert\&.
+.RE
+.PP
+
+.PP
+Definition at line 1027 of file SmartDate\&.cs\&.
+.SS "static implicit Csla\&.SmartDate\&.operator \fBSmartDate\fP (System\&.DateTime dateValue)\fC [static]\fP"
+
+.PP
+Convert a value to a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdateValue\fP Value to convert\&.
+.RE
+.PP
+
+.PP
+Definition at line 1036 of file SmartDate\&.cs\&.
+.SS "static implicit Csla\&.SmartDate\&.operator \fBSmartDate\fP (System\&.DateTime? dateValue)\fC [static]\fP"
+
+.PP
+Convert a value to a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdateValue\fP Value to convert\&.
+.RE
+.PP
+
+.PP
+Definition at line 1045 of file SmartDate\&.cs\&.
+.SS "static implicit Csla\&.SmartDate\&.operator string (\fBSmartDate\fP obj1)\fC [static]\fP"
+
+.PP
+Convert a \fBSmartDate\fP to a String\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP \fBSmartDate\fP value\&.
+.RE
+.PP
+
+.PP
+Definition at line 991 of file SmartDate\&.cs\&.
+.SS "static implicit Csla\&.SmartDate\&.operator System\&.DateTime (\fBSmartDate\fP obj1)\fC [static]\fP"
+
+.PP
+Convert a \fBSmartDate\fP to a DateTime\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP \fBSmartDate\fP value\&.
+.RE
+.PP
+
+.PP
+Definition at line 1000 of file SmartDate\&.cs\&.
+.SS "static implicit Csla\&.SmartDate\&.operator System\&.DateTime? (\fBSmartDate\fP obj1)\fC [static]\fP"
+
+.PP
+Convert a \fBSmartDate\fP to a nullable DateTime\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP \fBSmartDate\fP value\&.
+.RE
+.PP
+
+.PP
+Definition at line 1009 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator!= (\fBSmartDate\fP obj1, DateTime obj2)\fC [static]\fP"
+
+.PP
+Inequality operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1076 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator!= (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)\fC [static]\fP"
+
+.PP
+Inequality operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 982 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator!= (\fBSmartDate\fP obj1, string obj2)\fC [static]\fP"
+
+.PP
+Inequality operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1098 of file SmartDate\&.cs\&.
+.SS "static \fBSmartDate\fP Csla\&.SmartDate\&.operator+ (\fBSmartDate\fP start, TimeSpan span)\fC [static]\fP"
+
+.PP
+Addition operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Original date/time
+.br
+\fIspan\fP Span to add
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1109 of file SmartDate\&.cs\&.
+.SS "static TimeSpan Csla\&.SmartDate\&.operator\- (\fBSmartDate\fP start, \fBSmartDate\fP finish)\fC [static]\fP"
+
+.PP
+Subtraction operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Original date/time
+.br
+\fIfinish\fP Second date/time
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1131 of file SmartDate\&.cs\&.
+.SS "static \fBSmartDate\fP Csla\&.SmartDate\&.operator\- (\fBSmartDate\fP start, TimeSpan span)\fC [static]\fP"
+
+.PP
+Subtraction operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Original date/time
+.br
+\fIspan\fP Span to subtract
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1120 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator< (\fBSmartDate\fP obj1, DateTime obj2)\fC [static]\fP"
+
+.PP
+Less than operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1175 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator< (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)\fC [static]\fP"
+
+.PP
+Less than operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1153 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator< (\fBSmartDate\fP obj1, string obj2)\fC [static]\fP"
+
+.PP
+Less than operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1197 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator<= (\fBSmartDate\fP obj1, DateTime obj2)\fC [static]\fP"
+
+.PP
+Less than or equals operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1241 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator<= (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)\fC [static]\fP"
+
+.PP
+Less than or equals operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1219 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator<= (\fBSmartDate\fP obj1, string obj2)\fC [static]\fP"
+
+.PP
+Less than or equals operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1263 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator== (\fBSmartDate\fP obj1, DateTime obj2)\fC [static]\fP"
+
+.PP
+Equality operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1065 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator== (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)\fC [static]\fP"
+
+.PP
+Equality operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 971 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator== (\fBSmartDate\fP obj1, string obj2)\fC [static]\fP"
+
+.PP
+Equality operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1087 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator> (\fBSmartDate\fP obj1, DateTime obj2)\fC [static]\fP"
+
+.PP
+Greater than operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1164 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator> (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)\fC [static]\fP"
+
+.PP
+Greater than operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1142 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator> (\fBSmartDate\fP obj1, string obj2)\fC [static]\fP"
+
+.PP
+Greater than operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1186 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator>= (\fBSmartDate\fP obj1, DateTime obj2)\fC [static]\fP"
+
+.PP
+Greater than or equals operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1230 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator>= (\fBSmartDate\fP obj1, \fBSmartDate\fP obj2)\fC [static]\fP"
+
+.PP
+Greater than or equals operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1208 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.operator>= (\fBSmartDate\fP obj1, string obj2)\fC [static]\fP"
+
+.PP
+Greater than or equals operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj1\fP First object
+.br
+\fIobj2\fP Second object
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 1252 of file SmartDate\&.cs\&.
+.SS "static \fBSmartDate\fP Csla\&.SmartDate\&.Parse (string value)\fC [static]\fP"
+
+.PP
+Converts a string value into a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP String containing the date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A new \fBSmartDate\fP containing the date value\&.
+.RE
+.PP
+.PP
+EmptyIsMin will default to true\&. 
+.PP
+Definition at line 600 of file SmartDate\&.cs\&.
+.SS "static \fBSmartDate\fP Csla\&.SmartDate\&.Parse (string value, bool emptyIsMin)\fC [static]\fP"
+
+.PP
+Converts a string value into a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP String containing the date value\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A new \fBSmartDate\fP containing the date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 622 of file SmartDate\&.cs\&.
+.SS "static \fBSmartDate\fP Csla\&.SmartDate\&.Parse (string value, \fBEmptyValue\fP emptyValue)\fC [static]\fP"
+
+.PP
+Converts a string value into a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP String containing the date value\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A new \fBSmartDate\fP containing the date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 611 of file SmartDate\&.cs\&.
+.SS "void IMobileObject\&. Csla\&.SmartDate\&.SetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the deserialization\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 1396 of file SmartDate\&.cs\&.
+.SS "static void Csla\&.SmartDate\&.SetDefaultFormatString (string formatString)\fC [static]\fP"
+
+.PP
+Sets the global default format string used by all new \fBSmartDate\fP values going forward\&. The default global format string is 'd' unless this method is called to change that value\&. Existing \fBSmartDate\fP values are unaffected by this method, only \fBSmartDate\fP values created after calling this method are affected\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIformatString\fP The format string should follow the requirements for the \&.NET System\&.String\&.Format statement\&. 
+.RE
+.PP
+
+.PP
+Definition at line 356 of file SmartDate\&.cs\&.
+.SS "void IMobileObject\&. Csla\&.SmartDate\&.SetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 1387 of file SmartDate\&.cs\&.
+.SS "static DateTime Csla\&.SmartDate\&.StringToDate (string value)\fC [static]\fP"
+
+.PP
+Converts a text date representation into a Date value\&. An empty string is assumed to represent an empty date\&. An empty date is returned as the MinValue of the Date datatype\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The text representation of the date\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A Date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 668 of file SmartDate\&.cs\&.
+.SS "static DateTime Csla\&.SmartDate\&.StringToDate (string value, bool emptyIsMin)\fC [static]\fP"
+
+.PP
+Converts a text date representation into a Date value\&.
+.PP
+An empty string is assumed to represent an empty date\&. An empty date is returned as the MinValue or MaxValue of the Date datatype depending on the EmptyIsMin parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The text representation of the date\&.
+.br
+\fIemptyIsMin\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A Date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 684 of file SmartDate\&.cs\&.
+.SS "static DateTime Csla\&.SmartDate\&.StringToDate (string value, \fBEmptyValue\fP emptyValue)\fC [static]\fP"
+
+.PP
+Converts a text date representation into a Date value\&. An empty string is assumed to represent an empty date\&. An empty date is returned as the MinValue or MaxValue of the Date datatype depending on the EmptyIsMin parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The text representation of the date\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A Date value\&.
+.RE
+.PP
+
+.PP
+Definition at line 700 of file SmartDate\&.cs\&.
+.SS "TimeSpan Csla\&.SmartDate\&.Subtract (DateTime value)"
+
+.PP
+Subtracts a DateTime from the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Date to subtract from the date\&.
+.RE
+.PP
+
+.PP
+Definition at line 953 of file SmartDate\&.cs\&.
+.SS "TimeSpan Csla\&.SmartDate\&.Subtract (DateTimeOffset value)"
+
+.PP
+Subtracts a DateTimeOffset from the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP DateTimeOffset to subtract from the date\&.
+.RE
+.PP
+.PP
+\fBSmartDate\fP maintains the date value as a DateTime, so the provided DateTimeOffset is converted to a DateTime for this comparison\&. You should be aware that this can lead to a loss of precision in some cases\&. 
+.PP
+Definition at line 941 of file SmartDate\&.cs\&.
+.SS "DateTime Csla\&.SmartDate\&.Subtract (TimeSpan value)"
+
+.PP
+Subtracts a TimeSpan from the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Span to subtract from the date\&.
+.RE
+.PP
+
+.PP
+Definition at line 922 of file SmartDate\&.cs\&.
+.SS "bool IConvertible\&. Csla\&.SmartDate\&.ToBoolean (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1278 of file SmartDate\&.cs\&.
+.SS "byte IConvertible\&. Csla\&.SmartDate\&.ToByte (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1283 of file SmartDate\&.cs\&.
+.SS "char IConvertible\&. Csla\&.SmartDate\&.ToChar (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1288 of file SmartDate\&.cs\&.
+.SS "System\&.DateTime IConvertible\&. Csla\&.SmartDate\&.ToDateTime (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1293 of file SmartDate\&.cs\&.
+.SS "DateTimeOffset Csla\&.SmartDate\&.ToDateTimeOffset ()"
+
+.PP
+Gets the value as a DateTimeOffset\&. 
+.PP
+Definition at line 433 of file SmartDate\&.cs\&.
+.SS "decimal IConvertible\&. Csla\&.SmartDate\&.ToDecimal (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1298 of file SmartDate\&.cs\&.
+.SS "double IConvertible\&. Csla\&.SmartDate\&.ToDouble (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1303 of file SmartDate\&.cs\&.
+.SS "short IConvertible\&. Csla\&.SmartDate\&.ToInt16 (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1308 of file SmartDate\&.cs\&.
+.SS "int IConvertible\&. Csla\&.SmartDate\&.ToInt32 (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1313 of file SmartDate\&.cs\&.
+.SS "long IConvertible\&. Csla\&.SmartDate\&.ToInt64 (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1318 of file SmartDate\&.cs\&.
+.SS "DateTime? Csla\&.SmartDate\&.ToNullableDate ()"
+
+.PP
+Gets the value as a DateTime?\&. 
+.PP
+Definition at line 441 of file SmartDate\&.cs\&.
+.SS "sbyte IConvertible\&. Csla\&.SmartDate\&.ToSByte (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1323 of file SmartDate\&.cs\&.
+.SS "float IConvertible\&. Csla\&.SmartDate\&.ToSingle (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1328 of file SmartDate\&.cs\&.
+.SS "override string Csla\&.SmartDate\&.ToString ()"
+
+.PP
+Returns a text representation of the date value\&. 
+.PP
+Definition at line 456 of file SmartDate\&.cs\&.
+.SS "string Csla\&.SmartDate\&.ToString (string format)"
+
+.PP
+Returns a text representation of the date value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIformat\fP A standard \&.NET format string\&. 
+.RE
+.PP
+
+.PP
+Definition at line 467 of file SmartDate\&.cs\&.
+.SS "string IFormattable\&. Csla\&.SmartDate\&.ToString (string format, IFormatProvider formatProvider)"
+
+.PP
+Definition at line 1369 of file SmartDate\&.cs\&.
+.SS "string IConvertible\&. Csla\&.SmartDate\&.ToString (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1333 of file SmartDate\&.cs\&.
+.SS "object IConvertible\&. Csla\&.SmartDate\&.ToType (System\&.Type conversionType, System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1338 of file SmartDate\&.cs\&.
+.SS "ushort IConvertible\&. Csla\&.SmartDate\&.ToUInt16 (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1348 of file SmartDate\&.cs\&.
+.SS "uint IConvertible\&. Csla\&.SmartDate\&.ToUInt32 (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1353 of file SmartDate\&.cs\&.
+.SS "ulong IConvertible\&. Csla\&.SmartDate\&.ToUInt64 (System\&.IFormatProvider provider)"
+
+.PP
+Definition at line 1358 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.TryParse (string value, \fBEmptyValue\fP emptyValue, ref \fBSmartDate\fP result)\fC [static]\fP"
+
+.PP
+Converts a string value into a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP String containing the date value\&.
+.br
+\fIemptyValue\fP Indicates whether an empty date is the min or max date value\&.
+.br
+\fIresult\fP The resulting \fBSmartDate\fP value if the parse was successful\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the parse was successful\&.
+.RE
+.PP
+
+.PP
+Definition at line 645 of file SmartDate\&.cs\&.
+.SS "static bool Csla\&.SmartDate\&.TryParse (string value, ref \fBSmartDate\fP result)\fC [static]\fP"
+
+.PP
+Converts a string value into a \fBSmartDate\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP String containing the date value\&.
+.br
+\fIresult\fP The resulting \fBSmartDate\fP value if the parse was successful\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the parse was successful\&.
+.RE
+.PP
+
+.PP
+Definition at line 633 of file SmartDate\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Func<string, DateTime?> Csla\&.SmartDate\&.CustomParser\fC [static]\fP, \fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the custom parser\&. The CustomParser is called first in TryStringToDate to allow custom parsing\&. The parser method must return null if unable to parse and allow \fBSmartDate\fP to try default parsing\&.
+.PP
+The custom parser\&. 
+.PP
+Definition at line 585 of file SmartDate\&.cs\&.
+.SS "DateTime? Csla\&.SmartDate\&.Date\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the date value\&. 
+.PP
+Definition at line 412 of file SmartDate\&.cs\&.
+.SS "object Csla\&.SmartDate\&.DBValue\fC [get]\fP"
+
+.PP
+Gets a database-friendly version of the date value\&. If the \fBSmartDate\fP contains an empty date, this returns DBNull\&. Otherwise the actual date value is returned as type Date\&. 
+.PP
+This property is very useful when setting parameter values for a Command object, since it automatically stores null values into the database for empty date values\&. 
+.PP
+When you also use the SafeDataReader and its GetSmartDate method, you can easily read a null value from the database back into a \fBSmartDate\fP object so it remains considered as an empty date value\&. 
+.PP
+Definition at line 528 of file SmartDate\&.cs\&.
+.SS "bool Csla\&.SmartDate\&.EmptyIsMin\fC [get]\fP"
+
+.PP
+Gets a value indicating whether an empty date is the min or max possible date value\&. Whether an empty date is considered to be the smallest or largest possible date is only important for comparison operations\&. This allows you to compare an empty date with a real date and get a meaningful result\&. 
+.PP
+Definition at line 567 of file SmartDate\&.cs\&.
+.SS "string Csla\&.SmartDate\&.FormatString\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the format string used to format a date value when it is returned as text\&. The format string should follow the requirements for the \&.NET System\&.String\&.Format statement\&. 
+.PP
+A format string\&.
+.PP
+Definition at line 370 of file SmartDate\&.cs\&.
+.SS "bool Csla\&.SmartDate\&.IsEmpty\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this object contains an empty date\&. 
+.PP
+Definition at line 547 of file SmartDate\&.cs\&.
+.SS "string Csla\&.SmartDate\&.Text\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the date value\&. This property can be used to set the date value by passing a text representation of the date\&. Any text date representation that can be parsed by the \&.NET runtime is valid\&. 
+.PP
+When the date value is retrieved via this property, the text is formatted by using the format specified by the \fBFormatString\fP property\&. The default is the short date format (d)\&. 
+.PP
+Definition at line 399 of file SmartDate\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

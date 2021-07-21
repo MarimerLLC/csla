@@ -1,0 +1,119 @@
+.TH "Csla.Server.DataPortalException" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.DataPortalException \- This exception is returned from the server-side \fBDataPortal\fP and contains the exception and context data from the server\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits System\&.Exception\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalException\fP (string message, Exception ex, \fBDataPortalResult\fP result)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "override void \fBGetObjectData\fP (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "Serializes the object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalException\fP (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "Creates an instance of the object for serialization\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalResult\fP \fBResult\fP\fC [get]\fP"
+.br
+.RI "Returns the \fBDataPortalResult\fP object from the server\&. "
+.ti -1c
+.RI "override string \fBStackTrace\fP\fC [get]\fP"
+.br
+.RI "Get the server-side stack trace from the original exception\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This exception is returned from the server-side \fBDataPortal\fP and contains the exception and context data from the server\&. 
+
+
+.PP
+Definition at line 19 of file DataPortalException\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Server\&.DataPortalException\&.DataPortalException (string message, Exception ex, \fBDataPortalResult\fP result)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImessage\fP Text describing the exception\&.
+.br
+\fIex\fP Inner exception\&.
+.br
+\fIresult\fP The data portal result object\&.
+.RE
+.PP
+
+.PP
+Definition at line 49 of file DataPortalException\&.cs\&.
+.SS "Csla\&.Server\&.DataPortalException\&.DataPortalException (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP"
+
+.PP
+Creates an instance of the object for serialization\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Serialiation info object\&.
+.br
+\fIcontext\fP \fBSerialization\fP context object\&.
+.RE
+.PP
+
+.PP
+Definition at line 63 of file DataPortalException\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Server\&.DataPortalException\&.GetObjectData (System\&.Runtime\&.Serialization\&.SerializationInfo info, System\&.Runtime\&.Serialization\&.StreamingContext context)"
+
+.PP
+Serializes the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Serialiation info object\&.
+.br
+\fIcontext\fP \fBSerialization\fP context object\&.
+.RE
+.PP
+
+.PP
+Definition at line 81 of file DataPortalException\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBDataPortalResult\fP Csla\&.Server\&.DataPortalException\&.Result\fC [get]\fP"
+
+.PP
+Returns the \fBDataPortalResult\fP object from the server\&. 
+.PP
+Definition at line 27 of file DataPortalException\&.cs\&.
+.SS "override string Csla\&.Server\&.DataPortalException\&.StackTrace\fC [get]\fP"
+
+.PP
+Get the server-side stack trace from the original exception\&. 
+.PP
+Definition at line 37 of file DataPortalException\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

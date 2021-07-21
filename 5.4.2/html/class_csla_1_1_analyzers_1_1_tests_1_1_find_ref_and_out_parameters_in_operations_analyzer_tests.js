@@ -1,0 +1,9 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests =
+[
+    [ "AnalyzeWhenClassIsABusinessBaseAndHasNoParameters", "class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests.html#a4110f4b216fa90cb86c992124f72eaff", null ],
+    [ "AnalyzeWhenClassIsABusinessBaseAndHasOutParameter", "class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests.html#a00f8140552dc6ce7883afe3b6f0939c8", null ],
+    [ "AnalyzeWhenClassIsABusinessBaseAndHasParameterNotRefOrOut", "class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests.html#adbe082d6d889fb09bfa152c487bc9c23", null ],
+    [ "AnalyzeWhenClassIsABusinessBaseAndHasRefParameter", "class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests.html#af381a6e52bfc0d089bc500f9c3deadb2", null ],
+    [ "AnalyzeWhenClassIsNotABusinessBase", "class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests.html#a5c108190bf8fc1e87f43af9a9f14f9fe", null ],
+    [ "VerifySupportedDiagnostics", "class_csla_1_1_analyzers_1_1_tests_1_1_find_ref_and_out_parameters_in_operations_analyzer_tests.html#ae38825350286e12a42a43173f82f4492", null ]
+];

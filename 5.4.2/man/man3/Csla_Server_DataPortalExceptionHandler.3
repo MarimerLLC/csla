@@ -1,0 +1,98 @@
+.TH "Csla.Server.DataPortalExceptionHandler" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.DataPortalExceptionHandler \- This class provides a hoook for developers to add custom error handling in the \fBDataPortal\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "Exception \fBInspectException\fP (Type objectType, object criteria, string methodName, Exception ex)"
+.br
+.RI "Transforms the exception in a Fetch, Create or Execute method\&. "
+.ti -1c
+.RI "Exception \fBInspectException\fP (Type objectType, object businessObject, object criteria, string methodName, Exception ex)"
+.br
+.RI "Transforms the exception in a Update, Delete method "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "static string \fBExceptionInspector\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the fully qualified name of the ExceptionInspector class\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class provides a hoook for developers to add custom error handling in the \fBDataPortal\fP\&. 
+
+Typical scenario is to handle non-serializable exception and exceptions from assemblies that does not exist on the client side, such as 3rd party database drivers, MQ drivers etc\&.
+.PP
+Definition at line 22 of file DataPortalExceptionHandler\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "Exception Csla\&.Server\&.DataPortalExceptionHandler\&.InspectException (Type objectType, object businessObject, object criteria, string methodName, Exception ex)"
+
+.PP
+Transforms the exception in a Update, Delete method 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of the object\&.
+.br
+\fIbusinessObject\fP The business object if available\&.
+.br
+\fIcriteria\fP The criteria\&.
+.br
+\fImethodName\fP Name of the method\&.
+.br
+\fIex\fP The exception\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 108 of file DataPortalExceptionHandler\&.cs\&.
+.SS "Exception Csla\&.Server\&.DataPortalExceptionHandler\&.InspectException (Type objectType, object criteria, string methodName, Exception ex)"
+
+.PP
+Transforms the exception in a Fetch, Create or Execute method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of the object\&.
+.br
+\fIcriteria\fP The criteria\&.
+.br
+\fImethodName\fP Name of the method\&.
+.br
+\fIex\fP The exception\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 78 of file DataPortalExceptionHandler\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Server\&.DataPortalExceptionHandler\&.ExceptionInspector\fC [static]\fP, \fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the fully qualified name of the ExceptionInspector class\&. 
+.PP
+Definition at line 31 of file DataPortalExceptionHandler\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

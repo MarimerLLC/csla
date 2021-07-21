@@ -1,0 +1,119 @@
+.TH "Csla.Test.DataPortal.AuthorizeDataPortalTests" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.DataPortal.AuthorizeDataPortalTests
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSetup\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfAuthProviderTypeIsNull_ThenThrow_ArgumentNullException\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfAuthProviderTypeDoesNotImplement_IAuthorizeDataPortal_ThenThrow_ArgumentException\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfAuthProviderTypeImplements_IAuthorizeDataPortal_Then_authorizerFieldShouldBeAnInstanceOfThatType\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfCslaAuthorizationProviderAppSettingName_IsNull_ThenThrow_ArgumentNullException\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfCslaAuthorizationProviderAppSetting_DoesNotExist_ThenUse_NullAuthorizationProvider\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfCslaAuthorizationProviderAppSetting_HoldsInvalidType_ThenThrow_TypeLoadException\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfCslaAuthorizationProviderAppSetting_HoldsEmptyString_ThenUse_NullAuthorizationProvider\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfCslaAuthorizationProviderAppSetting_HoldsValidType_Then_authorizerFieldShouldHoldThatType\fP ()"
+.br
+.ti -1c
+.RI "void \fBIfAuthorizationProvider_SetInConfigFile_DataPortal_Instantiates_AuthorizationProviderType\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 28 of file AuthorizeDataPortalTests\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.DataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters ()"
+
+.PP
+Definition at line 136 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.DataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters ()"
+
+.PP
+Definition at line 174 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.DataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters ()"
+
+.PP
+Definition at line 148 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.DataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters ()"
+
+.PP
+Definition at line 161 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfAuthorizationProvider_SetInConfigFile_DataPortal_Instantiates_AuthorizationProviderType ()"
+
+.PP
+Definition at line 122 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfAuthProviderTypeDoesNotImplement_IAuthorizeDataPortal_ThenThrow_ArgumentException ()"
+
+.PP
+Definition at line 57 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfAuthProviderTypeImplements_IAuthorizeDataPortal_Then_authorizerFieldShouldBeAnInstanceOfThatType ()"
+
+.PP
+Definition at line 64 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfAuthProviderTypeIsNull_ThenThrow_ArgumentNullException ()"
+
+.PP
+Definition at line 49 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfCslaAuthorizationProviderAppSetting_DoesNotExist_ThenUse_NullAuthorizationProvider ()"
+
+.PP
+Definition at line 85 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfCslaAuthorizationProviderAppSetting_HoldsEmptyString_ThenUse_NullAuthorizationProvider ()"
+
+.PP
+Definition at line 100 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfCslaAuthorizationProviderAppSetting_HoldsInvalidType_ThenThrow_TypeLoadException ()"
+
+.PP
+Definition at line 93 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfCslaAuthorizationProviderAppSetting_HoldsValidType_Then_authorizerFieldShouldHoldThatType ()"
+
+.PP
+Definition at line 109 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.IfCslaAuthorizationProviderAppSettingName_IsNull_ThenThrow_ArgumentNullException ()"
+
+.PP
+Definition at line 78 of file AuthorizeDataPortalTests\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.AuthorizeDataPortalTests\&.Setup ()"
+
+.PP
+Definition at line 34 of file AuthorizeDataPortalTests\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

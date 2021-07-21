@@ -1,0 +1,173 @@
+.TH "Csla.Test.DataPortal.ESTransactionalRoot" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.DataPortal.ESTransactionalRoot
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< ESTransactionalRoot >\fP\&.
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBESTransactionalRoot\fP \fBNewESTransactionalRoot\fP ()"
+.br
+.ti -1c
+.RI "static \fBESTransactionalRoot\fP \fBGetESTransactionalRoot\fP (int \fBID\fP)"
+.br
+.ti -1c
+.RI "static void \fBDeleteESTransactionalRoot\fP (int \fBID\fP)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static string \fBCONNECTION_STRING\fP = \fBWellKnownValues\&.DataPortalTestDatabase\fP"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< int > \fBIDProperty\fP = RegisterProperty<int>(c => c\&.ID)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBFirstNameProperty\fP = RegisterProperty<string>(c => c\&.FirstName)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBLastNameProperty\fP = RegisterProperty<string>(c => c\&.LastName)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBSmallColumnProperty\fP = RegisterProperty<string>(c => c\&.SmallColumn)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBAddBusinessRules\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Create\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Fetch\fP (object criteria)"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Insert\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Update\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_DeleteSelf\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Delete\fP (object criteria)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBID\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "string \fBFirstName\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "string \fBLastName\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "string \fBSmallColumn\fP\fC [get, set]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 18 of file ESTransactionalRoot\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.AddBusinessRules ()\fC [protected]\fP"
+
+.PP
+Definition at line 55 of file ESTransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DataPortal_Create ()\fC [protected]\fP"
+
+.PP
+Definition at line 100 of file ESTransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DataPortal_Delete (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 170 of file ESTransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DataPortal_DeleteSelf ()\fC [protected]\fP"
+
+.PP
+Definition at line 162 of file ESTransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DataPortal_Fetch (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 108 of file ESTransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DataPortal_Insert ()\fC [protected]\fP"
+
+.PP
+Definition at line 118 of file ESTransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DataPortal_Update ()\fC [protected]\fP"
+
+.PP
+Definition at line 154 of file ESTransactionalRoot\&.cs\&.
+.SS "static void Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.DeleteESTransactionalRoot (int ID)\fC [static]\fP"
+
+.PP
+Definition at line 74 of file ESTransactionalRoot\&.cs\&.
+.SS "static \fBESTransactionalRoot\fP Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.GetESTransactionalRoot (int ID)\fC [static]\fP"
+
+.PP
+Definition at line 69 of file ESTransactionalRoot\&.cs\&.
+.SS "static \fBESTransactionalRoot\fP Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.NewESTransactionalRoot ()\fC [static]\fP"
+
+.PP
+Definition at line 64 of file ESTransactionalRoot\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "string Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.CONNECTION_STRING = \fBWellKnownValues\&.DataPortalTestDatabase\fP\fC [static]\fP"
+
+.PP
+Definition at line 23 of file ESTransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<string> Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.FirstNameProperty = RegisterProperty<string>(c => c\&.FirstName)\fC [static]\fP"
+
+.PP
+Definition at line 32 of file ESTransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<int> Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.IDProperty = RegisterProperty<int>(c => c\&.ID)\fC [static]\fP"
+
+.PP
+Definition at line 25 of file ESTransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<string> Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.LastNameProperty = RegisterProperty<string>(c => c\&.LastName)\fC [static]\fP"
+
+.PP
+Definition at line 39 of file ESTransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<string> Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.SmallColumnProperty = RegisterProperty<string>(c => c\&.SmallColumn)\fC [static]\fP"
+
+.PP
+Definition at line 46 of file ESTransactionalRoot\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.FirstName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 33 of file ESTransactionalRoot\&.cs\&.
+.SS "int Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.ID\fC [get]\fP"
+
+.PP
+Definition at line 26 of file ESTransactionalRoot\&.cs\&.
+.SS "string Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.LastName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 40 of file ESTransactionalRoot\&.cs\&.
+.SS "string Csla\&.Test\&.DataPortal\&.ESTransactionalRoot\&.SmallColumn\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 47 of file ESTransactionalRoot\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

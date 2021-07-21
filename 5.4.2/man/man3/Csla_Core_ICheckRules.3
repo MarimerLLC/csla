@@ -1,0 +1,77 @@
+.TH "Csla.Core.ICheckRules" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ICheckRules \- Defines the common methods for any business object which exposes means to supress and check business rules\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Core\&.BusinessBase\fP, and \fBCsla\&.IBusinessBase\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSuppressRuleChecking\fP ()"
+.br
+.RI "Sets value indicating no rule methods will be invoked\&. "
+.ti -1c
+.RI "void \fBResumeRuleChecking\fP ()"
+.br
+.RI "Resets value indicating all rule methods will be invoked\&. "
+.ti -1c
+.RI "void \fBCheckRules\fP ()"
+.br
+.RI "Invokes all rules for the business type\&. "
+.ti -1c
+.RI "Task \fBCheckRulesAsync\fP ()"
+.br
+.RI "Invokes all rules for the business type\&. "
+.ti -1c
+.RI "\fBBrokenRulesCollection\fP \fBGetBrokenRules\fP ()"
+.br
+.RI "Gets the broken rules collection "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines the common methods for any business object which exposes means to supress and check business rules\&. 
+
+
+.PP
+Definition at line 17 of file ICheckRules\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Core\&.ICheckRules\&.CheckRules ()"
+
+.PP
+Invokes all rules for the business type\&. 
+.SS "Task Csla\&.Core\&.ICheckRules\&.CheckRulesAsync ()"
+
+.PP
+Invokes all rules for the business type\&. 
+.SS "\fBBrokenRulesCollection\fP Csla\&.Core\&.ICheckRules\&.GetBrokenRules ()"
+
+.PP
+Gets the broken rules collection 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Core\&.BusinessBase\fP\&.
+.SS "void Csla\&.Core\&.ICheckRules\&.ResumeRuleChecking ()"
+
+.PP
+Resets value indicating all rule methods will be invoked\&. 
+.SS "void Csla\&.Core\&.ICheckRules\&.SuppressRuleChecking ()"
+
+.PP
+Sets value indicating no rule methods will be invoked\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

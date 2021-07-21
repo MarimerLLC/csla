@@ -1,0 +1,127 @@
+.TH "cslalighttest.Serialization.Customer" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+cslalighttest.Serialization.Customer \- Implementation of a test business object using CSLA managed properties backed by fields, and custom serialization logic (requirement of backing managed properties with fields)\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< Customer >\fP, and IEquatable< Customer >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCustomer\fP ()"
+.br
+.ti -1c
+.RI "override bool \fBEquals\fP (object obj)"
+.br
+.ti -1c
+.RI "override int \fBGetHashCode\fP ()"
+.br
+.ti -1c
+.RI "bool \fBEquals\fP (\fBCustomer\fP other)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBName\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the name of the customer\&. "
+.ti -1c
+.RI "\fBCustomerContact\fP \fBPrimaryContact\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the primary customer contact\&. "
+.ti -1c
+.RI "\fBCustomerContact\fP \fBAccountsPayableContact\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the accounts payable contact for the customer\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Implementation of a test business object using CSLA managed properties backed by fields, and custom serialization logic (requirement of backing managed properties with fields)\&. 
+
+
+.PP
+Definition at line 22 of file Customer\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "cslalighttest\&.Serialization\&.Customer\&.Customer ()"
+
+.PP
+Definition at line 26 of file Customer\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool cslalighttest\&.Serialization\&.Customer\&.Equals (\fBCustomer\fP other)"
+
+.PP
+Definition at line 56 of file Customer\&.cs\&.
+.SS "override bool cslalighttest\&.Serialization\&.Customer\&.Equals (object obj)"
+
+.PP
+Definition at line 36 of file Customer\&.cs\&.
+.SS "override int cslalighttest\&.Serialization\&.Customer\&.GetHashCode ()"
+
+.PP
+Definition at line 41 of file Customer\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.Customer\&.OnGetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Definition at line 74 of file Customer\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.Customer\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
+
+.PP
+Definition at line 86 of file Customer\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.Customer\&.OnSetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Definition at line 80 of file Customer\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.Customer\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
+
+.PP
+Definition at line 91 of file Customer\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBCustomerContact\fP cslalighttest\&.Serialization\&.Customer\&.AccountsPayableContact\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the accounts payable contact for the customer\&. 
+.PP
+Definition at line 130 of file Customer\&.cs\&.
+.SS "string cslalighttest\&.Serialization\&.Customer\&.Name\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the name of the customer\&. 
+.PP
+Definition at line 106 of file Customer\&.cs\&.
+.SS "\fBCustomerContact\fP cslalighttest\&.Serialization\&.Customer\&.PrimaryContact\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the primary customer contact\&. 
+.PP
+Definition at line 118 of file Customer\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

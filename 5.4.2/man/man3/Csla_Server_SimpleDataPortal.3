@@ -1,0 +1,126 @@
+.TH "Csla.Server.SimpleDataPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.SimpleDataPortal \- Implements the server-side \fBDataPortal\fP as discussed in Chapter 4\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBCreate\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBFetch\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBUpdate\fP (object obj, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBDelete\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implements the server-side \fBDataPortal\fP as discussed in Chapter 4\&. 
+
+
+.PP
+Definition at line 19 of file SimpleDataPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.SimpleDataPortal\&.Create (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 32 of file SimpleDataPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.SimpleDataPortal\&.Delete (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 229 of file SimpleDataPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.SimpleDataPortal\&.Fetch (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to retrieve\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 86 of file SimpleDataPortal\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.SimpleDataPortal\&.Update (object obj, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 138 of file SimpleDataPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

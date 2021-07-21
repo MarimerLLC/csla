@@ -1,0 +1,95 @@
+.TH "Csla.Core.IUndoableObject" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IUndoableObject \- Defines the methods required to participate in n-level undo within the CSLA \&.NET framework\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.BusinessBindingListBase< T, C >\fP, \fBCsla\&.BusinessListBase< T, C >\fP, \fBCsla\&.Core\&.FieldManager\&.FieldDataManager\fP, \fBCsla\&.Core\&.IEditableBusinessObject\fP, \fBCsla\&.Core\&.UndoableBase\fP, and \fBCsla\&.IBusinessListBase< C >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBCopyState\fP (int parentEditLevel, bool parentBindingEdit)"
+.br
+.RI "Copies the state of the object and places the copy onto the state stack\&. "
+.ti -1c
+.RI "void \fBUndoChanges\fP (int parentEditLevel, bool parentBindingEdit)"
+.br
+.RI "Restores the object's state to the most recently copied values from the state stack\&. "
+.ti -1c
+.RI "void \fBAcceptChanges\fP (int parentEditLevel, bool parentBindingEdit)"
+.br
+.RI "Accepts any changes made to the object since the last state copy was made\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBEditLevel\fP\fC [get]\fP"
+.br
+.RI "Gets the current edit level of the object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines the methods required to participate in n-level undo within the CSLA \&.NET framework\&. 
+
+This interface is used by \fBCsla\&.Core\&.UndoableBase\fP to initiate begin, cancel and apply edit operations\&. 
+.PP
+Definition at line 18 of file IUndoableObject\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Core\&.IUndoableObject\&.AcceptChanges (int parentEditLevel, bool parentBindingEdit)"
+
+.PP
+Accepts any changes made to the object since the last state copy was made\&. The most recent state copy is removed from the state stack and discarded, thus committing any changes made to the object's state\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparentEditLevel\fP Parent object's edit level\&. 
+.br
+\fIparentBindingEdit\fP Indicates whether parent is in edit mode due to data binding\&. 
+.RE
+.PP
+
+.SS "void Csla\&.Core\&.IUndoableObject\&.CopyState (int parentEditLevel, bool parentBindingEdit)"
+
+.PP
+Copies the state of the object and places the copy onto the state stack\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparentEditLevel\fP Parent object's edit level\&. 
+.br
+\fIparentBindingEdit\fP Indicates whether parent is in edit mode due to data binding\&. 
+.RE
+.PP
+
+.SS "void Csla\&.Core\&.IUndoableObject\&.UndoChanges (int parentEditLevel, bool parentBindingEdit)"
+
+.PP
+Restores the object's state to the most recently copied values from the state stack\&. Restores the state of the object to its previous value by taking the data out of the stack and restoring it into the fields of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparentEditLevel\fP Parent object's edit level\&. 
+.br
+\fIparentBindingEdit\fP Indicates whether parent is in edit mode due to data binding\&. 
+.RE
+.PP
+
+.SH "Property Documentation"
+.PP 
+.SS "int Csla\&.Core\&.IUndoableObject\&.EditLevel\fC [get]\fP"
+
+.PP
+Gets the current edit level of the object\&. 
+.PP
+Definition at line 23 of file IUndoableObject\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,2224 @@
+.TH "Csla.Core.BusinessBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.BusinessBase \- This is the non-generic base class from which most business objects will be derived\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.UndoableBase\fP, \fBCsla\&.Core\&.IEditableBusinessObject\fP, IEditableObject, ICloneable, \fBCsla\&.Security\&.IAuthorizeReadWrite\fP, \fBCsla\&.Core\&.IParent\fP, Csla\&.Server\&.IDataPortalTarget, Csla\&.Core\&.IManageProperties, \fBCsla\&.Rules\&.IHostRules\fP, \fBCsla\&.Core\&.ICheckRules\fP, \fBCsla\&.Core\&.INotifyBusy\fP, \fBCsla\&.Core\&.INotifyChildChanged\fP, \fBCsla\&.Serialization\&.Mobile\&.ISerializationNotification\fP, and IDataErrorInfo\&.
+.PP
+Inherited by \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBBypassPropertyChecksObject\fP"
+.br
+.RI "Class that allows setting of property values on current business object without raising PropertyChanged events and checking user rights\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual bool \fBCanReadProperty\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Returns true if the user is allowed to read the calling property\&. "
+.ti -1c
+.RI "bool \fBCanReadProperty\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property, bool throwOnFalse)"
+.br
+.RI "Returns true if the user is allowed to read the calling property\&. "
+.ti -1c
+.RI "bool \fBCanReadProperty\fP (string propertyName)"
+.br
+.RI "Returns true if the user is allowed to read the specified property\&. "
+.ti -1c
+.RI "virtual bool \fBCanWriteProperty\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Returns true if the user is allowed to write the specified property\&. "
+.ti -1c
+.RI "bool \fBCanWriteProperty\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property, bool throwOnFalse)"
+.br
+.RI "Returns true if the user is allowed to write the calling property\&. "
+.ti -1c
+.RI "bool \fBCanWriteProperty\fP (string propertyName)"
+.br
+.RI "Returns true if the user is allowed to write the specified property\&. "
+.ti -1c
+.RI "virtual bool \fBCanExecuteMethod\fP (\fBCsla\&.Core\&.IMemberInfo\fP method)"
+.br
+.RI "Returns true if the user is allowed to execute the specified method\&. "
+.ti -1c
+.RI "bool \fBCanExecuteMethod\fP (\fBCsla\&.Core\&.IMemberInfo\fP method, bool throwOnFalse)"
+.br
+.RI "Returns true if the user is allowed to execute the specified method\&. "
+.ti -1c
+.RI "virtual bool \fBCanExecuteMethod\fP (string methodName)"
+.br
+.RI "Returns true if the user is allowed to execute the specified method\&. "
+.ti -1c
+.RI "void \fBBeginEdit\fP ()"
+.br
+.RI "Starts a nested edit on the object\&. "
+.ti -1c
+.RI "void \fBCancelEdit\fP ()"
+.br
+.RI "Cancels the current edit process, restoring the object's state to its previous values\&. "
+.ti -1c
+.RI "void \fBApplyEdit\fP ()"
+.br
+.RI "Commits the current edit process\&. "
+.ti -1c
+.RI "virtual void \fBDelete\fP ()"
+.br
+.RI "Marks the object for deletion\&. The object will be deleted as part of the next save operation\&. "
+.ti -1c
+.RI "virtual bool \fBIsPropertyBusy\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Gets a value indicating whether a specific property is busy (has a currently executing async rule)\&. "
+.ti -1c
+.RI "bool \fBIsPropertyBusy\fP (string propertyName)"
+.br
+.RI "Gets a value indicating whether a specific property is busy (has a currently executing async rule)\&. "
+.ti -1c
+.RI "\fBBrokenRulesCollection\fP \fBGetBrokenRules\fP ()"
+.br
+.RI "Gets the broken rules for this object "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBusinessBase\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "virtual void \fBInitialize\fP ()"
+.br
+.RI "Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. "
+.ti -1c
+.RI "virtual void \fBSetParent\fP (\fBCore\&.IParent\fP parent)"
+.br
+.RI "Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. "
+.ti -1c
+.RI "virtual void \fBMarkNew\fP ()"
+.br
+.RI "Marks the object as being a new object\&. This also marks the object as being dirty and ensures that it is not marked for deletion\&. "
+.ti -1c
+.RI "virtual void \fBMarkOld\fP ()"
+.br
+.RI "Marks the object as being an old (not new) object\&. This also marks the object as being unchanged (not dirty)\&. "
+.ti -1c
+.RI "void \fBMarkDeleted\fP ()"
+.br
+.RI "Marks an object for deletion\&. This also marks the object as being dirty\&. "
+.ti -1c
+.RI "void \fBMarkDirty\fP ()"
+.br
+.RI "Marks an object as being dirty, or changed\&. "
+.ti -1c
+.RI "void \fBMarkDirty\fP (bool suppressEvent)"
+.br
+.RI "Marks an object as being dirty, or changed\&. "
+.ti -1c
+.RI "virtual void \fBPropertyHasChanged\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
+.br
+.RI "Performs processing required when a property has changed\&. "
+.ti -1c
+.RI "virtual void \fBMetaPropertyHasChanged\fP (string name)"
+.br
+.RI "Raises OnPropertyChanged for meta properties (IsXYZ) when PropertyChangedMode is not \fBWindows\fP "
+.ti -1c
+.RI "virtual void \fBCheckPropertyRules\fP (\fBIPropertyInfo\fP property)"
+.br
+.RI "Check rules for the property and notifies UI of properties that may have changed\&. "
+.ti -1c
+.RI "virtual void \fBCheckObjectRules\fP ()"
+.br
+.RI "Check object rules and notifies UI of properties that may have changed\&. "
+.ti -1c
+.RI "void \fBMarkClean\fP ()"
+.br
+.RI "Forces the object's IsDirty flag to false\&. "
+.ti -1c
+.RI "override void \fBUndoChangesComplete\fP ()"
+.br
+.RI "Called when an undo operation has completed\&. "
+.ti -1c
+.RI "override void \fBAcceptChangesComplete\fP ()"
+.br
+.RI "Notifies the parent object (if any) that this child object's edits have been accepted\&. "
+.ti -1c
+.RI "void \fBMarkAsChild\fP ()"
+.br
+.RI "Marks the object as being a child object\&. "
+.ti -1c
+.RI "virtual object \fBGetClone\fP ()"
+.br
+.RI "Creates a clone of the object\&. "
+.ti -1c
+.RI "virtual void \fBOnValidationComplete\fP ()"
+.br
+.RI "Raises the ValidationComplete event "
+.ti -1c
+.RI "\fBBusinessRuleManager\fP \fBGetRegisteredRules\fP ()"
+.br
+.RI "Gets the registered rules\&. Only for unit testing and not visible to code\&. "
+.ti -1c
+.RI "virtual void \fBAddBusinessRules\fP ()"
+.br
+.RI "Override this method in your business class to be notified when you need to set up shared business rules\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_XYZ method\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_XYZ method\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalException\fP (\fBDataPortalEventArgs\fP e, Exception ex)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. "
+.ti -1c
+.RI "virtual void \fBChild_Create\fP ()"
+.br
+.RI "Override this method to load a new business object with default values from the database\&. "
+.ti -1c
+.RI "virtual void \fBChild_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_XYZ method\&. "
+.ti -1c
+.RI "virtual void \fBChild_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_XYZ method\&. "
+.ti -1c
+.RI "virtual void \fBChild_OnDataPortalException\fP (\fBDataPortalEventArgs\fP e, Exception ex)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. "
+.ti -1c
+.RI "virtual void \fBOnDeserialized\fP (System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.RI "This method is called on a newly deserialized object after deserialization is complete\&. "
+.ti -1c
+.RI "void \fBAddEventHooks\fP (\fBIBusinessObject\fP child)"
+.br
+.RI "For internal use\&. "
+.ti -1c
+.RI "virtual void \fBOnAddEventHooks\fP (\fBIBusinessObject\fP child)"
+.br
+.RI "Hook child object events\&. "
+.ti -1c
+.RI "void \fBRemoveEventHooks\fP (\fBIBusinessObject\fP child)"
+.br
+.RI "For internal use only\&. "
+.ti -1c
+.RI "virtual void \fBOnRemoveEventHooks\fP (\fBIBusinessObject\fP child)"
+.br
+.RI "Unhook child object events\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (string propertyName, P field, P defaultValue)"
+.br
+.RI "Gets a property's value, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (string propertyName, P field, P defaultValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Gets a property's value, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P field)"
+.br
+.RI "Gets a property's value, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P field, P defaultValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Gets a property's value, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetPropertyConvert< F, P >\fP (\fBPropertyInfo\fP< F > propertyInfo, F field)"
+.br
+.RI "Gets a property's value as a specified type, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetPropertyConvert< F, P >\fP (\fBPropertyInfo\fP< F > propertyInfo, F field, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Gets a property's value as a specified type, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo)"
+.br
+.RI "Gets a property's managed field value, first checking authorization\&. "
+.ti -1c
+.RI "P \fBGetPropertyConvert< F, P >\fP (\fBPropertyInfo\fP< F > propertyInfo)"
+.br
+.RI "Gets a property's value from the list of managed field values, first checking authorization, and converting the value to an appropriate type\&. "
+.ti -1c
+.RI "P \fBGetPropertyConvert< F, P >\fP (\fBPropertyInfo\fP< F > propertyInfo, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Gets a property's value from the list of managed field values, first checking authorization, and converting the value to an appropriate type\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Gets a property's value as a specified type, first checking authorization\&. "
+.ti -1c
+.RI "object \fBGetProperty\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Gets a property's value as a specified type\&. "
+.ti -1c
+.RI "P \fBGetProperty< P >\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Gets a property's managed field value, first checking authorization\&. "
+.ti -1c
+.RI "P \fBLazyGetProperty< P >\fP (\fBPropertyInfo\fP< P > property, Func< P > valueGenerator)"
+.br
+.RI "Lazily initializes a property and returns the resulting value\&. "
+.ti -1c
+.RI "P \fBLazyGetPropertyAsync< P >\fP (\fBPropertyInfo\fP< P > property, Task< P > factory)"
+.br
+.RI "Lazily initializes a property and returns the resulting value\&. "
+.ti -1c
+.RI "P \fBReadPropertyConvert< F, P >\fP (\fBPropertyInfo\fP< F > propertyInfo)"
+.br
+.RI "Gets a property's value from the list of managed field values, converting the value to an appropriate type\&. "
+.ti -1c
+.RI "P \fBReadProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo)"
+.br
+.RI "Gets a property's value as a specified type\&. "
+.ti -1c
+.RI "virtual object \fBReadProperty\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Gets a property's value\&. "
+.ti -1c
+.RI "P \fBLazyReadProperty< P >\fP (\fBPropertyInfo\fP< P > property, Func< P > valueGenerator)"
+.br
+.RI "Gets a property's value as a specified type\&. "
+.ti -1c
+.RI "P \fBLazyReadPropertyAsync< P >\fP (\fBPropertyInfo\fP< P > property, Task< P > factory)"
+.br
+.RI "Gets a property's value as a specified type\&. "
+.ti -1c
+.RI "void \fBSetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, ref P field, P newValue)"
+.br
+.RI "Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetProperty< P >\fP (string propertyName, ref P field, P newValue)"
+.br
+.RI "Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetPropertyConvert< P, V >\fP (\fBPropertyInfo\fP< P > propertyInfo, ref P field, V newValue)"
+.br
+.RI "Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetPropertyConvert< P, V >\fP (\fBPropertyInfo\fP< P > propertyInfo, ref P field, V newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetProperty< P >\fP (string propertyName, ref P field, P newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetPropertyConvert< P, V >\fP (string propertyName, ref P field, V newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P newValue)"
+.br
+.RI "Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetPropertyConvert< P, F >\fP (\fBPropertyInfo\fP< P > propertyInfo, F newValue)"
+.br
+.RI "Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetPropertyConvert< P, F >\fP (\fBPropertyInfo\fP< P > propertyInfo, F newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)"
+.br
+.RI "Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetProperty\fP (\fBIPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Sets a property's managed field with the supplied value, and then calls PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBSetProperty< P >\fP (\fBIPropertyInfo\fP propertyInfo, P newValue)"
+.br
+.RI "Sets a property's managed field with the supplied value, and then calls PropertyHasChanged if the value does change\&. "
+.ti -1c
+.RI "void \fBLoadPropertyConvert< P, F >\fP (\fBPropertyInfo\fP< P > propertyInfo, F newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value\&. "
+.ti -1c
+.RI "void \fBLoadProperty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value\&. "
+.ti -1c
+.RI "bool \fBLoadPropertyMarkDirty< P >\fP (\fBPropertyInfo\fP< P > propertyInfo, P newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value and mark field as dirty if value is modified\&. "
+.ti -1c
+.RI "virtual bool \fBLoadPropertyMarkDirty\fP (\fBIPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value\&. "
+.ti -1c
+.RI "virtual void \fBLoadProperty\fP (\fBIPropertyInfo\fP propertyInfo, object newValue)"
+.br
+.RI "Loads a property's managed field with the supplied value\&. "
+.ti -1c
+.RI "void \fBLoadPropertyAsync< R >\fP (\fBPropertyInfo\fP< R > property, Task< R > factory)"
+.br
+.RI "Load a property from an async method\&. "
+.ti -1c
+.RI "void \fBMarkBusy\fP ()"
+.br
+.RI "Mark the object as busy (it is running an async operation)\&. "
+.ti -1c
+.RI "void \fBMarkIdle\fP ()"
+.br
+.RI "Mark the object as not busy (it is not running an async operation)\&. "
+.ti -1c
+.RI "virtual void \fBOnBusyChanged\fP (\fBBusyChangedEventArgs\fP args)"
+.br
+.RI "Raise the BusyChanged event\&. "
+.ti -1c
+.RI "virtual void \fBOnUnhandledAsyncException\fP (\fBErrorEventArgs\fP error)"
+.br
+.RI "Raises the UnhandledAsyncException event\&. "
+.ti -1c
+.RI "void \fBOnUnhandledAsyncException\fP (object originalSender, Exception error)"
+.br
+.RI "Raises the UnhandledAsyncException event\&. "
+.ti -1c
+.RI "virtual void \fBOnChildChanged\fP (\fBChildChangedEventArgs\fP e)"
+.br
+.RI "Raises the ChildChanged event, indicating that a child object has been changed\&. "
+.ti -1c
+.RI "virtual void \fBEditChildComplete\fP (\fBCore\&.IEditableBusinessObject\fP child)"
+.br
+.RI "Override this method to be notified when a child object's \fBCore\&.BusinessBase\&.ApplyEdit\fP method has completed\&. "
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to insert your field values into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)"
+.br
+.RI "Override this method to insert your child object references into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)"
+.br
+.RI "Override this method to retrieve your child object references from the MobileFormatter serialzation stream\&. "
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBCsla\&.Core\&.IMemberInfo\fP \fBRegisterMethod\fP (Type objectType, \fBIMemberInfo\fP info)"
+.br
+.RI "Indicates that the specified method belongs to the type\&. "
+.ti -1c
+.RI "static \fBMethodInfo\fP \fBRegisterMethod\fP (Type objectType, string methodName)"
+.br
+.RI "Indicates that the specified method belongs to the type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Type objectType, \fBPropertyInfo\fP< P > info)"
+.br
+.RI "Indicates that the specified property belongs to the type\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBCore\&.IParent\fP \fBParent\fP\fC [get]\fP"
+.br
+.RI "Provide access to the parent reference for use in child object code\&. "
+.ti -1c
+.RI "bool \fBIsNew\fP\fC [get]\fP"
+.br
+.RI "Returns true if this is a new object, false if it is a pre-existing object\&. "
+.ti -1c
+.RI "bool \fBIsDeleted\fP\fC [get]\fP"
+.br
+.RI "Returns true if this object is marked for deletion\&. "
+.ti -1c
+.RI "virtual bool \fBIsDirty\fP\fC [get]\fP"
+.br
+.RI "Returns true if this object's data, or any of its fields or child objects data, has been changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsSelfDirty\fP\fC [get]\fP"
+.br
+.RI "Returns true if this object's data has been changed\&. "
+.ti -1c
+.RI "virtual bool \fBIsSavable\fP\fC [get]\fP"
+.br
+.RI "Returns true if this object is both dirty and valid\&. "
+.ti -1c
+.RI "bool \fBDisableIEditableObject\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether the IEditableObject interface methods should be disabled for this object\&. "
+.ti -1c
+.RI "bool \fBIsChild\fP\fC [get]\fP"
+.br
+.RI "Returns true if this is a child (non-root) object\&. "
+.ti -1c
+.RI "EventHandler \fBValidationComplete\fP"
+.br
+.RI "Event raised when validation is complete\&. "
+.ti -1c
+.RI "\fBBusinessRules\fP \fBBusinessRules\fP\fC [get]\fP"
+.br
+.RI "Provides access to the broken rules functionality\&. "
+.ti -1c
+.RI "virtual bool \fBIsValid\fP\fC [get]\fP"
+.br
+.RI "Returns true if the object and its child objects are currently valid, false if the object or any of its child objects have broken rules or are otherwise invalid\&. "
+.ti -1c
+.RI "virtual bool \fBIsSelfValid\fP\fC [get]\fP"
+.br
+.RI "Returns true if the object is currently valid, false if the object has broken rules or is otherwise invalid\&. "
+.ti -1c
+.RI "virtual \fBRules\&.BrokenRulesCollection\fP \fBBrokenRulesCollection\fP\fC [get]\fP"
+.br
+.RI "Provides access to the readonly collection of broken business rules for this object\&. "
+.ti -1c
+.RI "virtual bool \fBIsBusy\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating if this object or its child objects are busy\&. "
+.ti -1c
+.RI "virtual bool \fBIsSelfBusy\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating if this object is busy\&. "
+.ti -1c
+.RI "\fBBusyChangedEventHandler\fP \fBBusyChanged\fP"
+.br
+.RI "Event indicating that the IsBusy property has changed\&. "
+.ti -1c
+.RI "EventHandler< \fBErrorEventArgs\fP > \fBUnhandledAsyncException\fP"
+.br
+.RI "Event indicating that an exception occurred during the processing of an async operation\&. "
+.ti -1c
+.RI "EventHandler< \fBCsla\&.Core\&.ChildChangedEventArgs\fP > \fBChildChanged\fP"
+.br
+.RI "Event raised when a child object has been changed\&. "
+.ti -1c
+.RI "\fBFieldDataManager\fP \fBFieldManager\fP\fC [get]\fP"
+.br
+.RI "Gets the PropertyManager object for this business object\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the non-generic base class from which most business objects will be derived\&. 
+
+
+.PP
+Definition at line 40 of file BusinessBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.BusinessBase\&.BusinessBase ()\fC [protected]\fP"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 59 of file BusinessBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Core\&.BusinessBase\&.AcceptChangesComplete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Notifies the parent object (if any) that this child object's edits have been accepted\&. 
+.PP
+Reimplemented from \fBCsla\&.Core\&.UndoableBase\fP\&.
+.PP
+Definition at line 908 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.AddBusinessRules ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method in your business class to be notified when you need to set up shared business rules\&. This method is automatically called by CSLA \&.NET when your object should associate per-type validation rules with its properties\&. 
+.PP
+Definition at line 1165 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.AddEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP"
+
+.PP
+For internal use\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP Child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1379 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.ApplyEdit ()"
+
+.PP
+Commits the current edit process\&. Calling this method causes the most recently taken snapshot of the object's state to be discarded, thus committing any changes made to the object's state since the last BeginEdit call\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
+.PP
+Definition at line 896 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.BeginEdit ()"
+
+.PP
+Starts a nested edit on the object\&. When this method is called the object takes a snapshot of its current state (the values of its variables)\&. This snapshot can be restored by calling CancelEdit or committed by calling ApplyEdit\&. 
+.PP
+This is a nested operation\&. Each call to BeginEdit adds a new snapshot of the object's state to a stack\&. You should ensure that for each call to BeginEdit there is a corresponding call to either CancelEdit or ApplyEdit to remove that snapshot from the stack\&. 
+.PP
+See Chapters 2 and 3 for details on n-level undo and state stacking\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
+.PP
+Definition at line 853 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.CancelEdit ()"
+
+.PP
+Cancels the current edit process, restoring the object's state to its previous values\&. Calling this method causes the most recently taken snapshot of the object's state to be restored\&. This resets the object's values to the point of the last BeginEdit call\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
+.PP
+Definition at line 867 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanExecuteMethod (\fBCsla\&.Core\&.IMemberInfo\fP method)\fC [virtual]\fP"
+
+.PP
+Returns true if the user is allowed to execute the specified method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP Method to execute\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if execute is allowed\&.
+.RE
+.PP
+
+.PP
+Definition at line 664 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.CanExecuteMethod (\fBCsla\&.Core\&.IMemberInfo\fP method, bool throwOnFalse)"
+
+.PP
+Returns true if the user is allowed to execute the specified method\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if execute is allowed\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP Method to execute\&.
+.br
+\fIthrowOnFalse\fP Indicates whether a negative result should cause an exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 691 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanExecuteMethod (string methodName)\fC [virtual]\fP"
+
+.PP
+Returns true if the user is allowed to execute the specified method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImethodName\fP Name of the method to execute\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if execute is allowed\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Security\&.IAuthorizeReadWrite\fP\&.
+.PP
+Definition at line 713 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanReadProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [virtual]\fP"
+
+.PP
+Returns true if the user is allowed to read the calling property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to check\&.
+.RE
+.PP
+
+.PP
+Definition at line 496 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.CanReadProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property, bool throwOnFalse)"
+
+.PP
+Returns true if the user is allowed to read the calling property\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if read is allowed\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to read\&.
+.br
+\fIthrowOnFalse\fP Indicates whether a negative result should cause an exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 523 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.CanReadProperty (string propertyName)"
+
+.PP
+Returns true if the user is allowed to read the specified property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to read\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Security\&.IAuthorizeReadWrite\fP\&.
+.PP
+Definition at line 542 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanWriteProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [virtual]\fP"
+
+.PP
+Returns true if the user is allowed to write the specified property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to write\&.
+.RE
+.PP
+
+.PP
+Definition at line 571 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.CanWriteProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property, bool throwOnFalse)"
+
+.PP
+Returns true if the user is allowed to write the calling property\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if write is allowed\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to write\&.
+.br
+\fIthrowOnFalse\fP Indicates whether a negative result should cause an exception\&.
+.RE
+.PP
+
+.PP
+Definition at line 598 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.CanWriteProperty (string propertyName)"
+
+.PP
+Returns true if the user is allowed to write the specified property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to write\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Security\&.IAuthorizeReadWrite\fP\&.
+.PP
+Definition at line 616 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.CheckObjectRules ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Check object rules and notifies UI of properties that may have changed\&. 
+.PP
+Definition at line 411 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.CheckPropertyRules (\fBIPropertyInfo\fP property)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Check rules for the property and notifies UI of properties that may have changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP The property\&.
+.RE
+.PP
+
+.PP
+Definition at line 398 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_Create ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to load a new business object with default values from the database\&. Normally you will overload this method to accept a strongly-typed criteria parameter, rather than overriding the method with a loosely-typed criteria parameter\&. 
+.PP
+Definition at line 1275 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.br
+\fIex\fP The Exception thrown during data access\&.
+.RE
+.PP
+
+.PP
+Definition at line 1305 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_XYZ method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1286 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_XYZ method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1295 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.DataPortal_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.br
+\fIex\fP The Exception thrown during data access\&.
+.RE
+.PP
+
+.PP
+Definition at line 1263 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.DataPortal_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_XYZ method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1244 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.DataPortal_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_XYZ method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 1253 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.Delete ()\fC [virtual]\fP"
+
+.PP
+Marks the object for deletion\&. The object will be deleted as part of the next save operation\&. CSLA \&.NET supports both immediate and deferred deletion of objects\&. This method is part of the support for deferred deletion, where an object can be marked for deletion, but isn't actually deleted until the object is saved to the database\&. This method is called by the UI developer to mark the object for deletion\&. 
+.PP
+To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3\&. 
+.PP
+Implements \fBCsla\&.Core\&.IEditableBusinessObject\fP\&.
+.PP
+Definition at line 964 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.EditChildComplete (\fBCore\&.IEditableBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to be notified when a child object's \fBCore\&.BusinessBase\&.ApplyEdit\fP method has completed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP The child object that was edited\&.
+.RE
+.PP
+
+.PP
+Definition at line 3336 of file BusinessBase\&.cs\&.
+.SS "\fBBrokenRulesCollection\fP Csla\&.Core\&.BusinessBase\&.GetBrokenRules ()"
+
+.PP
+Gets the broken rules for this object 
+.PP
+Implements \fBCsla\&.Core\&.ICheckRules\fP\&.
+.PP
+Definition at line 3735 of file BusinessBase\&.cs\&.
+.SS "virtual object Csla\&.Core\&.BusinessBase\&.GetClone ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Creates a clone of the object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the exact data of the original object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1033 of file BusinessBase\&.cs\&.
+.SS "object Csla\&.Core\&.BusinessBase\&.GetProperty (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1825 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's managed field value, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1854 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's managed field value, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1734 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P field)\fC [protected]\fP"
+
+.PP
+Gets a property's value, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The backing field for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1643 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P field, P defaultValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Gets a property's value, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The backing field for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fIdefaultValue\fP Value to be returned if the user is not authorized to read the property\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to read this property\&.
+.RE
+.PP
+
+.PP
+Definition at line 1664 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to read this property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1805 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (string propertyName, P field, P defaultValue)\fC [protected]\fP"
+
+.PP
+Gets a property's value, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The backing field for the property\&.
+.br
+\fIpropertyName\fP The name of the property\&.
+.br
+\fIdefaultValue\fP Value to be returned if the user is not authorized to read the property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1590 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (string propertyName, P field, P defaultValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Gets a property's value, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The backing field for the property\&.
+.br
+\fIpropertyName\fP The name of the property\&.
+.br
+\fIdefaultValue\fP Value to be returned if the user is not authorized to read the property\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to read this property\&.
+.RE
+.PP
+
+.PP
+Definition at line 1611 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's value from the list of managed field values, first checking authorization, and converting the value to an appropriate type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIF\fP Type of the field\&. 
+.br
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1757 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo, F field)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIF\fP Type of the field\&. 
+.br
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The backing field for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1688 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo, F field, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type, first checking authorization\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIF\fP Type of the field\&. 
+.br
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The backing field for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to read this property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1715 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Gets a property's value from the list of managed field values, first checking authorization, and converting the value to an appropriate type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIF\fP Type of the field\&. 
+.br
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to read this property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1783 of file BusinessBase\&.cs\&.
+.SS "\fBBusinessRuleManager\fP Csla\&.Core\&.BusinessBase\&.GetRegisteredRules ()\fC [protected]\fP"
+
+.PP
+Gets the registered rules\&. Only for unit testing and not visible to code\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 1120 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.Initialize ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. 
+.PP
+Definition at line 73 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsPropertyBusy (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [virtual]\fP"
+
+.PP
+Gets a value indicating whether a specific property is busy (has a currently executing async rule)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property to check\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3096 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.IsPropertyBusy (string propertyName)"
+
+.PP
+Gets a value indicating whether a specific property is busy (has a currently executing async rule)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3109 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.LazyGetProperty< P > (\fBPropertyInfo\fP< P > property, Func< P > valueGenerator)\fC [protected]\fP"
+
+.PP
+Lazily initializes a property and returns the resulting value\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fIvalueGenerator\fP Method returning the new value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1872 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.LazyGetPropertyAsync< P > (\fBPropertyInfo\fP< P > property, Task< P > factory)\fC [protected]\fP"
+
+.PP
+Lazily initializes a property and returns the resulting value\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fIfactory\fP Async method returning the new value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+.PP
+Note that the first value returned is almost certainly the defaultValue because the value is initialized asynchronously\&. The real value is provided later along with a PropertyChanged event to indicate the value has changed\&. 
+.PP
+If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
+.PP
+Definition at line 1906 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.LazyReadProperty< P > (\fBPropertyInfo\fP< P > property, Func< P > valueGenerator)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fIvalueGenerator\fP Method returning the new value\&.
+.RE
+.PP
+
+.PP
+Definition at line 2021 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.LazyReadPropertyAsync< P > (\fBPropertyInfo\fP< P > property, Task< P > factory)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fIfactory\fP Async method returning the new value\&.
+.RE
+.PP
+
+.PP
+Definition at line 2040 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.LoadProperty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Loads a property's managed field with the supplied value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 2853 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.LoadProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 2570 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.LoadPropertyAsync< R > (\fBPropertyInfo\fP< R > property, Task< R > factory)\fC [protected]\fP"
+
+.PP
+Load a property from an async method\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIR\fP 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP 
+.br
+\fIfactory\fP 
+.RE
+.PP
+
+.PP
+Definition at line 3000 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.LoadPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 2515 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.LoadPropertyMarkDirty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Loads a property's managed field with the supplied value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 2770 of file BusinessBase\&.cs\&.
+.SS "bool \fBCsla\&.Core\&.BusinessBase\&.LoadPropertyMarkDirty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
+
+.PP
+Loads a property's managed field with the supplied value and mark field as dirty if value is modified\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
+.PP
+Definition at line 2615 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkAsChild ()\fC [protected]\fP"
+
+.PP
+Marks the object as being a child object\&. 
+.PP
+Definition at line 939 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkBusy ()\fC [protected]\fP"
+
+.PP
+Mark the object as busy (it is running an async operation)\&. 
+.PP
+Definition at line 3018 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkClean ()\fC [protected]\fP"
+
+.PP
+Forces the object's IsDirty flag to false\&. This method is normally called automatically and is not intended to be called manually\&. 
+.PP
+Definition at line 433 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkDeleted ()\fC [protected]\fP"
+
+.PP
+Marks an object for deletion\&. This also marks the object as being dirty\&. You should call this method in your business logic in the case that you want to have the object deleted when it is saved to the database\&. 
+.PP
+Definition at line 309 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkDirty ()\fC [protected]\fP"
+
+.PP
+Marks an object as being dirty, or changed\&. You should call this method in your business logic any time the object's internal data changes\&. Any time any instance variable changes within the object, this method should be called to tell CSLA \&.NET that the object's data has been changed\&. 
+.PP
+Marking an object as dirty does two things\&. First it ensures that CSLA \&.NET will properly save the object as appropriate\&. Second, it causes CSLA \&.NET to tell \fBWindows\fP Forms data binding that the object's data has changed so any bound controls will update to reflect the new values\&. 
+.PP
+Definition at line 333 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkDirty (bool suppressEvent)\fC [protected]\fP"
+
+.PP
+Marks an object as being dirty, or changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsuppressEvent\fP true to supress the PropertyChanged event that is otherwise raised to indicate that the object's state has changed\&. 
+.RE
+.PP
+
+.PP
+Definition at line 346 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.MarkIdle ()\fC [protected]\fP"
+
+.PP
+Mark the object as not busy (it is not running an async operation)\&. 
+.PP
+Definition at line 3032 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.MarkNew ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Marks the object as being a new object\&. This also marks the object as being dirty and ensures that it is not marked for deletion\&. Newly created objects are marked new by default\&. You should call this method in the implementation of DataPortal_Update when the object is deleted (due to being marked for deletion) to indicate that the object no longer reflects data in the database\&. 
+.PP
+If you override this method, make sure to call the base implementation after executing your new code\&. 
+.PP
+Definition at line 266 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.MarkOld ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Marks the object as being an old (not new) object\&. This also marks the object as being unchanged (not dirty)\&. You should call this method in the implementation of DataPortal_Fetch to indicate that an existing object has been successfully retrieved from the database\&. 
+.PP
+You should call this method in the implementation of DataPortal_Update to indicate that a new object has been successfully inserted into the database\&. 
+.PP
+If you override this method, make sure to call the base implementation after executing your new code\&. 
+.PP
+Definition at line 293 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.MetaPropertyHasChanged (string name)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises OnPropertyChanged for meta properties (IsXYZ) when PropertyChangedMode is not \fBWindows\fP 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP meta property name that has cchanged\&.
+.RE
+.PP
+
+.PP
+Definition at line 387 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnAddEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Hook child object events\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP Child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1389 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnBusyChanged (\fBBusyChangedEventArgs\fP args)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raise the BusyChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargs\fP Event args\&.
+.RE
+.PP
+
+.PP
+Definition at line 3080 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnChildChanged (\fBChildChangedEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the ChildChanged event, indicating that a child object has been changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP \fBChildChangedEventArgs\fP object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3190 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnDeserialized (System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called on a newly deserialized object after deserialization is complete\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP \fBSerialization\fP context object\&.
+.RE
+.PP
+
+.PP
+Reimplemented in \fBCsla\&.Test\&.Silverlight\&.PropertyGetSet\&.AbstractGetSet< T >\fP\&.
+.PP
+Definition at line 1367 of file BusinessBase\&.cs\&.
+.SS "override void Csla\&.Core\&.BusinessBase\&.OnGetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Override this method to insert your child object references into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fIformatter\fP Reference to MobileFormatter instance\&. Use this to convert child references to/from reference id values\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3525 of file BusinessBase\&.cs\&.
+.SS "override void Csla\&.Core\&.BusinessBase\&.OnGetState (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
+
+.PP
+Override this method to insert your field values into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3475 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnRemoveEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Unhook child object events\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP Child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1431 of file BusinessBase\&.cs\&.
+.SS "override void Csla\&.Core\&.BusinessBase\&.OnSetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Override this method to retrieve your child object references from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fIformatter\fP Reference to MobileFormatter instance\&. Use this to convert child references to/from reference id values\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3555 of file BusinessBase\&.cs\&.
+.SS "override void Csla\&.Core\&.BusinessBase\&.OnSetState (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
+
+.PP
+Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Definition at line 3499 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnUnhandledAsyncException (\fBErrorEventArgs\fP error)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the UnhandledAsyncException event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror\fP Args parameter\&.
+.RE
+.PP
+
+.PP
+Definition at line 3137 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.OnUnhandledAsyncException (object originalSender, Exception error)\fC [protected]\fP"
+
+.PP
+Raises the UnhandledAsyncException event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoriginalSender\fP Original sender of the event\&.
+.br
+\fIerror\fP Exception object\&.
+.RE
+.PP
+
+.PP
+Definition at line 3150 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.OnValidationComplete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the ValidationComplete event 
+.PP
+Definition at line 1067 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.PropertyHasChanged (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Performs processing required when a property has changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIproperty\fP Property that has changed\&.
+.RE
+.PP
+.PP
+This method calls CheckRules(propertyName), MarkDirty and OnPropertyChanged(propertyName)\&. MarkDirty is called such that no event is raised for IsDirty, so only the specific property changed event for the current property is raised\&. 
+.PP
+Definition at line 372 of file BusinessBase\&.cs\&.
+.SS "virtual object Csla\&.Core\&.BusinessBase\&.ReadProperty (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Gets a property's value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+
+.PP
+Definition at line 1984 of file BusinessBase\&.cs\&.
+.SS "P \fBCsla\&.Core\&.BusinessBase\&.ReadProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's value as a specified type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+
+.PP
+Definition at line 1956 of file BusinessBase\&.cs\&.
+.SS "P Csla\&.Core\&.BusinessBase\&.ReadPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo)\fC [protected]\fP"
+
+.PP
+Gets a property's value from the list of managed field values, converting the value to an appropriate type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIF\fP Type of the field\&. 
+.br
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+
+.PP
+Definition at line 1943 of file BusinessBase\&.cs\&.
+.SS "static \fBCsla\&.Core\&.IMemberInfo\fP Csla\&.Core\&.BusinessBase\&.RegisterMethod (Type objectType, \fBIMemberInfo\fP info)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified method belongs to the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of object to which the method belongs\&. 
+.br
+\fIinfo\fP \fBIMemberInfo\fP object for the property\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided \fBIMemberInfo\fP object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1515 of file BusinessBase\&.cs\&.
+.SS "static \fBMethodInfo\fP Csla\&.Core\&.BusinessBase\&.RegisterMethod (Type objectType, string methodName)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified method belongs to the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of object to which the method belongs\&. 
+.br
+\fImethodName\fP Name of the method\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided \fBIMemberInfo\fP object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1536 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.BusinessBase\&.RegisterProperty< P > (Type objectType, \fBPropertyInfo\fP< P > info)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of object to which the property belongs\&. 
+.br
+\fIinfo\fP \fBPropertyInfo\fP object for the property\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided \fBIPropertyInfo\fP object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1563 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.RemoveEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP"
+
+.PP
+For internal use only\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP Child object\&.
+.RE
+.PP
+
+.PP
+Definition at line 1421 of file BusinessBase\&.cs\&.
+.SS "virtual void Csla\&.Core\&.BusinessBase\&.SetParent (\fBCore\&.IParent\fP parent)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP A reference to the parent collection object\&.
+.RE
+.PP
+
+.PP
+Definition at line 140 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.SetProperty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's managed field with the supplied value, and then calls PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property a SecurityException is thrown\&. 
+.PP
+Definition at line 2450 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBIPropertyInfo\fP propertyInfo, P newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's managed field with the supplied value, and then calls PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property a SecurityException is thrown\&. 
+.PP
+Definition at line 2492 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Property type\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property, this overload throws a SecurityException\&. 
+.PP
+Definition at line 2313 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to change this property\&.
+.RE
+.PP
+
+.PP
+Definition at line 2404 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, ref P field, P newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP A reference to the backing field for the property\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property, this overload throws a SecurityException\&. 
+.PP
+Definition at line 2079 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (string propertyName, ref P field, P newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP A reference to the backing field for the property\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fIpropertyName\fP The name of the property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property, this overload throws a SecurityException\&. 
+.PP
+Definition at line 2099 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (string propertyName, ref P field, P newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP A reference to the backing field for the property\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fIpropertyName\fP The name of the property\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to change this property\&.
+.RE
+.PP
+
+.PP
+Definition at line 2173 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property, this overload throws a SecurityException\&. 
+.PP
+Definition at line 2331 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Sets a property's managed field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to change this property\&.
+.RE
+.PP
+
+.PP
+Definition at line 2348 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, V > (\fBPropertyInfo\fP< P > propertyInfo, ref P field, V newValue)\fC [protected]\fP"
+
+.PP
+Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the field being set\&. 
+.br
+\fIV\fP Type of the value provided to the field\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP A reference to the backing field for the property\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.RE
+.PP
+.PP
+If the user is not authorized to change the property, this overload throws a SecurityException\&. 
+.PP
+Definition at line 2125 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, V > (\fBPropertyInfo\fP< P > propertyInfo, ref P field, V newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the field being set\&. 
+.br
+\fIV\fP Type of the value provided to the field\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP A reference to the backing field for the property\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fIpropertyInfo\fP \fBPropertyInfo\fP object containing property metadata\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to change this property\&.
+.RE
+.PP
+.PP
+If the field value is of type string, any incoming null values are converted to string\&.Empty\&. 
+.PP
+Definition at line 2154 of file BusinessBase\&.cs\&.
+.SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, V > (string propertyName, ref P field, V newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
+
+.PP
+Sets a property's backing field with the supplied value, first checking authorization, and then calling PropertyHasChanged if the value does change\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of the field being set\&. 
+.br
+\fIV\fP Type of the value provided to the field\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP A reference to the backing field for the property\&.
+.br
+\fInewValue\fP The new value for the property\&.
+.br
+\fIpropertyName\fP The name of the property\&.
+.br
+\fInoAccess\fP True if an exception should be thrown when the user is not authorized to change this property\&.
+.RE
+.PP
+.PP
+If the field value is of type string, any incoming null values are converted to string\&.Empty\&. 
+.PP
+Definition at line 2248 of file BusinessBase\&.cs\&.
+.SS "override void Csla\&.Core\&.BusinessBase\&.UndoChangesComplete ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called when an undo operation has completed\&. This method resets the object as a result of deserialization and raises PropertyChanged events to notify data binding that the object has changed\&. 
+.PP
+Reimplemented from \fBCsla\&.Core\&.UndoableBase\fP\&.
+.PP
+Definition at line 880 of file BusinessBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "virtual \fBRules\&.BrokenRulesCollection\fP Csla\&.Core\&.BusinessBase\&.BrokenRulesCollection\fC [get]\fP"
+
+.PP
+Provides access to the readonly collection of broken business rules for this object\&. 
+.PP
+Definition at line 1229 of file BusinessBase\&.cs\&.
+.SS "\fBBusinessRules\fP Csla\&.Core\&.BusinessBase\&.BusinessRules\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Provides access to the broken rules functionality\&. This property is used within your business logic so you can easily call the AddRule() method to associate business rules with your object's properties\&. 
+.PP
+Definition at line 1103 of file BusinessBase\&.cs\&.
+.SS "\fBBusyChangedEventHandler\fP Csla\&.Core\&.BusinessBase\&.BusyChanged\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event indicating that the IsBusy property has changed\&. 
+.PP
+Definition at line 3070 of file BusinessBase\&.cs\&.
+.SS "EventHandler<\fBCsla\&.Core\&.ChildChangedEventArgs\fP> Csla\&.Core\&.BusinessBase\&.ChildChanged\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event raised when a child object has been changed\&. 
+.PP
+Definition at line 3168 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.DisableIEditableObject\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
+
+.PP
+Gets or sets a value indicating whether the IEditableObject interface methods should be disabled for this object\&. Defaults to False, indicating that the IEditableObject methods will behave normally\&.
+.PP
+If you disable the IEditableObject methods then \fBWindows\fP Forms data binding will no longer automatically call BeginEdit, CancelEdit or ApplyEdit on your object, and you will have to call these methods manually to get proper n-level undo behavior\&. 
+.PP
+Definition at line 755 of file BusinessBase\&.cs\&.
+.SS "\fBFieldDataManager\fP Csla\&.Core\&.BusinessBase\&.FieldManager\fC [get]\fP, \fC [protected]\fP"
+
+.PP
+Gets the PropertyManager object for this business object\&. 
+.PP
+Definition at line 3294 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsBusy\fC [get]\fP"
+
+.PP
+Gets a value indicating if this object or its child objects are busy\&. 
+.PP
+Definition at line 3046 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.IsChild\fC [get]\fP"
+
+.PP
+Returns true if this is a child (non-root) object\&. 
+.PP
+Definition at line 931 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.IsDeleted\fC [get]\fP"
+
+.PP
+Returns true if this object is marked for deletion\&. CSLA \&.NET supports both immediate and deferred deletion of objects\&. This property is part of the support for deferred deletion, where an object can be marked for deletion, but isn't actually deleted until the object is saved to the database\&. This property indicates whether or not the current object has been marked for deletion\&. If it is true , the object will be deleted when it is saved to the database, otherwise it will be inserted or updated by the save operation\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if this object is marked for deletion\&.
+.RE
+.PP
+
+.PP
+Definition at line 194 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsDirty\fC [get]\fP"
+
+.PP
+Returns true if this object's data, or any of its fields or child objects data, has been changed\&. When an object's data is changed, CSLA \&.NET makes note of that change and considers the object to be 'dirty' or changed\&. This value is used to optimize data updates, since an unchanged object does not need to be updated into the database\&. All new objects are considered dirty\&. All objects marked for deletion are considered dirty\&. 
+.PP
+Once an object's data has been saved to the database (inserted or updated) the dirty flag is cleared and the object is considered unchanged\&. Objects newly loaded from the database are also considered unchanged\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if this object's data has been changed\&.
+.RE
+.PP
+
+.PP
+Definition at line 221 of file BusinessBase\&.cs\&.
+.SS "bool Csla\&.Core\&.BusinessBase\&.IsNew\fC [get]\fP"
+
+.PP
+Returns true if this is a new object, false if it is a pre-existing object\&. An object is considered to be new if its primary identifying (key) value doesn't correspond to data in the database\&. In other words, if the data values in this particular object have not yet been saved to the database the object is considered to be new\&. Likewise, if the object's data has been deleted from the database then the object is considered to be new\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if this object is new\&.
+.RE
+.PP
+
+.PP
+Definition at line 172 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSavable\fC [get]\fP"
+
+.PP
+Returns true if this object is both dirty and valid\&. An object is considered dirty (changed) if P:Csla\&.BusinessBase\&.IsDirty returns true\&. It is considered valid if IsValid returns true\&. The IsSavable property is a combination of these two properties\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if this object is both dirty and valid\&.
+.RE
+.PP
+
+.PP
+Definition at line 458 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSelfBusy\fC [get]\fP"
+
+.PP
+Gets a value indicating if this object is busy\&. 
+.PP
+Definition at line 3058 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSelfDirty\fC [get]\fP"
+
+.PP
+Returns true if this object's data has been changed\&. When an object's data is changed, CSLA \&.NET makes note of that change and considers the object to be 'dirty' or changed\&. This value is used to optimize data updates, since an unchanged object does not need to be updated into the database\&. All new objects are considered dirty\&. All objects marked for deletion are considered dirty\&. 
+.PP
+Once an object's data has been saved to the database (inserted or updated) the dirty flag is cleared and the object is considered unchanged\&. Objects newly loaded from the database are also considered unchanged\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if this object's data has been changed\&.
+.RE
+.PP
+
+.PP
+Definition at line 246 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSelfValid\fC [get]\fP"
+
+.PP
+Returns true if the object is currently valid, false if the object has broken rules or is otherwise invalid\&. By default this property relies on the underling BusinessRules object to track whether any business rules are currently broken for this object\&. 
+.PP
+You can override this property to provide more sophisticated implementations of the behavior\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the object is currently valid\&.
+.RE
+.PP
+
+.PP
+Definition at line 1215 of file BusinessBase\&.cs\&.
+.SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsValid\fC [get]\fP"
+
+.PP
+Returns true if the object and its child objects are currently valid, false if the object or any of its child objects have broken rules or are otherwise invalid\&. By default this property relies on the underling BusinessRules object to track whether any business rules are currently broken for this object\&. 
+.PP
+You can override this property to provide more sophisticated implementations of the behavior\&. For instance, you should always override this method if your object has child objects, since the validity of this object is affected by the validity of all child objects\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A value indicating if the object is currently valid\&.
+.RE
+.PP
+
+.PP
+Definition at line 1192 of file BusinessBase\&.cs\&.
+.SS "\fBCore\&.IParent\fP Csla\&.Core\&.BusinessBase\&.Parent\fC [get]\fP"
+
+.PP
+Provide access to the parent reference for use in child object code\&. This value will be Nothing for root objects\&. 
+.PP
+Definition at line 129 of file BusinessBase\&.cs\&.
+.SS "EventHandler<\fBErrorEventArgs\fP> Csla\&.Core\&.BusinessBase\&.UnhandledAsyncException\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event indicating that an exception occurred during the processing of an async operation\&. 
+.PP
+Definition at line 3126 of file BusinessBase\&.cs\&.
+.SS "EventHandler Csla\&.Core\&.BusinessBase\&.ValidationComplete\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event raised when validation is complete\&. 
+.PP
+Definition at line 1049 of file BusinessBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

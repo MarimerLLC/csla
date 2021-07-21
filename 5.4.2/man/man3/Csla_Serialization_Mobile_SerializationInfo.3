@@ -1,0 +1,307 @@
+.TH "Csla.Serialization.Mobile.SerializationInfo" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Serialization.Mobile.SerializationInfo \- Object containing the serialization data for a specific object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBChildData\fP"
+.br
+.RI "Object that contains information about a single child reference\&. "
+.ti -1c
+.RI "class \fBFieldData\fP"
+.br
+.RI "Object that contains information about a single field\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBAddValue\fP (string name, object value)"
+.br
+.RI "Adds a value to the serialization stream\&. "
+.ti -1c
+.RI "void \fBAddValue\fP (string name, object value, bool isDirty)"
+.br
+.RI "Adds a value to the list of fields\&. "
+.ti -1c
+.RI "void \fBAddValue\fP (string name, object value, bool isDirty, string enumTypeName)"
+.br
+.RI "Adds a value to the list of fields\&. "
+.ti -1c
+.RI "T \fBGetValue< T >\fP (string name)"
+.br
+.RI "Gets a value from the list of fields\&. "
+.ti -1c
+.RI "void \fBAddChild\fP (string name, int referenceId)"
+.br
+.RI "Adds a child to the list of child references\&. "
+.ti -1c
+.RI "void \fBAddChild\fP (string name, int referenceId, bool isDirty)"
+.br
+.RI "Adds a child to the list of child references\&. "
+.ti -1c
+.RI "\fBSerializationInfo\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "void \fBGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Dictionary< string, \fBChildData\fP > \fBChildren\fP\fC [get, set]\fP"
+.br
+.RI "Dictionary containing child reference data\&. "
+.ti -1c
+.RI "Dictionary< string, \fBFieldData\fP > \fBValues\fP\fC [get, set]\fP"
+.br
+.RI "Dictionary containg field data\&. "
+.ti -1c
+.RI "int \fBReferenceId\fP\fC [get, set]\fP"
+.br
+.RI "Reference number for this object\&. "
+.ti -1c
+.RI "string \fBTypeName\fP\fC [get, set]\fP"
+.br
+.RI "Assembly-qualified type name of the object being serialized\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Object containing the serialization data for a specific object\&. 
+
+
+.PP
+Definition at line 26 of file SerializationInfo\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.SerializationInfo ()"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 342 of file SerializationInfo\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.AddChild (string name, int referenceId)"
+
+.PP
+Adds a child to the list of child references\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.br
+\fIreferenceId\fP Reference id for the child object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 315 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.AddChild (string name, int referenceId, bool isDirty)"
+
+.PP
+Adds a child to the list of child references\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.br
+\fIreferenceId\fP Reference id for the child object\&. 
+.br
+\fIisDirty\fP Flag indicating whether the child is dirty\&. 
+.RE
+.PP
+
+.PP
+Definition at line 332 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.AddValue (string name, object value)"
+
+.PP
+Adds a value to the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.br
+\fIvalue\fP Value of the field\&. 
+.RE
+.PP
+
+.PP
+Definition at line 241 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.AddValue (string name, object value, bool isDirty)"
+
+.PP
+Adds a value to the list of fields\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.br
+\fIvalue\fP Value of the field\&. 
+.br
+\fIisDirty\fP Flag indicating whether the value is dirty\&. 
+.RE
+.PP
+
+.PP
+Definition at line 258 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.AddValue (string name, object value, bool isDirty, string enumTypeName)"
+
+.PP
+Adds a value to the list of fields\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.br
+\fIvalue\fP Value of the field\&. 
+.br
+\fIisDirty\fP Flag indicating whether the value is dirty\&. 
+.br
+\fIenumTypeName\fP Name of the enumeration 
+.RE
+.PP
+
+.PP
+Definition at line 278 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.GetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the serialization\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 369 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.GetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 352 of file SerializationInfo\&.cs\&.
+.SS "T Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.GetValue< T > (string name)"
+
+.PP
+Gets a value from the list of fields\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type to which the value should be coerced\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the field\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 293 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.SetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the deserialization\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 410 of file SerializationInfo\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.SetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 393 of file SerializationInfo\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Dictionary<string, \fBChildData\fP> Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.Children\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Dictionary containing child reference data\&. 
+.PP
+Definition at line 198 of file SerializationInfo\&.cs\&.
+.SS "int Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.ReferenceId\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Reference number for this object\&. 
+.PP
+Definition at line 224 of file SerializationInfo\&.cs\&.
+.SS "string Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.TypeName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Assembly-qualified type name of the object being serialized\&. 
+.PP
+Definition at line 230 of file SerializationInfo\&.cs\&.
+.SS "Dictionary<string, \fBFieldData\fP> Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.Values\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Dictionary containg field data\&. 
+.PP
+Definition at line 209 of file SerializationInfo\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

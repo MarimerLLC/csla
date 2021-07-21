@@ -1,0 +1,217 @@
+\hypertarget{class_csla_1_1_server_1_1_generic_business_exception}{}\doxysection{Csla.\+Server.\+Generic\+Business\+Exception Class Reference}
+\label{class_csla_1_1_server_1_1_generic_business_exception}\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+
+
+This exception is returned as Business\+Exception in \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_exception}{Data\+Portal\+Exception}} when the serverside/inner exception is not serializable  
+
+
+Inheritance diagram for Csla.\+Server.\+Generic\+Business\+Exception\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_server_1_1_generic_business_exception}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_ab80ff3f86e830c92804c875b2b7f0f07}{Generic\+Business\+Exception}} (Exception wrapped\+Exception)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} class. Reads information for a Non\+Serializable excpeption into \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_aacb51cd46db9847efc165a3aaec61468}{Generic\+Business\+Exception}} (Exception wrapped\+Exception, Exception inner\+Exception)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} class. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_a4564c8928269f682bd7247ee3f4a88ec}{Generic\+Business\+Exception}} (Serialization\+Info info, Streaming\+Context context)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} class. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_a51a36ba504f8a58978e6ab535f6c5092}{Get\+Object\+Data}} (Serialization\+Info info, Streaming\+Context context)
+\begin{DoxyCompactList}\small\item\em When overridden in a derived class, sets the T\+:\+System.\+Runtime.\+Serialization.\+Serialization\+Info with information about the exception. \end{DoxyCompactList}\item 
+override string \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_a4fab8a0ef894fbb35d52d82191b53523}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em Returns a System.\+String that represents this instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+override string \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_ad1c852bfa6b70967c9bb8ed75cfba736}{Stack\+Trace}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a string representation of the immediate frames on the call stack. \end{DoxyCompactList}\item 
+override IDictionary \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_a0b4e631a7ce36493ba0afa32b7c986dd}{Data}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a collection of key/value pairs that provide additional user-\/defined information about the exception. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception_aa78eceac6734ea001f08dd13e149f682}{Type\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the name of the type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This exception is returned as Business\+Exception in \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_exception}{Data\+Portal\+Exception}} when the serverside/inner exception is not serializable 
+
+
+
+Definition at line 21 of file Generic\+Business\+Exception.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_ab80ff3f86e830c92804c875b2b7f0f07}\label{class_csla_1_1_server_1_1_generic_business_exception_ab80ff3f86e830c92804c875b2b7f0f07}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!GenericBusinessException@{GenericBusinessException}}
+\index{GenericBusinessException@{GenericBusinessException}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{GenericBusinessException()}{GenericBusinessException()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily Csla.\+Server.\+Generic\+Business\+Exception.\+Generic\+Business\+Exception (\begin{DoxyParamCaption}\item[{Exception}]{wrapped\+Exception }\end{DoxyParamCaption})}
+
+
+
+Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} class. Reads information for a Non\+Serializable excpeption into \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em wrapped\+Exception} & The wrapped exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 74 of file Generic\+Business\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_aacb51cd46db9847efc165a3aaec61468}\label{class_csla_1_1_server_1_1_generic_business_exception_aacb51cd46db9847efc165a3aaec61468}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!GenericBusinessException@{GenericBusinessException}}
+\index{GenericBusinessException@{GenericBusinessException}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{GenericBusinessException()}{GenericBusinessException()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily Csla.\+Server.\+Generic\+Business\+Exception.\+Generic\+Business\+Exception (\begin{DoxyParamCaption}\item[{Exception}]{wrapped\+Exception,  }\item[{Exception}]{inner\+Exception }\end{DoxyParamCaption})}
+
+
+
+Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em wrapped\+Exception} & The wrapped exception.\\
+\hline
+{\em inner\+Exception} & The inner exception.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 89 of file Generic\+Business\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_a4564c8928269f682bd7247ee3f4a88ec}\label{class_csla_1_1_server_1_1_generic_business_exception_a4564c8928269f682bd7247ee3f4a88ec}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!GenericBusinessException@{GenericBusinessException}}
+\index{GenericBusinessException@{GenericBusinessException}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{GenericBusinessException()}{GenericBusinessException()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily Csla.\+Server.\+Generic\+Business\+Exception.\+Generic\+Business\+Exception (\begin{DoxyParamCaption}\item[{Serialization\+Info}]{info,  }\item[{Streaming\+Context}]{context }\end{DoxyParamCaption})}
+
+
+
+Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_generic_business_exception}{Generic\+Business\+Exception}} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & The T\+:\+System.\+Runtime.\+Serialization.\+Serialization\+Info that holds the serialized object data about the exception being thrown.\\
+\hline
+{\em context} & The T\+:\+System.\+Runtime.\+Serialization.\+Streaming\+Context that contains contextual information about the source or destination.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em T\+:\+System.\+Argument\+Null\+Exception} & The {\itshape info}  parameter is null. \\
+\hline
+{\em T\+:\+System.\+Runtime.\+Serialization.\+Serialization\+Exception} & The class name is null or P\+:\+System.\+Exception.\+HResult is zero (0). \\
+\hline
+\end{DoxyExceptions}
+
+
+Definition at line 107 of file Generic\+Business\+Exception.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_a51a36ba504f8a58978e6ab535f6c5092}\label{class_csla_1_1_server_1_1_generic_business_exception_a51a36ba504f8a58978e6ab535f6c5092}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!GetObjectData@{GetObjectData}}
+\index{GetObjectData@{GetObjectData}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{GetObjectData()}{GetObjectData()}}
+{\footnotesize\ttfamily override void Csla.\+Server.\+Generic\+Business\+Exception.\+Get\+Object\+Data (\begin{DoxyParamCaption}\item[{Serialization\+Info}]{info,  }\item[{Streaming\+Context}]{context }\end{DoxyParamCaption})}
+
+
+
+When overridden in a derived class, sets the T\+:\+System.\+Runtime.\+Serialization.\+Serialization\+Info with information about the exception. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em info} & The T\+:\+System.\+Runtime.\+Serialization.\+Serialization\+Info that holds the serialized object data about the exception being thrown.\\
+\hline
+{\em context} & The T\+:\+System.\+Runtime.\+Serialization.\+Streaming\+Context that contains contextual information about the source or destination.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em T\+:\+System.\+Argument\+Null\+Exception} & The {\itshape info}  parameter is a null reference (Nothing in Visual Basic). \\
+\hline
+\end{DoxyExceptions}
+$<$\+Permission\+Set$>$ $<$\+IPermission class=\char`\"{}\+System.\+Security.\+Permissions.\+File\+IOPermission, mscorlib, Version=2.\+0.\+3600.\+0, Culture=neutral, Public\+Key\+Token=b77a5c561934e089\char`\"{} version=\char`\"{}1\char`\"{} Read=\char`\"{}$\ast$\+All\+Files$\ast$\char`\"{} Path\+Discovery=\char`\"{}$\ast$\+All\+Files$\ast$\char`\"{}$>$ $<$\+IPermission class=\char`\"{}\+System.\+Security.\+Permissions.\+Security\+Permission, mscorlib, Version=2.\+0.\+3600.\+0, Culture=neutral, Public\+Key\+Token=b77a5c561934e089\char`\"{} version=\char`\"{}1\char`\"{} Flags=\char`\"{}\+Serialization\+Formatter\char`\"{}$>$ $<$/\+Permission\+Set$>$ 
+
+Definition at line 131 of file Generic\+Business\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_a4fab8a0ef894fbb35d52d82191b53523}\label{class_csla_1_1_server_1_1_generic_business_exception_a4fab8a0ef894fbb35d52d82191b53523}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!ToString@{ToString}}
+\index{ToString@{ToString}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{ToString()}{ToString()}}
+{\footnotesize\ttfamily override string Csla.\+Server.\+Generic\+Business\+Exception.\+To\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Returns a System.\+String that represents this instance. 
+
+\begin{DoxyReturn}{Returns}
+A System.\+String that represents this instance. 
+\end{DoxyReturn}
+$<$\+Permission\+Set$>$ $<$\+IPermission class=\char`\"{}\+System.\+Security.\+Permissions.\+File\+IOPermission, mscorlib, Version=2.\+0.\+3600.\+0, Culture=neutral, Public\+Key\+Token=b77a5c561934e089\char`\"{} version=\char`\"{}1\char`\"{} Path\+Discovery=\char`\"{}$\ast$\+All\+Files$\ast$\char`\"{}$>$ $<$/\+Permission\+Set$>$ 
+
+Definition at line 149 of file Generic\+Business\+Exception.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_a0b4e631a7ce36493ba0afa32b7c986dd}\label{class_csla_1_1_server_1_1_generic_business_exception_a0b4e631a7ce36493ba0afa32b7c986dd}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!Data@{Data}}
+\index{Data@{Data}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{Data}{Data}}
+{\footnotesize\ttfamily override IDictionary Csla.\+Server.\+Generic\+Business\+Exception.\+Data\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a collection of key/value pairs that provide additional user-\/defined information about the exception. 
+
+\begin{DoxyReturn}{Returns}
+An object that implements the T\+:\+System.\+Collections.\+IDictionary interface and contains a collection of user-\/defined key/value pairs. The default is an empty collection.
+\end{DoxyReturn}
+
+
+Definition at line 49 of file Generic\+Business\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_ad1c852bfa6b70967c9bb8ed75cfba736}\label{class_csla_1_1_server_1_1_generic_business_exception_ad1c852bfa6b70967c9bb8ed75cfba736}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!StackTrace@{StackTrace}}
+\index{StackTrace@{StackTrace}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{StackTrace}{StackTrace}}
+{\footnotesize\ttfamily override string Csla.\+Server.\+Generic\+Business\+Exception.\+Stack\+Trace\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a string representation of the immediate frames on the call stack. 
+
+\begin{DoxyReturn}{Returns}
+A string that describes the immediate frames of the call stack.
+\end{DoxyReturn}
+$<$\+Permission\+Set$>$ $<$\+IPermission class=\char`\"{}\+System.\+Security.\+Permissions.\+File\+IOPermission, mscorlib, Version=2.\+0.\+3600.\+0, Culture=neutral, Public\+Key\+Token=b77a5c561934e089\char`\"{} version=\char`\"{}1\char`\"{} Path\+Discovery=\char`\"{}$\ast$\+All\+Files$\ast$\char`\"{}$>$ $<$/\+Permission\+Set$>$ 
+
+Definition at line 36 of file Generic\+Business\+Exception.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_generic_business_exception_aa78eceac6734ea001f08dd13e149f682}\label{class_csla_1_1_server_1_1_generic_business_exception_aa78eceac6734ea001f08dd13e149f682}} 
+\index{Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}!TypeName@{TypeName}}
+\index{TypeName@{TypeName}!Csla.Server.GenericBusinessException@{Csla.Server.GenericBusinessException}}
+\doxysubsubsection{\texorpdfstring{TypeName}{TypeName}}
+{\footnotesize\ttfamily string Csla.\+Server.\+Generic\+Business\+Exception.\+Type\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the name of the type. 
+
+The name of the type.
+
+Definition at line 61 of file Generic\+Business\+Exception.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_generic_business_exception_8cs}{Generic\+Business\+Exception.\+cs}}\end{DoxyCompactItemize}

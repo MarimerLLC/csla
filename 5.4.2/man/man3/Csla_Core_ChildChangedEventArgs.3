@@ -1,0 +1,135 @@
+.TH "Csla.Core.ChildChangedEventArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ChildChangedEventArgs \- Contains event data about the changed child object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits EventArgs\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBChildChangedEventArgs\fP (object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBChildChangedEventArgs\fP (object childObject, PropertyChangedEventArgs propertyArgs)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "\fBChildChangedEventArgs\fP (object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)"
+.br
+.RI "Creates an instance of the object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "object \fBChildObject\fP\fC [get]\fP"
+.br
+.RI "Gets a reference to the changed child object\&. "
+.ti -1c
+.RI "PropertyChangedEventArgs \fBPropertyChangedArgs\fP\fC [get]\fP"
+.br
+.RI "Gets the PropertyChangedEventArgs object from the child's PropertyChanged event, if the child is not a collection or list\&. "
+.ti -1c
+.RI "NotifyCollectionChangedEventArgs \fBCollectionChangedArgs\fP\fC [get]\fP"
+.br
+.RI "Gets the NotifyCollectionChangedEventArgs object from the child's CollectionChanged event, if the child is an ObservableCollection\&. "
+.ti -1c
+.RI "ListChangedEventArgs \fBListChangedArgs\fP\fC [get]\fP"
+.br
+.RI "Gets the ListChangedEventArgs object from the child's ListChanged event, if the child is a collection or list\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains event data about the changed child object\&. 
+
+
+.PP
+Definition at line 20 of file ChildChangedEventArgs\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.ChildChangedEventArgs\&.ChildChangedEventArgs (object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchildObject\fP Reference to the child object that was changed\&. 
+.br
+\fIlistArgs\fP ListChangedEventArgs object or null\&. 
+.br
+\fIpropertyArgs\fP PropertyChangedEventArgs object or null\&. 
+.RE
+.PP
+
+.PP
+Definition at line 58 of file ChildChangedEventArgs\&.cs\&.
+.SS "Csla\&.Core\&.ChildChangedEventArgs\&.ChildChangedEventArgs (object childObject, PropertyChangedEventArgs propertyArgs)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchildObject\fP Reference to the child object that was changed\&. 
+.br
+\fIpropertyArgs\fP PropertyChangedEventArgs object or null\&. 
+.RE
+.PP
+
+.PP
+Definition at line 73 of file ChildChangedEventArgs\&.cs\&.
+.SS "Csla\&.Core\&.ChildChangedEventArgs\&.ChildChangedEventArgs (object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchildObject\fP Reference to the child object that was changed\&. 
+.br
+\fIlistArgs\fP ListChangedEventArgs object or null\&. 
+.br
+\fIpropertyArgs\fP PropertyChangedEventArgs object or null\&. 
+.RE
+.PP
+
+.PP
+Definition at line 91 of file ChildChangedEventArgs\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "object Csla\&.Core\&.ChildChangedEventArgs\&.ChildObject\fC [get]\fP"
+
+.PP
+Gets a reference to the changed child object\&. 
+.PP
+Definition at line 25 of file ChildChangedEventArgs\&.cs\&.
+.SS "NotifyCollectionChangedEventArgs Csla\&.Core\&.ChildChangedEventArgs\&.CollectionChangedArgs\fC [get]\fP"
+
+.PP
+Gets the NotifyCollectionChangedEventArgs object from the child's CollectionChanged event, if the child is an ObservableCollection\&. 
+.PP
+Definition at line 37 of file ChildChangedEventArgs\&.cs\&.
+.SS "ListChangedEventArgs Csla\&.Core\&.ChildChangedEventArgs\&.ListChangedArgs\fC [get]\fP"
+
+.PP
+Gets the ListChangedEventArgs object from the child's ListChanged event, if the child is a collection or list\&. 
+.PP
+Definition at line 44 of file ChildChangedEventArgs\&.cs\&.
+.SS "PropertyChangedEventArgs Csla\&.Core\&.ChildChangedEventArgs\&.PropertyChangedArgs\fC [get]\fP"
+
+.PP
+Gets the PropertyChangedEventArgs object from the child's PropertyChanged event, if the child is not a collection or list\&. 
+.PP
+Definition at line 31 of file ChildChangedEventArgs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

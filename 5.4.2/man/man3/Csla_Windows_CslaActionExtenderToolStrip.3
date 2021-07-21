@@ -1,0 +1,609 @@
+.TH "Csla.Windows.CslaActionExtenderToolStrip" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Windows.CslaActionExtenderToolStrip \- Extender control (for ToolStripButton only) providing automation around data binding to CSLA \&.NET business objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits System\&.ComponentModel\&.Component, and IExtenderProvider\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCslaActionExtenderToolStrip\fP (IContainer container)"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "\fBCslaFormAction\fP \fBGetActionType\fP (ToolStripButton ctl)"
+.br
+.RI "Gets the action type\&. "
+.ti -1c
+.RI "void \fBSetActionType\fP (ToolStripButton ctl, \fBCslaFormAction\fP value)"
+.br
+.RI "Sets the action type\&. "
+.ti -1c
+.RI "\fBPostSaveActionType\fP \fBGetPostSaveAction\fP (ToolStripButton ctl)"
+.br
+.RI "Gets the post save action\&. "
+.ti -1c
+.RI "void \fBSetPostSaveAction\fP (ToolStripButton ctl, \fBPostSaveActionType\fP value)"
+.br
+.RI "Sets the post save action\&. "
+.ti -1c
+.RI "bool \fBGetRebindAfterSave\fP (ToolStripButton ctl)"
+.br
+.RI "Gets the rebind after save value\&. "
+.ti -1c
+.RI "void \fBSetRebindAfterSave\fP (ToolStripButton ctl, bool value)"
+.br
+.RI "Sets the rebind after save value\&. "
+.ti -1c
+.RI "bool \fBGetDisableWhenClean\fP (ToolStripButton ctl)"
+.br
+.RI "Gets the disable when clean value\&. "
+.ti -1c
+.RI "void \fBSetDisableWhenClean\fP (ToolStripButton ctl, bool value)"
+.br
+.RI "Sets the disable when clean value\&. "
+.ti -1c
+.RI "bool \fBGetDisableWhenUseless\fP (ToolStripButton ctl)"
+.br
+.RI "Gets the disable when useless value\&. "
+.ti -1c
+.RI "void \fBSetDisableWhenUseless\fP (ToolStripButton ctl, bool value)"
+.br
+.RI "Sets the disable when useless value\&. "
+.ti -1c
+.RI "string \fBGetCommandName\fP (ToolStripButton ctl)"
+.br
+.RI "Gets the command name value\&. "
+.ti -1c
+.RI "void \fBSetCommandName\fP (ToolStripButton ctl, string value)"
+.br
+.RI "Sets the command name value\&. "
+.ti -1c
+.RI "void \fBResetActionBehaviors\fP (\fBISavable\fP objectToBind)"
+.br
+.RI "Resets all action behaviors\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBOnClicking\fP (\fBCslaActionCancelEventArgs\fP e)"
+.br
+.RI "Raises the Clicking event\&. "
+.ti -1c
+.RI "virtual void \fBOnClicked\fP (\fBCslaActionEventArgs\fP e)"
+.br
+.RI "Raises the Clicked event\&. "
+.ti -1c
+.RI "virtual void \fBOnErrorEncountered\fP (\fBErrorEncounteredEventArgs\fP e)"
+.br
+.RI "Raises the ErrorEncountered event\&. "
+.ti -1c
+.RI "virtual void \fBOnSetForNew\fP (\fBCslaActionEventArgs\fP e)"
+.br
+.RI "Raises the SetForNew event\&. "
+.ti -1c
+.RI "virtual void \fBOnBusinessObjectInvalid\fP (\fBCslaActionEventArgs\fP e)"
+.br
+.RI "Raises the BusinessObjectInvalid event\&. "
+.ti -1c
+.RI "virtual void \fBOnHasBrokenRules\fP (\fBHasBrokenRulesEventArgs\fP e)"
+.br
+.RI "Raises the HasBrokenRules event\&. "
+.ti -1c
+.RI "virtual void \fBOnObjectSaving\fP (\fBCslaActionCancelEventArgs\fP e)"
+.br
+.RI "Raises the ObjectSaving event\&. "
+.ti -1c
+.RI "virtual void \fBOnObjectSaved\fP (\fBCslaActionEventArgs\fP e)"
+.br
+.RI "Raises the ObjectSaved event\&. "
+.ti -1c
+.RI "void \fBOnClick\fP (object sender, EventArgs e)"
+.br
+.RI "Method invoked when the target control is clicked\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "object \fBDataSource\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a reference to the data source object\&. "
+.ti -1c
+.RI "bool \fBAutoShowBrokenRules\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether to automatically show broken rules\&. "
+.ti -1c
+.RI "bool \fBWarnIfCloseOnDirty\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether to warn the user on close when the object is dirty\&. "
+.ti -1c
+.RI "string \fBDirtyWarningMessage\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the message shown to the user in a close on dirty warning\&. "
+.ti -1c
+.RI "bool \fBWarnOnCancel\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether to warn the user on cancel\&. "
+.ti -1c
+.RI "string \fBWarnOnCancelMessage\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the message shown to the user in a warn on cancel\&. "
+.ti -1c
+.RI "string \fBObjectIsValidMessage\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the message shown to the user when a button with a Validate ActionType is pressed when the object is valid\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBCslaActionCancelEventArgs\fP > \fBClicking\fP"
+.br
+.RI "Event indicating the user is clicking on the ToolStripButton\&. "
+.ti -1c
+.RI "EventHandler< \fBCslaActionEventArgs\fP > \fBClicked\fP"
+.br
+.RI "Event indicating the user clicked on the ToolStripButton\&. "
+.ti -1c
+.RI "EventHandler< \fBErrorEncounteredEventArgs\fP > \fBErrorEncountered\fP"
+.br
+.RI "Event indicating an error was encountered\&. "
+.ti -1c
+.RI "EventHandler< \fBCslaActionEventArgs\fP > \fBSetForNew\fP"
+.br
+.RI "Event indicating the object is set for new\&. "
+.ti -1c
+.RI "EventHandler< \fBCslaActionEventArgs\fP > \fBBusinessObjectInvalid\fP"
+.br
+.RI "Event indicating the business object is in an invalid state\&. "
+.ti -1c
+.RI "EventHandler< \fBHasBrokenRulesEventArgs\fP > \fBHasBrokenRules\fP"
+.br
+.RI "Event indicating the business object has broken rules\&. "
+.ti -1c
+.RI "EventHandler< \fBCslaActionCancelEventArgs\fP > \fBObjectSaving\fP"
+.br
+.RI "Event indicating that the object is saving\&. "
+.ti -1c
+.RI "EventHandler< \fBCslaActionEventArgs\fP > \fBObjectSaved\fP"
+.br
+.RI "Event indicating that the object has been saved\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Extender control (for ToolStripButton only) providing automation around data binding to CSLA \&.NET business objects\&. 
+
+
+.PP
+Definition at line 29 of file CslaActionExtenderToolStrip\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Windows\&.CslaActionExtenderToolStrip\&.CslaActionExtenderToolStrip (IContainer container)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontainer\fP Container for the component\&.
+.RE
+.PP
+
+.PP
+Definition at line 37 of file CslaActionExtenderToolStrip\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBCslaFormAction\fP Csla\&.Windows\&.CslaActionExtenderToolStrip\&.GetActionType (ToolStripButton ctl)"
+
+.PP
+Gets the action type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 197 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "string Csla\&.Windows\&.CslaActionExtenderToolStrip\&.GetCommandName (ToolStripButton ctl)"
+
+.PP
+Gets the command name value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.RE
+.PP
+
+.PP
+Definition at line 407 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "bool Csla\&.Windows\&.CslaActionExtenderToolStrip\&.GetDisableWhenClean (ToolStripButton ctl)"
+
+.PP
+Gets the disable when clean value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.RE
+.PP
+
+.PP
+Definition at line 323 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "bool Csla\&.Windows\&.CslaActionExtenderToolStrip\&.GetDisableWhenUseless (ToolStripButton ctl)"
+
+.PP
+Gets the disable when useless value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.RE
+.PP
+
+.PP
+Definition at line 366 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "\fBPostSaveActionType\fP Csla\&.Windows\&.CslaActionExtenderToolStrip\&.GetPostSaveAction (ToolStripButton ctl)"
+
+.PP
+Gets the post save action\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 239 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "bool Csla\&.Windows\&.CslaActionExtenderToolStrip\&.GetRebindAfterSave (ToolStripButton ctl)"
+
+.PP
+Gets the rebind after save value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.RE
+.PP
+
+.PP
+Definition at line 280 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnBusinessObjectInvalid (\fBCslaActionEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the BusinessObjectInvalid event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 546 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnClick (object sender, EventArgs e)\fC [protected]\fP"
+
+.PP
+Method invoked when the target control is clicked\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP Object originating action\&.
+.br
+\fIe\fP Arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 657 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnClicked (\fBCslaActionEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the Clicked event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 516 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnClicking (\fBCslaActionCancelEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the Clicking event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 506 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnErrorEncountered (\fBErrorEncounteredEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the ErrorEncountered event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 526 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnHasBrokenRules (\fBHasBrokenRulesEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the HasBrokenRules event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 556 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnObjectSaved (\fBCslaActionEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the ObjectSaved event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 576 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnObjectSaving (\fBCslaActionCancelEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the ObjectSaving event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 566 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "virtual void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.OnSetForNew (\fBCslaActionEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the SetForNew event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Event arguments\&.
+.RE
+.PP
+
+.PP
+Definition at line 536 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.ResetActionBehaviors (\fBISavable\fP objectToBind)"
+
+.PP
+Resets all action behaviors\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectToBind\fP Target object\&.
+.RE
+.PP
+
+.PP
+Definition at line 590 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetActionType (ToolStripButton ctl, \fBCslaFormAction\fP value)"
+
+.PP
+Sets the action type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.br
+\fIvalue\fP Value for property\&.
+.RE
+.PP
+
+.PP
+Definition at line 214 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetCommandName (ToolStripButton ctl, string value)"
+
+.PP
+Sets the command name value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.br
+\fIvalue\fP Value for property\&.
+.RE
+.PP
+
+.PP
+Definition at line 424 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetDisableWhenClean (ToolStripButton ctl, bool value)"
+
+.PP
+Sets the disable when clean value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.br
+\fIvalue\fP Value for property\&.
+.RE
+.PP
+
+.PP
+Definition at line 342 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetDisableWhenUseless (ToolStripButton ctl, bool value)"
+
+.PP
+Sets the disable when useless value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.br
+\fIvalue\fP Value for property\&.
+.RE
+.PP
+
+.PP
+Definition at line 383 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetPostSaveAction (ToolStripButton ctl, \fBPostSaveActionType\fP value)"
+
+.PP
+Sets the post save action\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.br
+\fIvalue\fP Value for property\&.
+.RE
+.PP
+
+.PP
+Definition at line 256 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "void Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetRebindAfterSave (ToolStripButton ctl, bool value)"
+
+.PP
+Sets the rebind after save value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctl\fP Reference to ToolStripButton\&.
+.br
+\fIvalue\fP Value for property\&.
+.RE
+.PP
+
+.PP
+Definition at line 297 of file CslaActionExtenderToolStrip\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Windows\&.CslaActionExtenderToolStrip\&.AutoShowBrokenRules\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether to automatically show broken rules\&. 
+.PP
+Definition at line 103 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "object Csla\&.Windows\&.CslaActionExtenderToolStrip\&.DataSource\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a reference to the data source object\&. 
+.PP
+Definition at line 80 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "string Csla\&.Windows\&.CslaActionExtenderToolStrip\&.DirtyWarningMessage\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the message shown to the user in a close on dirty warning\&. 
+.PP
+Definition at line 132 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "string Csla\&.Windows\&.CslaActionExtenderToolStrip\&.ObjectIsValidMessage\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the message shown to the user when a button with a Validate ActionType is pressed when the object is valid\&. 
+.PP
+Definition at line 176 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "bool Csla\&.Windows\&.CslaActionExtenderToolStrip\&.WarnIfCloseOnDirty\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether to warn the user on close when the object is dirty\&. 
+.PP
+Definition at line 117 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "bool Csla\&.Windows\&.CslaActionExtenderToolStrip\&.WarnOnCancel\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether to warn the user on cancel\&. 
+.PP
+Definition at line 146 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "string Csla\&.Windows\&.CslaActionExtenderToolStrip\&.WarnOnCancelMessage\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the message shown to the user in a warn on cancel\&. 
+.PP
+Definition at line 161 of file CslaActionExtenderToolStrip\&.cs\&.
+.SH "Event Documentation"
+.PP 
+.SS "EventHandler<\fBCslaActionEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.BusinessObjectInvalid"
+
+.PP
+Event indicating the business object is in an invalid state\&. 
+.PP
+Definition at line 475 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBCslaActionEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.Clicked"
+
+.PP
+Event indicating the user clicked on the ToolStripButton\&. 
+.PP
+Definition at line 454 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBCslaActionCancelEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.Clicking"
+
+.PP
+Event indicating the user is clicking on the ToolStripButton\&. 
+.PP
+Definition at line 447 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBErrorEncounteredEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.ErrorEncountered"
+
+.PP
+Event indicating an error was encountered\&. 
+.PP
+Definition at line 461 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBHasBrokenRulesEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.HasBrokenRules"
+
+.PP
+Event indicating the business object has broken rules\&. 
+.PP
+Definition at line 482 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBCslaActionEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.ObjectSaved"
+
+.PP
+Event indicating that the object has been saved\&. 
+.PP
+Definition at line 496 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBCslaActionCancelEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.ObjectSaving"
+
+.PP
+Event indicating that the object is saving\&. 
+.PP
+Definition at line 489 of file CslaActionExtenderToolStrip\&.cs\&.
+.SS "EventHandler<\fBCslaActionEventArgs\fP> Csla\&.Windows\&.CslaActionExtenderToolStrip\&.SetForNew"
+
+.PP
+Event indicating the object is set for new\&. 
+.PP
+Definition at line 468 of file CslaActionExtenderToolStrip\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

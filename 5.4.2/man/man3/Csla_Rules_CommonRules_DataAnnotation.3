@@ -1,0 +1,88 @@
+.TH "Csla.Rules.CommonRules.DataAnnotation" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.CommonRules.DataAnnotation \- Business rule that encapsulates a DataAnnotations ValidationAttribute rule\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.BusinessRule\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataAnnotation\fP (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, System\&.ComponentModel\&.DataAnnotations\&.ValidationAttribute attribute)"
+.br
+.RI "Creates an instance of the rule\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBExecute\fP (\fBIRuleContext\fP context)"
+.br
+.RI "Rule implementation\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "System\&.ComponentModel\&.DataAnnotations\&.ValidationAttribute \fBAttribute\fP\fC [get]\fP"
+.br
+.RI "Gets the ValidationAttribute instance\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Business rule that encapsulates a DataAnnotations ValidationAttribute rule\&. 
+
+
+.PP
+Definition at line 49 of file CommonRules\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.CommonRules\&.DataAnnotation\&.DataAnnotation (\fBCsla\&.Core\&.IPropertyInfo\fP primaryProperty, System\&.ComponentModel\&.DataAnnotations\&.ValidationAttribute attribute)"
+
+.PP
+Creates an instance of the rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprimaryProperty\fP Property to which the rule applies\&.
+.br
+\fIattribute\fP ValidationAttribute instance\&.
+.RE
+.PP
+
+.PP
+Definition at line 61 of file CommonRules\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Rules\&.CommonRules\&.DataAnnotation\&.Execute (\fBIRuleContext\fP context)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Rule implementation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP Rule context\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Rules\&.BusinessRule\fP\&.
+.PP
+Definition at line 74 of file CommonRules\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "System\&.ComponentModel\&.DataAnnotations\&.ValidationAttribute Csla\&.Rules\&.CommonRules\&.DataAnnotation\&.Attribute\fC [get]\fP"
+
+.PP
+Gets the ValidationAttribute instance\&. 
+.PP
+Definition at line 54 of file CommonRules\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,100 @@
+.TH "Csla.Serialization.Mobile.IMobileObject" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Serialization.Mobile.IMobileObject \- Interface to be implemented by any object that supports serialization by the SerializationFormatterFactory\&.GetFormatter()\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Core\&.ContextDictionary\fP, \fBCsla\&.Core\&.ICommandObject\fP, \fBCsla\&.Core\&.MobileDictionary< K, V >\fP, \fBCsla\&.Core\&.MobileList< T >\fP, \fBCsla\&.Core\&.MobileObject\fP, \fBCsla\&.DataPortalClient\&.PrimitiveCriteria\fP, \fBCsla\&.IBusinessBase\fP, \fBCsla\&.IBusinessListBase< C >\fP, \fBCsla\&.ICommandBase\fP, \fBCsla\&.IReadOnlyBase\fP, \fBCsla\&.IReadOnlyListBase< C >\fP, \fBCsla\&.Security\&.ICslaPrincipal\fP, \fBCsla\&.Serialization\&.Mobile\&.IMobileList\fP, \fBCsla\&.Serialization\&.Mobile\&.NullPlaceholder\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.ChildData\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.FieldData\fP, \fBCsla\&.Server\&.DataPortalContext\fP, and \fBCsla\&.SmartDate\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Interface to be implemented by any object that supports serialization by the SerializationFormatterFactory\&.GetFormatter()\&. 
+
+
+.PP
+Definition at line 15 of file IMobileObject\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Serialization\&.Mobile\&.IMobileObject\&.GetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the serialization\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.SmartDate\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.ChildData\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.FieldData\fP, \fBCsla\&.Serialization\&.Mobile\&.NullPlaceholder\fP, and \fBCsla\&.DataPortalClient\&.PrimitiveCriteria\fP\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.IMobileObject\&.GetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.SmartDate\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.ChildData\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.FieldData\fP, \fBCsla\&.Serialization\&.Mobile\&.NullPlaceholder\fP, and \fBCsla\&.DataPortalClient\&.PrimitiveCriteria\fP\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.IMobileObject\&.SetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the deserialization\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.SmartDate\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.ChildData\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.FieldData\fP, \fBCsla\&.Serialization\&.Mobile\&.NullPlaceholder\fP, and \fBCsla\&.DataPortalClient\&.PrimitiveCriteria\fP\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.IMobileObject\&.SetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.SmartDate\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.ChildData\fP, \fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\&.FieldData\fP, \fBCsla\&.Serialization\&.Mobile\&.NullPlaceholder\fP, and \fBCsla\&.DataPortalClient\&.PrimitiveCriteria\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,77 @@
+.TH "cslalighttest.Serialization.ReadOnlyPerson" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+cslalighttest.Serialization.ReadOnlyPerson
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.ReadOnlyBase< ReadOnlyPerson >\fP\&.
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBReadOnlyPerson\fP \fBGetReadOnlyPerson\fP (string personName, int year)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static readonly \fBPropertyInfo\fP< string > \fBNameProperty\fP = RegisterProperty<string>(typeof(\fBReadOnlyPerson\fP), new \fBPropertyInfo\fP<string>('Name'))"
+.br
+.ti -1c
+.RI "static readonly \fBPropertyInfo\fP< DateTime > \fBBirthdateProperty\fP"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBName\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "DateTime \fBBirthdate\fP\fC [get]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 15 of file ReadOnlyPerson\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBReadOnlyPerson\fP cslalighttest\&.Serialization\&.ReadOnlyPerson\&.GetReadOnlyPerson (string personName, int year)\fC [static]\fP"
+
+.PP
+Definition at line 19 of file ReadOnlyPerson\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "readonly \fBPropertyInfo\fP<DateTime> cslalighttest\&.Serialization\&.ReadOnlyPerson\&.BirthdateProperty\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= RegisterProperty<DateTime>(
+      typeof(ReadOnlyPerson),
+      new PropertyInfo<DateTime>("Birthdate"))
+.fi
+.PP
+Definition at line 29 of file ReadOnlyPerson\&.cs\&.
+.SS "readonly \fBPropertyInfo\fP<string> cslalighttest\&.Serialization\&.ReadOnlyPerson\&.NameProperty = RegisterProperty<string>(typeof(\fBReadOnlyPerson\fP), new \fBPropertyInfo\fP<string>('Name'))\fC [static]\fP"
+
+.PP
+Definition at line 27 of file ReadOnlyPerson\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "DateTime cslalighttest\&.Serialization\&.ReadOnlyPerson\&.Birthdate\fC [get]\fP"
+
+.PP
+Definition at line 38 of file ReadOnlyPerson\&.cs\&.
+.SS "string cslalighttest\&.Serialization\&.ReadOnlyPerson\&.Name\fC [get]\fP"
+
+.PP
+Definition at line 33 of file ReadOnlyPerson\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

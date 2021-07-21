@@ -1,0 +1,223 @@
+.TH "Csla.Axml.Binding.BindingManager" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Axml.Binding.BindingManager \- Provides the ability to bing properties on \fBAxml\fP controls to properties on CSLA objects\&. Bindinds update normally when the control looses focus\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBindingManager\fP (Activity activity)"
+.br
+.RI "Creates a new instance of the binding manager\&. "
+.ti -1c
+.RI "void \fBAdd\fP (int viewId, string targetProperty, object source, string sourceProperty)"
+.br
+.RI "Adds a new binding to be managed\&. "
+.ti -1c
+.RI "void \fBAdd\fP (View target, string targetProperty, object source, string sourceProperty)"
+.br
+.RI "Adds a new binding to be managed\&. "
+.ti -1c
+.RI "void \fBAdd\fP (\fBBinding\fP binding)"
+.br
+.RI "Adds a new binding to be managed\&. "
+.ti -1c
+.RI "void \fBRemove\fP (View target, string targetProperty, object source, string sourceProperty)"
+.br
+.RI "Removes the binding matching the supplied parameters from the binding manager\&. If no bindings matched the method does nothing\&. "
+.ti -1c
+.RI "void \fBRemove\fP (\fBBinding\fP binding)"
+.br
+.RI "Removes the supplied binding from the binding manager\&. "
+.ti -1c
+.RI "void \fBRemoveAll\fP ()"
+.br
+.RI "Removes all bindings from the binding manager\&. "
+.ti -1c
+.RI "IEnumerable< \fBBinding\fP > \fBGetBindingsForView\fP (View view)"
+.br
+.RI "Returns all bindings for the supplied view\&. "
+.ti -1c
+.RI "void \fBUpdateSourceForView\fP (View view)"
+.br
+.RI "Updates bindings with the current values in the supplied view\&. "
+.ti -1c
+.RI "void \fBUpdateSourceForLastView\fP ()"
+.br
+.RI "Updates bindings on the view that is in current focus on the activity supplied to the \fBBindingManager\fP\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "List< \fBBinding\fP > \fBBindings\fP\fC [get]\fP"
+.br
+.RI "A list of bindings that have been added to the manager\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides the ability to bing properties on \fBAxml\fP controls to properties on CSLA objects\&. Bindinds update normally when the control looses focus\&. 
+
+
+.PP
+Definition at line 20 of file BindingManager\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Axml\&.Binding\&.BindingManager\&.BindingManager (Activity activity)"
+
+.PP
+Creates a new instance of the binding manager\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIactivity\fP The Android activity that is using the view with the controls to bind to\&.
+.RE
+.PP
+
+.PP
+Definition at line 28 of file BindingManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.Add (\fBBinding\fP binding)"
+
+.PP
+Adds a new binding to be managed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbinding\fP The new binding to add\&.
+.RE
+.PP
+
+.PP
+Definition at line 68 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.Add (int viewId, string targetProperty, object source, string sourceProperty)"
+
+.PP
+Adds a new binding to be managed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIviewId\fP The id of the control to bind to\&.
+.br
+\fItargetProperty\fP The name of the property on the view to bind to\&.
+.br
+\fIsource\fP A reference to the object that will be bound to the control\&.
+.br
+\fIsourceProperty\fP The name of the property on the object that will be bound to the target property\&.
+.RE
+.PP
+
+.PP
+Definition at line 46 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.Add (View target, string targetProperty, object source, string sourceProperty)"
+
+.PP
+Adds a new binding to be managed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP A reference to the control to bind to\&.
+.br
+\fItargetProperty\fP The name of the property on the view to bind to\&.
+.br
+\fIsource\fP A reference to the object that will be bound to the control\&.
+.br
+\fIsourceProperty\fP The name of the property on the object that will be bound to the target property\&.
+.RE
+.PP
+
+.PP
+Definition at line 59 of file BindingManager\&.cs\&.
+.SS "IEnumerable<\fBBinding\fP> Csla\&.Axml\&.Binding\&.BindingManager\&.GetBindingsForView (View view)"
+
+.PP
+Returns all bindings for the supplied view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIview\fP A reference to the view to return bindings for\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A enumerable containing the bindings for the supplied view\&.
+.RE
+.PP
+
+.PP
+Definition at line 117 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.Remove (\fBBinding\fP binding)"
+
+.PP
+Removes the supplied binding from the binding manager\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbinding\fP The binding to remove\&.
+.RE
+.PP
+
+.PP
+Definition at line 95 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.Remove (View target, string targetProperty, object source, string sourceProperty)"
+
+.PP
+Removes the binding matching the supplied parameters from the binding manager\&. If no bindings matched the method does nothing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP A reference to the bound control\&.
+.br
+\fItargetProperty\fP The name of the property on the view that is bound to\&.
+.br
+\fIsource\fP A reference to the object that is bound to\&.
+.br
+\fIsourceProperty\fP The name of the property on the object that that is bound to the target property\&.
+.RE
+.PP
+
+.PP
+Definition at line 81 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.RemoveAll ()"
+
+.PP
+Removes all bindings from the binding manager\&. 
+.PP
+Definition at line 104 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.UpdateSourceForLastView ()"
+
+.PP
+Updates bindings on the view that is in current focus on the activity supplied to the \fBBindingManager\fP\&. 
+.PP
+Definition at line 135 of file BindingManager\&.cs\&.
+.SS "void Csla\&.Axml\&.Binding\&.BindingManager\&.UpdateSourceForView (View view)"
+
+.PP
+Updates bindings with the current values in the supplied view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIview\fP The view to update bindings for\&.
+.RE
+.PP
+
+.PP
+Definition at line 126 of file BindingManager\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "List<\fBBinding\fP> Csla\&.Axml\&.Binding\&.BindingManager\&.Bindings\fC [get]\fP"
+
+.PP
+A list of bindings that have been added to the manager\&. 
+.PP
+Definition at line 37 of file BindingManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

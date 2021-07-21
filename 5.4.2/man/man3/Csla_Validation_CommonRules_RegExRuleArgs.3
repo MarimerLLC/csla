@@ -1,0 +1,477 @@
+.TH "Csla.Validation.CommonRules.RegExRuleArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Validation.CommonRules.RegExRuleArgs \- Custom \fBRuleArgs\fP object required by the RegExMatch rule method\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Validation\&.DecoratedRuleArgs\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBNullResultOptions\fP { \fBReturnFalse\fP, \fBReturnTrue\fP, \fBConvertToEmptyString\fP }"
+.br
+.RI "List of options for the NullResult property\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, RegExPatterns pattern)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, RegExPatterns pattern)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string friendlyName, RegExPatterns pattern)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string pattern)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, string pattern)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string friendlyName, string pattern)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, System\&.Text\&.RegularExpressions\&.Regex regEx)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, System\&.Text\&.RegularExpressions\&.Regex regEx)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string friendlyName, System\&.Text\&.RegularExpressions\&.Regex regEx)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, RegExPatterns pattern, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, RegExPatterns pattern, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string friendlyName, RegExPatterns pattern, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string pattern, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, string pattern, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string friendlyName, string pattern, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, System\&.Text\&.RegularExpressions\&.Regex regEx, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (\fBCore\&.IPropertyInfo\fP propertyInfo, System\&.Text\&.RegularExpressions\&.Regex regEx, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "\fBRegExRuleArgs\fP (string propertyName, string friendlyName, System\&.Text\&.RegularExpressions\&.Regex regEx, \fBNullResultOptions\fP nullResult)"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static string \fBGetPattern\fP (RegExPatterns pattern)"
+.br
+.RI "Returns the specified built-in regex pattern\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Regex \fBRegEx\fP\fC [get]\fP"
+.br
+.RI "The \fBRegEx\fP object used to validate the property\&. "
+.ti -1c
+.RI "\fBNullResultOptions\fP \fBNullResult\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether a null value means the rule will return true or false\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Custom \fBRuleArgs\fP object required by the RegExMatch rule method\&. 
+
+
+.PP
+Definition at line 965 of file CommonRules\&.cs\&.
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBCsla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.NullResultOptions\fP\fC [strong]\fP"
+
+.PP
+List of options for the NullResult property\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIReturnFalse \fP\fP
+Indicates that a null value should always result in the rule returning false\&. 
+.TP
+\fB\fIReturnTrue \fP\fP
+Indicates that a null value should always result in the rule returning true\&. 
+.TP
+\fB\fIConvertToEmptyString \fP\fP
+Indicates that a null value should be converted to an empty string before the regular expression is evaluated\&. 
+.PP
+Definition at line 973 of file CommonRules\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, RegExPatterns pattern)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIpattern\fP Built-in regex pattern to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1025 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, RegExPatterns pattern)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP Property to validate\&.
+.br
+\fIpattern\fP Built-in regex pattern to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1037 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string friendlyName, RegExPatterns pattern)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIpattern\fP Built-in regex pattern to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1052 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string pattern)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIpattern\fP Custom regex pattern to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1065 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, string pattern)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP Property to validate\&.
+.br
+\fIpattern\fP Custom regex pattern to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1077 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string friendlyName, string pattern)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIpattern\fP Custom regex pattern to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1092 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, System\&.Text\&.RegularExpressions\&.Regex regEx)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIregEx\fP \fBRegEx\fP object to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1105 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, System\&.Text\&.RegularExpressions\&.Regex regEx)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP Property to validate\&.
+.br
+\fIregEx\fP \fBRegEx\fP object to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1117 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string friendlyName, System\&.Text\&.RegularExpressions\&.Regex regEx)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIregEx\fP \fBRegEx\fP object to use\&.
+.RE
+.PP
+
+.PP
+Definition at line 1132 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, RegExPatterns pattern, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIpattern\fP Built-in regex pattern to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1149 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, RegExPatterns pattern, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP Property to validate\&.
+.br
+\fIpattern\fP Built-in regex pattern to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1165 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string friendlyName, RegExPatterns pattern, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIpattern\fP Built-in regex pattern to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1184 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string pattern, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIpattern\fP Custom regex pattern to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1201 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, string pattern, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP Property to validate\&.
+.br
+\fIpattern\fP Custom regex pattern to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1217 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string friendlyName, string pattern, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIpattern\fP Custom regex pattern to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1236 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, System\&.Text\&.RegularExpressions\&.Regex regEx, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIregEx\fP \fBRegEx\fP object to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1253 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (\fBCore\&.IPropertyInfo\fP propertyInfo, System\&.Text\&.RegularExpressions\&.Regex regEx, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP Property to validate\&.
+.br
+\fIregEx\fP \fBRegEx\fP object to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1269 of file CommonRules\&.cs\&.
+.SS "Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegExRuleArgs (string propertyName, string friendlyName, System\&.Text\&.RegularExpressions\&.Regex regEx, \fBNullResultOptions\fP nullResult)"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property to validate\&.
+.br
+\fIfriendlyName\fP A friendly name for the property, which will be used in place of the property name when creating the broken rule description string\&.
+.br
+\fIregEx\fP \fBRegEx\fP object to use\&.
+.br
+\fInullResult\fP Value indicating how a null value should be handled by the rule method\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1288 of file CommonRules\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static string Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.GetPattern (RegExPatterns pattern)\fC [static]\fP"
+
+.PP
+Returns the specified built-in regex pattern\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpattern\fP Pattern to return\&.
+.RE
+.PP
+
+.PP
+Definition at line 1300 of file CommonRules\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBNullResultOptions\fP Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.NullResult\fC [get]\fP"
+
+.PP
+Gets a value indicating whether a null value means the rule will return true or false\&. 
+.PP
+Definition at line 1012 of file CommonRules\&.cs\&.
+.SS "Regex Csla\&.Validation\&.CommonRules\&.RegExRuleArgs\&.RegEx\fC [get]\fP"
+
+.PP
+The \fBRegEx\fP object used to validate the property\&. 
+.PP
+Definition at line 1003 of file CommonRules\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

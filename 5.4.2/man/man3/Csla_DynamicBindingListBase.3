@@ -1,0 +1,383 @@
+.TH "Csla.DynamicBindingListBase< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.DynamicBindingListBase< T > \- This is the base class from which collections of editable root business objects should be derived\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.ExtendedBindingList< T >\fP, \fBCsla\&.Core\&.IParent\fP, Csla\&.Server\&.IDataPortalTarget, and \fBCsla\&.Core\&.IBusinessObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDynamicBindingListBase\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "T \fBSaveItem\fP (T item)"
+.br
+.RI "Saves the specified item in the list\&. "
+.ti -1c
+.RI "virtual T \fBSaveItem\fP (int index)"
+.br
+.RI "Saves the specified item in the list\&. "
+.ti -1c
+.RI "T[] \fBToArray\fP ()"
+.br
+.RI "Get an array containing all items in the list\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBInitialize\fP ()"
+.br
+.RI "Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. "
+.ti -1c
+.RI "virtual void \fBOnSaved\fP (T newObject, Exception e)"
+.br
+.RI "Raises the Saved event\&. "
+.ti -1c
+.RI "override object \fBAddNewCore\fP ()"
+.br
+.RI "Adds a new item to the list\&. "
+.ti -1c
+.RI "override void \fBInsertItem\fP (int index, T item)"
+.br
+.RI "Gives the new object a parent reference to this list\&. "
+.ti -1c
+.RI "override void \fBRemoveItem\fP (int index)"
+.br
+.RI "Removes an item from the list\&. "
+.ti -1c
+.RI "override void \fBSetItem\fP (int index, T item)"
+.br
+.RI "Replaces item in the list\&. "
+.ti -1c
+.RI "override void \fBChild_PropertyChanged\fP (object sender, System\&.ComponentModel\&.PropertyChangedEventArgs e)"
+.br
+.RI "Handles any PropertyChanged event from a child object and echoes it up as a ChildChanged event\&. "
+.ti -1c
+.RI "virtual void \fBOnChildPropertyChanged\fP (object sender, System\&.ComponentModel\&.PropertyChangedEventArgs e)"
+.br
+.RI "Override this method to be notified when a child object has been changed\&. "
+.ti -1c
+.RI "override void \fBOnDeserialized\fP ()"
+.br
+.RI "This method is called on a newly deserialized object after deserialization is complete\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_xyz method\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_xyz method\&. "
+.ti -1c
+.RI "virtual void \fBDataPortal_OnDataPortalException\fP (\fBDataPortalEventArgs\fP e, Exception ex)"
+.br
+.RI "Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. "
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Override this method to insert your field values into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBCsla\&.Core\&.SavedEventArgs\fP > \fBSaved\fP"
+.br
+.RI "Event raised when an object has been saved\&. "
+.ti -1c
+.RI "override bool \fBIsBusy\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this object is currently running an async operation\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the base class from which collections of editable root business objects should be derived\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of editable root object to contain within the collection\&. 
+.RE
+.PP
+.PP
+Your subclass should implement a factory method and should override or overload DataPortal_Fetch() to implement data retrieval\&. 
+.PP
+Saving (inserts or updates) of items in the collection should be handled through the \fBSaveItem()\fP method on the collection\&. 
+.PP
+Removing an item from the collection through Remove() or RemoveAt() causes immediate deletion of the object, by calling the object's Delete() and Save() methods\&. 
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fI\fBCore\&.IEditableBusinessObject\fP\fP
+.TP
+\fIT\fP : \fI\fBCore\&.IUndoableObject\fP\fP
+.TP
+\fIT\fP : \fI\fBCore\&.ISavable\fP\fP
+.TP
+\fIT\fP : \fIIMobileObject\fP
+.TP
+\fIT\fP : \fIIBusinessObject\fP
+.PP
+Definition at line 42 of file DynamicBindingListBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.DynamicBindingListBase\fP< T >\&.\fBDynamicBindingListBase\fP ()"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 52 of file DynamicBindingListBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override object \fBCsla\&.DynamicBindingListBase\fP< T >\&.AddNewCore ()\fC [protected]\fP"
+
+.PP
+Adds a new item to the list\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The added object
+.RE
+.PP
+
+.PP
+Definition at line 263 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.Child_PropertyChanged (object sender, System\&.ComponentModel\&.PropertyChangedEventArgs e)\fC [protected]\fP"
+
+.PP
+Handles any PropertyChanged event from a child object and echoes it up as a ChildChanged event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP Object that raised the event\&.
+.br
+\fIe\fP Property changed args\&.
+.RE
+.PP
+
+.PP
+Definition at line 355 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.DynamicBindingListBase\fP< T >\&.DataPortal_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP if an exception occurs during data access\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.br
+\fIex\fP The Exception thrown during data access\&.
+.RE
+.PP
+
+.PP
+Definition at line 476 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.DynamicBindingListBase\fP< T >\&.DataPortal_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP prior to calling the requested DataPortal_xyz method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 453 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.DynamicBindingListBase\fP< T >\&.DataPortal_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called by the server-side \fBDataPortal\fP after calling the requested DataPortal_xyz method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP The DataPortalContext object passed to the \fBDataPortal\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 464 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.DynamicBindingListBase\fP< T >\&.Initialize ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. 
+.PP
+Definition at line 66 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.InsertItem (int index, T item)\fC [protected]\fP"
+
+.PP
+Gives the new object a parent reference to this list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index at which to insert the item\&.
+.br
+\fIitem\fP Item to insert\&.
+.RE
+.PP
+
+.PP
+Definition at line 277 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.DynamicBindingListBase\fP< T >\&.OnChildPropertyChanged (object sender, System\&.ComponentModel\&.PropertyChangedEventArgs e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to be notified when a child object has been changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP Child object where the PropertyChanged event originated\&. 
+.br
+\fIe\fP PropertyChangedEventArgs from the child object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 391 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.OnDeserialized ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This method is called on a newly deserialized object after deserialization is complete\&. 
+.PP
+Reimplemented from \fBCsla\&.Core\&.ExtendedBindingList< T >\fP\&.
+.PP
+Definition at line 419 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.OnGetState (\fBSerializationInfo\fP info)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to insert your field values into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileBindingList< T >\fP\&.
+.PP
+Definition at line 570 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual void \fBCsla\&.DynamicBindingListBase\fP< T >\&.OnSaved (T newObject, Exception e)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the Saved event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP Reference to object returned from the save\&. 
+.br
+\fIe\fP Reference to any exception that occurred during the save\&. 
+.RE
+.PP
+
+.PP
+Definition at line 246 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.OnSetState (\fBSerializationInfo\fP info)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileBindingList< T >\fP\&.
+.PP
+Definition at line 583 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.RemoveItem (int index)\fC [protected]\fP"
+
+.PP
+Removes an item from the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the item to be removed\&.
+.RE
+.PP
+
+.PP
+Definition at line 288 of file DynamicBindingListBase\&.cs\&.
+.SS "virtual T \fBCsla\&.DynamicBindingListBase\fP< T >\&.SaveItem (int index)\fC [virtual]\fP"
+
+.PP
+Saves the specified item in the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the item to be saved\&. 
+.RE
+.PP
+.PP
+This method properly saves the child item, by making sure the item in the collection is properly replaced by the result of the Save() method call\&. 
+.PP
+Definition at line 139 of file DynamicBindingListBase\&.cs\&.
+.SS "T \fBCsla\&.DynamicBindingListBase\fP< T >\&.SaveItem (T item)"
+
+.PP
+Saves the specified item in the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Reference to the item to be saved\&. 
+.RE
+.PP
+.PP
+This method properly saves the child item, by making sure the item in the collection is properly replaced by the result of the Save() method call\&. 
+.PP
+Definition at line 122 of file DynamicBindingListBase\&.cs\&.
+.SS "override void \fBCsla\&.DynamicBindingListBase\fP< T >\&.SetItem (int index, T item)\fC [protected]\fP"
+
+.PP
+Replaces item in the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the item that was replaced\&.
+.br
+\fIitem\fP New item\&.
+.RE
+.PP
+
+.PP
+Definition at line 316 of file DynamicBindingListBase\&.cs\&.
+.SS "T [] \fBCsla\&.DynamicBindingListBase\fP< T >\&.ToArray ()"
+
+.PP
+Get an array containing all items in the list\&. 
+.PP
+Definition at line 488 of file DynamicBindingListBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "override bool \fBCsla\&.DynamicBindingListBase\fP< T >\&.IsBusy\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this object is currently running an async operation\&. 
+.PP
+Definition at line 544 of file DynamicBindingListBase\&.cs\&.
+.SS "EventHandler<\fBCsla\&.Core\&.SavedEventArgs\fP> \fBCsla\&.DynamicBindingListBase\fP< T >\&.Saved\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event raised when an object has been saved\&. 
+.PP
+Definition at line 209 of file DynamicBindingListBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

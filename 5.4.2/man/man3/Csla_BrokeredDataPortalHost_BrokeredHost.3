@@ -1,0 +1,108 @@
+.TH "Csla.BrokeredDataPortalHost.BrokeredHost" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.BrokeredDataPortalHost.BrokeredHost \- Brokered assembly entry point for the data portal\&. For use by side-loaded WinRT client apps\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "IAsyncOperation< IList< byte > > \fBCreate\fP (string objectTypeName, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)"
+.br
+.RI "Create and initialize a business object\&. "
+.ti -1c
+.RI "IAsyncOperation< IList< byte > > \fBFetch\fP (string objectTypeName, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "IAsyncOperation< IList< byte > > \fBUpdate\fP ([ReadOnlyArray] byte[] objectData, [ReadOnlyArray] byte[] contextData)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "IAsyncOperation< IList< byte > > \fBDelete\fP (string objectTypeName, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Brokered assembly entry point for the data portal\&. For use by side-loaded WinRT client apps\&. 
+
+
+.PP
+Definition at line 22 of file BrokeredHost\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "IAsyncOperation<IList<byte> > Csla\&.BrokeredDataPortalHost\&.BrokeredHost\&.Create (string objectTypeName, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)"
+
+.PP
+Create and initialize a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectTypeName\fP Type of business object to create\&.
+.br
+\fIcriteriaData\fP Criteria object describing business object\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 32 of file BrokeredHost\&.cs\&.
+.SS "IAsyncOperation<IList<byte> > Csla\&.BrokeredDataPortalHost\&.BrokeredHost\&.Delete (string objectTypeName, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectTypeName\fP Type of business object to create\&.
+.br
+\fIcriteriaData\fP Criteria object describing business object\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 88 of file BrokeredHost\&.cs\&.
+.SS "IAsyncOperation<IList<byte> > Csla\&.BrokeredDataPortalHost\&.BrokeredHost\&.Fetch (string objectTypeName, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectTypeName\fP Type of business object to retrieve\&.
+.br
+\fIcriteriaData\fP Criteria object describing business object\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 51 of file BrokeredHost\&.cs\&.
+.SS "IAsyncOperation<IList<byte> > Csla\&.BrokeredDataPortalHost\&.BrokeredHost\&.Update ([ReadOnlyArray] byte[] objectData, [ReadOnlyArray] byte[] contextData)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectData\fP Business object to update\&.
+.br
+\fIcontextData\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 69 of file BrokeredHost\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

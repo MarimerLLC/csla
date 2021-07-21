@@ -1,0 +1,64 @@
+.TH "Csla.Blazor.Client.Authentication.CslaAuthenticationStateProvider" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Blazor.Client.Authentication.CslaAuthenticationStateProvider \- ASP\&.NET AuthenticationStateProvider that relies on the \fBCslaUserService\fP to manage the current user\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits AuthenticationStateProvider\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCslaAuthenticationStateProvider\fP (\fBCslaUserService\fP currentUserService)"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "override Task< AuthenticationState > \fBGetAuthenticationStateAsync\fP ()"
+.br
+.RI "Gets the AuthenticationState from the \fBCslaUserService\fP service\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+ASP\&.NET AuthenticationStateProvider that relies on the \fBCslaUserService\fP to manage the current user\&. 
+
+
+.PP
+Definition at line 10 of file CslaAuthenticationStateProvider\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Blazor\&.Client\&.Authentication\&.CslaAuthenticationStateProvider\&.CslaAuthenticationStateProvider (\fBCslaUserService\fP currentUserService)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcurrentUserService\fP \fBCslaUserService\fP instance
+.RE
+.PP
+
+.PP
+Definition at line 18 of file CslaAuthenticationStateProvider\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override Task<AuthenticationState> Csla\&.Blazor\&.Client\&.Authentication\&.CslaAuthenticationStateProvider\&.GetAuthenticationStateAsync ()"
+
+.PP
+Gets the AuthenticationState from the \fBCslaUserService\fP service\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 33 of file CslaAuthenticationStateProvider\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

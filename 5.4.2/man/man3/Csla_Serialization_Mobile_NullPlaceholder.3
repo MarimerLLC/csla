@@ -1,0 +1,120 @@
+.TH "Csla.Serialization.Mobile.NullPlaceholder" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Serialization.Mobile.NullPlaceholder \- Placeholder for null child objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNullPlaceholder\fP ()"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "void \fBGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.ti -1c
+.RI "void \fBSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Placeholder for null child objects\&. 
+
+
+.PP
+Definition at line 16 of file NullPlaceholder\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Serialization\&.Mobile\&.NullPlaceholder\&.NullPlaceholder ()"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+Definition at line 21 of file NullPlaceholder\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Serialization\&.Mobile\&.NullPlaceholder\&.GetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the serialization\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 52 of file NullPlaceholder\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.NullPlaceholder\&.GetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object to contain the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 36 of file NullPlaceholder\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.NullPlaceholder\&.SetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.br
+\fIformatter\fP Reference to the formatter performing the deserialization\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 81 of file NullPlaceholder\&.cs\&.
+.SS "void Csla\&.Serialization\&.Mobile\&.NullPlaceholder\&.SetState (\fBSerializationInfo\fP info)"
+
+.PP
+Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the serialized data\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.PP
+Definition at line 65 of file NullPlaceholder\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

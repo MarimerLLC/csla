@@ -1,0 +1,65 @@
+.TH "Csla.Rules.ObjectRuleAsync" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.ObjectRuleAsync \- Base class for object level rules\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.BusinessRuleAsync\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBObjectRuleAsync\fP ()"
+.br
+.RI "Initializes a new instance of the \fBObjectRule\fP class\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "override \fBIPropertyInfo\fP \fBPrimaryProperty\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the primary property affected by this rule\&. Will always return null\&. Will throw ArgumentException if set to anything but null\&. "
+.ti -1c
+.RI "bool \fBCanRunInCheckRules\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether this instance can run when CheckRules is called on BO\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Base class for object level rules\&. 
+
+
+.PP
+Definition at line 17 of file ObjectRuleAsync\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.ObjectRuleAsync\&.ObjectRuleAsync ()\fC [protected]\fP"
+
+.PP
+Initializes a new instance of the \fBObjectRule\fP class\&. 
+.PP
+Definition at line 22 of file ObjectRuleAsync\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Rules\&.ObjectRuleAsync\&.CanRunInCheckRules\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether this instance can run when CheckRules is called on BO\&. \fCtrue\fP if this instance can run when CheckRules is called; otherwise, \fCfalse\fP\&. 
+.PP
+Definition at line 51 of file ObjectRuleAsync\&.cs\&.
+.SS "override \fBIPropertyInfo\fP Csla\&.Rules\&.ObjectRuleAsync\&.PrimaryProperty\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the primary property affected by this rule\&. Will always return null\&. Will throw ArgumentException if set to anything but null\&. 
+.PP
+Definition at line 30 of file ObjectRuleAsync\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

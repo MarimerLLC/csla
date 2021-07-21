@@ -1,0 +1,101 @@
+\hypertarget{interface_csla_1_1_core_1_1_i_editable_business_object}{}\doxysection{Csla.\+Core.\+IEditable\+Business\+Object Interface Reference}
+\label{interface_csla_1_1_core_1_1_i_editable_business_object}\index{Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}}
+
+
+Defines the common methods required by all editable CSLA single objects.  
+
+
+Inheritance diagram for Csla.\+Core.\+IEditable\+Business\+Object\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.307693cm]{interface_csla_1_1_core_1_1_i_editable_business_object}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object_a7e846b0b35a654b6461bfa33b221a0f1}{Delete\+Child}} ()
+\begin{DoxyCompactList}\small\item\em Called by a parent object to mark the child for deferred deletion. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object_a185b985d494547b48435567c4d3afe56}{Set\+Parent}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{IParent}} parent)
+\begin{DoxyCompactList}\small\item\em Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object_af43bfe022b9bee0f1c4f2f4223063bd7}{Delete}} ()
+\begin{DoxyCompactList}\small\item\em Marks the object for deletion. The object will be deleted as part of the next save operation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_editable_business_object_afe48fb495b0169b55611919291a3b50b}{Edit\+Level\+Added}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em For internal use only!! \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Defines the common methods required by all editable CSLA single objects. 
+
+It is strongly recommended that the implementations of the methods in this interface be made Private so as to not clutter up the native interface of the collection objects. 
+
+Definition at line 22 of file IEditable\+Business\+Object.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_editable_business_object_af43bfe022b9bee0f1c4f2f4223063bd7}\label{interface_csla_1_1_core_1_1_i_editable_business_object_af43bfe022b9bee0f1c4f2f4223063bd7}} 
+\index{Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IEditable\+Business\+Object.\+Delete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Marks the object for deletion. The object will be deleted as part of the next save operation. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a12a7bf0378970e77985fbb0fc83ed616}{Csla.\+Core.\+Business\+Base}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_editable_business_object_a7e846b0b35a654b6461bfa33b221a0f1}\label{interface_csla_1_1_core_1_1_i_editable_business_object_a7e846b0b35a654b6461bfa33b221a0f1}} 
+\index{Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}!DeleteChild@{DeleteChild}}
+\index{DeleteChild@{DeleteChild}!Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}}
+\doxysubsubsection{\texorpdfstring{DeleteChild()}{DeleteChild()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IEditable\+Business\+Object.\+Delete\+Child (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Called by a parent object to mark the child for deferred deletion. 
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_editable_business_object_a185b985d494547b48435567c4d3afe56}\label{interface_csla_1_1_core_1_1_i_editable_business_object_a185b985d494547b48435567c4d3afe56}} 
+\index{Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}!SetParent@{SetParent}}
+\index{SetParent@{SetParent}!Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}}
+\doxysubsubsection{\texorpdfstring{SetParent()}{SetParent()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IEditable\+Business\+Object.\+Set\+Parent (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{IParent}}}]{parent }\end{DoxyParamCaption})}
+
+
+
+Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & A reference to the parent collection object.\\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_editable_business_object_afe48fb495b0169b55611919291a3b50b}\label{interface_csla_1_1_core_1_1_i_editable_business_object_afe48fb495b0169b55611919291a3b50b}} 
+\index{Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}!EditLevelAdded@{EditLevelAdded}}
+\index{EditLevelAdded@{EditLevelAdded}!Csla.Core.IEditableBusinessObject@{Csla.Core.IEditableBusinessObject}}
+\doxysubsubsection{\texorpdfstring{EditLevelAdded}{EditLevelAdded}}
+{\footnotesize\ttfamily int Csla.\+Core.\+IEditable\+Business\+Object.\+Edit\+Level\+Added\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+For internal use only!! 
+
+Altering this value will almost certainly break your code. This property is for use by the parent collection only! 
+
+Definition at line 32 of file IEditable\+Business\+Object.\+cs.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_i_editable_business_object_8cs}{IEditable\+Business\+Object.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,173 @@
+.TH "Csla.TransactionalAttribute" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.TransactionalAttribute \- Marks a DataPortal_XYZ method to run within the specified transactional context\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Attribute\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTransactionalAttribute\fP ()"
+.br
+.RI "Marks a method to run within a COM+ transactional context\&. "
+.ti -1c
+.RI "\fBTransactionalAttribute\fP (\fBTransactionalTypes\fP transactionType)"
+.br
+.RI "Marks a method to run within the specified type of transactional context\&. "
+.ti -1c
+.RI "\fBTransactionalAttribute\fP (\fBTransactionalTypes\fP transactionType, \fBTransactionIsolationLevel\fP transactionIsolationLevel, int timeoutInSeconds)"
+.br
+.RI "Marks a method to run within the specified type of transactional context\&. "
+.ti -1c
+.RI "\fBTransactionalAttribute\fP (\fBTransactionalTypes\fP transactionType, \fBTransactionIsolationLevel\fP transactionIsolationLevel)"
+.br
+.RI "Marks a method to run within the specified type of transactional context\&. "
+.ti -1c
+.RI "\fBTransactionalAttribute\fP (\fBTransactionalTypes\fP transactionType, \fBTransactionIsolationLevel\fP transactionIsolationLevel, TransactionScopeAsyncFlowOption asyncFlowOption)"
+.br
+.RI "Marks a method to run within the specified type of transactional context\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBTransactionalTypes\fP \fBTransactionType\fP\fC [get]\fP"
+.br
+.RI "Gets the type of transaction requested by the business object method\&. "
+.ti -1c
+.RI "\fBTransactionIsolationLevel\fP \fBTransactionIsolationLevel\fP\fC [get]\fP"
+.br
+.RI "Specifies override for transaction isolation level\&. Default can be specified in \&.config file via CslaTransactionIsolationLevel setting If none specified, Serializable level is used "
+.ti -1c
+.RI "int \fBTimeoutInSeconds\fP\fC [get]\fP"
+.br
+.RI "Timeout for transaction, in seconds "
+.ti -1c
+.RI "TransactionScopeAsyncFlowOption \fBAsyncFlowOption\fP\fC [get]\fP"
+.br
+.RI "Gets the AsyncFlowOption for this transaction "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Marks a DataPortal_XYZ method to run within the specified transactional context\&. 
+
+Each business object method may be marked with this attribute to indicate which type of transactional technology should be used by the server-side \fBDataPortal\fP\&. The possible options are listed in the \fBTransactionalTypes\fP enum\&. 
+.PP
+If the Transactional attribute is not applied to a DataPortal_XYZ method then the \fBManual\fP option is assumed\&. 
+.PP
+If the Transactional attribute is applied with no explicit choice for transactionType then the TransactionScope option is assumed\&. 
+.PP
+Both the EnterpriseServices and TransactionScope options provide 2-phase distributed transactional support\&. 
+.PP
+Definition at line 39 of file TransactionalAttribute\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.TransactionalAttribute\&.TransactionalAttribute ()"
+
+.PP
+Marks a method to run within a COM+ transactional context\&. 
+.PP
+Definition at line 46 of file TransactionalAttribute\&.cs\&.
+.SS "Csla\&.TransactionalAttribute\&.TransactionalAttribute (\fBTransactionalTypes\fP transactionType)"
+
+.PP
+Marks a method to run within the specified type of transactional context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItransactionType\fP Specifies the transactional context within which the method should run\&.
+.RE
+.PP
+
+.PP
+Definition at line 58 of file TransactionalAttribute\&.cs\&.
+.SS "Csla\&.TransactionalAttribute\&.TransactionalAttribute (\fBTransactionalTypes\fP transactionType, \fBTransactionIsolationLevel\fP transactionIsolationLevel, int timeoutInSeconds)"
+
+.PP
+Marks a method to run within the specified type of transactional context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItransactionType\fP Specifies the transactional context within which the method should run\&.
+.br
+\fItransactionIsolationLevel\fP Specifies override for transaction isolation level\&. Default can be specified in \&.config file via CslaTransactionIsolationLevel setting If none specified, Serializable level is used 
+.br
+\fItimeoutInSeconds\fP Timeout for transaction, in seconds 
+.RE
+.PP
+
+.PP
+Definition at line 88 of file TransactionalAttribute\&.cs\&.
+.SS "Csla\&.TransactionalAttribute\&.TransactionalAttribute (\fBTransactionalTypes\fP transactionType, \fBTransactionIsolationLevel\fP transactionIsolationLevel)"
+
+.PP
+Marks a method to run within the specified type of transactional context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItransactionType\fP Specifies the transactional context within which the method should run\&.
+.br
+\fItransactionIsolationLevel\fP Specifies override for transaction isolation level\&. Default can be specified in \&.config file via CslaTransactionIsolationLevel setting If none specified, Serializable level is used 
+.RE
+.PP
+
+.PP
+Definition at line 110 of file TransactionalAttribute\&.cs\&.
+.SS "Csla\&.TransactionalAttribute\&.TransactionalAttribute (\fBTransactionalTypes\fP transactionType, \fBTransactionIsolationLevel\fP transactionIsolationLevel, TransactionScopeAsyncFlowOption asyncFlowOption)"
+
+.PP
+Marks a method to run within the specified type of transactional context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItransactionType\fP Specifies the transactional context within which the method should run\&.
+.br
+\fItransactionIsolationLevel\fP Specifies override for transaction isolation level\&. Default can be specified in \&.config file via CslaTransactionIsolationLevel setting If none specified, Serializable level is used 
+.br
+\fIasyncFlowOption\fP Specifies the async flow option used to initialize the transaction\&. 
+.RE
+.PP
+
+.PP
+Definition at line 143 of file TransactionalAttribute\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "TransactionScopeAsyncFlowOption Csla\&.TransactionalAttribute\&.AsyncFlowOption\fC [get]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= 
+      TransactionScopeAsyncFlowOption\&.Suppress
+.fi
+.PP
+Gets the AsyncFlowOption for this transaction 
+.PP
+Definition at line 186 of file TransactionalAttribute\&.cs\&.
+.SS "int Csla\&.TransactionalAttribute\&.TimeoutInSeconds\fC [get]\fP"
+
+.PP
+Timeout for transaction, in seconds The timeout for transaction, in seconds 
+.PP
+Definition at line 181 of file TransactionalAttribute\&.cs\&.
+.SS "\fBTransactionIsolationLevel\fP Csla\&.TransactionalAttribute\&.TransactionIsolationLevel\fC [get]\fP"
+
+.PP
+Specifies override for transaction isolation level\&. Default can be specified in \&.config file via CslaTransactionIsolationLevel setting If none specified, Serializable level is used 
+.PP
+Definition at line 173 of file TransactionalAttribute\&.cs\&.
+.SS "\fBTransactionalTypes\fP Csla\&.TransactionalAttribute\&.TransactionType\fC [get]\fP"
+
+.PP
+Gets the type of transaction requested by the business object method\&. 
+.PP
+Definition at line 166 of file TransactionalAttribute\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,1571 @@
+\hypertarget{class_csla_1_1_data_1_1_safe_data_reader}{}\doxysection{Csla.\+Data.\+Safe\+Data\+Reader Class Reference}
+\label{class_csla_1_1_data_1_1_safe_data_reader}\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+
+
+This is an IData\+Reader that \textquotesingle{}fixes\textquotesingle{} any null values before they are returned to our business code.  
+
+
+Inheritance diagram for Csla.\+Data.\+Safe\+Data\+Reader\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_csla_1_1_data_1_1_safe_data_reader}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_aedd71876039702054632664bb6f7a4ab}{Safe\+Data\+Reader}} (IData\+Reader data\+Reader)
+\begin{DoxyCompactList}\small\item\em Initializes the \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader}{Safe\+Data\+Reader}} object to use data from the provided Data\+Reader object. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a4bd76395dc4fc72373f29319a84ad406}{Get\+Field\+Value\+Async$<$ T $>$}} (int ordinal)
+\begin{DoxyCompactList}\small\item\em Asynchronously gets the data value as a type. \end{DoxyCompactList}\item 
+Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a0953824381883d9de78a730e566cabd9}{Get\+Field\+Value\+Async$<$ T $>$}} (int ordinal, System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Asynchronously gets the data value as a type. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a36f0ac3e608461e16b42529847dd2c1b}{Is\+Db\+Null\+Async}} (int ordinal)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the column has a null or missing value. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a717b36c78f9e47475c7ce3c87f85ca98}{Is\+Db\+Null\+Async}} (int ordinal, System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the column has a null or missing value. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ab9ed1852012e5d013ea1b4d04088938c}{Next\+Result\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Advances the reader to the next result. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ad0638d53a94d681b09894f1387a0bb14}{Next\+Result\+Async}} (System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Advances the reader to the next result. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a38b210801dce7008db49827bb76483e3}{Read\+Async}} ()
+\begin{DoxyCompactList}\small\item\em Advances to the next record in a recordset. \end{DoxyCompactList}\item 
+Task$<$ bool $>$ \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_aeaf2a890585d5fa73dece0fd9b334ddf}{Read\+Async}} (System.\+Threading.\+Cancellation\+Token cancellation\+Token)
+\begin{DoxyCompactList}\small\item\em Advances to the next record in a recordset. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a333778a1ada90f1bff44a96307243750}{Get\+String}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a string value from the datareader. \end{DoxyCompactList}\item 
+virtual string \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a3cfdf85dfcbd43a9278fc2693fc4a4f2}{Get\+String}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a string value from the datareader. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ab306fe1068d3032674b24ba52355eb01}{Get\+Value}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a value of type System.\+Object from the datareader. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a30c7ea25d51132c56ac204ef4f3642aa}{Get\+Value}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a value of type System.\+Object from the datareader. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a2b6875daf8e5c6767dcdd6ebb0d4be3a}{Get\+Int32}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets an integer from the datareader. \end{DoxyCompactList}\item 
+virtual int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_aa16dcffb1ae9e5a787bbb7becc47a54a}{Get\+Int32}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets an integer from the datareader. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_afb3b5ef0e600b37cf96ca8f27c5bcdc0}{Get\+Double}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a double from the datareader. \end{DoxyCompactList}\item 
+virtual double \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a9c2c07d95292fc3a7e79189bf5c0193d}{Get\+Double}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a double from the datareader. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a5588a2a88de9761ee20a02d00ba0881a}{Get\+Smart\+Date}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a12224738cbfa05e1f9b6bdc3a79d3f93}{Get\+Smart\+Date}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ad715b2164fc766f12f1d86f58897a1a2}{Get\+Smart\+Date}} (string name, bool min\+Is\+Empty)
+\begin{DoxyCompactList}\small\item\em Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a3aaf4dff2a4673061776e3dd6b8fef9a}{Get\+Smart\+Date}} (int i, bool min\+Is\+Empty)
+\begin{DoxyCompactList}\small\item\em Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. \end{DoxyCompactList}\item 
+System.\+Guid \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ac1826209afd3a4f06dac63dafc395723}{Get\+Guid}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a Guid value from the datareader. \end{DoxyCompactList}\item 
+virtual System.\+Guid \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a0f69fede3ff0e512c42b6114921f0d4f}{Get\+Guid}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a Guid value from the datareader. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_aee5dbd99bc833508ad53775202727ef8}{Read}} ()
+\begin{DoxyCompactList}\small\item\em Reads the next row of data from the datareader. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a9e48219f4006d18faaa8e576be4f98c6}{Next\+Result}} ()
+\begin{DoxyCompactList}\small\item\em Moves to the next result set in the datareader. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a53b1445c18201f806edb5d395312c170}{Close}} ()
+\begin{DoxyCompactList}\small\item\em Closes the datareader. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a9514b6da55ef240613fcff2567acb5dd}{Get\+Boolean}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a boolean value from the datareader. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a24ebaabf2948bd316df1bb5ed0c2487c}{Get\+Boolean}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a boolean value from the datareader. \end{DoxyCompactList}\item 
+byte \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ab8c5fdede89aae99ffa08c160cbaab07}{Get\+Byte}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a byte value from the datareader. \end{DoxyCompactList}\item 
+virtual byte \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ad6bb5e8e45e5ee28386721bc2493e9e7}{Get\+Byte}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a byte value from the datareader. \end{DoxyCompactList}\item 
+Int64 \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a73b3bfe8f379bd923d1bb9b6d1e2ddad}{Get\+Bytes}} (string name, Int64 field\+Offset, byte\mbox{[}$\,$\mbox{]} buffer, int buffer\+Offset, int length)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Bytes method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual Int64 \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a2a025c7830fa3139e7374de06f7ae2d7}{Get\+Bytes}} (int i, Int64 field\+Offset, byte\mbox{[}$\,$\mbox{]} buffer, int buffer\+Offset, int length)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Bytes method of the underlying datareader. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_af369981d84775c8078e0cd7f61d66779}{Get\+Char}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a char value from the datareader. \end{DoxyCompactList}\item 
+virtual char \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a8f8fc71cbf1bebe932b3c4871e55456e}{Get\+Char}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a char value from the datareader. \end{DoxyCompactList}\item 
+Int64 \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a38cd63a17d99848fe08d16bc628564a8}{Get\+Chars}} (string name, Int64 field\+Offset, char\mbox{[}$\,$\mbox{]} buffer, int buffer\+Offset, int length)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Chars method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual Int64 \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a71bd413a9a1836de06b22717c7aa6c13}{Get\+Chars}} (int i, Int64 field\+Offset, char\mbox{[}$\,$\mbox{]} buffer, int buffer\+Offset, int length)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Chars method of the underlying datareader. \end{DoxyCompactList}\item 
+IData\+Reader \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a09716ac0d350553871e783783ad282fe}{Get\+Data}} (string name)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Data method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual IData\+Reader \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a818e000c7acc4edf6c3a93954d1fa336}{Get\+Data}} (int i)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Data method of the underlying datareader. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a7b7d543135d43588e61955421d9c40e7}{Get\+Data\+Type\+Name}} (string name)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Data\+Type\+Name method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual string \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a74572b53dcd9eb9d16350b7845984372}{Get\+Data\+Type\+Name}} (int i)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Data\+Type\+Name method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual Date\+Time \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a3986c19e895bef22c6acbf13adc1e870}{Get\+Date\+Time}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a date value from the datareader. \end{DoxyCompactList}\item 
+virtual Date\+Time \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ae1633598f5294787848b7ec9347c7c70}{Get\+Date\+Time}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a date value from the datareader. \end{DoxyCompactList}\item 
+virtual Date\+Time\+Offset \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ab58acf0f40874a44c0cdb0d52b07fe26}{Get\+Date\+Time\+Offset}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets an UTC date value from the datareader. \end{DoxyCompactList}\item 
+virtual Date\+Time\+Offset \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a518dcef8fdad28fe44ea041937e6d9df}{Get\+Date\+Time\+Offset}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets an UTC date value from the datareader. \end{DoxyCompactList}\item 
+decimal \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a9bbe12460d833f8d07460c5f2afd4991}{Get\+Decimal}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a decimal value from the datareader. \end{DoxyCompactList}\item 
+virtual decimal \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_abc95c4c2a26c062cc5d0248e731e39a5}{Get\+Decimal}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a decimal value from the datareader. \end{DoxyCompactList}\item 
+Type \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_aa34674fe99d284de0a67e93c86e4b4cd}{Get\+Field\+Type}} (string name)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Field\+Type method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual Type \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ac61d314cde688b58c7b91813edb5e7b8}{Get\+Field\+Type}} (int i)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Field\+Type method of the underlying datareader. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a6b6ff0d213bd7bb92e50605ef638e57e}{Get\+Float}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a Single value from the datareader. \end{DoxyCompactList}\item 
+virtual float \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a0635e78d20d890385ce7df13c9510db6}{Get\+Float}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a Single value from the datareader. \end{DoxyCompactList}\item 
+short \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ae0d8af31a9c5e40ef21073111a9c06bf}{Get\+Int16}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a Short value from the datareader. \end{DoxyCompactList}\item 
+virtual short \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a8cb3527c1d17468f52fee46cbe464146}{Get\+Int16}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a Short value from the datareader. \end{DoxyCompactList}\item 
+Int64 \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a95fa5ae58fd2c137b5ee691691474125}{Get\+Int64}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets a Long value from the datareader. \end{DoxyCompactList}\item 
+virtual Int64 \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_abacf05d9b1cfedd30a2ca6101dbac0ec}{Get\+Int64}} (int i)
+\begin{DoxyCompactList}\small\item\em Gets a Long value from the datareader. \end{DoxyCompactList}\item 
+virtual string \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ae33f1712c0f671010c0d30a06edfd21a}{Get\+Name}} (int i)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Name method of the underlying datareader. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ade948af067ce58725e086c764ee5a98e}{Get\+Ordinal}} (string name)
+\begin{DoxyCompactList}\small\item\em Gets an ordinal value from the datareader. \end{DoxyCompactList}\item 
+Data\+Table \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ad1651211e4138f726ed0ea46011887ad}{Get\+Schema\+Table}} ()
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Schema\+Table method of the underlying datareader. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a002cc42871ffef2e90be271060a6f2f4}{Get\+Values}} (object\mbox{[}$\,$\mbox{]} values)
+\begin{DoxyCompactList}\small\item\em Invokes the Get\+Values method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_ac0c3f49e9f5af9fe7b5a23a145d98ac7}{Is\+DBNull}} (int i)
+\begin{DoxyCompactList}\small\item\em Invokes the Is\+DBNull method of the underlying datareader. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_acde5f7fede3a27cf56044eebaad953af}{Is\+DBNull}} (string name)
+\begin{DoxyCompactList}\small\item\em Invokes the Is\+DBNull method of the underlying datareader. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a0518277c2bc1fe4234d7c4038e340e5b}{Dispose}} ()
+\begin{DoxyCompactList}\small\item\em Disposes the object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a7eb0c89f7478df5357dfd0a1097c04b3}{Dispose}} (bool disposing)
+\begin{DoxyCompactList}\small\item\em Disposes the object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+IData\+Reader \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a09bf4dcbf3c94fc811bab9dc6f07ba83}{Data\+Reader}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get a reference to the underlying data reader object that actually contains the data from the data source. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a8e4a8b028ff2cc7efe6180ba39f7b3b7}{Depth}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the depth property value from the datareader. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_adf6f2a8fdb3b804db0f86d860073e4d6}{Field\+Count}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the Field\+Count property from the datareader. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a39609d52b772aee853a4589bd480af62}{Is\+Closed}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the Is\+Closed property value from the datareader. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a2b1172a5faa66c5e40e5a96a6d19825a}{this\mbox{[}string name\mbox{]}}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns a value from the datareader. \end{DoxyCompactList}\item 
+virtual object \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a95899c0b88a0bfc7469d81840d2c85f3}{this\mbox{[}int i\mbox{]}}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns a value from the datareader. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader_a0e5cd3ea918e72d37d4c7eb6097500ec}{Records\+Affected}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Returns the Records\+Affected property value from the underlying datareader. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This is an IData\+Reader that \textquotesingle{}fixes\textquotesingle{} any null values before they are returned to our business code. 
+
+
+
+Definition at line 21 of file Safe\+Data\+Reader.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_aedd71876039702054632664bb6f7a4ab}\label{class_csla_1_1_data_1_1_safe_data_reader_aedd71876039702054632664bb6f7a4ab}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!SafeDataReader@{SafeDataReader}}
+\index{SafeDataReader@{SafeDataReader}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{SafeDataReader()}{SafeDataReader()}}
+{\footnotesize\ttfamily Csla.\+Data.\+Safe\+Data\+Reader.\+Safe\+Data\+Reader (\begin{DoxyParamCaption}\item[{IData\+Reader}]{data\+Reader }\end{DoxyParamCaption})}
+
+
+
+Initializes the \mbox{\hyperlink{class_csla_1_1_data_1_1_safe_data_reader}{Safe\+Data\+Reader}} object to use data from the provided Data\+Reader object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Reader} & The source Data\+Reader object containing the data.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 39 of file Safe\+Data\+Reader.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a53b1445c18201f806edb5d395312c170}\label{class_csla_1_1_data_1_1_safe_data_reader_a53b1445c18201f806edb5d395312c170}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!Close@{Close}}
+\index{Close@{Close}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{Close()}{Close()}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Safe\+Data\+Reader.\+Close (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Closes the datareader. 
+
+
+
+Definition at line 357 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a0518277c2bc1fe4234d7c4038e340e5b}\label{class_csla_1_1_data_1_1_safe_data_reader_a0518277c2bc1fe4234d7c4038e340e5b}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Csla.\+Data.\+Safe\+Data\+Reader.\+Dispose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Disposes the object. 
+
+
+
+Definition at line 894 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a7eb0c89f7478df5357dfd0a1097c04b3}\label{class_csla_1_1_data_1_1_safe_data_reader_a7eb0c89f7478df5357dfd0a1097c04b3}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{Dispose()}{Dispose()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void Csla.\+Data.\+Safe\+Data\+Reader.\+Dispose (\begin{DoxyParamCaption}\item[{bool}]{disposing }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Disposes the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em disposing} & True if called by the public Dispose method.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 876 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a24ebaabf2948bd316df1bb5ed0c2487c}\label{class_csla_1_1_data_1_1_safe_data_reader_a24ebaabf2948bd316df1bb5ed0c2487c}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetBoolean@{GetBoolean}}
+\index{GetBoolean@{GetBoolean}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetBoolean()}{GetBoolean()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Boolean (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a boolean value from the datareader. 
+
+Returns false for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 403 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a9514b6da55ef240613fcff2567acb5dd}\label{class_csla_1_1_data_1_1_safe_data_reader_a9514b6da55ef240613fcff2567acb5dd}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetBoolean@{GetBoolean}}
+\index{GetBoolean@{GetBoolean}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetBoolean()}{GetBoolean()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Boolean (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a boolean value from the datareader. 
+
+Returns false for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 391 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ad6bb5e8e45e5ee28386721bc2493e9e7}\label{class_csla_1_1_data_1_1_safe_data_reader_ad6bb5e8e45e5ee28386721bc2493e9e7}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetByte@{GetByte}}
+\index{GetByte@{GetByte}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetByte()}{GetByte()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual byte Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Byte (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a byte value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 430 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ab8c5fdede89aae99ffa08c160cbaab07}\label{class_csla_1_1_data_1_1_safe_data_reader_ab8c5fdede89aae99ffa08c160cbaab07}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetByte@{GetByte}}
+\index{GetByte@{GetByte}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetByte()}{GetByte()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily byte Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Byte (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a byte value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 418 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a2a025c7830fa3139e7374de06f7ae2d7}\label{class_csla_1_1_data_1_1_safe_data_reader_a2a025c7830fa3139e7374de06f7ae2d7}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetBytes@{GetBytes}}
+\index{GetBytes@{GetBytes}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetBytes()}{GetBytes()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual Int64 Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Bytes (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{Int64}]{field\+Offset,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{buffer,  }\item[{int}]{buffer\+Offset,  }\item[{int}]{length }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Get\+Bytes method of the underlying datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+{\em buffer} & Array containing the data.\\
+\hline
+{\em buffer\+Offset} & Offset position within the buffer.\\
+\hline
+{\em field\+Offset} & Offset position within the field.\\
+\hline
+{\em length} & Length of data to read.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 466 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a73b3bfe8f379bd923d1bb9b6d1e2ddad}\label{class_csla_1_1_data_1_1_safe_data_reader_a73b3bfe8f379bd923d1bb9b6d1e2ddad}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetBytes@{GetBytes}}
+\index{GetBytes@{GetBytes}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetBytes()}{GetBytes()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Int64 Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Bytes (\begin{DoxyParamCaption}\item[{string}]{name,  }\item[{Int64}]{field\+Offset,  }\item[{byte\mbox{[}$\,$\mbox{]}}]{buffer,  }\item[{int}]{buffer\+Offset,  }\item[{int}]{length }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Bytes method of the underlying datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+{\em buffer} & Array containing the data.\\
+\hline
+{\em buffer\+Offset} & Offset position within the buffer.\\
+\hline
+{\em field\+Offset} & Offset position within the field.\\
+\hline
+{\em length} & Length of data to read.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 449 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a8f8fc71cbf1bebe932b3c4871e55456e}\label{class_csla_1_1_data_1_1_safe_data_reader_a8f8fc71cbf1bebe932b3c4871e55456e}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetChar@{GetChar}}
+\index{GetChar@{GetChar}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetChar()}{GetChar()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual char Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Char (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a char value from the datareader. 
+
+Returns Char.\+Min\+Value for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 494 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_af369981d84775c8078e0cd7f61d66779}\label{class_csla_1_1_data_1_1_safe_data_reader_af369981d84775c8078e0cd7f61d66779}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetChar@{GetChar}}
+\index{GetChar@{GetChar}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetChar()}{GetChar()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily char Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Char (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a char value from the datareader. 
+
+Returns Char.\+Min\+Value for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 482 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a71bd413a9a1836de06b22717c7aa6c13}\label{class_csla_1_1_data_1_1_safe_data_reader_a71bd413a9a1836de06b22717c7aa6c13}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetChars@{GetChars}}
+\index{GetChars@{GetChars}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetChars()}{GetChars()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual Int64 Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Chars (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{Int64}]{field\+Offset,  }\item[{char\mbox{[}$\,$\mbox{]}}]{buffer,  }\item[{int}]{buffer\+Offset,  }\item[{int}]{length }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Get\+Chars method of the underlying datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+{\em buffer} & Array containing the data.\\
+\hline
+{\em buffer\+Offset} & Offset position within the buffer.\\
+\hline
+{\em field\+Offset} & Offset position within the field.\\
+\hline
+{\em length} & Length of data to read.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 534 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a38cd63a17d99848fe08d16bc628564a8}\label{class_csla_1_1_data_1_1_safe_data_reader_a38cd63a17d99848fe08d16bc628564a8}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetChars@{GetChars}}
+\index{GetChars@{GetChars}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetChars()}{GetChars()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Int64 Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Chars (\begin{DoxyParamCaption}\item[{string}]{name,  }\item[{Int64}]{field\+Offset,  }\item[{char\mbox{[}$\,$\mbox{]}}]{buffer,  }\item[{int}]{buffer\+Offset,  }\item[{int}]{length }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Chars method of the underlying datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+{\em buffer} & Array containing the data.\\
+\hline
+{\em buffer\+Offset} & Offset position within the buffer.\\
+\hline
+{\em field\+Offset} & Offset position within the field.\\
+\hline
+{\em length} & Length of data to read.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 517 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a818e000c7acc4edf6c3a93954d1fa336}\label{class_csla_1_1_data_1_1_safe_data_reader_a818e000c7acc4edf6c3a93954d1fa336}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetData@{GetData}}
+\index{GetData@{GetData}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetData()}{GetData()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual IData\+Reader Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Data (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Get\+Data method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 556 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a09716ac0d350553871e783783ad282fe}\label{class_csla_1_1_data_1_1_safe_data_reader_a09716ac0d350553871e783783ad282fe}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetData@{GetData}}
+\index{GetData@{GetData}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetData()}{GetData()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily IData\+Reader Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Data (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Data method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 547 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a74572b53dcd9eb9d16350b7845984372}\label{class_csla_1_1_data_1_1_safe_data_reader_a74572b53dcd9eb9d16350b7845984372}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDataTypeName@{GetDataTypeName}}
+\index{GetDataTypeName@{GetDataTypeName}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDataTypeName()}{GetDataTypeName()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual string Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Data\+Type\+Name (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Get\+Data\+Type\+Name method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 574 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a7b7d543135d43588e61955421d9c40e7}\label{class_csla_1_1_data_1_1_safe_data_reader_a7b7d543135d43588e61955421d9c40e7}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDataTypeName@{GetDataTypeName}}
+\index{GetDataTypeName@{GetDataTypeName}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDataTypeName()}{GetDataTypeName()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily string Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Data\+Type\+Name (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Data\+Type\+Name method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 565 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ae1633598f5294787848b7ec9347c7c70}\label{class_csla_1_1_data_1_1_safe_data_reader_ae1633598f5294787848b7ec9347c7c70}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDateTime@{GetDateTime}}
+\index{GetDateTime@{GetDateTime}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDateTime()}{GetDateTime()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual Date\+Time Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Date\+Time (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a date value from the datareader. 
+
+Returns Date\+Time.\+Min\+Value for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 598 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a3986c19e895bef22c6acbf13adc1e870}\label{class_csla_1_1_data_1_1_safe_data_reader_a3986c19e895bef22c6acbf13adc1e870}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDateTime@{GetDateTime}}
+\index{GetDateTime@{GetDateTime}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDateTime()}{GetDateTime()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual Date\+Time Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Date\+Time (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a date value from the datareader. 
+
+Returns Date\+Time.\+Min\+Value for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 586 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a518dcef8fdad28fe44ea041937e6d9df}\label{class_csla_1_1_data_1_1_safe_data_reader_a518dcef8fdad28fe44ea041937e6d9df}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDateTimeOffset@{GetDateTimeOffset}}
+\index{GetDateTimeOffset@{GetDateTimeOffset}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDateTimeOffset()}{GetDateTimeOffset()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual Date\+Time\+Offset Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Date\+Time\+Offset (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets an UTC date value from the datareader. 
+
+Returns Date\+Time\+Offset.\+Min\+Value for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 625 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ab58acf0f40874a44c0cdb0d52b07fe26}\label{class_csla_1_1_data_1_1_safe_data_reader_ab58acf0f40874a44c0cdb0d52b07fe26}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDateTimeOffset@{GetDateTimeOffset}}
+\index{GetDateTimeOffset@{GetDateTimeOffset}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDateTimeOffset()}{GetDateTimeOffset()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual Date\+Time\+Offset Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Date\+Time\+Offset (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets an UTC date value from the datareader. 
+
+Returns Date\+Time\+Offset.\+Min\+Value for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 613 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_abc95c4c2a26c062cc5d0248e731e39a5}\label{class_csla_1_1_data_1_1_safe_data_reader_abc95c4c2a26c062cc5d0248e731e39a5}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDecimal@{GetDecimal}}
+\index{GetDecimal@{GetDecimal}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDecimal()}{GetDecimal()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual decimal Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Decimal (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a decimal value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 652 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a9bbe12460d833f8d07460c5f2afd4991}\label{class_csla_1_1_data_1_1_safe_data_reader_a9bbe12460d833f8d07460c5f2afd4991}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDecimal@{GetDecimal}}
+\index{GetDecimal@{GetDecimal}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDecimal()}{GetDecimal()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily decimal Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Decimal (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a decimal value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 640 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a9c2c07d95292fc3a7e79189bf5c0193d}\label{class_csla_1_1_data_1_1_safe_data_reader_a9c2c07d95292fc3a7e79189bf5c0193d}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDouble@{GetDouble}}
+\index{GetDouble@{GetDouble}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDouble()}{GetDouble()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual double Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Double (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a double from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 243 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_afb3b5ef0e600b37cf96ca8f27c5bcdc0}\label{class_csla_1_1_data_1_1_safe_data_reader_afb3b5ef0e600b37cf96ca8f27c5bcdc0}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetDouble@{GetDouble}}
+\index{GetDouble@{GetDouble}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetDouble()}{GetDouble()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Double (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a double from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 231 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ac61d314cde688b58c7b91813edb5e7b8}\label{class_csla_1_1_data_1_1_safe_data_reader_ac61d314cde688b58c7b91813edb5e7b8}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetFieldType@{GetFieldType}}
+\index{GetFieldType@{GetFieldType}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFieldType()}{GetFieldType()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual Type Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Field\+Type (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Get\+Field\+Type method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 673 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_aa34674fe99d284de0a67e93c86e4b4cd}\label{class_csla_1_1_data_1_1_safe_data_reader_aa34674fe99d284de0a67e93c86e4b4cd}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetFieldType@{GetFieldType}}
+\index{GetFieldType@{GetFieldType}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFieldType()}{GetFieldType()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Type Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Field\+Type (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Field\+Type method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 664 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a4bd76395dc4fc72373f29319a84ad406}\label{class_csla_1_1_data_1_1_safe_data_reader_a4bd76395dc4fc72373f29319a84ad406}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}}
+\index{GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFieldValueAsync$<$ T $>$()}{GetFieldValueAsync< T >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$T$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Field\+Value\+Async$<$ T $>$ (\begin{DoxyParamCaption}\item[{int}]{ordinal }\end{DoxyParamCaption})}
+
+
+
+Asynchronously gets the data value as a type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of value\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 54 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a0953824381883d9de78a730e566cabd9}\label{class_csla_1_1_data_1_1_safe_data_reader_a0953824381883d9de78a730e566cabd9}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}}
+\index{GetFieldValueAsync$<$ T $>$@{GetFieldValueAsync$<$ T $>$}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFieldValueAsync$<$ T $>$()}{GetFieldValueAsync< T >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$T$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Field\+Value\+Async$<$ T $>$ (\begin{DoxyParamCaption}\item[{int}]{ordinal,  }\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Asynchronously gets the data value as a type. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of value\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 67 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a0635e78d20d890385ce7df13c9510db6}\label{class_csla_1_1_data_1_1_safe_data_reader_a0635e78d20d890385ce7df13c9510db6}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetFloat@{GetFloat}}
+\index{GetFloat@{GetFloat}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFloat()}{GetFloat()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual float Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Float (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a Single value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 697 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a6b6ff0d213bd7bb92e50605ef638e57e}\label{class_csla_1_1_data_1_1_safe_data_reader_a6b6ff0d213bd7bb92e50605ef638e57e}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetFloat@{GetFloat}}
+\index{GetFloat@{GetFloat}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetFloat()}{GetFloat()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily float Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Float (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a Single value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 685 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a0f69fede3ff0e512c42b6114921f0d4f}\label{class_csla_1_1_data_1_1_safe_data_reader_a0f69fede3ff0e512c42b6114921f0d4f}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetGuid@{GetGuid}}
+\index{GetGuid@{GetGuid}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetGuid()}{GetGuid()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual System.\+Guid Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Guid (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a Guid value from the datareader. 
+
+Returns Guid.\+Empty for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 330 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ac1826209afd3a4f06dac63dafc395723}\label{class_csla_1_1_data_1_1_safe_data_reader_ac1826209afd3a4f06dac63dafc395723}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetGuid@{GetGuid}}
+\index{GetGuid@{GetGuid}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetGuid()}{GetGuid()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily System.\+Guid Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Guid (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a Guid value from the datareader. 
+
+Returns Guid.\+Empty for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 318 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a8cb3527c1d17468f52fee46cbe464146}\label{class_csla_1_1_data_1_1_safe_data_reader_a8cb3527c1d17468f52fee46cbe464146}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetInt16@{GetInt16}}
+\index{GetInt16@{GetInt16}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetInt16()}{GetInt16()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual short Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Int16 (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a Short value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 724 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ae0d8af31a9c5e40ef21073111a9c06bf}\label{class_csla_1_1_data_1_1_safe_data_reader_ae0d8af31a9c5e40ef21073111a9c06bf}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetInt16@{GetInt16}}
+\index{GetInt16@{GetInt16}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetInt16()}{GetInt16()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily short Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Int16 (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a Short value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 712 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_aa16dcffb1ae9e5a787bbb7becc47a54a}\label{class_csla_1_1_data_1_1_safe_data_reader_aa16dcffb1ae9e5a787bbb7becc47a54a}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetInt32@{GetInt32}}
+\index{GetInt32@{GetInt32}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetInt32()}{GetInt32()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual int Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Int32 (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets an integer from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 216 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a2b6875daf8e5c6767dcdd6ebb0d4be3a}\label{class_csla_1_1_data_1_1_safe_data_reader_a2b6875daf8e5c6767dcdd6ebb0d4be3a}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetInt32@{GetInt32}}
+\index{GetInt32@{GetInt32}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetInt32()}{GetInt32()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Int32 (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets an integer from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 204 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_abacf05d9b1cfedd30a2ca6101dbac0ec}\label{class_csla_1_1_data_1_1_safe_data_reader_abacf05d9b1cfedd30a2ca6101dbac0ec}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetInt64@{GetInt64}}
+\index{GetInt64@{GetInt64}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetInt64()}{GetInt64()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual Int64 Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Int64 (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a Long value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 751 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a95fa5ae58fd2c137b5ee691691474125}\label{class_csla_1_1_data_1_1_safe_data_reader_a95fa5ae58fd2c137b5ee691691474125}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetInt64@{GetInt64}}
+\index{GetInt64@{GetInt64}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetInt64()}{GetInt64()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Int64 Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Int64 (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a Long value from the datareader. 
+
+Returns 0 for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 739 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ae33f1712c0f671010c0d30a06edfd21a}\label{class_csla_1_1_data_1_1_safe_data_reader_ae33f1712c0f671010c0d30a06edfd21a}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetName@{GetName}}
+\index{GetName@{GetName}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetName()}{GetName()}}
+{\footnotesize\ttfamily virtual string Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Name (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Get\+Name method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 763 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ade948af067ce58725e086c764ee5a98e}\label{class_csla_1_1_data_1_1_safe_data_reader_ade948af067ce58725e086c764ee5a98e}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetOrdinal@{GetOrdinal}}
+\index{GetOrdinal@{GetOrdinal}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetOrdinal()}{GetOrdinal()}}
+{\footnotesize\ttfamily int Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Ordinal (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets an ordinal value from the datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 772 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ad1651211e4138f726ed0ea46011887ad}\label{class_csla_1_1_data_1_1_safe_data_reader_ad1651211e4138f726ed0ea46011887ad}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetSchemaTable@{GetSchemaTable}}
+\index{GetSchemaTable@{GetSchemaTable}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetSchemaTable()}{GetSchemaTable()}}
+{\footnotesize\ttfamily Data\+Table Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Schema\+Table (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Schema\+Table method of the underlying datareader. 
+
+
+
+Definition at line 780 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a12224738cbfa05e1f9b6bdc3a79d3f93}\label{class_csla_1_1_data_1_1_safe_data_reader_a12224738cbfa05e1f9b6bdc3a79d3f93}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetSmartDate@{GetSmartDate}}
+\index{GetSmartDate@{GetSmartDate}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetSmartDate()}{GetSmartDate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Smart\+Date (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. 
+
+A null is converted into the min possible date See Chapter 5 for more details on the \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 272 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a3aaf4dff2a4673061776e3dd6b8fef9a}\label{class_csla_1_1_data_1_1_safe_data_reader_a3aaf4dff2a4673061776e3dd6b8fef9a}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetSmartDate@{GetSmartDate}}
+\index{GetSmartDate@{GetSmartDate}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetSmartDate()}{GetSmartDate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Smart\+Date (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{bool}]{min\+Is\+Empty }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+{\em min\+Is\+Empty} & A flag indicating whether the min or max value of a data means an empty date.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 301 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a5588a2a88de9761ee20a02d00ba0881a}\label{class_csla_1_1_data_1_1_safe_data_reader_a5588a2a88de9761ee20a02d00ba0881a}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetSmartDate@{GetSmartDate}}
+\index{GetSmartDate@{GetSmartDate}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetSmartDate()}{GetSmartDate()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Smart\+Date (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. 
+
+A null is converted into min possible date See Chapter 5 for more details on the \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 259 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ad715b2164fc766f12f1d86f58897a1a2}\label{class_csla_1_1_data_1_1_safe_data_reader_ad715b2164fc766f12f1d86f58897a1a2}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetSmartDate@{GetSmartDate}}
+\index{GetSmartDate@{GetSmartDate}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetSmartDate()}{GetSmartDate()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_csla_1_1_smart_date}{Csla.\+Smart\+Date}} Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Smart\+Date (\begin{DoxyParamCaption}\item[{string}]{name,  }\item[{bool}]{min\+Is\+Empty }\end{DoxyParamCaption})}
+
+
+
+Gets a \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} from the datareader. 
+
+A null is converted into either the min or max possible date depending on the Min\+Is\+Empty parameter. See Chapter 5 for more details on the \mbox{\hyperlink{struct_csla_1_1_smart_date}{Smart\+Date}} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+{\em min\+Is\+Empty} & A flag indicating whether the min or max value of a data means an empty date.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 289 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a3cfdf85dfcbd43a9278fc2693fc4a4f2}\label{class_csla_1_1_data_1_1_safe_data_reader_a3cfdf85dfcbd43a9278fc2693fc4a4f2}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetString@{GetString}}
+\index{GetString@{GetString}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetString()}{GetString()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual string Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+String (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a string value from the datareader. 
+
+Returns empty string for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 167 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a333778a1ada90f1bff44a96307243750}\label{class_csla_1_1_data_1_1_safe_data_reader_a333778a1ada90f1bff44a96307243750}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetString@{GetString}}
+\index{GetString@{GetString}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetString()}{GetString()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily string Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+String (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a string value from the datareader. 
+
+Returns empty string for null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 155 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a30c7ea25d51132c56ac204ef4f3642aa}\label{class_csla_1_1_data_1_1_safe_data_reader_a30c7ea25d51132c56ac204ef4f3642aa}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetValue@{GetValue}}
+\index{GetValue@{GetValue}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetValue()}{GetValue()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual object Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Value (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Gets a value of type System.\+Object from the datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 189 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ab306fe1068d3032674b24ba52355eb01}\label{class_csla_1_1_data_1_1_safe_data_reader_ab306fe1068d3032674b24ba52355eb01}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetValue@{GetValue}}
+\index{GetValue@{GetValue}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetValue()}{GetValue()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily object Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Value (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets a value of type System.\+Object from the datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 180 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a002cc42871ffef2e90be271060a6f2f4}\label{class_csla_1_1_data_1_1_safe_data_reader_a002cc42871ffef2e90be271060a6f2f4}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!GetValues@{GetValues}}
+\index{GetValues@{GetValues}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{GetValues()}{GetValues()}}
+{\footnotesize\ttfamily int Csla.\+Data.\+Safe\+Data\+Reader.\+Get\+Values (\begin{DoxyParamCaption}\item[{object\mbox{[}$\,$\mbox{]}}]{values }\end{DoxyParamCaption})}
+
+
+
+Invokes the Get\+Values method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em values} & An array of System.\+Object to copy the values into.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 791 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ac0c3f49e9f5af9fe7b5a23a145d98ac7}\label{class_csla_1_1_data_1_1_safe_data_reader_ac0c3f49e9f5af9fe7b5a23a145d98ac7}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!IsDBNull@{IsDBNull}}
+\index{IsDBNull@{IsDBNull}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{IsDBNull()}{IsDBNull()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Data.\+Safe\+Data\+Reader.\+Is\+DBNull (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Is\+DBNull method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 811 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_acde5f7fede3a27cf56044eebaad953af}\label{class_csla_1_1_data_1_1_safe_data_reader_acde5f7fede3a27cf56044eebaad953af}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!IsDBNull@{IsDBNull}}
+\index{IsDBNull@{IsDBNull}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{IsDBNull()}{IsDBNull()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Data.\+Safe\+Data\+Reader.\+Is\+DBNull (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Invokes the Is\+DBNull method of the underlying datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 820 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a36f0ac3e608461e16b42529847dd2c1b}\label{class_csla_1_1_data_1_1_safe_data_reader_a36f0ac3e608461e16b42529847dd2c1b}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!IsDbNullAsync@{IsDbNullAsync}}
+\index{IsDbNullAsync@{IsDbNullAsync}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{IsDbNullAsync()}{IsDbNullAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Is\+Db\+Null\+Async (\begin{DoxyParamCaption}\item[{int}]{ordinal }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether the column has a null or missing value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 80 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a717b36c78f9e47475c7ce3c87f85ca98}\label{class_csla_1_1_data_1_1_safe_data_reader_a717b36c78f9e47475c7ce3c87f85ca98}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!IsDbNullAsync@{IsDbNullAsync}}
+\index{IsDbNullAsync@{IsDbNullAsync}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{IsDbNullAsync()}{IsDbNullAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Is\+Db\+Null\+Async (\begin{DoxyParamCaption}\item[{int}]{ordinal,  }\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Gets a value indicating whether the column has a null or missing value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ordinal} & Ordinal position of value\\
+\hline
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 94 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a9e48219f4006d18faaa8e576be4f98c6}\label{class_csla_1_1_data_1_1_safe_data_reader_a9e48219f4006d18faaa8e576be4f98c6}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!NextResult@{NextResult}}
+\index{NextResult@{NextResult}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{NextResult()}{NextResult()}}
+{\footnotesize\ttfamily bool Csla.\+Data.\+Safe\+Data\+Reader.\+Next\+Result (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Moves to the next result set in the datareader. 
+
+
+
+Definition at line 349 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ab9ed1852012e5d013ea1b4d04088938c}\label{class_csla_1_1_data_1_1_safe_data_reader_ab9ed1852012e5d013ea1b4d04088938c}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!NextResultAsync@{NextResultAsync}}
+\index{NextResultAsync@{NextResultAsync}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{NextResultAsync()}{NextResultAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Next\+Result\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Advances the reader to the next result. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 105 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_ad0638d53a94d681b09894f1387a0bb14}\label{class_csla_1_1_data_1_1_safe_data_reader_ad0638d53a94d681b09894f1387a0bb14}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!NextResultAsync@{NextResultAsync}}
+\index{NextResultAsync@{NextResultAsync}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{NextResultAsync()}{NextResultAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Next\+Result\+Async (\begin{DoxyParamCaption}\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Advances the reader to the next result. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 117 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_aee5dbd99bc833508ad53775202727ef8}\label{class_csla_1_1_data_1_1_safe_data_reader_aee5dbd99bc833508ad53775202727ef8}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!Read@{Read}}
+\index{Read@{Read}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{Read()}{Read()}}
+{\footnotesize\ttfamily bool Csla.\+Data.\+Safe\+Data\+Reader.\+Read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Reads the next row of data from the datareader. 
+
+
+
+Definition at line 341 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a38b210801dce7008db49827bb76483e3}\label{class_csla_1_1_data_1_1_safe_data_reader_a38b210801dce7008db49827bb76483e3}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!ReadAsync@{ReadAsync}}
+\index{ReadAsync@{ReadAsync}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{ReadAsync()}{ReadAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Read\+Async (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Advances to the next record in a recordset. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 128 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_aeaf2a890585d5fa73dece0fd9b334ddf}\label{class_csla_1_1_data_1_1_safe_data_reader_aeaf2a890585d5fa73dece0fd9b334ddf}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!ReadAsync@{ReadAsync}}
+\index{ReadAsync@{ReadAsync}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{ReadAsync()}{ReadAsync()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Task$<$bool$>$ Csla.\+Data.\+Safe\+Data\+Reader.\+Read\+Async (\begin{DoxyParamCaption}\item[{System.\+Threading.\+Cancellation\+Token}]{cancellation\+Token }\end{DoxyParamCaption})}
+
+
+
+Advances to the next record in a recordset. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cancellation\+Token} & Async cancellation token\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 140 of file Safe\+Data\+Reader.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a09bf4dcbf3c94fc811bab9dc6f07ba83}\label{class_csla_1_1_data_1_1_safe_data_reader_a09bf4dcbf3c94fc811bab9dc6f07ba83}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!DataReader@{DataReader}}
+\index{DataReader@{DataReader}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{DataReader}{DataReader}}
+{\footnotesize\ttfamily IData\+Reader Csla.\+Data.\+Safe\+Data\+Reader.\+Data\+Reader\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Get a reference to the underlying data reader object that actually contains the data from the data source. 
+
+
+
+Definition at line 32 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a8e4a8b028ff2cc7efe6180ba39f7b3b7}\label{class_csla_1_1_data_1_1_safe_data_reader_a8e4a8b028ff2cc7efe6180ba39f7b3b7}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!Depth@{Depth}}
+\index{Depth@{Depth}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{Depth}{Depth}}
+{\footnotesize\ttfamily int Csla.\+Data.\+Safe\+Data\+Reader.\+Depth\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the depth property value from the datareader. 
+
+
+
+Definition at line 365 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_adf6f2a8fdb3b804db0f86d860073e4d6}\label{class_csla_1_1_data_1_1_safe_data_reader_adf6f2a8fdb3b804db0f86d860073e4d6}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!FieldCount@{FieldCount}}
+\index{FieldCount@{FieldCount}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{FieldCount}{FieldCount}}
+{\footnotesize\ttfamily int Csla.\+Data.\+Safe\+Data\+Reader.\+Field\+Count\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the Field\+Count property from the datareader. 
+
+
+
+Definition at line 376 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a39609d52b772aee853a4589bd480af62}\label{class_csla_1_1_data_1_1_safe_data_reader_a39609d52b772aee853a4589bd480af62}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!IsClosed@{IsClosed}}
+\index{IsClosed@{IsClosed}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{IsClosed}{IsClosed}}
+{\footnotesize\ttfamily bool Csla.\+Data.\+Safe\+Data\+Reader.\+Is\+Closed\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the Is\+Closed property value from the datareader. 
+
+
+
+Definition at line 799 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a0e5cd3ea918e72d37d4c7eb6097500ec}\label{class_csla_1_1_data_1_1_safe_data_reader_a0e5cd3ea918e72d37d4c7eb6097500ec}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!RecordsAffected@{RecordsAffected}}
+\index{RecordsAffected@{RecordsAffected}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{RecordsAffected}{RecordsAffected}}
+{\footnotesize\ttfamily int Csla.\+Data.\+Safe\+Data\+Reader.\+Records\+Affected\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns the Records\+Affected property value from the underlying datareader. 
+
+
+
+Definition at line 859 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a95899c0b88a0bfc7469d81840d2c85f3}\label{class_csla_1_1_data_1_1_safe_data_reader_a95899c0b88a0bfc7469d81840d2c85f3}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!this\mbox{[}int i\mbox{]}@{this[int i]}}
+\index{this\mbox{[}int i\mbox{]}@{this[int i]}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{this[int i]}{this[int i]}}
+{\footnotesize\ttfamily virtual object Csla.\+Data.\+Safe\+Data\+Reader.\+this\mbox{[}int i\mbox{]}\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns a value from the datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & Ordinal column position of the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 846 of file Safe\+Data\+Reader.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_1_1_safe_data_reader_a2b1172a5faa66c5e40e5a96a6d19825a}\label{class_csla_1_1_data_1_1_safe_data_reader_a2b1172a5faa66c5e40e5a96a6d19825a}} 
+\index{Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}!this\mbox{[}string name\mbox{]}@{this[string name]}}
+\index{this\mbox{[}string name\mbox{]}@{this[string name]}!Csla.Data.SafeDataReader@{Csla.Data.SafeDataReader}}
+\doxysubsubsection{\texorpdfstring{this[string name]}{this[string name]}}
+{\footnotesize\ttfamily object Csla.\+Data.\+Safe\+Data\+Reader.\+this\mbox{[}string name\mbox{]}\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Returns a value from the datareader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the column containing the value.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 830 of file Safe\+Data\+Reader.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Data/\mbox{\hyperlink{_safe_data_reader_8cs}{Safe\+Data\+Reader.\+cs}}\end{DoxyCompactItemize}

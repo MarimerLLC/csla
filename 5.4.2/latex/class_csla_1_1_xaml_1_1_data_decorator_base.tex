@@ -1,0 +1,194 @@
+\hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base}{}\doxysection{Csla.\+Xaml.\+Data\+Decorator\+Base Class Reference}
+\label{class_csla_1_1_xaml_1_1_data_decorator_base}\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+
+
+Base class for creating WPF panel controls that react when the Data\+Context, data object and data property values are changed.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+Data\+Decorator\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_csla_1_1_xaml_1_1_data_decorator_base}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a14136fcfa5bfe63ba698e7a20c962502}{Data\+Decorator\+Base}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_aa515624b539cb8581b31f2daec069d66}{Data\+Property\+Changed}} (Property\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em This method is called when a property of the data object to which the control is bound has changed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a29e85792f53ade1b60321f3f6b067211}{Data\+Binding\+List\+Changed}} (List\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em This method is called if the data object is an IBinding\+List, and the List\+Changed event was raised by the data object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a5d7b160100c7ae90f5fcc2140f04351b}{Data\+Observable\+Collection\+Changed}} (Notify\+Collection\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em This method is called if the data object is an INotify\+Collection\+Changed, and the Collection\+Changed event was raised by the data object. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a0a404eac3302626aca4bd380faf7ac1b}{Data\+Object\+Changed}} ()
+\begin{DoxyCompactList}\small\item\em This method is called when the data object to which the control is bound has changed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_af541077ade6e65cc362420117ccb6076}{Find\+Child\+Bindings}} ()
+\begin{DoxyCompactList}\small\item\em Scans all child controls of this panel for object bindings, and calls \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_af2e510b451b0e9cc7b0b34142025df21}{Found\+Binding}} for each binding found. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_af2e510b451b0e9cc7b0b34142025df21}{Found\+Binding}} (Binding bnd, Framework\+Element control, Dependency\+Property prop)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_af541077ade6e65cc362420117ccb6076}{Find\+Child\+Bindings}} each time an object binding is found. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+object \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a4337d5aa121d1ef206d3611a590de4d0}{Data\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a reference to the current data object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for creating WPF panel controls that react when the Data\+Context, data object and data property values are changed. 
+
+
+
+Definition at line 26 of file Data\+Decorator\+Base.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_a14136fcfa5bfe63ba698e7a20c962502}\label{class_csla_1_1_xaml_1_1_data_decorator_base_a14136fcfa5bfe63ba698e7a20c962502}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!DataDecoratorBase@{DataDecoratorBase}}
+\index{DataDecoratorBase@{DataDecoratorBase}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{DataDecoratorBase()}{DataDecoratorBase()}}
+{\footnotesize\ttfamily Csla.\+Xaml.\+Data\+Decorator\+Base.\+Data\+Decorator\+Base (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+
+Definition at line 52 of file Data\+Decorator\+Base.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_a29e85792f53ade1b60321f3f6b067211}\label{class_csla_1_1_xaml_1_1_data_decorator_base_a29e85792f53ade1b60321f3f6b067211}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!DataBindingListChanged@{DataBindingListChanged}}
+\index{DataBindingListChanged@{DataBindingListChanged}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{DataBindingListChanged()}{DataBindingListChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Data\+Decorator\+Base.\+Data\+Binding\+List\+Changed (\begin{DoxyParamCaption}\item[{List\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called if the data object is an IBinding\+List, and the List\+Changed event was raised by the data object. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a9915164a30bb3ca96cbc7e2763e1086e}{Csla.\+Xaml.\+Object\+Status}}.
+
+
+
+Definition at line 257 of file Data\+Decorator\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_a0a404eac3302626aca4bd380faf7ac1b}\label{class_csla_1_1_xaml_1_1_data_decorator_base_a0a404eac3302626aca4bd380faf7ac1b}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!DataObjectChanged@{DataObjectChanged}}
+\index{DataObjectChanged@{DataObjectChanged}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{DataObjectChanged()}{DataObjectChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Data\+Decorator\+Base.\+Data\+Object\+Changed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called when the data object to which the control is bound has changed. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a45a8d7487e23ac551b4d6a993e0acd71}{Csla.\+Xaml.\+Object\+Status}}.
+
+
+
+Definition at line 277 of file Data\+Decorator\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_a5d7b160100c7ae90f5fcc2140f04351b}\label{class_csla_1_1_xaml_1_1_data_decorator_base_a5d7b160100c7ae90f5fcc2140f04351b}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!DataObservableCollectionChanged@{DataObservableCollectionChanged}}
+\index{DataObservableCollectionChanged@{DataObservableCollectionChanged}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{DataObservableCollectionChanged()}{DataObservableCollectionChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Data\+Decorator\+Base.\+Data\+Observable\+Collection\+Changed (\begin{DoxyParamCaption}\item[{Notify\+Collection\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called if the data object is an INotify\+Collection\+Changed, and the Collection\+Changed event was raised by the data object. 
+
+
+
+Definition at line 268 of file Data\+Decorator\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_aa515624b539cb8581b31f2daec069d66}\label{class_csla_1_1_xaml_1_1_data_decorator_base_aa515624b539cb8581b31f2daec069d66}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!DataPropertyChanged@{DataPropertyChanged}}
+\index{DataPropertyChanged@{DataPropertyChanged}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{DataPropertyChanged()}{DataPropertyChanged()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Data\+Decorator\+Base.\+Data\+Property\+Changed (\begin{DoxyParamCaption}\item[{Property\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called when a property of the data object to which the control is bound has changed. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a08d3e227c1825f97ea855642d5638ed1}{Csla.\+Xaml.\+Object\+Status}}.
+
+
+
+Definition at line 246 of file Data\+Decorator\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_af541077ade6e65cc362420117ccb6076}\label{class_csla_1_1_xaml_1_1_data_decorator_base_af541077ade6e65cc362420117ccb6076}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!FindChildBindings@{FindChildBindings}}
+\index{FindChildBindings@{FindChildBindings}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{FindChildBindings()}{FindChildBindings()}}
+{\footnotesize\ttfamily void Csla.\+Xaml.\+Data\+Decorator\+Base.\+Find\+Child\+Bindings (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Scans all child controls of this panel for object bindings, and calls \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_af2e510b451b0e9cc7b0b34142025df21}{Found\+Binding}} for each binding found. 
+
+
+
+Definition at line 292 of file Data\+Decorator\+Base.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_af2e510b451b0e9cc7b0b34142025df21}\label{class_csla_1_1_xaml_1_1_data_decorator_base_af2e510b451b0e9cc7b0b34142025df21}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!FoundBinding@{FoundBinding}}
+\index{FoundBinding@{FoundBinding}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{FoundBinding()}{FoundBinding()}}
+{\footnotesize\ttfamily virtual void Csla.\+Xaml.\+Data\+Decorator\+Base.\+Found\+Binding (\begin{DoxyParamCaption}\item[{Binding}]{bnd,  }\item[{Framework\+Element}]{control,  }\item[{Dependency\+Property}]{prop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_af541077ade6e65cc362420117ccb6076}{Find\+Child\+Bindings}} each time an object binding is found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bnd} & The Binding object.\\
+\hline
+{\em control} & The control containing the binding.\\
+\hline
+{\em prop} & The data bound Dependency\+Property.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 331 of file Data\+Decorator\+Base.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_data_decorator_base_a4337d5aa121d1ef206d3611a590de4d0}\label{class_csla_1_1_xaml_1_1_data_decorator_base_a4337d5aa121d1ef206d3611a590de4d0}} 
+\index{Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}!DataObject@{DataObject}}
+\index{DataObject@{DataObject}!Csla.Xaml.DataDecoratorBase@{Csla.Xaml.DataDecoratorBase}}
+\doxysubsubsection{\texorpdfstring{DataObject}{DataObject}}
+{\footnotesize\ttfamily object Csla.\+Xaml.\+Data\+Decorator\+Base.\+Data\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected]}}
+
+
+
+Gets a reference to the current data object. 
+
+The Data\+Context may not be the data object. The Data\+Context may be a Data\+Source\+Provider control. This property returns a reference to the actual {\bfseries{data object}}, not necessarily the Data\+Context itself. 
+
+Definition at line 41 of file Data\+Decorator\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_data_decorator_base_8cs}{Data\+Decorator\+Base.\+cs}}\end{DoxyCompactItemize}

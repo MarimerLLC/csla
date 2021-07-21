@@ -1,0 +1,135 @@
+\hypertarget{class_csla_1_1_xaml_1_1_view_model}{}\doxysection{Csla.\+Xaml.\+View\+Model$<$ T $>$ Class Template Reference}
+\label{class_csla_1_1_xaml_1_1_view_model}\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+
+
+Base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects, with pre-\/existing verbs for use by \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method}{Invoke\+Method}} or Invoke.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+View\+Model$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.472406cm]{class_csla_1_1_xaml_1_1_view_model}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_a3fd3ed79e34fff0e419a9673cfc8078d}{Save}} (object sender, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual async void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_a8a29ae7f32d797dc68682b666e6ae69b}{Save\+Async}} (object sender, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_aaef5f8647e48ee06dbc758ca3a8644e4}{Cancel}} (object sender, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Cancels changes made to the model if Managed\+Object\+Lifetime is true. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_aad355be515de912f031233e93f347723}{Add\+New}} (object sender, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Adds a new item to the Model (if it is a collection). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_a0d7513e29ccf34321ec23d90dbdf297d}{Remove}} (object sender, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Removes an item from the Model (if it is a collection). \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_a5723b9e35ee78b69ca7cf5d2bc85f68f}{Delete}} (object sender, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}} e)
+\begin{DoxyCompactList}\small\item\em Marks the Model for deletion (if it is an editable root object). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects, with pre-\/existing verbs for use by \mbox{\hyperlink{class_csla_1_1_xaml_1_1_invoke_method}{Invoke\+Method}} or Invoke. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the Model object.\\
+\hline
+\end{DoxyTemplParams}
+
+
+Definition at line 30 of file View\+Model.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_aad355be515de912f031233e93f347723}\label{class_csla_1_1_xaml_1_1_view_model_aad355be515de912f031233e93f347723}} 
+\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}!AddNew@{AddNew}}
+\index{AddNew@{AddNew}!Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{AddNew()}{AddNew()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{Csla.\+Xaml.\+View\+Model}}$<$ T $>$.Add\+New (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{\mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Adds a new item to the Model (if it is a collection). 
+
+
+
+Definition at line 64 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_aaef5f8647e48ee06dbc758ca3a8644e4}\label{class_csla_1_1_xaml_1_1_view_model_aaef5f8647e48ee06dbc758ca3a8644e4}} 
+\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}!Cancel@{Cancel}}
+\index{Cancel@{Cancel}!Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Cancel()}{Cancel()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{Csla.\+Xaml.\+View\+Model}}$<$ T $>$.Cancel (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{\mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Cancels changes made to the model if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 55 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_a5723b9e35ee78b69ca7cf5d2bc85f68f}\label{class_csla_1_1_xaml_1_1_view_model_a5723b9e35ee78b69ca7cf5d2bc85f68f}} 
+\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{Csla.\+Xaml.\+View\+Model}}$<$ T $>$.Delete (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{\mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Marks the Model for deletion (if it is an editable root object). 
+
+
+
+Definition at line 86 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_a0d7513e29ccf34321ec23d90dbdf297d}\label{class_csla_1_1_xaml_1_1_view_model_a0d7513e29ccf34321ec23d90dbdf297d}} 
+\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}!Remove@{Remove}}
+\index{Remove@{Remove}!Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Remove()}{Remove()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{Csla.\+Xaml.\+View\+Model}}$<$ T $>$.Remove (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{\mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Removes an item from the Model (if it is a collection). 
+
+
+
+Definition at line 77 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_a3fd3ed79e34fff0e419a9673cfc8078d}\label{class_csla_1_1_xaml_1_1_view_model_a3fd3ed79e34fff0e419a9673cfc8078d}} 
+\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}!Save@{Save}}
+\index{Save@{Save}!Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}}
+{\footnotesize\ttfamily virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{Csla.\+Xaml.\+View\+Model}}$<$ T $>$.Save (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{\mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 37 of file View\+Model.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_view_model_a8a29ae7f32d797dc68682b666e6ae69b}\label{class_csla_1_1_xaml_1_1_view_model_a8a29ae7f32d797dc68682b666e6ae69b}} 
+\index{Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}!SaveAsync@{SaveAsync}}
+\index{SaveAsync@{SaveAsync}!Csla.Xaml.ViewModel$<$ T $>$@{Csla.Xaml.ViewModel$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAsync()}{SaveAsync()}}
+{\footnotesize\ttfamily virtual async void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{Csla.\+Xaml.\+View\+Model}}$<$ T $>$.Save\+Async (\begin{DoxyParamCaption}\item[{object}]{sender,  }\item[{\mbox{\hyperlink{class_csla_1_1_xaml_1_1_execute_event_args}{Execute\+Event\+Args}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Saves the Model, first committing changes if Managed\+Object\+Lifetime is true. 
+
+
+
+Definition at line 46 of file View\+Model.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_csla_8_xaml_8_shared_2_view_model_8cs}{View\+Model.\+cs}}\end{DoxyCompactItemize}

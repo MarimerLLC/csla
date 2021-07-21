@@ -1,0 +1,67 @@
+.TH "Csla.Rules.ObjectRule" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.ObjectRule \- Base class for object level rules\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Rules\&.BusinessRule\fP\&.
+.PP
+Inherited by \fBCsla\&.Test\&.ValidationRules\&.GenericRule< T >\fP, and \fBCsla\&.Test\&.ValidationRules\&.ValidateRootObject\fP\&.
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBObjectRule\fP ()"
+.br
+.RI "Initializes a new instance of the \fBObjectRule\fP class\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "override \fBIPropertyInfo\fP \fBPrimaryProperty\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the primary property affected by this rule\&. Will always return null\&. Will throw ArgumentException if set to anything but null\&. "
+.ti -1c
+.RI "bool \fBCanRunInCheckRules\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether this instance can run when CheckRules is called on BO\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Base class for object level rules\&. 
+
+
+.PP
+Definition at line 17 of file ObjectRule\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.ObjectRule\&.ObjectRule ()\fC [protected]\fP"
+
+.PP
+Initializes a new instance of the \fBObjectRule\fP class\&. 
+.PP
+Definition at line 22 of file ObjectRule\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Rules\&.ObjectRule\&.CanRunInCheckRules\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether this instance can run when CheckRules is called on BO\&. \fCtrue\fP if this instance can run when CheckRules is called; otherwise, \fCfalse\fP\&. 
+.PP
+Definition at line 51 of file ObjectRule\&.cs\&.
+.SS "override \fBIPropertyInfo\fP Csla\&.Rules\&.ObjectRule\&.PrimaryProperty\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the primary property affected by this rule\&. Will always return null\&. Will throw ArgumentException if set to anything but null\&. 
+.PP
+Definition at line 30 of file ObjectRule\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

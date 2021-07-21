@@ -1,0 +1,805 @@
+.TH "Csla.BusinessBase< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.BusinessBase< T > \- This is the base class from which most business objects will be derived\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.BusinessBase\fP, \fBCsla\&.Core\&.ISavable< T >\fP, \fBCsla\&.Core\&.ISavable< T >\fP, and \fBCsla\&.IBusinessBase\fP\&.
+.PP
+Inherited by \fBCsla\&.Test\&.DataPortal\&.MultipleDataAccessBase< T >\fP, \fBCsla\&.Test\&.DataPortalTest\&.LegacySplitBase< T >\fP, \fBCsla\&.Test\&.DataPortalTest\&.SplitBase< T >\fP, \fBCsla\&.Test\&.DataPortalTest\&.SplitOverloadBase< T >\fP, \fBCsla\&.Test\&.PropertyGetSet\&.EditableGetSetTopBase< T >\fP, \fBCsla\&.Test\&.PropertyGetSet\&.EditableGetSetTopNFIBase< T >\fP, \fBCsla\&.Test\&.Silverlight\&.PropertyGetSet\&.AbstractGetSet< T >\fP, \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier< T >\fP, and \fBCsla\&.Validation\&.BusinessBase< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Returns a text representation of this object by returning the \fBGetIdValue\fP value in text form\&. "
+.ti -1c
+.RI "T \fBClone\fP ()"
+.br
+.RI "Creates a clone of the object\&. "
+.ti -1c
+.RI "T \fBSave\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "async Task< T > \fBSaveAsync\fP ()"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "async Task< T > \fBSaveAsync\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "T \fBSave\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database, forcing IsNew to false and IsDirty to True\&. "
+.ti -1c
+.RI "async Task \fBSaveAndMergeAsync\fP ()"
+.br
+.RI "Saves the object to the database, merging any resulting updates into the existing object graph\&. "
+.ti -1c
+.RI "async Task \fBSaveAndMergeAsync\fP (bool forceUpdate)"
+.br
+.RI "Saves the object to the database, merging any resulting updates into the existing object graph\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP ()"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (object userState)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (EventHandler< \fBSavedEventArgs\fP > handler)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "async void \fBBeginSave\fP (bool forceUpdate, EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (bool forceUpdate)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (bool forceUpdate, EventHandler< \fBSavedEventArgs\fP > handler)"
+.br
+.RI "Starts an async operation to save the object to the database\&. "
+.ti -1c
+.RI "void \fBBeginSave\fP (EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
+.br
+.RI "Saves the object to the database, forcing IsNew to false and IsDirty to True\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual object \fBGetIdValue\fP ()"
+.br
+.RI "Override this method to return a unique identifying value for this object\&. "
+.ti -1c
+.RI "virtual async Task< T > \fBSaveAsync\fP (bool forceUpdate, object userState, bool isSync)"
+.br
+.RI "Saves the object to the database\&. "
+.ti -1c
+.RI "virtual void \fBOnSaved\fP (T newObject, Exception e, object userState)"
+.br
+.RI "Raises the Saved event, indicating that the object has been saved, and providing a reference to the new object instance\&. "
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (\fBPropertyInfo\fP< P > info)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (string propertyName)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression, P defaultValue)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (string propertyName, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (string propertyName, string friendlyName)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (string propertyName, string friendlyName, P defaultValue)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (string propertyName, string friendlyName, P defaultValue, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBPropertyInfo\fP< P > \fBRegisterProperty< P >\fP (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Indicates that the specified property belongs to the business object type\&. "
+.ti -1c
+.RI "static \fBMethodInfo\fP \fBRegisterMethod\fP (string methodName)"
+.br
+.RI "Registers a method for use in Authorization\&. "
+.ti -1c
+.RI "static \fBMethodInfo\fP \fBRegisterMethod\fP (Expression< Action< T >> methodLambdaExpression)"
+.br
+.RI "Registers a method for use in Authorization\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "EventHandler< \fBCsla\&.Core\&.SavedEventArgs\fP > \fBSaved\fP"
+.br
+.RI "Event raised when an object has been saved\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the base class from which most business objects will be derived\&. 
+
+This class is the core of the CSLA \&.NET framework\&. To create a business object, inherit from this class\&. 
+.PP
+Please refer to 'Expert C# 2008 Business Objects' for full details on the use of this base class to create business objects\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of the business object being defined\&.
+.RE
+.PP
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fI\fBBusinessBase\fP<T>\fP
+.PP
+Definition at line 36 of file BusinessBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave ()"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 272 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (bool forceUpdate)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSave()\fP\&. 
+.RE
+.PP
+.PP
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
+.PP
+Definition at line 349 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (bool forceUpdate, EventHandler< \fBSavedEventArgs\fP > handler)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSave()\fP\&. 
+.br
+\fIhandler\fP Delegate reference to a callback handler that will be invoked when the async operation is complete\&. 
+.RE
+.PP
+.PP
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
+.PP
+Definition at line 371 of file BusinessBase\&.cs\&.
+.SS "async void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (bool forceUpdate, EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSave()\fP\&. 
+.br
+\fIhandler\fP Method called when the operation is complete\&. 
+.br
+\fIuserState\fP User state data\&.
+.RE
+.PP
+
+.PP
+Definition at line 311 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (EventHandler< \fBSavedEventArgs\fP > handler)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandler\fP Method called when the operation is complete\&. 
+.RE
+.PP
+
+.PP
+Definition at line 294 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
+
+.PP
+Saves the object to the database, forcing IsNew to false and IsDirty to True\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandler\fP Delegate reference to a callback handler that will be invoked when the async operation is complete\&. 
+.br
+\fIuserState\fP User state data\&.
+.RE
+.PP
+.PP
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
+.PP
+Definition at line 391 of file BusinessBase\&.cs\&.
+.SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (object userState)"
+
+.PP
+Starts an async operation to save the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserState\fP User state data\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 282 of file BusinessBase\&.cs\&.
+.SS "T \fBCsla\&.BusinessBase\fP< T >\&.Clone ()"
+
+.PP
+Creates a clone of the object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the exact data of the original object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 79 of file BusinessBase\&.cs\&.
+.SS "virtual object \fBCsla\&.BusinessBase\fP< T >\&.GetIdValue ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to return a unique identifying value for this object\&. 
+.PP
+Reimplemented in \fBCsla\&.Test\&.DataPortalTest\&.PrimitiveCriteriaSingle\fP, \fBCsla\&.Test\&.RollBack\&.RollbackRoot\fP, \fBCsla\&.Test\&.Nullable\&.NullableObject\fP, \fBCsla\&.Test\&.IO\&.TestBizObj\fP, \fBCsla\&.Test\&.DataBinding\&.ChildEntity\fP, \fBDataBindingApp\&.ListObject\&.DataObject\fP, \fBCsla\&.Test\&.ChildrenByInterface\&.Item2\fP, \fBCsla\&.Test\&.ChildrenByInterface\&.Item1\fP, \fBCsla\&.Test\&.Basic\&.GrandChild\fP, \fBCsla\&.Test\&.Basic\&.GenRootBase\fP, \fBCsla\&.Test\&.Basic\&.Child\fP, \fBCsla\&.Test\&.Security\&.PermissionsRoot2\fP, \fBCsla\&.Test\&.Security\&.PermissionsRoot\fP, \fBCsla\&.Test\&.AppContext\&.SimpleRoot\fP, \fBCsla\&.Test\&.AppContext\&.ExceptionRoot\fP, \fBCsla\&.Test\&.DataBinding\&.ChildEntity\fP, and \fBCsla\&.Test\&.Basic\&.GenRootBase\fP\&.
+.PP
+Definition at line 46 of file BusinessBase\&.cs\&.
+.SS "virtual void \fBCsla\&.BusinessBase\fP< T >\&.OnSaved (T newObject, Exception e, object userState)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the Saved event, indicating that the object has been saved, and providing a reference to the new object instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewObject\fP The new object instance\&.
+.br
+\fIe\fP Exception that occurred during operation\&.
+.br
+\fIuserState\fP User state object\&.
+.RE
+.PP
+
+.PP
+Definition at line 476 of file BusinessBase\&.cs\&.
+.SS "static \fBMethodInfo\fP \fBCsla\&.BusinessBase\fP< T >\&.RegisterMethod (Expression< Action< T >> methodLambdaExpression)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Registers a method for use in Authorization\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImethodLambdaExpression\fP The method lambda expression\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 694 of file BusinessBase\&.cs\&.
+.SS "static \fBMethodInfo\fP \fBCsla\&.BusinessBase\fP< T >\&.RegisterMethod (string methodName)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Registers a method for use in Authorization\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImethodName\fP Method name from nameof()
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 684 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 526 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIdefaultValue\fP Default Value for the property
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 541 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIrelationship\fP Relationship with property value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 569 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 596 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.br
+\fIdefaultValue\fP Default Value for the property
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 642 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.br
+\fIdefaultValue\fP Default Value for the property
+.br
+\fIrelationship\fP Relationship with property value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 673 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyLambdaExpression\fP Property Expression
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.br
+\fIrelationship\fP Relationship with property value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 612 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (\fBPropertyInfo\fP< P > info)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBPropertyInfo\fP object for the property\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The provided IPropertyInfo object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 502 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Property name from nameof()
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 514 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Property name from nameof()
+.br
+\fIrelationship\fP Relationship with property value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 556 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, string friendlyName)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Property name from nameof()
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 583 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, string friendlyName, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Property name from nameof()
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.br
+\fIdefaultValue\fP Default Value for the property
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 628 of file BusinessBase\&.cs\&.
+.SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, string friendlyName, P defaultValue, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+Indicates that the specified property belongs to the business object type\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIP\fP Type of property
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Property name from nameof()
+.br
+\fIfriendlyName\fP Friendly description for a property to be used in databinding
+.br
+\fIdefaultValue\fP Default Value for the property
+.br
+\fIrelationship\fP Relationship with property value\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 658 of file BusinessBase\&.cs\&.
+.SS "T \fBCsla\&.BusinessBase\fP< T >\&.Save ()"
+
+.PP
+Saves the object to the database\&. Calling this method starts the save operation, causing the object to be inserted, updated or deleted within the database based on the object's current state\&. 
+.PP
+If \fBCore\&.BusinessBase\&.IsDeleted\fP is true the object will be deleted\&. Otherwise, if \fBCore\&.BusinessBase\&.IsNew\fP is true the object will be inserted\&. Otherwise the object's data will be updated in the database\&. 
+.PP
+All this is contingent on \fBCore\&.BusinessBase\&.IsDirty\fP\&. If this value is false, no data operation occurs\&. It is also contingent on \fBCore\&.BusinessBase\&.IsValid\fP\&. If this value is false an exception will be thrown to indicate that the UI attempted to save an invalid object\&. 
+.PP
+It is important to note that this method returns a new version of the business object that contains any data updated during the save operation\&. You MUST update all object references to use this new version of the business object in order to have access to the correct object data\&. 
+.PP
+You can override this method to add your own custom behaviors to the save operation\&. For instance, you may add some security checks to make sure the user can save the object\&. If all security checks pass, you would then invoke the base Save method via \fCbase\&.Save()\fP\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 121 of file BusinessBase\&.cs\&.
+.SS "T \fBCsla\&.BusinessBase\fP< T >\&.Save (bool forceUpdate)"
+
+.PP
+Saves the object to the database, forcing IsNew to false and IsDirty to True\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSave()\fP\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A new object containing the saved values\&.
+.RE
+.PP
+.PP
+This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 231 of file BusinessBase\&.cs\&.
+.SS "async Task \fBCsla\&.BusinessBase\fP< T >\&.SaveAndMergeAsync ()"
+
+.PP
+Saves the object to the database, merging any resulting updates into the existing object graph\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 249 of file BusinessBase\&.cs\&.
+.SS "async Task \fBCsla\&.BusinessBase\fP< T >\&.SaveAndMergeAsync (bool forceUpdate)"
+
+.PP
+Saves the object to the database, merging any resulting updates into the existing object graph\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSaveAndMergeAsync()\fP\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 263 of file BusinessBase\&.cs\&.
+.SS "async Task<T> \fBCsla\&.BusinessBase\fP< T >\&.SaveAsync ()"
+
+.PP
+Saves the object to the database\&. 
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 139 of file BusinessBase\&.cs\&.
+.SS "async Task<T> \fBCsla\&.BusinessBase\fP< T >\&.SaveAsync (bool forceUpdate)"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSave()\fP\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
+.PP
+Definition at line 151 of file BusinessBase\&.cs\&.
+.SS "virtual async Task<T> \fBCsla\&.BusinessBase\fP< T >\&.SaveAsync (bool forceUpdate, object userState, bool isSync)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Saves the object to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforceUpdate\fP If true, triggers overriding IsNew and IsDirty\&. If false then it is the same as calling \fBSave()\fP\&. 
+.br
+\fIuserState\fP User state data\&.
+.br
+\fIisSync\fP True if the save operation should be synchronous\&.
+.RE
+.PP
+
+.PP
+Definition at line 165 of file BusinessBase\&.cs\&.
+.SS "override string \fBCsla\&.BusinessBase\fP< T >\&.ToString ()"
+
+.PP
+Returns a text representation of this object by returning the \fBGetIdValue\fP value in text form\&. 
+.PP
+Definition at line 60 of file BusinessBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "EventHandler<\fBCsla\&.Core\&.SavedEventArgs\fP> \fBCsla\&.BusinessBase\fP< T >\&.Saved\fC [add]\fP, \fC [remove]\fP"
+
+.PP
+Event raised when an object has been saved\&. 
+.PP
+Definition at line 431 of file BusinessBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

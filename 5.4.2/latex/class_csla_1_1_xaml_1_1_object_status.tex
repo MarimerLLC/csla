@@ -1,0 +1,278 @@
+\hypertarget{class_csla_1_1_xaml_1_1_object_status}{}\doxysection{Csla.\+Xaml.\+Object\+Status Class Reference}
+\label{class_csla_1_1_xaml_1_1_object_status}\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+
+
+Container for other UI controls that exposes various status values from the CSLA .NET business object acting as Data\+Context.  
+
+
+Inheritance diagram for Csla.\+Xaml.\+Object\+Status\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_csla_1_1_xaml_1_1_object_status}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a18587d357c57c883c017459a70a4e0be}{Refresh}} ()
+\begin{DoxyCompactList}\small\item\em Refreshes the control\textquotesingle{}s property values to reflect the values of the underlying business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a45a8d7487e23ac551b4d6a993e0acd71}{Data\+Object\+Changed}} ()
+\begin{DoxyCompactList}\small\item\em This method is called when the data object to which the control is bound has changed. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a08d3e227c1825f97ea855642d5638ed1}{Data\+Property\+Changed}} (Property\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em This method is called when a property of the data object to which the control is bound has changed. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a9915164a30bb3ca96cbc7e2763e1086e}{Data\+Binding\+List\+Changed}} (List\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em This method is called if the data object is an IBinding\+List, and the List\+Changed event was raised by the data object. \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a0056642e4d57bb703c65f440c93f8263}{Data\+Observable\+Collection\+Changed}} (System.\+Collections.\+Specialized.\+Notify\+Collection\+Changed\+Event\+Args e)
+\begin{DoxyCompactList}\small\item\em This method is called if the data object is an INotify\+Collection\+Changed, and the Collection\+Changed event was raised by the data object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a7bd236477b1f146ae95172896ac3a5a8}{Can\+Create\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Can\+Create\+Object property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a021adb4ecf7e561995ba005da3bbd6cb}{Can\+Get\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Can\+Get\+Object property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a7f7d07b78651e31f1420f04156c343bf}{Can\+Edit\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Can\+Edit\+Object property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_ad823e2bca912db59d0b29d18ecf930bd}{Can\+Delete\+Object}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Can\+Delete\+Object property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_ad5e568c9f9eeeef85ed06ca65be1d22e}{Is\+Deleted}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Is\+Deleted property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_abb3c0f4824c5888714ad50f0b8ad45d5}{Is\+Dirty}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Is\+Dirty property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_ae3c2d23d001f2492a98c687f903eca35}{Is\+New}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Is\+New property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_ad0a7b7bda6d502360c5a34af961bbc0d}{Is\+Savable}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Is\+Savable property of the Data\+Context business object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_csla_1_1_xaml_1_1_object_status_a0df607af4749d96430f43affc3365948}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Exposes the Is\+Valid property of the Data\+Context business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Container for other UI controls that exposes various status values from the CSLA .NET business object acting as Data\+Context. 
+
+This control provides access to the Is\+Dirty, Is\+New, Is\+Deleted, Is\+Valid and Is\+Savable properties of a business object. The purpose behind this control is to expose those properties in a way that supports WFP data binding against those values. 
+
+Definition at line 29 of file Object\+Status.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a9915164a30bb3ca96cbc7e2763e1086e}\label{class_csla_1_1_xaml_1_1_object_status_a9915164a30bb3ca96cbc7e2763e1086e}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!DataBindingListChanged@{DataBindingListChanged}}
+\index{DataBindingListChanged@{DataBindingListChanged}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{DataBindingListChanged()}{DataBindingListChanged()}}
+{\footnotesize\ttfamily override void Csla.\+Xaml.\+Object\+Status.\+Data\+Binding\+List\+Changed (\begin{DoxyParamCaption}\item[{List\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called if the data object is an IBinding\+List, and the List\+Changed event was raised by the data object. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a29e85792f53ade1b60321f3f6b067211}{Csla.\+Xaml.\+Data\+Decorator\+Base}}.
+
+
+
+Definition at line 239 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a45a8d7487e23ac551b4d6a993e0acd71}\label{class_csla_1_1_xaml_1_1_object_status_a45a8d7487e23ac551b4d6a993e0acd71}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!DataObjectChanged@{DataObjectChanged}}
+\index{DataObjectChanged@{DataObjectChanged}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{DataObjectChanged()}{DataObjectChanged()}}
+{\footnotesize\ttfamily override void Csla.\+Xaml.\+Object\+Status.\+Data\+Object\+Changed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called when the data object to which the control is bound has changed. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_a0a404eac3302626aca4bd380faf7ac1b}{Csla.\+Xaml.\+Data\+Decorator\+Base}}.
+
+
+
+Definition at line 218 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a0056642e4d57bb703c65f440c93f8263}\label{class_csla_1_1_xaml_1_1_object_status_a0056642e4d57bb703c65f440c93f8263}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!DataObservableCollectionChanged@{DataObservableCollectionChanged}}
+\index{DataObservableCollectionChanged@{DataObservableCollectionChanged}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{DataObservableCollectionChanged()}{DataObservableCollectionChanged()}}
+{\footnotesize\ttfamily override void Csla.\+Xaml.\+Object\+Status.\+Data\+Observable\+Collection\+Changed (\begin{DoxyParamCaption}\item[{System.\+Collections.\+Specialized.\+Notify\+Collection\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+This method is called if the data object is an INotify\+Collection\+Changed, and the Collection\+Changed event was raised by the data object. 
+
+
+
+Definition at line 250 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a08d3e227c1825f97ea855642d5638ed1}\label{class_csla_1_1_xaml_1_1_object_status_a08d3e227c1825f97ea855642d5638ed1}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!DataPropertyChanged@{DataPropertyChanged}}
+\index{DataPropertyChanged@{DataPropertyChanged}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{DataPropertyChanged()}{DataPropertyChanged()}}
+{\footnotesize\ttfamily override void Csla.\+Xaml.\+Object\+Status.\+Data\+Property\+Changed (\begin{DoxyParamCaption}\item[{Property\+Changed\+Event\+Args}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method is called when a property of the data object to which the control is bound has changed. 
+
+
+
+Reimplemented from \mbox{\hyperlink{class_csla_1_1_xaml_1_1_data_decorator_base_aa515624b539cb8581b31f2daec069d66}{Csla.\+Xaml.\+Data\+Decorator\+Base}}.
+
+
+
+Definition at line 228 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a18587d357c57c883c017459a70a4e0be}\label{class_csla_1_1_xaml_1_1_object_status_a18587d357c57c883c017459a70a4e0be}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!Refresh@{Refresh}}
+\index{Refresh@{Refresh}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{Refresh()}{Refresh()}}
+{\footnotesize\ttfamily void Csla.\+Xaml.\+Object\+Status.\+Refresh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Refreshes the control\textquotesingle{}s property values to reflect the values of the underlying business object. 
+
+
+
+Definition at line 260 of file Object\+Status.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a7bd236477b1f146ae95172896ac3a5a8}\label{class_csla_1_1_xaml_1_1_object_status_a7bd236477b1f146ae95172896ac3a5a8}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!CanCreateObject@{CanCreateObject}}
+\index{CanCreateObject@{CanCreateObject}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{CanCreateObject}{CanCreateObject}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Can\+Create\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Can\+Create\+Object property of the Data\+Context business object. 
+
+
+
+Definition at line 46 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_ad823e2bca912db59d0b29d18ecf930bd}\label{class_csla_1_1_xaml_1_1_object_status_ad823e2bca912db59d0b29d18ecf930bd}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!CanDeleteObject@{CanDeleteObject}}
+\index{CanDeleteObject@{CanDeleteObject}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{CanDeleteObject}{CanDeleteObject}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Can\+Delete\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Can\+Delete\+Object property of the Data\+Context business object. 
+
+
+
+Definition at line 97 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a7f7d07b78651e31f1420f04156c343bf}\label{class_csla_1_1_xaml_1_1_object_status_a7f7d07b78651e31f1420f04156c343bf}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!CanEditObject@{CanEditObject}}
+\index{CanEditObject@{CanEditObject}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{CanEditObject}{CanEditObject}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Can\+Edit\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Can\+Edit\+Object property of the Data\+Context business object. 
+
+
+
+Definition at line 80 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a021adb4ecf7e561995ba005da3bbd6cb}\label{class_csla_1_1_xaml_1_1_object_status_a021adb4ecf7e561995ba005da3bbd6cb}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!CanGetObject@{CanGetObject}}
+\index{CanGetObject@{CanGetObject}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{CanGetObject}{CanGetObject}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Can\+Get\+Object\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Can\+Get\+Object property of the Data\+Context business object. 
+
+
+
+Definition at line 63 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_ad5e568c9f9eeeef85ed06ca65be1d22e}\label{class_csla_1_1_xaml_1_1_object_status_ad5e568c9f9eeeef85ed06ca65be1d22e}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!IsDeleted@{IsDeleted}}
+\index{IsDeleted@{IsDeleted}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{IsDeleted}{IsDeleted}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Is\+Deleted\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Is\+Deleted property of the Data\+Context business object. 
+
+
+
+Definition at line 129 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_abb3c0f4824c5888714ad50f0b8ad45d5}\label{class_csla_1_1_xaml_1_1_object_status_abb3c0f4824c5888714ad50f0b8ad45d5}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!IsDirty@{IsDirty}}
+\index{IsDirty@{IsDirty}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{IsDirty}{IsDirty}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Is\+Dirty\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Is\+Dirty property of the Data\+Context business object. 
+
+
+
+Definition at line 145 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_ae3c2d23d001f2492a98c687f903eca35}\label{class_csla_1_1_xaml_1_1_object_status_ae3c2d23d001f2492a98c687f903eca35}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!IsNew@{IsNew}}
+\index{IsNew@{IsNew}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{IsNew}{IsNew}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Is\+New\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Is\+New property of the Data\+Context business object. 
+
+
+
+Definition at line 162 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_ad0a7b7bda6d502360c5a34af961bbc0d}\label{class_csla_1_1_xaml_1_1_object_status_ad0a7b7bda6d502360c5a34af961bbc0d}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!IsSavable@{IsSavable}}
+\index{IsSavable@{IsSavable}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{IsSavable}{IsSavable}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Is\+Savable\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Is\+Savable property of the Data\+Context business object. 
+
+
+
+Definition at line 179 of file Object\+Status.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_xaml_1_1_object_status_a0df607af4749d96430f43affc3365948}\label{class_csla_1_1_xaml_1_1_object_status_a0df607af4749d96430f43affc3365948}} 
+\index{Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Xaml.ObjectStatus@{Csla.Xaml.ObjectStatus}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily bool Csla.\+Xaml.\+Object\+Status.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Exposes the Is\+Valid property of the Data\+Context business object. 
+
+
+
+Definition at line 196 of file Object\+Status.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Xaml.\+Shared/\mbox{\hyperlink{_object_status_8cs}{Object\+Status.\+cs}}\end{DoxyCompactItemize}

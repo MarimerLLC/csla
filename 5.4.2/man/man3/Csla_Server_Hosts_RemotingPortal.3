@@ -1,0 +1,110 @@
+.TH "Csla.Server.Hosts.RemotingPortal" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Server.Hosts.RemotingPortal \- Exposes server-side \fBDataPortal\fP functionality through \&.NET Remoting\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits MarshalByRefObject\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPortalResult\fP \fBCreate\fP (Type objectType, object criteria, \fBDataPortalContext\fP context)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "\fBDataPortalResult\fP \fBFetch\fP (Type objectType, object criteria, \fBDataPortalContext\fP context)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "\fBDataPortalResult\fP \fBUpdate\fP (object obj, \fBDataPortalContext\fP context)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "\fBDataPortalResult\fP \fBDelete\fP (Type objectType, object criteria, \fBDataPortalContext\fP context)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exposes server-side \fBDataPortal\fP functionality through \&.NET Remoting\&. 
+
+
+.PP
+Definition at line 17 of file RemotingPortal\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBDataPortalResult\fP Csla\&.Server\&.Hosts\&.RemotingPortal\&.Create (Type objectType, object criteria, \fBDataPortalContext\fP context)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 27 of file RemotingPortal\&.cs\&.
+.SS "\fBDataPortalResult\fP Csla\&.Server\&.Hosts\&.RemotingPortal\&.Delete (Type objectType, object criteria, \fBDataPortalContext\fP context)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 69 of file RemotingPortal\&.cs\&.
+.SS "\fBDataPortalResult\fP Csla\&.Server\&.Hosts\&.RemotingPortal\&.Fetch (Type objectType, object criteria, \fBDataPortalContext\fP context)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to retrieve\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 42 of file RemotingPortal\&.cs\&.
+.SS "\fBDataPortalResult\fP Csla\&.Server\&.Hosts\&.RemotingPortal\&.Update (object obj, \fBDataPortalContext\fP context)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP Business object to update\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.RE
+.PP
+
+.PP
+Definition at line 55 of file RemotingPortal\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

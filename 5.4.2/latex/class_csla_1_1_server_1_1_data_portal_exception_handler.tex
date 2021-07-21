@@ -1,0 +1,111 @@
+\hypertarget{class_csla_1_1_server_1_1_data_portal_exception_handler}{}\doxysection{Csla.\+Server.\+Data\+Portal\+Exception\+Handler Class Reference}
+\label{class_csla_1_1_server_1_1_data_portal_exception_handler}\index{Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}}
+
+
+This class provides a hoook for developers to add custom error handling in the \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}}.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Exception \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_exception_handler_aeaff69b11bbe9fd6b9310f81254b04da}{Inspect\+Exception}} (Type object\+Type, object criteria, string method\+Name, Exception ex)
+\begin{DoxyCompactList}\small\item\em Transforms the exception in a Fetch, Create or Execute method. \end{DoxyCompactList}\item 
+Exception \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_exception_handler_ae5e0fb0f22730266213512c74d466c67}{Inspect\+Exception}} (Type object\+Type, object business\+Object, object criteria, string method\+Name, Exception ex)
+\begin{DoxyCompactList}\small\item\em Transforms the exception in a Update, Delete method \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+static string \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_exception_handler_a5f6677267526a8b931c2e26928e4811e}{Exception\+Inspector}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the fully qualified name of the Exception\+Inspector class. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class provides a hoook for developers to add custom error handling in the \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}}. 
+
+Typical scenario is to handle non-\/serializable exception and exceptions from assemblies that does not exist on the client side, such as 3rd party database drivers, MQ drivers etc.
+
+Definition at line 22 of file Data\+Portal\+Exception\+Handler.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_exception_handler_ae5e0fb0f22730266213512c74d466c67}\label{class_csla_1_1_server_1_1_data_portal_exception_handler_ae5e0fb0f22730266213512c74d466c67}} 
+\index{Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}!InspectException@{InspectException}}
+\index{InspectException@{InspectException}!Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}}
+\doxysubsubsection{\texorpdfstring{InspectException()}{InspectException()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Exception Csla.\+Server.\+Data\+Portal\+Exception\+Handler.\+Inspect\+Exception (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{business\+Object,  }\item[{object}]{criteria,  }\item[{string}]{method\+Name,  }\item[{Exception}]{ex }\end{DoxyParamCaption})}
+
+
+
+Transforms the exception in a Update, Delete method 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of the object.\\
+\hline
+{\em business\+Object} & The business object if available.\\
+\hline
+{\em criteria} & The criteria.\\
+\hline
+{\em method\+Name} & Name of the method.\\
+\hline
+{\em ex} & The exception.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 108 of file Data\+Portal\+Exception\+Handler.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_exception_handler_aeaff69b11bbe9fd6b9310f81254b04da}\label{class_csla_1_1_server_1_1_data_portal_exception_handler_aeaff69b11bbe9fd6b9310f81254b04da}} 
+\index{Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}!InspectException@{InspectException}}
+\index{InspectException@{InspectException}!Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}}
+\doxysubsubsection{\texorpdfstring{InspectException()}{InspectException()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Exception Csla.\+Server.\+Data\+Portal\+Exception\+Handler.\+Inspect\+Exception (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{string}]{method\+Name,  }\item[{Exception}]{ex }\end{DoxyParamCaption})}
+
+
+
+Transforms the exception in a Fetch, Create or Execute method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of the object.\\
+\hline
+{\em criteria} & The criteria.\\
+\hline
+{\em method\+Name} & Name of the method.\\
+\hline
+{\em ex} & The exception.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 78 of file Data\+Portal\+Exception\+Handler.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_data_portal_exception_handler_a5f6677267526a8b931c2e26928e4811e}\label{class_csla_1_1_server_1_1_data_portal_exception_handler_a5f6677267526a8b931c2e26928e4811e}} 
+\index{Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}!ExceptionInspector@{ExceptionInspector}}
+\index{ExceptionInspector@{ExceptionInspector}!Csla.Server.DataPortalExceptionHandler@{Csla.Server.DataPortalExceptionHandler}}
+\doxysubsubsection{\texorpdfstring{ExceptionInspector}{ExceptionInspector}}
+{\footnotesize\ttfamily string Csla.\+Server.\+Data\+Portal\+Exception\+Handler.\+Exception\+Inspector\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the fully qualified name of the Exception\+Inspector class. 
+
+
+
+Definition at line 31 of file Data\+Portal\+Exception\+Handler.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_data_portal_exception_handler_8cs}{Data\+Portal\+Exception\+Handler.\+cs}}\end{DoxyCompactItemize}

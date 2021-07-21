@@ -1,0 +1,277 @@
+\hypertarget{interface_csla_1_1_core_1_1_i_context_manager}{}\doxysection{Csla.\+Core.\+IContext\+Manager Interface Reference}
+\label{interface_csla_1_1_core_1_1_i_context_manager}\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+
+
+Defines the interface for an application context manager type.  
+
+
+Inheritance diagram for Csla.\+Core.\+IContext\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.007194cm]{interface_csla_1_1_core_1_1_i_context_manager}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+IPrincipal \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a50378fd27cb465b60ba7e24e1f7f8437}{Get\+User}} ()
+\begin{DoxyCompactList}\small\item\em Gets the current principal. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_aa212c18536d8e15c02611ba1eb4e9990}{Set\+User}} (IPrincipal principal)
+\begin{DoxyCompactList}\small\item\em Sets the current principal. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_aef6249542cb94fe87af17e811a7f3543}{Get\+Local\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Gets the local context. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_aae3449af55305cf083bf13023901c170}{Set\+Local\+Context}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} local\+Context)
+\begin{DoxyCompactList}\small\item\em Sets the local context. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a6cae64f00c6779590a4bfbae14769fd6}{Get\+Client\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Gets the client context. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a07e829f8c8a3242b9a578b19ddf67931}{Set\+Client\+Context}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} client\+Context)
+\begin{DoxyCompactList}\small\item\em Sets the client context. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a785d5b1a8520c77c8435f17fd89a6ed1}{Get\+Global\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Gets the global context. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a57141fb8c9497a02bb16477c12d41055}{Set\+Global\+Context}} (\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} global\+Context)
+\begin{DoxyCompactList}\small\item\em Sets the global context. \end{DoxyCompactList}\item 
+IService\+Provider \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a792895c7f95fa19879bfc2b197a84c4e}{Get\+Default\+Service\+Provider}} ()
+\begin{DoxyCompactList}\small\item\em Gets the default IService\+Provider \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a7741c08ea3f57da253d33ff4522fa9d1}{Set\+Default\+Service\+Provider}} (IService\+Provider service\+Provider)
+\begin{DoxyCompactList}\small\item\em Sets the default IService\+Provider \end{DoxyCompactList}\item 
+IService\+Provider \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_abba4b1b31572301686793986e9cc98e5}{Get\+Service\+Provider}} ()
+\begin{DoxyCompactList}\small\item\em Gets the service provider scope for current scope. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_ac901f3fa97756a8a668f4105d8d16220}{Set\+Service\+Provider}} (IService\+Provider scope)
+\begin{DoxyCompactList}\small\item\em Sets the service provider for current scope. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_context_manager_a097655a0b39640ebf449fd9b76c98c58}{Is\+Valid}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether this context manager is valid for use in the current environment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Defines the interface for an application context manager type. 
+
+
+
+Definition at line 17 of file IContext\+Manager.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a6cae64f00c6779590a4bfbae14769fd6}\label{interface_csla_1_1_core_1_1_i_context_manager_a6cae64f00c6779590a4bfbae14769fd6}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!GetClientContext@{GetClientContext}}
+\index{GetClientContext@{GetClientContext}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{GetClientContext()}{GetClientContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} Csla.\+Core.\+IContext\+Manager.\+Get\+Client\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the client context. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_afb83fedd573dc3daa4be5e7d967aa910}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_ad114550f26284e518bfb1a685b81d0ed}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_aa4e6ca6fe52125e30136e142c32e908a}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a9f8a1e1a85552f58d08ed67de5ce2fa8}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a72f830c53da5d47954cda1f58e3b7b04}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a81158b879f8b154aaef8031060fcb996}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a792895c7f95fa19879bfc2b197a84c4e}\label{interface_csla_1_1_core_1_1_i_context_manager_a792895c7f95fa19879bfc2b197a84c4e}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!GetDefaultServiceProvider@{GetDefaultServiceProvider}}
+\index{GetDefaultServiceProvider@{GetDefaultServiceProvider}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{GetDefaultServiceProvider()}{GetDefaultServiceProvider()}}
+{\footnotesize\ttfamily IService\+Provider Csla.\+Core.\+IContext\+Manager.\+Get\+Default\+Service\+Provider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the default IService\+Provider 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a1717ed294432b2a4804a87b1f233f295}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a46269e8a03d7389e05101b4afaea3c05}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_a1a178ba7b333b2d4ea030e505869c542}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_ac036ad48281737d065518f722ba0df93}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a5353a4499fd9ae16162c30fe440e70a4}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_acc36319f398fc4bcc06e6f58be3d13c8}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a785d5b1a8520c77c8435f17fd89a6ed1}\label{interface_csla_1_1_core_1_1_i_context_manager_a785d5b1a8520c77c8435f17fd89a6ed1}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!GetGlobalContext@{GetGlobalContext}}
+\index{GetGlobalContext@{GetGlobalContext}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{GetGlobalContext()}{GetGlobalContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} Csla.\+Core.\+IContext\+Manager.\+Get\+Global\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the global context. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a238db169c0c73934ff654d95e8ef2f9a}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a87617b8050c744598b1baf2730af70d0}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_aa3068949359eee942ffc215e54b50885}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a42dfacb3f94a9ba13ccf164a0bb69996}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a0d17624b8fcb08b642b68f473d0c2eca}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a03e6712cb2271ed0b4403a763c1c651a}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_aef6249542cb94fe87af17e811a7f3543}\label{interface_csla_1_1_core_1_1_i_context_manager_aef6249542cb94fe87af17e811a7f3543}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!GetLocalContext@{GetLocalContext}}
+\index{GetLocalContext@{GetLocalContext}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{GetLocalContext()}{GetLocalContext()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}} Csla.\+Core.\+IContext\+Manager.\+Get\+Local\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the local context. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_aa4ef310bf9e0f1796c76edacd99eadd7}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a77a0512f15c3d5a33da227e20b7a00b5}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_afd73eaaecd6f4b74f1df85f0e7a2786d}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_aaaadd13f992400a2cd6feae0eb361533}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_ad6ecb6fed3556af7c98fb18d1d352025}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_ad74b004016e82342a9e8047d5e1c1fb2}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_abba4b1b31572301686793986e9cc98e5}\label{interface_csla_1_1_core_1_1_i_context_manager_abba4b1b31572301686793986e9cc98e5}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!GetServiceProvider@{GetServiceProvider}}
+\index{GetServiceProvider@{GetServiceProvider}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{GetServiceProvider()}{GetServiceProvider()}}
+{\footnotesize\ttfamily IService\+Provider Csla.\+Core.\+IContext\+Manager.\+Get\+Service\+Provider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the service provider scope for current scope. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a7ed390365a79f7f24858f64e0c9e26c4}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_ac0e4b2ca65bd3c543f1f13222c5dfacc}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_aa5cf278540d60470fec8b3787cbbe62b}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a84595569eda163c6972655b73aa2b442}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a4054e274a838fd39d78dcb619a464f2f}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_aea4520b7ba7a72369b7a37105b919873}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a50378fd27cb465b60ba7e24e1f7f8437}\label{interface_csla_1_1_core_1_1_i_context_manager_a50378fd27cb465b60ba7e24e1f7f8437}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!GetUser@{GetUser}}
+\index{GetUser@{GetUser}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{GetUser()}{GetUser()}}
+{\footnotesize\ttfamily IPrincipal Csla.\+Core.\+IContext\+Manager.\+Get\+User (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the current principal. 
+
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a67e64e0eb1dca1085a7e5625056df39c}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_aa2c57c2c77f9b41baf855a7aac6fafad}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_a5fb34188194ce9d2b6f13c69639f12d6}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_application_context_manager_ac3013e3cc20e65b3302c2dccef29d220}{Csla.\+Xaml.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_windows_1_1_application_context_manager_a987f4e18dc051addfcaa0a9905ec6c1c}{Csla.\+Windows.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a248e57efacb306efdade9c007d771292}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_ad542549cd3997703d346ccd624739607}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a8a72b5da2a96ec3169bb11e0fc0fbd81}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a07e829f8c8a3242b9a578b19ddf67931}\label{interface_csla_1_1_core_1_1_i_context_manager_a07e829f8c8a3242b9a578b19ddf67931}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!SetClientContext@{SetClientContext}}
+\index{SetClientContext@{SetClientContext}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{SetClientContext()}{SetClientContext()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IContext\+Manager.\+Set\+Client\+Context (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{client\+Context }\end{DoxyParamCaption})}
+
+
+
+Sets the client context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em client\+Context} & Client context.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_ab85f6481325b11fdbfc39bbb8ae462ec}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a4232a22a247d12c194d642cac624c471}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_ac37f78dd898ed96daa8909baccad83bf}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_ac8f77dc977ab279b56f02e3001e6a09f}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a94cbcf21f737f574fede60a63d6d39a3}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a98edf951fa4ac4b6eebeb02dc2bdad6f}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a7741c08ea3f57da253d33ff4522fa9d1}\label{interface_csla_1_1_core_1_1_i_context_manager_a7741c08ea3f57da253d33ff4522fa9d1}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!SetDefaultServiceProvider@{SetDefaultServiceProvider}}
+\index{SetDefaultServiceProvider@{SetDefaultServiceProvider}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{SetDefaultServiceProvider()}{SetDefaultServiceProvider()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IContext\+Manager.\+Set\+Default\+Service\+Provider (\begin{DoxyParamCaption}\item[{IService\+Provider}]{service\+Provider }\end{DoxyParamCaption})}
+
+
+
+Sets the default IService\+Provider 
+
+
+\begin{DoxyParams}{Parameters}
+{\em service\+Provider} & IService\+Provider instance\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a99208249f19d034ffbdd9cff3cca428e}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_ae5795482a0e7ee69fe6c7944a790703a}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_a9e77bad54cf979b7b8bdcd0ba2a78d3a}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a2e257b818b0c81a7a8ec8cc834052f45}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a5204a83b88430447bea75608d5b4a51e}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a4dcb392c44bc17e137351986353d234a}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a57141fb8c9497a02bb16477c12d41055}\label{interface_csla_1_1_core_1_1_i_context_manager_a57141fb8c9497a02bb16477c12d41055}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!SetGlobalContext@{SetGlobalContext}}
+\index{SetGlobalContext@{SetGlobalContext}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{SetGlobalContext()}{SetGlobalContext()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IContext\+Manager.\+Set\+Global\+Context (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{global\+Context }\end{DoxyParamCaption})}
+
+
+
+Sets the global context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em global\+Context} & Global context.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_acf5547348d7118d0a15268bc740623fd}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a34bd5018401a23f12d22018e4767c02e}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_ad147ede80992b08e69e9d6534a3e09c0}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a2d7fb00707c16106742ef96bb50a238b}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a9c47ec55802c7f8bece6b8a18e35a647}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a6b2c71abf7720b1b64402bd4324f20c8}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_aae3449af55305cf083bf13023901c170}\label{interface_csla_1_1_core_1_1_i_context_manager_aae3449af55305cf083bf13023901c170}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!SetLocalContext@{SetLocalContext}}
+\index{SetLocalContext@{SetLocalContext}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{SetLocalContext()}{SetLocalContext()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IContext\+Manager.\+Set\+Local\+Context (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Context\+Dictionary}}}]{local\+Context }\end{DoxyParamCaption})}
+
+
+
+Sets the local context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local\+Context} & Local context.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a314e59642abed04713e940da22b2e0b1}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a86f126ec557ffbe5498d28f292f27828}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_a178a6a4f2382bfc532a8ba67a9a5d93a}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_a83e61dc4ec92d0feb14985ef6b38bb8f}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a31657c393cacd0d3dd7a24a289998812}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a7854bd73c0079ffcbfba6e63ada215ca}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_ac901f3fa97756a8a668f4105d8d16220}\label{interface_csla_1_1_core_1_1_i_context_manager_ac901f3fa97756a8a668f4105d8d16220}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!SetServiceProvider@{SetServiceProvider}}
+\index{SetServiceProvider@{SetServiceProvider}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{SetServiceProvider()}{SetServiceProvider()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IContext\+Manager.\+Set\+Service\+Provider (\begin{DoxyParamCaption}\item[{IService\+Provider}]{scope }\end{DoxyParamCaption})}
+
+
+
+Sets the service provider for current scope. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em scope} & IService\+Provider instance\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a2c88eee059668518318a00b707325a51}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_abc80afa6f66247639f58c559a10e71ac}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_ad25cf03fdcb98d9b70315e11e37a7984}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_web_1_1_application_context_manager_ab35603a4adef5532f4e32e813f4da3a6}{Csla.\+Web.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_abf3366fc4d8e58d4feb1163896068408}{Csla.\+Test.\+App\+Context.\+Test\+Context}}, and \mbox{\hyperlink{class_csla_1_1_asp_net_core_1_1_application_context_manager_a0b167ca70bc571eb9f343544e06d049b}{Csla.\+Asp\+Net\+Core.\+Application\+Context\+Manager}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_aa212c18536d8e15c02611ba1eb4e9990}\label{interface_csla_1_1_core_1_1_i_context_manager_aa212c18536d8e15c02611ba1eb4e9990}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!SetUser@{SetUser}}
+\index{SetUser@{SetUser}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{SetUser()}{SetUser()}}
+{\footnotesize\ttfamily void Csla.\+Core.\+IContext\+Manager.\+Set\+User (\begin{DoxyParamCaption}\item[{IPrincipal}]{principal }\end{DoxyParamCaption})}
+
+
+
+Sets the current principal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em principal} & Principal object.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_tls_a835d82fc758108a1bcdf153f9683e538}{Csla.\+Core.\+Application\+Context\+Manager\+Tls}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_static_a1b5c6a4149ae7cf9ff2dd416857dca2c}{Csla.\+Core.\+Application\+Context\+Manager\+Static}}, \mbox{\hyperlink{class_csla_1_1_core_1_1_application_context_manager_a6ccf1385f0c016edbd861a2d6efb0e68}{Csla.\+Core.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_xaml_1_1_application_context_manager_a3082c2ce4fb74fc0590735e25fd16e96}{Csla.\+Xaml.\+Application\+Context\+Manager}}, \mbox{\hyperlink{class_csla_1_1_windows_1_1_application_context_manager_ade5f41dcee951b86ceaa0a9eb87cd22e}{Csla.\+Windows.\+Application\+Context\+Manager}}, and \mbox{\hyperlink{class_csla_1_1_test_1_1_app_context_1_1_test_context_a4db29f4c160d802b125f179c0ace3bcd}{Csla.\+Test.\+App\+Context.\+Test\+Context}}.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_core_1_1_i_context_manager_a097655a0b39640ebf449fd9b76c98c58}\label{interface_csla_1_1_core_1_1_i_context_manager_a097655a0b39640ebf449fd9b76c98c58}} 
+\index{Csla.Core.IContextManager@{Csla.Core.IContextManager}!IsValid@{IsValid}}
+\index{IsValid@{IsValid}!Csla.Core.IContextManager@{Csla.Core.IContextManager}}
+\doxysubsubsection{\texorpdfstring{IsValid}{IsValid}}
+{\footnotesize\ttfamily bool Csla.\+Core.\+IContext\+Manager.\+Is\+Valid\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether this context manager is valid for use in the current environment. 
+
+
+
+Definition at line 24 of file IContext\+Manager.\+cs.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Core/\mbox{\hyperlink{_i_context_manager_8cs}{IContext\+Manager.\+cs}}\end{DoxyCompactItemize}

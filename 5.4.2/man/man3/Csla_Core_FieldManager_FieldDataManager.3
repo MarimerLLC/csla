@@ -1,0 +1,331 @@
+.TH "Csla.Core.FieldManager.FieldDataManager" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.FieldManager.FieldDataManager \- Manages properties and property data for a business object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileObject\fP, and \fBCsla\&.Core\&.IUndoableObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFieldDataManager\fP ()"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "List< \fBIPropertyInfo\fP > \fBGetRegisteredProperties\fP ()"
+.br
+.RI "Returns a copy of the property list for the business object\&. Returns null if there are no properties registered for this object\&. "
+.ti -1c
+.RI "\fBIPropertyInfo\fP \fBGetRegisteredProperty\fP (string propertyName)"
+.br
+.RI "Returns the \fBIPropertyInfo\fP object corresponding to the property name\&. "
+.ti -1c
+.RI "\fBIFieldData\fP \fBGetFieldData\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Gets the \fBIFieldData\fP object for a specific field\&. "
+.ti -1c
+.RI "bool \fBFieldExists\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Returns a value indicating whether an \fBIFieldData\fP entry exists for the specified property\&. "
+.ti -1c
+.RI "bool \fBIsFieldDirty\fP (\fBIPropertyInfo\fP propertyInfo)"
+.br
+.RI "Gets a value indicating whether the specified field has been changed\&. "
+.ti -1c
+.RI "bool \fBIsValid\fP ()"
+.br
+.RI "Returns a value indicating whether all fields are valid\&. "
+.ti -1c
+.RI "bool \fBIsDirty\fP ()"
+.br
+.RI "Returns a value indicating whether any fields are dirty\&. "
+.ti -1c
+.RI "List< object > \fBGetChildren\fP ()"
+.br
+.RI "Returns a list of all child objects contained in the list of fields\&. "
+.ti -1c
+.RI "void \fBUpdateChildren\fP (params object[] parameters)"
+.br
+.RI "Invokes the data portal to update all child objects contained in the list of fields\&. "
+.ti -1c
+.RI "void \fBUpdateAllChildren\fP (params object[] parameters)"
+.br
+.RI "Invokes the data portal to update all child objects, including those which are not dirty, contained in the list of fields\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBForceStaticFieldInit\fP (Type type)"
+.br
+.RI "Forces initialization of the static fields declared by a type, and any of its base class types\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to insert your field values into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Serializes child objects\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Deserializes child objects\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBHasFields\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether there are any managed fields available\&. "
+.ti -1c
+.RI "int \fBEditLevel\fP\fC [get]\fP"
+.br
+.RI "Gets the current edit level of the object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Manages properties and property data for a business object\&. 
+
+
+.PP
+Definition at line 29 of file FieldDataManager\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.FieldManager\&.FieldDataManager\&.FieldDataManager ()"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+Definition at line 41 of file FieldDataManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool Csla\&.Core\&.FieldManager\&.FieldDataManager\&.FieldExists (\fBIPropertyInfo\fP propertyInfo)"
+
+.PP
+Returns a value indicating whether an \fBIFieldData\fP entry exists for the specified property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The property corresponding to the field\&. 
+.RE
+.PP
+
+.PP
+Definition at line 353 of file FieldDataManager\&.cs\&.
+.SS "static void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.ForceStaticFieldInit (Type type)\fC [static]\fP"
+
+.PP
+Forces initialization of the static fields declared by a type, and any of its base class types\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItype\fP Type of object to initialize\&.
+.RE
+.PP
+
+.PP
+Definition at line 765 of file FieldDataManager\&.cs\&.
+.SS "List<object> Csla\&.Core\&.FieldManager\&.FieldDataManager\&.GetChildren ()"
+
+.PP
+Returns a list of all child objects contained in the list of fields\&. This method returns a list of actual child objects, not a list of \fBIFieldData\fP container objects\&. 
+.PP
+Definition at line 566 of file FieldDataManager\&.cs\&.
+.SS "\fBIFieldData\fP Csla\&.Core\&.FieldManager\&.FieldDataManager\&.GetFieldData (\fBIPropertyInfo\fP propertyInfo)"
+
+.PP
+Gets the \fBIFieldData\fP object for a specific field\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The property corresponding to the field\&. 
+.RE
+.PP
+
+.PP
+Definition at line 187 of file FieldDataManager\&.cs\&.
+.SS "List<\fBIPropertyInfo\fP> Csla\&.Core\&.FieldManager\&.FieldDataManager\&.GetRegisteredProperties ()"
+
+.PP
+Returns a copy of the property list for the business object\&. Returns null if there are no properties registered for this object\&. 
+.PP
+Definition at line 73 of file FieldDataManager\&.cs\&.
+.SS "\fBIPropertyInfo\fP Csla\&.Core\&.FieldManager\&.FieldDataManager\&.GetRegisteredProperty (string propertyName)"
+
+.PP
+Returns the \fBIPropertyInfo\fP object corresponding to the property name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyName\fP Name of the property\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fIArgumentOutOfRangeException\fP Thrown if the property name doesn't correspond to a registered property\&.
+.RE
+.PP
+
+.PP
+Definition at line 86 of file FieldDataManager\&.cs\&.
+.SS "bool Csla\&.Core\&.FieldManager\&.FieldDataManager\&.IsDirty ()"
+
+.PP
+Returns a value indicating whether any fields are dirty\&. 
+.PP
+Definition at line 412 of file FieldDataManager\&.cs\&.
+.SS "bool Csla\&.Core\&.FieldManager\&.FieldDataManager\&.IsFieldDirty (\fBIPropertyInfo\fP propertyInfo)"
+
+.PP
+Gets a value indicating whether the specified field has been changed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpropertyInfo\fP The property corresponding to the field\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the field has been changed\&.
+.RE
+.PP
+
+.PP
+Definition at line 373 of file FieldDataManager\&.cs\&.
+.SS "bool Csla\&.Core\&.FieldManager\&.FieldDataManager\&.IsValid ()"
+
+.PP
+Returns a value indicating whether all fields are valid\&. 
+.PP
+Definition at line 400 of file FieldDataManager\&.cs\&.
+.SS "override void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.OnGetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Serializes child objects\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP state
+.br
+\fIformatter\fP Serializer instance
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 655 of file FieldDataManager\&.cs\&.
+.SS "override void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to insert your field values into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 628 of file FieldDataManager\&.cs\&.
+.SS "override void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.OnSetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Deserializes child objects\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP state
+.br
+\fIformatter\fP Serializer instance
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 741 of file FieldDataManager\&.cs\&.
+.SS "override void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 681 of file FieldDataManager\&.cs\&.
+.SS "void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.UpdateAllChildren (params object[] parameters)"
+
+.PP
+Invokes the data portal to update all child objects, including those which are not dirty, contained in the list of fields\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameters\fP Paramters for method
+.RE
+.PP
+
+.PP
+Definition at line 600 of file FieldDataManager\&.cs\&.
+.SS "void Csla\&.Core\&.FieldManager\&.FieldDataManager\&.UpdateChildren (params object[] parameters)"
+
+.PP
+Invokes the data portal to update all child objects contained in the list of fields\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameters\fP Paramters for method
+.RE
+.PP
+
+.PP
+Definition at line 581 of file FieldDataManager\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "int Csla\&.Core\&.FieldManager\&.FieldDataManager\&.EditLevel\fC [get]\fP"
+
+.PP
+Gets the current edit level of the object\&. 
+.PP
+Definition at line 448 of file FieldDataManager\&.cs\&.
+.SS "bool Csla\&.Core\&.FieldManager\&.FieldDataManager\&.HasFields\fC [get]\fP"
+
+.PP
+Gets a value indicating whether there are any managed fields available\&. 
+.PP
+Definition at line 98 of file FieldDataManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

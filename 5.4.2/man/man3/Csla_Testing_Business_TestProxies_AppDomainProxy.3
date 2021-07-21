@@ -1,0 +1,139 @@
+.TH "Csla.Testing.Business.TestProxies.AppDomainProxy" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Testing.Business.TestProxies.AppDomainProxy \- This is a test proxy used to test any type of calls that have to be send accross to a different AppDomain (non local styff)  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.DataPortalClient\&.IDataPortalProxy\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBCreate\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Create a new business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBFetch\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Get an existing business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBUpdate\fP (object obj, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Update a business object\&. "
+.ti -1c
+.RI "async Task< \fBDataPortalResult\fP > \fBDelete\fP (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+.br
+.RI "Delete a business object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBIsServerRemote\fP\fC [get]\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is a test proxy used to test any type of calls that have to be send accross to a different AppDomain (non local styff) 
+
+
+.PP
+Definition at line 23 of file AppDomainProxy\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Testing\&.Business\&.TestProxies\&.AppDomainProxy\&.Create (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Create a new business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 87 of file AppDomainProxy\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Testing\&.Business\&.TestProxies\&.AppDomainProxy\&.Delete (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Delete a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to create\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 217 of file AppDomainProxy\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Testing\&.Business\&.TestProxies\&.AppDomainProxy\&.Fetch (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Get an existing business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobjectType\fP Type of business object to retrieve\&.
+.br
+\fIcriteria\fP Criteria object describing business object\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 132 of file AppDomainProxy\&.cs\&.
+.SS "async Task<\fBDataPortalResult\fP> Csla\&.Testing\&.Business\&.TestProxies\&.AppDomainProxy\&.Update (object obj, \fBDataPortalContext\fP context, bool isSync)"
+
+.PP
+Update a business object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIobj\fP \fBBusiness\fP object to update\&.
+.br
+\fIcontext\fP \fBServer\&.DataPortalContext\fP object passed to the server\&. 
+.br
+\fIisSync\fP True if the client-side proxy should synchronously invoke the server\&.
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
+.PP
+Definition at line 178 of file AppDomainProxy\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Testing\&.Business\&.TestProxies\&.AppDomainProxy\&.IsServerRemote\fC [get]\fP"
+
+.PP
+Definition at line 296 of file AppDomainProxy\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

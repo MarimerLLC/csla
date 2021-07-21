@@ -1,0 +1,207 @@
+.TH "Csla.Data.EF6.DbContextManager< C >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Data.EF6.DbContextManager< C > \- Provides an automated way to reuse Entity Framework DbContext objects within the context of a single data portal operation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDisposable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Dispose object, dereferencing or disposing the context it is managing\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP ()"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the /// specified database\&. "
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP (string database)"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP (string database, string label)"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP (string database, DbCompiledModel model)"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP (string database, string label, DbCompiledModel model)"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP (ObjectContext context)"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBDbContextManager\fP< C > \fBGetManager\fP (ObjectContext context, string label)"
+.br
+.RI "Gets the \fBObjectContextManager\fP object for the specified database\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "C \fBDbContext\fP\fC [get]\fP"
+.br
+.RI "Gets the DbContext object\&. "
+.ti -1c
+.RI "int \fBRefCount\fP\fC [get]\fP"
+.br
+.RI "Gets the current reference count for this object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides an automated way to reuse Entity Framework DbContext objects within the context of a single data portal operation\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIC\fP Type of database DbContext object to use\&. 
+.RE
+.PP
+.PP
+This type stores the object context object in Csla\&.ApplicationContext\&.LocalContext and uses reference counting through IDisposable to keep the data context object open for reuse by child objects, and to automatically dispose the object when the last consumer has called Dispose\&." 
+.PP
+\fBType Constraints\fP
+.TP
+\fIC\fP : \fI\fBDbContext\fP\fP
+.PP
+Definition at line 36 of file DbContextManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.Dispose ()"
+
+.PP
+Dispose object, dereferencing or disposing the context it is managing\&. 
+.PP
+Definition at line 241 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager ()\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the /// specified database\&. 
+.PP
+Definition at line 47 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager (ObjectContext context)\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP The ObjectContext to wrap in DbContext 
+.RE
+.PP
+
+.PP
+Definition at line 123 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager (ObjectContext context, string label)\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontext\fP The ObjectContext to wrap in DbContext 
+.br
+\fIlabel\fP Label for this context\&.
+.RE
+.PP
+
+.PP
+Definition at line 136 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager (string database)\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&.
+.RE
+.PP
+
+.PP
+Definition at line 57 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager (string database, DbCompiledModel model)\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&.
+.br
+\fImodel\fP Database compiled model\&.
+.RE
+.PP
+
+.PP
+Definition at line 79 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager (string database, string label)\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&.
+.br
+\fIlabel\fP Label for this context\&.
+.RE
+.PP
+
+.PP
+Definition at line 68 of file DbContextManager\&.cs\&.
+.SS "static \fBDbContextManager\fP<C> \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.GetManager (string database, string label, DbCompiledModel model)\fC [static]\fP"
+
+.PP
+Gets the \fBObjectContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP The database name or connection string\&. 
+.br
+\fIlabel\fP Label for this context\&.
+.br
+\fImodel\fP Database Compiled model\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBContextManager\fP object for the name\&.
+.RE
+.PP
+
+.PP
+Definition at line 95 of file DbContextManager\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "C \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.DbContext\fC [get]\fP"
+
+.PP
+Gets the DbContext object\&. 
+.PP
+Definition at line 191 of file DbContextManager\&.cs\&.
+.SS "int \fBCsla\&.Data\&.EF6\&.DbContextManager\fP< C >\&.RefCount\fC [get]\fP"
+
+.PP
+Gets the current reference count for this object\&. 
+.PP
+Definition at line 207 of file DbContextManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

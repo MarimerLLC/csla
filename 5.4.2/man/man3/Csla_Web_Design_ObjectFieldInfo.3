@@ -1,0 +1,172 @@
+.TH "Csla.Web.Design.ObjectFieldInfo" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Web.Design.ObjectFieldInfo \- Contains schema information for a single object property\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDataSourceFieldSchema\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBObjectFieldInfo\fP (PropertyDescriptor field)"
+.br
+.RI "Creates an instance of the object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Type \fBDataType\fP\fC [get]\fP"
+.br
+.RI "Gets the data type of the property\&. "
+.ti -1c
+.RI "bool \fBIdentity\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this property is an identity key for the object\&. "
+.ti -1c
+.RI "bool \fBIsReadOnly\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this property is readonly\&. "
+.ti -1c
+.RI "bool \fBIsUnique\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this property must contain a unique value\&. "
+.ti -1c
+.RI "int \fBLength\fP\fC [get]\fP"
+.br
+.RI "Gets the length of the property value\&. "
+.ti -1c
+.RI "string \fBName\fP\fC [get]\fP"
+.br
+.RI "Gets the property name\&. "
+.ti -1c
+.RI "bool \fBNullable\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the property is nullable "
+.ti -1c
+.RI "int \fBPrecision\fP\fC [get]\fP"
+.br
+.RI "Gets the property's numeric precision\&. "
+.ti -1c
+.RI "bool \fBPrimaryKey\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the property is a primary key value\&. "
+.ti -1c
+.RI "int \fBScale\fP\fC [get]\fP"
+.br
+.RI "Gets the property's scale\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains schema information for a single object property\&. 
+
+
+.PP
+Definition at line 19 of file ObjectFieldInfo\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Web\&.Design\&.ObjectFieldInfo\&.ObjectFieldInfo (PropertyDescriptor field)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfield\fP The \fBPropertyInfo\fP object describing the property\&.
+.RE
+.PP
+
+.PP
+Definition at line 35 of file ObjectFieldInfo\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Type Csla\&.Web\&.Design\&.ObjectFieldInfo\&.DataType\fC [get]\fP"
+
+.PP
+Gets the data type of the property\&. 
+.PP
+Definition at line 68 of file ObjectFieldInfo\&.cs\&.
+.SS "bool Csla\&.Web\&.Design\&.ObjectFieldInfo\&.Identity\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this property is an identity key for the object\&. Returns the optional value provided through the \fBDataObjectField\fP attribute on the property\&. 
+.PP
+Definition at line 85 of file ObjectFieldInfo\&.cs\&.
+.SS "bool Csla\&.Web\&.Design\&.ObjectFieldInfo\&.IsReadOnly\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this property is readonly\&. 
+.PP
+Definition at line 94 of file ObjectFieldInfo\&.cs\&.
+.SS "bool Csla\&.Web\&.Design\&.ObjectFieldInfo\&.IsUnique\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this property must contain a unique value\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Always returns True if the property is marked as a primary key, otherwise returns False\&. 
+.RE
+.PP
+
+.PP
+Definition at line 108 of file ObjectFieldInfo\&.cs\&.
+.SS "int Csla\&.Web\&.Design\&.ObjectFieldInfo\&.Length\fC [get]\fP"
+
+.PP
+Gets the length of the property value\&. Returns the optional value provided through the \fBDataObjectField\fP attribute on the property\&. 
+.PP
+Definition at line 121 of file ObjectFieldInfo\&.cs\&.
+.SS "string Csla\&.Web\&.Design\&.ObjectFieldInfo\&.Name\fC [get]\fP"
+
+.PP
+Gets the property name\&. 
+.PP
+Definition at line 129 of file ObjectFieldInfo\&.cs\&.
+.SS "bool Csla\&.Web\&.Design\&.ObjectFieldInfo\&.Nullable\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the property is nullable Returns True for reference types, and for value types wrapped in the Nullable generic\&. The result can also be set to True through the \fBDataObjectField\fP attribute on the property\&. 
+.PP
+Definition at line 145 of file ObjectFieldInfo\&.cs\&.
+.SS "int Csla\&.Web\&.Design\&.ObjectFieldInfo\&.Precision\fC [get]\fP"
+
+.PP
+Gets the property's numeric precision\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Always returns -1\&.
+.RE
+.PP
+
+.PP
+Definition at line 155 of file ObjectFieldInfo\&.cs\&.
+.SS "bool Csla\&.Web\&.Design\&.ObjectFieldInfo\&.PrimaryKey\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the property is a primary key value\&. Returns the optional value provided through the \fBDataObjectField\fP attribute on the property\&. 
+.PP
+Definition at line 169 of file ObjectFieldInfo\&.cs\&.
+.SS "int Csla\&.Web\&.Design\&.ObjectFieldInfo\&.Scale\fC [get]\fP"
+
+.PP
+Gets the property's scale\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Always returns -1\&.
+.RE
+.PP
+
+.PP
+Definition at line 178 of file ObjectFieldInfo\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

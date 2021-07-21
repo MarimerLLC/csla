@@ -1,0 +1,300 @@
+.TH "Csla.Blazor.CslaValidationMessageBase< PropertyType >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Blazor.CslaValidationMessageBase< PropertyType > \- \fBValidation\fP message base type  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits ComponentBase, and IDisposable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Dispose the object "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnInitialized\fP ()"
+.br
+.RI "On initialized method "
+.ti -1c
+.RI "override void \fBOnParametersSet\fP ()"
+.br
+.RI "On parameters set method "
+.ti -1c
+.RI "void \fBOnFieldChanged\fP (object sender, FieldChangedEventArgs eventArgs)"
+.br
+.RI "On field changed method "
+.ti -1c
+.RI "void \fBOnValidationStateChanged\fP (object sender, ValidationStateChangedEventArgs eventArgs)"
+.br
+.RI "On validation state changed method "
+.ti -1c
+.RI "void \fBDetachPreviousEventHandlers\fP ()"
+.br
+.RI "Detatch previous event handlers "
+.ti -1c
+.RI "IEnumerable< string > \fBGetErrorMessages\fP ()"
+.br
+.RI "Get error messages "
+.ti -1c
+.RI "IEnumerable< string > \fBGetWarningMessages\fP ()"
+.br
+.RI "Get warning messages "
+.ti -1c
+.RI "IEnumerable< string > \fBGetInfoMessages\fP ()"
+.br
+.RI "Get info messages "
+.ti -1c
+.RI "virtual void \fBDispose\fP (bool disposing)"
+.br
+.RI "Dispose the object "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fB_validationInitiated\fP = false"
+.br
+.RI "Value indicating whether validation is initiated "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Expression< Func< PropertyType > > \fBFor\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the expression t use during validation "
+.ti -1c
+.RI "string \fBWrapperId\fP = 'wrapper'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the wrapper id "
+.ti -1c
+.RI "string \fBWrapperClass\fP = 'validation\-messages'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the wrapper class "
+.ti -1c
+.RI "string \fBErrorClass\fP = 'text\-danger'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the error class "
+.ti -1c
+.RI "string \fBWarningClass\fP = 'text\-warning'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the warning class "
+.ti -1c
+.RI "string \fBInfoClass\fP = 'text\-info'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the info class "
+.ti -1c
+.RI "string \fBErrorWrapperClass\fP = 'error\-messages'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the error wrapper class "
+.ti -1c
+.RI "string \fBWarningWrapperClass\fP = 'warning\-messages'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the warning wrapper class "
+.ti -1c
+.RI "string \fBInfoWrapperClass\fP = 'information\-messages'\fC [get, set]\fP"
+.br
+.RI "Gets or sets the info wrapper class "
+.ti -1c
+.RI "EditContext \fBCurrentEditContext\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the current edit context "
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBValidation\fP message base type 
+
+
+.PP
+Definition at line 16 of file CslaValidationMessages\&.razor\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.DetachPreviousEventHandlers ()\fC [protected]\fP"
+
+.PP
+Detatch previous event handlers 
+.PP
+Definition at line 150 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.Dispose ()"
+
+.PP
+Dispose the object 
+.PP
+Definition at line 229 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "virtual void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.Dispose (bool disposing)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Dispose the object 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdisposing\fP Disposing
+.RE
+.PP
+
+.PP
+Definition at line 238 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "IEnumerable<string> \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.GetErrorMessages ()\fC [protected]\fP"
+
+.PP
+Get error messages 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 168 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "IEnumerable<string> \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.GetInfoMessages ()\fC [protected]\fP"
+
+.PP
+Get info messages 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 186 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "IEnumerable<string> \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.GetWarningMessages ()\fC [protected]\fP"
+
+.PP
+Get warning messages 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 177 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.OnFieldChanged (object sender, FieldChangedEventArgs eventArgs)\fC [protected]\fP"
+
+.PP
+On field changed method 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP 
+.br
+\fIeventArgs\fP 
+.RE
+.PP
+
+.PP
+Definition at line 116 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "override void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.OnInitialized ()\fC [protected]\fP"
+
+.PP
+On initialized method 
+.PP
+Definition at line 74 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "override void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.OnParametersSet ()\fC [protected]\fP"
+
+.PP
+On parameters set method 
+.PP
+Definition at line 84 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "void \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.OnValidationStateChanged (object sender, ValidationStateChangedEventArgs eventArgs)\fC [protected]\fP"
+
+.PP
+On validation state changed method 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP 
+.br
+\fIeventArgs\fP 
+.RE
+.PP
+
+.PP
+Definition at line 130 of file CslaValidationMessages\&.razor\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&._validationInitiated = false\fC [protected]\fP"
+
+.PP
+Value indicating whether validation is initiated 
+.PP
+Definition at line 22 of file CslaValidationMessages\&.razor\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "EditContext \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.CurrentEditContext\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
+
+.PP
+Gets or sets the current edit context 
+.PP
+Definition at line 67 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.ErrorClass = 'text\-danger'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the error class 
+.PP
+Definition at line 43 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.ErrorWrapperClass = 'error\-messages'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the error wrapper class 
+.PP
+Definition at line 55 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "Expression<Func<PropertyType> > \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.For\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the expression t use during validation 
+.PP
+Definition at line 31 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.InfoClass = 'text\-info'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the info class 
+.PP
+Definition at line 51 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.InfoWrapperClass = 'information\-messages'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the info wrapper class 
+.PP
+Definition at line 63 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.WarningClass = 'text\-warning'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the warning class 
+.PP
+Definition at line 47 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.WarningWrapperClass = 'warning\-messages'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the warning wrapper class 
+.PP
+Definition at line 59 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.WrapperClass = 'validation\-messages'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the wrapper class 
+.PP
+Definition at line 39 of file CslaValidationMessages\&.razor\&.cs\&.
+.SS "string \fBCsla\&.Blazor\&.CslaValidationMessageBase\fP< PropertyType >\&.WrapperId = 'wrapper'\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the wrapper id 
+.PP
+Definition at line 35 of file CslaValidationMessages\&.razor\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

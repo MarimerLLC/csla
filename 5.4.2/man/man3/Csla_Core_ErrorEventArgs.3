@@ -1,0 +1,73 @@
+.TH "Csla.Core.ErrorEventArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ErrorEventArgs \- Event arguments for an unhandled async exception\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits EventArgs\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBErrorEventArgs\fP (object originalSender, Exception error)"
+.br
+.RI "Creates an instance of the object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "object \fBOriginalSender\fP\fC [get, protected set]\fP"
+.br
+.RI "Reference to the original sender of the event\&. "
+.ti -1c
+.RI "Exception \fBError\fP\fC [get, protected set]\fP"
+.br
+.RI "Reference to the unhandled async exception object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Event arguments for an unhandled async exception\&. 
+
+
+.PP
+Definition at line 19 of file ErrorEventArgs\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Core\&.ErrorEventArgs\&.ErrorEventArgs (object originalSender, Exception error)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIoriginalSender\fP Reference to the original sender of the event\&. 
+.br
+\fIerror\fP Reference to the unhandled async exception object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 39 of file ErrorEventArgs\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "Exception Csla\&.Core\&.ErrorEventArgs\&.Error\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Reference to the unhandled async exception object\&. 
+.PP
+Definition at line 28 of file ErrorEventArgs\&.cs\&.
+.SS "object Csla\&.Core\&.ErrorEventArgs\&.OriginalSender\fC [get]\fP, \fC [protected set]\fP"
+
+.PP
+Reference to the original sender of the event\&. 
+.PP
+Definition at line 24 of file ErrorEventArgs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

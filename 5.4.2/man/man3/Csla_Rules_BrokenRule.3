@@ -1,0 +1,159 @@
+.TH "Csla.Rules.BrokenRule" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.BrokenRule \- Stores details about a specific broken business rule\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBrokenRule\fP ()"
+.br
+.RI "Creates an instance of this type\&. "
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Gets a string representation for this object\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to insert your field values into the MobileFormatter serialzation stream\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBRuleName\fP\fC [get, set]\fP"
+.br
+.RI "Provides access to the name of the broken rule\&. "
+.ti -1c
+.RI "string \fBDescription\fP\fC [get, set]\fP"
+.br
+.RI "Provides access to the description of the broken rule\&. "
+.ti -1c
+.RI "string \fBProperty\fP\fC [get, set]\fP"
+.br
+.RI "Provides access to the property affected by the broken rule\&. "
+.ti -1c
+.RI "\fBRuleSeverity\fP \fBSeverity\fP\fC [get, set]\fP"
+.br
+.RI "Gets the severity of the broken rule\&. "
+.ti -1c
+.RI "string \fBOriginProperty\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the origin property\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Stores details about a specific broken business rule\&. 
+
+
+.PP
+Definition at line 18 of file BrokenRule\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.BrokenRule\&.BrokenRule ()"
+
+.PP
+Creates an instance of this type\&. 
+.PP
+Definition at line 23 of file BrokenRule\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Rules\&.BrokenRule\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to insert your field values into the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 104 of file BrokenRule\&.cs\&.
+.SS "override void Csla\&.Rules\&.BrokenRule\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve your field values from the MobileFormatter serialzation stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing the data to serialize\&. 
+.br
+\fImode\fP The StateMode indicating why this method was invoked\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 125 of file BrokenRule\&.cs\&.
+.SS "override string Csla\&.Rules\&.BrokenRule\&.ToString ()"
+
+.PP
+Gets a string representation for this object\&. 
+.PP
+Definition at line 35 of file BrokenRule\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Rules\&.BrokenRule\&.Description\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Provides access to the description of the broken rule\&. The description of the rule\&.
+.PP
+Definition at line 54 of file BrokenRule\&.cs\&.
+.SS "string Csla\&.Rules\&.BrokenRule\&.OriginProperty\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the origin property\&. The origin property\&.
+.PP
+Definition at line 86 of file BrokenRule\&.cs\&.
+.SS "string Csla\&.Rules\&.BrokenRule\&.Property\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Provides access to the property affected by the broken rule\&. The property affected by the rule\&.
+.PP
+Definition at line 64 of file BrokenRule\&.cs\&.
+.SS "string Csla\&.Rules\&.BrokenRule\&.RuleName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Provides access to the name of the broken rule\&. The name of the rule\&.
+.PP
+Definition at line 44 of file BrokenRule\&.cs\&.
+.SS "\fBRuleSeverity\fP Csla\&.Rules\&.BrokenRule\&.Severity\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets the severity of the broken rule\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Definition at line 76 of file BrokenRule\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

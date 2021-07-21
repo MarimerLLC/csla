@@ -1,0 +1,250 @@
+.TH "Csla.Test.Basic.Root" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.Basic.Root
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< Root >\fP, and \fBCsla\&.BusinessBase< Root >\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCriteria\fP"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBRoot\fP \fBNewRoot\fP ()"
+.br
+.ti -1c
+.RI "static \fBRoot\fP \fBGetRoot\fP (string data)"
+.br
+.ti -1c
+.RI "static void \fBDeleteRoot\fP (string data)"
+.br
+.ti -1c
+.RI "static \fBRoot\fP \fBNewRoot\fP ()"
+.br
+.ti -1c
+.RI "static \fBRoot\fP \fBGetRoot\fP (string data)"
+.br
+.ti -1c
+.RI "static void \fBDeleteRoot\fP (string data)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBDataProperty\fP = RegisterProperty<string>(c => c\&.Data)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< int > \fBCreatedDomainProperty\fP = RegisterProperty<int>(c => c\&.CreatedDomain)"
+.br
+.ti -1c
+.RI "static readonly \fBPropertyInfo\fP< \fBChildren\fP > \fBChildrenProperty\fP = RegisterProperty<\fBChildren\fP>(c => c\&.Children)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBDataPortal_Fetch\fP (object criteria)"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Insert\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Update\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_DeleteSelf\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Delete\fP (object criteria)"
+.br
+.ti -1c
+.RI "override void \fBOnDeserialized\fP (System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.ti -1c
+.RI "override void \fBDataPortal_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.ti -1c
+.RI "override void \fBDataPortal_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Fetch\fP (object criteria)"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Insert\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Update\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_DeleteSelf\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Delete\fP (object criteria)"
+.br
+.ti -1c
+.RI "override void \fBOnDeserialized\fP (System\&.Runtime\&.Serialization\&.StreamingContext context)"
+.br
+.ti -1c
+.RI "override void \fBDataPortal_OnDataPortalInvoke\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.ti -1c
+.RI "override void \fBDataPortal_OnDataPortalInvokeComplete\fP (\fBDataPortalEventArgs\fP e)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBData\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "int \fBCreatedDomain\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "\fBChildren\fP \fBChildren\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "override bool \fBIsDirty\fP\fC [get]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 15 of file Root\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Delete (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 134 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Delete (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 126 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_DeleteSelf ()\fC [protected]\fP"
+
+.PP
+Definition at line 126 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_DeleteSelf ()\fC [protected]\fP"
+
+.PP
+Definition at line 120 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Fetch (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 85 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Fetch (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 88 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Insert ()\fC [protected]\fP"
+
+.PP
+Definition at line 100 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Insert ()\fC [protected]\fP"
+
+.PP
+Definition at line 98 of file Root\&.cs\&.
+.SS "override void Csla\&.Test\&.Basic\&.Root\&.DataPortal_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP"
+
+.PP
+Definition at line 148 of file Root\&.cs\&.
+.SS "override void Csla\&.Test\&.Basic\&.Root\&.DataPortal_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP"
+
+.PP
+Definition at line 136 of file Root\&.cs\&.
+.SS "override void Csla\&.Test\&.Basic\&.Root\&.DataPortal_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP"
+
+.PP
+Definition at line 155 of file Root\&.cs\&.
+.SS "override void Csla\&.Test\&.Basic\&.Root\&.DataPortal_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP"
+
+.PP
+Definition at line 141 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Update ()\fC [protected]\fP"
+
+.PP
+Definition at line 117 of file Root\&.cs\&.
+.SS "void Csla\&.Test\&.Basic\&.Root\&.DataPortal_Update ()\fC [protected]\fP"
+
+.PP
+Definition at line 113 of file Root\&.cs\&.
+.SS "static void Csla\&.Test\&.Basic\&.Root\&.DeleteRoot (string data)\fC [static]\fP"
+
+.PP
+Definition at line 64 of file Root\&.cs\&.
+.SS "static void Csla\&.Test\&.Basic\&.Root\&.DeleteRoot (string data)\fC [static]\fP"
+
+.PP
+Definition at line 74 of file Root\&.cs\&.
+.SS "static \fBRoot\fP Csla\&.Test\&.Basic\&.Root\&.GetRoot (string data)\fC [static]\fP"
+
+.PP
+Definition at line 59 of file Root\&.cs\&.
+.SS "static \fBRoot\fP Csla\&.Test\&.Basic\&.Root\&.GetRoot (string data)\fC [static]\fP"
+
+.PP
+Definition at line 69 of file Root\&.cs\&.
+.SS "static \fBRoot\fP Csla\&.Test\&.Basic\&.Root\&.NewRoot ()\fC [static]\fP"
+
+.PP
+Definition at line 54 of file Root\&.cs\&.
+.SS "static \fBRoot\fP Csla\&.Test\&.Basic\&.Root\&.NewRoot ()\fC [static]\fP"
+
+.PP
+Definition at line 64 of file Root\&.cs\&.
+.SS "override void Csla\&.Test\&.Basic\&.Root\&.OnDeserialized (System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP"
+
+.PP
+Definition at line 141 of file Root\&.cs\&.
+.SS "override void Csla\&.Test\&.Basic\&.Root\&.OnDeserialized (System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP"
+
+.PP
+Definition at line 131 of file Root\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "readonly \fBPropertyInfo\fP<\fBChildren\fP> Csla\&.Test\&.Basic\&.Root\&.ChildrenProperty = RegisterProperty<\fBChildren\fP>(c => c\&.Children)\fC [static]\fP"
+
+.PP
+Definition at line 31 of file Root\&.cs\&.
+.SS "static \fBPropertyInfo\fP< int > Csla\&.Test\&.Basic\&.Root\&.CreatedDomainProperty = RegisterProperty<int>(c => c\&.CreatedDomain)\fC [static]\fP"
+
+.PP
+Definition at line 24 of file Root\&.cs\&.
+.SS "static \fBPropertyInfo\fP< string > Csla\&.Test\&.Basic\&.Root\&.DataProperty = RegisterProperty<string>(c => c\&.Data)\fC [static]\fP"
+
+.PP
+Definition at line 17 of file Root\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "\fBChildren\fP Csla\&.Test\&.Basic\&.Root\&.Children\fC [get]\fP"
+
+.PP
+Definition at line 32 of file Root\&.cs\&.
+.SS "int Csla\&.Test\&.Basic\&.Root\&.CreatedDomain\fC [get]\fP"
+
+.PP
+Definition at line 25 of file Root\&.cs\&.
+.SS "string Csla\&.Test\&.Basic\&.Root\&.Data\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 18 of file Root\&.cs\&.
+.SS "override bool Csla\&.Test\&.Basic\&.Root\&.IsDirty\fC [get]\fP"
+start editing 
+.PP
+Definition at line 40 of file Root\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

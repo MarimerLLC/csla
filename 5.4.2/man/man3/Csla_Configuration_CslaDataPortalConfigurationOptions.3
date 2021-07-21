@@ -1,0 +1,147 @@
+.TH "Csla.Configuration.CslaDataPortalConfigurationOptions" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Configuration.CslaDataPortalConfigurationOptions \- Use this type to configure the settings for the CSLA \&.NET data portal using dot net core  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBAuthenticationType\fP\fC [get, set]\fP"
+.br
+.RI "Returns the authentication type being used by the CSLA \&.NET framework\&. "
+.ti -1c
+.RI "bool \fBAutoCloneOnUpdate\fP\fC [get, set]\fP"
+.br
+.RI "Gets a value indicating whether objects should be automatically cloned by the data portal Update()method when using a local data portal configuration\&. "
+.ti -1c
+.RI "string \fBActivator\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets an instance of the IDataPortalActivator provider\&. "
+.ti -1c
+.RI "string \fBExceptionInspector\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the fully qualified name of the ExceptionInspector class\&. "
+.ti -1c
+.RI "string \fBAuthorizationProvider\fP\fC [get, set]\fP"
+.br
+.RI "Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. "
+.ti -1c
+.RI "string \fBInterceptor\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. "
+.ti -1c
+.RI "string \fBProxy\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the default data portal proxy type "
+.ti -1c
+.RI "string \fBProxyFactory\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "bool \fBReturnObjectOnException\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether the server-side business object should be returned to the client as part of the \fBDataPortalException\fP (default is false)\&. "
+.ti -1c
+.RI "string \fBPortalUrl\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the data portal URL string\&. 
+.br
+ "
+.ti -1c
+.RI "string \fBObjectFactoryLoader\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. "
+.ti -1c
+.RI "bool \fBFlowSynchronizationContext\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Use this type to configure the settings for the CSLA \&.NET data portal using dot net core 
+
+
+.PP
+Definition at line 18 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.Activator\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets an instance of the IDataPortalActivator provider\&. 
+.PP
+Definition at line 60 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.AuthenticationType\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Returns the authentication type being used by the CSLA \&.NET framework\&. This value is read from the application configuration file with the key value 'CslaAuthentication'\&. The value 'Windows' indicates CSLA \&.NET should use \fBWindows\fP integrated (or AD) security\&. Any other value indicates the use of custom security derived from CslaPrincipal\&. 
+.PP
+Definition at line 31 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.AuthorizationProvider\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. 
+.PP
+Definition at line 79 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "bool Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.AutoCloneOnUpdate\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets a value indicating whether objects should be automatically cloned by the data portal Update()method when using a local data portal configuration\&. 
+.PP
+Definition at line 42 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.ExceptionInspector\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the fully qualified name of the ExceptionInspector class\&. 
+.PP
+Definition at line 69 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "bool Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.FlowSynchronizationContext\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&. 
+.PP
+Definition at line 165 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.Interceptor\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. 
+.PP
+Definition at line 91 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.ObjectFactoryLoader\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. 
+.PP
+Definition at line 152 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.PortalUrl\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the data portal URL string\&. 
+.br
+ The data portal URL string\&.
+.PP
+Definition at line 140 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.Proxy\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the default data portal proxy type summary> Gets or sets the full type name of the data portal proxy factory object to be used to get the IDataPortalProxy instance to use when communicating with the data portal server\&.
+.PP
+Definition at line 100 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.ProxyFactory\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 112 of file CslaDataPortalConfigurationOptions\&.cs\&.
+.SS "bool Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.ReturnObjectOnException\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether the server-side business object should be returned to the client as part of the \fBDataPortalException\fP (default is false)\&. 
+.PP
+Definition at line 124 of file CslaDataPortalConfigurationOptions\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

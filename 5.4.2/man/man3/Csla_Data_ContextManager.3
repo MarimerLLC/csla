@@ -1,0 +1,166 @@
+.TH "Csla.Data.ContextManager< C >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Data.ContextManager< C > \- Provides an automated way to reuse LINQ data context objects within the context of a single data portal operation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits IDisposable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBDispose\fP ()"
+.br
+.RI "Dispose object, dereferencing or disposing the context it is managing\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBContextManager\fP< C > \fBGetManager\fP (string database)"
+.br
+.RI "Gets the \fBContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBContextManager\fP< C > \fBGetManager\fP (string database, string label)"
+.br
+.RI "Gets the \fBContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBContextManager\fP< C > \fBGetManager\fP (string database, bool isDatabaseName)"
+.br
+.RI "Gets the \fBContextManager\fP object for the specified database\&. "
+.ti -1c
+.RI "static \fBContextManager\fP< C > \fBGetManager\fP (string database, bool isDatabaseName, string label)"
+.br
+.RI "Gets the \fBContextManager\fP object for the specified database\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "C \fBDataContext\fP\fC [get]\fP"
+.br
+.RI "Gets the LINQ data context object\&. "
+.ti -1c
+.RI "int \fBRefCount\fP\fC [get]\fP"
+.br
+.RI "Gets the current reference count for this object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides an automated way to reuse LINQ data context objects within the context of a single data portal operation\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIC\fP Type of database LINQ data context objects object to use\&. 
+.RE
+.PP
+.PP
+This type stores the LINQ data context object in Csla\&.ApplicationContext\&.LocalContext and uses reference counting through IDisposable to keep the data context object open for reuse by child objects, and to automatically dispose the object when the last consumer has called Dispose\&." 
+.PP
+\fBType Constraints\fP
+.TP
+\fIC\fP : \fI\fBDataContext\fP\fP
+.PP
+Definition at line 35 of file ContextManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void \fBCsla\&.Data\&.ContextManager\fP< C >\&.Dispose ()"
+
+.PP
+Dispose object, dereferencing or disposing the context it is managing\&. 
+.PP
+Definition at line 200 of file ContextManager\&.cs\&.
+.SS "static \fBContextManager\fP<C> \fBCsla\&.Data\&.ContextManager\fP< C >\&.GetManager (string database)\fC [static]\fP"
+
+.PP
+Gets the \fBContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&. 
+.RE
+.PP
+
+.PP
+Definition at line 49 of file ContextManager\&.cs\&.
+.SS "static \fBContextManager\fP<C> \fBCsla\&.Data\&.ContextManager\fP< C >\&.GetManager (string database, bool isDatabaseName)\fC [static]\fP"
+
+.PP
+Gets the \fBContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP The database name or connection string\&. 
+.br
+\fIisDatabaseName\fP True to indicate that the connection string should be retrieved from the config file\&. If False, the database parameter is directly used as a connection string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBContextManager\fP object for the name\&.
+.RE
+.PP
+
+.PP
+Definition at line 81 of file ContextManager\&.cs\&.
+.SS "static \fBContextManager\fP<C> \fBCsla\&.Data\&.ContextManager\fP< C >\&.GetManager (string database, bool isDatabaseName, string label)\fC [static]\fP"
+
+.PP
+Gets the \fBContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP The database name or connection string\&. 
+.br
+\fIisDatabaseName\fP True to indicate that the connection string should be retrieved from the config file\&. If False, the database parameter is directly used as a connection string\&. 
+.br
+\fIlabel\fP Label for this context\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBContextManager\fP object for the name\&.
+.RE
+.PP
+
+.PP
+Definition at line 101 of file ContextManager\&.cs\&.
+.SS "static \fBContextManager\fP<C> \fBCsla\&.Data\&.ContextManager\fP< C >\&.GetManager (string database, string label)\fC [static]\fP"
+
+.PP
+Gets the \fBContextManager\fP object for the specified database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdatabase\fP Database name as shown in the config file\&. 
+.br
+\fIlabel\fP Label for this context\&.
+.RE
+.PP
+
+.PP
+Definition at line 62 of file ContextManager\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "C \fBCsla\&.Data\&.ContextManager\fP< C >\&.DataContext\fC [get]\fP"
+
+.PP
+Gets the LINQ data context object\&. 
+.PP
+Definition at line 150 of file ContextManager\&.cs\&.
+.SS "int \fBCsla\&.Data\&.ContextManager\fP< C >\&.RefCount\fC [get]\fP"
+
+.PP
+Gets the current reference count for this object\&. 
+.PP
+Definition at line 166 of file ContextManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

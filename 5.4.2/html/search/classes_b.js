@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['namevaluelistbase_5787',['NameValueListBase',['../class_csla_1_1_name_value_list_base.html',1,'Csla']]],
+  ['namevaluelistbase_3c_20int_2c_20string_20_3e_5788',['NameValueListBase&lt; int, string &gt;',['../class_csla_1_1_name_value_list_base.html',1,'Csla']]],
+  ['namevaluelistbase_3c_20int32_2c_20string_20_3e_5789',['NameValueListBase&lt; Int32, string &gt;',['../class_csla_1_1_name_value_list_base.html',1,'Csla']]],
+  ['namevaluelistobj_5790',['NameValueListObj',['../class_csla_1_1_test_1_1_basic_1_1_name_value_list_obj.html',1,'Csla::Test::Basic']]],
+  ['namevaluelisttests_5791',['NameValueListTests',['../classcslalighttest_1_1_name_value_list_1_1_name_value_list_tests.html',1,'cslalighttest::NameValueList']]],
+  ['namevaluepair_5792',['NameValuePair',['../class_csla_1_1_name_value_list_base_1_1_name_value_pair.html',1,'Csla::NameValueListBase']]],
+  ['nestedclass_5793',['NestedClass',['../class_csla_1_1_analyzers_1_1_integration_tests_1_1_outer_class_1_1_nested_class.html',1,'Csla::Analyzers::IntegrationTests::OuterClass']]],
+  ['netdatacontractoperationbehavior_5794',['NetDataContractOperationBehavior',['../class_csla_1_1_server_1_1_hosts_1_1_wcf_channel_1_1_net_data_contract_operation_behavior.html',1,'Csla::Server::Hosts::WcfChannel']]],
+  ['netdatacontractserializerwrapper_5795',['NetDataContractSerializerWrapper',['../class_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper.html',1,'Csla::Serialization']]],
+  ['noerrorroot_5796',['NoErrorRoot',['../class_csla_1_1_test_1_1_validation_rules_1_1_no_error_root.html',1,'Csla::Test::ValidationRules']]],
+  ['noncslachild_5797',['NonCslaChild',['../class_csla_1_1_test_1_1_serialization_1_1_non_csla_child.html',1,'Csla::Test::Serialization']]],
+  ['nonpublic1_5798',['NonPublic1',['../class_csla_1_1_test_1_1_method_caller_1_1_create_constructor_tests_1_1_non_public1.html',1,'Csla::Test::MethodCaller::CreateConstructorTests']]],
+  ['nonserializableeventhandler_5799',['nonSerializableEventHandler',['../class_csla_1_1_test_1_1_serialization_1_1non_serializable_event_handler.html',1,'Csla::Test::Serialization']]],
+  ['nonserializedclass_5800',['NonSerializedClass',['../class_csla_1_1_test_1_1_serialization_1_1_non_serialized_class.html',1,'Csla::Test::Serialization']]],
+  ['nonserializedobject_5801',['NonSerializedObject',['../class_csla_1_1_analyzers_1_1_integration_tests_1_1_non_serialized_object.html',1,'Csla::Analyzers::IntegrationTests']]],
+  ['notastereotype_5802',['NotAStereotype',['../class_csla_1_1_analyzers_1_1_integration_tests_1_1_not_a_stereotype.html',1,'Csla::Analyzers::IntegrationTests']]],
+  ['notundoableattribute_5803',['NotUndoableAttribute',['../class_csla_1_1_not_undoable_attribute.html',1,'Csla']]],
+  ['nullablecriteria_5804',['NullableCriteria',['../class_csla_1_1_test_1_1_data_portal_1_1_nullable_criteria.html',1,'Csla::Test::DataPortal']]],
+  ['nullableentity_5805',['NullableEntity',['../class_csla_1_1_ios_1_1_test_1_1_nullable_entity.html',1,'Csla::Ios::Test']]],
+  ['nullableobject_5806',['NullableObject',['../class_csla_1_1_test_1_1_nullable_1_1_nullable_object.html',1,'Csla::Test::Nullable']]],
+  ['nullabletests_5807',['NullableTests',['../class_csla_1_1_ios_1_1_test_1_1_nullable_tests.html',1,'Csla.Ios.Test.NullableTests'],['../class_csla_1_1_test_1_1_nullable_1_1_nullable_tests.html',1,'Csla.Test.Nullable.NullableTests']]],
+  ['nullauthorizer_5808',['NullAuthorizer',['../class_csla_1_1_server_1_1_data_portal_1_1_null_authorizer.html',1,'Csla::Server::DataPortal']]],
+  ['nullcriteria_5809',['NullCriteria',['../class_csla_1_1_server_1_1_null_criteria.html',1,'Csla::Server']]],
+  ['nulldashboard_5810',['NullDashboard',['../class_csla_1_1_server_1_1_dashboard_1_1_null_dashboard.html',1,'Csla::Server::Dashboard']]],
+  ['nullplaceholder_5811',['NullPlaceholder',['../class_csla_1_1_serialization_1_1_mobile_1_1_null_placeholder.html',1,'Csla::Serialization::Mobile']]]
+];

@@ -1,0 +1,107 @@
+.TH "Csla.Testing.Business.ApplicationContext.ContextBOVerifier< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Testing.Business.ApplicationContext.ContextBOVerifier< T >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBContextBOVerifier\fP ()"
+.br
+.ti -1c
+.RI "\fBContextBOVerifier\fP (bool isNew)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnDeserialized\fP (StreamingContext context)"
+.br
+.ti -1c
+.RI "void \fBSetReceivedContextValuePropertyFrom\fP (\fBContexts\fP selectedContext)"
+.br
+.ti -1c
+.RI "void \fBSetContextValueModified\fP (\fBContexts\fP selectedContext)"
+.br
+.in -1c
+.SS "Static Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBReceivedContextValueProperty\fP"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBName\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "string \fBReceivedContextValue\fP\fC [get, set]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fI\fBContextBOVerifier\fP<T>\fP
+.PP
+Definition at line 15 of file ContextBOVerifier\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.\fBContextBOVerifier\fP ()"
+
+.PP
+Definition at line 18 of file ContextBOVerifier\&.cs\&.
+.SS "\fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.\fBContextBOVerifier\fP (bool isNew)"
+
+.PP
+Definition at line 19 of file ContextBOVerifier\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.OnDeserialized (StreamingContext context)\fC [protected]\fP"
+
+.PP
+Definition at line 30 of file ContextBOVerifier\&.cs\&.
+.SS "void \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.SetContextValueModified (\fBContexts\fP selectedContext)\fC [protected]\fP"
+
+.PP
+Definition at line 66 of file ContextBOVerifier\&.cs\&.
+.SS "void \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.SetReceivedContextValuePropertyFrom (\fBContexts\fP selectedContext)\fC [protected]\fP"
+
+.PP
+Definition at line 55 of file ContextBOVerifier\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPropertyInfo\fP<string> \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.ReceivedContextValueProperty\fC [static]\fP, \fC [protected]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= 
+      RegisterProperty(new PropertyInfo<string>("ReceivedContextValue", "ReceivedContextValue"))
+.fi
+.PP
+Definition at line 44 of file ContextBOVerifier\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.Name\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 38 of file ContextBOVerifier\&.cs\&.
+.SS "string \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier\fP< T >\&.ReceivedContextValue\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 46 of file ContextBOVerifier\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

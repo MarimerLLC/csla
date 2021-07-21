@@ -1,0 +1,151 @@
+.TH "Csla.Data.DataMap" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Data.DataMap \- Defines a mapping between two sets of properties/fields for use by DataMapper\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBMemberMapping\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataMap\fP (Type sourceType, Type targetType)"
+.br
+.RI "Initializes an instance of the type\&. "
+.ti -1c
+.RI "\fBDataMap\fP (Type sourceType, Type targetType, IEnumerable< string > includedPropertyNames)"
+.br
+.RI "Initializes an instance of the type\&. "
+.ti -1c
+.RI "void \fBAddPropertyMapping\fP (string sourceProperty, string targetProperty)"
+.br
+.RI "Adds a property to property mapping\&. "
+.ti -1c
+.RI "void \fBAddFieldMapping\fP (string sourceField, string targetField)"
+.br
+.RI "Adds a field to field mapping\&. "
+.ti -1c
+.RI "void \fBAddFieldToPropertyMapping\fP (string sourceField, string targetProperty)"
+.br
+.RI "Adds a field to property mapping\&. "
+.ti -1c
+.RI "void \fBAddPropertyToFieldMapping\fP (string sourceProperty, string targetField)"
+.br
+.RI "Adds a property to field mapping\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines a mapping between two sets of properties/fields for use by DataMapper\&. 
+
+
+.PP
+Definition at line 19 of file DataMap\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Data\&.DataMap\&.DataMap (Type sourceType, Type targetType)"
+
+.PP
+Initializes an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceType\fP Type of source object\&. 
+.br
+\fItargetType\fP Type of target object\&. 
+.RE
+.PP
+
+.PP
+Definition at line 50 of file DataMap\&.cs\&.
+.SS "Csla\&.Data\&.DataMap\&.DataMap (Type sourceType, Type targetType, IEnumerable< string > includedPropertyNames)"
+
+.PP
+Initializes an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceType\fP Type of source object\&. 
+.br
+\fItargetType\fP Type of target object\&. 
+.br
+\fIincludedPropertyNames\fP List of property names to map 1:1\&.
+.RE
+.PP
+
+.PP
+Definition at line 66 of file DataMap\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Data\&.DataMap\&.AddFieldMapping (string sourceField, string targetField)"
+
+.PP
+Adds a field to field mapping\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceField\fP Name of source field\&. 
+.br
+\fItargetField\fP Name of target field\&. 
+.RE
+.PP
+
+.PP
+Definition at line 104 of file DataMap\&.cs\&.
+.SS "void Csla\&.Data\&.DataMap\&.AddFieldToPropertyMapping (string sourceField, string targetProperty)"
+
+.PP
+Adds a field to property mapping\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceField\fP Name of source field\&. 
+.br
+\fItargetProperty\fP Name of target property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 121 of file DataMap\&.cs\&.
+.SS "void Csla\&.Data\&.DataMap\&.AddPropertyMapping (string sourceProperty, string targetProperty)"
+
+.PP
+Adds a property to property mapping\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceProperty\fP Name of source property\&. 
+.br
+\fItargetProperty\fP Name of target property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 87 of file DataMap\&.cs\&.
+.SS "void Csla\&.Data\&.DataMap\&.AddPropertyToFieldMapping (string sourceProperty, string targetField)"
+
+.PP
+Adds a property to field mapping\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceProperty\fP Name of source property\&. 
+.br
+\fItargetField\fP Name of target field\&. 
+.RE
+.PP
+
+.PP
+Definition at line 138 of file DataMap\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

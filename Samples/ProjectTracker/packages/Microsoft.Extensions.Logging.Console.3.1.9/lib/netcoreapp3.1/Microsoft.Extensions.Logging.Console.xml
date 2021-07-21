@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Extensions.Logging.Console</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Extensions.Logging.Console.AnsiLogConsole">
+            <summary>
+            For non-Windows platform consoles which understand the ANSI escape code sequences to represent color
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.Console.AnsiSystemConsole.#ctor(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat">
+            <summary>
+            Format of <see cref="T:Microsoft.Extensions.Logging.Console.ConsoleLogger" /> messages.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Default">
+            <summary>
+            Produces messages in the default console format.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Systemd">
+            <summary>
+            Produces messages in a format suitable for console output to the systemd journal.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions">
+            <summary>
+            Options for a <see cref="T:Microsoft.Extensions.Logging.Console.ConsoleLogger"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions.IncludeScopes">
+            <summary>
+            Includes scopes when <code>true</code>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions.DisableColors">
+            <summary>
+            Disables colors when <code>true</code>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions.Format">
+            <summary>
+            Gets or sets log message format. Defaults to <see cref="F:Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Default" />.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions.LogToStandardErrorThreshold">
+            <summary>
+            Gets or sets value indicating the minimum level of messaged that would get written to <c>Console.Error</c>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions.TimestampFormat">
+            <summary>
+            Gets or sets format string used to format timestamp in logging messages. Defaults to <c>null</c>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider">
+            <summary>
+            A provider of <see cref="T:Microsoft.Extensions.Logging.Console.ConsoleLogger"/> instances.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider.#ctor(Microsoft.Extensions.Options.IOptionsMonitor{Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions})">
+            <summary>
+            Creates an instance of <see cref="T:Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider"/>.
+            </summary>
+            <param name="options">The options to create <see cref="T:Microsoft.Extensions.Logging.Console.ConsoleLogger"/> instances with.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider.CreateLogger(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider.SetScopeProvider(Microsoft.Extensions.Logging.IExternalScopeProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.Console.WindowsLogConsole.#ctor(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.ConsoleLoggerExtensions.AddConsole(Microsoft.Extensions.Logging.ILoggingBuilder)">
+            <summary>
+            Adds a console logger named 'Console' to the factory.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.Logging.ILoggingBuilder"/> to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.ConsoleLoggerExtensions.AddConsole(Microsoft.Extensions.Logging.ILoggingBuilder,System.Action{Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions})">
+            <summary>
+            Adds a console logger named 'Console' to the factory.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.Logging.ILoggingBuilder"/> to use.</param>
+            <param name="configure">A delegate to configure the <see cref="T:Microsoft.Extensions.Logging.Console.ConsoleLogger"/>.</param>
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.NullExternalScopeProvider">
+            <summary>
+            Scope provider that does nothing.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Logging.NullExternalScopeProvider.Instance">
+            <summary>
+            Returns a cached instance of <see cref="T:Microsoft.Extensions.Logging.NullExternalScopeProvider"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.NullExternalScopeProvider.Microsoft#Extensions#Logging#IExternalScopeProvider#ForEachScope``1(System.Action{System.Object,``0},``0)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.NullExternalScopeProvider.Microsoft#Extensions#Logging#IExternalScopeProvider#Push(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.NullScope">
+            <summary>
+            An empty scope without any logic
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.NullScope.Dispose">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

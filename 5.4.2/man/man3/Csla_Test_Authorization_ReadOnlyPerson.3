@@ -1,0 +1,81 @@
+.TH "Csla.Test.Authorization.ReadOnlyPerson" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.Authorization.ReadOnlyPerson
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.ReadOnlyBase< ReadOnlyPerson >\fP\&.
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBReadOnlyPerson\fP \fBGetReadOnlyPerson\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBAddBusinessRules\fP ()"
+.br
+.RI "Override this method to add per-type authorization rules for your type's properties\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBFirstName\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "string \fBLastName\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "string \fBMiddleName\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "string \fBPlaceOfBirth\fP\fC [get]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 21 of file ReadOnlyPerson\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Test\&.Authorization\&.ReadOnlyPerson\&.AddBusinessRules ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to add per-type authorization rules for your type's properties\&. AddSharedAuthorizationRules is automatically called by CSLA \&.NET when your object should associate per-type authorization roles with its properties\&. 
+.PP
+Reimplemented from \fBCsla\&.ReadOnlyBase< ReadOnlyPerson >\fP\&.
+.PP
+Definition at line 74 of file ReadOnlyPerson\&.cs\&.
+.SS "static \fBReadOnlyPerson\fP Csla\&.Test\&.Authorization\&.ReadOnlyPerson\&.GetReadOnlyPerson ()\fC [static]\fP"
+
+.PP
+Definition at line 30 of file ReadOnlyPerson\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Test\&.Authorization\&.ReadOnlyPerson\&.FirstName\fC [get]\fP"
+
+.PP
+Definition at line 35 of file ReadOnlyPerson\&.cs\&.
+.SS "string Csla\&.Test\&.Authorization\&.ReadOnlyPerson\&.LastName\fC [get]\fP"
+
+.PP
+Definition at line 46 of file ReadOnlyPerson\&.cs\&.
+.SS "string Csla\&.Test\&.Authorization\&.ReadOnlyPerson\&.MiddleName\fC [get]\fP"
+
+.PP
+Definition at line 55 of file ReadOnlyPerson\&.cs\&.
+.SS "string Csla\&.Test\&.Authorization\&.ReadOnlyPerson\&.PlaceOfBirth\fC [get]\fP"
+
+.PP
+Definition at line 66 of file ReadOnlyPerson\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,77 @@
+.TH "Csla.Core.GraphMerger" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.GraphMerger \- Implements behavior to merge one object graph into a clone of itself (typically post-serialization)\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Server\&.ObjectFactory\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBMergeGraph\fP (\fBIEditableBusinessObject\fP target, \fBIEditableBusinessObject\fP source)"
+.br
+.RI "Merges state from source graph into target graph\&. "
+.ti -1c
+.RI "void \fBMergeBusinessListGraph< T, C >\fP (T target, T source)"
+.br
+.RI "Merges state from source graph into target graph\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Implements behavior to merge one object graph into a clone of itself (typically post-serialization)\&. 
+
+
+.PP
+Definition at line 19 of file GraphMerger\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Csla\&.Core\&.GraphMerger\&.MergeBusinessListGraph< T, C > (T target, T source)"
+
+.PP
+Merges state from source graph into target graph\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP Target of merge\&.
+.br
+\fIsource\fP Source for merge\&.
+.RE
+.PP
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIBusinessListBase\fP
+.TP
+\fIT\fP : \fIT\fP
+.TP
+\fIT\fP : \fIC\fP
+.TP
+\fIC\fP : \fICore\&.IEditableBusinessObject\fP
+.PP
+Definition at line 120 of file GraphMerger\&.cs\&.
+.SS "void Csla\&.Core\&.GraphMerger\&.MergeGraph (\fBIEditableBusinessObject\fP target, \fBIEditableBusinessObject\fP source)"
+
+.PP
+Merges state from source graph into target graph\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP Target of merge\&.
+.br
+\fIsource\fP Source for merge\&.
+.RE
+.PP
+
+.PP
+Definition at line 26 of file GraphMerger\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

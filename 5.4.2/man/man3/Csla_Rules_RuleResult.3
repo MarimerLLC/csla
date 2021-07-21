@@ -1,0 +1,152 @@
+.TH "Csla.Rules.RuleResult" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.RuleResult \- Contains information about the result of a rule\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRuleResult\fP (string ruleName, \fBCore\&.IPropertyInfo\fP property)"
+.br
+.RI "Creates a successful result\&. "
+.ti -1c
+.RI "\fBRuleResult\fP (string ruleName, \fBCore\&.IPropertyInfo\fP property, string description)"
+.br
+.RI "Creates a failure result\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBRuleName\fP\fC [get]\fP"
+.br
+.RI "Gets the unique name of the rule that created this result\&. "
+.ti -1c
+.RI "bool \fBSuccess\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the rule was successful\&. "
+.ti -1c
+.RI "string \fBDescription\fP\fC [get]\fP"
+.br
+.RI "Gets a human-readable description of why the rule failed\&. "
+.ti -1c
+.RI "\fBRuleSeverity\fP \fBSeverity\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the severity of a failed rule\&. "
+.ti -1c
+.RI "bool \fBStopProcessing\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a value indicating whether rule processing should immediately stop (applies to sync rules only)\&. "
+.ti -1c
+.RI "\fBCsla\&.Core\&.IPropertyInfo\fP \fBPrimaryProperty\fP\fC [get]\fP"
+.br
+.RI "Gets the primary property for this result\&. "
+.ti -1c
+.RI "List< \fBCore\&.IPropertyInfo\fP > \fBProperties\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a list of properties that were affected by the rule, so appropriate PropertyChanged events can be raised for UI notification\&. "
+.ti -1c
+.RI "Dictionary< \fBCore\&.IPropertyInfo\fP, object > \fBOutputPropertyValues\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets a dictionary of new property values used to update the business object's properties after the rule is complete\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains information about the result of a rule\&. 
+
+
+.PP
+Definition at line 19 of file RuleResult\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Rules\&.RuleResult\&.RuleResult (string ruleName, \fBCore\&.IPropertyInfo\fP property)"
+
+.PP
+Creates a successful result\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIruleName\fP Unique name of the rule creating this result\&.
+.br
+\fIproperty\fP Property to which this result should be attached\&.
+.RE
+.PP
+
+.PP
+Definition at line 70 of file RuleResult\&.cs\&.
+.SS "Csla\&.Rules\&.RuleResult\&.RuleResult (string ruleName, \fBCore\&.IPropertyInfo\fP property, string description)"
+
+.PP
+Creates a failure result\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIruleName\fP Unique name of the rule creating this result\&.
+.br
+\fIproperty\fP Property to which this result should be attached\&.
+.br
+\fIdescription\fP Human-readable description of why the rule failed\&.
+.RE
+.PP
+
+.PP
+Definition at line 87 of file RuleResult\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Rules\&.RuleResult\&.Description\fC [get]\fP"
+
+.PP
+Gets a human-readable description of why the rule failed\&. 
+.PP
+Definition at line 35 of file RuleResult\&.cs\&.
+.SS "Dictionary<\fBCore\&.IPropertyInfo\fP, object> Csla\&.Rules\&.RuleResult\&.OutputPropertyValues\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a dictionary of new property values used to update the business object's properties after the rule is complete\&. 
+.PP
+Definition at line 61 of file RuleResult\&.cs\&.
+.SS "\fBCsla\&.Core\&.IPropertyInfo\fP Csla\&.Rules\&.RuleResult\&.PrimaryProperty\fC [get]\fP"
+
+.PP
+Gets the primary property for this result\&. 
+.PP
+Definition at line 49 of file RuleResult\&.cs\&.
+.SS "List<\fBCore\&.IPropertyInfo\fP> Csla\&.Rules\&.RuleResult\&.Properties\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a list of properties that were affected by the rule, so appropriate PropertyChanged events can be raised for UI notification\&. 
+.PP
+Definition at line 55 of file RuleResult\&.cs\&.
+.SS "string Csla\&.Rules\&.RuleResult\&.RuleName\fC [get]\fP"
+
+.PP
+Gets the unique name of the rule that created this result\&. 
+.PP
+Definition at line 25 of file RuleResult\&.cs\&.
+.SS "\fBRuleSeverity\fP Csla\&.Rules\&.RuleResult\&.Severity\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the severity of a failed rule\&. 
+.PP
+Definition at line 39 of file RuleResult\&.cs\&.
+.SS "bool Csla\&.Rules\&.RuleResult\&.StopProcessing\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets a value indicating whether rule processing should immediately stop (applies to sync rules only)\&. 
+.PP
+Definition at line 45 of file RuleResult\&.cs\&.
+.SS "bool Csla\&.Rules\&.RuleResult\&.Success\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the rule was successful\&. 
+.PP
+Definition at line 30 of file RuleResult\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

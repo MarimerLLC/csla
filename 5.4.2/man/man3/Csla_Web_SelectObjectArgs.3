@@ -1,0 +1,121 @@
+.TH "Csla.Web.SelectObjectArgs" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Web.SelectObjectArgs \- Argument object used in the SelectObject event\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits EventArgs\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSelectObjectArgs\fP (System\&.Web\&.UI\&.DataSourceSelectArguments args)"
+.br
+.RI "Creates an instance of the object, initializing it with values from data binding\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "object \fBBusinessObject\fP\fC [get, set]\fP"
+.br
+.RI "Get or set a reference to the business object that is created and populated by the SelectObject event handler in the web page\&. "
+.ti -1c
+.RI "string \fBSortExpression\fP\fC [get]\fP"
+.br
+.RI "Gets the sort expression that should be used to sort the data being returned to the data source control\&. "
+.ti -1c
+.RI "string \fBSortProperty\fP\fC [get]\fP"
+.br
+.RI "Gets the property name for the sort if only one property/column name is specified\&. "
+.ti -1c
+.RI "ListSortDirection \fBSortDirection\fP\fC [get]\fP"
+.br
+.RI "Gets the sort direction for the sort if only one property/column name is specified\&. "
+.ti -1c
+.RI "int \fBStartRowIndex\fP\fC [get]\fP"
+.br
+.RI "Gets the index for the first row that will be displayed\&. This should be the first row in the resulting collection set into the \fBBusinessObject\fP property\&. "
+.ti -1c
+.RI "int \fBMaximumRows\fP\fC [get]\fP"
+.br
+.RI "Gets the maximum number of rows that should be returned as a result of this query\&. For paged collections, this is the page size\&. "
+.ti -1c
+.RI "bool \fBRetrieveTotalRowCount\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the query should return the total row count through the \fBCsla\&.Core\&.IReportTotalRowCount\fP interface\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Argument object used in the SelectObject event\&. 
+
+
+.PP
+Definition at line 17 of file SelectObjectArgs\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Csla\&.Web\&.SelectObjectArgs\&.SelectObjectArgs (System\&.Web\&.UI\&.DataSourceSelectArguments args)"
+
+.PP
+Creates an instance of the object, initializing it with values from data binding\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargs\fP Values provided from data binding\&.
+.RE
+.PP
+
+.PP
+Definition at line 137 of file SelectObjectArgs\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "object Csla\&.Web\&.SelectObjectArgs\&.BusinessObject\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Get or set a reference to the business object that is created and populated by the SelectObject event handler in the web page\&. A reference to a CSLA \&.NET business object\&.
+.PP
+Definition at line 34 of file SelectObjectArgs\&.cs\&.
+.SS "int Csla\&.Web\&.SelectObjectArgs\&.MaximumRows\fC [get]\fP"
+
+.PP
+Gets the maximum number of rows that should be returned as a result of this query\&. For paged collections, this is the page size\&. 
+.PP
+Definition at line 109 of file SelectObjectArgs\&.cs\&.
+.SS "bool Csla\&.Web\&.SelectObjectArgs\&.RetrieveTotalRowCount\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the query should return the total row count through the \fBCsla\&.Core\&.IReportTotalRowCount\fP interface\&. 
+.PP
+Definition at line 124 of file SelectObjectArgs\&.cs\&.
+.SS "ListSortDirection Csla\&.Web\&.SelectObjectArgs\&.SortDirection\fC [get]\fP"
+
+.PP
+Gets the sort direction for the sort if only one property/column name is specified\&. If multiple properties/columns are specified for the sort, you must parse the value from \fBSortExpression\fP to find all the property names and sort directions for the sort\&. 
+.PP
+Definition at line 81 of file SelectObjectArgs\&.cs\&.
+.SS "string Csla\&.Web\&.SelectObjectArgs\&.SortExpression\fC [get]\fP"
+
+.PP
+Gets the sort expression that should be used to sort the data being returned to the data source control\&. 
+.PP
+Definition at line 45 of file SelectObjectArgs\&.cs\&.
+.SS "string Csla\&.Web\&.SelectObjectArgs\&.SortProperty\fC [get]\fP"
+
+.PP
+Gets the property name for the sort if only one property/column name is specified\&. If multiple properties/columns are specified for the sort, you must parse the value from \fBSortExpression\fP to find all the property names and sort directions for the sort\&. 
+.PP
+Definition at line 63 of file SelectObjectArgs\&.cs\&.
+.SS "int Csla\&.Web\&.SelectObjectArgs\&.StartRowIndex\fC [get]\fP"
+
+.PP
+Gets the index for the first row that will be displayed\&. This should be the first row in the resulting collection set into the \fBBusinessObject\fP property\&. 
+.PP
+Definition at line 95 of file SelectObjectArgs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

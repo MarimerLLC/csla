@@ -1,0 +1,131 @@
+.TH "Csla.NameValueListBase< K, V >.NameValuePair" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.NameValueListBase< K, V >.NameValuePair \- Contains a key and value pair\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.MobileObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNameValuePair\fP (K key, V value)"
+.br
+.RI "Creates an instance of the object\&. "
+.ti -1c
+.RI "override string \fBToString\fP ()"
+.br
+.RI "Returns a string representation of the value for this item\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to manually get custom field values from the serialization stream\&. "
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.RI "Override this method to manually set custom field values into the serialization stream\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "K \fBKey\fP\fC [get]\fP"
+.br
+.RI "The Key or Name value\&. "
+.ti -1c
+.RI "V \fBValue\fP\fC [get]\fP"
+.br
+.RI "The Value corresponding to the key/name\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains a key and value pair\&. 
+
+
+.PP
+Definition at line 157 of file NameValueListBase\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.NameValueListBase\fP< K, V >\&.NameValuePair\&.NameValuePair (K key, V value)"
+
+.PP
+Creates an instance of the object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP The key\&.
+.br
+\fIvalue\fP The value\&.
+.RE
+.PP
+
+.PP
+Definition at line 193 of file NameValueListBase\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void \fBCsla\&.NameValueListBase\fP< K, V >\&.NameValuePair\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to manually get custom field values from the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info\&.
+.br
+\fImode\fP \fBSerialization\fP mode\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 214 of file NameValueListBase\&.cs\&.
+.SS "override void \fBCsla\&.NameValueListBase\fP< K, V >\&.NameValuePair\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to manually set custom field values into the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP \fBSerialization\fP info\&.
+.br
+\fImode\fP \fBSerialization\fP mode\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCsla\&.Core\&.MobileObject\fP\&.
+.PP
+Definition at line 227 of file NameValueListBase\&.cs\&.
+.SS "override string \fBCsla\&.NameValueListBase\fP< K, V >\&.NameValuePair\&.ToString ()"
+
+.PP
+Returns a string representation of the value for this item\&. 
+.PP
+Definition at line 203 of file NameValueListBase\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "K \fBCsla\&.NameValueListBase\fP< K, V >\&.NameValuePair\&.Key\fC [get]\fP"
+
+.PP
+The Key or Name value\&. 
+.PP
+Definition at line 175 of file NameValueListBase\&.cs\&.
+.SS "V \fBCsla\&.NameValueListBase\fP< K, V >\&.NameValuePair\&.Value\fC [get]\fP"
+
+.PP
+The Value corresponding to the key/name\&. 
+.PP
+Definition at line 183 of file NameValueListBase\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

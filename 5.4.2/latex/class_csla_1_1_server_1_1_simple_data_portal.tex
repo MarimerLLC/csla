@@ -1,0 +1,155 @@
+\hypertarget{class_csla_1_1_server_1_1_simple_data_portal}{}\doxysection{Csla.\+Server.\+Simple\+Data\+Portal Class Reference}
+\label{class_csla_1_1_server_1_1_simple_data_portal}\index{Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}}
+
+
+Implements the server-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} as discussed in Chapter 4.  
+
+
+Inheritance diagram for Csla.\+Server.\+Simple\+Data\+Portal\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_server_1_1_simple_data_portal}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_a183123c2a2d1c6d62392327efbddee78}{Create}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Create a new business object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_ab8565ed3a51836b8b494c6466a7374d5}{Fetch}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Get an existing business object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_a867eeba447ceac25458922f5618bd131}{Update}} (object obj, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Update a business object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal_a04ad950082e7dcf2f0431bd695c86582}{Delete}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Delete a business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements the server-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} as discussed in Chapter 4. 
+
+
+
+Definition at line 19 of file Simple\+Data\+Portal.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_simple_data_portal_a183123c2a2d1c6d62392327efbddee78}\label{class_csla_1_1_server_1_1_simple_data_portal_a183123c2a2d1c6d62392327efbddee78}} 
+\index{Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}!Create@{Create}}
+\index{Create@{Create}!Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Simple\+Data\+Portal.\+Create (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Create a new business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 32 of file Simple\+Data\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_simple_data_portal_a04ad950082e7dcf2f0431bd695c86582}\label{class_csla_1_1_server_1_1_simple_data_portal_a04ad950082e7dcf2f0431bd695c86582}} 
+\index{Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Simple\+Data\+Portal.\+Delete (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Delete a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 229 of file Simple\+Data\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_simple_data_portal_ab8565ed3a51836b8b494c6466a7374d5}\label{class_csla_1_1_server_1_1_simple_data_portal_ab8565ed3a51836b8b494c6466a7374d5}} 
+\index{Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Simple\+Data\+Portal.\+Fetch (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Get an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to retrieve.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 86 of file Simple\+Data\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_simple_data_portal_a867eeba447ceac25458922f5618bd131}\label{class_csla_1_1_server_1_1_simple_data_portal_a867eeba447ceac25458922f5618bd131}} 
+\index{Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}!Update@{Update}}
+\index{Update@{Update}!Csla.Server.SimpleDataPortal@{Csla.Server.SimpleDataPortal}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Simple\+Data\+Portal.\+Update (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Update a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Business object to update.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 138 of file Simple\+Data\+Portal.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_simple_data_portal_8cs}{Simple\+Data\+Portal.\+cs}}\end{DoxyCompactItemize}

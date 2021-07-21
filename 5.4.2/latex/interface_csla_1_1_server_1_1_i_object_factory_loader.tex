@@ -1,0 +1,75 @@
+\hypertarget{interface_csla_1_1_server_1_1_i_object_factory_loader}{}\doxysection{Csla.\+Server.\+IObject\+Factory\+Loader Interface Reference}
+\label{interface_csla_1_1_server_1_1_i_object_factory_loader}\index{Csla.Server.IObjectFactoryLoader@{Csla.Server.IObjectFactoryLoader}}
+
+
+Defines an interface to be implemented by a factory loader object that returns \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} objects based on the \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} attributes used to decorate CSLA .NET business objects.  
+
+
+Inheritance diagram for Csla.\+Server.\+IObject\+Factory\+Loader\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.094819cm]{interface_csla_1_1_server_1_1_i_object_factory_loader}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Type \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_object_factory_loader_a2b62dd145f16b9f1557954a5501ca343}{Get\+Factory\+Type}} (string factory\+Name)
+\begin{DoxyCompactList}\small\item\em Returns the type of the factory object. \end{DoxyCompactList}\item 
+object \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_object_factory_loader_a8fe9de7fc35b88a3088f693276b76f34}{Get\+Factory}} (string factory\+Name)
+\begin{DoxyCompactList}\small\item\em Returns an \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Defines an interface to be implemented by a factory loader object that returns \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} objects based on the \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} attributes used to decorate CSLA .NET business objects. 
+
+
+
+Definition at line 21 of file IObject\+Factory\+Loader.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_object_factory_loader_a8fe9de7fc35b88a3088f693276b76f34}\label{interface_csla_1_1_server_1_1_i_object_factory_loader_a8fe9de7fc35b88a3088f693276b76f34}} 
+\index{Csla.Server.IObjectFactoryLoader@{Csla.Server.IObjectFactoryLoader}!GetFactory@{GetFactory}}
+\index{GetFactory@{GetFactory}!Csla.Server.IObjectFactoryLoader@{Csla.Server.IObjectFactoryLoader}}
+\doxysubsubsection{\texorpdfstring{GetFactory()}{GetFactory()}}
+{\footnotesize\ttfamily object Csla.\+Server.\+IObject\+Factory\+Loader.\+Get\+Factory (\begin{DoxyParamCaption}\item[{string}]{factory\+Name }\end{DoxyParamCaption})}
+
+
+
+Returns an \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory}{Object\+Factory}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Name} & Name of the factory to create, typically an assembly qualified type name. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory_loader_a183ba2fe7e4dc3851eb41d175cec24d2}{Csla.\+Server.\+Object\+Factory\+Loader}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_object_factory_1_1_object_factory_loader_acbe82863b3709cc94eb9727efea3cb3c}{Csla.\+Test.\+Object\+Factory.\+Object\+Factory\+Loader}}, and \mbox{\hyperlink{classcsla_1_1netcore_1_1test_1_1_configuration_1_1_test_object_factory_loader_ad2333eaa1ca21a99db9b596062bc8114}{csla.\+netcore.\+test.\+Configuration.\+Test\+Object\+Factory\+Loader}}.
+
+\mbox{\Hypertarget{interface_csla_1_1_server_1_1_i_object_factory_loader_a2b62dd145f16b9f1557954a5501ca343}\label{interface_csla_1_1_server_1_1_i_object_factory_loader_a2b62dd145f16b9f1557954a5501ca343}} 
+\index{Csla.Server.IObjectFactoryLoader@{Csla.Server.IObjectFactoryLoader}!GetFactoryType@{GetFactoryType}}
+\index{GetFactoryType@{GetFactoryType}!Csla.Server.IObjectFactoryLoader@{Csla.Server.IObjectFactoryLoader}}
+\doxysubsubsection{\texorpdfstring{GetFactoryType()}{GetFactoryType()}}
+{\footnotesize\ttfamily Type Csla.\+Server.\+IObject\+Factory\+Loader.\+Get\+Factory\+Type (\begin{DoxyParamCaption}\item[{string}]{factory\+Name }\end{DoxyParamCaption})}
+
+
+
+Returns the type of the factory object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em factory\+Name} & Name of the factory to create, typically an assembly qualified type name. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_server_1_1_object_factory_loader_ad693c834345416f2b24db718753c0323}{Csla.\+Server.\+Object\+Factory\+Loader}}, \mbox{\hyperlink{class_csla_1_1_test_1_1_object_factory_1_1_object_factory_loader_a5ed055600ef41a8d3c38f6f402bfc612}{Csla.\+Test.\+Object\+Factory.\+Object\+Factory\+Loader}}, and \mbox{\hyperlink{classcsla_1_1netcore_1_1test_1_1_configuration_1_1_test_object_factory_loader_ad538caf1a7660d0244793c55a53f7ebe}{csla.\+netcore.\+test.\+Configuration.\+Test\+Object\+Factory\+Loader}}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_i_object_factory_loader_8cs}{IObject\+Factory\+Loader.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,108 @@
+.TH "Csla.Rules.IBusinessRuleBase" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Rules.IBusinessRuleBase \- Interface defining a business/validation rule implementation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Rules\&.BusinessRuleBase\fP, \fBCsla\&.Rules\&.IBusinessRule\fP, and \fBCsla\&.Rules\&.IBusinessRuleAsync\fP\&.
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "List< \fBCsla\&.Core\&.IPropertyInfo\fP > \fBInputProperties\fP\fC [get]\fP"
+.br
+.RI "Gets a list of secondary property values to be supplied to the rule when it is executed\&. "
+.ti -1c
+.RI "List< \fBCsla\&.Core\&.IPropertyInfo\fP > \fBAffectedProperties\fP\fC [get]\fP"
+.br
+.RI "Gets a list of properties affected by this rule\&. \fBRules\fP for these properties are executed after rules for the primary property\&. "
+.ti -1c
+.RI "\fBCsla\&.Core\&.IPropertyInfo\fP \fBPrimaryProperty\fP\fC [get]\fP"
+.br
+.RI "Gets the primary property affected by this rule\&. "
+.ti -1c
+.RI "string \fBRuleName\fP\fC [get]\fP"
+.br
+.RI "Gets a unique rule:// URI for the specific instance of the rule within the context of the business object where the rule is used\&. "
+.ti -1c
+.RI "int \fBPriority\fP\fC [get]\fP"
+.br
+.RI "Gets the rule priority\&. "
+.ti -1c
+.RI "bool \fBProvideTargetWhenAsync\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating that the Target property should be set even for an async rule (note that using Target from a background thread will cause major problems)\&. "
+.ti -1c
+.RI "\fBRunModes\fP \fBRunMode\fP\fC [get]\fP"
+.br
+.RI "Gets the context in which the rule is allowed to execute\&. "
+.ti -1c
+.RI "bool \fBIsAsync\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether the Execute() method will run asynchronous code\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Interface defining a business/validation rule implementation\&. 
+
+
+.PP
+Definition at line 42 of file IBusinessRule\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "List<\fBCsla\&.Core\&.IPropertyInfo\fP> Csla\&.Rules\&.IBusinessRuleBase\&.AffectedProperties\fC [get]\fP"
+
+.PP
+Gets a list of properties affected by this rule\&. \fBRules\fP for these properties are executed after rules for the primary property\&. 
+.PP
+Definition at line 54 of file IBusinessRule\&.cs\&.
+.SS "List<\fBCsla\&.Core\&.IPropertyInfo\fP> Csla\&.Rules\&.IBusinessRuleBase\&.InputProperties\fC [get]\fP"
+
+.PP
+Gets a list of secondary property values to be supplied to the rule when it is executed\&. 
+.PP
+Definition at line 48 of file IBusinessRule\&.cs\&.
+.SS "bool Csla\&.Rules\&.IBusinessRuleBase\&.IsAsync\fC [get]\fP"
+
+.PP
+Gets a value indicating whether the Execute() method will run asynchronous code\&. 
+.PP
+Definition at line 84 of file IBusinessRule\&.cs\&.
+.SS "\fBCsla\&.Core\&.IPropertyInfo\fP Csla\&.Rules\&.IBusinessRuleBase\&.PrimaryProperty\fC [get]\fP"
+
+.PP
+Gets the primary property affected by this rule\&. 
+.PP
+Definition at line 58 of file IBusinessRule\&.cs\&.
+.SS "int Csla\&.Rules\&.IBusinessRuleBase\&.Priority\fC [get]\fP"
+
+.PP
+Gets the rule priority\&. 
+.PP
+Definition at line 68 of file IBusinessRule\&.cs\&.
+.SS "bool Csla\&.Rules\&.IBusinessRuleBase\&.ProvideTargetWhenAsync\fC [get]\fP"
+
+.PP
+Gets a value indicating that the Target property should be set even for an async rule (note that using Target from a background thread will cause major problems)\&. 
+.PP
+Definition at line 74 of file IBusinessRule\&.cs\&.
+.SS "string Csla\&.Rules\&.IBusinessRuleBase\&.RuleName\fC [get]\fP"
+
+.PP
+Gets a unique rule:// URI for the specific instance of the rule within the context of the business object where the rule is used\&. 
+.PP
+Definition at line 64 of file IBusinessRule\&.cs\&.
+.SS "\fBRunModes\fP Csla\&.Rules\&.IBusinessRuleBase\&.RunMode\fC [get]\fP"
+
+.PP
+Gets the context in which the rule is allowed to execute\&. The run in context\&.
+.PP
+Definition at line 79 of file IBusinessRule\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

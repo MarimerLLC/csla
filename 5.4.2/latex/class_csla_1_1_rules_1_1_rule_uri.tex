@@ -1,0 +1,241 @@
+\hypertarget{class_csla_1_1_rules_1_1_rule_uri}{}\doxysection{Csla.\+Rules.\+Rule\+Uri Class Reference}
+\label{class_csla_1_1_rules_1_1_rule_uri}\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+
+
+Parses a rule\+:// URI to provide easy access to the parts of the URI.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_a9a77ec10fae2dd2cce5cdba56190e964}{Rule\+Uri}} (string rule\+String)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object by parsing the provided rule\+:// URI. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_a4157a0fd94cc2d75b790f2af842d4007}{Rule\+Uri}} (Uri uri)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_a00713de3bc7a9c7f4df76b6eb28c8401}{Rule\+Uri}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}} rule, \mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_ab12142995e128a94c41fec97f7bda563}{Rule\+Uri}} (string type\+Name, string property\+Name)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object. \end{DoxyCompactList}\item 
+override string \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_add0adf7598d53bc86ab96d6fb4c42c45}{To\+String}} ()
+\begin{DoxyCompactList}\small\item\em Gets a string representation of the rule URI. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_aeb33fb498f57ef865789e20b4f852eb8}{Add\+Query\+Parameter}} (string key, string value)
+\begin{DoxyCompactList}\small\item\em Adds a query parameter to the URI. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri}{Rule\+Uri}} \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_aaafe6c27d79528acd4392b973db9a71b}{Parse}} (string rule\+String)
+\begin{DoxyCompactList}\small\item\em Parses a rule\+:// URI. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_a1348874e134f35feb9a9e05123669237}{Rule\+Type\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the name of the type containing the rule method. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_ab0c5e0d9895556fc49f89dc1b61ca589}{Property\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the name of the property with which the rule is associated. \end{DoxyCompactList}\item 
+Dictionary$<$ string, string $>$? \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri_a37665471866954defe5104e098b107e2}{Arguments}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a Dictionary containing the name/value arguments provided to the rule method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Parses a rule\+:// URI to provide easy access to the parts of the URI. 
+
+
+
+Definition at line 18 of file Rule\+Uri.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_a9a77ec10fae2dd2cce5cdba56190e964}\label{class_csla_1_1_rules_1_1_rule_uri_a9a77ec10fae2dd2cce5cdba56190e964}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!RuleUri@{RuleUri}}
+\index{RuleUri@{RuleUri}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{RuleUri()}{RuleUri()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Rule\+Uri.\+Rule\+Uri (\begin{DoxyParamCaption}\item[{string}]{rule\+String }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object by parsing the provided rule\+:// URI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rule\+String} & The rule\+:// URI.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 27 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_a4157a0fd94cc2d75b790f2af842d4007}\label{class_csla_1_1_rules_1_1_rule_uri_a4157a0fd94cc2d75b790f2af842d4007}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!RuleUri@{RuleUri}}
+\index{RuleUri@{RuleUri}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{RuleUri()}{RuleUri()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Rule\+Uri.\+Rule\+Uri (\begin{DoxyParamCaption}\item[{Uri}]{uri }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em uri} & The rule\+:// URI.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 35 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_a00713de3bc7a9c7f4df76b6eb28c8401}\label{class_csla_1_1_rules_1_1_rule_uri_a00713de3bc7a9c7f4df76b6eb28c8401}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!RuleUri@{RuleUri}}
+\index{RuleUri@{RuleUri}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{RuleUri()}{RuleUri()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Rule\+Uri.\+Rule\+Uri (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}}}]{rule,  }\item[{\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}}}]{property }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rule} & Rule object.\\
+\hline
+{\em property} & Property to which rule applies.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 47 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_ab12142995e128a94c41fec97f7bda563}\label{class_csla_1_1_rules_1_1_rule_uri_ab12142995e128a94c41fec97f7bda563}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!RuleUri@{RuleUri}}
+\index{RuleUri@{RuleUri}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{RuleUri()}{RuleUri()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Csla.\+Rules.\+Rule\+Uri.\+Rule\+Uri (\begin{DoxyParamCaption}\item[{string}]{type\+Name,  }\item[{string}]{property\+Name }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type\+Name} & Name of the rule type.\\
+\hline
+{\em property\+Name} & Name of the business object property or the string literal \char`\"{}null\char`\"{}.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 57 of file Rule\+Uri.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_aeb33fb498f57ef865789e20b4f852eb8}\label{class_csla_1_1_rules_1_1_rule_uri_aeb33fb498f57ef865789e20b4f852eb8}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!AddQueryParameter@{AddQueryParameter}}
+\index{AddQueryParameter@{AddQueryParameter}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{AddQueryParameter()}{AddQueryParameter()}}
+{\footnotesize\ttfamily void Csla.\+Rules.\+Rule\+Uri.\+Add\+Query\+Parameter (\begin{DoxyParamCaption}\item[{string}]{key,  }\item[{string}]{value }\end{DoxyParamCaption})}
+
+
+
+Adds a query parameter to the URI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Key for the parameter.\\
+\hline
+{\em value} & Value of the parameter.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 113 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_aaafe6c27d79528acd4392b973db9a71b}\label{class_csla_1_1_rules_1_1_rule_uri_aaafe6c27d79528acd4392b973db9a71b}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!Parse@{Parse}}
+\index{Parse@{Parse}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{Parse()}{Parse()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_uri}{Rule\+Uri}} Csla.\+Rules.\+Rule\+Uri.\+Parse (\begin{DoxyParamCaption}\item[{string}]{rule\+String }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Parses a rule\+:// URI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rule\+String} & Text representation of a rule\+:// URI.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A populated Rule\+Description object.
+\end{DoxyReturn}
+
+
+Definition at line 94 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_add0adf7598d53bc86ab96d6fb4c42c45}\label{class_csla_1_1_rules_1_1_rule_uri_add0adf7598d53bc86ab96d6fb4c42c45}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!ToString@{ToString}}
+\index{ToString@{ToString}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{ToString()}{ToString()}}
+{\footnotesize\ttfamily override string Csla.\+Rules.\+Rule\+Uri.\+To\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets a string representation of the rule URI. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 103 of file Rule\+Uri.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_a37665471866954defe5104e098b107e2}\label{class_csla_1_1_rules_1_1_rule_uri_a37665471866954defe5104e098b107e2}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!Arguments@{Arguments}}
+\index{Arguments@{Arguments}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{Arguments}{Arguments}}
+{\footnotesize\ttfamily Dictionary$<$string, string$>$? Csla.\+Rules.\+Rule\+Uri.\+Arguments\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a Dictionary containing the name/value arguments provided to the rule method. 
+
+
+
+Definition at line 153 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_ab0c5e0d9895556fc49f89dc1b61ca589}\label{class_csla_1_1_rules_1_1_rule_uri_ab0c5e0d9895556fc49f89dc1b61ca589}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!PropertyName@{PropertyName}}
+\index{PropertyName@{PropertyName}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{PropertyName}{PropertyName}}
+{\footnotesize\ttfamily string Csla.\+Rules.\+Rule\+Uri.\+Property\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the name of the property with which the rule is associated. 
+
+
+
+Definition at line 143 of file Rule\+Uri.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_rules_1_1_rule_uri_a1348874e134f35feb9a9e05123669237}\label{class_csla_1_1_rules_1_1_rule_uri_a1348874e134f35feb9a9e05123669237}} 
+\index{Csla.Rules.RuleUri@{Csla.Rules.RuleUri}!RuleTypeName@{RuleTypeName}}
+\index{RuleTypeName@{RuleTypeName}!Csla.Rules.RuleUri@{Csla.Rules.RuleUri}}
+\doxysubsubsection{\texorpdfstring{RuleTypeName}{RuleTypeName}}
+{\footnotesize\ttfamily string Csla.\+Rules.\+Rule\+Uri.\+Rule\+Type\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets the name of the type containing the rule method. 
+
+
+
+Definition at line 127 of file Rule\+Uri.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Rules/\mbox{\hyperlink{_rule_uri_8cs}{Rule\+Uri.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,117 @@
+.TH "cslalighttest.Serialization.CustomerContact" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+cslalighttest.Serialization.CustomerContact \- Implementation of a test business object using CSLA managed properties backed by fields, and custom serialization logic (requirement of backing managed properties with fields)\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< CustomerContact >\fP, and IEquatable< CustomerContact >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCustomerContact\fP ()"
+.br
+.ti -1c
+.RI "override bool \fBEquals\fP (object obj)"
+.br
+.ti -1c
+.RI "override int \fBGetHashCode\fP ()"
+.br
+.ti -1c
+.RI "bool \fBEquals\fP (\fBCustomerContact\fP other)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.ti -1c
+.RI "override void \fBOnSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.ti -1c
+.RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.ti -1c
+.RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info, \fBStateMode\fP mode)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBFirstName\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the first name of the contact\&. "
+.ti -1c
+.RI "string \fBLastName\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the last name of the contact\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Implementation of a test business object using CSLA managed properties backed by fields, and custom serialization logic (requirement of backing managed properties with fields)\&. 
+
+
+.PP
+Definition at line 22 of file CustomerContact\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "cslalighttest\&.Serialization\&.CustomerContact\&.CustomerContact ()"
+
+.PP
+Definition at line 26 of file CustomerContact\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool cslalighttest\&.Serialization\&.CustomerContact\&.Equals (\fBCustomerContact\fP other)"
+
+.PP
+Definition at line 54 of file CustomerContact\&.cs\&.
+.SS "override bool cslalighttest\&.Serialization\&.CustomerContact\&.Equals (object obj)"
+
+.PP
+Definition at line 35 of file CustomerContact\&.cs\&.
+.SS "override int cslalighttest\&.Serialization\&.CustomerContact\&.GetHashCode ()"
+
+.PP
+Definition at line 40 of file CustomerContact\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.CustomerContact\&.OnGetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Definition at line 71 of file CustomerContact\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.CustomerContact\&.OnGetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
+
+.PP
+Definition at line 81 of file CustomerContact\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.CustomerContact\&.OnSetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP"
+
+.PP
+Definition at line 76 of file CustomerContact\&.cs\&.
+.SS "override void cslalighttest\&.Serialization\&.CustomerContact\&.OnSetState (\fBSerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
+
+.PP
+Definition at line 89 of file CustomerContact\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string cslalighttest\&.Serialization\&.CustomerContact\&.FirstName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the first name of the contact\&. 
+.PP
+Definition at line 107 of file CustomerContact\&.cs\&.
+.SS "string cslalighttest\&.Serialization\&.CustomerContact\&.LastName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the last name of the contact\&. 
+.PP
+Definition at line 119 of file CustomerContact\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

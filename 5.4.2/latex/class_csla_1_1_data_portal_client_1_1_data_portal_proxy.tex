@@ -1,0 +1,321 @@
+\hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy}{}\doxysection{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy Class Reference}
+\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy}\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+
+
+Implements a data portal proxy to relay data portal calls to a remote application server.  
+
+
+Inheritance diagram for Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.431373cm]{class_csla_1_1_data_portal_client_1_1_data_portal_proxy}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a70a47d95422e48db758c123c94e29717}{Create}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to create a new business object. \end{DoxyCompactList}\item 
+virtual async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a7e3c50ca9b7eb3066dc129e766cfcd60}{Fetch}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to load an existing business object. \end{DoxyCompactList}\item 
+virtual async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae85c52ef65cc5b2d6b3b15f3377e171f}{Update}} (object obj, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to update a business object. \end{DoxyCompactList}\item 
+virtual async Task$<$ \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a17c02949e5653b8e094049b336e8cdd3}{Delete}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to delete a business object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ab8ad66d1ae012ead4ed3f004e891dd17}{Convert\+Request}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Override this method to manipulate the message request data sent to the server. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ac2ff485c3467712f2a3a30120ae33a93}{Convert\+Request}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} request)
+\begin{DoxyCompactList}\small\item\em Override this method to manipulate the message request data sent to the server. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae99f1e0ad8eeb6f2c219006041bb39ab}{Convert\+Response}} (\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} response)
+\begin{DoxyCompactList}\small\item\em Override this method to manipulate the message request data returned from the server. \end{DoxyCompactList}\item 
+abstract Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_aa6451b20c63f5f953e0f81e2e3394ce2}{Call\+Data\+Portal\+Server}} (byte\mbox{[}$\,$\mbox{]} serialized, string operation, string routing\+Token, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Override this method with implementation of sending and receiving of data to the server Returns serialised response from server \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a4f574b675eecffc433130bd7157bc765}{Is\+Server\+Remote}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets a value indicating whether the data portal is hosted on a remote server. \end{DoxyCompactList}\item 
+virtual int \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a4e92127ce5bb919ba9c65acc705bfbd8}{Timeout}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets the Client timeout in milliseconds (0 uses default timeout). \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a6250fd1db21cc1469d6a7e30e41324da}{Data\+Portal\+Url}} = Application\+Context.\+Data\+Portal\+Url\+String\hspace{0.3cm}{\ttfamily  \mbox{[}get, protected set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets the URL address for the data portal server used by this proxy instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements a data portal proxy to relay data portal calls to a remote application server. 
+
+
+
+Definition at line 23 of file Data\+Portal\+Proxy.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_aa6451b20c63f5f953e0f81e2e3394ce2}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_aa6451b20c63f5f953e0f81e2e3394ce2}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!CallDataPortalServer@{CallDataPortalServer}}
+\index{CallDataPortalServer@{CallDataPortalServer}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{CallDataPortalServer()}{CallDataPortalServer()}}
+{\footnotesize\ttfamily abstract Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Call\+Data\+Portal\+Server (\begin{DoxyParamCaption}\item[{byte\mbox{[}$\,$\mbox{]}}]{serialized,  }\item[{string}]{operation,  }\item[{string}]{routing\+Token,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [pure virtual]}}
+
+
+
+Override this method with implementation of sending and receiving of data to the server Returns serialised response from server 
+
+
+\begin{DoxyParams}{Parameters}
+{\em serialized} & Serialised request\\
+\hline
+{\em operation} & \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} operation\\
+\hline
+{\em routing\+Token} & Routing Tag for server\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Serialised response from server
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_a788327f6991fd84fd5dbee2baa4518b5}{Csla.\+Data\+Portal\+Client.\+Http\+Proxy}}, \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_aeaa97687ba49955d9f3f5df983d71e1d}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}, and \mbox{\hyperlink{class_csla_1_1_channels_1_1_grpc_1_1_grpc_proxy_acc1f2fd267cace38d70d83912db2f30c}{Csla.\+Channels.\+Grpc.\+Grpc\+Proxy}}.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ab8ad66d1ae012ead4ed3f004e891dd17}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ab8ad66d1ae012ead4ed3f004e891dd17}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!ConvertRequest@{ConvertRequest}}
+\index{ConvertRequest@{ConvertRequest}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{ConvertRequest()}{ConvertRequest()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}} Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Convert\+Request (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request}{Criteria\+Request}}}]{request }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manipulate the message request data sent to the server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & Criteria request data.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 260 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ac2ff485c3467712f2a3a30120ae33a93}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ac2ff485c3467712f2a3a30120ae33a93}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!ConvertRequest@{ConvertRequest}}
+\index{ConvertRequest@{ConvertRequest}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{ConvertRequest()}{ConvertRequest()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}} Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Convert\+Request (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request}{Update\+Request}}}]{request }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manipulate the message request data sent to the server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & Update request data.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 270 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae99f1e0ad8eeb6f2c219006041bb39ab}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae99f1e0ad8eeb6f2c219006041bb39ab}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!ConvertResponse@{ConvertResponse}}
+\index{ConvertResponse@{ConvertResponse}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{ConvertResponse()}{ConvertResponse()}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}} Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Convert\+Response (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response}{Data\+Portal\+Response}}}]{response }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override this method to manipulate the message request data returned from the server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response} & Response data.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 280 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a70a47d95422e48db758c123c94e29717}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a70a47d95422e48db758c123c94e29717}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!Create@{Create}}
+\index{Create@{Create}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily virtual async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Create (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to create a new business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a6eeec4965da371f02328db65256de9ba}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}.
+
+
+
+Definition at line 53 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a17c02949e5653b8e094049b336e8cdd3}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a17c02949e5653b8e094049b336e8cdd3}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily virtual async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Delete (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to delete a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a8b18390de8fc625f7767eae1ff9ca117}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}.
+
+
+
+Definition at line 210 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a7e3c50ca9b7eb3066dc129e766cfcd60}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a7e3c50ca9b7eb3066dc129e766cfcd60}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily virtual async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Fetch (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to load an existing business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Criteria object describing business object.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a86643d37a852ca1dd477cfd1b2570742}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}.
+
+
+
+Definition at line 106 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae85c52ef65cc5b2d6b3b15f3377e171f}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_ae85c52ef65cc5b2d6b3b15f3377e171f}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!Update@{Update}}
+\index{Update@{Update}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily virtual async Task$<$\mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Update (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Called by \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} to update a business object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & The business object to update.\\
+\hline
+{\em context} & \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Server.\+Data\+Portal\+Context}} object passed to the server. \\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a111e8964f97ca1b88db4a8f249f37c90}{Csla.\+Channels.\+Rabbit\+Mq.\+Rabbit\+Mq\+Proxy}}.
+
+
+
+Definition at line 160 of file Data\+Portal\+Proxy.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a6250fd1db21cc1469d6a7e30e41324da}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a6250fd1db21cc1469d6a7e30e41324da}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!DataPortalUrl@{DataPortalUrl}}
+\index{DataPortalUrl@{DataPortalUrl}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{DataPortalUrl}{DataPortalUrl}}
+{\footnotesize\ttfamily string Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Data\+Portal\+Url = Application\+Context.\+Data\+Portal\+Url\+String\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [protected set]}}
+
+
+
+Gets the URL address for the data portal server used by this proxy instance. 
+
+
+
+Definition at line 41 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a4f574b675eecffc433130bd7157bc765}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a4f574b675eecffc433130bd7157bc765}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!IsServerRemote@{IsServerRemote}}
+\index{IsServerRemote@{IsServerRemote}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{IsServerRemote}{IsServerRemote}}
+{\footnotesize\ttfamily virtual bool Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Is\+Server\+Remote\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Gets a value indicating whether the data portal is hosted on a remote server. 
+
+
+
+Definition at line 29 of file Data\+Portal\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a4e92127ce5bb919ba9c65acc705bfbd8}\label{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_a4e92127ce5bb919ba9c65acc705bfbd8}} 
+\index{Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}!Timeout@{Timeout}}
+\index{Timeout@{Timeout}!Csla.DataPortalClient.DataPortalProxy@{Csla.DataPortalClient.DataPortalProxy}}
+\doxysubsubsection{\texorpdfstring{Timeout}{Timeout}}
+{\footnotesize\ttfamily virtual int Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy.\+Timeout\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets the Client timeout in milliseconds (0 uses default timeout). 
+
+
+
+Definition at line 35 of file Data\+Portal\+Proxy.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Data\+Portal\+Client/\mbox{\hyperlink{_data_portal_proxy_8cs}{Data\+Portal\+Proxy.\+cs}}\end{DoxyCompactItemize}

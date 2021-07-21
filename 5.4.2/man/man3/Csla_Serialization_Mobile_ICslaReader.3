@@ -1,0 +1,50 @@
+.TH "Csla.Serialization.Mobile.ICslaReader" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Serialization.Mobile.ICslaReader \- Represents a reader class that can be used to read the data sent across the wire in byte array format when communicating between server and client in both directions  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCsla\&.Serialization\&.Mobile\&.CslaBinaryReader\fP, \fBCsla\&.Serialization\&.Mobile\&.CslaLegacyBinaryReader\fP, \fBCsla\&.Serialization\&.Mobile\&.CslaXmlBinaryReader\fP, and \fBCsla\&.Serialization\&.Mobile\&.CslaXmlReader\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "List< \fBSerializationInfo\fP > \fBRead\fP (Stream serializationStream)"
+.br
+.RI "Read the data from a stream and return a list of \fBSerializationInfo\fP objects "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents a reader class that can be used to read the data sent across the wire in byte array format when communicating between server and client in both directions 
+
+
+.PP
+Definition at line 11 of file ICslaReader\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "List<\fBSerializationInfo\fP> Csla\&.Serialization\&.Mobile\&.ICslaReader\&.Read (Stream serializationStream)"
+
+.PP
+Read the data from a stream and return a list of \fBSerializationInfo\fP objects 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserializationStream\fP Stream to read the data from, typically MemoryStream
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+List of \fBSerializationInfo\fP objects
+.RE
+.PP
+
+.PP
+Implemented in \fBCsla\&.Serialization\&.Mobile\&.CslaXmlReader\fP, \fBCsla\&.Serialization\&.Mobile\&.CslaXmlBinaryReader\fP, \fBCsla\&.Serialization\&.Mobile\&.CslaLegacyBinaryReader\fP, and \fBCsla\&.Serialization\&.Mobile\&.CslaBinaryReader\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

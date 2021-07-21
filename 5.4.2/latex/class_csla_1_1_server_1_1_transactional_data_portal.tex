@@ -1,0 +1,196 @@
+\hypertarget{class_csla_1_1_server_1_1_transactional_data_portal}{}\doxysection{Csla.\+Server.\+Transactional\+Data\+Portal Class Reference}
+\label{class_csla_1_1_server_1_1_transactional_data_portal}\index{Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}}
+
+
+Implements the server-\/side Serviced \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} described in Chapter 4.  
+
+
+Inheritance diagram for Csla.\+Server.\+Transactional\+Data\+Portal\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_server_1_1_transactional_data_portal}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a70962f76807928b32621e1b185829231}{Transactional\+Data\+Portal}} (\mbox{\hyperlink{class_csla_1_1_transactional_attribute}{Transactional\+Attribute}} transactional\+Attribute)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal}{Transactional\+Data\+Portal}} class. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a266486aa5f9651eea9f9835d744f4f57}{Create}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Wraps a Create call in a Transaction\+Scope \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_ac1e3e39c9d0a18ff8d3da4e6e25df639}{Fetch}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by the client-\/side Data\+Protal to retrieve an object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a03d8694aee902df3aba8533b4b0ed819}{Update}} (object obj, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by the client-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} to update an object. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal_a4eac72b8e65f8465bfda0b12cdfa0611}{Delete}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Called by the client-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} to delete an object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements the server-\/side Serviced \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} described in Chapter 4. 
+
+
+
+Definition at line 18 of file Transactional\+Data\+Portal.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_transactional_data_portal_a70962f76807928b32621e1b185829231}\label{class_csla_1_1_server_1_1_transactional_data_portal_a70962f76807928b32621e1b185829231}} 
+\index{Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}!TransactionalDataPortal@{TransactionalDataPortal}}
+\index{TransactionalDataPortal@{TransactionalDataPortal}!Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}}
+\doxysubsubsection{\texorpdfstring{TransactionalDataPortal()}{TransactionalDataPortal()}}
+{\footnotesize\ttfamily Csla.\+Server.\+Transactional\+Data\+Portal.\+Transactional\+Data\+Portal (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_csla_1_1_transactional_attribute}{Transactional\+Attribute}}}]{transactional\+Attribute }\end{DoxyParamCaption})}
+
+
+
+Initializes a new instance of the \mbox{\hyperlink{class_csla_1_1_server_1_1_transactional_data_portal}{Transactional\+Data\+Portal}} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em transactional\+Attribute} & The transactional attribute that defines transaction options to be used with transactions. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 28 of file Transactional\+Data\+Portal.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_transactional_data_portal_a266486aa5f9651eea9f9835d744f4f57}\label{class_csla_1_1_server_1_1_transactional_data_portal_a266486aa5f9651eea9f9835d744f4f57}} 
+\index{Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}!Create@{Create}}
+\index{Create@{Create}!Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Transactional\+Data\+Portal.\+Create (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Wraps a Create call in a Transaction\+Scope 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a \mbox{\hyperlink{}{Transaction\+Scope}} to provide transactional support via System.\+Transactions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & A \mbox{\hyperlink{}{Type}} object indicating the type of business object to be created.\\
+\hline
+{\em criteria} & A custom criteria object providing any extra information that may be required to properly create the object.\\
+\hline
+{\em context} & Context data from the client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A populated business object.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 51 of file Transactional\+Data\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_transactional_data_portal_a4eac72b8e65f8465bfda0b12cdfa0611}\label{class_csla_1_1_server_1_1_transactional_data_portal_a4eac72b8e65f8465bfda0b12cdfa0611}} 
+\index{Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Transactional\+Data\+Portal.\+Delete (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Called by the client-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} to delete an object. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a \mbox{\hyperlink{}{Transaction\+Scope}} to provide transactional support via System.\+Transactions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em context} & Context data from the client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 168 of file Transactional\+Data\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_transactional_data_portal_ac1e3e39c9d0a18ff8d3da4e6e25df639}\label{class_csla_1_1_server_1_1_transactional_data_portal_ac1e3e39c9d0a18ff8d3da4e6e25df639}} 
+\index{Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Transactional\+Data\+Portal.\+Fetch (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Called by the client-\/side Data\+Protal to retrieve an object. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a \mbox{\hyperlink{}{Transaction\+Scope}} to provide transactional support via System.\+Transactions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to retrieve.\\
+\hline
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em context} & Object containing context data from client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A populated business object.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 114 of file Transactional\+Data\+Portal.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_transactional_data_portal_a03d8694aee902df3aba8533b4b0ed819}\label{class_csla_1_1_server_1_1_transactional_data_portal_a03d8694aee902df3aba8533b4b0ed819}} 
+\index{Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}!Update@{Update}}
+\index{Update@{Update}!Csla.Server.TransactionalDataPortal@{Csla.Server.TransactionalDataPortal}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Transactional\+Data\+Portal.\+Update (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Called by the client-\/side \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} to update an object. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a \mbox{\hyperlink{}{Transaction\+Scope}} to provide transactional support via System.\+Transactions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & A reference to the object being updated.\\
+\hline
+{\em context} & Context data from the client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the newly updated object.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 141 of file Transactional\+Data\+Portal.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_transactional_data_portal_8cs}{Transactional\+Data\+Portal.\+cs}}\end{DoxyCompactItemize}

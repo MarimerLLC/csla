@@ -1,0 +1,69 @@
+.TH "Csla.Core.IEditableCollection" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IEditableCollection \- Defines the common methods required by all editable CSLA collection objects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.IBusinessObject\fP, \fBCsla\&.Core\&.ISupportUndo\fP, and \fBCsla\&.Core\&.ITrackStatus\fP\&.
+.PP
+Inherited by \fBCsla\&.BusinessBindingListBase< T, C >\fP, \fBCsla\&.BusinessListBase< T, C >\fP, and \fBCsla\&.IBusinessListBase< C >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBRemoveChild\fP (\fBCore\&.IEditableBusinessObject\fP child)"
+.br
+.RI "Removes the specified child from the parent collection\&. "
+.ti -1c
+.RI "void \fBSetParent\fP (\fBIParent\fP parent)"
+.br
+.RI "Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. "
+.ti -1c
+.RI "object \fBGetDeletedList\fP ()"
+.br
+.RI "Used by ObjectFactory to gain access to the list of deleted items contained in the collection\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Defines the common methods required by all editable CSLA collection objects\&. 
+
+It is strongly recommended that the implementations of the methods in this interface be made Private so as to not clutter up the native interface of the collection objects\&. 
+.PP
+Definition at line 20 of file IEditableCollection\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "object Csla\&.Core\&.IEditableCollection\&.GetDeletedList ()"
+
+.PP
+Used by ObjectFactory to gain access to the list of deleted items contained in the collection\&. 
+.SS "void Csla\&.Core\&.IEditableCollection\&.RemoveChild (\fBCore\&.IEditableBusinessObject\fP child)"
+
+.PP
+Removes the specified child from the parent collection\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchild\fP Child object to be removed\&.
+.RE
+.PP
+
+.SS "void Csla\&.Core\&.IEditableCollection\&.SetParent (\fBIParent\fP parent)"
+
+.PP
+Used by \fBBusinessListBase\fP as a child object is created to tell the child object about its parent\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP A reference to the parent collection object\&.
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

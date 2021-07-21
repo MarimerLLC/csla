@@ -1,0 +1,172 @@
+\hypertarget{class_csla_1_1_server_1_1_serviced_data_portal_read_committed}{}\doxysection{Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed Class Reference}
+\label{class_csla_1_1_server_1_1_serviced_data_portal_read_committed}\index{Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}}
+
+
+Implements the server-\/side Serviced \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} described in Chapter 4.  
+
+
+Inheritance diagram for Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.944445cm]{class_csla_1_1_server_1_1_serviced_data_portal_read_committed}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a0a93387ff7f0517a4cf0eba1a9bad8e9}{Create}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Wraps a Create call in a Serviced\+Component. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a4233b01645e54b98b137df714ebdfcee}{Fetch}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Wraps a Fetch call in a Serviced\+Component. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a3d59f38087c768044d413e4379bdeb50}{Update}} (object obj, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Wraps an Update call in a Serviced\+Component. \end{DoxyCompactList}\item 
+async Task$<$ \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}} $>$ \mbox{\hyperlink{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a612c1c62edde96279d77f814796a00c8}{Delete}} (Type object\+Type, object criteria, \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}} context, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Wraps a Delete call in a Serviced\+Component. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements the server-\/side Serviced \mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal}{Data\+Portal}} described in Chapter 4. 
+
+
+
+Definition at line 23 of file Serviced\+Data\+Portal\+Read\+Committed.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a0a93387ff7f0517a4cf0eba1a9bad8e9}\label{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a0a93387ff7f0517a4cf0eba1a9bad8e9}} 
+\index{Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}!Create@{Create}}
+\index{Create@{Create}!Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed.\+Create (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Wraps a Create call in a Serviced\+Component. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a COM+ transaction to provide transactional support. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & A \mbox{\hyperlink{}{Type}} object indicating the type of business object to be created.\\
+\hline
+{\em criteria} & A custom criteria object providing any extra information that may be required to properly create the object.\\
+\hline
+{\em context} & Context data from the client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A populated business object.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_ad950081eefdad09039a3145cdf1984d2}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 43 of file Serviced\+Data\+Portal\+Read\+Committed.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a612c1c62edde96279d77f814796a00c8}\label{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a612c1c62edde96279d77f814796a00c8}} 
+\index{Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}!Delete@{Delete}}
+\index{Delete@{Delete}!Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed.\+Delete (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Wraps a Delete call in a Serviced\+Component. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a COM+ transaction to provide transactional support. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to create.\\
+\hline
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em context} & Context data from the client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a3b3966b250841cf841d03a4bbe1895e6}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 105 of file Serviced\+Data\+Portal\+Read\+Committed.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a4233b01645e54b98b137df714ebdfcee}\label{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a4233b01645e54b98b137df714ebdfcee}} 
+\index{Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}!Fetch@{Fetch}}
+\index{Fetch@{Fetch}!Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}}
+\doxysubsubsection{\texorpdfstring{Fetch()}{Fetch()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed.\+Fetch (\begin{DoxyParamCaption}\item[{Type}]{object\+Type,  }\item[{object}]{criteria,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Wraps a Fetch call in a Serviced\+Component. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a COM+ transaction to provide transactional support. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em object\+Type} & Type of business object to retrieve.\\
+\hline
+{\em criteria} & Object-\/specific criteria.\\
+\hline
+{\em context} & Object containing context data from client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A populated business object.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a5ac735daabda4b1fcb2a7bb3433e7229}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 65 of file Serviced\+Data\+Portal\+Read\+Committed.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a3d59f38087c768044d413e4379bdeb50}\label{class_csla_1_1_server_1_1_serviced_data_portal_read_committed_a3d59f38087c768044d413e4379bdeb50}} 
+\index{Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}!Update@{Update}}
+\index{Update@{Update}!Csla.Server.ServicedDataPortalReadCommitted@{Csla.Server.ServicedDataPortalReadCommitted}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily async Task$<$\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_result}{Data\+Portal\+Result}}$>$ Csla.\+Server.\+Serviced\+Data\+Portal\+Read\+Committed.\+Update (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_server_1_1_data_portal_context}{Data\+Portal\+Context}}}]{context,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})}
+
+
+
+Wraps an Update call in a Serviced\+Component. 
+
+This method delegates to \mbox{\hyperlink{class_csla_1_1_server_1_1_simple_data_portal}{Simple\+Data\+Portal}} but wraps that call within a COM+ transaction to provide transactional support. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & A reference to the object being updated.\\
+\hline
+{\em context} & Context data from the client.\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the newly updated object.
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{interface_csla_1_1_server_1_1_i_data_portal_server_a60eee66f338a5217fe4854dd6689da47}{Csla.\+Server.\+IData\+Portal\+Server}}.
+
+
+
+Definition at line 85 of file Serviced\+Data\+Portal\+Read\+Committed.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Server/\mbox{\hyperlink{_serviced_data_portal_read_committed_8cs}{Serviced\+Data\+Portal\+Read\+Committed.\+cs}}\end{DoxyCompactItemize}

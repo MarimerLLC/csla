@@ -1,0 +1,250 @@
+.TH "Csla.Core.ApplicationContextManager" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.ApplicationContextManager \- Default context manager for the user property and local/client/global context dictionaries\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Inherited by \fBCsla\&.Windows\&.ApplicationContextManager\fP, and \fBCsla\&.Xaml\&.ApplicationContextManager\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual IPrincipal \fBGetUser\fP ()"
+.br
+.RI "Gets the current user principal\&. "
+.ti -1c
+.RI "virtual void \fBSetUser\fP (IPrincipal principal)"
+.br
+.RI "Sets the current user principal\&. "
+.ti -1c
+.RI "\fBContextDictionary\fP \fBGetLocalContext\fP ()"
+.br
+.RI "Gets the local context dictionary\&. "
+.ti -1c
+.RI "void \fBSetLocalContext\fP (\fBContextDictionary\fP localContext)"
+.br
+.RI "Sets the local context dictionary\&. "
+.ti -1c
+.RI "\fBContextDictionary\fP \fBGetClientContext\fP ()"
+.br
+.RI "Gets the client context dictionary\&. "
+.ti -1c
+.RI "void \fBSetClientContext\fP (\fBContextDictionary\fP clientContext)"
+.br
+.RI "Sets the client context dictionary\&. "
+.ti -1c
+.RI "\fBContextDictionary\fP \fBGetGlobalContext\fP ()"
+.br
+.RI "Gets the global context dictionary\&. "
+.ti -1c
+.RI "void \fBSetGlobalContext\fP (\fBContextDictionary\fP globalContext)"
+.br
+.RI "Sets the global context dictionary\&. "
+.ti -1c
+.RI "IServiceProvider \fBGetDefaultServiceProvider\fP ()"
+.br
+.RI "Gets the default IServiceProvider "
+.ti -1c
+.RI "void \fBSetDefaultServiceProvider\fP (IServiceProvider serviceProvider)"
+.br
+.RI "Sets the default IServiceProvider "
+.ti -1c
+.RI "IServiceProvider \fBGetServiceProvider\fP ()"
+.br
+.RI "Gets the service provider for current scope "
+.ti -1c
+.RI "void \fBSetServiceProvider\fP (IServiceProvider scope)"
+.br
+.RI "Sets the service provider for current scope "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBIsValid\fP\fC [get]\fP"
+.br
+.RI "Returns a value indicating whether the context is valid\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Default context manager for the user property and local/client/global context dictionaries\&. 
+
+
+.PP
+Definition at line 20 of file ApplicationContextManager\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBContextDictionary\fP Csla\&.Core\&.ApplicationContextManager\&.GetClientContext ()"
+
+.PP
+Gets the client context dictionary\&. 
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 78 of file ApplicationContextManager\&.cs\&.
+.SS "IServiceProvider Csla\&.Core\&.ApplicationContextManager\&.GetDefaultServiceProvider ()"
+
+.PP
+Gets the default IServiceProvider 
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 116 of file ApplicationContextManager\&.cs\&.
+.SS "\fBContextDictionary\fP Csla\&.Core\&.ApplicationContextManager\&.GetGlobalContext ()"
+
+.PP
+Gets the global context dictionary\&. 
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 95 of file ApplicationContextManager\&.cs\&.
+.SS "\fBContextDictionary\fP Csla\&.Core\&.ApplicationContextManager\&.GetLocalContext ()"
+
+.PP
+Gets the local context dictionary\&. 
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 61 of file ApplicationContextManager\&.cs\&.
+.SS "IServiceProvider Csla\&.Core\&.ApplicationContextManager\&.GetServiceProvider ()"
+
+.PP
+Gets the service provider for current scope 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 135 of file ApplicationContextManager\&.cs\&.
+.SS "virtual IPrincipal Csla\&.Core\&.ApplicationContextManager\&.GetUser ()\fC [virtual]\fP"
+
+.PP
+Gets the current user principal\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current user principal
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.ApplicationContextManager\fP, and \fBCsla\&.Windows\&.ApplicationContextManager\fP\&.
+.PP
+Definition at line 38 of file ApplicationContextManager\&.cs\&.
+.SS "void Csla\&.Core\&.ApplicationContextManager\&.SetClientContext (\fBContextDictionary\fP clientContext)"
+
+.PP
+Sets the client context dictionary\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclientContext\fP Context dictionary
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 87 of file ApplicationContextManager\&.cs\&.
+.SS "void Csla\&.Core\&.ApplicationContextManager\&.SetDefaultServiceProvider (IServiceProvider serviceProvider)"
+
+.PP
+Sets the default IServiceProvider 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserviceProvider\fP IServiceProvider instance
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 125 of file ApplicationContextManager\&.cs\&.
+.SS "void Csla\&.Core\&.ApplicationContextManager\&.SetGlobalContext (\fBContextDictionary\fP globalContext)"
+
+.PP
+Sets the global context dictionary\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglobalContext\fP Context dictionary
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 105 of file ApplicationContextManager\&.cs\&.
+.SS "void Csla\&.Core\&.ApplicationContextManager\&.SetLocalContext (\fBContextDictionary\fP localContext)"
+
+.PP
+Sets the local context dictionary\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocalContext\fP Context dictionary
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 70 of file ApplicationContextManager\&.cs\&.
+.SS "void Csla\&.Core\&.ApplicationContextManager\&.SetServiceProvider (IServiceProvider scope)"
+
+.PP
+Sets the service provider for current scope 
+.PP
+\fBParameters\fP
+.RS 4
+\fIscope\fP IServiceProvider instance
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Definition at line 146 of file ApplicationContextManager\&.cs\&.
+.SS "virtual void Csla\&.Core\&.ApplicationContextManager\&.SetUser (IPrincipal principal)\fC [virtual]\fP"
+
+.PP
+Sets the current user principal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprincipal\fP User principal value
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IContextManager\fP\&.
+.PP
+Reimplemented in \fBCsla\&.Xaml\&.ApplicationContextManager\fP, and \fBCsla\&.Windows\&.ApplicationContextManager\fP\&.
+.PP
+Definition at line 53 of file ApplicationContextManager\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "bool Csla\&.Core\&.ApplicationContextManager\&.IsValid\fC [get]\fP"
+
+.PP
+Returns a value indicating whether the context is valid\&. 
+.PP
+Definition at line 29 of file ApplicationContextManager\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

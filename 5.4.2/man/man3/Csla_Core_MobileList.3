@@ -1,0 +1,157 @@
+.TH "Csla.Core.MobileList< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.MobileList< T > \- Implements a list that is serializable using the SerializationFormatterFactory\&.GetFormatter()\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits List< T >, and \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMobileList\fP ()"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "\fBMobileList\fP (int capacity)"
+.br
+.RI "Creates an instance of the type\&. "
+.ti -1c
+.RI "\fBMobileList\fP (IEnumerable< T > collection)"
+.br
+.RI "Creates an instance of the type\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBOnGetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Override this method to add extra field values to the serialization stream\&. "
+.ti -1c
+.RI "virtual void \fBOnGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Override this method to manually serialize child objects contained within the current object\&. "
+.ti -1c
+.RI "virtual void \fBOnSetState\fP (\fBSerializationInfo\fP info)"
+.br
+.RI "Override this method to retrieve extra field values to the serialization stream\&. "
+.ti -1c
+.RI "virtual void \fBOnSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
+.br
+.RI "Override this method to manually deserialize child objects from data in the serialization stream\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implements a list that is serializable using the SerializationFormatterFactory\&.GetFormatter()\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Type of object contained in the list\&. 
+.RE
+.PP
+
+.PP
+Definition at line 28 of file MobileList\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.Core\&.MobileList\fP< T >\&.\fBMobileList\fP ()"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+Definition at line 33 of file MobileList\&.cs\&.
+.SS "\fBCsla\&.Core\&.MobileList\fP< T >\&.\fBMobileList\fP (int capacity)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcapacity\fP Capacity of the list\&.
+.RE
+.PP
+
+.PP
+Definition at line 38 of file MobileList\&.cs\&.
+.SS "\fBCsla\&.Core\&.MobileList\fP< T >\&.\fBMobileList\fP (IEnumerable< T > collection)"
+
+.PP
+Creates an instance of the type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcollection\fP \fBData\fP to add to list\&.
+.RE
+.PP
+
+.PP
+Definition at line 43 of file MobileList\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void \fBCsla\&.Core\&.MobileList\fP< T >\&.OnGetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to manually serialize child objects contained within the current object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing serialized values\&.
+.br
+\fIformatter\fP Reference to the current SerializationFormatterFactory\&.GetFormatter()\&.
+.RE
+.PP
+
+.PP
+Definition at line 74 of file MobileList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.MobileList\fP< T >\&.OnGetState (\fBSerializationInfo\fP info)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to add extra field values to the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing field values\&.
+.RE
+.PP
+
+.PP
+Definition at line 62 of file MobileList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.MobileList\fP< T >\&.OnSetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to manually deserialize child objects from data in the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing serialized values\&.
+.br
+\fIformatter\fP Reference to the current SerializationFormatterFactory\&.GetFormatter()\&.
+.RE
+.PP
+
+.PP
+Definition at line 117 of file MobileList\&.cs\&.
+.SS "virtual void \fBCsla\&.Core\&.MobileList\fP< T >\&.OnSetState (\fBSerializationInfo\fP info)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this method to retrieve extra field values to the serialization stream\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinfo\fP Object containing field values\&.
+.RE
+.PP
+
+.PP
+Definition at line 109 of file MobileList\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,106 @@
+.TH "Csla.Core.IPropertyInfo" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Core.IPropertyInfo \- Maintains metadata about a property\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.IMemberInfo\fP\&.
+.PP
+Inherited by \fBCsla\&.PropertyInfo< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCore\&.FieldManager\&.IFieldData\fP \fBNewFieldData\fP (string name)"
+.br
+.RI "Gets a new field data container for the property\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "Type \fBType\fP\fC [get]\fP"
+.br
+.RI "Gets the type of the property\&. "
+.ti -1c
+.RI "string \fBFriendlyName\fP\fC [get]\fP"
+.br
+.RI "Gets the friendly display name for the property\&. "
+.ti -1c
+.RI "object \fBDefaultValue\fP\fC [get]\fP"
+.br
+.RI "Gets the default initial value for the property\&. "
+.ti -1c
+.RI "\fBRelationshipTypes\fP \fBRelationshipType\fP\fC [get]\fP"
+.br
+.RI "Gets the relationship between the declaring object and the object reference in the property\&. "
+.ti -1c
+.RI "int \fBIndex\fP\fC [get, set]\fP"
+.br
+.RI "Gets or sets the index position for the managed field storage behind the property\&. FOR INTERNAL CSLA \&.NET USE ONLY\&. "
+.ti -1c
+.RI "bool \fBIsChild\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this property references a child in the object graph\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Maintains metadata about a property\&. 
+
+
+.PP
+Definition at line 15 of file IPropertyInfo\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBCore\&.FieldManager\&.IFieldData\fP Csla\&.Core\&.IPropertyInfo\&.NewFieldData (string name)"
+
+.PP
+Gets a new field data container for the property\&. 
+.PP
+Implemented in \fBCsla\&.PropertyInfo< T >\fP\&.
+.SH "Property Documentation"
+.PP 
+.SS "object Csla\&.Core\&.IPropertyInfo\&.DefaultValue\fC [get]\fP"
+
+.PP
+Gets the default initial value for the property\&. This value is used to initialize the property's value, and is returned from a property get if the user is not authorized to read the property\&. 
+.PP
+Definition at line 35 of file IPropertyInfo\&.cs\&.
+.SS "string Csla\&.Core\&.IPropertyInfo\&.FriendlyName\fC [get]\fP"
+
+.PP
+Gets the friendly display name for the property\&. 
+.PP
+Definition at line 25 of file IPropertyInfo\&.cs\&.
+.SS "int Csla\&.Core\&.IPropertyInfo\&.Index\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Gets or sets the index position for the managed field storage behind the property\&. FOR INTERNAL CSLA \&.NET USE ONLY\&. 
+.PP
+Definition at line 50 of file IPropertyInfo\&.cs\&.
+.SS "bool Csla\&.Core\&.IPropertyInfo\&.IsChild\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this property references a child in the object graph\&. 
+.PP
+Definition at line 55 of file IPropertyInfo\&.cs\&.
+.SS "\fBRelationshipTypes\fP Csla\&.Core\&.IPropertyInfo\&.RelationshipType\fC [get]\fP"
+
+.PP
+Gets the relationship between the declaring object and the object reference in the property\&. 
+.PP
+Definition at line 44 of file IPropertyInfo\&.cs\&.
+.SS "Type Csla\&.Core\&.IPropertyInfo\&.Type\fC [get]\fP"
+
+.PP
+Gets the type of the property\&. 
+.PP
+Definition at line 20 of file IPropertyInfo\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

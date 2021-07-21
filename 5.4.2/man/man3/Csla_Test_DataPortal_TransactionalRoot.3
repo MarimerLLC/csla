@@ -1,0 +1,173 @@
+.TH "Csla.Test.DataPortal.TransactionalRoot" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.Test.DataPortal.TransactionalRoot
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.BusinessBase< TransactionalRoot >\fP\&.
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBTransactionalRoot\fP \fBNewTransactionalRoot\fP ()"
+.br
+.ti -1c
+.RI "static \fBTransactionalRoot\fP \fBGetTransactionalRoot\fP (int \fBID\fP)"
+.br
+.ti -1c
+.RI "static void \fBDeleteTransactionalRoot\fP (int \fBID\fP)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPropertyInfo\fP< int > \fBIDProperty\fP = RegisterProperty<int>(c => c\&.ID)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBFirstNameProperty\fP = RegisterProperty<string>(c => c\&.FirstName)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBLastNameProperty\fP = RegisterProperty<string>(c => c\&.LastName)"
+.br
+.ti -1c
+.RI "static \fBPropertyInfo\fP< string > \fBSmallColumnProperty\fP = RegisterProperty<string>(c => c\&.SmallColumn)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBAddBusinessRules\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Create\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Fetch\fP (object criteria)"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Insert\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Update\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_DeleteSelf\fP ()"
+.br
+.ti -1c
+.RI "void \fBDataPortal_Delete\fP (object criteria)"
+.br
+.ti -1c
+.RI "override void \fBDataPortal_OnDataPortalException\fP (\fBDataPortalEventArgs\fP e, Exception ex)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "int \fBID\fP\fC [get]\fP"
+.br
+.ti -1c
+.RI "string \fBFirstName\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "string \fBLastName\fP\fC [get, set]\fP"
+.br
+.ti -1c
+.RI "string \fBSmallColumn\fP\fC [get, set]\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 18 of file TransactionalRoot\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.AddBusinessRules ()\fC [protected]\fP"
+
+.PP
+Definition at line 55 of file TransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_Create ()\fC [protected]\fP"
+
+.PP
+Definition at line 100 of file TransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_Delete (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 177 of file TransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_DeleteSelf ()\fC [protected]\fP"
+
+.PP
+Definition at line 169 of file TransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_Fetch (object criteria)\fC [protected]\fP"
+
+.PP
+Definition at line 108 of file TransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_Insert ()\fC [protected]\fP"
+
+.PP
+Definition at line 125 of file TransactionalRoot\&.cs\&.
+.SS "override void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP"
+
+.PP
+Definition at line 194 of file TransactionalRoot\&.cs\&.
+.SS "void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DataPortal_Update ()\fC [protected]\fP"
+
+.PP
+Definition at line 161 of file TransactionalRoot\&.cs\&.
+.SS "static void Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.DeleteTransactionalRoot (int ID)\fC [static]\fP"
+
+.PP
+Definition at line 74 of file TransactionalRoot\&.cs\&.
+.SS "static \fBTransactionalRoot\fP Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.GetTransactionalRoot (int ID)\fC [static]\fP"
+
+.PP
+Definition at line 69 of file TransactionalRoot\&.cs\&.
+.SS "static \fBTransactionalRoot\fP Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.NewTransactionalRoot ()\fC [static]\fP"
+
+.PP
+Definition at line 64 of file TransactionalRoot\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPropertyInfo\fP<string> Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.FirstNameProperty = RegisterProperty<string>(c => c\&.FirstName)\fC [static]\fP"
+
+.PP
+Definition at line 32 of file TransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<int> Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.IDProperty = RegisterProperty<int>(c => c\&.ID)\fC [static]\fP"
+
+.PP
+Definition at line 25 of file TransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<string> Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.LastNameProperty = RegisterProperty<string>(c => c\&.LastName)\fC [static]\fP"
+
+.PP
+Definition at line 39 of file TransactionalRoot\&.cs\&.
+.SS "\fBPropertyInfo\fP<string> Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.SmallColumnProperty = RegisterProperty<string>(c => c\&.SmallColumn)\fC [static]\fP"
+
+.PP
+Definition at line 46 of file TransactionalRoot\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "string Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.FirstName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 33 of file TransactionalRoot\&.cs\&.
+.SS "int Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.ID\fC [get]\fP"
+
+.PP
+Definition at line 26 of file TransactionalRoot\&.cs\&.
+.SS "string Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.LastName\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 40 of file TransactionalRoot\&.cs\&.
+.SS "string Csla\&.Test\&.DataPortal\&.TransactionalRoot\&.SmallColumn\fC [get]\fP, \fC [set]\fP"
+
+.PP
+Definition at line 47 of file TransactionalRoot\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

@@ -1,0 +1,313 @@
+.TH "Csla.PropertyInfo< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Csla.PropertyInfo< T > \- Maintains metadata about a property\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCsla\&.Core\&.IPropertyInfo\fP, and IComparable\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, T defaultValue)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, string friendlyName)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType, T defaultValue)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Creates a new instance of this class\&. "
+.ti -1c
+.RI "\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType, T defaultValue, \fBRelationshipTypes\fP relationship)"
+.br
+.RI "Creates a new instance of this class\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static T \fBDataBindingFriendlyDefault\fP ()"
+.br
+.RI "Creates the CSLA \fBData\fP Binding Friendly default for the given type T\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fBCore\&.FieldManager\&.IFieldData\fP \fBNewFieldData\fP (string name)"
+.br
+.RI "Create and return a new IFieldData object to store an instance value for this property\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "string \fBName\fP\fC [get]\fP"
+.br
+.RI "Gets the property name value\&. "
+.ti -1c
+.RI "Type \fBType\fP\fC [get]\fP"
+.br
+.RI "Gets the type of the property\&. "
+.ti -1c
+.RI "virtual string \fBFriendlyName\fP\fC [get]\fP"
+.br
+.RI "Gets the friendly display name for the property\&. "
+.ti -1c
+.RI "virtual T \fBDefaultValue\fP\fC [get]\fP"
+.br
+.RI "Gets the default initial value for the property\&. "
+.ti -1c
+.RI "\fBRelationshipTypes\fP \fBRelationshipType\fP\fC [get]\fP"
+.br
+.RI "Gets the relationship between the declaring object and the object reference in the property\&. "
+.ti -1c
+.RI "bool \fBIsChild\fP\fC [get]\fP"
+.br
+.RI "Gets a value indicating whether this property references a child in the object graph\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Maintains metadata about a property\&. 
+
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP \fBData\fP type of the property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 21 of file PropertyInfo\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.RE
+.PP
+
+.PP
+Definition at line 27 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, \fBRelationshipTypes\fP relationship)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIrelationship\fP Relationship with referenced object\&.
+.RE
+.PP
+
+.PP
+Definition at line 36 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, T defaultValue)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIdefaultValue\fP Default value for the property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 47 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, string friendlyName)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 58 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIcontainingType\fP Factory to provide display name from attributes\&. 
+.RE
+.PP
+
+.PP
+Definition at line 72 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType, T defaultValue)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIcontainingType\fP Factory to provide display name from attributes\&. 
+.br
+\fIdefaultValue\fP Default value for the property\&. 
+.RE
+.PP
+
+.PP
+Definition at line 89 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType, \fBRelationshipTypes\fP relationship)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIcontainingType\fP Factory to provide display name from attributes\&. 
+.br
+\fIrelationship\fP Relationship with referenced object\&.
+.RE
+.PP
+
+.PP
+Definition at line 104 of file PropertyInfo\&.cs\&.
+.SS "\fBCsla\&.PropertyInfo\fP< T >\&.\fBPropertyInfo\fP (string name, string friendlyName, \fBType\fP containingType, T defaultValue, \fBRelationshipTypes\fP relationship)"
+
+.PP
+Creates a new instance of this class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name of the property\&.
+.br
+\fIfriendlyName\fP Friendly display name for the property\&. 
+.br
+\fIcontainingType\fP Factory to provide display name from attributes\&. 
+.br
+\fIdefaultValue\fP Default value for the property\&. 
+.br
+\fIrelationship\fP Relationship with referenced object\&.
+.RE
+.PP
+
+.PP
+Definition at line 123 of file PropertyInfo\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static T \fBCsla\&.PropertyInfo\fP< T >\&.DataBindingFriendlyDefault ()\fC [static]\fP"
+
+.PP
+Creates the CSLA \fBData\fP Binding Friendly default for the given type T\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Default value for T which is compatible with \fBData\fP Binding
+.RE
+.PP
+
+.PP
+Definition at line 272 of file PropertyInfo\&.cs\&.
+.SS "virtual \fBCore\&.FieldManager\&.IFieldData\fP \fBCsla\&.PropertyInfo\fP< T >\&.NewFieldData (string name)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Create and return a new IFieldData object to store an instance value for this property\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Property name\&. 
+.RE
+.PP
+
+.PP
+Implements \fBCsla\&.Core\&.IPropertyInfo\fP\&.
+.PP
+Definition at line 221 of file PropertyInfo\&.cs\&.
+.SH "Property Documentation"
+.PP 
+.SS "virtual T \fBCsla\&.PropertyInfo\fP< T >\&.DefaultValue\fC [get]\fP"
+
+.PP
+Gets the default initial value for the property\&. This value is used to initialize the property's value, and is returned from a property get if the user is not authorized to read the property\&. 
+.PP
+Definition at line 198 of file PropertyInfo\&.cs\&.
+.SS "virtual string \fBCsla\&.PropertyInfo\fP< T >\&.FriendlyName\fC [get]\fP"
+
+.PP
+Gets the friendly display name for the property\&. If no friendly name was provided, the property name itself is returned as a result\&. 
+.PP
+Definition at line 159 of file PropertyInfo\&.cs\&.
+.SS "bool \fBCsla\&.PropertyInfo\fP< T >\&.IsChild\fC [get]\fP"
+
+.PP
+Gets a value indicating whether this property references a child in the object graph\&. 
+.PP
+Definition at line 256 of file PropertyInfo\&.cs\&.
+.SS "string \fBCsla\&.PropertyInfo\fP< T >\&.Name\fC [get]\fP"
+
+.PP
+Gets the property name value\&. 
+.PP
+Definition at line 137 of file PropertyInfo\&.cs\&.
+.SS "\fBRelationshipTypes\fP \fBCsla\&.PropertyInfo\fP< T >\&.RelationshipType\fC [get]\fP"
+
+.PP
+Gets the relationship between the declaring object and the object reference in the property\&. 
+.PP
+Definition at line 234 of file PropertyInfo\&.cs\&.
+.SS "Type \fBCsla\&.PropertyInfo\fP< T >\&.Type\fC [get]\fP"
+
+.PP
+Gets the type of the property\&. 
+.PP
+Definition at line 142 of file PropertyInfo\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

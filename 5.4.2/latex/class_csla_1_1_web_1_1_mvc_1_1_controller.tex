@@ -1,0 +1,137 @@
+\hypertarget{class_csla_1_1_web_1_1_mvc_1_1_controller}{}\doxysection{Csla.\+Web.\+Mvc.\+Controller Class Reference}
+\label{class_csla_1_1_web_1_1_mvc_1_1_controller}\index{Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}}
+
+
+Provides methods that respond to HTTP requests in an ASP.\+NET MVC web site.  
+
+
+Inheritance diagram for Csla.\+Web.\+Mvc.\+Controller\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_csla_1_1_web_1_1_mvc_1_1_controller}
+\end{center}
+\end{figure}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_csla_1_1_web_1_1_mvc_1_1_controller_a8355e64ffb6ba6be447051841e9ae615}{Save\+Object$<$ T $>$}} (T item, bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Performs a Save() operation on an editable business object, with appropriate validation and exception handling. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_csla_1_1_web_1_1_mvc_1_1_controller_a50befa0da3d5a4dc3362232a501ee012}{Save\+Object$<$ T $>$}} (T item, Action$<$ T $>$ update\+Model, bool force\+Update)
+\begin{DoxyCompactList}\small\item\em Performs a Save() operation on an editable business object, with appropriate validation and exception handling. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_csla_1_1_web_1_1_mvc_1_1_controller_aa9680b3ac331cefc2cff7996c091487c}{Load\+Property$<$ P $>$}} (object obj, \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$ property\+Info, P new\+Value)
+\begin{DoxyCompactList}\small\item\em Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides methods that respond to HTTP requests in an ASP.\+NET MVC web site. 
+
+
+
+Definition at line 30 of file Controller.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_mvc_1_1_controller_aa9680b3ac331cefc2cff7996c091487c}\label{class_csla_1_1_web_1_1_mvc_1_1_controller_aa9680b3ac331cefc2cff7996c091487c}} 
+\index{Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}!LoadProperty$<$ P $>$@{LoadProperty$<$ P $>$}}
+\index{LoadProperty$<$ P $>$@{LoadProperty$<$ P $>$}!Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}}
+\doxysubsubsection{\texorpdfstring{LoadProperty$<$ P $>$()}{LoadProperty< P >()}}
+{\footnotesize\ttfamily void Csla.\+Web.\+Mvc.\+Controller.\+Load\+Property$<$ P $>$ (\begin{DoxyParamCaption}\item[{object}]{obj,  }\item[{\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ P $>$}]{property\+Info,  }\item[{P}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Loads a property\textquotesingle{}s managed field with the supplied value calling Property\+Has\+Changed if the value does change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em P} & Type of the property. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em obj} & Object on which to call the method. \\
+\hline
+{\em property\+Info} & \mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}} object containing property metadata.\\
+\hline
+{\em new\+Value} & The new value for the property.\\
+\hline
+\end{DoxyParams}
+
+
+No authorization checks occur when this method is called, and no Property\+Changing or Property\+Changed events are raised. Loading values does not cause validation rules to be invoked. 
+
+Definition at line 192 of file Controller.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_mvc_1_1_controller_a50befa0da3d5a4dc3362232a501ee012}\label{class_csla_1_1_web_1_1_mvc_1_1_controller_a50befa0da3d5a4dc3362232a501ee012}} 
+\index{Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}!SaveObject$<$ T $>$@{SaveObject$<$ T $>$}}
+\index{SaveObject$<$ T $>$@{SaveObject$<$ T $>$}!Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}}
+\doxysubsubsection{\texorpdfstring{SaveObject$<$ T $>$()}{SaveObject< T >()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual bool Csla.\+Web.\+Mvc.\+Controller.\+Save\+Object$<$ T $>$ (\begin{DoxyParamCaption}\item[{T}]{item,  }\item[{Action$<$ T $>$}]{update\+Model,  }\item[{bool}]{force\+Update }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Performs a Save() operation on an editable business object, with appropriate validation and exception handling. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of business object.\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em item} & The business object to insert.\\
+\hline
+{\em update\+Model} & Delegate that invokes the Update\+Model() method.\\
+\hline
+{\em force\+Update} & true to force Save() to be an update.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true the Save() succeeds, false if not.
+\end{DoxyReturn}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em class}]\item[{\em T} : {\em Core.\+ISavable}]\end{description}
+\end{Desc}
+
+
+Definition at line 141 of file Controller.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_web_1_1_mvc_1_1_controller_a8355e64ffb6ba6be447051841e9ae615}\label{class_csla_1_1_web_1_1_mvc_1_1_controller_a8355e64ffb6ba6be447051841e9ae615}} 
+\index{Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}!SaveObject$<$ T $>$@{SaveObject$<$ T $>$}}
+\index{SaveObject$<$ T $>$@{SaveObject$<$ T $>$}!Csla.Web.Mvc.Controller@{Csla.Web.Mvc.Controller}}
+\doxysubsubsection{\texorpdfstring{SaveObject$<$ T $>$()}{SaveObject< T >()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool Csla.\+Web.\+Mvc.\+Controller.\+Save\+Object$<$ T $>$ (\begin{DoxyParamCaption}\item[{T}]{item,  }\item[{bool}]{force\+Update }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Performs a Save() operation on an editable business object, with appropriate validation and exception handling. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of business object.\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em item} & The business object to insert.\\
+\hline
+{\em force\+Update} & true to force Save() to be an update.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true the Save() succeeds, false if not.
+\end{DoxyReturn}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em class}]\item[{\em T} : {\em Core.\+ISavable}]\end{description}
+\end{Desc}
+
+
+Definition at line 123 of file Controller.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla.\+Web.\+Mvc.\+Shared/\mbox{\hyperlink{_controller_8cs}{Controller.\+cs}}\end{DoxyCompactItemize}

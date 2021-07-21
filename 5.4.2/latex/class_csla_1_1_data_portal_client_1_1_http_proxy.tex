@@ -1,0 +1,257 @@
+\hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy}{}\doxysection{Csla.\+Data\+Portal\+Client.\+Http\+Proxy Class Reference}
+\label{class_csla_1_1_data_portal_client_1_1_http_proxy}\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+
+
+Implements a data portal proxy to relay data portal calls to a remote application server by using http.  
+
+
+Inheritance diagram for Csla.\+Data\+Portal\+Client.\+Http\+Proxy\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=5.000000cm]{class_csla_1_1_data_portal_client_1_1_http_proxy}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_ab4538c93a12983a99007fa9b40870f8f}{Http\+Proxy}} ()
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it to use the Default\+Url values. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_a7ae141331182a20c4371906ac550f9ec}{Http\+Proxy}} (string data\+Portal\+Url)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it to use the supplied URL. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_ad7140d8986a282b9e1aa93639ad6c943}{Http\+Proxy}} (Http\+Client http\+Client)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it to use the supplied Http\+Client object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_ad39fb154450637df0997f9c3029e81c4}{Http\+Proxy}} (Http\+Client http\+Client, string data\+Portal\+Url)
+\begin{DoxyCompactList}\small\item\em Creates an instance of the object, initializing it to use the supplied Http\+Client object and URL. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual Http\+Client\+Handler \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_ac87e1eeaf43cc8600f88c6176fa8b5a2}{Get\+Http\+Client\+Handler}} ()
+\begin{DoxyCompactList}\small\item\em Gets an Http\+Client\+Handler for use in initializing the Http\+Client instance. \end{DoxyCompactList}\item 
+virtual Http\+Client \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_a69dab036c0c3feea6fe39f47d166e33b}{Get\+Http\+Client}} ()
+\begin{DoxyCompactList}\small\item\em Gets an Http\+Client object for use in communication with the server. \end{DoxyCompactList}\item 
+virtual Web\+Client \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_a8b50e9c5c835d861a04e7e4ee19c600c}{Get\+Web\+Client}} ()
+\begin{DoxyCompactList}\small\item\em Gets an Web\+Client object for use in communication with the server. \end{DoxyCompactList}\item 
+override async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_a788327f6991fd84fd5dbee2baa4518b5}{Call\+Data\+Portal\+Server}} (byte\mbox{[}$\,$\mbox{]} serialized, string operation, string routing\+Token, bool is\+Sync)
+\begin{DoxyCompactList}\small\item\em Select client to make request based on is\+Sync parameter and return response from server \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_a4f6e0d574b3112be9aeaad5cadc0bd2f}{Set\+Http\+Request\+Headers}} (Http\+Request\+Message request)
+\begin{DoxyCompactList}\small\item\em Override to set headers or other properties of the Http\+Request\+Message before it is sent to the server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+static bool \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_proxy_ac1d07f7f28d99e65b7d44e8a81f24b61}{Use\+Text\+Serialization}} = false\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether to use text/string serialization instead of the default binary serialization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements a data portal proxy to relay data portal calls to a remote application server by using http. 
+
+
+
+Definition at line 26 of file Http\+Proxy.\+cs.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_ab4538c93a12983a99007fa9b40870f8f}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_ab4538c93a12983a99007fa9b40870f8f}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!HttpProxy@{HttpProxy}}
+\index{HttpProxy@{HttpProxy}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{HttpProxy()}{HttpProxy()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Http\+Proxy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it to use the Default\+Url values. 
+
+
+
+Definition at line 33 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_a7ae141331182a20c4371906ac550f9ec}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_a7ae141331182a20c4371906ac550f9ec}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!HttpProxy@{HttpProxy}}
+\index{HttpProxy@{HttpProxy}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{HttpProxy()}{HttpProxy()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Http\+Proxy (\begin{DoxyParamCaption}\item[{string}]{data\+Portal\+Url }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it to use the supplied URL. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Portal\+Url} & \mbox{\hyperlink{namespace_csla_1_1_server}{Server}} endpoint URL\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 42 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_ad7140d8986a282b9e1aa93639ad6c943}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_ad7140d8986a282b9e1aa93639ad6c943}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!HttpProxy@{HttpProxy}}
+\index{HttpProxy@{HttpProxy}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{HttpProxy()}{HttpProxy()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Http\+Proxy (\begin{DoxyParamCaption}\item[{Http\+Client}]{http\+Client }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it to use the supplied Http\+Client object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em http\+Client} & Http\+Client instance\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 52 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_ad39fb154450637df0997f9c3029e81c4}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_ad39fb154450637df0997f9c3029e81c4}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!HttpProxy@{HttpProxy}}
+\index{HttpProxy@{HttpProxy}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{HttpProxy()}{HttpProxy()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Http\+Proxy (\begin{DoxyParamCaption}\item[{Http\+Client}]{http\+Client,  }\item[{string}]{data\+Portal\+Url }\end{DoxyParamCaption})}
+
+
+
+Creates an instance of the object, initializing it to use the supplied Http\+Client object and URL. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em http\+Client} & Http\+Client instance\\
+\hline
+{\em data\+Portal\+Url} & \mbox{\hyperlink{namespace_csla_1_1_server}{Server}} endpoint URL\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 63 of file Http\+Proxy.\+cs.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_a788327f6991fd84fd5dbee2baa4518b5}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_a788327f6991fd84fd5dbee2baa4518b5}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!CallDataPortalServer@{CallDataPortalServer}}
+\index{CallDataPortalServer@{CallDataPortalServer}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{CallDataPortalServer()}{CallDataPortalServer()}}
+{\footnotesize\ttfamily override async Task$<$byte\mbox{[}$\,$\mbox{]}$>$ Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Call\+Data\+Portal\+Server (\begin{DoxyParamCaption}\item[{byte\mbox{[}$\,$\mbox{]}}]{serialized,  }\item[{string}]{operation,  }\item[{string}]{routing\+Token,  }\item[{bool}]{is\+Sync }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Select client to make request based on is\+Sync parameter and return response from server 
+
+
+\begin{DoxyParams}{Parameters}
+{\em serialized} & Serialised request\\
+\hline
+{\em operation} & \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} operation\\
+\hline
+{\em routing\+Token} & Routing Tag for server\\
+\hline
+{\em is\+Sync} & True if the client-\/side proxy should synchronously invoke the server.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Serialised response from server
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_data_portal_proxy_aa6451b20c63f5f953e0f81e2e3394ce2}{Csla.\+Data\+Portal\+Client.\+Data\+Portal\+Proxy}}.
+
+
+
+Definition at line 134 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_a69dab036c0c3feea6fe39f47d166e33b}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_a69dab036c0c3feea6fe39f47d166e33b}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!GetHttpClient@{GetHttpClient}}
+\index{GetHttpClient@{GetHttpClient}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{GetHttpClient()}{GetHttpClient()}}
+{\footnotesize\ttfamily virtual Http\+Client Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Get\+Http\+Client (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Gets an Http\+Client object for use in communication with the server. 
+
+
+
+Definition at line 84 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_ac87e1eeaf43cc8600f88c6176fa8b5a2}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_ac87e1eeaf43cc8600f88c6176fa8b5a2}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!GetHttpClientHandler@{GetHttpClientHandler}}
+\index{GetHttpClientHandler@{GetHttpClientHandler}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{GetHttpClientHandler()}{GetHttpClientHandler()}}
+{\footnotesize\ttfamily virtual Http\+Client\+Handler Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Get\+Http\+Client\+Handler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Gets an Http\+Client\+Handler for use in initializing the Http\+Client instance. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_compression_proxy_a0ba1416d38a6a84f566385b111a4f2ca}{Csla.\+Data\+Portal\+Client.\+Http\+Compression\+Proxy}}.
+
+
+
+Definition at line 75 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_a8b50e9c5c835d861a04e7e4ee19c600c}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_a8b50e9c5c835d861a04e7e4ee19c600c}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!GetWebClient@{GetWebClient}}
+\index{GetWebClient@{GetWebClient}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{GetWebClient()}{GetWebClient()}}
+{\footnotesize\ttfamily virtual Web\+Client Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Get\+Web\+Client (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Gets an Web\+Client object for use in communication with the server. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_compression_proxy_aa2ba06162148a64af5025a62e12691d5}{Csla.\+Data\+Portal\+Client.\+Http\+Compression\+Proxy}}.
+
+
+
+Definition at line 114 of file Http\+Proxy.\+cs.
+
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_a4f6e0d574b3112be9aeaad5cadc0bd2f}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_a4f6e0d574b3112be9aeaad5cadc0bd2f}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!SetHttpRequestHeaders@{SetHttpRequestHeaders}}
+\index{SetHttpRequestHeaders@{SetHttpRequestHeaders}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{SetHttpRequestHeaders()}{SetHttpRequestHeaders()}}
+{\footnotesize\ttfamily virtual void Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Set\+Http\+Request\+Headers (\begin{DoxyParamCaption}\item[{Http\+Request\+Message}]{request }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Override to set headers or other properties of the Http\+Request\+Message before it is sent to the server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & Http\+Request\+Message instance\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{class_csla_1_1_data_portal_client_1_1_http_compression_proxy_a51f953ec9e172851fb21d56b510888f0}{Csla.\+Data\+Portal\+Client.\+Http\+Compression\+Proxy}}.
+
+
+
+Definition at line 146 of file Http\+Proxy.\+cs.
+
+
+
+\doxysubsection{Property Documentation}
+\mbox{\Hypertarget{class_csla_1_1_data_portal_client_1_1_http_proxy_ac1d07f7f28d99e65b7d44e8a81f24b61}\label{class_csla_1_1_data_portal_client_1_1_http_proxy_ac1d07f7f28d99e65b7d44e8a81f24b61}} 
+\index{Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}!UseTextSerialization@{UseTextSerialization}}
+\index{UseTextSerialization@{UseTextSerialization}!Csla.DataPortalClient.HttpProxy@{Csla.DataPortalClient.HttpProxy}}
+\doxysubsubsection{\texorpdfstring{UseTextSerialization}{UseTextSerialization}}
+{\footnotesize\ttfamily bool Csla.\+Data\+Portal\+Client.\+Http\+Proxy.\+Use\+Text\+Serialization = false\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+Gets or sets a value indicating whether to use text/string serialization instead of the default binary serialization. 
+
+
+
+Definition at line 124 of file Http\+Proxy.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/korye/source/repos/csla/\+Source/\+Csla/\+Data\+Portal\+Client/\mbox{\hyperlink{_http_proxy_8cs}{Http\+Proxy.\+cs}}\end{DoxyCompactItemize}

@@ -63,7 +63,7 @@ Provides an automated way to reuse open database connections within the context 
 
 This type stores the open database connection in Csla\&.ApplicationContext\&.LocalContext and uses reference counting through IDisposable to keep the connection open for reuse by child objects, and to automatically dispose the connection when the last consumer has called Dispose\&." 
 .PP
-Definition at line 35 of file ConnectionManager\&.cs\&.
+Definition at line 35 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "void Csla\&.Data\&.SqlClient\&.ConnectionManager\&.Dispose ()"
@@ -71,13 +71,13 @@ Definition at line 35 of file ConnectionManager\&.cs\&.
 .PP
 Dispose object, dereferencing or disposing the connection it is managing\&. 
 .PP
-Definition at line 187 of file ConnectionManager\&.cs\&.
+Definition at line 187 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SS "virtual void Csla\&.Data\&.SqlClient\&.ConnectionManager\&.Dispose (bool p)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Dispose object, dereferencing or disposing the context it is managing\&. 
 .PP
-Definition at line 198 of file ConnectionManager\&.cs\&.
+Definition at line 198 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SS "static \fBConnectionManager\fP Csla\&.Data\&.SqlClient\&.ConnectionManager\&.GetManager (string database)\fC [static]\fP"
 
 .PP
@@ -90,7 +90,7 @@ Gets the \fBConnectionManager\fP object for the specified database\&.
 .PP
 
 .PP
-Definition at line 48 of file ConnectionManager\&.cs\&.
+Definition at line 48 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SS "static \fBConnectionManager\fP Csla\&.Data\&.SqlClient\&.ConnectionManager\&.GetManager (string database, bool isDatabaseName)\fC [static]\fP"
 
 .PP
@@ -110,7 +110,7 @@ Gets the \fBConnectionManager\fP object for the specified database\&.
 .PP
 
 .PP
-Definition at line 80 of file ConnectionManager\&.cs\&.
+Definition at line 80 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SS "static \fBConnectionManager\fP Csla\&.Data\&.SqlClient\&.ConnectionManager\&.GetManager (string database, bool isDatabaseName, string label)\fC [static]\fP"
 
 .PP
@@ -132,7 +132,7 @@ Gets the \fBConnectionManager\fP object for the specified database\&.
 .PP
 
 .PP
-Definition at line 100 of file ConnectionManager\&.cs\&.
+Definition at line 100 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SS "static \fBConnectionManager\fP Csla\&.Data\&.SqlClient\&.ConnectionManager\&.GetManager (string database, string label)\fC [static]\fP"
 
 .PP
@@ -147,7 +147,7 @@ Gets the \fBConnectionManager\fP object for the specified database\&.
 .PP
 
 .PP
-Definition at line 61 of file ConnectionManager\&.cs\&.
+Definition at line 61 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SH "Property Documentation"
 .PP 
 .SS "IDbConnection Csla\&.Data\&.SqlClient\&.ConnectionManager\&.Connection\fC [get]\fP"
@@ -155,13 +155,13 @@ Definition at line 61 of file ConnectionManager\&.cs\&.
 .PP
 Dispose object, dereferencing or disposing the connection it is managing\&. 
 .PP
-Definition at line 157 of file ConnectionManager\&.cs\&.
+Definition at line 157 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 .SS "int Csla\&.Data\&.SqlClient\&.ConnectionManager\&.RefCount\fC [get]\fP"
 
 .PP
 Gets the current reference count for this object\&. 
 .PP
-Definition at line 163 of file ConnectionManager\&.cs\&.
+Definition at line 163 of file Csla\&.Data\&.SqlClient\&.Fx/ConnectionManager\&.cs\&.
 
 .SH "Author"
 .PP 

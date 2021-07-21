@@ -151,7 +151,7 @@ Expose metastate information about a property\&.
 
 
 .PP
-Definition at line 38 of file PropertyInfo\&.cs\&.
+Definition at line 38 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "Csla\&.Xaml\&.PropertyInfo\&.PropertyInfo ()"
@@ -159,7 +159,7 @@ Definition at line 38 of file PropertyInfo\&.cs\&.
 .PP
 Creates an instance of the object\&. 
 .PP
-Definition at line 47 of file PropertyInfo\&.cs\&.
+Definition at line 47 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "Csla\&.Xaml\&.PropertyInfo\&.PropertyInfo (bool testing)"
 
 .PP
@@ -172,7 +172,7 @@ Creates an instance of the object for testing\&.
 .PP
 
 .PP
-Definition at line 70 of file PropertyInfo\&.cs\&.
+Definition at line 70 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "object Csla\&.Xaml\&.PropertyInfo\&.GetRealSource (object source, string bindingPath)\fC [protected]\fP"
@@ -193,7 +193,7 @@ Gets the real source helper method\&.
 .PP
 
 .PP
-Definition at line 457 of file PropertyInfo\&.cs\&.
+Definition at line 457 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "PropertyPath Csla\&.Xaml\&.PropertyInfo\&.GetRelativePath (object source, string bindingPath)\fC [protected]\fP"
 
 .PP
@@ -212,7 +212,7 @@ Gets the part of the binding path relevant to the given source\&.
 .PP
 
 .PP
-Definition at line 483 of file PropertyInfo\&.cs\&.
+Definition at line 483 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "virtual void Csla\&.Xaml\&.PropertyInfo\&.OnPropertyChanged (string propertyName)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -225,7 +225,7 @@ Raises the PropertyChanged event\&.
 .PP
 
 .PP
-Definition at line 878 of file PropertyInfo\&.cs\&.
+Definition at line 878 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "virtual BindingExpression Csla\&.Xaml\&.PropertyInfo\&.ParseRelativeBinding (BindingExpression sourceBinding)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -243,25 +243,25 @@ If the source binding is a relative source binding, this method finds the proper
 .PP
 
 .PP
-Definition at line 317 of file PropertyInfo\&.cs\&.
+Definition at line 317 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "virtual void Csla\&.Xaml\&.PropertyInfo\&.SetSource (bool propertyValueChanged)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Sets the source binding and updates status\&. 
 .PP
-Definition at line 361 of file PropertyInfo\&.cs\&.
+Definition at line 361 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "virtual void Csla\&.Xaml\&.PropertyInfo\&.SetSource (object dataItem)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Sets the source binding and updates status\&. 
 .PP
-Definition at line 373 of file PropertyInfo\&.cs\&.
+Definition at line 373 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "virtual void Csla\&.Xaml\&.PropertyInfo\&.UpdateState ()\fC [virtual]\fP"
 
 .PP
 Updates the metastate values on control based on the current state of the business object and property\&. 
 .PP
-Definition at line 790 of file PropertyInfo\&.cs\&.
+Definition at line 790 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SH "Member Data Documentation"
 .PP 
 .SS "readonly DependencyProperty Csla\&.Xaml\&.PropertyInfo\&.BrokenRulesProperty\fC [static]\fP"
@@ -277,7 +277,7 @@ Definition at line 790 of file PropertyInfo\&.cs\&.
 .PP
 Gets the broken rules collection from the business object\&. 
 .PP
-Definition at line 100 of file PropertyInfo\&.cs\&.
+Definition at line 100 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "readonly DependencyProperty Csla\&.Xaml\&.PropertyInfo\&.MyDataContextProperty\fC [static]\fP"
 \fBInitial value:\fP
 .PP
@@ -294,7 +294,7 @@ Definition at line 100 of file PropertyInfo\&.cs\&.
 .PP
 Used to monitor for changes in the binding path\&. 
 .PP
-Definition at line 127 of file PropertyInfo\&.cs\&.
+Definition at line 127 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "readonly DependencyProperty Csla\&.Xaml\&.PropertyInfo\&.PropertyProperty\fC [static]\fP"
 \fBInitial value:\fP
 .PP
@@ -321,7 +321,7 @@ Definition at line 127 of file PropertyInfo\&.cs\&.
 .PP
 Gets or sets the source business property to which this control is bound\&. 
 .PP
-Definition at line 273 of file PropertyInfo\&.cs\&.
+Definition at line 273 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "readonly DependencyProperty Csla\&.Xaml\&.PropertyInfo\&.RelativeBindingProperty\fC [static]\fP"
 \fBInitial value:\fP
 .PP
@@ -338,7 +338,7 @@ Definition at line 273 of file PropertyInfo\&.cs\&.
 .PP
 Used to monitor for changes in the binding path\&. 
 .PP
-Definition at line 153 of file PropertyInfo\&.cs\&.
+Definition at line 153 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SH "Property Documentation"
 .PP 
 .SS "string Csla\&.Xaml\&.PropertyInfo\&.BindingPath\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
@@ -346,31 +346,31 @@ Definition at line 153 of file PropertyInfo\&.cs\&.
 .PP
 Gets or sets the binding path\&. The binding path\&.
 .PP
-Definition at line 183 of file PropertyInfo\&.cs\&.
+Definition at line 183 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "ObservableCollection<\fBBrokenRule\fP> Csla\&.Xaml\&.PropertyInfo\&.BrokenRules\fC [get]\fP"
 
 .PP
 Gets the broken rules collection from the business object\&. 
 .PP
-Definition at line 111 of file PropertyInfo\&.cs\&.
+Definition at line 111 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "bool Csla\&.Xaml\&.PropertyInfo\&.CanRead\fC [get]\fP, \fC [protected set]\fP"
 
 .PP
 Gets a value indicating whether the user is authorized to read the property\&. 
 .PP
-Definition at line 649 of file PropertyInfo\&.cs\&.
+Definition at line 649 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "bool Csla\&.Xaml\&.PropertyInfo\&.CanWrite\fC [get]\fP, \fC [protected set]\fP"
 
 .PP
 Gets a value indicating whether the user is authorized to write the property\&. 
 .PP
-Definition at line 668 of file PropertyInfo\&.cs\&.
+Definition at line 668 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "object Csla\&.Xaml\&.PropertyInfo\&.CustomTag\fC [get]\fP, \fC [set]\fP"
 
 .PP
 Gets or sets an arbitrary value associated with this \fBPropertyInfo\fP instance\&. 
 .PP
-Definition at line 765 of file PropertyInfo\&.cs\&.
+Definition at line 765 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "string Csla\&.Xaml\&.PropertyInfo\&.ErrorText\fC [get]\fP"
 
 .PP
@@ -383,7 +383,7 @@ Gets the validation error messages for a property on the Model
 .PP
 
 .PP
-Definition at line 574 of file PropertyInfo\&.cs\&.
+Definition at line 574 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "string Csla\&.Xaml\&.PropertyInfo\&.InformationText\fC [get]\fP"
 
 .PP
@@ -396,49 +396,49 @@ Gets the validation information messages for a property on the Model
 .PP
 
 .PP
-Definition at line 606 of file PropertyInfo\&.cs\&.
+Definition at line 606 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "bool Csla\&.Xaml\&.PropertyInfo\&.IsBusy\fC [get]\fP"
 
 .PP
 Gets a value indicating whether the property is busy with an asynchronous operation\&. 
 .PP
-Definition at line 687 of file PropertyInfo\&.cs\&.
+Definition at line 687 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "bool Csla\&.Xaml\&.PropertyInfo\&.IsValid\fC [get]\fP"
 
 .PP
 Gets a value indicating whether the property is valid\&. 
 .PP
-Definition at line 706 of file PropertyInfo\&.cs\&.
+Definition at line 706 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "object Csla\&.Xaml\&.PropertyInfo\&.Property\fC [get]\fP, \fC [set]\fP"
 
 .PP
 Gets or sets the source business property to which this control is bound\&. 
 .PP
-Definition at line 297 of file PropertyInfo\&.cs\&.
+Definition at line 297 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "string Csla\&.Xaml\&.PropertyInfo\&.RuleDescription\fC [get]\fP"
 
 .PP
 Gets the description of the most severe broken rule for this property\&. 
 .PP
-Definition at line 746 of file PropertyInfo\&.cs\&.
+Definition at line 746 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "\fBRuleSeverity\fP Csla\&.Xaml\&.PropertyInfo\&.RuleSeverity\fC [get]\fP"
 
 .PP
 Gets a value indicating the worst severity of all broken rules for this property (if IsValid is false)\&. 
 .PP
-Definition at line 727 of file PropertyInfo\&.cs\&.
+Definition at line 727 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "object Csla\&.Xaml\&.PropertyInfo\&.Source\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
 
 .PP
 Gets or sets the Source\&. The source\&.
 .PP
-Definition at line 177 of file PropertyInfo\&.cs\&.
+Definition at line 177 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "object Csla\&.Xaml\&.PropertyInfo\&.Value\fC [get]\fP, \fC [set]\fP"
 
 .PP
 Gets and sets the value of the property on the business object\&. 
 .PP
-Definition at line 626 of file PropertyInfo\&.cs\&.
+Definition at line 626 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SS "string Csla\&.Xaml\&.PropertyInfo\&.WarningText\fC [get]\fP"
 
 .PP
@@ -451,7 +451,7 @@ Gets the validation warning messages for a property on the Model
 .PP
 
 .PP
-Definition at line 590 of file PropertyInfo\&.cs\&.
+Definition at line 590 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 .SH "Event Documentation"
 .PP 
 .SS "PropertyChangedEventHandler Csla\&.Xaml\&.PropertyInfo\&.PropertyChanged"
@@ -459,7 +459,7 @@ Definition at line 590 of file PropertyInfo\&.cs\&.
 .PP
 Event raised when a property has changed\&. 
 .PP
-Definition at line 872 of file PropertyInfo\&.cs\&.
+Definition at line 872 of file Csla\&.Xaml\&.Shared/PropertyInfo\&.cs\&.
 
 .SH "Author"
 .PP 

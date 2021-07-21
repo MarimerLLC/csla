@@ -95,10 +95,9 @@ var NAVTREEINDEX =
 "class_csla_1_1_xaml_1_1_property_info.html#a02c1656f8d396854a43a03464bb4de2a",
 "classcslalighttest_1_1_csla_data_provider_1_1_customer_contact.html#acac29676b604a1b744ab4ca7b8e83223",
 "csla_8netcore_8test_2_data_binding_2_child_entity_list_8cs_source.html",
-"dir_c95e5b33424a667bbdbda3f198b859fa.html",
-"interface_csla_1_1_core_1_1_i_notify_unhandled_async_exception.html",
-"interface_csla_1_1_server_1_1_i_data_portal_activator.html#a960ace192e03774bf6e85082320155bb",
-"namespace_csla_1_1_testing_1_1_business_1_1_busy_status.html"
+"interface_csla_1_1_data_portal_client_1_1_i_data_portal_proxy.html#a4f3822405fb255571bf741f0b177eb5b",
+"namespace_csla_1_1_analyzers.html",
+"non_serializable_event_handler_8cs.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

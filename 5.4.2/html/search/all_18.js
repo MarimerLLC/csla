@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['xamarin_2eios_2cversion_3dv1_2e0_2eassemblyattributes_2ecs_4913',['Xamarin.iOS,Version=v1.0.AssemblyAttributes.cs',['../_ad-_hoc_2_xamarin_8i_o_s_00_version_0av1_80_8_assembly_attributes_8cs.html',1,'(Global Namespace)'],['../_app_store_2_xamarin_8i_o_s_00_version_0av1_80_8_assembly_attributes_8cs.html',1,'(Global Namespace)'],['../_debug_2_xamarin_8i_o_s_00_version_0av1_80_8_assembly_attributes_8cs.html',1,'(Global Namespace)'],['../_release_2_xamarin_8i_o_s_00_version_0av1_80_8_assembly_attributes_8cs.html',1,'(Global Namespace)'],['../imulator_2_debug_2_xamarin_8i_o_s_00_version_0av1_80_8_assembly_attributes_8cs.html',1,'(Global Namespace)'],['../imulator_2_release_2_xamarin_8i_o_s_00_version_0av1_80_8_assembly_attributes_8cs.html',1,'(Global Namespace)']]],
-  ['xamlpropertyinfotests_4914',['XamlPropertyInfoTests',['../class_csla_1_1_test_1_1_property_info_1_1_xaml_property_info_tests.html',1,'Csla::Test::PropertyInfo']]],
-  ['xamlpropertyinfotests_2ecs_4915',['XamlPropertyInfoTests.cs',['../_xaml_property_info_tests_8cs.html',1,'']]]
+  ['yesfail_4952',['YesFail',['../class_csla_1_1_test_1_1_roll_back_1_1_roll_back_tests.html#af8600dc5dfb0447597eb1e48f63be21d',1,'Csla::Test::RollBack::RollBackTests']]],
+  ['yesfailcancel_4953',['YesFailCancel',['../class_csla_1_1_test_1_1_roll_back_1_1_roll_back_tests.html#acdd350532c8b9c95814f035a73d74bd9',1,'Csla::Test::RollBack::RollBackTests']]]
 ];

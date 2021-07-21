@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['yesfail_4916',['YesFail',['../class_csla_1_1_test_1_1_roll_back_1_1_roll_back_tests.html#af8600dc5dfb0447597eb1e48f63be21d',1,'Csla::Test::RollBack::RollBackTests']]],
-  ['yesfailcancel_4917',['YesFailCancel',['../class_csla_1_1_test_1_1_roll_back_1_1_roll_back_tests.html#acdd350532c8b9c95814f035a73d74bd9',1,'Csla::Test::RollBack::RollBackTests']]]
+  ['zipcode_4954',['ZipCode',['../classcslalighttest_1_1_serialization_1_1_address.html#a3386a6fa724a65880fc0121f4247c8cd',1,'cslalighttest::Serialization::Address']]],
+  ['zipcodeproperty_4955',['ZipCodeProperty',['../classcslalighttest_1_1_serialization_1_1_address.html#acd8ed716f3b46b55365bfbdd69b489ce',1,'cslalighttest::Serialization::Address']]]
 ];

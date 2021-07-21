@@ -514,7 +514,7 @@ This is the non-generic base class from which most business objects will be deri
 
 
 .PP
-Definition at line 40 of file BusinessBase\&.cs\&.
+Definition at line 40 of file Csla/Core/BusinessBase\&.cs\&.
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "Csla\&.Core\&.BusinessBase\&.BusinessBase ()\fC [protected]\fP"
@@ -522,7 +522,7 @@ Definition at line 40 of file BusinessBase\&.cs\&.
 .PP
 Creates an instance of the object\&. 
 .PP
-Definition at line 59 of file BusinessBase\&.cs\&.
+Definition at line 59 of file Csla/Core/BusinessBase\&.cs\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "override void Csla\&.Core\&.BusinessBase\&.AcceptChangesComplete ()\fC [protected]\fP, \fC [virtual]\fP"
@@ -532,13 +532,13 @@ Notifies the parent object (if any) that this child object's edits have been acc
 .PP
 Reimplemented from \fBCsla\&.Core\&.UndoableBase\fP\&.
 .PP
-Definition at line 908 of file BusinessBase\&.cs\&.
+Definition at line 908 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.AddBusinessRules ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Override this method in your business class to be notified when you need to set up shared business rules\&. This method is automatically called by CSLA \&.NET when your object should associate per-type validation rules with its properties\&. 
 .PP
-Definition at line 1165 of file BusinessBase\&.cs\&.
+Definition at line 1165 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.AddEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP"
 
 .PP
@@ -551,7 +551,7 @@ For internal use\&.
 .PP
 
 .PP
-Definition at line 1379 of file BusinessBase\&.cs\&.
+Definition at line 1379 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.ApplyEdit ()"
 
 .PP
@@ -559,7 +559,7 @@ Commits the current edit process\&. Calling this method causes the most recently
 .PP
 Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
 .PP
-Definition at line 896 of file BusinessBase\&.cs\&.
+Definition at line 896 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.BeginEdit ()"
 
 .PP
@@ -571,7 +571,7 @@ See Chapters 2 and 3 for details on n-level undo and state stacking\&.
 .PP
 Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
 .PP
-Definition at line 853 of file BusinessBase\&.cs\&.
+Definition at line 853 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.CancelEdit ()"
 
 .PP
@@ -579,7 +579,7 @@ Cancels the current edit process, restoring the object's state to its previous v
 .PP
 Implements \fBCsla\&.Core\&.ISupportUndo\fP\&.
 .PP
-Definition at line 867 of file BusinessBase\&.cs\&.
+Definition at line 867 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanExecuteMethod (\fBCsla\&.Core\&.IMemberInfo\fP method)\fC [virtual]\fP"
 
 .PP
@@ -597,7 +597,7 @@ true if execute is allowed\&.
 .PP
 
 .PP
-Definition at line 664 of file BusinessBase\&.cs\&.
+Definition at line 664 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.CanExecuteMethod (\fBCsla\&.Core\&.IMemberInfo\fP method, bool throwOnFalse)"
 
 .PP
@@ -617,7 +617,7 @@ true if execute is allowed\&.
 .PP
 
 .PP
-Definition at line 691 of file BusinessBase\&.cs\&.
+Definition at line 691 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanExecuteMethod (string methodName)\fC [virtual]\fP"
 
 .PP
@@ -637,7 +637,7 @@ true if execute is allowed\&.
 .PP
 Implements \fBCsla\&.Security\&.IAuthorizeReadWrite\fP\&.
 .PP
-Definition at line 713 of file BusinessBase\&.cs\&.
+Definition at line 713 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanReadProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [virtual]\fP"
 
 .PP
@@ -650,7 +650,7 @@ Returns true if the user is allowed to read the calling property\&.
 .PP
 
 .PP
-Definition at line 496 of file BusinessBase\&.cs\&.
+Definition at line 496 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.CanReadProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property, bool throwOnFalse)"
 
 .PP
@@ -670,7 +670,7 @@ true if read is allowed\&.
 .PP
 
 .PP
-Definition at line 523 of file BusinessBase\&.cs\&.
+Definition at line 523 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.CanReadProperty (string propertyName)"
 
 .PP
@@ -685,7 +685,7 @@ Returns true if the user is allowed to read the specified property\&.
 .PP
 Implements \fBCsla\&.Security\&.IAuthorizeReadWrite\fP\&.
 .PP
-Definition at line 542 of file BusinessBase\&.cs\&.
+Definition at line 542 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.CanWriteProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [virtual]\fP"
 
 .PP
@@ -698,7 +698,7 @@ Returns true if the user is allowed to write the specified property\&.
 .PP
 
 .PP
-Definition at line 571 of file BusinessBase\&.cs\&.
+Definition at line 571 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.CanWriteProperty (\fBCsla\&.Core\&.IPropertyInfo\fP property, bool throwOnFalse)"
 
 .PP
@@ -718,7 +718,7 @@ true if write is allowed\&.
 .PP
 
 .PP
-Definition at line 598 of file BusinessBase\&.cs\&.
+Definition at line 598 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.CanWriteProperty (string propertyName)"
 
 .PP
@@ -733,13 +733,13 @@ Returns true if the user is allowed to write the specified property\&.
 .PP
 Implements \fBCsla\&.Security\&.IAuthorizeReadWrite\fP\&.
 .PP
-Definition at line 616 of file BusinessBase\&.cs\&.
+Definition at line 616 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.CheckObjectRules ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Check object rules and notifies UI of properties that may have changed\&. 
 .PP
-Definition at line 411 of file BusinessBase\&.cs\&.
+Definition at line 411 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.CheckPropertyRules (\fBIPropertyInfo\fP property)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -752,13 +752,13 @@ Check rules for the property and notifies UI of properties that may have changed
 .PP
 
 .PP
-Definition at line 398 of file BusinessBase\&.cs\&.
+Definition at line 398 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_Create ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Override this method to load a new business object with default values from the database\&. Normally you will overload this method to accept a strongly-typed criteria parameter, rather than overriding the method with a loosely-typed criteria parameter\&. 
 .PP
-Definition at line 1275 of file BusinessBase\&.cs\&.
+Definition at line 1275 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -773,7 +773,7 @@ Called by the server-side \fBDataPortal\fP if an exception occurs during data ac
 .PP
 
 .PP
-Definition at line 1305 of file BusinessBase\&.cs\&.
+Definition at line 1305 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -786,7 +786,7 @@ Called by the server-side \fBDataPortal\fP prior to calling the requested DataPo
 .PP
 
 .PP
-Definition at line 1286 of file BusinessBase\&.cs\&.
+Definition at line 1286 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Child_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -799,7 +799,7 @@ Called by the server-side \fBDataPortal\fP after calling the requested DataPorta
 .PP
 
 .PP
-Definition at line 1295 of file BusinessBase\&.cs\&.
+Definition at line 1295 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.DataPortal_OnDataPortalException (\fBDataPortalEventArgs\fP e, Exception ex)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -814,7 +814,7 @@ Called by the server-side \fBDataPortal\fP if an exception occurs during data ac
 .PP
 
 .PP
-Definition at line 1263 of file BusinessBase\&.cs\&.
+Definition at line 1263 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.DataPortal_OnDataPortalInvoke (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -827,7 +827,7 @@ Called by the server-side \fBDataPortal\fP prior to calling the requested DataPo
 .PP
 
 .PP
-Definition at line 1244 of file BusinessBase\&.cs\&.
+Definition at line 1244 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.DataPortal_OnDataPortalInvokeComplete (\fBDataPortalEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -840,7 +840,7 @@ Called by the server-side \fBDataPortal\fP after calling the requested DataPorta
 .PP
 
 .PP
-Definition at line 1253 of file BusinessBase\&.cs\&.
+Definition at line 1253 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Delete ()\fC [virtual]\fP"
 
 .PP
@@ -850,7 +850,7 @@ To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3\&.
 .PP
 Implements \fBCsla\&.Core\&.IEditableBusinessObject\fP\&.
 .PP
-Definition at line 964 of file BusinessBase\&.cs\&.
+Definition at line 964 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.EditChildComplete (\fBCore\&.IEditableBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -863,7 +863,7 @@ Override this method to be notified when a child object's \fBCore\&.BusinessBase
 .PP
 
 .PP
-Definition at line 3336 of file BusinessBase\&.cs\&.
+Definition at line 3336 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBBrokenRulesCollection\fP Csla\&.Core\&.BusinessBase\&.GetBrokenRules ()"
 
 .PP
@@ -871,7 +871,7 @@ Gets the broken rules for this object
 .PP
 Implements \fBCsla\&.Core\&.ICheckRules\fP\&.
 .PP
-Definition at line 3735 of file BusinessBase\&.cs\&.
+Definition at line 3735 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual object Csla\&.Core\&.BusinessBase\&.GetClone ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -884,7 +884,7 @@ A new object containing the exact data of the original object\&.
 .PP
 
 .PP
-Definition at line 1033 of file BusinessBase\&.cs\&.
+Definition at line 1033 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "object Csla\&.Core\&.BusinessBase\&.GetProperty (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP"
 
 .PP
@@ -898,7 +898,7 @@ Gets a property's value as a specified type\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1825 of file BusinessBase\&.cs\&.
+Definition at line 1825 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP"
 
 .PP
@@ -917,7 +917,7 @@ Gets a property's managed field value, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1854 of file BusinessBase\&.cs\&.
+Definition at line 1854 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo)\fC [protected]\fP"
 
 .PP
@@ -936,7 +936,7 @@ Gets a property's managed field value, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1734 of file BusinessBase\&.cs\&.
+Definition at line 1734 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P field)\fC [protected]\fP"
 
 .PP
@@ -957,7 +957,7 @@ Gets a property's value, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1643 of file BusinessBase\&.cs\&.
+Definition at line 1643 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P field, P defaultValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -981,7 +981,7 @@ Gets a property's value, first checking authorization\&.
 .PP
 
 .PP
-Definition at line 1664 of file BusinessBase\&.cs\&.
+Definition at line 1664 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1002,7 +1002,7 @@ Gets a property's value as a specified type, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1805 of file BusinessBase\&.cs\&.
+Definition at line 1805 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (string propertyName, P field, P defaultValue)\fC [protected]\fP"
 
 .PP
@@ -1025,7 +1025,7 @@ Gets a property's value, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1590 of file BusinessBase\&.cs\&.
+Definition at line 1590 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.GetProperty\fP< P > (string propertyName, P field, P defaultValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1049,7 +1049,7 @@ Gets a property's value, first checking authorization\&.
 .PP
 
 .PP
-Definition at line 1611 of file BusinessBase\&.cs\&.
+Definition at line 1611 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo)\fC [protected]\fP"
 
 .PP
@@ -1070,7 +1070,7 @@ Gets a property's value from the list of managed field values, first checking au
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1757 of file BusinessBase\&.cs\&.
+Definition at line 1757 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo, F field)\fC [protected]\fP"
 
 .PP
@@ -1093,7 +1093,7 @@ Gets a property's value as a specified type, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1688 of file BusinessBase\&.cs\&.
+Definition at line 1688 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo, F field, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1118,7 +1118,7 @@ Gets a property's value as a specified type, first checking authorization\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1715 of file BusinessBase\&.cs\&.
+Definition at line 1715 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.GetPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1141,7 +1141,7 @@ Gets a property's value from the list of managed field values, first checking au
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1783 of file BusinessBase\&.cs\&.
+Definition at line 1783 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBBusinessRuleManager\fP Csla\&.Core\&.BusinessBase\&.GetRegisteredRules ()\fC [protected]\fP"
 
 .PP
@@ -1154,13 +1154,13 @@ Gets the registered rules\&. Only for unit testing and not visible to code\&.
 .PP
 
 .PP
-Definition at line 1120 of file BusinessBase\&.cs\&.
+Definition at line 1120 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Initialize ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Override this method to set up event handlers so user code in a partial class can respond to events raised by generated code\&. 
 .PP
-Definition at line 73 of file BusinessBase\&.cs\&.
+Definition at line 73 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsPropertyBusy (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [virtual]\fP"
 
 .PP
@@ -1173,7 +1173,7 @@ Gets a value indicating whether a specific property is busy (has a currently exe
 .PP
 
 .PP
-Definition at line 3096 of file BusinessBase\&.cs\&.
+Definition at line 3096 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.IsPropertyBusy (string propertyName)"
 
 .PP
@@ -1186,7 +1186,7 @@ Gets a value indicating whether a specific property is busy (has a currently exe
 .PP
 
 .PP
-Definition at line 3109 of file BusinessBase\&.cs\&.
+Definition at line 3109 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.LazyGetProperty< P > (\fBPropertyInfo\fP< P > property, Func< P > valueGenerator)\fC [protected]\fP"
 
 .PP
@@ -1211,7 +1211,7 @@ Lazily initializes a property and returns the resulting value\&.
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1872 of file BusinessBase\&.cs\&.
+Definition at line 1872 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.LazyGetPropertyAsync< P > (\fBPropertyInfo\fP< P > property, Task< P > factory)\fC [protected]\fP"
 
 .PP
@@ -1238,7 +1238,7 @@ Note that the first value returned is almost certainly the defaultValue because 
 .PP
 If the user is not authorized to read the property value, the defaultValue value is returned as a result\&. 
 .PP
-Definition at line 1906 of file BusinessBase\&.cs\&.
+Definition at line 1906 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.LazyReadProperty< P > (\fBPropertyInfo\fP< P > property, Func< P > valueGenerator)\fC [protected]\fP"
 
 .PP
@@ -1258,7 +1258,7 @@ Gets a property's value as a specified type\&.
 .PP
 
 .PP
-Definition at line 2021 of file BusinessBase\&.cs\&.
+Definition at line 2021 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.LazyReadPropertyAsync< P > (\fBPropertyInfo\fP< P > property, Task< P > factory)\fC [protected]\fP"
 
 .PP
@@ -1278,7 +1278,7 @@ Gets a property's value as a specified type\&.
 .PP
 
 .PP
-Definition at line 2040 of file BusinessBase\&.cs\&.
+Definition at line 2040 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.LoadProperty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1294,7 +1294,7 @@ Loads a property's managed field with the supplied value\&.
 .PP
 No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
 .PP
-Definition at line 2853 of file BusinessBase\&.cs\&.
+Definition at line 2853 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.LoadProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
 
 .PP
@@ -1315,7 +1315,7 @@ Loads a property's managed field with the supplied value\&.
 .PP
 No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
 .PP
-Definition at line 2570 of file BusinessBase\&.cs\&.
+Definition at line 2570 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.LoadPropertyAsync< R > (\fBPropertyInfo\fP< R > property, Task< R > factory)\fC [protected]\fP"
 
 .PP
@@ -1335,7 +1335,7 @@ Load a property from an async method\&.
 .PP
 
 .PP
-Definition at line 3000 of file BusinessBase\&.cs\&.
+Definition at line 3000 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.LoadPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue)\fC [protected]\fP"
 
 .PP
@@ -1351,7 +1351,7 @@ Loads a property's managed field with the supplied value\&.
 .PP
 No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
 .PP
-Definition at line 2515 of file BusinessBase\&.cs\&.
+Definition at line 2515 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.LoadPropertyMarkDirty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1367,7 +1367,7 @@ Loads a property's managed field with the supplied value\&.
 .PP
 No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
 .PP
-Definition at line 2770 of file BusinessBase\&.cs\&.
+Definition at line 2770 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool \fBCsla\&.Core\&.BusinessBase\&.LoadPropertyMarkDirty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
 
 .PP
@@ -1388,31 +1388,31 @@ Loads a property's managed field with the supplied value and mark field as dirty
 .PP
 No authorization checks occur when this method is called, and no PropertyChanging or PropertyChanged events are raised\&. Loading values does not cause validation rules to be invoked\&. 
 .PP
-Definition at line 2615 of file BusinessBase\&.cs\&.
+Definition at line 2615 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkAsChild ()\fC [protected]\fP"
 
 .PP
 Marks the object as being a child object\&. 
 .PP
-Definition at line 939 of file BusinessBase\&.cs\&.
+Definition at line 939 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkBusy ()\fC [protected]\fP"
 
 .PP
 Mark the object as busy (it is running an async operation)\&. 
 .PP
-Definition at line 3018 of file BusinessBase\&.cs\&.
+Definition at line 3018 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkClean ()\fC [protected]\fP"
 
 .PP
 Forces the object's IsDirty flag to false\&. This method is normally called automatically and is not intended to be called manually\&. 
 .PP
-Definition at line 433 of file BusinessBase\&.cs\&.
+Definition at line 433 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkDeleted ()\fC [protected]\fP"
 
 .PP
 Marks an object for deletion\&. This also marks the object as being dirty\&. You should call this method in your business logic in the case that you want to have the object deleted when it is saved to the database\&. 
 .PP
-Definition at line 309 of file BusinessBase\&.cs\&.
+Definition at line 309 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkDirty ()\fC [protected]\fP"
 
 .PP
@@ -1420,7 +1420,7 @@ Marks an object as being dirty, or changed\&. You should call this method in you
 .PP
 Marking an object as dirty does two things\&. First it ensures that CSLA \&.NET will properly save the object as appropriate\&. Second, it causes CSLA \&.NET to tell \fBWindows\fP Forms data binding that the object's data has changed so any bound controls will update to reflect the new values\&. 
 .PP
-Definition at line 333 of file BusinessBase\&.cs\&.
+Definition at line 333 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkDirty (bool suppressEvent)\fC [protected]\fP"
 
 .PP
@@ -1433,13 +1433,13 @@ Marks an object as being dirty, or changed\&.
 .PP
 
 .PP
-Definition at line 346 of file BusinessBase\&.cs\&.
+Definition at line 346 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkIdle ()\fC [protected]\fP"
 
 .PP
 Mark the object as not busy (it is not running an async operation)\&. 
 .PP
-Definition at line 3032 of file BusinessBase\&.cs\&.
+Definition at line 3032 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.MarkNew ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1447,7 +1447,7 @@ Marks the object as being a new object\&. This also marks the object as being di
 .PP
 If you override this method, make sure to call the base implementation after executing your new code\&. 
 .PP
-Definition at line 266 of file BusinessBase\&.cs\&.
+Definition at line 266 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.MarkOld ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1457,7 +1457,7 @@ You should call this method in the implementation of DataPortal_Update to indica
 .PP
 If you override this method, make sure to call the base implementation after executing your new code\&. 
 .PP
-Definition at line 293 of file BusinessBase\&.cs\&.
+Definition at line 293 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.MetaPropertyHasChanged (string name)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1470,7 +1470,7 @@ Raises OnPropertyChanged for meta properties (IsXYZ) when PropertyChangedMode is
 .PP
 
 .PP
-Definition at line 387 of file BusinessBase\&.cs\&.
+Definition at line 387 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnAddEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1483,7 +1483,7 @@ Hook child object events\&.
 .PP
 
 .PP
-Definition at line 1389 of file BusinessBase\&.cs\&.
+Definition at line 1389 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnBusyChanged (\fBBusyChangedEventArgs\fP args)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1496,7 +1496,7 @@ Raise the BusyChanged event\&.
 .PP
 
 .PP
-Definition at line 3080 of file BusinessBase\&.cs\&.
+Definition at line 3080 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnChildChanged (\fBChildChangedEventArgs\fP e)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1509,7 +1509,7 @@ Raises the ChildChanged event, indicating that a child object has been changed\&
 .PP
 
 .PP
-Definition at line 3190 of file BusinessBase\&.cs\&.
+Definition at line 3190 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnDeserialized (System\&.Runtime\&.Serialization\&.StreamingContext context)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1524,7 +1524,7 @@ This method is called on a newly deserialized object after deserialization is co
 .PP
 Reimplemented in \fBCsla\&.Test\&.Silverlight\&.PropertyGetSet\&.AbstractGetSet< T >\fP\&.
 .PP
-Definition at line 1367 of file BusinessBase\&.cs\&.
+Definition at line 1367 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "override void Csla\&.Core\&.BusinessBase\&.OnGetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
 
 .PP
@@ -1539,7 +1539,7 @@ Override this method to insert your child object references into the MobileForma
 .PP
 
 .PP
-Definition at line 3525 of file BusinessBase\&.cs\&.
+Definition at line 3525 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "override void Csla\&.Core\&.BusinessBase\&.OnGetState (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
 
 .PP
@@ -1554,7 +1554,7 @@ Override this method to insert your field values into the MobileFormatter serial
 .PP
 
 .PP
-Definition at line 3475 of file BusinessBase\&.cs\&.
+Definition at line 3475 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnRemoveEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1567,7 +1567,7 @@ Unhook child object events\&.
 .PP
 
 .PP
-Definition at line 1431 of file BusinessBase\&.cs\&.
+Definition at line 1431 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "override void Csla\&.Core\&.BusinessBase\&.OnSetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
 
 .PP
@@ -1582,7 +1582,7 @@ Override this method to retrieve your child object references from the MobileFor
 .PP
 
 .PP
-Definition at line 3555 of file BusinessBase\&.cs\&.
+Definition at line 3555 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "override void Csla\&.Core\&.BusinessBase\&.OnSetState (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBStateMode\fP mode)\fC [protected]\fP"
 
 .PP
@@ -1597,7 +1597,7 @@ Override this method to retrieve your field values from the MobileFormatter seri
 .PP
 
 .PP
-Definition at line 3499 of file BusinessBase\&.cs\&.
+Definition at line 3499 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnUnhandledAsyncException (\fBErrorEventArgs\fP error)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1610,7 +1610,7 @@ Raises the UnhandledAsyncException event\&.
 .PP
 
 .PP
-Definition at line 3137 of file BusinessBase\&.cs\&.
+Definition at line 3137 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.OnUnhandledAsyncException (object originalSender, Exception error)\fC [protected]\fP"
 
 .PP
@@ -1625,13 +1625,13 @@ Raises the UnhandledAsyncException event\&.
 .PP
 
 .PP
-Definition at line 3150 of file BusinessBase\&.cs\&.
+Definition at line 3150 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.OnValidationComplete ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Raises the ValidationComplete event 
 .PP
-Definition at line 1067 of file BusinessBase\&.cs\&.
+Definition at line 1067 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.PropertyHasChanged (\fBCsla\&.Core\&.IPropertyInfo\fP property)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1645,7 +1645,7 @@ Performs processing required when a property has changed\&.
 .PP
 This method calls CheckRules(propertyName), MarkDirty and OnPropertyChanged(propertyName)\&. MarkDirty is called such that no event is raised for IsDirty, so only the specific property changed event for the current property is raised\&. 
 .PP
-Definition at line 372 of file BusinessBase\&.cs\&.
+Definition at line 372 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual object Csla\&.Core\&.BusinessBase\&.ReadProperty (\fBIPropertyInfo\fP propertyInfo)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1658,7 +1658,7 @@ Gets a property's value\&.
 .PP
 
 .PP
-Definition at line 1984 of file BusinessBase\&.cs\&.
+Definition at line 1984 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P \fBCsla\&.Core\&.BusinessBase\&.ReadProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo)\fC [protected]\fP"
 
 .PP
@@ -1676,7 +1676,7 @@ Gets a property's value as a specified type\&.
 .PP
 
 .PP
-Definition at line 1956 of file BusinessBase\&.cs\&.
+Definition at line 1956 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "P Csla\&.Core\&.BusinessBase\&.ReadPropertyConvert< F, P > (\fBPropertyInfo\fP< F > propertyInfo)\fC [protected]\fP"
 
 .PP
@@ -1696,7 +1696,7 @@ Gets a property's value from the list of managed field values, converting the va
 .PP
 
 .PP
-Definition at line 1943 of file BusinessBase\&.cs\&.
+Definition at line 1943 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "static \fBCsla\&.Core\&.IMemberInfo\fP Csla\&.Core\&.BusinessBase\&.RegisterMethod (Type objectType, \fBIMemberInfo\fP info)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -1716,7 +1716,7 @@ The provided \fBIMemberInfo\fP object\&.
 .PP
 
 .PP
-Definition at line 1515 of file BusinessBase\&.cs\&.
+Definition at line 1515 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "static \fBMethodInfo\fP Csla\&.Core\&.BusinessBase\&.RegisterMethod (Type objectType, string methodName)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -1736,7 +1736,7 @@ The provided \fBIMemberInfo\fP object\&.
 .PP
 
 .PP
-Definition at line 1536 of file BusinessBase\&.cs\&.
+Definition at line 1536 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> Csla\&.Core\&.BusinessBase\&.RegisterProperty< P > (Type objectType, \fBPropertyInfo\fP< P > info)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -1761,7 +1761,7 @@ The provided \fBIPropertyInfo\fP object\&.
 .PP
 
 .PP
-Definition at line 1563 of file BusinessBase\&.cs\&.
+Definition at line 1563 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.RemoveEventHooks (\fBIBusinessObject\fP child)\fC [protected]\fP"
 
 .PP
@@ -1774,7 +1774,7 @@ For internal use only\&.
 .PP
 
 .PP
-Definition at line 1421 of file BusinessBase\&.cs\&.
+Definition at line 1421 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.SetParent (\fBCore\&.IParent\fP parent)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -1787,7 +1787,7 @@ Used by \fBBusinessListBase\fP as a child object is created to tell the child ob
 .PP
 
 .PP
-Definition at line 140 of file BusinessBase\&.cs\&.
+Definition at line 140 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.SetProperty (\fBIPropertyInfo\fP propertyInfo, object newValue)\fC [protected]\fP"
 
 .PP
@@ -1803,7 +1803,7 @@ Sets a property's managed field with the supplied value, and then calls Property
 .PP
 If the user is not authorized to change the property a SecurityException is thrown\&. 
 .PP
-Definition at line 2450 of file BusinessBase\&.cs\&.
+Definition at line 2450 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBIPropertyInfo\fP propertyInfo, P newValue)\fC [protected]\fP"
 
 .PP
@@ -1824,7 +1824,7 @@ Sets a property's managed field with the supplied value, and then calls Property
 .PP
 If the user is not authorized to change the property a SecurityException is thrown\&. 
 .PP
-Definition at line 2492 of file BusinessBase\&.cs\&.
+Definition at line 2492 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue)\fC [protected]\fP"
 
 .PP
@@ -1845,7 +1845,7 @@ Sets a property's managed field with the supplied value, first checking authoriz
 .PP
 If the user is not authorized to change the property, this overload throws a SecurityException\&. 
 .PP
-Definition at line 2313 of file BusinessBase\&.cs\&.
+Definition at line 2313 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, P newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1867,7 +1867,7 @@ Sets a property's managed field with the supplied value, first checking authoriz
 .PP
 
 .PP
-Definition at line 2404 of file BusinessBase\&.cs\&.
+Definition at line 2404 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (\fBPropertyInfo\fP< P > propertyInfo, ref P field, P newValue)\fC [protected]\fP"
 
 .PP
@@ -1885,7 +1885,7 @@ Sets a property's backing field with the supplied value, first checking authoriz
 .PP
 If the user is not authorized to change the property, this overload throws a SecurityException\&. 
 .PP
-Definition at line 2079 of file BusinessBase\&.cs\&.
+Definition at line 2079 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (string propertyName, ref P field, P newValue)\fC [protected]\fP"
 
 .PP
@@ -1903,7 +1903,7 @@ Sets a property's backing field with the supplied value, first checking authoriz
 .PP
 If the user is not authorized to change the property, this overload throws a SecurityException\&. 
 .PP
-Definition at line 2099 of file BusinessBase\&.cs\&.
+Definition at line 2099 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.Core\&.BusinessBase\&.SetProperty\fP< P > (string propertyName, ref P field, P newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1922,7 +1922,7 @@ Sets a property's backing field with the supplied value, first checking authoriz
 .PP
 
 .PP
-Definition at line 2173 of file BusinessBase\&.cs\&.
+Definition at line 2173 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue)\fC [protected]\fP"
 
 .PP
@@ -1938,7 +1938,7 @@ Sets a property's managed field with the supplied value, first checking authoriz
 .PP
 If the user is not authorized to change the property, this overload throws a SecurityException\&. 
 .PP
-Definition at line 2331 of file BusinessBase\&.cs\&.
+Definition at line 2331 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, F > (\fBPropertyInfo\fP< P > propertyInfo, F newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -1955,7 +1955,7 @@ Sets a property's managed field with the supplied value, first checking authoriz
 .PP
 
 .PP
-Definition at line 2348 of file BusinessBase\&.cs\&.
+Definition at line 2348 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, V > (\fBPropertyInfo\fP< P > propertyInfo, ref P field, V newValue)\fC [protected]\fP"
 
 .PP
@@ -1980,7 +1980,7 @@ Sets a property's backing field with the supplied value, first checking authoriz
 .PP
 If the user is not authorized to change the property, this overload throws a SecurityException\&. 
 .PP
-Definition at line 2125 of file BusinessBase\&.cs\&.
+Definition at line 2125 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, V > (\fBPropertyInfo\fP< P > propertyInfo, ref P field, V newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -2007,7 +2007,7 @@ Sets a property's backing field with the supplied value, first checking authoriz
 .PP
 If the field value is of type string, any incoming null values are converted to string\&.Empty\&. 
 .PP
-Definition at line 2154 of file BusinessBase\&.cs\&.
+Definition at line 2154 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.SetPropertyConvert< P, V > (string propertyName, ref P field, V newValue, \fBSecurity\&.NoAccessBehavior\fP noAccess)\fC [protected]\fP"
 
 .PP
@@ -2034,7 +2034,7 @@ Sets a property's backing field with the supplied value, first checking authoriz
 .PP
 If the field value is of type string, any incoming null values are converted to string\&.Empty\&. 
 .PP
-Definition at line 2248 of file BusinessBase\&.cs\&.
+Definition at line 2248 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "override void Csla\&.Core\&.BusinessBase\&.UndoChangesComplete ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -2042,7 +2042,7 @@ Called when an undo operation has completed\&. This method resets the object as 
 .PP
 Reimplemented from \fBCsla\&.Core\&.UndoableBase\fP\&.
 .PP
-Definition at line 880 of file BusinessBase\&.cs\&.
+Definition at line 880 of file Csla/Core/BusinessBase\&.cs\&.
 .SH "Property Documentation"
 .PP 
 .SS "virtual \fBRules\&.BrokenRulesCollection\fP Csla\&.Core\&.BusinessBase\&.BrokenRulesCollection\fC [get]\fP"
@@ -2050,25 +2050,25 @@ Definition at line 880 of file BusinessBase\&.cs\&.
 .PP
 Provides access to the readonly collection of broken business rules for this object\&. 
 .PP
-Definition at line 1229 of file BusinessBase\&.cs\&.
+Definition at line 1229 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBBusinessRules\fP Csla\&.Core\&.BusinessBase\&.BusinessRules\fC [get]\fP, \fC [protected]\fP"
 
 .PP
 Provides access to the broken rules functionality\&. This property is used within your business logic so you can easily call the AddRule() method to associate business rules with your object's properties\&. 
 .PP
-Definition at line 1103 of file BusinessBase\&.cs\&.
+Definition at line 1103 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBBusyChangedEventHandler\fP Csla\&.Core\&.BusinessBase\&.BusyChanged\fC [add]\fP, \fC [remove]\fP"
 
 .PP
 Event indicating that the IsBusy property has changed\&. 
 .PP
-Definition at line 3070 of file BusinessBase\&.cs\&.
+Definition at line 3070 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "EventHandler<\fBCsla\&.Core\&.ChildChangedEventArgs\fP> Csla\&.Core\&.BusinessBase\&.ChildChanged\fC [add]\fP, \fC [remove]\fP"
 
 .PP
 Event raised when a child object has been changed\&. 
 .PP
-Definition at line 3168 of file BusinessBase\&.cs\&.
+Definition at line 3168 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.DisableIEditableObject\fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
 
 .PP
@@ -2076,25 +2076,25 @@ Gets or sets a value indicating whether the IEditableObject interface methods sh
 .PP
 If you disable the IEditableObject methods then \fBWindows\fP Forms data binding will no longer automatically call BeginEdit, CancelEdit or ApplyEdit on your object, and you will have to call these methods manually to get proper n-level undo behavior\&. 
 .PP
-Definition at line 755 of file BusinessBase\&.cs\&.
+Definition at line 755 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBFieldDataManager\fP Csla\&.Core\&.BusinessBase\&.FieldManager\fC [get]\fP, \fC [protected]\fP"
 
 .PP
 Gets the PropertyManager object for this business object\&. 
 .PP
-Definition at line 3294 of file BusinessBase\&.cs\&.
+Definition at line 3294 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsBusy\fC [get]\fP"
 
 .PP
 Gets a value indicating if this object or its child objects are busy\&. 
 .PP
-Definition at line 3046 of file BusinessBase\&.cs\&.
+Definition at line 3046 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.IsChild\fC [get]\fP"
 
 .PP
 Returns true if this is a child (non-root) object\&. 
 .PP
-Definition at line 931 of file BusinessBase\&.cs\&.
+Definition at line 931 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.IsDeleted\fC [get]\fP"
 
 .PP
@@ -2107,7 +2107,7 @@ A value indicating if this object is marked for deletion\&.
 .PP
 
 .PP
-Definition at line 194 of file BusinessBase\&.cs\&.
+Definition at line 194 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsDirty\fC [get]\fP"
 
 .PP
@@ -2122,7 +2122,7 @@ A value indicating if this object's data has been changed\&.
 .PP
 
 .PP
-Definition at line 221 of file BusinessBase\&.cs\&.
+Definition at line 221 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "bool Csla\&.Core\&.BusinessBase\&.IsNew\fC [get]\fP"
 
 .PP
@@ -2135,7 +2135,7 @@ A value indicating if this object is new\&.
 .PP
 
 .PP
-Definition at line 172 of file BusinessBase\&.cs\&.
+Definition at line 172 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSavable\fC [get]\fP"
 
 .PP
@@ -2148,13 +2148,13 @@ A value indicating if this object is both dirty and valid\&.
 .PP
 
 .PP
-Definition at line 458 of file BusinessBase\&.cs\&.
+Definition at line 458 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSelfBusy\fC [get]\fP"
 
 .PP
 Gets a value indicating if this object is busy\&. 
 .PP
-Definition at line 3058 of file BusinessBase\&.cs\&.
+Definition at line 3058 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSelfDirty\fC [get]\fP"
 
 .PP
@@ -2169,7 +2169,7 @@ A value indicating if this object's data has been changed\&.
 .PP
 
 .PP
-Definition at line 246 of file BusinessBase\&.cs\&.
+Definition at line 246 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsSelfValid\fC [get]\fP"
 
 .PP
@@ -2184,7 +2184,7 @@ A value indicating if the object is currently valid\&.
 .PP
 
 .PP
-Definition at line 1215 of file BusinessBase\&.cs\&.
+Definition at line 1215 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual bool Csla\&.Core\&.BusinessBase\&.IsValid\fC [get]\fP"
 
 .PP
@@ -2199,25 +2199,25 @@ A value indicating if the object is currently valid\&.
 .PP
 
 .PP
-Definition at line 1192 of file BusinessBase\&.cs\&.
+Definition at line 1192 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBCore\&.IParent\fP Csla\&.Core\&.BusinessBase\&.Parent\fC [get]\fP"
 
 .PP
 Provide access to the parent reference for use in child object code\&. This value will be Nothing for root objects\&. 
 .PP
-Definition at line 129 of file BusinessBase\&.cs\&.
+Definition at line 129 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "EventHandler<\fBErrorEventArgs\fP> Csla\&.Core\&.BusinessBase\&.UnhandledAsyncException\fC [add]\fP, \fC [remove]\fP"
 
 .PP
 Event indicating that an exception occurred during the processing of an async operation\&. 
 .PP
-Definition at line 3126 of file BusinessBase\&.cs\&.
+Definition at line 3126 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "EventHandler Csla\&.Core\&.BusinessBase\&.ValidationComplete\fC [add]\fP, \fC [remove]\fP"
 
 .PP
 Event raised when validation is complete\&. 
 .PP
-Definition at line 1049 of file BusinessBase\&.cs\&.
+Definition at line 1049 of file Csla/Core/BusinessBase\&.cs\&.
 
 .SH "Author"
 .PP 

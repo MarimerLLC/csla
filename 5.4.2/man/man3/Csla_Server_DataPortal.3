@@ -89,7 +89,7 @@ Implements the server-side \fBDataPortal\fP message router as discussed in Chapt
 
 
 .PP
-Definition at line 21 of file DataPortal\&.cs\&.
+Definition at line 21 of file Server/DataPortal\&.cs\&.
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "Csla\&.Server\&.DataPortal\&.DataPortal ()"
@@ -97,7 +97,7 @@ Definition at line 21 of file DataPortal\&.cs\&.
 .PP
 Default constructor 
 .PP
-Definition at line 37 of file DataPortal\&.cs\&.
+Definition at line 37 of file Server/DataPortal\&.cs\&.
 .SS "Csla\&.Server\&.DataPortal\&.DataPortal (string cslaAuthorizationProviderAppSettingName)\fC [protected]\fP"
 
 .PP
@@ -110,7 +110,7 @@ This construcor accepts the App Setting name for the \fBCsla\fP Authorization Pr
 .PP
 
 .PP
-Definition at line 48 of file DataPortal\&.cs\&.
+Definition at line 48 of file Server/DataPortal\&.cs\&.
 .SS "Csla\&.Server\&.DataPortal\&.DataPortal (Type authProviderType)\fC [protected]\fP"
 
 .PP
@@ -123,7 +123,7 @@ This constructor accepts the Authorization Provider Type as a parameter\&.
 .PP
 
 .PP
-Definition at line 57 of file DataPortal\&.cs\&.
+Definition at line 57 of file Server/DataPortal\&.cs\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.DataPortal\&.Create (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
@@ -146,7 +146,7 @@ Create a new business object\&.
 .PP
 Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
 .PP
-Definition at line 138 of file DataPortal\&.cs\&.
+Definition at line 138 of file Server/DataPortal\&.cs\&.
 .SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.DataPortal\&.Delete (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
 
 .PP
@@ -167,7 +167,7 @@ Delete a business object\&.
 .PP
 Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
 .PP
-Definition at line 456 of file DataPortal\&.cs\&.
+Definition at line 456 of file Server/DataPortal\&.cs\&.
 .SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.DataPortal\&.Fetch (Type objectType, object criteria, \fBDataPortalContext\fP context, bool isSync)"
 
 .PP
@@ -188,7 +188,7 @@ Get an existing business object\&.
 .PP
 Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
 .PP
-Definition at line 233 of file DataPortal\&.cs\&.
+Definition at line 233 of file Server/DataPortal\&.cs\&.
 .SS "static object [] Csla\&.Server\&.DataPortal\&.GetCriteriaArray (object criteria)\fC [static]\fP"
 
 .PP
@@ -205,7 +205,7 @@ Converts a single serializable criteria value into an array of type object\&.
 .PP
 
 .PP
-Definition at line 755 of file DataPortal\&.cs\&.
+Definition at line 755 of file Server/DataPortal\&.cs\&.
 .SS "static object Csla\&.Server\&.DataPortal\&.GetCriteriaFromArray (params object[] criteria)\fC [static]\fP"
 
 .PP
@@ -222,7 +222,7 @@ Converts a params array to a single serializable criteria value\&.
 .PP
 
 .PP
-Definition at line 730 of file DataPortal\&.cs\&.
+Definition at line 730 of file Server/DataPortal\&.cs\&.
 .SS "async Task<\fBDataPortalResult\fP> Csla\&.Server\&.DataPortal\&.Update (object obj, \fBDataPortalContext\fP context, bool isSync)"
 
 .PP
@@ -241,7 +241,7 @@ Update a business object\&.
 .PP
 Implements \fBCsla\&.Server\&.IDataPortalServer\fP\&.
 .PP
-Definition at line 325 of file DataPortal\&.cs\&.
+Definition at line 325 of file Server/DataPortal\&.cs\&.
 .SH "Property Documentation"
 .PP 
 .SS "\fBIAuthorizeDataPortal\fP Csla\&.Server\&.DataPortal\&.Authorizer\fC [static]\fP, \fC [get]\fP, \fC [set]\fP, \fC [protected]\fP"
@@ -249,19 +249,19 @@ Definition at line 325 of file DataPortal\&.cs\&.
 .PP
 Gets or sets a reference to the current authorizer\&. 
 .PP
-Definition at line 680 of file DataPortal\&.cs\&.
+Definition at line 680 of file Server/DataPortal\&.cs\&.
 .SS "\fBDashboard\&.IDashboard\fP Csla\&.Server\&.DataPortal\&.Dashboard\fC [static]\fP, \fC [get]\fP, \fC [set]\fP"
 
 .PP
 Gets the data portal dashboard instance\&. 
 .PP
-Definition at line 26 of file DataPortal\&.cs\&.
+Definition at line 26 of file Server/DataPortal\&.cs\&.
 .SS "Type Csla\&.Server\&.DataPortal\&.InterceptorType\fC [static]\fP, \fC [get]\fP, \fC [set]\fP"
 
 .PP
 Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. 
 .PP
-Definition at line 556 of file DataPortal\&.cs\&.
+Definition at line 556 of file Server/DataPortal\&.cs\&.
 
 .SH "Author"
 .PP 

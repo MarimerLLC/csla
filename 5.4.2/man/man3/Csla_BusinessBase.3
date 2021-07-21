@@ -183,7 +183,7 @@ Please refer to 'Expert C# 2008 Business Objects' for full details on the use of
 .TP
 \fIT\fP : \fI\fBBusinessBase\fP<T>\fP
 .PP
-Definition at line 36 of file BusinessBase\&.cs\&.
+Definition at line 36 of file Csla/BusinessBase\&.cs\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave ()"
@@ -193,7 +193,7 @@ Starts an async operation to save the object to the database\&.
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 272 of file BusinessBase\&.cs\&.
+Definition at line 272 of file Csla/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (bool forceUpdate)"
 
 .PP
@@ -207,7 +207,7 @@ Starts an async operation to save the object to the database\&.
 .PP
 This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
 .PP
-Definition at line 349 of file BusinessBase\&.cs\&.
+Definition at line 349 of file Csla/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (bool forceUpdate, EventHandler< \fBSavedEventArgs\fP > handler)"
 
 .PP
@@ -223,7 +223,7 @@ Starts an async operation to save the object to the database\&.
 .PP
 This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
 .PP
-Definition at line 371 of file BusinessBase\&.cs\&.
+Definition at line 371 of file Csla/BusinessBase\&.cs\&.
 .SS "async void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (bool forceUpdate, EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
 
 .PP
@@ -240,7 +240,7 @@ Starts an async operation to save the object to the database\&.
 .PP
 
 .PP
-Definition at line 311 of file BusinessBase\&.cs\&.
+Definition at line 311 of file Csla/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (EventHandler< \fBSavedEventArgs\fP > handler)"
 
 .PP
@@ -253,7 +253,7 @@ Starts an async operation to save the object to the database\&.
 .PP
 
 .PP
-Definition at line 294 of file BusinessBase\&.cs\&.
+Definition at line 294 of file Csla/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (EventHandler< \fBSavedEventArgs\fP > handler, object userState)"
 
 .PP
@@ -269,7 +269,7 @@ Saves the object to the database, forcing IsNew to false and IsDirty to True\&.
 .PP
 This overload is designed for use in web applications when implementing the Update method in your data wrapper object\&. 
 .PP
-Definition at line 391 of file BusinessBase\&.cs\&.
+Definition at line 391 of file Csla/BusinessBase\&.cs\&.
 .SS "void \fBCsla\&.BusinessBase\fP< T >\&.BeginSave (object userState)"
 
 .PP
@@ -284,7 +284,7 @@ Starts an async operation to save the object to the database\&.
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 282 of file BusinessBase\&.cs\&.
+Definition at line 282 of file Csla/BusinessBase\&.cs\&.
 .SS "T \fBCsla\&.BusinessBase\fP< T >\&.Clone ()"
 
 .PP
@@ -297,7 +297,7 @@ A new object containing the exact data of the original object\&.
 .PP
 
 .PP
-Definition at line 79 of file BusinessBase\&.cs\&.
+Definition at line 79 of file Csla/BusinessBase\&.cs\&.
 .SS "virtual object \fBCsla\&.BusinessBase\fP< T >\&.GetIdValue ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -305,7 +305,7 @@ Override this method to return a unique identifying value for this object\&.
 .PP
 Reimplemented in \fBCsla\&.Test\&.DataPortalTest\&.PrimitiveCriteriaSingle\fP, \fBCsla\&.Test\&.RollBack\&.RollbackRoot\fP, \fBCsla\&.Test\&.Nullable\&.NullableObject\fP, \fBCsla\&.Test\&.IO\&.TestBizObj\fP, \fBCsla\&.Test\&.DataBinding\&.ChildEntity\fP, \fBDataBindingApp\&.ListObject\&.DataObject\fP, \fBCsla\&.Test\&.ChildrenByInterface\&.Item2\fP, \fBCsla\&.Test\&.ChildrenByInterface\&.Item1\fP, \fBCsla\&.Test\&.Basic\&.GrandChild\fP, \fBCsla\&.Test\&.Basic\&.GenRootBase\fP, \fBCsla\&.Test\&.Basic\&.Child\fP, \fBCsla\&.Test\&.Security\&.PermissionsRoot2\fP, \fBCsla\&.Test\&.Security\&.PermissionsRoot\fP, \fBCsla\&.Test\&.AppContext\&.SimpleRoot\fP, \fBCsla\&.Test\&.AppContext\&.ExceptionRoot\fP, \fBCsla\&.Test\&.DataBinding\&.ChildEntity\fP, and \fBCsla\&.Test\&.Basic\&.GenRootBase\fP\&.
 .PP
-Definition at line 46 of file BusinessBase\&.cs\&.
+Definition at line 46 of file Csla/BusinessBase\&.cs\&.
 .SS "virtual void \fBCsla\&.BusinessBase\fP< T >\&.OnSaved (T newObject, Exception e, object userState)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -322,7 +322,7 @@ Raises the Saved event, indicating that the object has been saved, and providing
 .PP
 
 .PP
-Definition at line 476 of file BusinessBase\&.cs\&.
+Definition at line 476 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBMethodInfo\fP \fBCsla\&.BusinessBase\fP< T >\&.RegisterMethod (Expression< Action< T >> methodLambdaExpression)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -339,7 +339,7 @@ Registers a method for use in Authorization\&.
 .PP
 
 .PP
-Definition at line 694 of file BusinessBase\&.cs\&.
+Definition at line 694 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBMethodInfo\fP \fBCsla\&.BusinessBase\fP< T >\&.RegisterMethod (string methodName)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -356,7 +356,7 @@ Registers a method for use in Authorization\&.
 .PP
 
 .PP
-Definition at line 684 of file BusinessBase\&.cs\&.
+Definition at line 684 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -378,7 +378,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 526 of file BusinessBase\&.cs\&.
+Definition at line 526 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -402,7 +402,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 541 of file BusinessBase\&.cs\&.
+Definition at line 541 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -426,7 +426,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 569 of file BusinessBase\&.cs\&.
+Definition at line 569 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -450,7 +450,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 596 of file BusinessBase\&.cs\&.
+Definition at line 596 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -476,7 +476,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 642 of file BusinessBase\&.cs\&.
+Definition at line 642 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, P defaultValue, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -504,7 +504,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 673 of file BusinessBase\&.cs\&.
+Definition at line 673 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (Expression< Func< T, object >> propertyLambdaExpression, string friendlyName, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -530,7 +530,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 612 of file BusinessBase\&.cs\&.
+Definition at line 612 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (\fBPropertyInfo\fP< P > info)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -553,7 +553,7 @@ The provided IPropertyInfo object\&.
 .PP
 
 .PP
-Definition at line 502 of file BusinessBase\&.cs\&.
+Definition at line 502 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -575,7 +575,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 514 of file BusinessBase\&.cs\&.
+Definition at line 514 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -599,7 +599,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 556 of file BusinessBase\&.cs\&.
+Definition at line 556 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, string friendlyName)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -623,7 +623,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 583 of file BusinessBase\&.cs\&.
+Definition at line 583 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, string friendlyName, P defaultValue)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -649,7 +649,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 628 of file BusinessBase\&.cs\&.
+Definition at line 628 of file Csla/BusinessBase\&.cs\&.
 .SS "static \fBPropertyInfo\fP<P> \fBCsla\&.BusinessBase\fP< T >\&.RegisterProperty< P > (string propertyName, string friendlyName, P defaultValue, \fBRelationshipTypes\fP relationship)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
@@ -677,7 +677,7 @@ Indicates that the specified property belongs to the business object type\&.
 .PP
 
 .PP
-Definition at line 658 of file BusinessBase\&.cs\&.
+Definition at line 658 of file Csla/BusinessBase\&.cs\&.
 .SS "T \fBCsla\&.BusinessBase\fP< T >\&.Save ()"
 
 .PP
@@ -700,7 +700,7 @@ A new object containing the saved values\&.
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 121 of file BusinessBase\&.cs\&.
+Definition at line 121 of file Csla/BusinessBase\&.cs\&.
 .SS "T \fBCsla\&.BusinessBase\fP< T >\&.Save (bool forceUpdate)"
 
 .PP
@@ -721,7 +721,7 @@ This overload is designed for use in web applications when implementing the Upda
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 231 of file BusinessBase\&.cs\&.
+Definition at line 231 of file Csla/BusinessBase\&.cs\&.
 .SS "async Task \fBCsla\&.BusinessBase\fP< T >\&.SaveAndMergeAsync ()"
 
 .PP
@@ -729,7 +729,7 @@ Saves the object to the database, merging any resulting updates into the existin
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 249 of file BusinessBase\&.cs\&.
+Definition at line 249 of file Csla/BusinessBase\&.cs\&.
 .SS "async Task \fBCsla\&.BusinessBase\fP< T >\&.SaveAndMergeAsync (bool forceUpdate)"
 
 .PP
@@ -744,7 +744,7 @@ Saves the object to the database, merging any resulting updates into the existin
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 263 of file BusinessBase\&.cs\&.
+Definition at line 263 of file Csla/BusinessBase\&.cs\&.
 .SS "async Task<T> \fBCsla\&.BusinessBase\fP< T >\&.SaveAsync ()"
 
 .PP
@@ -752,7 +752,7 @@ Saves the object to the database\&.
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 139 of file BusinessBase\&.cs\&.
+Definition at line 139 of file Csla/BusinessBase\&.cs\&.
 .SS "async Task<T> \fBCsla\&.BusinessBase\fP< T >\&.SaveAsync (bool forceUpdate)"
 
 .PP
@@ -767,7 +767,7 @@ Saves the object to the database\&.
 .PP
 Implements \fBCsla\&.Core\&.ISavable< T >\fP\&.
 .PP
-Definition at line 151 of file BusinessBase\&.cs\&.
+Definition at line 151 of file Csla/BusinessBase\&.cs\&.
 .SS "virtual async Task<T> \fBCsla\&.BusinessBase\fP< T >\&.SaveAsync (bool forceUpdate, object userState, bool isSync)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -784,13 +784,13 @@ Saves the object to the database\&.
 .PP
 
 .PP
-Definition at line 165 of file BusinessBase\&.cs\&.
+Definition at line 165 of file Csla/BusinessBase\&.cs\&.
 .SS "override string \fBCsla\&.BusinessBase\fP< T >\&.ToString ()"
 
 .PP
 Returns a text representation of this object by returning the \fBGetIdValue\fP value in text form\&. 
 .PP
-Definition at line 60 of file BusinessBase\&.cs\&.
+Definition at line 60 of file Csla/BusinessBase\&.cs\&.
 .SH "Property Documentation"
 .PP 
 .SS "EventHandler<\fBCsla\&.Core\&.SavedEventArgs\fP> \fBCsla\&.BusinessBase\fP< T >\&.Saved\fC [add]\fP, \fC [remove]\fP"
@@ -798,7 +798,7 @@ Definition at line 60 of file BusinessBase\&.cs\&.
 .PP
 Event raised when an object has been saved\&. 
 .PP
-Definition at line 431 of file BusinessBase\&.cs\&.
+Definition at line 431 of file Csla/BusinessBase\&.cs\&.
 
 .SH "Author"
 .PP 

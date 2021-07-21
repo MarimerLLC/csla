@@ -21,6 +21,11 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalSelector : IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="simpleDataPortal"></param>
+    /// <param name="factoryDataPortal"></param>
     public DataPortalSelector(SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal)
     {
       SimpleDataPortal = simpleDataPortal;

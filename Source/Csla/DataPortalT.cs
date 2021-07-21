@@ -22,20 +22,14 @@ namespace Csla
   /// </typeparam>
   public class DataPortal<T> : IDataPortal<T>, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="applicationContext">ApplicationContext</param>
     public DataPortal(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext;
     }
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    private ApplicationContext ApplicationContext { get; set; }
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.

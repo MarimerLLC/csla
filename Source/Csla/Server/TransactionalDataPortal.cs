@@ -17,6 +17,10 @@ namespace Csla.Server
   /// </summary>
   public class TransactionalDataPortal : IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortalBroker"></param>
     public TransactionalDataPortal(DataPortalBroker dataPortalBroker)
     {
       portal = dataPortalBroker;

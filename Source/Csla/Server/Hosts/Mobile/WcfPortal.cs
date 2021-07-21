@@ -24,11 +24,18 @@ namespace Csla.Server.Hosts.Mobile
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="mobileRequestProcessor"></param>
     public WcfPortal(MobileRequestProcessor mobileRequestProcessor)
     {
       processor = mobileRequestProcessor;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public MobileRequestProcessor processor { get; set; }
 
     #region IWcfPortal Members

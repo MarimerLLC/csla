@@ -16,6 +16,10 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalBroker : IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortalSelector"></param>
     public DataPortalBroker(DataPortalSelector dataPortalSelector)
     {
       DataPortalSelector = dataPortalSelector;

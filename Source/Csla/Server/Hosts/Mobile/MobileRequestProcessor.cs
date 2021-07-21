@@ -17,15 +17,30 @@ namespace Csla.Server.Hosts.Mobile
   /// <summary>
   /// Object that processes all the requests from a client
   /// </summary>
-  public class MobileRequestProcessor : Core.IUseApplicationContext
+  public class MobileRequestProcessor
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortal"></param>
+    /// <param name="applicationContext"></param>
+    public MobileRequestProcessor(Server.IDataPortalServer dataPortal, ApplicationContext applicationContext)
+    {
+      serverDataPortal = dataPortal;
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public Server.IDataPortalServer serverDataPortal { get; set; }
 
-#region Factory Loader
+    #region Factory Loader
 
     private IMobileFactoryLoader _factoryLoader;
     /// <summary>
@@ -55,9 +70,9 @@ namespace Csla.Server.Hosts.Mobile
       }
     }
 
-#endregion
+    #endregion
 
-#region Operations
+    #region Operations
 
     /// <summary>
     /// Create a new business object.
@@ -66,7 +81,7 @@ namespace Csla.Server.Hosts.Mobile
     /// <returns>Resulf of the create operation - an instance of a business object</returns>
     public async Task<MobileResponse> Create(MobileCriteriaRequest request)
     {
-      var serverDataPortal = new Csla.Server.DataPortal();
+      var serverDataPortal = ApplicationContext.CreateInstance<Csla.Server.DataPortal>();
       var result = new MobileResponse();
       Type businessObjectType = null;
       object criteria = null;
@@ -122,9 +137,9 @@ namespace Csla.Server.Hosts.Mobile
       finally
       {
         if (result.Error != null)
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error) });
         else
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create, Result = new DataPortalResult(result.Object, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create, Result = new DataPortalResult(result.Object) });
         ClearContext();
       }
       return result;
@@ -137,7 +152,7 @@ namespace Csla.Server.Hosts.Mobile
     /// <returns>Result of the fetch operation - an instance of a business object</returns>
     public async Task<MobileResponse> Fetch(MobileCriteriaRequest request)
     {
-      var serverDataPortal = new Csla.Server.DataPortal();
+      var serverDataPortal = ApplicationContext.CreateInstance<Csla.Server.DataPortal>();
       var result = new MobileResponse();
       Type businessObjectType = null;
       object criteria = null;
@@ -195,9 +210,9 @@ namespace Csla.Server.Hosts.Mobile
       finally
       {
         if (result.Error != null)
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error) });
         else
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, Result = new DataPortalResult(result.Object, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, Result = new DataPortalResult(result.Object) });
         ClearContext();
       }
       return result;
@@ -210,7 +225,7 @@ namespace Csla.Server.Hosts.Mobile
     /// <returns>Result of the update operation - updated object</returns>
     public async Task<MobileResponse> Update(MobileUpdateRequest request)
     {
-      var serverDataPortal = new Csla.Server.DataPortal();
+      var serverDataPortal = ApplicationContext.CreateInstance<Csla.Server.DataPortal>();
       var result = new MobileResponse();
       Type businessObjectType = null;
       object obj = null;
@@ -263,9 +278,9 @@ namespace Csla.Server.Hosts.Mobile
       finally
       {
         if (result.Error != null)
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error) });
         else
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation, Result = new DataPortalResult(result.Object, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation, Result = new DataPortalResult(result.Object) });
         ClearContext();
       }
       return result;
@@ -278,7 +293,7 @@ namespace Csla.Server.Hosts.Mobile
     /// <returns>Result of the delete operation</returns>
     public async Task<MobileResponse> Delete(MobileCriteriaRequest request)
     {
-      var serverDataPortal = new Csla.Server.DataPortal();
+      var serverDataPortal = ApplicationContext.CreateInstance<Csla.Server.DataPortal>();
       var result = new MobileResponse();
       Type businessObjectType = null;
       object criteria = null;
@@ -328,17 +343,17 @@ namespace Csla.Server.Hosts.Mobile
       finally
       {
         if (result.Error != null)
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error) });
         else
-          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete, Result = new DataPortalResult(result.Object, result.GlobalContext) });
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete, Result = new DataPortalResult(result.Object) });
         ClearContext();
       }
       return result;
     }
 
-#endregion
+    #endregion
 
-#region Mobile Factory
+    #region Mobile Factory
 
     private static MobileFactoryAttribute GetMobileFactoryAttribute(Type objectType)
     {
@@ -349,9 +364,9 @@ namespace Csla.Server.Hosts.Mobile
         return null;
     }
 
-#endregion
+    #endregion
 
-#region Context and Criteria
+    #region Context and Criteria
     private void SetContext(IMobileRequest request)
     {
       ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
@@ -374,7 +389,7 @@ namespace Csla.Server.Hosts.Mobile
       //  ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
     }
 
-#region client culture
+    #region client culture
     /// <summary>
     /// Sets the client cultures on current tread.
     /// </summary>
@@ -416,8 +431,8 @@ namespace Csla.Server.Hosts.Mobile
       }
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
   }
 }

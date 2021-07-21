@@ -22,6 +22,10 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalRepeatableRead : ServicedComponent, IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortalBroker"></param>
     public ServicedDataPortalRepeatableRead(DataPortalBroker dataPortalBroker)
     {
       portal = dataPortalBroker;

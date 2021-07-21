@@ -16,11 +16,18 @@ namespace Csla.Server.Hosts
   /// </summary>
   public class RemotingPortal : MarshalByRefObject//, Server.IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortal"></param>
     public RemotingPortal(Server.IDataPortalServer dataPortal)
     {
       portal = dataPortal;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Server.IDataPortalServer portal { get; set; }
 
     /// <summary>

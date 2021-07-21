@@ -22,6 +22,10 @@ namespace Csla.Server.Hosts
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortal"></param>
     public WcfPortal(Server.IDataPortalServer dataPortal)
     {
       portal = dataPortal;

@@ -22,6 +22,10 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalReadCommitted : ServicedComponent, IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortalBroker"></param>
     public ServicedDataPortalReadCommitted(DataPortalBroker dataPortalBroker)
     {
       portal = dataPortalBroker;

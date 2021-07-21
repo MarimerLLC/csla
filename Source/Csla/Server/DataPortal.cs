@@ -118,13 +118,13 @@ namespace Csla.Server
       switch (transactionalAttribute.TransactionIsolationLevel)
       {
         case TransactionIsolationLevel.Serializable:
-          return new ServicedDataPortalSerializable();
+          return ApplicationContext.CreateInstance<ServicedDataPortalSerializable>();
         case TransactionIsolationLevel.RepeatableRead:
-          return new ServicedDataPortalRepeatableRead();
+          return ApplicationContext.CreateInstance<ServicedDataPortalRepeatableRead>();
         case TransactionIsolationLevel.ReadCommitted:
-          return new ServicedDataPortalReadCommitted();
+          return ApplicationContext.CreateInstance<ServicedDataPortalReadCommitted>();
         case TransactionIsolationLevel.ReadUncommitted:
-          return new ServicedDataPortalReadUncommitted();
+          return ApplicationContext.CreateInstance<ServicedDataPortalReadUncommitted>();
         default:
           throw new ArgumentOutOfRangeException("transactionalAttribute");
       }
@@ -196,7 +196,7 @@ namespace Csla.Server
 
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -288,7 +288,7 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -419,7 +419,7 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -519,7 +519,7 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }

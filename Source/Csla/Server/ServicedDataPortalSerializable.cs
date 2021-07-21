@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !MONO && !(ANDROID || IOS) && !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0
 //-----------------------------------------------------------------------
 // <copyright file="ServicedDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -22,6 +22,10 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalSerializable : ServicedComponent, IDataPortalServer
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortalBroker"></param>
     public ServicedDataPortalSerializable(DataPortalBroker dataPortalBroker)
     {
       portal = dataPortalBroker;

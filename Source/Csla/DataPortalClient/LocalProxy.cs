@@ -21,6 +21,11 @@ namespace Csla.DataPortalClient
   /// </summary>
   public class LocalProxy : DataPortalClient.IDataPortalProxy, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="dataportal">Server-side data portal instance</param>
+    /// <param name="applicationContext">ApplicationContext</param>
     public LocalProxy(Server.IDataPortalServer dataportal, ApplicationContext applicationContext)
     {
       _portal = dataportal;
@@ -28,16 +33,6 @@ namespace Csla.DataPortalClient
     }
 
     private readonly Server.IDataPortalServer _portal;
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    private ApplicationContext ApplicationContext { get; set; }
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.

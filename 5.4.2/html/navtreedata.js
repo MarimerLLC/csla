@@ -25,8 +25,6 @@
 var NAVTREE =
 [
   [ "CSLA.NET", "index.html", [
-    [ "AnalyzerReleases.Shipped", "md__c___users_korye_source_repos_csla__source__csla__analyzers__csla__analyzers__analyzer_releases__shipped.html", null ],
-    [ "AnalyzerReleases.Unshipped", "md__c___users_korye_source_repos_csla__source__csla__analyzers__csla__analyzers__analyzer_releases__unshipped.html", null ],
     [ "Packages", "namespaces.html", [
       [ "Packages", "namespaces.html", "namespaces_dup" ],
       [ "Package Functions", "namespacemembers.html", [

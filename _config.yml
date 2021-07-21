@@ -1,0 +1,8 @@
+title: Csla
+description: CSLA .NET business layer development framework
+google_analytics: "1318776"
+show_downloads: true
+theme: jekyll-theme-architect
+
+gems:
+  - jekyll-mentions

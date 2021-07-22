@@ -17,7 +17,7 @@ Inherited by \fBCsla\&.Xaml\&.ViewModel< T >\fP\&.
 .ti -1c
 .RI "async Task< \fBViewModelBase\fP< T > > \fBInitAsync\fP ()"
 .br
-.RI "Method used to perform async initialization of the viewmodel\&. This method is usually invoked immediately following construction of the object instance\&. "
+.RI "Method used to perform async initialization of the viewmodel\&. "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -41,7 +41,7 @@ Inherited by \fBCsla\&.Xaml\&.ViewModel< T >\fP\&.
 .ti -1c
 .RI "virtual async Task< T > \fBDoInitAsync\fP ()"
 .br
-.RI "Override this method to implement async initialization of the model object\&. The result of this method is used to set the Model property of the viewmodel\&. "
+.RI "Override this method to implement async initialization of the model object\&. "
 .ti -1c
 .RI "virtual void \fBOnError\fP (Exception error)"
 .br
@@ -320,7 +320,7 @@ Definition at line 1038 of file Csla\&.Xaml\&.Shared/ViewModelBase\&.cs\&.
 .SS "virtual async Task<T> \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.DoInitAsync ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Override this method to implement async initialization of the model object\&. The result of this method is used to set the Model property of the viewmodel\&. 
+Override this method to implement async initialization of the model object\&. The result of this method is used to set the Model property of the viewmodel\&.
 .PP
 \fBReturns\fP
 .RS 4
@@ -391,11 +391,10 @@ Definition at line 333 of file Csla\&.Xaml\&.Shared/ViewModelBase\&.cs\&.
 .SS "async Task<\fBViewModelBase\fP<T> > \fBCsla\&.Xaml\&.ViewModelBase\fP< T >\&.InitAsync ()"
 
 .PP
-Method used to perform async initialization of the viewmodel\&. This method is usually invoked immediately following construction of the object instance\&. 
+Method used to perform async initialization of the viewmodel\&. This method is usually invoked immediately following construction of the object instance\&.
 .PP
 \fBReturns\fP
 .RS 4
-
 .RE
 .PP
 

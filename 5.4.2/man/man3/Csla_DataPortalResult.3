@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-Csla.DataPortalResult< T > \- \fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&. It contains object that was received from the server, an error (if occurred) and userState - user defined information that was passed into data portal on initial request  
+Csla.DataPortalResult< T > \- \fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&.  
 
 .SH SYNOPSIS
 .br
@@ -27,7 +27,7 @@ Inherits EventArgs, and \fBCsla\&.IDataPortalResult\fP\&.
 .ti -1c
 .RI "Exception \fBError\fP\fC [get]\fP"
 .br
-.RI "Error that occurred during the DataPotal call\&. This will be null if no errors occurred\&. "
+.RI "Error that occurred during the DataPotal call\&. "
 .ti -1c
 .RI "object \fBUserState\fP\fC [get]\fP"
 .br
@@ -35,9 +35,9 @@ Inherits EventArgs, and \fBCsla\&.IDataPortalResult\fP\&.
 .in -1c
 .SH "Detailed Description"
 .PP 
-\fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&. It contains object that was received from the server, an error (if occurred) and userState - user defined information that was passed into data portal on initial request 
+\fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&. 
 
-
+It contains object that was received from the server, an error (if occurred) and userState - user defined information that was passed into data portal on initial request
 .PP
 \fBTemplate Parameters\fP
 .RS 4
@@ -71,7 +71,7 @@ Definition at line 51 of file DataPortalResult\&.cs\&.
 .SS "Exception \fBCsla\&.DataPortalResult\fP< T >\&.Error\fC [get]\fP"
 
 .PP
-Error that occurred during the DataPotal call\&. This will be null if no errors occurred\&. 
+Error that occurred during the DataPotal call\&. This will be null if no errors occurred\&.
 .PP
 Definition at line 29 of file DataPortalResult\&.cs\&.
 .SS "T \fBCsla\&.DataPortalResult\fP< T >\&.Object\fC [get]\fP"

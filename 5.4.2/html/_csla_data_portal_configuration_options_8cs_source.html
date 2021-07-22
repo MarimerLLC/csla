@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -205,7 +215,7 @@ $(document).ready(function(){initNavTree('_csla_data_portal_configuration_option
 <div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_a7efd0f127c3db1b6371786bff9801ae1"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7efd0f127c3db1b6371786bff9801ae1">Csla.Configuration.CslaDataPortalConfigurationOptions.FlowSynchronizationContext</a></div><div class="ttdeci">bool FlowSynchronizationContext</div><div class="ttdoc">Gets or sets a value indicating whether any synchronization context should be flowed to child tasks b...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00165">CslaDataPortalConfigurationOptions.cs:166</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_a82c5b4a06c8196e660109e21af1bd0d1"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a82c5b4a06c8196e660109e21af1bd0d1">Csla.Configuration.CslaDataPortalConfigurationOptions.ReturnObjectOnException</a></div><div class="ttdeci">bool ReturnObjectOnException</div><div class="ttdoc">Gets or sets a value indicating whether the server-side business object should be returned to the cli...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00124">CslaDataPortalConfigurationOptions.cs:125</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_ab1768c450d2745a03493439815cfb81a"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ab1768c450d2745a03493439815cfb81a">Csla.Configuration.CslaDataPortalConfigurationOptions.ProxyFactory</a></div><div class="ttdeci">string ProxyFactory</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00112">CslaDataPortalConfigurationOptions.cs:113</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_ad2c3f7753a778345d5f11c883e159cd1"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad2c3f7753a778345d5f11c883e159cd1">Csla.Configuration.CslaDataPortalConfigurationOptions.AuthorizationProvider</a></div><div class="ttdeci">string AuthorizationProvider</div><div class="ttdoc">Sets the type name to be used for server-side data portal authorization. Type must implement IAuthori...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00079">CslaDataPortalConfigurationOptions.cs:80</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_ad2c3f7753a778345d5f11c883e159cd1"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad2c3f7753a778345d5f11c883e159cd1">Csla.Configuration.CslaDataPortalConfigurationOptions.AuthorizationProvider</a></div><div class="ttdeci">string AuthorizationProvider</div><div class="ttdoc">Sets the type name to be used for server-side data portal authorization.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00079">CslaDataPortalConfigurationOptions.cs:80</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_ad30f58b8621645f5438942dc52ece394"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad30f58b8621645f5438942dc52ece394">Csla.Configuration.CslaDataPortalConfigurationOptions.ExceptionInspector</a></div><div class="ttdeci">string ExceptionInspector</div><div class="ttdoc">Gets or sets the fully qualified name of the ExceptionInspector class.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00069">CslaDataPortalConfigurationOptions.cs:70</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_ae3ecf8003b1b370b979772914b542ddf"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ae3ecf8003b1b370b979772914b542ddf">Csla.Configuration.CslaDataPortalConfigurationOptions.PortalUrl</a></div><div class="ttdeci">string PortalUrl</div><div class="ttdoc">Gets or sets the data portal URL string.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00140">CslaDataPortalConfigurationOptions.cs:141</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_html_af739410ab3678b0dcbfc5cb934e79b44"><div class="ttname"><a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#af739410ab3678b0dcbfc5cb934e79b44">Csla.Configuration.CslaDataPortalConfigurationOptions.AutoCloneOnUpdate</a></div><div class="ttdeci">bool AutoCloneOnUpdate</div><div class="ttdoc">Gets a value indicating whether objects should be automatically cloned by the data portal Update()met...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_portal_configuration_options_8cs_source.html#l00042">CslaDataPortalConfigurationOptions.cs:43</a></div></div>

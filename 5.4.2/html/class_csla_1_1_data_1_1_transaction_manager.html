@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -105,7 +115,7 @@ Inheritance diagram for Csla.Data.TransactionManager&lt; C, T &gt;:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2808537e6b07819a3c332ba949abbbd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_data_1_1_transaction_manager.html#a2808537e6b07819a3c332ba949abbbd2">Commit</a> ()</td></tr>
-<tr class="memdesc:a2808537e6b07819a3c332ba949abbbd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates that the current transactional scope has completed successfully. If all transactional scopes complete successfully the transaction will commit when the <a class="el" href="class_csla_1_1_data_1_1_transaction_manager.html" title="Provides an automated way to reuse open database connections and associated ADO.NET transactions with...">TransactionManager</a> object is disposed.  <a href="class_csla_1_1_data_1_1_transaction_manager.html#a2808537e6b07819a3c332ba949abbbd2">More...</a><br /></td></tr>
+<tr class="memdesc:a2808537e6b07819a3c332ba949abbbd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates that the current transactional scope has completed successfully.  <a href="class_csla_1_1_data_1_1_transaction_manager.html#a2808537e6b07819a3c332ba949abbbd2">More...</a><br /></td></tr>
 <tr class="separator:a2808537e6b07819a3c332ba949abbbd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb8eacb1a7e4e18bcb385a7084e0c995"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_data_1_1_transaction_manager.html#aeb8eacb1a7e4e18bcb385a7084e0c995">Dispose</a> ()</td></tr>
 <tr class="memdesc:aeb8eacb1a7e4e18bcb385a7084e0c995"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispose object, dereferencing or disposing the connection it is managing.  <a href="class_csla_1_1_data_1_1_transaction_manager.html#aeb8eacb1a7e4e18bcb385a7084e0c995">More...</a><br /></td></tr>
@@ -176,7 +186,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Indicates that the current transactional scope has completed successfully. If all transactional scopes complete successfully the transaction will commit when the <a class="el" href="class_csla_1_1_data_1_1_transaction_manager.html" title="Provides an automated way to reuse open database connections and associated ADO.NET transactions with...">TransactionManager</a> object is disposed. </p>
+<p>Indicates that the current transactional scope has completed successfully. </p>
+<p>If all transactional scopes complete successfully the transaction will commit when the <a class="el" href="class_csla_1_1_data_1_1_transaction_manager.html" title="Provides an automated way to reuse open database connections and associated ADO.NET transactions with...">TransactionManager</a> object is disposed.</p>
 
 <p class="definition">Definition at line <a class="el" href="_transaction_manager_8cs_source.html#l00196">196</a> of file <a class="el" href="_transaction_manager_8cs_source.html">TransactionManager.cs</a>.</p>
 
@@ -468,9 +479,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_transaction_manager_8cs_source.html">TransactionManager.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -190,7 +190,7 @@ Csla
 .ti -1c
 .RI "class \fBDataPortalResult\fP"
 .br
-.RI "\fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&. It contains object that was received from the server, an error (if occurred) and userState - user defined information that was passed into data portal on initial request "
+.RI "\fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&. "
 .ti -1c
 .RI "class \fBDataPortalServerResourceAttribute\fP"
 .br
@@ -416,10 +416,10 @@ The default value, indicating all values are cleared
 Property is a reference to a child object contained by the parent\&. 
 .TP
 \fB\fILazyLoad \fP\fP
-Property is a reference to a lazy loaded object\&. Attempting to get or read the property value prior to a set or load will result in an exception\&. 
+Property is a reference to a lazy loaded object\&. Attempting to get or read the property value prior to a set or load will result in an exception\&.
 .TP
 \fB\fIPrivateField \fP\fP
-Property is stored in a private field\&. Attemting to read or write the property in FieldManager (managed fields) will throw an exception\&. NonGeneric ReadProperty/LoadProperty will call property get/set methods\&. 
+Property is stored in a private field\&. Attemting to read or write the property in FieldManager (managed fields) will throw an exception\&. NonGeneric ReadProperty/LoadProperty will call property get/set methods\&.
 .PP
 Definition at line 18 of file RelationshipTypes\&.cs\&.
 .SS "enum \fBCsla\&.TransactionalTypes\fP\fC [strong]\fP"
@@ -449,13 +449,13 @@ Specifies an isolation level for transactions controlled by \fBTransactionalAttr
 .in +1c
 .TP
 \fB\fIUnspecified \fP\fP
-Shows that different isolation level than the one specified is being used, but the level cannot be determined\&. An exception is thrown if this value is set\&. Default\&. 
+Shows that different isolation level than the one specified is being used, but the level cannot be determined\&. An exception is thrown if this value is set\&. Default\&.
 .TP
 \fB\fISerializable \fP\fP
 Prevents updating or inserting until the transaction is complete\&. 
 .TP
 \fB\fIRepeatableRead \fP\fP
-Locks are placed on all data that is used in a query, preventing other users from updating the data\&. Prevents non-repeatable reads, but phantom rows are still possible\&. 
+Locks are placed on all data that is used in a query, preventing other users from updating the data\&. Prevents non-repeatable reads, but phantom rows are still possible\&.
 .TP
 \fB\fIReadCommitted \fP\fP
 Shared locks are held while the data is being read to avoid reading modified data, but the data can be changed before the end of the transaction, resulting in non-repeatable reads or phantom data\&. 

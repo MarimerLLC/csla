@@ -44,7 +44,7 @@ void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a7b7bd9eca1b5d5beb24
 void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a1c4645e983d0cea5bbc061b25e4366b3}{Apply\+Edit}} ()
 \begin{DoxyCompactList}\small\item\em Commits the current edit process. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a12a7bf0378970e77985fbb0fc83ed616}{Delete}} ()
-\begin{DoxyCompactList}\small\item\em Marks the object for deletion. The object will be deleted as part of the next save operation. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Marks the object for deletion. \end{DoxyCompactList}\item 
 virtual bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a0867947238a7a47e348bcef4e88da0d3}{Is\+Property\+Busy}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
 \begin{DoxyCompactList}\small\item\em Gets a value indicating whether a specific property is busy (has a currently executing async rule). \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a392999536d44892f6cbaed4ce39278ae}{Is\+Property\+Busy}} (string property\+Name)
@@ -61,11 +61,11 @@ virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_adb05c36b8fd
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a974b519582aacd666375a1ee84215238}{Set\+Parent}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_parent}{Core.\+IParent}} parent)
 \begin{DoxyCompactList}\small\item\em Used by \mbox{\hyperlink{class_csla_1_1_business_list_base}{Business\+List\+Base}} as a child object is created to tell the child object about its parent. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_af74bc729d625a2e43d7a617e4e2197ee}{Mark\+New}} ()
-\begin{DoxyCompactList}\small\item\em Marks the object as being a new object. This also marks the object as being dirty and ensures that it is not marked for deletion. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Marks the object as being a new object. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a9751d36d02b9be925a43cf8c4ac5f6b5}{Mark\+Old}} ()
-\begin{DoxyCompactList}\small\item\em Marks the object as being an old (not new) object. This also marks the object as being unchanged (not dirty). \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Marks the object as being an old (not new) object. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a70b1f36632fc8fcc83bb21df25ccd329}{Mark\+Deleted}} ()
-\begin{DoxyCompactList}\small\item\em Marks an object for deletion. This also marks the object as being dirty. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Marks an object for deletion. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_ab28925b4c26ea78131c7cc5ec67a0969}{Mark\+Dirty}} ()
 \begin{DoxyCompactList}\small\item\em Marks an object as being dirty, or changed. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a8d0b24f7608cdd488a1efa7d33385a64}{Mark\+Dirty}} (bool suppress\+Event)
@@ -91,7 +91,7 @@ virtual object \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a413ead90b
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a5375c9b84bd0c67c9c4b1353ac945a67}{On\+Validation\+Complete}} ()
 \begin{DoxyCompactList}\small\item\em Raises the Validation\+Complete event \end{DoxyCompactList}\item 
 \mbox{\hyperlink{class_csla_1_1_rules_1_1_business_rule_manager}{Business\+Rule\+Manager}} \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a54dec8b9056ab398e7990b4421caf962}{Get\+Registered\+Rules}} ()
-\begin{DoxyCompactList}\small\item\em Gets the registered rules. Only for unit testing and not visible to code. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Gets the registered rules. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_a47b63d4701a820c685fc25008f09a377}{Add\+Business\+Rules}} ()
 \begin{DoxyCompactList}\small\item\em Override this method in your business class to be notified when you need to set up shared business rules. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_core_1_1_business_base_abff80f843abc5068f390630f10cb987d}{Data\+Portal\+\_\+\+On\+Data\+Portal\+Invoke}} (\mbox{\hyperlink{class_csla_1_1_data_portal_event_args}{Data\+Portal\+Event\+Args}} e)
@@ -780,7 +780,9 @@ Definition at line 1253 of file Csla/\+Core/\+Business\+Base.\+cs.
 
 
 
-Marks the object for deletion. The object will be deleted as part of the next save operation. 
+Marks the object for deletion. 
+
+The object will be deleted as part of the next save operation.
 
 CSLA .NET supports both immediate and deferred deletion of objects. This method is part of the support for deferred deletion, where an object can be marked for deletion, but isn\textquotesingle{}t actually deleted until the object is saved to the database. This method is called by the UI developer to mark the object for deletion. 
 
@@ -1193,7 +1195,9 @@ Definition at line 1783 of file Csla/\+Core/\+Business\+Base.\+cs.
 
 
 
-Gets the registered rules. Only for unit testing and not visible to code. 
+Gets the registered rules. 
+
+Only for unit testing and not visible to code.
 
 \begin{DoxyReturn}{Returns}
 
@@ -1571,7 +1575,9 @@ Definition at line 433 of file Csla/\+Core/\+Business\+Base.\+cs.
 
 
 
-Marks an object for deletion. This also marks the object as being dirty. 
+Marks an object for deletion. 
+
+This also marks the object as being dirty.
 
 You should call this method in your business logic in the case that you want to have the object deleted when it is saved to the database. 
 
@@ -1634,7 +1640,9 @@ Definition at line 3032 of file Csla/\+Core/\+Business\+Base.\+cs.
 
 
 
-Marks the object as being a new object. This also marks the object as being dirty and ensures that it is not marked for deletion. 
+Marks the object as being a new object. 
+
+This also marks the object as being dirty and ensures that it is not marked for deletion.
 
 Newly created objects are marked new by default. You should call this method in the implementation of Data\+Portal\+\_\+\+Update when the object is deleted (due to being marked for deletion) to indicate that the object no longer reflects data in the database. 
 
@@ -1650,7 +1658,9 @@ Definition at line 266 of file Csla/\+Core/\+Business\+Base.\+cs.
 
 
 
-Marks the object as being an old (not new) object. This also marks the object as being unchanged (not dirty). 
+Marks the object as being an old (not new) object. 
+
+This also marks the object as being unchanged (not dirty).
 
 You should call this method in the implementation of Data\+Portal\+\_\+\+Fetch to indicate that an existing object has been successfully retrieved from the database. 
 
@@ -2777,8 +2787,3 @@ Event raised when validation is complete.
 
 Definition at line 1049 of file Csla/\+Core/\+Business\+Base.\+cs.
 
-
-
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_csla_2_core_2_business_base_8cs}{Csla/\+Core/\+Business\+Base.\+cs}}\end{DoxyCompactItemize}

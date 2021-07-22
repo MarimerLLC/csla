@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -219,9 +229,9 @@ $(document).ready(function(){initNavTree('_csla_8_iosui_8_ios_2_binding_2_bindin
 <div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_a7f6e0a3ad2e449ab51d7b2b8d23c976d"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#a7f6e0a3ad2e449ab51d7b2b8d23c976d">Csla.Iosui.Binding.Binding.Dispose</a></div><div class="ttdeci">void Dispose()</div><div class="ttdoc">Clears the bindings, references and event handlers.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00176">Csla.Iosui.Ios/Binding/Binding.cs:176</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_a85c1cef97ea472c92bfe2fb2f81f6aac"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#a85c1cef97ea472c92bfe2fb2f81f6aac">Csla.Iosui.Binding.Binding.Source</a></div><div class="ttdeci">object Source</div><div class="ttdoc">The object that the view is bound to.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00039">Csla.Iosui.Ios/Binding/Binding.cs:39</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_a9f1e8adbe36d786c9733f73559121289"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#a9f1e8adbe36d786c9733f73559121289">Csla.Iosui.Binding.Binding.Binding</a></div><div class="ttdeci">Binding(UIView target, string targetProperty, object source, string sourceProperty, Func&lt; object, object &gt; convert, BindingDirection bindingDirection)</div><div class="ttdoc">Creates a new instance of the Binding class.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00082">Csla.Iosui.Ios/Binding/Binding.cs:82</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_ab0a1d0b6b802e49fd77d04f9fa4e40b0"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#ab0a1d0b6b802e49fd77d04f9fa4e40b0">Csla.Iosui.Binding.Binding.UpdateTarget</a></div><div class="ttdeci">void UpdateTarget()</div><div class="ttdoc">Updates the target with the current value in the source object. Uses the Convert function to convert ...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00161">Csla.Iosui.Ios/Binding/Binding.cs:161</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_ab0a1d0b6b802e49fd77d04f9fa4e40b0"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#ab0a1d0b6b802e49fd77d04f9fa4e40b0">Csla.Iosui.Binding.Binding.UpdateTarget</a></div><div class="ttdeci">void UpdateTarget()</div><div class="ttdoc">Updates the target with the current value in the source object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00161">Csla.Iosui.Ios/Binding/Binding.cs:161</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_ac1fd9df68cfa35f30918bccfba308be6"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#ac1fd9df68cfa35f30918bccfba308be6">Csla.Iosui.Binding.Binding.SourceProperty</a></div><div class="ttdeci">System.Reflection.PropertyInfo SourceProperty</div><div class="ttdoc">The PropertyInfo for the property on the source object that is being bound to.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00049">Csla.Iosui.Ios/Binding/Binding.cs:49</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_af6e916844a1fa42b2b79b60dd18dc844"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#af6e916844a1fa42b2b79b60dd18dc844">Csla.Iosui.Binding.Binding.UpdateSource</a></div><div class="ttdeci">void UpdateSource()</div><div class="ttdoc">Updates the source with the current value in the target object. Uses the ConvertBack function to conv...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00144">Csla.Iosui.Ios/Binding/Binding.cs:144</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_iosui_1_1_binding_1_1_binding_html_af6e916844a1fa42b2b79b60dd18dc844"><div class="ttname"><a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#af6e916844a1fa42b2b79b60dd18dc844">Csla.Iosui.Binding.Binding.UpdateSource</a></div><div class="ttdeci">void UpdateSource()</div><div class="ttdoc">Updates the source with the current value in the target object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00144">Csla.Iosui.Ios/Binding/Binding.cs:144</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_property_info_html_a0d0ff7891b803c06e6d45cfdd3c92ab7"><div class="ttname"><a href="class_csla_1_1_property_info.html#a0d0ff7891b803c06e6d45cfdd3c92ab7">Csla.PropertyInfo.PropertyInfo</a></div><div class="ttdeci">PropertyInfo(string name)</div><div class="ttdoc">Creates a new instance of this class.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_property_info_8cs_source.html#l00027">Csla/PropertyInfo.cs:27</a></div></div>
 <div class="ttc" id="anamespace_csla_1_1_iosui_1_1_binding_html"><div class="ttname"><a href="namespace_csla_1_1_iosui_1_1_binding.html">Csla.Iosui.Binding</a></div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00019">Csla.Iosui.Ios/Binding/Binding.cs:20</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

@@ -168,7 +168,7 @@ virtual void \mbox{\hyperlink{class_csla_1_1_data_portal_a20e68064fd51cafc820b65
 static \mbox{\hyperlink{interface_csla_1_1_data_portal_client_1_1_i_data_portal_proxy_factory}{Data\+Portal\+Client.\+IData\+Portal\+Proxy\+Factory}} \mbox{\hyperlink{class_csla_1_1_data_portal_ae0ada2518f8c03722ae584154ee95967}{Proxy\+Factory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
 \begin{DoxyCompactList}\small\item\em Gets or sets a reference to a Proxy\+Factory object that is used to create an instance of the data portal proxy object. \end{DoxyCompactList}\item 
 static string \mbox{\hyperlink{class_csla_1_1_data_portal_a32a304b160c6bd12426198fdb966fad3}{Proxy\+Type\+Name}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
-\begin{DoxyCompactList}\small\item\em Gets or sets the assembly qualified type name of the proxy object to be loaded by the data portal. \char`\"{}\+Local\char`\"{} is a special value used to indicate that the data portal should run in local mode. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Gets or sets the assembly qualified type name of the proxy object to be loaded by the data portal. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{class_csla_1_1_core_1_1_context_dictionary}{Csla.\+Core.\+Context\+Dictionary}} \mbox{\hyperlink{class_csla_1_1_data_portal_aa092acdb71156ac5b87e85854f14b396}{Global\+Context}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
 \begin{DoxyCompactList}\small\item\em Gets a reference to the global context returned from the background thread and/or server. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Events}
@@ -1980,7 +1980,9 @@ Definition at line 814 of file Data\+Portal.\+cs.
 
 
 
-Gets or sets the assembly qualified type name of the proxy object to be loaded by the data portal. \char`\"{}\+Local\char`\"{} is a special value used to indicate that the data portal should run in local mode. 
+Gets or sets the assembly qualified type name of the proxy object to be loaded by the data portal. 
+
+\char`\"{}\+Local\char`\"{} is a special value used to indicate that the data portal should run in local mode.
 
 Deprecated\+: use Application\+Context.\+Data\+Portal\+Proxy 
 
@@ -2117,9 +2119,3 @@ In any other environment (such as ASP.\+NET), this event will be raised on a bac
 
 Definition at line 681 of file Data\+Portal\+T.\+cs.
 
-
-
-The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_data_portal_8cs}{Data\+Portal.\+cs}}\item 
-\mbox{\hyperlink{_data_portal_t_8cs}{Data\+Portal\+T.\+cs}}\end{DoxyCompactItemize}

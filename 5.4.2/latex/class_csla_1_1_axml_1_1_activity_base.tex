@@ -17,9 +17,9 @@ Inheritance diagram for Csla.\+Axml.\+Activity\+Base$<$ T, Z $>$\+:\begin{figure
 override void \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_acbd00da3394e117b9409dc91993d91f5}{On\+Create}} (Bundle bundle)
 \begin{DoxyCompactList}\small\item\em Event that occurs when the activity is created. \end{DoxyCompactList}\item 
 byte\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a62844c59545db2bb2fb68a23d19859b4}{Serilize\+Model\+For\+Parameter}} ()
-\begin{DoxyCompactList}\small\item\em Serializes the View\+Model\textquotesingle{}s model property using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Serializes the View\+Model\textquotesingle{}s model property using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). \end{DoxyCompactList}\item 
 byte\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a59079b6491bd728aabacc1a1b4b82e92}{Serilize\+Model\+For\+Parameter}} (object model)
-\begin{DoxyCompactList}\small\item\em Serialized the provided model using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Serialized the provided model using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). \end{DoxyCompactList}\item 
 object \mbox{\hyperlink{class_csla_1_1_axml_1_1_activity_base_a5c8ae08f50daaf96f527cb6c3c52a13e}{Deserialize\+From\+Parameter}} (byte\mbox{[}$\,$\mbox{]} parameter)
 \begin{DoxyCompactList}\small\item\em Takes a byte array and uses the Mobile\+Formatter to reconstitute it into a model reference. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Protected Attributes}
@@ -101,7 +101,9 @@ Definition at line 38 of file Activity\+Base.\+cs.
 
 
 
-Serializes the View\+Model\textquotesingle{}s model property using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. 
+Serializes the View\+Model\textquotesingle{}s model property using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). 
+
+Used to serialize and transfer models between activities.
 
 \begin{DoxyReturn}{Returns}
 An array of bytes that contains the serialized model.
@@ -118,7 +120,9 @@ Definition at line 48 of file Activity\+Base.\+cs.
 
 
 
-Serialized the provided model using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). Used to serialize and transfer models between activities. 
+Serialized the provided model using the Serialization\+Formatter\+Factory.\+Get\+Formatter(). 
+
+Used to serialize and transfer models between activities.
 
 
 \begin{DoxyParams}{Parameters}
@@ -163,8 +167,3 @@ A reference to the view model.
 
 Definition at line 27 of file Activity\+Base.\+cs.
 
-
-
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_activity_base_8cs}{Activity\+Base.\+cs}}\end{DoxyCompactItemize}

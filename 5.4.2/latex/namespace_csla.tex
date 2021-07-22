@@ -105,7 +105,7 @@ class \mbox{\hyperlink{class_csla_1_1_execute_child_attribute}{Execute\+Child\+A
 class {\bfseries Data\+Portal\+Operation\+Extensions}
 \begin{DoxyCompactList}\small\item\em Extension methods for mapping {\ttfamily Data\+Portal\+Operations} to other system values. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}}
-\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} defines the results of \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} operation. It contains object that was received from the server, an error (if occurred) and user\+State -\/ user defined information that was passed into data portal on initial request \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_csla_1_1_data_portal_result}{Data\+Portal\+Result}} defines the results of \mbox{\hyperlink{class_csla_1_1_data_portal}{Data\+Portal}} operation. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_csla_1_1_data_portal_server_resource_attribute}{Data\+Portal\+Server\+Resource\+Attribute}}
 \begin{DoxyCompactList}\small\item\em Specifies a server resource required by a business type so the data portal can route any calls to the correct server. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_csla_1_1_data_portal_server_routing_tag_attribute}{Data\+Portal\+Server\+Routing\+Tag\+Attribute}}
@@ -306,11 +306,11 @@ Child&Property is a reference to a child object contained by the parent. \\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{LazyLoad@{LazyLoad}!Csla@{Csla}}\index{Csla@{Csla}!LazyLoad@{LazyLoad}}}\mbox{\Hypertarget{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4a062f7d5b789f2b8610dd44e4f74f3db8}\label{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4a062f7d5b789f2b8610dd44e4f74f3db8}} 
-Lazy\+Load&Property is a reference to a lazy loaded object. Attempting to get or read the property value prior to a set or load will result in an exception. \\
+Lazy\+Load&Property is a reference to a lazy loaded object. Attempting to get or read the property value prior to a set or load will result in an exception.\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{PrivateField@{PrivateField}!Csla@{Csla}}\index{Csla@{Csla}!PrivateField@{PrivateField}}}\mbox{\Hypertarget{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4ad79b26a5e2f35f256662da4ea6cbf205}\label{namespace_csla_a7bfc7afe8f8a49e8a04768f5244dd3b4ad79b26a5e2f35f256662da4ea6cbf205}} 
-Private\+Field&Property is stored in a private field. Attemting to read or write the property in Field\+Manager (managed fields) will throw an exception. Non\+Generic Read\+Property/\+Load\+Property will call property get/set methods. \\
+Private\+Field&Property is stored in a private field. Attemting to read or write the property in Field\+Manager (managed fields) will throw an exception. Non\+Generic Read\+Property/\+Load\+Property will call property get/set methods.\\
 \hline
 
 \end{DoxyEnumFields}
@@ -358,7 +358,7 @@ Specifies an isolation level for transactions controlled by \mbox{\hyperlink{cla
 
 \begin{DoxyEnumFields}{Enumerator}
 \raisebox{\heightof{T}}[0pt][0pt]{\index{Unspecified@{Unspecified}!Csla@{Csla}}\index{Csla@{Csla}!Unspecified@{Unspecified}}}\mbox{\Hypertarget{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca6fcdc090caeade09d0efd6253932b6f5}\label{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca6fcdc090caeade09d0efd6253932b6f5}} 
-Unspecified&Shows that different isolation level than the one specified is being used, but the level cannot be determined. An exception is thrown if this value is set. Default. \\
+Unspecified&Shows that different isolation level than the one specified is being used, but the level cannot be determined. An exception is thrown if this value is set. Default.\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{Serializable@{Serializable}!Csla@{Csla}}\index{Csla@{Csla}!Serializable@{Serializable}}}\mbox{\Hypertarget{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca33909597338639745b2d76081beeb48b}\label{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca33909597338639745b2d76081beeb48b}} 
@@ -366,7 +366,7 @@ Serializable&Prevents updating or inserting until the transaction is complete. \
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{RepeatableRead@{RepeatableRead}!Csla@{Csla}}\index{Csla@{Csla}!RepeatableRead@{RepeatableRead}}}\mbox{\Hypertarget{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca2b95cfc2a1dca5195cc09451acb85c91}\label{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca2b95cfc2a1dca5195cc09451acb85c91}} 
-Repeatable\+Read&Locks are placed on all data that is used in a query, preventing other users from updating the data. Prevents non-\/repeatable reads, but phantom rows are still possible. \\
+Repeatable\+Read&Locks are placed on all data that is used in a query, preventing other users from updating the data. Prevents non-\/repeatable reads, but phantom rows are still possible.\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{ReadCommitted@{ReadCommitted}!Csla@{Csla}}\index{Csla@{Csla}!ReadCommitted@{ReadCommitted}}}\mbox{\Hypertarget{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca90ed941e4502c163cb075594c5f7df1c}\label{namespace_csla_ada8965cb8c1e6f2f310db250eec59a1ca90ed941e4502c163cb075594c5f7df1c}} 

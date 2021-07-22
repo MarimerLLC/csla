@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -426,8 +436,8 @@ $(document).ready(function(){initNavTree('_mobile_formatter_8cs_source.html','')
 <div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_csla_writer_html"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_csla_writer.html">Csla.Serialization.Mobile.ICslaWriter</a></div><div class="ttdoc">Represents a class that can be used to write a list of SerializationInfo objects into a stream,...</div><div class="ttdef"><b>Definition:</b> <a href="_i_csla_writer_8cs_source.html#l00011">ICslaWriter.cs:12</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_csla_writer_html_a69cb5d9a0b0faaad84339321d3169c5d"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_csla_writer.html#a69cb5d9a0b0faaad84339321d3169c5d">Csla.Serialization.Mobile.ICslaWriter.Write</a></div><div class="ttdeci">void Write(Stream serializationStream, List&lt; SerializationInfo &gt; objectData)</div><div class="ttdoc">Write a list of SerializationInfo objects into a stream, typically MemoryStream</div></div>
 <div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_html"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object.html">Csla.Serialization.Mobile.IMobileObject</a></div><div class="ttdoc">Interface to be implemented by any object that supports serialization by the SerializationFormatterFa...</div><div class="ttdef"><b>Definition:</b> <a href="_i_mobile_object_8cs_source.html#l00015">IMobileObject.cs:16</a></div></div>
-<div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_html_a58c04f45902519586ee9e7f64bddc0ee"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object.html#a58c04f45902519586ee9e7f64bddc0ee">Csla.Serialization.Mobile.IMobileObject.SetChildren</a></div><div class="ttdeci">void SetChildren(SerializationInfo info, MobileFormatter formatter)</div><div class="ttdoc">Method called by MobileFormatter when an object should deserialize its child references....</div></div>
-<div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_html_aa9683c8340d844e4df17ee21acf464c0"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object.html#aa9683c8340d844e4df17ee21acf464c0">Csla.Serialization.Mobile.IMobileObject.SetState</a></div><div class="ttdeci">void SetState(SerializationInfo info)</div><div class="ttdoc">Method called by MobileFormatter when an object should be deserialized. The data should be deserializ...</div></div>
+<div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_html_a58c04f45902519586ee9e7f64bddc0ee"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object.html#a58c04f45902519586ee9e7f64bddc0ee">Csla.Serialization.Mobile.IMobileObject.SetChildren</a></div><div class="ttdeci">void SetChildren(SerializationInfo info, MobileFormatter formatter)</div><div class="ttdoc">Method called by MobileFormatter when an object should deserialize its child references.</div></div>
+<div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object_html_aa9683c8340d844e4df17ee21acf464c0"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_mobile_object.html#aa9683c8340d844e4df17ee21acf464c0">Csla.Serialization.Mobile.IMobileObject.SetState</a></div><div class="ttdeci">void SetState(SerializationInfo info)</div><div class="ttdoc">Method called by MobileFormatter when an object should be deserialized.</div></div>
 <div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_serialization_notification_html"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_serialization_notification.html">Csla.Serialization.Mobile.ISerializationNotification</a></div><div class="ttdoc">Interface defining callback methods used by the SerializationFormatterFactory.GetFormatter().</div><div class="ttdef"><b>Definition:</b> <a href="_i_serialization_notification_8cs_source.html#l00016">ISerializationNotification.cs:17</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_serialization_1_1_mobile_1_1_i_serialization_notification_html_a656b4580e32d16233a6908bd3e8e8eb6"><div class="ttname"><a href="interface_csla_1_1_serialization_1_1_mobile_1_1_i_serialization_notification.html#a656b4580e32d16233a6908bd3e8e8eb6">Csla.Serialization.Mobile.ISerializationNotification.Deserialized</a></div><div class="ttdeci">void Deserialized()</div><div class="ttdoc">Method called on an object after deserialization is complete.</div></div>
 <div class="ttc" id="anamespace_csla_1_1_properties_html"><div class="ttname"><a href="namespace_csla_1_1_properties.html">Csla.Properties</a></div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00011">Resources.Designer.cs:11</a></div></div>

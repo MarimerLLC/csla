@@ -55,19 +55,19 @@ Inherits \fBCsla\&.Serialization\&.Mobile\&.IMobileObject\fP\&.
 .ti -1c
 .RI "void \fBGetState\fP (\fBSerializationInfo\fP info)"
 .br
-.RI "Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its data\&. "
 .ti -1c
 .RI "void \fBGetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
 .br
-.RI "Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. "
+.RI "Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. "
 .ti -1c
 .RI "void \fBSetState\fP (\fBSerializationInfo\fP info)"
 .br
-.RI "Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.RI "Method called by \fBMobileFormatter\fP when an object should be deserialized\&. "
 .ti -1c
 .RI "void \fBSetChildren\fP (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
 .br
-.RI "Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. "
+.RI "Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. "
 .in -1c
 .SS "Properties"
 
@@ -192,7 +192,7 @@ Definition at line 278 of file SerializationInfo\&.cs\&.
 .SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.GetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
 
 .PP
-Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+Method called by \fBMobileFormatter\fP when an object should serialize its child references\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -209,7 +209,7 @@ Definition at line 369 of file SerializationInfo\&.cs\&.
 .SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.GetState (\fBSerializationInfo\fP info)"
 
 .PP
-Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&. 
+Method called by \fBMobileFormatter\fP when an object should serialize its data\&. The data should be serialized into the \fBSerializationInfo\fP parameter\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -246,7 +246,7 @@ Definition at line 293 of file SerializationInfo\&.cs\&.
 .SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.SetChildren (\fBSerializationInfo\fP info, \fBMobileFormatter\fP formatter)"
 
 .PP
-Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+Method called by \fBMobileFormatter\fP when an object should deserialize its child references\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -263,7 +263,7 @@ Definition at line 410 of file SerializationInfo\&.cs\&.
 .SS "void Csla\&.Serialization\&.Mobile\&.SerializationInfo\&.SetState (\fBSerializationInfo\fP info)"
 
 .PP
-Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&. 
+Method called by \fBMobileFormatter\fP when an object should be deserialized\&. The data should be deserialized from the \fBSerializationInfo\fP parameter\&.
 .PP
 \fBParameters\fP
 .RS 4

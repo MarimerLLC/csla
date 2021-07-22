@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -113,10 +123,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a0a6d91e5251deb881dc0022039035fdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new instance of the <a class="el" href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html" title="Contains an individual binding to tie a property on an Axml view to the property on a supplied object...">Binding</a> class.  <a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#a0a6d91e5251deb881dc0022039035fdc">More...</a><br /></td></tr>
 <tr class="separator:a0a6d91e5251deb881dc0022039035fdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6e916844a1fa42b2b79b60dd18dc844"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#af6e916844a1fa42b2b79b60dd18dc844">UpdateSource</a> ()</td></tr>
-<tr class="memdesc:af6e916844a1fa42b2b79b60dd18dc844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the source with the current value in the target object. Uses the ConvertBack function to convert the data if available.  <a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#af6e916844a1fa42b2b79b60dd18dc844">More...</a><br /></td></tr>
+<tr class="memdesc:af6e916844a1fa42b2b79b60dd18dc844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the source with the current value in the target object.  <a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#af6e916844a1fa42b2b79b60dd18dc844">More...</a><br /></td></tr>
 <tr class="separator:af6e916844a1fa42b2b79b60dd18dc844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0a1d0b6b802e49fd77d04f9fa4e40b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#ab0a1d0b6b802e49fd77d04f9fa4e40b0">UpdateTarget</a> ()</td></tr>
-<tr class="memdesc:ab0a1d0b6b802e49fd77d04f9fa4e40b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the target with the current value in the source object. Uses the Convert function to convert the data if available.  <a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#ab0a1d0b6b802e49fd77d04f9fa4e40b0">More...</a><br /></td></tr>
+<tr class="memdesc:ab0a1d0b6b802e49fd77d04f9fa4e40b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the target with the current value in the source object.  <a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#ab0a1d0b6b802e49fd77d04f9fa4e40b0">More...</a><br /></td></tr>
 <tr class="separator:ab0a1d0b6b802e49fd77d04f9fa4e40b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f6e0a3ad2e449ab51d7b2b8d23c976d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#a7f6e0a3ad2e449ab51d7b2b8d23c976d">Dispose</a> ()</td></tr>
 <tr class="memdesc:a7f6e0a3ad2e449ab51d7b2b8d23c976d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the bindings, references and event handlers.  <a href="class_csla_1_1_iosui_1_1_binding_1_1_binding.html#a7f6e0a3ad2e449ab51d7b2b8d23c976d">More...</a><br /></td></tr>
@@ -389,7 +399,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Updates the source with the current value in the target object. Uses the ConvertBack function to convert the data if available. </p>
+<p>Updates the source with the current value in the target object. </p>
+<p>Uses the ConvertBack function to convert the data if available.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00144">144</a> of file <a class="el" href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html">Csla.Iosui.Ios/Binding/Binding.cs</a>.</p>
 
@@ -410,7 +421,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Updates the target with the current value in the source object. Uses the Convert function to convert the data if available. </p>
+<p>Updates the target with the current value in the source object. </p>
+<p>Uses the Convert function to convert the data if available.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html#l00161">161</a> of file <a class="el" href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html">Csla.Iosui.Ios/Binding/Binding.cs</a>.</p>
 
@@ -599,9 +611,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_csla_8_iosui_8_ios_2_binding_2_binding_8cs_source.html">Csla.Iosui.Ios/Binding/Binding.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

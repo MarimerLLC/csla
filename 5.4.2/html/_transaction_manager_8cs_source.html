@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -261,7 +271,7 @@ $(document).ready(function(){initNavTree('_transaction_manager_8cs_source.html',
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html">Csla.Data.TransactionManager</a></div><div class="ttdoc">Provides an automated way to reuse open database connections and associated ADO.NET transactions with...</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00037">TransactionManager.cs:40</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html_a1094f29dccd75c70bc242fa5e45e47b5"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html#a1094f29dccd75c70bc242fa5e45e47b5">Csla.Data.TransactionManager.GetManager</a></div><div class="ttdeci">static TransactionManager&lt; C, T &gt; GetManager(string database, bool isDatabaseName, string label)</div><div class="ttdoc">Gets the TransactionManager object for the specified database.</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00106">TransactionManager.cs:106</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html_a2808537e6b07819a3c332ba949abbbd2"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html#a2808537e6b07819a3c332ba949abbbd2">Csla.Data.TransactionManager.Commit</a></div><div class="ttdeci">void Commit()</div><div class="ttdoc">Indicates that the current transactional scope has completed successfully. If all transactional scope...</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00196">TransactionManager.cs:196</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html_a2808537e6b07819a3c332ba949abbbd2"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html#a2808537e6b07819a3c332ba949abbbd2">Csla.Data.TransactionManager.Commit</a></div><div class="ttdeci">void Commit()</div><div class="ttdoc">Indicates that the current transactional scope has completed successfully.</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00196">TransactionManager.cs:196</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html_a5e6b2981c91fa05097e6e77f65931e3a"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html#a5e6b2981c91fa05097e6e77f65931e3a">Csla.Data.TransactionManager.GetManager</a></div><div class="ttdeci">static TransactionManager&lt; C, T &gt; GetManager(string database, string label)</div><div class="ttdoc">Gets the TransactionManager object for the specified database.</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00067">TransactionManager.cs:67</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html_a5f6220ea179ee9be394df1f5deab52b2"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html#a5f6220ea179ee9be394df1f5deab52b2">Csla.Data.TransactionManager.RefCount</a></div><div class="ttdeci">int RefCount</div><div class="ttdoc">Gets the current reference count for this object.</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00210">TransactionManager.cs:211</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_1_1_transaction_manager_html_a91c26d13e03dffe529b79f1d203a9615"><div class="ttname"><a href="class_csla_1_1_data_1_1_transaction_manager.html#a91c26d13e03dffe529b79f1d203a9615">Csla.Data.TransactionManager.GetManager</a></div><div class="ttdeci">static TransactionManager&lt; C, T &gt; GetManager(string database)</div><div class="ttdoc">Gets the TransactionManager object for the specified database.</div><div class="ttdef"><b>Definition:</b> <a href="_transaction_manager_8cs_source.html#l00054">TransactionManager.cs:54</a></div></div>

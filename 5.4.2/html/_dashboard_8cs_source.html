@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -220,7 +230,7 @@ $(document).ready(function(){initNavTree('_dashboard_8cs_source.html',''); initR
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_dashboard_html_a754bffc01ff9a1f6fa42454d067c5b9a"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#a754bffc01ff9a1f6fa42454d067c5b9a">Csla.Server.Dashboard.Dashboard.LastCall</a></div><div class="ttdeci">DateTimeOffset LastCall</div><div class="ttdoc">Gets the most recent time the data portal was invoked</div><div class="ttdef"><b>Definition:</b> <a href="_dashboard_8cs_source.html#l00100">Dashboard.cs:100</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_dashboard_html_aa733b82aedf2f1d9a92c7e43248cceb2"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#aa733b82aedf2f1d9a92c7e43248cceb2">Csla.Server.Dashboard.Dashboard.FirstCall</a></div><div class="ttdeci">DateTimeOffset FirstCall</div><div class="ttdoc">Gets the time the data portal was first invoked</div><div class="ttdef"><b>Definition:</b> <a href="_dashboard_8cs_source.html#l00095">Dashboard.cs:95</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_dashboard_html_abe590d7afe4cddc32e5f1f369ee5e4f7"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#abe590d7afe4cddc32e5f1f369ee5e4f7">Csla.Server.Dashboard.Dashboard.CompletedCalls</a></div><div class="ttdeci">long CompletedCalls</div><div class="ttdoc">Gets the number of times data portal calls have successfully completed</div><div class="ttdef"><b>Definition:</b> <a href="_dashboard_8cs_source.html#l00116">Dashboard.cs:117</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_dashboard_html_ae7ce60b63c59e2248b9dd43108473eb6"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#ae7ce60b63c59e2248b9dd43108473eb6">Csla.Server.Dashboard.Dashboard.RecentActivityCount</a></div><div class="ttdeci">int RecentActivityCount</div><div class="ttdoc">Gets or sets a value indicating the number of items to maintain in the recent activity list....</div><div class="ttdef"><b>Definition:</b> <a href="_dashboard_8cs_source.html#l00045">Dashboard.cs:45</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_dashboard_html_ae7ce60b63c59e2248b9dd43108473eb6"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#ae7ce60b63c59e2248b9dd43108473eb6">Csla.Server.Dashboard.Dashboard.RecentActivityCount</a></div><div class="ttdeci">int RecentActivityCount</div><div class="ttdoc">Gets or sets a value indicating the number of items to maintain in the recent activity list.</div><div class="ttdef"><b>Definition:</b> <a href="_dashboard_8cs_source.html#l00045">Dashboard.cs:45</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_dashboard_html_aed5c6eeb6d1a22b91b1b2158c6e15583"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#aed5c6eeb6d1a22b91b1b2158c6e15583">Csla.Server.Dashboard.Dashboard.TotalCalls</a></div><div class="ttdeci">long TotalCalls</div><div class="ttdoc">Gets the total number of times the data portal has been invoked</div><div class="ttdef"><b>Definition:</b> <a href="_dashboard_8cs_source.html#l00106">Dashboard.cs:107</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_intercept_args_html"><div class="ttname"><a href="class_csla_1_1_server_1_1_intercept_args.html">Csla.Server.InterceptArgs</a></div><div class="ttdoc">Arguments parameter passed to the interceptor methods.</div><div class="ttdef"><b>Definition:</b> <a href="_i_intercept_data_portal_8cs_source.html#l00038">IInterceptDataPortal.cs:39</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_server_1_1_dashboard_1_1_i_dashboard_html"><div class="ttname"><a href="interface_csla_1_1_server_1_1_dashboard_1_1_i_dashboard.html">Csla.Server.Dashboard.IDashboard</a></div><div class="ttdoc">Data portal server dashboard.</div><div class="ttdef"><b>Definition:</b> <a href="_i_dashboard_8cs_source.html#l00016">IDashboard.cs:17</a></div></div>

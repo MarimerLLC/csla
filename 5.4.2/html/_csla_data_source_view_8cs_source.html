@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -293,14 +303,14 @@ $(document).ready(function(){initNavTree('_csla_data_source_view_8cs_source.html
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_html"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source.html">Csla.Web.CslaDataSource</a></div><div class="ttdoc">A Web Forms data binding control designed to support CSLA .NET business objects as data sources.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_8cs_source.html#l00025">CslaDataSource.cs:26</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html">Csla.Web.CslaDataSourceView</a></div><div class="ttdoc">The object responsible for managing data binding to a specific CSLA .NET object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00019">CslaDataSourceView.cs:20</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a0ab1276bdf2c14e7ae0ccf10fd207094"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a0ab1276bdf2c14e7ae0ccf10fd207094">Csla.Web.CslaDataSourceView.CanPage</a></div><div class="ttdeci">override bool CanPage</div><div class="ttdoc">Gets a value indicating whether the data source supports paging of the data.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00264">CslaDataSourceView.cs:265</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a0f4d84d6a4a65322484a1542f2ae74e9"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a0f4d84d6a4a65322484a1542f2ae74e9">Csla.Web.CslaDataSourceView.CanRetrieveTotalRowCount</a></div><div class="ttdeci">override bool CanRetrieveTotalRowCount</div><div class="ttdoc">Gets a value indicating whether the data source can retrieve the total number of rows of data....</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00277">CslaDataSourceView.cs:278</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a0f4d84d6a4a65322484a1542f2ae74e9"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a0f4d84d6a4a65322484a1542f2ae74e9">Csla.Web.CslaDataSourceView.CanRetrieveTotalRowCount</a></div><div class="ttdeci">override bool CanRetrieveTotalRowCount</div><div class="ttdoc">Gets a value indicating whether the data source can retrieve the total number of rows of data.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00277">CslaDataSourceView.cs:278</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a11483385d7e25127a943245cb98dd3a6"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a11483385d7e25127a943245cb98dd3a6">Csla.Web.CslaDataSourceView.ExecuteDelete</a></div><div class="ttdeci">override int ExecuteDelete(IDictionary keys, IDictionary oldValues)</div><div class="ttdoc">Implements the delete behavior for the control by raising the CslaDataSource.DeleteObject event.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00207">CslaDataSourceView.cs:207</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a24f70ac288227b875b78eab8b9282d4b"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a24f70ac288227b875b78eab8b9282d4b">Csla.Web.CslaDataSourceView.ExecuteInsert</a></div><div class="ttdeci">override int ExecuteInsert(IDictionary values)</div><div class="ttdoc">Implements the insert behavior for the control by raising the CslaDataSource.InsertObject event.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00167">CslaDataSourceView.cs:167</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a2858d83c3d12a39b62755e3c9163be7d"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a2858d83c3d12a39b62755e3c9163be7d">Csla.Web.CslaDataSourceView.TypeAssemblyName</a></div><div class="ttdeci">string TypeAssemblyName</div><div class="ttdoc">Get or set the name of the assembly (no longer used).</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00044">CslaDataSourceView.cs:45</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a2e430bcc187fa0f391eb542aa62c846b"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a2e430bcc187fa0f391eb542aa62c846b">Csla.Web.CslaDataSourceView.ExecuteSelect</a></div><div class="ttdeci">override System.Collections.IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)</div><div class="ttdoc">Implements the select behavior for the control by raising the CslaDataSource.SelectObject event.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00096">CslaDataSourceView.cs:96</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a36c7879686fb0539026b0e365f5c190a"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a36c7879686fb0539026b0e365f5c190a">Csla.Web.CslaDataSourceView.CanInsert</a></div><div class="ttdeci">override bool CanInsert</div><div class="ttdoc">Gets a value indicating whether the data source can insert data.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00147">CslaDataSourceView.cs:148</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a6ea8adfe66dba6ef54e67127a91a53b5"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a6ea8adfe66dba6ef54e67127a91a53b5">Csla.Web.CslaDataSourceView.TypeSupportsPaging</a></div><div class="ttdeci">bool TypeSupportsPaging</div><div class="ttdoc">Get or set a value indicating whether the business object data source supports paging.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00070">CslaDataSourceView.cs:71</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a6f6aec3e7fd66d9ec899c9377ebaa3ec"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a6f6aec3e7fd66d9ec899c9377ebaa3ec">Csla.Web.CslaDataSourceView.CanSort</a></div><div class="ttdeci">override bool CanSort</div><div class="ttdoc">Gets a alue indicating whether the data source supports sorting of the data. Always returns false.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00286">CslaDataSourceView.cs:287</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_a6f6aec3e7fd66d9ec899c9377ebaa3ec"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#a6f6aec3e7fd66d9ec899c9377ebaa3ec">Csla.Web.CslaDataSourceView.CanSort</a></div><div class="ttdeci">override bool CanSort</div><div class="ttdoc">Gets a alue indicating whether the data source supports sorting of the data.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00286">CslaDataSourceView.cs:287</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_abc77336a27ddc7a658badd07a12c837b"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#abc77336a27ddc7a658badd07a12c837b">Csla.Web.CslaDataSourceView.CanUpdate</a></div><div class="ttdeci">override bool CanUpdate</div><div class="ttdoc">Gets a value indicating whether the data source can update data.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00224">CslaDataSourceView.cs:225</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_ac111c4f3f8de22de385c24dae989b59e"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#ac111c4f3f8de22de385c24dae989b59e">Csla.Web.CslaDataSourceView.TypeSupportsSorting</a></div><div class="ttdeci">bool TypeSupportsSorting</div><div class="ttdoc">Get or set a value indicating whether the business object data source supports sorting.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00080">CslaDataSourceView.cs:81</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_web_1_1_csla_data_source_view_html_ac21745c21eaff7c26b699ff4f6ff1ac2"><div class="ttname"><a href="class_csla_1_1_web_1_1_csla_data_source_view.html#ac21745c21eaff7c26b699ff4f6ff1ac2">Csla.Web.CslaDataSourceView.CanDelete</a></div><div class="ttdeci">override bool CanDelete</div><div class="ttdoc">Gets a value indicating whether the data source can delete data.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_data_source_view_8cs_source.html#l00185">CslaDataSourceView.cs:186</a></div></div>

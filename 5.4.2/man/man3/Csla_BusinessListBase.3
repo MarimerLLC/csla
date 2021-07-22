@@ -103,19 +103,19 @@ Inherits \fBCsla\&.Core\&.ObservableBindingList< C >\fP, \fBCsla\&.Core\&.IEdita
 .ti -1c
 .RI "override void \fBOnGetState\fP (\fBSerializationInfo\fP info)"
 .br
-.RI "Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&. "
+.RI "Method called by MobileFormatter when an object should serialize its data\&. "
 .ti -1c
 .RI "override void \fBOnSetState\fP (\fBSerializationInfo\fP info)"
 .br
-.RI "Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&. "
+.RI "Method called by MobileFormatter when an object should be deserialized\&. "
 .ti -1c
 .RI "override void \fBOnGetChildren\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)"
 .br
-.RI "Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&. "
+.RI "Method called by MobileFormatter when an object should serialize its child references\&. "
 .ti -1c
 .RI "override void \fBOnSetChildren\fP (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)"
 .br
-.RI "Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&. "
+.RI "Method called by MobileFormatter when an object should deserialize its child references\&. "
 .ti -1c
 .RI "void \fBMarkAsChild\fP ()"
 .br
@@ -544,7 +544,7 @@ Definition at line 837 of file BusinessListBase\&.cs\&.
 .SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnGetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
 
 .PP
-Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&. 
+Method called by MobileFormatter when an object should serialize its child references\&. The data should be serialized into the SerializationInfo parameter\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -559,7 +559,7 @@ Definition at line 638 of file BusinessListBase\&.cs\&.
 .SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnGetState (\fBSerializationInfo\fP info)\fC [protected]\fP"
 
 .PP
-Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&. 
+Method called by MobileFormatter when an object should serialize its data\&. The data should be serialized into the SerializationInfo parameter\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -589,7 +589,7 @@ Definition at line 1195 of file BusinessListBase\&.cs\&.
 .SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnSetChildren (\fBCsla\&.Serialization\&.Mobile\&.SerializationInfo\fP info, \fBCsla\&.Serialization\&.Mobile\&.MobileFormatter\fP formatter)\fC [protected]\fP"
 
 .PP
-Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&. 
+Method called by MobileFormatter when an object should deserialize its child references\&. The data should be deserialized from the SerializationInfo parameter\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -604,7 +604,7 @@ Definition at line 659 of file BusinessListBase\&.cs\&.
 .SS "override void \fBCsla\&.BusinessListBase\fP< T, C >\&.OnSetState (\fBSerializationInfo\fP info)\fC [protected]\fP"
 
 .PP
-Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&. 
+Method called by MobileFormatter when an object should be deserialized\&. The data should be deserialized from the SerializationInfo parameter\&.
 .PP
 \fBParameters\fP
 .RS 4

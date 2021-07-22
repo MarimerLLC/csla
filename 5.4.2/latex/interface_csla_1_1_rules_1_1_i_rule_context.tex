@@ -15,8 +15,7 @@ Inheritance diagram for Csla.\+Rules.\+IRule\+Context\+:\begin{figure}[H]
 \begin{DoxyCompactItemize}
 \item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_acab7981f73fbe64b90bda089c295b08a}{Execute\+Rule}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}} inner\+Rule)
-\begin{DoxyCompactList}\small\item\em Executes the inner rule from the outer rules context. Creates a chained context and if Can\+Run\+Rule will execute the inner rule. ~\newline
- \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Executes the inner rule from the outer rules context. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context}{IRule\+Context}} \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_af30791a26d3c73f120b2d456176f7025}{Get\+Chained\+Context}} (\mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_business_rule_base}{IBusiness\+Rule\+Base}} rule)
 \begin{DoxyCompactList}\small\item\em Gets a new \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context}{Rule\+Context}} object for a chained rule. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a5c8053bd2494e45db27df85d0eb8f3ba}{Add\+Error\+Result}} (string description)
@@ -24,19 +23,19 @@ void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a5c8053bd2494e
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a49e67a217f562e2f606570d1877530ec}{Add\+Error\+Result}} (string description, bool stop\+Processing)
 \begin{DoxyCompactList}\small\item\em Add a Error severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_adf5b7e661d19b42f91c6d48970ae9b9d}{Add\+Error\+Result}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property, string description)
-\begin{DoxyCompactList}\small\item\em Add a Error severity result to the Results list. This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Add a Error severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a2daf17d529419adc978055e00672cfa4}{Add\+Warning\+Result}} (string description)
 \begin{DoxyCompactList}\small\item\em Add a Warning severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a31fb63da7f2fb0cabb17091d1929bec1}{Add\+Warning\+Result}} (string description, bool stop\+Processing)
 \begin{DoxyCompactList}\small\item\em Add a Warning severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a7101c2b778d06562c8a30471ce1affe0}{Add\+Warning\+Result}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property, string description)
-\begin{DoxyCompactList}\small\item\em Add a Warning severity result to the Results list. This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Add a Warning severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_ab5900d08bd0086b95d5bfbf269a38cf1}{Add\+Information\+Result}} (string description)
 \begin{DoxyCompactList}\small\item\em Add an Information severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a1beebed97a449db1baad455c917f82c7}{Add\+Information\+Result}} (string description, bool stop\+Processing)
 \begin{DoxyCompactList}\small\item\em Add an Information severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a94e89a870dc4f59ac77934ab94e4511c}{Add\+Information\+Result}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property, string description)
-\begin{DoxyCompactList}\small\item\em Add an Information severity result to the Results list. This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Add an Information severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a8c820756f741d759b41ce13a8dcf1e18}{Add\+Success\+Result}} (bool stop\+Processing)
 \begin{DoxyCompactList}\small\item\em Add a Success severity result to the Results list. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a69981e93365e99552042d3abba6f3cc0}{Add\+Out\+Value}} (object value)
@@ -46,15 +45,15 @@ void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a2314018096f46
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_abc638dac6c8acd85a46d9832e39fd4ff}{Add\+Dirty\+Property}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{Csla.\+Core.\+IProperty\+Info}} property)
 \begin{DoxyCompactList}\small\item\em Adds a property name as a dirty field (changed value). \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a77c8f020b9460a8a1d1ee3caf7aeff92}{Complete}} ()
-\begin{DoxyCompactList}\small\item\em Indicates that the rule processing is complete, so CSLA .NET will process the Results list. This method must be invoked on the UI thread. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Indicates that the rule processing is complete, so CSLA .NET will process the Results list. \end{DoxyCompactList}\item 
 T \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_ae73b89c7ee437f26818010dceadfdf01}{Get\+Input\+Value$<$ T $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ T $>$ property\+Info)
 \begin{DoxyCompactList}\small\item\em Gets the value. \end{DoxyCompactList}\item 
 T \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a9c76eac6f634ce384373b559e43e930c}{Get\+Input\+Value$<$ T $>$}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info)
 \begin{DoxyCompactList}\small\item\em Gets the value with explicit cast \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_a4e6559175c9631be59161eaf24e30b81}{Try\+Get\+Input\+Value$<$ T $>$}} (\mbox{\hyperlink{class_csla_1_1_property_info}{Property\+Info}}$<$ T $>$ property\+Info, ref T value)
-\begin{DoxyCompactList}\small\item\em Tries to get the value. Use this method on Lazy\+Loaded properties to test if value has been provided or not. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Tries to get the value. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{interface_csla_1_1_rules_1_1_i_rule_context_af9b755a9d48cae7e622711c948f25bc5}{Try\+Get\+Input\+Value$<$ T $>$}} (\mbox{\hyperlink{interface_csla_1_1_core_1_1_i_property_info}{IProperty\+Info}} property\+Info, ref T value)
-\begin{DoxyCompactList}\small\item\em Tries to get the value with explicit cast. Use this method on Lazy\+Loaded properties to test if value has been provided or not. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Tries to get the value with explicit cast. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Properties}
 \begin{DoxyCompactItemize}
 \item 
@@ -126,7 +125,9 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_aa40600594
 
 
 
-Add a Error severity result to the Results list. This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field. 
+Add a Error severity result to the Results list. 
+
+This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field.
 
 
 \begin{DoxyParams}{Parameters}
@@ -193,7 +194,9 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_a79aa82a3a
 
 
 
-Add an Information severity result to the Results list. This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field. 
+Add an Information severity result to the Results list. 
+
+This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field.
 
 
 \begin{DoxyParams}{Parameters}
@@ -325,7 +328,9 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_a16abb7070
 
 
 
-Add a Warning severity result to the Results list. This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field. 
+Add a Warning severity result to the Results list. 
+
+This method is only allowed on \char`\"{}object\char`\"{} level rules to allow an object level rule to set warning result on a field.
 
 
 \begin{DoxyParams}{Parameters}
@@ -392,9 +397,9 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_a5bc0799a5
 
 
 
-Indicates that the rule processing is complete, so CSLA .NET will process the Results list. This method must be invoked on the UI thread. 
+Indicates that the rule processing is complete, so CSLA .NET will process the Results list. 
 
-
+This method must be invoked on the UI thread.
 
 Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_a9ceda4d0f6ccbecb1e89c6d95a53e927}{Csla.\+Rules.\+Rule\+Context}}.
 
@@ -406,8 +411,10 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_a9ceda4d0f
 
 
 
-Executes the inner rule from the outer rules context. Creates a chained context and if Can\+Run\+Rule will execute the inner rule. ~\newline
- 
+Executes the inner rule from the outer rules context. 
+
+Creates a chained context and if Can\+Run\+Rule will execute the inner rule. ~\newline
+
 
 
 \begin{DoxyParams}{Parameters}
@@ -501,7 +508,9 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_aff7e6e7bb
 
 
 
-Tries to get the value with explicit cast. Use this method on Lazy\+Loaded properties to test if value has been provided or not. 
+Tries to get the value with explicit cast. 
+
+Use this method on Lazy\+Loaded properties to test if value has been provided or not.
 
 
 \begin{DoxyTemplParams}{Template Parameters}
@@ -530,7 +539,9 @@ Implemented in \mbox{\hyperlink{class_csla_1_1_rules_1_1_rule_context_aa7f4a4b90
 
 
 
-Tries to get the value. Use this method on Lazy\+Loaded properties to test if value has been provided or not. 
+Tries to get the value. 
+
+Use this method on Lazy\+Loaded properties to test if value has been provided or not.
 
 
 \begin{DoxyTemplParams}{Template Parameters}
@@ -722,8 +733,3 @@ Gets a reference to the target business object.
 
 Definition at line 29 of file IRule\+Context.\+cs.
 
-
-
-The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_i_rule_context_8cs}{IRule\+Context.\+cs}}\end{DoxyCompactItemize}

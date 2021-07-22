@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -506,7 +516,7 @@ $(document).ready(function(){initNavTree('_csla_2_business_base_8cs_source.html'
 <div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_a342756e9cf08028186b6cecde15b4f31"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#a342756e9cf08028186b6cecde15b4f31">Csla.Core.BusinessBase.IsDeleted</a></div><div class="ttdeci">bool IsDeleted</div><div class="ttdoc">Returns true if this object is marked for deletion.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00194">Csla/Core/BusinessBase.cs:195</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_a413ead90b06b4e75301d3511d7d76a5d"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#a413ead90b06b4e75301d3511d7d76a5d">Csla.Core.BusinessBase.GetClone</a></div><div class="ttdeci">virtual object GetClone()</div><div class="ttdoc">Creates a clone of the object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l01033">Csla/Core/BusinessBase.cs:1033</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_a84273283b7db180b67a105c0e83427df"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#a84273283b7db180b67a105c0e83427df">Csla.Core.BusinessBase.IsNew</a></div><div class="ttdeci">bool IsNew</div><div class="ttdoc">Returns true if this is a new object, false if it is a pre-existing object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00172">Csla/Core/BusinessBase.cs:173</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_a9751d36d02b9be925a43cf8c4ac5f6b5"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#a9751d36d02b9be925a43cf8c4ac5f6b5">Csla.Core.BusinessBase.MarkOld</a></div><div class="ttdeci">virtual void MarkOld()</div><div class="ttdoc">Marks the object as being an old (not new) object. This also marks the object as being unchanged (not...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00293">Csla/Core/BusinessBase.cs:293</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_a9751d36d02b9be925a43cf8c4ac5f6b5"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#a9751d36d02b9be925a43cf8c4ac5f6b5">Csla.Core.BusinessBase.MarkOld</a></div><div class="ttdeci">virtual void MarkOld()</div><div class="ttdoc">Marks the object as being an old (not new) object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00293">Csla/Core/BusinessBase.cs:293</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_ab28925b4c26ea78131c7cc5ec67a0969"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#ab28925b4c26ea78131c7cc5ec67a0969">Csla.Core.BusinessBase.MarkDirty</a></div><div class="ttdeci">void MarkDirty()</div><div class="ttdoc">Marks an object as being dirty, or changed.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00333">Csla/Core/BusinessBase.cs:333</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_ad64799a8470d5d338842479d980c39ad"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#ad64799a8470d5d338842479d980c39ad">Csla.Core.BusinessBase.IsChild</a></div><div class="ttdeci">bool IsChild</div><div class="ttdoc">Returns true if this is a child (non-root) object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00931">Csla/Core/BusinessBase.cs:932</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_business_base_html_ad67992c09ceb801e17e64350c289a55b"><div class="ttname"><a href="class_csla_1_1_core_1_1_business_base.html#ad67992c09ceb801e17e64350c289a55b">Csla.Core.BusinessBase.IsDirty</a></div><div class="ttdeci">virtual bool IsDirty</div><div class="ttdoc">Returns true if this object's data, or any of its fields or child objects data, has been changed.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_business_base_8cs_source.html#l00221">Csla/Core/BusinessBase.cs:222</a></div></div>

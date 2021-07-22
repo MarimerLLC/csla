@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -1005,7 +1015,7 @@ $(document).ready(function(){initNavTree('_csla_8_validation_8_shared_2_common_r
 <div class="ttc" id="aclass_csla_1_1_validation_1_1_common_rules_1_1_reg_ex_rule_args_html_afda5a234ebba43152b2c9b59ee43cb41"><div class="ttname"><a href="class_csla_1_1_validation_1_1_common_rules_1_1_reg_ex_rule_args.html#afda5a234ebba43152b2c9b59ee43cb41">Csla.Validation.CommonRules.RegExRuleArgs.RegExRuleArgs</a></div><div class="ttdeci">RegExRuleArgs(Core.IPropertyInfo propertyInfo, System.Text.RegularExpressions.Regex regEx, NullResultOptions nullResult)</div><div class="ttdoc">Creates a new object.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_validation_8_shared_2_common_rules_8cs_source.html#l01269">Csla.Validation.Shared/CommonRules.cs:1269</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_validation_1_1_decorated_rule_args_html"><div class="ttname"><a href="class_csla_1_1_validation_1_1_decorated_rule_args.html">Csla.Validation.DecoratedRuleArgs</a></div><div class="ttdoc">Object providing extra information to methods that implement business rules.</div><div class="ttdef"><b>Definition:</b> <a href="_decorated_rule_args_8cs_source.html#l00023">DecoratedRuleArgs.cs:24</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_validation_1_1_decorated_rule_args_html_a1e80663864849ea8ee65a180494631c0"><div class="ttname"><a href="class_csla_1_1_validation_1_1_decorated_rule_args.html#a1e80663864849ea8ee65a180494631c0">Csla.Validation.DecoratedRuleArgs.ToString</a></div><div class="ttdeci">override string ToString()</div><div class="ttdoc">Return a string representation of the object using the rule:// URI format.</div><div class="ttdef"><b>Definition:</b> <a href="_decorated_rule_args_8cs_source.html#l00466">DecoratedRuleArgs.cs:466</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_validation_1_1_rule_args_html"><div class="ttname"><a href="class_csla_1_1_validation_1_1_rule_args.html">Csla.Validation.RuleArgs</a></div><div class="ttdoc">Object providing extra information to methods that implement business rules. As imlemented in Csla 3....</div><div class="ttdef"><b>Definition:</b> <a href="_rule_args_8cs_source.html#l00021">RuleArgs.cs:22</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_validation_1_1_rule_args_html"><div class="ttname"><a href="class_csla_1_1_validation_1_1_rule_args.html">Csla.Validation.RuleArgs</a></div><div class="ttdoc">Object providing extra information to methods that implement business rules.</div><div class="ttdef"><b>Definition:</b> <a href="_rule_args_8cs_source.html#l00021">RuleArgs.cs:22</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_validation_1_1_rule_args_html_a832cbf7b6cb96ee62eae4298aba37d2d"><div class="ttname"><a href="class_csla_1_1_validation_1_1_rule_args.html#a832cbf7b6cb96ee62eae4298aba37d2d">Csla.Validation.RuleArgs.Description</a></div><div class="ttdeci">string Description</div><div class="ttdoc">Set by the rule handler method to describe the broken rule.</div><div class="ttdef"><b>Definition:</b> <a href="_rule_args_8cs_source.html#l00058">RuleArgs.cs:59</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_validation_1_1_rule_args_html_ab214dee4efd615ecbcf86cb27681945d"><div class="ttname"><a href="class_csla_1_1_validation_1_1_rule_args.html#ab214dee4efd615ecbcf86cb27681945d">Csla.Validation.RuleArgs.Severity</a></div><div class="ttdeci">RuleSeverity Severity</div><div class="ttdoc">Gets or sets the severity of the broken rule.</div><div class="ttdef"><b>Definition:</b> <a href="_rule_args_8cs_source.html#l00074">RuleArgs.cs:75</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_validation_1_1_rule_args_html_ab2947269d6ad480d8b9af4658154e0fa"><div class="ttname"><a href="class_csla_1_1_validation_1_1_rule_args.html#ab2947269d6ad480d8b9af4658154e0fa">Csla.Validation.RuleArgs.PropertyName</a></div><div class="ttdeci">string PropertyName</div><div class="ttdoc">The name of the property to be validated.</div><div class="ttdef"><b>Definition:</b> <a href="_rule_args_8cs_source.html#l00032">RuleArgs.cs:33</a></div></div>

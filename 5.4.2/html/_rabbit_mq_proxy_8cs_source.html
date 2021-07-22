@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -248,7 +258,7 @@ $(document).ready(function(){initNavTree('_rabbit_mq_proxy_8cs_source.html','');
 <div class="ttc" id="aclass_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_html_a8d7e917cf3236b48fbff0d1f0170ef5e"><div class="ttname"><a href="class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy.html#a8d7e917cf3236b48fbff0d1f0170ef5e">Csla.Channels.RabbitMq.RabbitMqProxy.Timeout</a></div><div class="ttdeci">override int Timeout</div><div class="ttdoc">Gets or sets the timeout for network operations in seconds (default is 30 seconds).</div><div class="ttdef"><b>Definition:</b> <a href="_rabbit_mq_proxy_8cs_source.html#l00048">RabbitMqProxy.cs:48</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_html_ac26ab8f6661746616c017f59a535cd55"><div class="ttname"><a href="class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy.html#ac26ab8f6661746616c017f59a535cd55">Csla.Channels.RabbitMq.RabbitMqProxy.Channel</a></div><div class="ttdeci">IModel Channel</div><div class="ttdoc">Gets or sets the channel (model) for RabbitMQ.</div><div class="ttdef"><b>Definition:</b> <a href="_rabbit_mq_proxy_8cs_source.html#l00058">RabbitMqProxy.cs:58</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_html_ac4836c458ab877746277ba647609030c"><div class="ttname"><a href="class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy.html#ac4836c458ab877746277ba647609030c">Csla.Channels.RabbitMq.RabbitMqProxy.RabbitMqProxy</a></div><div class="ttdeci">RabbitMqProxy()</div><div class="ttdoc">Creates an instance of the object, initializing it to use the DefaultUrl value.</div><div class="ttdef"><b>Definition:</b> <a href="_rabbit_mq_proxy_8cs_source.html#l00030">RabbitMqProxy.cs:30</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_html_aeaa97687ba49955d9f3f5df983d71e1d"><div class="ttname"><a href="class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy.html#aeaa97687ba49955d9f3f5df983d71e1d">Csla.Channels.RabbitMq.RabbitMqProxy.CallDataPortalServer</a></div><div class="ttdeci">override async Task&lt; byte[]&gt; CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)</div><div class="ttdoc">Create message and send to Rabbit MQ server. Return Response from server</div><div class="ttdef"><b>Definition:</b> <a href="_rabbit_mq_proxy_8cs_source.html#l00191">RabbitMqProxy.cs:191</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_html_aeaa97687ba49955d9f3f5df983d71e1d"><div class="ttname"><a href="class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy.html#aeaa97687ba49955d9f3f5df983d71e1d">Csla.Channels.RabbitMq.RabbitMqProxy.CallDataPortalServer</a></div><div class="ttdeci">override async Task&lt; byte[]&gt; CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)</div><div class="ttdoc">Create message and send to Rabbit MQ server.</div><div class="ttdef"><b>Definition:</b> <a href="_rabbit_mq_proxy_8cs_source.html#l00191">RabbitMqProxy.cs:191</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_client_1_1_data_portal_proxy_html"><div class="ttname"><a href="class_csla_1_1_data_portal_client_1_1_data_portal_proxy.html">Csla.DataPortalClient.DataPortalProxy</a></div><div class="ttdoc">Implements a data portal proxy to relay data portal calls to a remote application server.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_proxy_8cs_source.html#l00023">DataPortalProxy.cs:24</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_client_1_1_data_portal_proxy_html_a6250fd1db21cc1469d6a7e30e41324da"><div class="ttname"><a href="class_csla_1_1_data_portal_client_1_1_data_portal_proxy.html#a6250fd1db21cc1469d6a7e30e41324da">Csla.DataPortalClient.DataPortalProxy.DataPortalUrl</a></div><div class="ttdeci">string DataPortalUrl</div><div class="ttdoc">Gets the URL address for the data portal server used by this proxy instance.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_proxy_8cs_source.html#l00041">DataPortalProxy.cs:41</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_data_portal_context_html"><div class="ttname"><a href="class_csla_1_1_server_1_1_data_portal_context.html">Csla.Server.DataPortalContext</a></div><div class="ttdoc">Provides consistent context information between the client and server DataPortal objects.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_context_8cs_source.html#l00020">DataPortalContext.cs:21</a></div></div>

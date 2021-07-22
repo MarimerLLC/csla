@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -188,7 +198,7 @@ $(document).ready(function(){initNavTree('_property_rule_8cs_source.html',''); i
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html">Csla.Rules.PropertyRule</a></div><div class="ttdoc">Base class for a property rule</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00016">PropertyRule.cs:17</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_a1c629e8c5a4b9be3508ac6433b35877a"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#a1c629e8c5a4b9be3508ac6433b35877a">Csla.Rules.PropertyRule.CanRunAsAffectedProperty</a></div><div class="ttdeci">bool CanRunAsAffectedProperty</div><div class="ttdoc">Gets or sets a value indicating whether this instance can run as affected property.</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00081">PropertyRule.cs:82</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_a59dae6b04145cc342a0613d3959fe43c"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#a59dae6b04145cc342a0613d3959fe43c">Csla.Rules.PropertyRule.PropertyRule</a></div><div class="ttdeci">PropertyRule()</div><div class="ttdoc">Initializes a new instance of the PropertyRule class.</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00056">PropertyRule.cs:56</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_a75e1542f32d3f4138035339537de8e67"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#a75e1542f32d3f4138035339537de8e67">Csla.Rules.PropertyRule.MessageDelegate</a></div><div class="ttdeci">Func&lt; string &gt; MessageDelegate</div><div class="ttdoc">Gets or sets the error message function for this rule. Use this for localizable messages from a resou...</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00031">PropertyRule.cs:31</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_a75e1542f32d3f4138035339537de8e67"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#a75e1542f32d3f4138035339537de8e67">Csla.Rules.PropertyRule.MessageDelegate</a></div><div class="ttdeci">Func&lt; string &gt; MessageDelegate</div><div class="ttdoc">Gets or sets the error message function for this rule.</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00031">PropertyRule.cs:31</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_a9711abe7aa9715113d9de15a7efcfd29"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#a9711abe7aa9715113d9de15a7efcfd29">Csla.Rules.PropertyRule.CanRunInCheckRules</a></div><div class="ttdeci">bool CanRunInCheckRules</div><div class="ttdoc">Gets or sets a value indicating whether this instance can run when CheckRules is called on BO.</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00125">PropertyRule.cs:126</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_abb53a0b1378c6a3e03cab90efb40dfb0"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#abb53a0b1378c6a3e03cab90efb40dfb0">Csla.Rules.PropertyRule.PropertyRule</a></div><div class="ttdeci">PropertyRule(IPropertyInfo propertyInfo)</div><div class="ttdoc">Initializes a new instance of the PropertyRule class.</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00068">PropertyRule.cs:68</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_property_rule_html_ad1a34e74991abe792ee0d01e3557c4ca"><div class="ttname"><a href="class_csla_1_1_rules_1_1_property_rule.html#ad1a34e74991abe792ee0d01e3557c4ca">Csla.Rules.PropertyRule.CanRunOnServer</a></div><div class="ttdeci">bool CanRunOnServer</div><div class="ttdoc">Gets or sets a value indicating whether this instance can run in logical serverside data portal.</div><div class="ttdef"><b>Definition:</b> <a href="_property_rule_8cs_source.html#l00103">PropertyRule.cs:104</a></div></div>

@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -478,7 +488,7 @@ $(document).ready(function(){initNavTree('_data_portal_8cs_source.html',''); ini
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_a28dff005eb229190a969bd8dd5b4d02d"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a28dff005eb229190a969bd8dd5b4d02d">Csla.DataPortal.BeginExecute&lt; T &gt;</a></div><div class="ttdeci">static void BeginExecute&lt; T &gt;(T obj, EventHandler&lt; DataPortalResult&lt; T &gt;&gt; callback)</div><div class="ttdoc">Starts an asynchronous data portal operation to execute a command object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00562">DataPortal.cs:562</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_a2fa251e27d2a61aa311777421d88b302"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a2fa251e27d2a61aa311777421d88b302">Csla.DataPortal.ResetProxyType</a></div><div class="ttdeci">static void ResetProxyType()</div><div class="ttdoc">Resets the data portal proxy type, so the next data portal call will reload the proxy type based on c...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00859">DataPortal.cs:859</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_a327cf304ece6f70d2e58dd464c70514b"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a327cf304ece6f70d2e58dd464c70514b">Csla.DataPortal.BeginDelete&lt; T &gt;</a></div><div class="ttdeci">static void BeginDelete&lt; T &gt;(object criteria, EventHandler&lt; DataPortalResult&lt; T &gt;&gt; callback)</div><div class="ttdoc">Starts an asynchronous data portal operation to delete a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00472">DataPortal.cs:472</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_data_portal_html_a32a304b160c6bd12426198fdb966fad3"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a32a304b160c6bd12426198fdb966fad3">Csla.DataPortal.ProxyTypeName</a></div><div class="ttdeci">static string ProxyTypeName</div><div class="ttdoc">Gets or sets the assembly qualified type name of the proxy object to be loaded by the data portal....</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00838">DataPortal.cs:839</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_data_portal_html_a32a304b160c6bd12426198fdb966fad3"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a32a304b160c6bd12426198fdb966fad3">Csla.DataPortal.ProxyTypeName</a></div><div class="ttdeci">static string ProxyTypeName</div><div class="ttdoc">Gets or sets the assembly qualified type name of the proxy object to be loaded by the data portal.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00838">DataPortal.cs:839</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_a379daa6ce85836095e12d97329c4dfd6"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a379daa6ce85836095e12d97329c4dfd6">Csla.DataPortal.Update</a></div><div class="ttdeci">T Update(T obj)</div><div class="ttdoc">Called by a factory method in a business class or by the UI to update an object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_t_8cs_source.html#l00715">DataPortalT.cs:715</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_a38ec5d9199d321e28e077aeb2d7d4a47"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a38ec5d9199d321e28e077aeb2d7d4a47">Csla.DataPortal.CreateChild&lt; T &gt;</a></div><div class="ttdeci">static T CreateChild&lt; T &gt;()</div><div class="ttdoc">Creates and initializes a new child business object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00617">DataPortal.cs:617</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_a397c93f4a3ad70a4d5fbec1d8dd0ac2e"><div class="ttname"><a href="class_csla_1_1_data_portal.html#a397c93f4a3ad70a4d5fbec1d8dd0ac2e">Csla.DataPortal.UpdateChild</a></div><div class="ttdeci">static void UpdateChild(object child)</div><div class="ttdoc">Inserts, updates or deletes an existing child business object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00733">DataPortal.cs:733</a></div></div>
@@ -510,7 +520,7 @@ $(document).ready(function(){initNavTree('_data_portal_8cs_source.html',''); ini
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_ae887172b9b72595f3262b15cb772c557"><div class="ttname"><a href="class_csla_1_1_data_portal.html#ae887172b9b72595f3262b15cb772c557">Csla.DataPortal.Delete&lt; T &gt;</a></div><div class="ttdeci">static void Delete&lt; T &gt;(params object[] criteria)</div><div class="ttdoc">Called by a Shared (static in C#) method in the business class to cause immediate deletion of a speci...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00445">DataPortal.cs:445</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_af207a43a475c636a170dba79b49c147c"><div class="ttname"><a href="class_csla_1_1_data_portal.html#af207a43a475c636a170dba79b49c147c">Csla.DataPortal.CreateAsync</a></div><div class="ttdeci">async Task&lt; T &gt; CreateAsync(params object[] criteria)</div><div class="ttdoc">Called by a factory method in a business class or by the UI to create a new object,...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_t_8cs_source.html#l00168">DataPortalT.cs:168</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html_af707d6121fd8d9c778e013e55836fa65"><div class="ttname"><a href="class_csla_1_1_data_portal.html#af707d6121fd8d9c778e013e55836fa65">Csla.DataPortal.ExecuteAsync&lt; T &gt;</a></div><div class="ttdeci">static async Task&lt; T &gt; ExecuteAsync&lt; T &gt;(T command)</div><div class="ttdoc">Starts an asynchronous data portal operation to execute a command object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_8cs_source.html#l00603">DataPortal.cs:603</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_data_portal_result_html"><div class="ttname"><a href="class_csla_1_1_data_portal_result.html">Csla.DataPortalResult</a></div><div class="ttdoc">DataPortalResult defines the results of DataPortal operation. It contains object that was received fr...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_result_8cs_source.html#l00019">DataPortalResult.cs:20</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_data_portal_result_html"><div class="ttname"><a href="class_csla_1_1_data_portal_result.html">Csla.DataPortalResult</a></div><div class="ttdoc">DataPortalResult defines the results of DataPortal operation.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_result_8cs_source.html#l00019">DataPortalResult.cs:20</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html">Csla.Properties.Resources</a></div><div class="ttdoc">A strongly-typed resource class, for looking up localized strings, etc.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00025">Resources.Designer.cs:25</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_aafaa8b1482fdad5fb34099b779769489"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#aafaa8b1482fdad5fb34099b779769489">Csla.Properties.Resources.UnableToLoadDataPortalProxyFactory</a></div><div class="ttdeci">static string UnableToLoadDataPortalProxyFactory</div><div class="ttdoc">Looks up a localized string similar to Unable to load DataPortalProxyFactory {0}.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l01056">Resources.Designer.cs:1056</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_data_portal_html"><div class="ttname"><a href="class_csla_1_1_server_1_1_data_portal.html">Csla.Server.DataPortal</a></div><div class="ttdoc">Implements the server-side DataPortal message router as discussed in Chapter 4.</div><div class="ttdef"><b>Definition:</b> <a href="_server_2_data_portal_8cs_source.html#l00021">Server/DataPortal.cs:22</a></div></div>

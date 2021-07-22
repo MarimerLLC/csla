@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -354,17 +364,17 @@ $(document).ready(function(){initNavTree('_child_data_portal_8cs_source.html',''
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html">Csla.DataPortalException</a></div><div class="ttdoc">This exception is returned for any errors occurring during the server-side DataPortal invocation.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00020">DataPortalException.cs:21</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html">Csla.Server.ChildDataPortal</a></div><div class="ttdoc">Invoke data portal methods on child objects.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00018">ChildDataPortal.cs:19</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a2c5480135843ace5ccd012b562de6506"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a2c5480135843ace5ccd012b562de6506">Csla.Server.ChildDataPortal.Update</a></div><div class="ttdeci">void Update(object obj, params object[] parameters)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00231">ChildDataPortal.cs:231</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a334a8e4fb93a82b6e0130b6cc46b5e84"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a334a8e4fb93a82b6e0130b6cc46b5e84">Csla.Server.ChildDataPortal.UpdateAllAsync</a></div><div class="ttdeci">async Task UpdateAllAsync(object obj, params object[] parameters)</div><div class="ttdoc">Update a business object. Include objects which are not dirty.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00301">ChildDataPortal.cs:301</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a334a8e4fb93a82b6e0130b6cc46b5e84"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a334a8e4fb93a82b6e0130b6cc46b5e84">Csla.Server.ChildDataPortal.UpdateAllAsync</a></div><div class="ttdeci">async Task UpdateAllAsync(object obj, params object[] parameters)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00301">ChildDataPortal.cs:301</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a37b45111b76a9a833be5a87262ee2d91"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a37b45111b76a9a833be5a87262ee2d91">Csla.Server.ChildDataPortal.Update</a></div><div class="ttdeci">void Update(object obj)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00212">ChildDataPortal.cs:212</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a5007e44fee699b8a6a39ffe368e2ec80"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a5007e44fee699b8a6a39ffe368e2ec80">Csla.Server.ChildDataPortal.UpdateAsync</a></div><div class="ttdeci">async Task UpdateAsync(object obj, params object[] parameters)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00259">ChildDataPortal.cs:259</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a6846094f9bcf45f3f4651fc75c79ca31"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a6846094f9bcf45f3f4651fc75c79ca31">Csla.Server.ChildDataPortal.CreateAsync&lt; T &gt;</a></div><div class="ttdeci">async Task&lt; T &gt; CreateAsync&lt; T &gt;()</div><div class="ttdoc">Create a new business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00058">ChildDataPortal.cs:58</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a75a066a8ce1b3880bb35d7b358ae0ab4"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a75a066a8ce1b3880bb35d7b358ae0ab4">Csla.Server.ChildDataPortal.FetchAsync&lt; T &gt;</a></div><div class="ttdeci">async Task&lt; T &gt; FetchAsync&lt; T &gt;()</div><div class="ttdoc">Get an existing business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00153">ChildDataPortal.cs:153</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a87f4f51ccb6e553437ede63b5e125625"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a87f4f51ccb6e553437ede63b5e125625">Csla.Server.ChildDataPortal.Create</a></div><div class="ttdeci">object Create(Type objectType)</div><div class="ttdoc">Create a new business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00024">ChildDataPortal.cs:24</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_a920158c7b0092355a14646f37ac0fab4"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#a920158c7b0092355a14646f37ac0fab4">Csla.Server.ChildDataPortal.Fetch</a></div><div class="ttdeci">object Fetch(Type objectType)</div><div class="ttdoc">Get an existing business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00119">ChildDataPortal.cs:119</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ab0efd5c3c10a294d74d0d599445a6bcc"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ab0efd5c3c10a294d74d0d599445a6bcc">Csla.Server.ChildDataPortal.UpdateAllAsync</a></div><div class="ttdeci">async Task UpdateAllAsync(object obj)</div><div class="ttdoc">Update a business object. Include objects which are not dirty.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00289">ChildDataPortal.cs:289</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ac530fda87bfcd263d249c13ce3efe41f"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ac530fda87bfcd263d249c13ce3efe41f">Csla.Server.ChildDataPortal.UpdateAll</a></div><div class="ttdeci">void UpdateAll(object obj, params object[] parameters)</div><div class="ttdoc">Update a business object. Include objects which are not dirty.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00280">ChildDataPortal.cs:280</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ab0efd5c3c10a294d74d0d599445a6bcc"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ab0efd5c3c10a294d74d0d599445a6bcc">Csla.Server.ChildDataPortal.UpdateAllAsync</a></div><div class="ttdeci">async Task UpdateAllAsync(object obj)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00289">ChildDataPortal.cs:289</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ac530fda87bfcd263d249c13ce3efe41f"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ac530fda87bfcd263d249c13ce3efe41f">Csla.Server.ChildDataPortal.UpdateAll</a></div><div class="ttdeci">void UpdateAll(object obj, params object[] parameters)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00280">ChildDataPortal.cs:280</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ac968ce118b0dadcadf0312696deed43f"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ac968ce118b0dadcadf0312696deed43f">Csla.Server.ChildDataPortal.Create</a></div><div class="ttdeci">object Create(Type objectType, params object[] parameters)</div><div class="ttdoc">Create a new business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00043">ChildDataPortal.cs:43</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ae65fe99d407609293bb009ae1cfa2f47"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ae65fe99d407609293bb009ae1cfa2f47">Csla.Server.ChildDataPortal.UpdateAll</a></div><div class="ttdeci">void UpdateAll(object obj)</div><div class="ttdoc">Update a business object. Include objects which are not dirty.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00268">ChildDataPortal.cs:268</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_ae65fe99d407609293bb009ae1cfa2f47"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#ae65fe99d407609293bb009ae1cfa2f47">Csla.Server.ChildDataPortal.UpdateAll</a></div><div class="ttdeci">void UpdateAll(object obj)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00268">ChildDataPortal.cs:268</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_af1e355d7708631796551647ebd99a808"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#af1e355d7708631796551647ebd99a808">Csla.Server.ChildDataPortal.Fetch</a></div><div class="ttdeci">object Fetch(Type objectType, params object[] parameters)</div><div class="ttdoc">Get an existing business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00138">ChildDataPortal.cs:138</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_child_data_portal_html_afad04a9457dd6a36fd18b87dceefd742"><div class="ttname"><a href="class_csla_1_1_server_1_1_child_data_portal.html#afad04a9457dd6a36fd18b87dceefd742">Csla.Server.ChildDataPortal.UpdateAsync</a></div><div class="ttdeci">async Task UpdateAsync(object obj)</div><div class="ttdoc">Update a business object.</div><div class="ttdef"><b>Definition:</b> <a href="_child_data_portal_8cs_source.html#l00247">ChildDataPortal.cs:247</a></div></div>
 <div class="ttc" id="anamespace_csla_1_1_reflection_html"><div class="ttname"><a href="namespace_csla_1_1_reflection.html">Csla.Reflection</a></div><div class="ttdef"><b>Definition:</b> <a href="_call_method_exception_8cs_source.html#l00011">CallMethodException.cs:12</a></div></div>

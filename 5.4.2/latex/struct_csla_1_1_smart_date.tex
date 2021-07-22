@@ -118,13 +118,13 @@ ulong IConvertible. \mbox{\hyperlink{struct_csla_1_1_smart_date_a749c3c8b034f529
 string IFormattable. \mbox{\hyperlink{struct_csla_1_1_smart_date_a4e8a6f24e2821644fce52c5c52f370e0}{To\+String}} (string format, IFormat\+Provider format\+Provider)
 \item 
 void IMobile\+Object. \mbox{\hyperlink{struct_csla_1_1_smart_date_a557769d94f82f10ee2d8d3ed530e9e8e}{Get\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
-\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should serialize its data. The data should be serialized into the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should serialize its data. \end{DoxyCompactList}\item 
 void IMobile\+Object. \mbox{\hyperlink{struct_csla_1_1_smart_date_ae5b63bff3d3e9cb538eda5821d465f16}{Set\+State}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info)
-\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should be deserialized. The data should be deserialized from the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should be deserialized. \end{DoxyCompactList}\item 
 void IMobile\+Object. \mbox{\hyperlink{struct_csla_1_1_smart_date_a7bcfbdba08dc528c8acb9dbcf80585a3}{Set\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
-\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should deserialize its child references. The data should be deserialized from the Serialization\+Info parameter. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should deserialize its child references. \end{DoxyCompactList}\item 
 void IMobile\+Object. \mbox{\hyperlink{struct_csla_1_1_smart_date_a20c5d7452036dd8fd409793385108468}{Get\+Children}} (\mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} info, \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter}{Mobile\+Formatter}} formatter)
-\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should serialize its child references. The data should be serialized into the Serialization\+Info parameter. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Method called by Mobile\+Formatter when an object should serialize its child references. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -844,7 +844,9 @@ Definition at line 480 of file Smart\+Date.\+cs.
 
 
 
-Method called by Mobile\+Formatter when an object should serialize its child references. The data should be serialized into the Serialization\+Info parameter. 
+Method called by Mobile\+Formatter when an object should serialize its child references. 
+
+The data should be serialized into the Serialization\+Info parameter.
 
 
 \begin{DoxyParams}{Parameters}
@@ -883,7 +885,9 @@ Definition at line 501 of file Smart\+Date.\+cs.
 
 
 
-Method called by Mobile\+Formatter when an object should serialize its data. The data should be serialized into the Serialization\+Info parameter. 
+Method called by Mobile\+Formatter when an object should serialize its data. 
+
+The data should be serialized into the Serialization\+Info parameter.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1644,7 +1648,9 @@ Definition at line 611 of file Smart\+Date.\+cs.
 
 
 
-Method called by Mobile\+Formatter when an object should deserialize its child references. The data should be deserialized from the Serialization\+Info parameter. 
+Method called by Mobile\+Formatter when an object should deserialize its child references. 
+
+The data should be deserialized from the Serialization\+Info parameter.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1690,7 +1696,9 @@ Definition at line 356 of file Smart\+Date.\+cs.
 
 
 
-Method called by Mobile\+Formatter when an object should be deserialized. The data should be deserialized from the Serialization\+Info parameter. 
+Method called by Mobile\+Formatter when an object should be deserialized. 
+
+The data should be deserialized from the Serialization\+Info parameter.
 
 
 \begin{DoxyParams}{Parameters}
@@ -2234,8 +2242,3 @@ When the date value is retrieved via this property, the text is formatted by usi
 
 Definition at line 399 of file Smart\+Date.\+cs.
 
-
-
-The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_smart_date_8cs}{Smart\+Date.\+cs}}\end{DoxyCompactItemize}

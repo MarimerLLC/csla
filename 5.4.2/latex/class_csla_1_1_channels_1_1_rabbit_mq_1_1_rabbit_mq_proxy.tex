@@ -34,7 +34,7 @@ void \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_
 virtual void \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_a5751ebdc19b5b2107474ffeeba5d2829}{Initialize\+Rabbit\+MQ}} ()
 \begin{DoxyCompactList}\small\item\em Method responsible for creating the Connection, Channel, Reply\+Queue, and Data\+Portal\+Queue\+Name values used for bi-\/directional communication. \end{DoxyCompactList}\item 
 override async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_rabbit_mq_1_1_rabbit_mq_proxy_aeaa97687ba49955d9f3f5df983d71e1d}{Call\+Data\+Portal\+Server}} (byte\mbox{[}$\,$\mbox{]} serialized, string operation, string routing\+Token, bool is\+Sync)
-\begin{DoxyCompactList}\small\item\em Create message and send to Rabbit MQ server. Return Response from server \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Create message and send to Rabbit MQ server. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Properties}
 \begin{DoxyCompactItemize}
 \item 
@@ -102,7 +102,9 @@ Definition at line 39 of file Rabbit\+Mq\+Proxy.\+cs.
 
 
 
-Create message and send to Rabbit MQ server. Return Response from server 
+Create message and send to Rabbit MQ server. 
+
+Return Response from server
 
 
 \begin{DoxyParams}{Parameters}
@@ -327,8 +329,3 @@ Gets or sets the timeout for network operations in seconds (default is 30 second
 
 Definition at line 48 of file Rabbit\+Mq\+Proxy.\+cs.
 
-
-
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_rabbit_mq_proxy_8cs}{Rabbit\+Mq\+Proxy.\+cs}}\end{DoxyCompactItemize}

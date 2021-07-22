@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -106,6 +116,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ab634fe0ece0fd711b3aa6efeb9196727"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds resource/type to data portal proxy mappings for use by the data portal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ab634fe0ece0fd711b3aa6efeb9196727">More...</a><br /></td></tr>
 <tr class="separator:ab634fe0ece0fd711b3aa6efeb9196727"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2945113ff083804b612fdff4118577e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ae2945113ff083804b612fdff4118577e">ProxyFactoryType</a> (Type type)</td></tr>
+<tr class="memdesc:ae2945113ff083804b612fdff4118577e"><td class="mdescLeft">&#160;</td><td class="mdescRight">summary&gt; Sets the full type name (or 'Default') of the data portal proxy factory object to be used to get the DataPortalProxy instance to use when communicating with the data portal server.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ae2945113ff083804b612fdff4118577e">More...</a><br /></td></tr>
 <tr class="separator:ae2945113ff083804b612fdff4118577e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dc11de777d905b1319c730ba1bf96d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a3dc11de777d905b1319c730ba1bf96d9">ProxyFactoryType</a> (string typeName)</td></tr>
 <tr class="separator:a3dc11de777d905b1319c730ba1bf96d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,28 +133,28 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a55e9e69d3588ef6962f9898bb9895ea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the authentication type being used by the CSLA .NET framework.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a55e9e69d3588ef6962f9898bb9895ea1">More...</a><br /></td></tr>
 <tr class="separator:a55e9e69d3588ef6962f9898bb9895ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d563fc72ba3bd0a93576e405aed79d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a0d563fc72ba3bd0a93576e405aed79d2">ServerAuthorizationProviderType</a> (Type type)</td></tr>
-<tr class="memdesc:a0d563fc72ba3bd0a93576e405aed79d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name to be used for server-side data portal authorization. Type must implement IAuthorizeDataPortal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a0d563fc72ba3bd0a93576e405aed79d2">More...</a><br /></td></tr>
+<tr class="memdesc:a0d563fc72ba3bd0a93576e405aed79d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name to be used for server-side data portal authorization.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a0d563fc72ba3bd0a93576e405aed79d2">More...</a><br /></td></tr>
 <tr class="separator:a0d563fc72ba3bd0a93576e405aed79d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a29af084379020ec6f67d27e9432329"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a3a29af084379020ec6f67d27e9432329">ServerAuthorizationProviderType</a> (string typeName)</td></tr>
-<tr class="memdesc:a3a29af084379020ec6f67d27e9432329"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name to be used for server-side data portal authorization. Type must implement IAuthorizeDataPortal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a3a29af084379020ec6f67d27e9432329">More...</a><br /></td></tr>
+<tr class="memdesc:a3a29af084379020ec6f67d27e9432329"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name to be used for server-side data portal authorization.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a3a29af084379020ec6f67d27e9432329">More...</a><br /></td></tr>
 <tr class="separator:a3a29af084379020ec6f67d27e9432329"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a668e7bc8f337c7952e2a4af1f54ad38e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a668e7bc8f337c7952e2a4af1f54ad38e">InterceptorType</a> (string typeName)</td></tr>
-<tr class="memdesc:a668e7bc8f337c7952e2a4af1f54ad38e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. Type must implement IInterceptDataPortal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a668e7bc8f337c7952e2a4af1f54ad38e">More...</a><br /></td></tr>
+<tr class="memdesc:a668e7bc8f337c7952e2a4af1f54ad38e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a668e7bc8f337c7952e2a4af1f54ad38e">More...</a><br /></td></tr>
 <tr class="separator:a668e7bc8f337c7952e2a4af1f54ad38e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61c19e00ce1b890e0beacb63dbbcba45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a61c19e00ce1b890e0beacb63dbbcba45">InterceptorType</a> (Type type)</td></tr>
-<tr class="memdesc:a61c19e00ce1b890e0beacb63dbbcba45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. Type must implement IInterceptDataPortal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a61c19e00ce1b890e0beacb63dbbcba45">More...</a><br /></td></tr>
+<tr class="memdesc:a61c19e00ce1b890e0beacb63dbbcba45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a61c19e00ce1b890e0beacb63dbbcba45">More...</a><br /></td></tr>
 <tr class="separator:a61c19e00ce1b890e0beacb63dbbcba45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6b60bd6b5556465d69e2eff754c71cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ad6b60bd6b5556465d69e2eff754c71cd">ExceptionInspectorType</a> (Type type)</td></tr>
-<tr class="memdesc:ad6b60bd6b5556465d69e2eff754c71cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of the ExceptionInspector class. Type must implement IDataPortalExceptionInspector.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ad6b60bd6b5556465d69e2eff754c71cd">More...</a><br /></td></tr>
+<tr class="memdesc:ad6b60bd6b5556465d69e2eff754c71cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of the ExceptionInspector class.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ad6b60bd6b5556465d69e2eff754c71cd">More...</a><br /></td></tr>
 <tr class="separator:ad6b60bd6b5556465d69e2eff754c71cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adedf3ad36084e820573a858ad8d19328"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#adedf3ad36084e820573a858ad8d19328">ExceptionInspectorType</a> (string typeName)</td></tr>
-<tr class="memdesc:adedf3ad36084e820573a858ad8d19328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name of the ExceptionInspector class. Type must implement IDataPortalExceptionInspector.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#adedf3ad36084e820573a858ad8d19328">More...</a><br /></td></tr>
+<tr class="memdesc:adedf3ad36084e820573a858ad8d19328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name of the ExceptionInspector class.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#adedf3ad36084e820573a858ad8d19328">More...</a><br /></td></tr>
 <tr class="separator:adedf3ad36084e820573a858ad8d19328"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb6e4fcf8e89c2f3f2a5751742b16e9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#adb6e4fcf8e89c2f3f2a5751742b16e9b">FactoryLoaderType</a> (Type type)</td></tr>
-<tr class="memdesc:adb6e4fcf8e89c2f3f2a5751742b16e9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. Type must implement IObjectFactoryLoader.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#adb6e4fcf8e89c2f3f2a5751742b16e9b">More...</a><br /></td></tr>
+<tr class="memdesc:adb6e4fcf8e89c2f3f2a5751742b16e9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#adb6e4fcf8e89c2f3f2a5751742b16e9b">More...</a><br /></td></tr>
 <tr class="separator:adb6e4fcf8e89c2f3f2a5751742b16e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac22aec42ccac855087f0fa375c691c12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ac22aec42ccac855087f0fa375c691c12">FactoryLoaderType</a> (string typeName)</td></tr>
-<tr class="memdesc:ac22aec42ccac855087f0fa375c691c12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. Type must implement IObjectFactoryLoader.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ac22aec42ccac855087f0fa375c691c12">More...</a><br /></td></tr>
+<tr class="memdesc:ac22aec42ccac855087f0fa375c691c12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ac22aec42ccac855087f0fa375c691c12">More...</a><br /></td></tr>
 <tr class="separator:ac22aec42ccac855087f0fa375c691c12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace8f5697e085920603b7535d256812a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ace8f5697e085920603b7535d256812a4">AutoCloneOnUpdate</a> (bool value)</td></tr>
 <tr class="memdesc:ace8f5697e085920603b7535d256812a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a value indicating whether objects should be automatically cloned by the data portal Update() method when using a local data portal configuration.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ace8f5697e085920603b7535d256812a4">More...</a><br /></td></tr>
@@ -158,7 +169,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad7568add83ecfb3d7d69ea307d5f21cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the assembly qualified type name of the dashboard, or 'Dashboard' for default, or 'NullDashboard' for the null dashboard.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ad7568add83ecfb3d7d69ea307d5f21cb">More...</a><br /></td></tr>
 <tr class="separator:ad7568add83ecfb3d7d69ea307d5f21cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a248db809e31b248ca707587a55cbd479"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html">CslaDataPortalConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a248db809e31b248ca707587a55cbd479">FlowSynchronizationContext</a> (bool flow)</td></tr>
-<tr class="memdesc:a248db809e31b248ca707587a55cbd479"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy. Setting this to true may restrict or eliminate the use of background threads by LocalProxy.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a248db809e31b248ca707587a55cbd479">More...</a><br /></td></tr>
+<tr class="memdesc:a248db809e31b248ca707587a55cbd479"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a248db809e31b248ca707587a55cbd479">More...</a><br /></td></tr>
 <tr class="separator:a248db809e31b248ca707587a55cbd479"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -488,7 +499,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type name of the ExceptionInspector class. Type must implement IDataPortalExceptionInspector. </p>
+<p>Sets the type name of the ExceptionInspector class. </p>
+<p>Type must implement IDataPortalExceptionInspector.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">typeName</td><td>Assembly qualified type name</td></tr>
@@ -516,7 +528,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type of the ExceptionInspector class. Type must implement IDataPortalExceptionInspector. </p>
+<p>Sets the type of the ExceptionInspector class. </p>
+<p>Type must implement IDataPortalExceptionInspector.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>Inspector type</td></tr>
@@ -544,7 +557,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. Type must implement IObjectFactoryLoader. </p>
+<p>Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. </p>
+<p>Type must implement IObjectFactoryLoader.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">typeName</td><td>Assembly qualified type name</td></tr>
@@ -572,7 +586,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. Type must implement IObjectFactoryLoader. </p>
+<p>Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. </p>
+<p>Type must implement IObjectFactoryLoader.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>Factory loader type</td></tr>
@@ -600,7 +615,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy. Setting this to true may restrict or eliminate the use of background threads by LocalProxy. </p>
+<p>Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy. </p>
+<p>Setting this to true may restrict or eliminate the use of background threads by LocalProxy.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">flow</td><td>True to flow context</td></tr>
@@ -629,7 +645,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. Type must implement IInterceptDataPortal. </p>
+<p>Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. </p>
+<p>Type must implement IInterceptDataPortal.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">typeName</td><td>Assembly qualified type name</td></tr>
@@ -657,7 +674,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. Type must implement IInterceptDataPortal. </p>
+<p>Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. </p>
+<p>Type must implement IInterceptDataPortal.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>Interceptor type</td></tr>
@@ -741,8 +759,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>summary&gt; Sets the full type name (or 'Default') of the data portal proxy factory object to be used to get the DataPortalProxy instance to use when communicating with the data portal server.</p>
+<p>summary&gt; Sets the full type name (or 'Default') of the data portal proxy factory object to be used to get the DataPortalProxy instance to use when communicating with the data portal server. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">typeName</td><td>Assembly qualified type name</td></tr>
@@ -770,7 +787,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type name to be used for server-side data portal authorization. Type must implement IAuthorizeDataPortal. </p>
+<p>Sets the type name to be used for server-side data portal authorization. </p>
+<p>Type must implement IAuthorizeDataPortal.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">typeName</td><td>Assembly qualified type name</td></tr>
@@ -798,7 +816,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the type name to be used for server-side data portal authorization. Type must implement IAuthorizeDataPortal. </p>
+<p>Sets the type name to be used for server-side data portal authorization. </p>
+<p>Type must implement IAuthorizeDataPortal.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>Authorization provider type</td></tr>
@@ -810,9 +829,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_csla_data_portal_configuration_8cs_source.html">CslaDataPortalConfiguration.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

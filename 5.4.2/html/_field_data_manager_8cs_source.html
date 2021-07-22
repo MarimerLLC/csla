@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -712,7 +722,7 @@ $(document).ready(function(){initNavTree('_field_data_manager_8cs_source.html','
 <div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_abdb40dbc811268154edb27d60ab80326"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#abdb40dbc811268154edb27d60ab80326">Csla.Core.FieldManager.FieldDataManager.IsValid</a></div><div class="ttdeci">bool IsValid()</div><div class="ttdoc">Returns a value indicating whether all fields are valid.</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00400">FieldDataManager.cs:400</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_ac712de83e417c9a1e5bc2bd629d40ba1"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ac712de83e417c9a1e5bc2bd629d40ba1">Csla.Core.FieldManager.FieldDataManager.FieldExists</a></div><div class="ttdeci">bool FieldExists(IPropertyInfo propertyInfo)</div><div class="ttdoc">Returns a value indicating whether an IFieldData entry exists for the specified property.</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00353">FieldDataManager.cs:353</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_ad371e286a8c831cfebbb861b2fcc9955"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ad371e286a8c831cfebbb861b2fcc9955">Csla.Core.FieldManager.FieldDataManager.UpdateAllChildren</a></div><div class="ttdeci">void UpdateAllChildren(params object[] parameters)</div><div class="ttdoc">Invokes the data portal to update all child objects, including those which are not dirty,...</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00600">FieldDataManager.cs:600</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_ada88dabf6398bd1ea168d057ff8967b8"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ada88dabf6398bd1ea168d057ff8967b8">Csla.Core.FieldManager.FieldDataManager.GetRegisteredProperties</a></div><div class="ttdeci">List&lt; IPropertyInfo &gt; GetRegisteredProperties()</div><div class="ttdoc">Returns a copy of the property list for the business object. Returns null if there are no properties ...</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00073">FieldDataManager.cs:73</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_ada88dabf6398bd1ea168d057ff8967b8"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ada88dabf6398bd1ea168d057ff8967b8">Csla.Core.FieldManager.FieldDataManager.GetRegisteredProperties</a></div><div class="ttdeci">List&lt; IPropertyInfo &gt; GetRegisteredProperties()</div><div class="ttdoc">Returns a copy of the property list for the business object.</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00073">FieldDataManager.cs:73</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_ae629320e9fb01638a1a8981d0564e9e4"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ae629320e9fb01638a1a8981d0564e9e4">Csla.Core.FieldManager.FieldDataManager.GetRegisteredProperty</a></div><div class="ttdeci">IPropertyInfo GetRegisteredProperty(string propertyName)</div><div class="ttdoc">Returns the IPropertyInfo object corresponding to the property name.</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00086">FieldDataManager.cs:86</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_field_manager_1_1_field_data_manager_html_af9ffeed2f93fa638b2acd50fc7b35c57"><div class="ttname"><a href="class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#af9ffeed2f93fa638b2acd50fc7b35c57">Csla.Core.FieldManager.FieldDataManager.OnGetChildren</a></div><div class="ttdeci">override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)</div><div class="ttdoc">Serializes child objects.</div><div class="ttdef"><b>Definition:</b> <a href="_field_data_manager_8cs_source.html#l00655">FieldDataManager.cs:655</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_mobile_object_html"><div class="ttname"><a href="class_csla_1_1_core_1_1_mobile_object.html">Csla.Core.MobileObject</a></div><div class="ttdoc">Inherit from this base class to easily create a serializable class.</div><div class="ttdef"><b>Definition:</b> <a href="_mobile_object_8cs_source.html#l00019">MobileObject.cs:20</a></div></div>
@@ -723,7 +733,7 @@ $(document).ready(function(){initNavTree('_field_data_manager_8cs_source.html','
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_a039d1367e8dac1d15b04457ea9482777"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#a039d1367e8dac1d15b04457ea9482777">Csla.Properties.Resources.PropertyIsPrivateField</a></div><div class="ttdeci">static string PropertyIsPrivateField</div><div class="ttdoc">Looks up a localized string similar to Attempt to read/load private field property in managed propert...</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00813">Resources.Designer.cs:813</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_a1d42cfbc3cfc587c83b3ade0e0224f6c"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#a1d42cfbc3cfc587c83b3ade0e0224f6c">Csla.Properties.Resources.PropertyNotRegistered</a></div><div class="ttdeci">static string PropertyNotRegistered</div><div class="ttdoc">Looks up a localized string similar to One or more properties are not registered for this type.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00858">Resources.Designer.cs:858</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_a3bcb7786f465795921011bdefb64ca2d"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#a3bcb7786f465795921011bdefb64ca2d">Csla.Properties.Resources.EditLevelMismatchException</a></div><div class="ttdeci">static string EditLevelMismatchException</div><div class="ttdoc">Looks up a localized string similar to Edit level mismatch in {0}.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00372">Resources.Designer.cs:372</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_abc68017448f42daec77f5ef211782d85"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#abc68017448f42daec77f5ef211782d85">Csla.Properties.Resources.PropertyNameNotRegisteredException</a></div><div class="ttdeci">static string PropertyNameNotRegisteredException</div><div class="ttdoc">Looks up a localized string similar to Property '{0}' not registered..</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00840">Resources.Designer.cs:840</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_abc68017448f42daec77f5ef211782d85"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#abc68017448f42daec77f5ef211782d85">Csla.Properties.Resources.PropertyNameNotRegisteredException</a></div><div class="ttdeci">static string PropertyNameNotRegisteredException</div><div class="ttdoc">Looks up a localized string similar to Property '{0}' not registered.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00840">Resources.Designer.cs:840</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_reflection_1_1_method_caller_html"><div class="ttname"><a href="class_csla_1_1_reflection_1_1_method_caller.html">Csla.Reflection.MethodCaller</a></div><div class="ttdef"><b>Definition:</b> <a href="_method_caller_8cs_source.html#l00023">MethodCaller.cs:24</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter_html"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_mobile_1_1_mobile_formatter.html">Csla.Serialization.Mobile.MobileFormatter</a></div><div class="ttdoc">Serializes and deserializes objects at the field level.</div><div class="ttdef"><b>Definition:</b> <a href="_mobile_formatter_8cs_source.html#l00025">MobileFormatter.cs:26</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_child_data_html"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info_1_1_child_data.html">Csla.Serialization.Mobile.SerializationInfo.ChildData</a></div><div class="ttdoc">Object that contains information about a single child reference.</div><div class="ttdef"><b>Definition:</b> <a href="_serialization_info_8cs_source.html#l00112">SerializationInfo.cs:113</a></div></div>
@@ -741,7 +751,7 @@ $(document).ready(function(){initNavTree('_field_data_manager_8cs_source.html','
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_editable_collection_html"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_editable_collection.html">Csla.Core.IEditableCollection</a></div><div class="ttdoc">Defines the common methods required by all editable CSLA collection objects.</div><div class="ttdef"><b>Definition:</b> <a href="_i_editable_collection_8cs_source.html#l00020">IEditableCollection.cs:21</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_member_info_html_a8ed073fa07101564cb67faf8aec269cb"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_member_info.html#a8ed073fa07101564cb67faf8aec269cb">Csla.Core.IMemberInfo.Name</a></div><div class="ttdeci">string Name</div><div class="ttdoc">Gets the member name value.</div><div class="ttdef"><b>Definition:</b> <a href="_i_member_info_8cs_source.html#l00023">IMemberInfo.cs:23</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html">Csla.Core.IPropertyInfo</a></div><div class="ttdoc">Maintains metadata about a property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00015">Csla/Core/IPropertyInfo.cs:16</a></div></div>
-<div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a063df03d31e98d0d6fdc66c6656bd05c"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a063df03d31e98d0d6fdc66c6656bd05c">Csla.Core.IPropertyInfo.Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">Gets or sets the index position for the managed field storage behind the property....</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00050">Csla/Core/IPropertyInfo.cs:50</a></div></div>
+<div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a063df03d31e98d0d6fdc66c6656bd05c"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a063df03d31e98d0d6fdc66c6656bd05c">Csla.Core.IPropertyInfo.Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">Gets or sets the index position for the managed field storage behind the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00050">Csla/Core/IPropertyInfo.cs:50</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a42d0b6a3aec67bea06efcb61b7c98cf1"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a42d0b6a3aec67bea06efcb61b7c98cf1">Csla.Core.IPropertyInfo.RelationshipType</a></div><div class="ttdeci">RelationshipTypes RelationshipType</div><div class="ttdoc">Gets the relationship between the declaring object and the object reference in the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00044">Csla/Core/IPropertyInfo.cs:44</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a866e4fea90cc02bb7ec603eb7a11b0e9"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a866e4fea90cc02bb7ec603eb7a11b0e9">Csla.Core.IPropertyInfo.Type</a></div><div class="ttdeci">Type Type</div><div class="ttdoc">Gets the type of the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00020">Csla/Core/IPropertyInfo.cs:20</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_ab48fd9979324534cbf82345e4071dd77"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#ab48fd9979324534cbf82345e4071dd77">Csla.Core.IPropertyInfo.NewFieldData</a></div><div class="ttdeci">Core.FieldManager.IFieldData NewFieldData(string name)</div><div class="ttdoc">Gets a new field data container for the property.</div></div>

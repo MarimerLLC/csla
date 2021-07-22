@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -242,7 +252,7 @@ $(document).ready(function(){initNavTree('_data_portal_exception_8cs_source.html
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_a34ac27e4ecc74e11d80d6f5499d1ac82"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#a34ac27e4ecc74e11d80d6f5499d1ac82">Csla.DataPortalException.BusinessExceptionMessage</a></div><div class="ttdeci">string BusinessExceptionMessage</div><div class="ttdoc">Gets the Message property from the BusinessException, falling back to the Message value from the top-...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00185">DataPortalException.cs:186</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_a840a2b29818565d64917fada4ec97942"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#a840a2b29818565d64917fada4ec97942">Csla.DataPortalException.BusinessErrorInfo</a></div><div class="ttdeci">DataPortalErrorInfo BusinessErrorInfo</div><div class="ttdoc">Gets the original exception error info that caused this exception.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00123">DataPortalException.cs:124</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_aa37d9efa4c2b784b51c94bc3a45cdb4e"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#aa37d9efa4c2b784b51c94bc3a45cdb4e">Csla.DataPortalException.GetObjectData</a></div><div class="ttdeci">override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)</div><div class="ttdoc">Serializes the object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00230">DataPortalException.cs:230</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_aac0b1bdfcd3142946529e305c2adb634"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#aac0b1bdfcd3142946529e305c2adb634">Csla.DataPortalException.ErrorInfo</a></div><div class="ttdeci">DataPortalErrorInfo ErrorInfo</div><div class="ttdoc">Gets information about the original server-side exception. That exception is not an exception on the ...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00117">DataPortalException.cs:117</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_aac0b1bdfcd3142946529e305c2adb634"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#aac0b1bdfcd3142946529e305c2adb634">Csla.DataPortalException.ErrorInfo</a></div><div class="ttdeci">DataPortalErrorInfo ErrorInfo</div><div class="ttdoc">Gets information about the original server-side exception.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00117">DataPortalException.cs:117</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_ab6947173cfdd1dcecbd4b7814ad1660c"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#ab6947173cfdd1dcecbd4b7814ad1660c">Csla.DataPortalException.DataPortalException</a></div><div class="ttdeci">DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)</div><div class="ttdoc">Creates an instance of the object for serialization.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00213">DataPortalException.cs:213</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_acc1467e89eef43e2bdba7295a3012803"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#acc1467e89eef43e2bdba7295a3012803">Csla.DataPortalException.DataPortalException</a></div><div class="ttdeci">DataPortalException(string message, Exception ex, object businessObject)</div><div class="ttdoc">Creates an instance of the object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00042">DataPortalException.cs:42</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_acee68fb6f1d617cbff3c5342c795efee"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#acee68fb6f1d617cbff3c5342c795efee">Csla.DataPortalException.DataPortalException</a></div><div class="ttdeci">DataPortalException(WcfPortal.WcfErrorInfo info)</div><div class="ttdoc">Creates an instance of the object.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00069">DataPortalException.cs:69</a></div></div>

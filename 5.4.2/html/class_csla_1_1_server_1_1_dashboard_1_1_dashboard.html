@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -119,7 +129,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
 <tr class="memitem:ae7ce60b63c59e2248b9dd43108473eb6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#ae7ce60b63c59e2248b9dd43108473eb6">RecentActivityCount</a> = 100<code> [get, set]</code></td></tr>
-<tr class="memdesc:ae7ce60b63c59e2248b9dd43108473eb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets a value indicating the number of items to maintain in the recent activity list. Default is 100.  <a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#ae7ce60b63c59e2248b9dd43108473eb6">More...</a><br /></td></tr>
+<tr class="memdesc:ae7ce60b63c59e2248b9dd43108473eb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets a value indicating the number of items to maintain in the recent activity list.  <a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#ae7ce60b63c59e2248b9dd43108473eb6">More...</a><br /></td></tr>
 <tr class="separator:ae7ce60b63c59e2248b9dd43108473eb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa733b82aedf2f1d9a92c7e43248cceb2"><td class="memItemLeft" align="right" valign="top">DateTimeOffset&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#aa733b82aedf2f1d9a92c7e43248cceb2">FirstCall</a><code> [get]</code></td></tr>
 <tr class="memdesc:aa733b82aedf2f1d9a92c7e43248cceb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the time the data portal was first invoked  <a href="class_csla_1_1_server_1_1_dashboard_1_1_dashboard.html#aa733b82aedf2f1d9a92c7e43248cceb2">More...</a><br /></td></tr>
@@ -349,7 +359,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets or sets a value indicating the number of items to maintain in the recent activity list. Default is 100. </p>
+<p>Gets or sets a value indicating the number of items to maintain in the recent activity list. </p>
+<p>Default is 100.</p>
 
 <p class="definition">Definition at line <a class="el" href="_dashboard_8cs_source.html#l00045">45</a> of file <a class="el" href="_dashboard_8cs_source.html">Dashboard.cs</a>.</p>
 
@@ -381,9 +392,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_dashboard_8cs_source.html">Dashboard.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

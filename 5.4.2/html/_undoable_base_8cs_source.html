@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -455,7 +465,7 @@ $(document).ready(function(){initNavTree('_undoable_base_8cs_source.html',''); i
 <div class="ttc" id="aclass_csla_1_1_core_1_1_mobile_dictionary_html_a8c5d0cde3082852bc8db30f8b8588579"><div class="ttname"><a href="class_csla_1_1_core_1_1_mobile_dictionary.html#a8c5d0cde3082852bc8db30f8b8588579">Csla.Core.MobileDictionary.Contains</a></div><div class="ttdeci">bool Contains(K key)</div><div class="ttdoc">Gets a value indicating whether the dictionary contains the specified key value.</div><div class="ttdef"><b>Definition:</b> <a href="_mobile_dictionary_8cs_source.html#l00081">MobileDictionary.cs:81</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_undo_exception_html"><div class="ttname"><a href="class_csla_1_1_core_1_1_undo_exception.html">Csla.Core.UndoException</a></div><div class="ttdoc">Exception indicating a problem with the use of the n-level undo feature in CSLA .NET.</div><div class="ttdef"><b>Definition:</b> <a href="_undo_exception_8cs_source.html#l00019">UndoException.cs:20</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_undoable_base_html"><div class="ttname"><a href="class_csla_1_1_core_1_1_undoable_base.html">Csla.Core.UndoableBase</a></div><div class="ttdoc">Implements n-level undo capabilities as described in Chapters 2 and 3.</div><div class="ttdef"><b>Definition:</b> <a href="_undoable_base_8cs_source.html#l00026">UndoableBase.cs:28</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_core_1_1_undoable_base_html_a15ac7e90a225bdf59d7806b18b4ad5b3"><div class="ttname"><a href="class_csla_1_1_core_1_1_undoable_base.html#a15ac7e90a225bdf59d7806b18b4ad5b3">Csla.Core.UndoableBase.BindingEdit</a></div><div class="ttdeci">bool BindingEdit</div><div class="ttdoc">Gets or sets a value indicating whether n-level undo was invoked through IEditableObject....</div><div class="ttdef"><b>Definition:</b> <a href="_undoable_base_8cs_source.html#l00049">UndoableBase.cs:50</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_core_1_1_undoable_base_html_a15ac7e90a225bdf59d7806b18b4ad5b3"><div class="ttname"><a href="class_csla_1_1_core_1_1_undoable_base.html#a15ac7e90a225bdf59d7806b18b4ad5b3">Csla.Core.UndoableBase.BindingEdit</a></div><div class="ttdeci">bool BindingEdit</div><div class="ttdoc">Gets or sets a value indicating whether n-level undo was invoked through IEditableObject.</div><div class="ttdef"><b>Definition:</b> <a href="_undoable_base_8cs_source.html#l00049">UndoableBase.cs:50</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_undoable_base_html_a24ce65a9ca4e7a6334373331ec8d672f"><div class="ttname"><a href="class_csla_1_1_core_1_1_undoable_base.html#a24ce65a9ca4e7a6334373331ec8d672f">Csla.Core.UndoableBase.CopyingState</a></div><div class="ttdeci">virtual void CopyingState()</div><div class="ttdoc">This method is invoked before the CopyState operation begins.</div><div class="ttdef"><b>Definition:</b> <a href="_undoable_base_8cs_source.html#l00098">UndoableBase.cs:98</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_undoable_base_html_a80770ed4bd6e3f6b70dcc1ee0ec6d57c"><div class="ttname"><a href="class_csla_1_1_core_1_1_undoable_base.html#a80770ed4bd6e3f6b70dcc1ee0ec6d57c">Csla.Core.UndoableBase.UndoingChanges</a></div><div class="ttdeci">virtual void UndoingChanges()</div><div class="ttdoc">This method is invoked after the UndoChanges operation is complete.</div><div class="ttdef"><b>Definition:</b> <a href="_undoable_base_8cs_source.html#l00194">UndoableBase.cs:194</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_undoable_base_html_a856bf9430a6d6094a04d74aee4168c92"><div class="ttname"><a href="class_csla_1_1_core_1_1_undoable_base.html#a856bf9430a6d6094a04d74aee4168c92">Csla.Core.UndoableBase.CopyStateComplete</a></div><div class="ttdeci">virtual void CopyStateComplete()</div><div class="ttdoc">This method is invoked after the CopyState operation is complete.</div><div class="ttdef"><b>Definition:</b> <a href="_undoable_base_8cs_source.html#l00107">UndoableBase.cs:107</a></div></div>

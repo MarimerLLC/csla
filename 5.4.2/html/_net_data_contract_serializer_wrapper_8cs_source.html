@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -139,7 +149,7 @@ $(document).ready(function(){initNavTree('_net_data_contract_serializer_wrapper_
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  }</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper_html"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper.html">Csla.Serialization.NetDataContractSerializerWrapper</a></div><div class="ttdef"><b>Definition:</b> <a href="_net_data_contract_serializer_wrapper_8cs_source.html#l00019">NetDataContractSerializerWrapper.cs:20</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper_html"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper.html">Csla.Serialization.NetDataContractSerializerWrapper</a></div><div class="ttdoc">Wraps the NetDataContractSerializer in the ISerializationFormatter interface so it can be used in a s...</div><div class="ttdef"><b>Definition:</b> <a href="_net_data_contract_serializer_wrapper_8cs_source.html#l00019">NetDataContractSerializerWrapper.cs:20</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper_html_a1629cb6c7d60003af096908077e51d48"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper.html#a1629cb6c7d60003af096908077e51d48">Csla.Serialization.NetDataContractSerializerWrapper.Deserialize</a></div><div class="ttdeci">object Deserialize(byte[] buffer)</div><div class="ttdoc">Converts a serialization stream into an object graph.</div><div class="ttdef"><b>Definition:</b> <a href="_net_data_contract_serializer_wrapper_8cs_source.html#l00043">NetDataContractSerializerWrapper.cs:43</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper_html_a5cb800310b794198df210fdd38355439"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper.html#a5cb800310b794198df210fdd38355439">Csla.Serialization.NetDataContractSerializerWrapper.Serialize</a></div><div class="ttdeci">void Serialize(System.IO.Stream serializationStream, object graph)</div><div class="ttdoc">Converts an object graph into a byte stream.</div><div class="ttdef"><b>Definition:</b> <a href="_net_data_contract_serializer_wrapper_8cs_source.html#l00055">NetDataContractSerializerWrapper.cs:55</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper_html_a7c2782c4dde6b48b3a58e49ea5cb3f33"><div class="ttname"><a href="class_csla_1_1_serialization_1_1_net_data_contract_serializer_wrapper.html#a7c2782c4dde6b48b3a58e49ea5cb3f33">Csla.Serialization.NetDataContractSerializerWrapper.Formatter</a></div><div class="ttdeci">NetDataContractSerializer Formatter</div><div class="ttdoc">Gets a reference to the underlying NetDataContractSerializer object.</div><div class="ttdef"><b>Definition:</b> <a href="_net_data_contract_serializer_wrapper_8cs_source.html#l00077">NetDataContractSerializerWrapper.cs:78</a></div></div>

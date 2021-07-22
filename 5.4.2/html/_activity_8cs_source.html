@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -110,9 +120,9 @@ $(document).ready(function(){initNavTree('_activity_8cs_source.html',''); initRe
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html">Csla.Server.Dashboard.Activity</a></div><div class="ttdoc">Information about a server-side data portal invocation.</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00009">Activity.cs:10</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a0d416760e6f4f82aa9857578f5dd06f8"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a0d416760e6f4f82aa9857578f5dd06f8">Csla.Server.Dashboard.Activity.Operation</a></div><div class="ttdeci">DataPortalOperations Operation</div><div class="ttdoc">Gets the operation type for the call</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00030">Activity.cs:30</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a21d056ce113acca37d6c0dab45577cce"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a21d056ce113acca37d6c0dab45577cce">Csla.Server.Dashboard.Activity.ObjectType</a></div><div class="ttdeci">Type ObjectType</div><div class="ttdoc">Gets the root business object type for the call</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00026">Activity.cs:26</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a6041306719f60a1d0d177376a2db69fe"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a6041306719f60a1d0d177376a2db69fe">Csla.Server.Dashboard.Activity.Runtime</a></div><div class="ttdeci">TimeSpan Runtime</div><div class="ttdoc">Gets the elapsed runtime for the call. Only valid upon call completion.</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00035">Activity.cs:35</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a6041306719f60a1d0d177376a2db69fe"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a6041306719f60a1d0d177376a2db69fe">Csla.Server.Dashboard.Activity.Runtime</a></div><div class="ttdeci">TimeSpan Runtime</div><div class="ttdoc">Gets the elapsed runtime for the call.</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00035">Activity.cs:35</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a731a484f8ac2a36e88b788a88014d64a"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a731a484f8ac2a36e88b788a88014d64a">Csla.Server.Dashboard.Activity.Activity</a></div><div class="ttdeci">Activity(InterceptArgs result)</div><div class="ttdoc">Creates an instance of the type.</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00015">Activity.cs:15</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a8187bbab0ad551bc7c886e93e388b9a5"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a8187bbab0ad551bc7c886e93e388b9a5">Csla.Server.Dashboard.Activity.Exception</a></div><div class="ttdeci">Exception Exception</div><div class="ttdoc">Gets the exception (if any) resulting from the call. Only valid upon call completion.</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00040">Activity.cs:40</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_server_1_1_dashboard_1_1_activity_html_a8187bbab0ad551bc7c886e93e388b9a5"><div class="ttname"><a href="class_csla_1_1_server_1_1_dashboard_1_1_activity.html#a8187bbab0ad551bc7c886e93e388b9a5">Csla.Server.Dashboard.Activity.Exception</a></div><div class="ttdeci">Exception Exception</div><div class="ttdoc">Gets the exception (if any) resulting from the call.</div><div class="ttdef"><b>Definition:</b> <a href="_activity_8cs_source.html#l00040">Activity.cs:40</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_intercept_args_html"><div class="ttname"><a href="class_csla_1_1_server_1_1_intercept_args.html">Csla.Server.InterceptArgs</a></div><div class="ttdoc">Arguments parameter passed to the interceptor methods.</div><div class="ttdef"><b>Definition:</b> <a href="_i_intercept_data_portal_8cs_source.html#l00038">IInterceptDataPortal.cs:39</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_intercept_args_html_a00fec5ca8845575c278de37ae51d7f94"><div class="ttname"><a href="class_csla_1_1_server_1_1_intercept_args.html#a00fec5ca8845575c278de37ae51d7f94">Csla.Server.InterceptArgs.Runtime</a></div><div class="ttdeci">TimeSpan Runtime</div><div class="ttdoc">Gets or sets a value containing the elapsed runtime for this operation (only valid at end of operatio...</div><div class="ttdef"><b>Definition:</b> <a href="_i_intercept_data_portal_8cs_source.html#l00077">IInterceptDataPortal.cs:77</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_server_1_1_intercept_args_html_a15954e8c3113ae491a5a6dd78f116a45"><div class="ttname"><a href="class_csla_1_1_server_1_1_intercept_args.html#a15954e8c3113ae491a5a6dd78f116a45">Csla.Server.InterceptArgs.Operation</a></div><div class="ttdeci">DataPortalOperations Operation</div><div class="ttdoc">Gets or sets the data portal operation being performed.</div><div class="ttdef"><b>Definition:</b> <a href="_i_intercept_data_portal_8cs_source.html#l00065">IInterceptDataPortal.cs:65</a></div></div>

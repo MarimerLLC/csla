@@ -15,7 +15,7 @@ Inheritance diagram for Csla.\+Xaml.\+View\+Model\+Base$<$ T $>$\+:\begin{figure
 \begin{DoxyCompactItemize}
 \item 
 async Task$<$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base}{View\+Model\+Base}}$<$ T $>$ $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a932e58543a60afaece26501682735b21}{Init\+Async}} ()
-\begin{DoxyCompactList}\small\item\em Method used to perform async initialization of the viewmodel. This method is usually invoked immediately following construction of the object instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Method used to perform async initialization of the viewmodel. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Static Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -29,7 +29,7 @@ static readonly Dependency\+Property \mbox{\hyperlink{class_csla_1_1_xaml_1_1_vi
 \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a96a1e467f52bd1cbe8e48d055ed7e971}{View\+Model\+Base}} ()
 \begin{DoxyCompactList}\small\item\em Create new instance of base class used to create \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model}{View\+Model}} objects that implement their own commands/verbs/actions. \end{DoxyCompactList}\item 
 virtual async Task$<$ T $>$ \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a42c156c8a69d439e9eaf5963689a388d}{Do\+Init\+Async}} ()
-\begin{DoxyCompactList}\small\item\em Override this method to implement async initialization of the model object. The result of this method is used to set the Model property of the viewmodel. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Override this method to implement async initialization of the model object. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a56e3bb17d1a0da1d8920210d16b717c9}{On\+Error}} (Exception error)
 \begin{DoxyCompactList}\small\item\em Raises Error\+Occurred event when an error occurs during processing. \end{DoxyCompactList}\item 
 virtual void \mbox{\hyperlink{class_csla_1_1_xaml_1_1_view_model_base_a5465ffe0a66e46bc4838661acc759cfb}{Do\+Refresh}} (Func$<$ T $>$ factory\+Method)
@@ -291,7 +291,9 @@ Definition at line 1038 of file Csla.\+Xaml.\+Shared/\+View\+Model\+Base.\+cs.
 
 
 
-Override this method to implement async initialization of the model object. The result of this method is used to set the Model property of the viewmodel. 
+Override this method to implement async initialization of the model object. 
+
+The result of this method is used to set the Model property of the viewmodel.
 
 \begin{DoxyReturn}{Returns}
 A Task that creates the model object.
@@ -401,7 +403,9 @@ Definition at line 333 of file Csla.\+Xaml.\+Shared/\+View\+Model\+Base.\+cs.
 
 
 
-Method used to perform async initialization of the viewmodel. This method is usually invoked immediately following construction of the object instance. 
+Method used to perform async initialization of the viewmodel. 
+
+This method is usually invoked immediately following construction of the object instance.
 
 \begin{DoxyReturn}{Returns}
 
@@ -917,8 +921,3 @@ Event raised when a property changes.
 
 Definition at line 1153 of file Csla.\+Xaml.\+Shared/\+View\+Model\+Base.\+cs.
 
-
-
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_csla_8_xaml_8_shared_2_view_model_base_8cs}{Csla.\+Xaml.\+Shared/\+View\+Model\+Base.\+cs}}\end{DoxyCompactItemize}

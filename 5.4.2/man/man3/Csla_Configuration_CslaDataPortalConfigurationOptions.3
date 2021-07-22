@@ -29,11 +29,11 @@ Csla.Configuration.CslaDataPortalConfigurationOptions \- Use this type to config
 .ti -1c
 .RI "string \fBAuthorizationProvider\fP\fC [get, set]\fP"
 .br
-.RI "Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. "
+.RI "Sets the type name to be used for server-side data portal authorization\&. "
 .ti -1c
 .RI "string \fBInterceptor\fP\fC [get, set]\fP"
 .br
-.RI "Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. "
+.RI "Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. "
 .ti -1c
 .RI "string \fBProxy\fP\fC [get, set]\fP"
 .br
@@ -48,17 +48,15 @@ Csla.Configuration.CslaDataPortalConfigurationOptions \- Use this type to config
 .ti -1c
 .RI "string \fBPortalUrl\fP\fC [get, set]\fP"
 .br
-.RI "Gets or sets the data portal URL string\&. 
-.br
- "
+.RI "Gets or sets the data portal URL string\&. "
 .ti -1c
 .RI "string \fBObjectFactoryLoader\fP\fC [get, set]\fP"
 .br
-.RI "Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. "
+.RI "Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. "
 .ti -1c
 .RI "bool \fBFlowSynchronizationContext\fP\fC [get, set]\fP"
 .br
-.RI "Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&. "
+.RI "Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -84,7 +82,7 @@ Definition at line 31 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.AuthorizationProvider\fC [get]\fP, \fC [set]\fP"
 
 .PP
-Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. 
+Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&.
 .PP
 Definition at line 79 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "bool Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.AutoCloneOnUpdate\fC [get]\fP, \fC [set]\fP"
@@ -102,19 +100,19 @@ Definition at line 69 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "bool Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.FlowSynchronizationContext\fC [get]\fP, \fC [set]\fP"
 
 .PP
-Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&. 
+Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&.
 .PP
 Definition at line 165 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.Interceptor\fC [get]\fP, \fC [set]\fP"
 
 .PP
-Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. 
+Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&.
 .PP
 Definition at line 91 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.ObjectFactoryLoader\fC [get]\fP, \fC [set]\fP"
 
 .PP
-Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. 
+Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&.
 .PP
 Definition at line 152 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.PortalUrl\fC [get]\fP, \fC [set]\fP"
@@ -122,7 +120,8 @@ Definition at line 152 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .PP
 Gets or sets the data portal URL string\&. 
 .br
- The data portal URL string\&.
+.PP
+The data portal URL string\&.
 .PP
 Definition at line 140 of file CslaDataPortalConfigurationOptions\&.cs\&.
 .SS "string Csla\&.Configuration\&.CslaDataPortalConfigurationOptions\&.Proxy\fC [get]\fP, \fC [set]\fP"

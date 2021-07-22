@@ -15,9 +15,7 @@ Inherits \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .ti -1c
 .RI "void \fBExecuteRule\fP (\fBIBusinessRuleBase\fP innerRule)"
 .br
-.RI "Executes the inner rule from the outer rules context\&. Creates a chained context and if CanRunRule will execute the inner rule\&. 
-.br
- "
+.RI "Executes the inner rule from the outer rules context\&. "
 .ti -1c
 .RI "\fBRuleContext\fP (Action< \fBIRuleContext\fP > completeHandler, \fBIBusinessRuleBase\fP rule, object target, Dictionary< \fBCsla\&.Core\&.IPropertyInfo\fP, object > inputPropertyValues)"
 .br
@@ -37,7 +35,7 @@ Inherits \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .ti -1c
 .RI "void \fBAddErrorResult\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property, string description)"
 .br
-.RI "Add a Error severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&. "
+.RI "Add a Error severity result to the Results list\&. "
 .ti -1c
 .RI "void \fBAddWarningResult\fP (string description)"
 .br
@@ -49,7 +47,7 @@ Inherits \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .ti -1c
 .RI "void \fBAddWarningResult\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property, string description)"
 .br
-.RI "Add a Warning severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&. "
+.RI "Add a Warning severity result to the Results list\&. "
 .ti -1c
 .RI "void \fBAddInformationResult\fP (string description)"
 .br
@@ -61,7 +59,7 @@ Inherits \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .ti -1c
 .RI "void \fBAddInformationResult\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property, string description)"
 .br
-.RI "Add an Information severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&. "
+.RI "Add an Information severity result to the Results list\&. "
 .ti -1c
 .RI "void \fBAddSuccessResult\fP (bool stopProcessing)"
 .br
@@ -81,7 +79,7 @@ Inherits \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .ti -1c
 .RI "void \fBComplete\fP ()"
 .br
-.RI "Indicates that the rule processing is complete, so CSLA \&.NET will process the Results list\&. This method must be invoked on the UI thread\&. "
+.RI "Indicates that the rule processing is complete, so CSLA \&.NET will process the Results list\&. "
 .ti -1c
 .RI "T \fBGetInputValue< T >\fP (\fBPropertyInfo\fP< T > propertyInfo)"
 .br
@@ -93,11 +91,11 @@ Inherits \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .ti -1c
 .RI "bool \fBTryGetInputValue< T >\fP (\fBPropertyInfo\fP< T > propertyInfo, ref T value)"
 .br
-.RI "Tries to get the value\&. Use this method on LazyLoaded properties to test if value has been provided or not\&. "
+.RI "Tries to get the value\&. "
 .ti -1c
 .RI "bool \fBTryGetInputValue< T >\fP (\fBIPropertyInfo\fP propertyInfo, ref T value)"
 .br
-.RI "Tries to get the value with explicit cast\&. Use this method on LazyLoaded properties to test if value has been provided or not\&. "
+.RI "Tries to get the value with explicit cast\&. "
 .in -1c
 .SS "Properties"
 
@@ -204,7 +202,7 @@ Definition at line 419 of file RuleContext\&.cs\&.
 .SS "void Csla\&.Rules\&.RuleContext\&.AddErrorResult (\fBCsla\&.Core\&.IPropertyInfo\fP property, string description)"
 
 .PP
-Add a Error severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&. 
+Add a Error severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -260,7 +258,7 @@ Definition at line 290 of file RuleContext\&.cs\&.
 .SS "void Csla\&.Rules\&.RuleContext\&.AddInformationResult (\fBCsla\&.Core\&.IPropertyInfo\fP property, string description)"
 
 .PP
-Add an Information severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&. 
+Add an Information severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -370,7 +368,7 @@ Definition at line 385 of file RuleContext\&.cs\&.
 .SS "void Csla\&.Rules\&.RuleContext\&.AddWarningResult (\fBCsla\&.Core\&.IPropertyInfo\fP property, string description)"
 
 .PP
-Add a Warning severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&. 
+Add a Warning severity result to the Results list\&. This method is only allowed on 'object' level rules to allow an object level rule to set warning result on a field\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -426,7 +424,7 @@ Definition at line 327 of file RuleContext\&.cs\&.
 .SS "void Csla\&.Rules\&.RuleContext\&.Complete ()"
 
 .PP
-Indicates that the rule processing is complete, so CSLA \&.NET will process the Results list\&. This method must be invoked on the UI thread\&. 
+Indicates that the rule processing is complete, so CSLA \&.NET will process the Results list\&. This method must be invoked on the UI thread\&.
 .PP
 Implements \fBCsla\&.Rules\&.IRuleContext\fP\&.
 .PP
@@ -436,7 +434,6 @@ Definition at line 431 of file RuleContext\&.cs\&.
 .PP
 Executes the inner rule from the outer rules context\&. Creates a chained context and if CanRunRule will execute the inner rule\&. 
 .br
- 
 .PP
 \fBParameters\fP
 .RS 4
@@ -515,7 +512,7 @@ Definition at line 444 of file RuleContext\&.cs\&.
 .SS "bool Csla\&.Rules\&.RuleContext\&.TryGetInputValue< T > (\fBIPropertyInfo\fP propertyInfo, ref T value)"
 
 .PP
-Tries to get the value with explicit cast\&. Use this method on LazyLoaded properties to test if value has been provided or not\&. 
+Tries to get the value with explicit cast\&. Use this method on LazyLoaded properties to test if value has been provided or not\&.
 .PP
 \fBTemplate Parameters\fP
 .RS 4
@@ -542,7 +539,7 @@ Definition at line 486 of file RuleContext\&.cs\&.
 .SS "bool Csla\&.Rules\&.RuleContext\&.TryGetInputValue< T > (\fBPropertyInfo\fP< T > propertyInfo, ref T value)"
 
 .PP
-Tries to get the value\&. Use this method on LazyLoaded properties to test if value has been provided or not\&. 
+Tries to get the value\&. Use this method on LazyLoaded properties to test if value has been provided or not\&.
 .PP
 \fBTemplate Parameters\fP
 .RS 4

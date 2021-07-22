@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -111,7 +121,7 @@ $(document).ready(function(){initNavTree('_csla_2_core_2_i_property_info_8cs_sou
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_member_info_html"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_member_info.html">Csla.Core.IMemberInfo</a></div><div class="ttdoc">Maintains metadata about a method or property.</div><div class="ttdef"><b>Definition:</b> <a href="_i_member_info_8cs_source.html#l00018">IMemberInfo.cs:19</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html">Csla.Core.IPropertyInfo</a></div><div class="ttdoc">Maintains metadata about a property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00015">Csla/Core/IPropertyInfo.cs:16</a></div></div>
-<div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a063df03d31e98d0d6fdc66c6656bd05c"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a063df03d31e98d0d6fdc66c6656bd05c">Csla.Core.IPropertyInfo.Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">Gets or sets the index position for the managed field storage behind the property....</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00050">Csla/Core/IPropertyInfo.cs:50</a></div></div>
+<div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a063df03d31e98d0d6fdc66c6656bd05c"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a063df03d31e98d0d6fdc66c6656bd05c">Csla.Core.IPropertyInfo.Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">Gets or sets the index position for the managed field storage behind the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00050">Csla/Core/IPropertyInfo.cs:50</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a42d0b6a3aec67bea06efcb61b7c98cf1"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a42d0b6a3aec67bea06efcb61b7c98cf1">Csla.Core.IPropertyInfo.RelationshipType</a></div><div class="ttdeci">RelationshipTypes RelationshipType</div><div class="ttdoc">Gets the relationship between the declaring object and the object reference in the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00044">Csla/Core/IPropertyInfo.cs:44</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a84ac982d078480ed1c525d331d7e62b3"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a84ac982d078480ed1c525d331d7e62b3">Csla.Core.IPropertyInfo.FriendlyName</a></div><div class="ttdeci">string FriendlyName</div><div class="ttdoc">Gets the friendly display name for the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00025">Csla/Core/IPropertyInfo.cs:25</a></div></div>
 <div class="ttc" id="ainterface_csla_1_1_core_1_1_i_property_info_html_a866e4fea90cc02bb7ec603eb7a11b0e9"><div class="ttname"><a href="interface_csla_1_1_core_1_1_i_property_info.html#a866e4fea90cc02bb7ec603eb7a11b0e9">Csla.Core.IPropertyInfo.Type</a></div><div class="ttdeci">Type Type</div><div class="ttdoc">Gets the type of the property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_2_core_2_i_property_info_8cs_source.html#l00020">Csla/Core/IPropertyInfo.cs:20</a></div></div>

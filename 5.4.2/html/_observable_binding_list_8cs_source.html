@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -583,7 +593,7 @@ $(document).ready(function(){initNavTree('_observable_binding_list_8cs_source.ht
 <div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a28454191d00db12e9ab43fa2a12c4e96"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a28454191d00db12e9ab43fa2a12c4e96">Csla.Core.ObservableBindingList.AllowEdit</a></div><div class="ttdeci">bool AllowEdit</div><div class="ttdoc">Gets or sets a value indicating whether data binding can automatically edit items in this collection.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00056">ObservableBindingList.cs:57</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a299cbd944af4750bda4a291d39813e12"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a299cbd944af4750bda4a291d39813e12">Csla.Core.ObservableBindingList.AddedNew</a></div><div class="ttdeci">EventHandler&lt; AddedNewEventArgs&lt; T &gt; &gt; AddedNew</div><div class="ttdoc">Event raised when a new object has been added to the collection.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00488">ObservableBindingList.cs:489</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a49d58766c5871b6f2088fb5ca41ec748"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a49d58766c5871b6f2088fb5ca41ec748">Csla.Core.ObservableBindingList.OnSetState</a></div><div class="ttdeci">override void OnSetState(SerializationInfo info)</div><div class="ttdoc">Override this method to set custom field values into the serialization stream.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00577">ObservableBindingList.cs:577</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a5209627f98dc0a93dc3cbe257a85d241"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a5209627f98dc0a93dc3cbe257a85d241">Csla.Core.ObservableBindingList.SuppressListChangedEvents</a></div><div class="ttdeci">IDisposable SuppressListChangedEvents</div><div class="ttdoc">Use this object to suppress ListChangedEvents for an entire code block. May be nested in multiple lev...</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00595">ObservableBindingList.cs:596</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a5209627f98dc0a93dc3cbe257a85d241"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a5209627f98dc0a93dc3cbe257a85d241">Csla.Core.ObservableBindingList.SuppressListChangedEvents</a></div><div class="ttdeci">IDisposable SuppressListChangedEvents</div><div class="ttdoc">Use this object to suppress ListChangedEvents for an entire code block.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00595">ObservableBindingList.cs:596</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a607047487fc88dcfab1e80b9e42549a8"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a607047487fc88dcfab1e80b9e42549a8">Csla.Core.ObservableBindingList.OnRemoveEventHooks</a></div><div class="ttdeci">virtual void OnRemoveEventHooks(T item)</div><div class="ttdoc">Method invoked when events are unhooked for a child object.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00339">ObservableBindingList.cs:339</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a624a1466dc1852caf997d7b77cd1fa12"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a624a1466dc1852caf997d7b77cd1fa12">Csla.Core.ObservableBindingList.OnAddEventHooks</a></div><div class="ttdeci">virtual void OnAddEventHooks(T item)</div><div class="ttdoc">Method invoked when events are hooked for a child object.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00310">ObservableBindingList.cs:310</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_observable_binding_list_html_a6a8c372a4a70f4400a5d4c7230f62a8c"><div class="ttname"><a href="class_csla_1_1_core_1_1_observable_binding_list.html#a6a8c372a4a70f4400a5d4c7230f62a8c">Csla.Core.ObservableBindingList.IsSelfBusy</a></div><div class="ttdeci">virtual bool IsSelfBusy</div><div class="ttdoc">Gets the busy status for this object.</div><div class="ttdef"><b>Definition:</b> <a href="_observable_binding_list_8cs_source.html#l00235">ObservableBindingList.cs:236</a></div></div>

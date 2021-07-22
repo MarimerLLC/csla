@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -283,7 +293,7 @@ $(document).ready(function(){initNavTree('_csla_validation_messages_8razor_8cs_s
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_csla_validation_message_base_html_ae0d91ce3b6e36561e51add0fe4156951"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_csla_validation_message_base.html#ae0d91ce3b6e36561e51add0fe4156951">Csla.Blazor.CslaValidationMessageBase.ErrorWrapperClass</a></div><div class="ttdeci">string ErrorWrapperClass</div><div class="ttdoc">Gets or sets the error wrapper class</div><div class="ttdef"><b>Definition:</b> <a href="_csla_validation_messages_8razor_8cs_source.html#l00055">CslaValidationMessages.razor.cs:55</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_csla_validation_message_base_html_af4a75cd289e37e08183a4edca1385030"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_csla_validation_message_base.html#af4a75cd289e37e08183a4edca1385030">Csla.Blazor.CslaValidationMessageBase.WarningClass</a></div><div class="ttdeci">string WarningClass</div><div class="ttdoc">Gets or sets the warning class</div><div class="ttdef"><b>Definition:</b> <a href="_csla_validation_messages_8razor_8cs_source.html#l00047">CslaValidationMessages.razor.cs:47</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html">Csla.Properties.Resources</a></div><div class="ttdoc">A strongly-typed resource class, for looking up localized strings, etc.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00025">Resources.Designer.cs:25</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_ab2130cd03729ea37c86096d5f1b6885a"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#ab2130cd03729ea37c86096d5f1b6885a">Csla.Properties.Resources.CascadingEditContextRequiredException</a></div><div class="ttdeci">static string CascadingEditContextRequiredException</div><div class="ttdoc">Looks up a localized string similar to {0} requires a cascading parameter of type {1}....</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00246">Resources.Designer.cs:246</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_ab2130cd03729ea37c86096d5f1b6885a"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#ab2130cd03729ea37c86096d5f1b6885a">Csla.Properties.Resources.CascadingEditContextRequiredException</a></div><div class="ttdeci">static string CascadingEditContextRequiredException</div><div class="ttdoc">Looks up a localized string similar to {0} requires a cascading parameter of type {1}.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00246">Resources.Designer.cs:246</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_broken_rule_html"><div class="ttname"><a href="class_csla_1_1_rules_1_1_broken_rule.html">Csla.Rules.BrokenRule</a></div><div class="ttdoc">Stores details about a specific broken business rule.</div><div class="ttdef"><b>Definition:</b> <a href="_broken_rule_8cs_source.html#l00018">BrokenRule.cs:19</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_broken_rule_html_a542f0bab34ed1c557522dd2f2d6bf78e"><div class="ttname"><a href="class_csla_1_1_rules_1_1_broken_rule.html#a542f0bab34ed1c557522dd2f2d6bf78e">Csla.Rules.BrokenRule.Property</a></div><div class="ttdeci">string Property</div><div class="ttdoc">Provides access to the property affected by the broken rule.</div><div class="ttdef"><b>Definition:</b> <a href="_broken_rule_8cs_source.html#l00064">BrokenRule.cs:65</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_broken_rule_html_a8726bc57aa7a72f51747a371a7e023d8"><div class="ttname"><a href="class_csla_1_1_rules_1_1_broken_rule.html#a8726bc57aa7a72f51747a371a7e023d8">Csla.Rules.BrokenRule.Description</a></div><div class="ttdeci">string Description</div><div class="ttdoc">Provides access to the description of the broken rule.</div><div class="ttdef"><b>Definition:</b> <a href="_broken_rule_8cs_source.html#l00054">BrokenRule.cs:55</a></div></div>

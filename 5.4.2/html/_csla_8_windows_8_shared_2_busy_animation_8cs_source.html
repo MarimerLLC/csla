@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -225,7 +235,7 @@ $(document).ready(function(){initNavTree('_csla_8_windows_8_shared_2_busy_animat
 <div class="ttc" id="aclass_csla_1_1_windows_1_1_busy_animation_html"><div class="ttname"><a href="class_csla_1_1_windows_1_1_busy_animation.html">Csla.Windows.BusyAnimation</a></div><div class="ttdoc">User control that displays busy animation</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_busy_animation_8cs_source.html#l00023">Csla.Windows.Shared/BusyAnimation.cs:24</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_windows_1_1_busy_animation_html_a1a9fac02bf3206b70208c0559a0d8272"><div class="ttname"><a href="class_csla_1_1_windows_1_1_busy_animation.html#a1a9fac02bf3206b70208c0559a0d8272">Csla.Windows.BusyAnimation.ProgressBarForeColor</a></div><div class="ttdeci">Color ProgressBarForeColor</div><div class="ttdoc">Set or get foreground color for busy animation's progress bar</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_busy_animation_8cs_source.html#l00045">Csla.Windows.Shared/BusyAnimation.cs:46</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_windows_1_1_busy_animation_html_a384013231d6f4ec95765ebf4735aa998"><div class="ttname"><a href="class_csla_1_1_windows_1_1_busy_animation.html#a384013231d6f4ec95765ebf4735aa998">Csla.Windows.BusyAnimation.ProgressBarBackColor</a></div><div class="ttdeci">Color ProgressBarBackColor</div><div class="ttdoc">Set or get background color for busy animation's progress bar</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_busy_animation_8cs_source.html#l00067">Csla.Windows.Shared/BusyAnimation.cs:68</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_windows_1_1_busy_animation_html_a98b65476736d1c86aafdb4de353a9241"><div class="ttname"><a href="class_csla_1_1_windows_1_1_busy_animation.html#a98b65476736d1c86aafdb4de353a9241">Csla.Windows.BusyAnimation.IsRunning</a></div><div class="ttdeci">bool IsRunning</div><div class="ttdoc">Indicates if animation needs to be shown. Set to true to start progress bar animation</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_busy_animation_8cs_source.html#l00090">Csla.Windows.Shared/BusyAnimation.cs:91</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_windows_1_1_busy_animation_html_a98b65476736d1c86aafdb4de353a9241"><div class="ttname"><a href="class_csla_1_1_windows_1_1_busy_animation.html#a98b65476736d1c86aafdb4de353a9241">Csla.Windows.BusyAnimation.IsRunning</a></div><div class="ttdeci">bool IsRunning</div><div class="ttdoc">Indicates if animation needs to be shown.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_busy_animation_8cs_source.html#l00090">Csla.Windows.Shared/BusyAnimation.cs:91</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_windows_1_1_busy_animation_html_ae1be057b41bc141b9cf613e467c59be2"><div class="ttname"><a href="class_csla_1_1_windows_1_1_busy_animation.html#ae1be057b41bc141b9cf613e467c59be2">Csla.Windows.BusyAnimation.BusyAnimation</a></div><div class="ttdeci">BusyAnimation()</div><div class="ttdoc">new instance busy animation</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_busy_animation_8cs_source.html#l00028">Csla.Windows.Shared/BusyAnimation.cs:28</a></div></div>
 <div class="ttc" id="anamespace_csla_1_1_windows_html"><div class="ttname"><a href="namespace_csla_1_1_windows.html">Csla.Windows</a></div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_windows_8_shared_2_application_context_manager_8cs_source.html#l00013">Csla.Windows.Shared/ApplicationContextManager.cs:14</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

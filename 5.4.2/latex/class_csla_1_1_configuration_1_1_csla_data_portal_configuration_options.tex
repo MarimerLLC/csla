@@ -17,9 +17,9 @@ string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_config
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_ad30f58b8621645f5438942dc52ece394}{Exception\+Inspector}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
 \begin{DoxyCompactList}\small\item\em Gets or sets the fully qualified name of the Exception\+Inspector class. \end{DoxyCompactList}\item 
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_ad2c3f7753a778345d5f11c883e159cd1}{Authorization\+Provider}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
-\begin{DoxyCompactList}\small\item\em Sets the type name to be used for server-\/side data portal authorization. Type must implement IAuthorize\+Data\+Portal. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Sets the type name to be used for server-\/side data portal authorization. \end{DoxyCompactList}\item 
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_a7db3ea07a0f5c1cb7711720460e59639}{Interceptor}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
-\begin{DoxyCompactList}\small\item\em Gets or sets the type of interceptor invoked by the data portal for pre-\/ and post-\/processing of each data portal invocation. Type must implement IIntercept\+Data\+Portal. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Gets or sets the type of interceptor invoked by the data portal for pre-\/ and post-\/processing of each data portal invocation. \end{DoxyCompactList}\item 
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_a2773114b3bef56d6d8059c7f1aa607a6}{Proxy}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
 \begin{DoxyCompactList}\small\item\em Gets or sets the default data portal proxy type \end{DoxyCompactList}\item 
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_ab1768c450d2745a03493439815cfb81a}{Proxy\+Factory}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
@@ -27,12 +27,11 @@ string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_config
 bool \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_a82c5b4a06c8196e660109e21af1bd0d1}{Return\+Object\+On\+Exception}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
 \begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether the server-\/side business object should be returned to the client as part of the \mbox{\hyperlink{class_csla_1_1_data_portal_exception}{Data\+Portal\+Exception}} (default is false). \end{DoxyCompactList}\item 
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_ae3ecf8003b1b370b979772914b542ddf}{Portal\+Url}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
-\begin{DoxyCompactList}\small\item\em Gets or sets the data portal URL string. ~\newline
- \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Gets or sets the data portal URL string. \end{DoxyCompactList}\item 
 string \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_aa7ec737b16359c037ca6d809b0fd16e1}{Object\+Factory\+Loader}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
-\begin{DoxyCompactList}\small\item\em Gets or sets the type name of the factor loader used to create server-\/side instances of business object factories when using the Factory\+Data\+Portal model. Type must implement IObject\+Factory\+Loader. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Gets or sets the type name of the factor loader used to create server-\/side instances of business object factories when using the Factory\+Data\+Portal model. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options_a7efd0f127c3db1b6371786bff9801ae1}{Flow\+Synchronization\+Context}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
-\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by Local\+Proxy. Setting this to true may restrict or eliminate the use of background threads by Local\+Proxy. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by Local\+Proxy. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -81,9 +80,9 @@ Definition at line 31 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
 
 
-Sets the type name to be used for server-\/side data portal authorization. Type must implement IAuthorize\+Data\+Portal. 
+Sets the type name to be used for server-\/side data portal authorization. 
 
-
+Type must implement IAuthorize\+Data\+Portal.
 
 Definition at line 79 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
@@ -123,9 +122,9 @@ Definition at line 69 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
 
 
-Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by Local\+Proxy. Setting this to true may restrict or eliminate the use of background threads by Local\+Proxy. 
+Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by Local\+Proxy. 
 
-
+Setting this to true may restrict or eliminate the use of background threads by Local\+Proxy.
 
 Definition at line 165 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
@@ -137,9 +136,9 @@ Definition at line 165 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
 
 
-Gets or sets the type of interceptor invoked by the data portal for pre-\/ and post-\/processing of each data portal invocation. Type must implement IIntercept\+Data\+Portal. 
+Gets or sets the type of interceptor invoked by the data portal for pre-\/ and post-\/processing of each data portal invocation. 
 
-
+Type must implement IIntercept\+Data\+Portal.
 
 Definition at line 91 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
@@ -151,9 +150,9 @@ Definition at line 91 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
 
 
-Gets or sets the type name of the factor loader used to create server-\/side instances of business object factories when using the Factory\+Data\+Portal model. Type must implement IObject\+Factory\+Loader. 
+Gets or sets the type name of the factor loader used to create server-\/side instances of business object factories when using the Factory\+Data\+Portal model. 
 
-
+Type must implement IObject\+Factory\+Loader.
 
 Definition at line 152 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
@@ -165,8 +164,10 @@ Definition at line 152 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
 
 
-Gets or sets the data portal URL string. ~\newline
- 
+Gets or sets the data portal URL string. 
+
+~\newline
+
 
 The data portal URL string.
 
@@ -210,8 +211,3 @@ Gets or sets a value indicating whether the server-\/side business object should
 
 Definition at line 124 of file Csla\+Data\+Portal\+Configuration\+Options.\+cs.
 
-
-
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_csla_data_portal_configuration_options_8cs}{Csla\+Data\+Portal\+Configuration\+Options.\+cs}}\end{DoxyCompactItemize}

@@ -28,7 +28,7 @@ virtual Grpc\+Channel \mbox{\hyperlink{class_csla_1_1_channels_1_1_grpc_1_1_grpc
 virtual Grpc\+Service.\+Grpc\+Service\+Client \mbox{\hyperlink{class_csla_1_1_channels_1_1_grpc_1_1_grpc_proxy_ab858c7e50b16a5e0667bdc703259fee5}{Get\+Grpc\+Client}} ()
 \begin{DoxyCompactList}\small\item\em Get g\+RPC client object used by data portal. \end{DoxyCompactList}\item 
 override async Task$<$ byte\mbox{[}$\,$\mbox{]}$>$ \mbox{\hyperlink{class_csla_1_1_channels_1_1_grpc_1_1_grpc_proxy_acc1f2fd267cace38d70d83912db2f30c}{Call\+Data\+Portal\+Server}} (byte\mbox{[}$\,$\mbox{]} serialized, string operation, string routing\+Token, bool is\+Sync)
-\begin{DoxyCompactList}\small\item\em Create message and send to \mbox{\hyperlink{namespace_csla_1_1_channels_1_1_grpc}{Grpc}} server. Return Response from server \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Create message and send to \mbox{\hyperlink{namespace_csla_1_1_channels_1_1_grpc}{Grpc}} server. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Static Protected Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -117,7 +117,9 @@ Definition at line 53 of file Grpc\+Proxy.\+cs.
 
 
 
-Create message and send to \mbox{\hyperlink{namespace_csla_1_1_channels_1_1_grpc}{Grpc}} server. Return Response from server 
+Create message and send to \mbox{\hyperlink{namespace_csla_1_1_channels_1_1_grpc}{Grpc}} server. 
+
+Return Response from server
 
 
 \begin{DoxyParams}{Parameters}
@@ -194,8 +196,3 @@ Sets the Grpc\+Channel used by g\+RPC clients.
 
 Definition at line 80 of file Grpc\+Proxy.\+cs.
 
-
-
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
-\item 
-\mbox{\hyperlink{_grpc_proxy_8cs}{Grpc\+Proxy.\+cs}}\end{DoxyCompactItemize}

@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -106,7 +116,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:a99c3ead2b106b68d50fb606b8a146cb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Are you sure you want to close?.  <a href="class_csla_1_1_properties_1_1_resources.html#a99c3ead2b106b68d50fb606b8a146cb7">More...</a><br /></td></tr>
 <tr class="separator:a99c3ead2b106b68d50fb606b8a146cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acda8a38610a705273395493a33080c37"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#acda8a38610a705273395493a33080c37">ActionExtenderDirtyWarningMessagePropertyDefault</a><code> [get]</code></td></tr>
-<tr class="memdesc:acda8a38610a705273395493a33080c37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Object is currently in a dirty changed..  <a href="class_csla_1_1_properties_1_1_resources.html#acda8a38610a705273395493a33080c37">More...</a><br /></td></tr>
+<tr class="memdesc:acda8a38610a705273395493a33080c37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Object is currently in a dirty changed.  <a href="class_csla_1_1_properties_1_1_resources.html#acda8a38610a705273395493a33080c37">More...</a><br /></td></tr>
 <tr class="separator:acda8a38610a705273395493a33080c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a1451a1cbde1a4654ff37f20227d9c4"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a3a1451a1cbde1a4654ff37f20227d9c4">ActionExtenderErrorCaption</a><code> [get]</code></td></tr>
 <tr class="memdesc:a3a1451a1cbde1a4654ff37f20227d9c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Error.  <a href="class_csla_1_1_properties_1_1_resources.html#a3a1451a1cbde1a4654ff37f20227d9c4">More...</a><br /></td></tr>
@@ -145,10 +155,10 @@ Properties</h2></td></tr>
 <tr class="memdesc:a65ea635847824e1c72ddf7290ce2d68e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to <a class="el" href="namespace_csla.html">Csla</a> Authorization Provider App Setting name not specified.  <a href="class_csla_1_1_properties_1_1_resources.html#a65ea635847824e1c72ddf7290ce2d68e">More...</a><br /></td></tr>
 <tr class="separator:a65ea635847824e1c72ddf7290ce2d68e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abee755e0686229c51506c756ff93dbf8"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#abee755e0686229c51506c756ff93dbf8">BinaryWriterObjectSerializationException</a><code> [get]</code></td></tr>
-<tr class="memdesc:abee755e0686229c51506c756ff93dbf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_serialization.html">Serialization</a> of type object is not supported..  <a href="class_csla_1_1_properties_1_1_resources.html#abee755e0686229c51506c756ff93dbf8">More...</a><br /></td></tr>
+<tr class="memdesc:abee755e0686229c51506c756ff93dbf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_serialization.html">Serialization</a> of type object is not supported.  <a href="class_csla_1_1_properties_1_1_resources.html#abee755e0686229c51506c756ff93dbf8">More...</a><br /></td></tr>
 <tr class="separator:abee755e0686229c51506c756ff93dbf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38429bc993c9aa816021af56a138a7b3"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a38429bc993c9aa816021af56a138a7b3">BindingSourceNotProvided</a><code> [get]</code></td></tr>
-<tr class="memdesc:a38429bc993c9aa816021af56a138a7b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to A root binding source has not been provided..  <a href="class_csla_1_1_properties_1_1_resources.html#a38429bc993c9aa816021af56a138a7b3">More...</a><br /></td></tr>
+<tr class="memdesc:a38429bc993c9aa816021af56a138a7b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to A root binding source has not been provided.  <a href="class_csla_1_1_properties_1_1_resources.html#a38429bc993c9aa816021af56a138a7b3">More...</a><br /></td></tr>
 <tr class="separator:a38429bc993c9aa816021af56a138a7b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bf37b15342265dbde8c310a6b1677fa"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a6bf37b15342265dbde8c310a6b1677fa">BusinessPrincipalException</a><code> [get]</code></td></tr>
 <tr class="memdesc:a6bf37b15342265dbde8c310a6b1677fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Principal must be of type BusinessPrincipal, not.  <a href="class_csla_1_1_properties_1_1_resources.html#a6bf37b15342265dbde8c310a6b1677fa">More...</a><br /></td></tr>
@@ -163,7 +173,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:a5fe8dd4d6d51b24b5e11de90995feb1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Cannot serialize collections not of type IMobileObject.  <a href="class_csla_1_1_properties_1_1_resources.html#a5fe8dd4d6d51b24b5e11de90995feb1b">More...</a><br /></td></tr>
 <tr class="separator:a5fe8dd4d6d51b24b5e11de90995feb1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2130cd03729ea37c86096d5f1b6885a"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#ab2130cd03729ea37c86096d5f1b6885a">CascadingEditContextRequiredException</a><code> [get]</code></td></tr>
-<tr class="memdesc:ab2130cd03729ea37c86096d5f1b6885a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to {0} requires a cascading parameter of type {1}. For example, you can use {0} inside an EditForm..  <a href="class_csla_1_1_properties_1_1_resources.html#ab2130cd03729ea37c86096d5f1b6885a">More...</a><br /></td></tr>
+<tr class="memdesc:ab2130cd03729ea37c86096d5f1b6885a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to {0} requires a cascading parameter of type {1}.  <a href="class_csla_1_1_properties_1_1_resources.html#ab2130cd03729ea37c86096d5f1b6885a">More...</a><br /></td></tr>
 <tr class="separator:ab2130cd03729ea37c86096d5f1b6885a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8639154f43fe02073d102f11d8b228b"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#ac8639154f43fe02073d102f11d8b228b">ChangeInvalidException</a><code> [get]</code></td></tr>
 <tr class="memdesc:ac8639154f43fe02073d102f11d8b228b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Changing an element is an invalid operation.  <a href="class_csla_1_1_properties_1_1_resources.html#ac8639154f43fe02073d102f11d8b228b">More...</a><br /></td></tr>
@@ -286,7 +296,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:a5a7c5e67e9e00bb9201cdea4c76c7393"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Type {0} must implement IMobileObject.  <a href="class_csla_1_1_properties_1_1_resources.html#a5a7c5e67e9e00bb9201cdea4c76c7393">More...</a><br /></td></tr>
 <tr class="separator:a5a7c5e67e9e00bb9201cdea4c76c7393"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7583efc1af3dcbf178039b9837723112"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a7583efc1af3dcbf178039b9837723112">NavigatorProviderSetPriorToTriggerEvent</a><code> [get]</code></td></tr>
-<tr class="memdesc:a7583efc1af3dcbf178039b9837723112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property..  <a href="class_csla_1_1_properties_1_1_resources.html#a7583efc1af3dcbf178039b9837723112">More...</a><br /></td></tr>
+<tr class="memdesc:a7583efc1af3dcbf178039b9837723112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property.  <a href="class_csla_1_1_properties_1_1_resources.html#a7583efc1af3dcbf178039b9837723112">More...</a><br /></td></tr>
 <tr class="separator:a7583efc1af3dcbf178039b9837723112"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60e7ec8fa6ffe94e96dde08360a29553"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a60e7ec8fa6ffe94e96dde08360a29553">NoApplyEditChildException</a><code> [get]</code></td></tr>
 <tr class="memdesc:a60e7ec8fa6ffe94e96dde08360a29553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to ApplyEdit is not valid on a child object.  <a href="class_csla_1_1_properties_1_1_resources.html#a60e7ec8fa6ffe94e96dde08360a29553">More...</a><br /></td></tr>
@@ -331,19 +341,19 @@ Properties</h2></td></tr>
 <tr class="memdesc:add20d534279fe28678961c8461ef179d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Object not serializable ({0}).  <a href="class_csla_1_1_properties_1_1_resources.html#add20d534279fe28678961c8461ef179d">More...</a><br /></td></tr>
 <tr class="separator:add20d534279fe28678961c8461ef179d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94f3c93c1f9aaa2bea5d2421bbbd3bf7"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a94f3c93c1f9aaa2bea5d2421bbbd3bf7">ObjectRulesCannotSetPrimaryProperty</a><code> [get]</code></td></tr>
-<tr class="memdesc:a94f3c93c1f9aaa2bea5d2421bbbd3bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Object rule can not have PrimaryPropery..  <a href="class_csla_1_1_properties_1_1_resources.html#a94f3c93c1f9aaa2bea5d2421bbbd3bf7">More...</a><br /></td></tr>
+<tr class="memdesc:a94f3c93c1f9aaa2bea5d2421bbbd3bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Object rule can not have PrimaryPropery.  <a href="class_csla_1_1_properties_1_1_resources.html#a94f3c93c1f9aaa2bea5d2421bbbd3bf7">More...</a><br /></td></tr>
 <tr class="separator:a94f3c93c1f9aaa2bea5d2421bbbd3bf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae770240be27a4b4d040ddc4eb3f7fb1"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#aae770240be27a4b4d040ddc4eb3f7fb1">ObjectTypeCouldNotBeLoaded</a><code> [get]</code></td></tr>
 <tr class="memdesc:aae770240be27a4b4d040ddc4eb3f7fb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Object type or assembly could not be loaded ({0}).  <a href="class_csla_1_1_properties_1_1_resources.html#aae770240be27a4b4d040ddc4eb3f7fb1">More...</a><br /></td></tr>
 <tr class="separator:aae770240be27a4b4d040ddc4eb3f7fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58fd4af50a9ffe443351a915347d0d3e"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a58fd4af50a9ffe443351a915347d0d3e">OneOfTwoParametersRequiredException</a><code> [get]</code></td></tr>
-<tr class="memdesc:a58fd4af50a9ffe443351a915347d0d3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to {0} requires a value for either the {1} or the {2} parameter..  <a href="class_csla_1_1_properties_1_1_resources.html#a58fd4af50a9ffe443351a915347d0d3e">More...</a><br /></td></tr>
+<tr class="memdesc:a58fd4af50a9ffe443351a915347d0d3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to {0} requires a value for either the {1} or the {2} parameter.  <a href="class_csla_1_1_properties_1_1_resources.html#a58fd4af50a9ffe443351a915347d0d3e">More...</a><br /></td></tr>
 <tr class="separator:a58fd4af50a9ffe443351a915347d0d3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab63e62c84593bee8a70a9620944976eb"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#ab63e62c84593bee8a70a9620944976eb">ParameterRequiredException</a><code> [get]</code></td></tr>
-<tr class="memdesc:ab63e62c84593bee8a70a9620944976eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to {0} requires a value for the {1} parameter..  <a href="class_csla_1_1_properties_1_1_resources.html#ab63e62c84593bee8a70a9620944976eb">More...</a><br /></td></tr>
+<tr class="memdesc:ab63e62c84593bee8a70a9620944976eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to {0} requires a value for the {1} parameter.  <a href="class_csla_1_1_properties_1_1_resources.html#ab63e62c84593bee8a70a9620944976eb">More...</a><br /></td></tr>
 <tr class="separator:ab63e62c84593bee8a70a9620944976eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24f1fcc1ee96d21a5fd12610582c396e"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a24f1fcc1ee96d21a5fd12610582c396e">PrivateFieldException</a><code> [get]</code></td></tr>
-<tr class="memdesc:a24f1fcc1ee96d21a5fd12610582c396e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_properties.html">Properties</a> with private backing fields must be marked as <a class="el" href="namespace_csla.html#a7bfc7afe8f8a49e8a04768f5244dd3b4ad79b26a5e2f35f256662da4ea6cbf205" title="Property is stored in a private field. Attemting to read or write the property in FieldManager (manag...">RelationshipTypes.PrivateField</a>.  <a href="class_csla_1_1_properties_1_1_resources.html#a24f1fcc1ee96d21a5fd12610582c396e">More...</a><br /></td></tr>
+<tr class="memdesc:a24f1fcc1ee96d21a5fd12610582c396e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_properties.html">Properties</a> with private backing fields must be marked as <a class="el" href="namespace_csla.html#a7bfc7afe8f8a49e8a04768f5244dd3b4ad79b26a5e2f35f256662da4ea6cbf205" title="Property is stored in a private field.">RelationshipTypes.PrivateField</a>.  <a href="class_csla_1_1_properties_1_1_resources.html#a24f1fcc1ee96d21a5fd12610582c396e">More...</a><br /></td></tr>
 <tr class="separator:a24f1fcc1ee96d21a5fd12610582c396e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07d623fd9c728c2318f3a8e61cdf2a4d"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a07d623fd9c728c2318f3a8e61cdf2a4d">PropertyCopyFailed</a><code> [get]</code></td></tr>
 <tr class="memdesc:a07d623fd9c728c2318f3a8e61cdf2a4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property copy failed.  <a href="class_csla_1_1_properties_1_1_resources.html#a07d623fd9c728c2318f3a8e61cdf2a4d">More...</a><br /></td></tr>
@@ -352,7 +362,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:aa5d7e107d5edca8b24510a13539e0cf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property get not allowed.  <a href="class_csla_1_1_properties_1_1_resources.html#aa5d7e107d5edca8b24510a13539e0cf6">More...</a><br /></td></tr>
 <tr class="separator:aa5d7e107d5edca8b24510a13539e0cf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a039d1367e8dac1d15b04457ea9482777"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a039d1367e8dac1d15b04457ea9482777">PropertyIsPrivateField</a><code> [get]</code></td></tr>
-<tr class="memdesc:a039d1367e8dac1d15b04457ea9482777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Attempt to read/load private field property in managed properties..  <a href="class_csla_1_1_properties_1_1_resources.html#a039d1367e8dac1d15b04457ea9482777">More...</a><br /></td></tr>
+<tr class="memdesc:a039d1367e8dac1d15b04457ea9482777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Attempt to read/load private field property in managed properties.  <a href="class_csla_1_1_properties_1_1_resources.html#a039d1367e8dac1d15b04457ea9482777">More...</a><br /></td></tr>
 <tr class="separator:a039d1367e8dac1d15b04457ea9482777"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86fc9ed32104c6640efa3aa102eed25f"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a86fc9ed32104c6640efa3aa102eed25f">PropertyLoadException</a><code> [get]</code></td></tr>
 <tr class="memdesc:a86fc9ed32104c6640efa3aa102eed25f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property load or set failed for property {0} ({1}).  <a href="class_csla_1_1_properties_1_1_resources.html#a86fc9ed32104c6640efa3aa102eed25f">More...</a><br /></td></tr>
@@ -361,16 +371,16 @@ Properties</h2></td></tr>
 <tr class="memdesc:a467013ff738b1ea12a9b21e11233e2fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to The specified property name '{0}' does not exist.  <a href="class_csla_1_1_properties_1_1_resources.html#a467013ff738b1ea12a9b21e11233e2fa">More...</a><br /></td></tr>
 <tr class="separator:a467013ff738b1ea12a9b21e11233e2fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc68017448f42daec77f5ef211782d85"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#abc68017448f42daec77f5ef211782d85">PropertyNameNotRegisteredException</a><code> [get]</code></td></tr>
-<tr class="memdesc:abc68017448f42daec77f5ef211782d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property '{0}' not registered..  <a href="class_csla_1_1_properties_1_1_resources.html#abc68017448f42daec77f5ef211782d85">More...</a><br /></td></tr>
+<tr class="memdesc:abc68017448f42daec77f5ef211782d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property '{0}' not registered.  <a href="class_csla_1_1_properties_1_1_resources.html#abc68017448f42daec77f5ef211782d85">More...</a><br /></td></tr>
 <tr class="separator:abc68017448f42daec77f5ef211782d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a258cf36ac5e59e72ea6f15b67b736930"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a258cf36ac5e59e72ea6f15b67b736930">PropertyNotInAffectedPropertiesException</a><code> [get]</code></td></tr>
-<tr class="memdesc:a258cf36ac5e59e72ea6f15b67b736930"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property {0} must be added to AffectedProperties. .  <a href="class_csla_1_1_properties_1_1_resources.html#a258cf36ac5e59e72ea6f15b67b736930">More...</a><br /></td></tr>
+<tr class="memdesc:a258cf36ac5e59e72ea6f15b67b736930"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Property {0} must be added to AffectedProperties.  <a href="class_csla_1_1_properties_1_1_resources.html#a258cf36ac5e59e72ea6f15b67b736930">More...</a><br /></td></tr>
 <tr class="separator:a258cf36ac5e59e72ea6f15b67b736930"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d42cfbc3cfc587c83b3ade0e0224f6c"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a1d42cfbc3cfc587c83b3ade0e0224f6c">PropertyNotRegistered</a><code> [get]</code></td></tr>
 <tr class="memdesc:a1d42cfbc3cfc587c83b3ade0e0224f6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to One or more properties are not registered for this type.  <a href="class_csla_1_1_properties_1_1_resources.html#a1d42cfbc3cfc587c83b3ade0e0224f6c">More...</a><br /></td></tr>
 <tr class="separator:a1d42cfbc3cfc587c83b3ade0e0224f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9347aeda12a9a7a40f97e38a2b1f51db"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a9347aeda12a9a7a40f97e38a2b1f51db">PropertyRegisterDuplicateNotAllowed</a><code> [get]</code></td></tr>
-<tr class="memdesc:a9347aeda12a9a7a40f97e38a2b1f51db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Cannot register property {0}, a <a class="el" href="class_csla_1_1_property_info.html" title="Maintains metadata about a property.">PropertyInfo</a> with the same name already exists..  <a href="class_csla_1_1_properties_1_1_resources.html#a9347aeda12a9a7a40f97e38a2b1f51db">More...</a><br /></td></tr>
+<tr class="memdesc:a9347aeda12a9a7a40f97e38a2b1f51db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Cannot register property {0}, a <a class="el" href="class_csla_1_1_property_info.html" title="Maintains metadata about a property.">PropertyInfo</a> with the same name already exists.  <a href="class_csla_1_1_properties_1_1_resources.html#a9347aeda12a9a7a40f97e38a2b1f51db">More...</a><br /></td></tr>
 <tr class="separator:a9347aeda12a9a7a40f97e38a2b1f51db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96404ac0e5b5dfc8e364a8884a1b88a1"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#a96404ac0e5b5dfc8e364a8884a1b88a1">PropertyRegisterNotAllowed</a><code> [get]</code></td></tr>
 <tr class="memdesc:a96404ac0e5b5dfc8e364a8884a1b88a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Cannot register property {0} after containing type ({1}) has been instantiated.  <a href="class_csla_1_1_properties_1_1_resources.html#a96404ac0e5b5dfc8e364a8884a1b88a1">More...</a><br /></td></tr>
@@ -388,7 +398,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:a0f113d82842a350c58f83eb3b045598a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Remove is an invalid operation.  <a href="class_csla_1_1_properties_1_1_resources.html#a0f113d82842a350c58f83eb3b045598a">More...</a><br /></td></tr>
 <tr class="separator:a0f113d82842a350c58f83eb3b045598a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9f94b7149f4b9b9ffe1f15c157c69f3"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#ad9f94b7149f4b9b9ffe1f15c157c69f3">RuleMessageRequired</a><code> [get]</code></td></tr>
-<tr class="memdesc:ad9f94b7149f4b9b9ffe1f15c157c69f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Message for broken rule is required. Rule: {0}.  <a href="class_csla_1_1_properties_1_1_resources.html#ad9f94b7149f4b9b9ffe1f15c157c69f3">More...</a><br /></td></tr>
+<tr class="memdesc:ad9f94b7149f4b9b9ffe1f15c157c69f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to Message for broken rule is required.  <a href="class_csla_1_1_properties_1_1_resources.html#ad9f94b7149f4b9b9ffe1f15c157c69f3">More...</a><br /></td></tr>
 <tr class="separator:ad9f94b7149f4b9b9ffe1f15c157c69f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdd071c5f2921490c32618db9a1a7d90"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_properties_1_1_resources.html#acdd071c5f2921490c32618db9a1a7d90">SmartDateT</a><code> [get]</code></td></tr>
 <tr class="memdesc:acdd071c5f2921490c32618db9a1a7d90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up a localized string similar to t.  <a href="class_csla_1_1_properties_1_1_resources.html#acdd071c5f2921490c32618db9a1a7d90">More...</a><br /></td></tr>
@@ -505,7 +515,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Object is currently in a dirty changed.. </p>
+<p>Looks up a localized string similar to Object is currently in a dirty changed. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00075">75</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -843,7 +853,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_serialization.html">Serialization</a> of type object is not supported.. </p>
+<p>Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_serialization.html">Serialization</a> of type object is not supported. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00192">192</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -869,7 +879,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to A root binding source has not been provided.. </p>
+<p>Looks up a localized string similar to A root binding source has not been provided. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00201">201</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -999,7 +1009,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to {0} requires a cascading parameter of type {1}. For example, you can use {0} inside an EditForm.. </p>
+<p>Looks up a localized string similar to {0} requires a cascading parameter of type {1}. </p>
+<p>For example, you can use {0} inside an EditForm..</p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00246">246</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2091,7 +2102,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property.. </p>
+<p>Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00615">615</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2481,7 +2492,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Object rule can not have PrimaryPropery.. </p>
+<p>Looks up a localized string similar to Object rule can not have PrimaryPropery. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00750">750</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2533,7 +2544,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to {0} requires a value for either the {1} or the {2} parameter.. </p>
+<p>Looks up a localized string similar to {0} requires a value for either the {1} or the {2} parameter. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00768">768</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2559,7 +2570,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to {0} requires a value for the {1} parameter.. </p>
+<p>Looks up a localized string similar to {0} requires a value for the {1} parameter. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00777">777</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2585,7 +2596,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_properties.html">Properties</a> with private backing fields must be marked as <a class="el" href="namespace_csla.html#a7bfc7afe8f8a49e8a04768f5244dd3b4ad79b26a5e2f35f256662da4ea6cbf205" title="Property is stored in a private field. Attemting to read or write the property in FieldManager (manag...">RelationshipTypes.PrivateField</a>. </p>
+<p>Looks up a localized string similar to <a class="el" href="namespace_csla_1_1_properties.html">Properties</a> with private backing fields must be marked as <a class="el" href="namespace_csla.html#a7bfc7afe8f8a49e8a04768f5244dd3b4ad79b26a5e2f35f256662da4ea6cbf205" title="Property is stored in a private field.">RelationshipTypes.PrivateField</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00786">786</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2663,7 +2674,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Attempt to read/load private field property in managed properties.. </p>
+<p>Looks up a localized string similar to Attempt to read/load private field property in managed properties. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00813">813</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2741,7 +2752,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Property '{0}' not registered.. </p>
+<p>Looks up a localized string similar to Property '{0}' not registered. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00840">840</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2767,7 +2778,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Property {0} must be added to AffectedProperties. . </p>
+<p>Looks up a localized string similar to Property {0} must be added to AffectedProperties. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00849">849</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -2819,7 +2830,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Cannot register property {0}, a <a class="el" href="class_csla_1_1_property_info.html" title="Maintains metadata about a property.">PropertyInfo</a> with the same name already exists.. </p>
+<p>Looks up a localized string similar to Cannot register property {0}, a <a class="el" href="class_csla_1_1_property_info.html" title="Maintains metadata about a property.">PropertyInfo</a> with the same name already exists. </p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00867">867</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -3001,7 +3012,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Looks up a localized string similar to Message for broken rule is required. Rule: {0}. </p>
+<p>Looks up a localized string similar to Message for broken rule is required. </p>
+<p>Rule: {0}.</p>
 
 <p class="definition">Definition at line <a class="el" href="_resources_8_designer_8cs_source.html#l00921">921</a> of file <a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a>.</p>
 
@@ -3553,9 +3565,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_resources_8_designer_8cs_source.html">Resources.Designer.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

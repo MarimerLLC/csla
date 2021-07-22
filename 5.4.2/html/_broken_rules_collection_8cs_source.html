@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -385,7 +395,7 @@ $(document).ready(function(){initNavTree('_broken_rules_collection_8cs_source.ht
 <div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;}</div>
 <div class="ttc" id="aclass_csla_1_1_core_1_1_read_only_observable_binding_list_html_abe0f2305afed3afa97b3761c5aa68047"><div class="ttname"><a href="class_csla_1_1_core_1_1_read_only_observable_binding_list.html#abe0f2305afed3afa97b3761c5aa68047">Csla.Core.ReadOnlyObservableBindingList&lt; BrokenRule &gt;::IsReadOnly</a></div><div class="ttdeci">bool IsReadOnly</div><div class="ttdoc">Gets or sets a value indicating whether the list is readonly.</div><div class="ttdef"><b>Definition:</b> <a href="_read_only_observable_binding_list_8cs_source.html#l00071">ReadOnlyObservableBindingList.cs:72</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html">Csla.Properties.Resources</a></div><div class="ttdoc">A strongly-typed resource class, for looking up localized strings, etc.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00025">Resources.Designer.cs:25</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_ad9f94b7149f4b9b9ffe1f15c157c69f3"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#ad9f94b7149f4b9b9ffe1f15c157c69f3">Csla.Properties.Resources.RuleMessageRequired</a></div><div class="ttdeci">static string RuleMessageRequired</div><div class="ttdoc">Looks up a localized string similar to Message for broken rule is required. Rule: {0}.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00921">Resources.Designer.cs:921</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_properties_1_1_resources_html_ad9f94b7149f4b9b9ffe1f15c157c69f3"><div class="ttname"><a href="class_csla_1_1_properties_1_1_resources.html#ad9f94b7149f4b9b9ffe1f15c157c69f3">Csla.Properties.Resources.RuleMessageRequired</a></div><div class="ttdeci">static string RuleMessageRequired</div><div class="ttdoc">Looks up a localized string similar to Message for broken rule is required.</div><div class="ttdef"><b>Definition:</b> <a href="_resources_8_designer_8cs_source.html#l00921">Resources.Designer.cs:921</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_broken_rule_html"><div class="ttname"><a href="class_csla_1_1_rules_1_1_broken_rule.html">Csla.Rules.BrokenRule</a></div><div class="ttdoc">Stores details about a specific broken business rule.</div><div class="ttdef"><b>Definition:</b> <a href="_broken_rule_8cs_source.html#l00018">BrokenRule.cs:19</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_broken_rule_html_a8726bc57aa7a72f51747a371a7e023d8"><div class="ttname"><a href="class_csla_1_1_rules_1_1_broken_rule.html#a8726bc57aa7a72f51747a371a7e023d8">Csla.Rules.BrokenRule.Description</a></div><div class="ttdeci">string Description</div><div class="ttdoc">Provides access to the description of the broken rule.</div><div class="ttdef"><b>Definition:</b> <a href="_broken_rule_8cs_source.html#l00054">BrokenRule.cs:55</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_rules_1_1_broken_rule_html_a8b2e615bae6d3d2bef68fe24ecfa984c"><div class="ttname"><a href="class_csla_1_1_rules_1_1_broken_rule.html#a8b2e615bae6d3d2bef68fe24ecfa984c">Csla.Rules.BrokenRule.Severity</a></div><div class="ttdeci">RuleSeverity Severity</div><div class="ttdoc">Gets the severity of the broken rule.</div><div class="ttdef"><b>Definition:</b> <a href="_broken_rule_8cs_source.html#l00076">BrokenRule.cs:77</a></div></div>

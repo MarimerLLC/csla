@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -885,7 +895,7 @@ $(document).ready(function(){initNavTree('_sorted_binding_list_8cs_source.html',
 <div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_ad3772000fd30928bb350310db2196063"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#ad3772000fd30928bb350310db2196063">Csla.SortedBindingList.AllowRemove</a></div><div class="ttdeci">bool AllowRemove</div><div class="ttdoc">Implemented by IList source object.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00316">SortedBindingList.cs:317</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_ad45bb2e7679f882fd09f3799bd70d76f"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#ad45bb2e7679f882fd09f3799bd70d76f">Csla.SortedBindingList.OnListChanged</a></div><div class="ttdeci">void OnListChanged(ListChangedEventArgs e)</div><div class="ttdoc">Raises the ListChanged event.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00430">SortedBindingList.cs:430</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_ad9e5b95dcea4fbc131b77b09213f52fd"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#ad9e5b95dcea4fbc131b77b09213f52fd">Csla.SortedBindingList.Add</a></div><div class="ttdeci">void Add(T item)</div><div class="ttdoc">Implemented by IList source object.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00551">SortedBindingList.cs:551</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_adabce28a18b3597a120beef8097df25a"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#adabce28a18b3597a120beef8097df25a">Csla.SortedBindingList.SupportsSorting</a></div><div class="ttdeci">bool SupportsSorting</div><div class="ttdoc">Returns true. Sorting is supported.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00497">SortedBindingList.cs:498</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_adabce28a18b3597a120beef8097df25a"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#adabce28a18b3597a120beef8097df25a">Csla.SortedBindingList.SupportsSorting</a></div><div class="ttdeci">bool SupportsSorting</div><div class="ttdoc">Returns true.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00497">SortedBindingList.cs:498</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_adb9a1dfb1cef833d954af7ded0e183d2"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#adb9a1dfb1cef833d954af7ded0e183d2">Csla.SortedBindingList.Contains</a></div><div class="ttdeci">bool Contains(T item)</div><div class="ttdoc">Implemented by IList source object.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00574">SortedBindingList.cs:574</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_ae041c39ddcdde816f74058ef602d32b4"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#ae041c39ddcdde816f74058ef602d32b4">Csla.SortedBindingList.IndexOf</a></div><div class="ttdeci">int IndexOf(T item)</div><div class="ttdoc">Implemented by IList source object.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00588">SortedBindingList.cs:588</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_sorted_binding_list_html_aeccfb7d84baee69c74e91bc01eb7a248"><div class="ttname"><a href="class_csla_1_1_sorted_binding_list.html#aeccfb7d84baee69c74e91bc01eb7a248">Csla.SortedBindingList.ApplySort</a></div><div class="ttdeci">void ApplySort(PropertyDescriptor property, ListSortDirection direction)</div><div class="ttdoc">Applies a sort to the view.</div><div class="ttdef"><b>Definition:</b> <a href="_sorted_binding_list_8cs_source.html#l00344">SortedBindingList.cs:344</a></div></div>

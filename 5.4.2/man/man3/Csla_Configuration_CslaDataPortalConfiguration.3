@@ -25,6 +25,7 @@ Csla.Configuration.CslaDataPortalConfiguration \- Use this type to configure the
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBProxyFactoryType\fP (Type type)"
 .br
+.RI "summary> Sets the full type name (or 'Default') of the data portal proxy factory object to be used to get the DataPortalProxy instance to use when communicating with the data portal server\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBProxyFactoryType\fP (string typeName)"
 .br
@@ -47,35 +48,35 @@ Csla.Configuration.CslaDataPortalConfiguration \- Use this type to configure the
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBServerAuthorizationProviderType\fP (Type type)"
 .br
-.RI "Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. "
+.RI "Sets the type name to be used for server-side data portal authorization\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBServerAuthorizationProviderType\fP (string typeName)"
 .br
-.RI "Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. "
+.RI "Sets the type name to be used for server-side data portal authorization\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBInterceptorType\fP (string typeName)"
 .br
-.RI "Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. "
+.RI "Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBInterceptorType\fP (Type type)"
 .br
-.RI "Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. "
+.RI "Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBExceptionInspectorType\fP (Type type)"
 .br
-.RI "Sets the type of the ExceptionInspector class\&. Type must implement IDataPortalExceptionInspector\&. "
+.RI "Sets the type of the ExceptionInspector class\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBExceptionInspectorType\fP (string typeName)"
 .br
-.RI "Sets the type name of the ExceptionInspector class\&. Type must implement IDataPortalExceptionInspector\&. "
+.RI "Sets the type name of the ExceptionInspector class\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBFactoryLoaderType\fP (Type type)"
 .br
-.RI "Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. "
+.RI "Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBFactoryLoaderType\fP (string typeName)"
 .br
-.RI "Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. "
+.RI "Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. "
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBAutoCloneOnUpdate\fP (bool value)"
 .br
@@ -95,7 +96,7 @@ Csla.Configuration.CslaDataPortalConfiguration \- Use this type to configure the
 .ti -1c
 .RI "\fBCslaDataPortalConfiguration\fP \fBFlowSynchronizationContext\fP (bool flow)"
 .br
-.RI "Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&. "
+.RI "Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -259,7 +260,7 @@ Definition at line 39 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.ExceptionInspectorType (string typeName)"
 
 .PP
-Sets the type name of the ExceptionInspector class\&. Type must implement IDataPortalExceptionInspector\&. 
+Sets the type name of the ExceptionInspector class\&. Type must implement IDataPortalExceptionInspector\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -272,7 +273,7 @@ Definition at line 225 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.ExceptionInspectorType (Type type)"
 
 .PP
-Sets the type of the ExceptionInspector class\&. Type must implement IDataPortalExceptionInspector\&. 
+Sets the type of the ExceptionInspector class\&. Type must implement IDataPortalExceptionInspector\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -285,7 +286,7 @@ Definition at line 214 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.FactoryLoaderType (string typeName)"
 
 .PP
-Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. 
+Sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -298,7 +299,7 @@ Definition at line 251 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.FactoryLoaderType (Type type)"
 
 .PP
-Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&. 
+Sets the type of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model\&. Type must implement IObjectFactoryLoader\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -311,7 +312,7 @@ Definition at line 238 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.FlowSynchronizationContext (bool flow)"
 
 .PP
-Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&. 
+Sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy\&. Setting this to true may restrict or eliminate the use of background threads by LocalProxy\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -328,7 +329,7 @@ Definition at line 315 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.InterceptorType (string typeName)"
 
 .PP
-Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. 
+Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -341,7 +342,7 @@ Definition at line 190 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.InterceptorType (Type type)"
 
 .PP
-Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&. 
+Sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation\&. Type must implement IInterceptDataPortal\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -382,7 +383,7 @@ Definition at line 114 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.ProxyFactoryType (Type type)"
 
 .PP
-summary> Sets the full type name (or 'Default') of the data portal proxy factory object to be used to get the DataPortalProxy instance to use when communicating with the data portal server\&.
+summary> Sets the full type name (or 'Default') of the data portal proxy factory object to be used to get the DataPortalProxy instance to use when communicating with the data portal server\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -395,7 +396,7 @@ Definition at line 101 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.ServerAuthorizationProviderType (string typeName)"
 
 .PP
-Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. 
+Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -408,7 +409,7 @@ Definition at line 177 of file CslaDataPortalConfiguration\&.cs\&.
 .SS "\fBCslaDataPortalConfiguration\fP Csla\&.Configuration\&.CslaDataPortalConfiguration\&.ServerAuthorizationProviderType (Type type)"
 
 .PP
-Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&. 
+Sets the type name to be used for server-side data portal authorization\&. Type must implement IAuthorizeDataPortal\&.
 .PP
 \fBParameters\fP
 .RS 4

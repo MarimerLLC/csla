@@ -10,9 +10,9 @@ class \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_r
 class \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_writer}{Csla\+Binary\+Writer}}
 \begin{DoxyCompactList}\small\item\em This is a class that is responsible for serializing \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_serialization_info}{Serialization\+Info}} objects into a Stream for sending the data t client / server \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_legacy_binary_reader}{Csla\+Legacy\+Binary\+Reader}}
-\begin{DoxyCompactList}\small\item\em This is a legacy version of \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_reader}{Csla\+Binary\+Reader}}. You should not use this type unless you have issues with the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_reader}{Csla\+Binary\+Reader}}. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em This is a legacy version of \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_reader}{Csla\+Binary\+Reader}}. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_legacy_binary_writer}{Csla\+Legacy\+Binary\+Writer}}
-\begin{DoxyCompactList}\small\item\em This is a legacy version of \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_writer}{Csla\+Binary\+Writer}}. You should not use this type unless you have issues with the \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_writer}{Csla\+Binary\+Writer}}. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em This is a legacy version of \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_binary_writer}{Csla\+Binary\+Writer}}. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_csla_1_1_serialization_1_1_mobile_1_1_csla_non_closing_binary_writer}{Csla\+Non\+Closing\+Binary\+Writer}}
 \begin{DoxyCompactList}\small\item\em This class is used to get around the issue in .NET framework, where underlying stream is closed by a writer that writes to that stream when said writer is disposed \end{DoxyCompactList}\item 
 class {\bfseries Csla\+Reader\+Writer\+Factory}
@@ -170,7 +170,7 @@ Guid&Globally unique identifier / Guid \\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{ByteArray@{ByteArray}!Csla.Serialization.Mobile@{Csla.Serialization.Mobile}}\index{Csla.Serialization.Mobile@{Csla.Serialization.Mobile}!ByteArray@{ByteArray}}}\mbox{\Hypertarget{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a29d83f0080e24c1f4b3975dc9ff9e868}\label{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a29d83f0080e24c1f4b3975dc9ff9e868}} 
-Byte\+Array&Array of bytes. can be used to represent images data \\
+Byte\+Array&Array of bytes. can be used to represent images data\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{CharArray@{CharArray}!Csla.Serialization.Mobile@{Csla.Serialization.Mobile}}\index{Csla.Serialization.Mobile@{Csla.Serialization.Mobile}!CharArray@{CharArray}}}\mbox{\Hypertarget{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394ac81b062e5c6743c67b5016058f61645f}\label{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394ac81b062e5c6743c67b5016058f61645f}} 
@@ -186,11 +186,11 @@ Null&Represents null value \\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{StringWithDictionaryKey@{StringWithDictionaryKey}!Csla.Serialization.Mobile@{Csla.Serialization.Mobile}}\index{Csla.Serialization.Mobile@{Csla.Serialization.Mobile}!StringWithDictionaryKey@{StringWithDictionaryKey}}}\mbox{\Hypertarget{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a2b25dc59a241e04cb4cfb2594109f11d}\label{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a2b25dc59a241e04cb4cfb2594109f11d}} 
-String\+With\+Dictionary\+Key&Represents string that is supported by internal dictionary that is used to replace strings with integers to save space in the serialization process. This entry contains both string and integer value of that string. This data is used to re-\/build the dictionary on the receiving end \\
+String\+With\+Dictionary\+Key&Represents string that is supported by internal dictionary that is used to replace strings with integers to save space in the serialization process. This entry contains both string and integer value of that string. This data is used to re-\/build the dictionary on the receiving end\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{StringDictionaryKey@{StringDictionaryKey}!Csla.Serialization.Mobile@{Csla.Serialization.Mobile}}\index{Csla.Serialization.Mobile@{Csla.Serialization.Mobile}!StringDictionaryKey@{StringDictionaryKey}}}\mbox{\Hypertarget{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a91be77ef49872374074cfcd0de82eea8}\label{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a91be77ef49872374074cfcd0de82eea8}} 
-String\+Dictionary\+Key&Key that corresponds to internally used string. On the receiving end this value will be replaces with the actual string \\
+String\+Dictionary\+Key&Key that corresponds to internally used string. On the receiving end this value will be replaces with the actual string\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{ByteArrayArray@{ByteArrayArray}!Csla.Serialization.Mobile@{Csla.Serialization.Mobile}}\index{Csla.Serialization.Mobile@{Csla.Serialization.Mobile}!ByteArrayArray@{ByteArrayArray}}}\mbox{\Hypertarget{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a71edbd25bf05351612ca713c2da2642d}\label{namespace_csla_1_1_serialization_1_1_mobile_aa3a3833391c5508bd8be31e16fe9f394a71edbd25bf05351612ca713c2da2642d}} 

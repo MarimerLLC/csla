@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -107,8 +117,7 @@ Inheritance diagram for Csla.Rules.RuleContext:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8851f7744e2306abfb387a596875a58e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a8851f7744e2306abfb387a596875a58e">ExecuteRule</a> (<a class="el" href="interface_csla_1_1_rules_1_1_i_business_rule_base.html">IBusinessRuleBase</a> innerRule)</td></tr>
-<tr class="memdesc:a8851f7744e2306abfb387a596875a58e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the inner rule from the outer rules context. Creates a chained context and if CanRunRule will execute the inner rule. <br  />
-  <a href="class_csla_1_1_rules_1_1_rule_context.html#a8851f7744e2306abfb387a596875a58e">More...</a><br /></td></tr>
+<tr class="memdesc:a8851f7744e2306abfb387a596875a58e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the inner rule from the outer rules context.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a8851f7744e2306abfb387a596875a58e">More...</a><br /></td></tr>
 <tr class="separator:a8851f7744e2306abfb387a596875a58e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3174c69fcef42139948606cf5fb900c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#aa3174c69fcef42139948606cf5fb900c">RuleContext</a> (Action&lt; <a class="el" href="interface_csla_1_1_rules_1_1_i_rule_context.html">IRuleContext</a> &gt; completeHandler, <a class="el" href="interface_csla_1_1_rules_1_1_i_business_rule_base.html">IBusinessRuleBase</a> rule, object target, Dictionary&lt; <a class="el" href="interface_csla_1_1_core_1_1_i_property_info.html">Csla.Core.IPropertyInfo</a>, object &gt; inputPropertyValues)</td></tr>
 <tr class="memdesc:aa3174c69fcef42139948606cf5fb900c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_csla_1_1_rules_1_1_rule_context.html" title="Context information provided to a business rule when it is invoked.">RuleContext</a> instance for testing.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aa3174c69fcef42139948606cf5fb900c">More...</a><br /></td></tr>
@@ -123,7 +132,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a79aa82a3a67747a1ecfea931187cc7bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Error severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a79aa82a3a67747a1ecfea931187cc7bc">More...</a><br /></td></tr>
 <tr class="separator:a79aa82a3a67747a1ecfea931187cc7bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a477b3d3bb1232e626115a2ec51040038"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a477b3d3bb1232e626115a2ec51040038">AddErrorResult</a> (<a class="el" href="interface_csla_1_1_core_1_1_i_property_info.html">Csla.Core.IPropertyInfo</a> property, string description)</td></tr>
-<tr class="memdesc:a477b3d3bb1232e626115a2ec51040038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Error severity result to the Results list. This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a477b3d3bb1232e626115a2ec51040038">More...</a><br /></td></tr>
+<tr class="memdesc:a477b3d3bb1232e626115a2ec51040038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Error severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a477b3d3bb1232e626115a2ec51040038">More...</a><br /></td></tr>
 <tr class="separator:a477b3d3bb1232e626115a2ec51040038"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a9e21e91dd7f1b13d75af0dbe0e6ca7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a0a9e21e91dd7f1b13d75af0dbe0e6ca7">AddWarningResult</a> (string description)</td></tr>
 <tr class="memdesc:a0a9e21e91dd7f1b13d75af0dbe0e6ca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Warning severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a0a9e21e91dd7f1b13d75af0dbe0e6ca7">More...</a><br /></td></tr>
@@ -132,7 +141,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a5bc0799a5194a823e8f8f0a8ca70e163"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Warning severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a5bc0799a5194a823e8f8f0a8ca70e163">More...</a><br /></td></tr>
 <tr class="separator:a5bc0799a5194a823e8f8f0a8ca70e163"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7537ebe40bb528da8d398701dc5d2239"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a7537ebe40bb528da8d398701dc5d2239">AddWarningResult</a> (<a class="el" href="interface_csla_1_1_core_1_1_i_property_info.html">Csla.Core.IPropertyInfo</a> property, string description)</td></tr>
-<tr class="memdesc:a7537ebe40bb528da8d398701dc5d2239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Warning severity result to the Results list. This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a7537ebe40bb528da8d398701dc5d2239">More...</a><br /></td></tr>
+<tr class="memdesc:a7537ebe40bb528da8d398701dc5d2239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Warning severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a7537ebe40bb528da8d398701dc5d2239">More...</a><br /></td></tr>
 <tr class="separator:a7537ebe40bb528da8d398701dc5d2239"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafc89d855c56340b84eb7a0d458b2bf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#aafc89d855c56340b84eb7a0d458b2bf3">AddInformationResult</a> (string description)</td></tr>
 <tr class="memdesc:aafc89d855c56340b84eb7a0d458b2bf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an Information severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aafc89d855c56340b84eb7a0d458b2bf3">More...</a><br /></td></tr>
@@ -141,7 +150,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa91505ed25b3fa7f0a07b766e775be74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an Information severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aa91505ed25b3fa7f0a07b766e775be74">More...</a><br /></td></tr>
 <tr class="separator:aa91505ed25b3fa7f0a07b766e775be74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee0538f796b38288b79a11ed17fc632b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#aee0538f796b38288b79a11ed17fc632b">AddInformationResult</a> (<a class="el" href="interface_csla_1_1_core_1_1_i_property_info.html">Csla.Core.IPropertyInfo</a> property, string description)</td></tr>
-<tr class="memdesc:aee0538f796b38288b79a11ed17fc632b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an Information severity result to the Results list. This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aee0538f796b38288b79a11ed17fc632b">More...</a><br /></td></tr>
+<tr class="memdesc:aee0538f796b38288b79a11ed17fc632b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an Information severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aee0538f796b38288b79a11ed17fc632b">More...</a><br /></td></tr>
 <tr class="separator:aee0538f796b38288b79a11ed17fc632b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16abb707056f6811f296db307210dc33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a16abb707056f6811f296db307210dc33">AddSuccessResult</a> (bool stopProcessing)</td></tr>
 <tr class="memdesc:a16abb707056f6811f296db307210dc33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a Success severity result to the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a16abb707056f6811f296db307210dc33">More...</a><br /></td></tr>
@@ -156,7 +165,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa406005947c2fac3468bed1b106d0fd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a property name as a dirty field (changed value).  <a href="class_csla_1_1_rules_1_1_rule_context.html#aa406005947c2fac3468bed1b106d0fd7">More...</a><br /></td></tr>
 <tr class="separator:aa406005947c2fac3468bed1b106d0fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ceda4d0f6ccbecb1e89c6d95a53e927"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a9ceda4d0f6ccbecb1e89c6d95a53e927">Complete</a> ()</td></tr>
-<tr class="memdesc:a9ceda4d0f6ccbecb1e89c6d95a53e927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates that the rule processing is complete, so CSLA .NET will process the Results list. This method must be invoked on the UI thread.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a9ceda4d0f6ccbecb1e89c6d95a53e927">More...</a><br /></td></tr>
+<tr class="memdesc:a9ceda4d0f6ccbecb1e89c6d95a53e927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates that the rule processing is complete, so CSLA .NET will process the Results list.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a9ceda4d0f6ccbecb1e89c6d95a53e927">More...</a><br /></td></tr>
 <tr class="separator:a9ceda4d0f6ccbecb1e89c6d95a53e927"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff7e6e7bb84231b3c7192102a22c03d9"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#aff7e6e7bb84231b3c7192102a22c03d9">GetInputValue&lt; T &gt;</a> (<a class="el" href="class_csla_1_1_property_info.html">PropertyInfo</a>&lt; T &gt; propertyInfo)</td></tr>
 <tr class="memdesc:aff7e6e7bb84231b3c7192102a22c03d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aff7e6e7bb84231b3c7192102a22c03d9">More...</a><br /></td></tr>
@@ -165,10 +174,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:afef1069ce7350258eb367365f1d99147"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value with explicit cast  <a href="class_csla_1_1_rules_1_1_rule_context.html#afef1069ce7350258eb367365f1d99147">More...</a><br /></td></tr>
 <tr class="separator:afef1069ce7350258eb367365f1d99147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ff6af6127a07b5acecc03d168c06da2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#a7ff6af6127a07b5acecc03d168c06da2">TryGetInputValue&lt; T &gt;</a> (<a class="el" href="class_csla_1_1_property_info.html">PropertyInfo</a>&lt; T &gt; propertyInfo, ref T value)</td></tr>
-<tr class="memdesc:a7ff6af6127a07b5acecc03d168c06da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a7ff6af6127a07b5acecc03d168c06da2">More...</a><br /></td></tr>
+<tr class="memdesc:a7ff6af6127a07b5acecc03d168c06da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tries to get the value.  <a href="class_csla_1_1_rules_1_1_rule_context.html#a7ff6af6127a07b5acecc03d168c06da2">More...</a><br /></td></tr>
 <tr class="separator:a7ff6af6127a07b5acecc03d168c06da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7f4a4b90ae2fd64339ed74beb1b5ef8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_rules_1_1_rule_context.html#aa7f4a4b90ae2fd64339ed74beb1b5ef8">TryGetInputValue&lt; T &gt;</a> (<a class="el" href="interface_csla_1_1_core_1_1_i_property_info.html">IPropertyInfo</a> propertyInfo, ref T value)</td></tr>
-<tr class="memdesc:aa7f4a4b90ae2fd64339ed74beb1b5ef8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aa7f4a4b90ae2fd64339ed74beb1b5ef8">More...</a><br /></td></tr>
+<tr class="memdesc:aa7f4a4b90ae2fd64339ed74beb1b5ef8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tries to get the value with explicit cast.  <a href="class_csla_1_1_rules_1_1_rule_context.html#aa7f4a4b90ae2fd64339ed74beb1b5ef8">More...</a><br /></td></tr>
 <tr class="separator:aa7f4a4b90ae2fd64339ed74beb1b5ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
@@ -368,7 +377,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add a Error severity result to the Results list. This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. </p>
+<p>Add a Error severity result to the Results list. </p>
+<p>This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">property</td><td>Property to which the result applies.</td></tr>
@@ -488,7 +498,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add an Information severity result to the Results list. This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. </p>
+<p>Add an Information severity result to the Results list. </p>
+<p>This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">property</td><td>Property to which the result applies.</td></tr>
@@ -717,7 +728,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add a Warning severity result to the Results list. This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. </p>
+<p>Add a Warning severity result to the Results list. </p>
+<p>This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">property</td><td>Property to which the result applies.</td></tr>
@@ -826,7 +838,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Indicates that the rule processing is complete, so CSLA .NET will process the Results list. This method must be invoked on the UI thread. </p>
+<p>Indicates that the rule processing is complete, so CSLA .NET will process the Results list. </p>
+<p>This method must be invoked on the UI thread.</p>
 
 <p>Implements <a class="el" href="interface_csla_1_1_rules_1_1_i_rule_context.html#a77c8f020b9460a8a1d1ee3caf7aeff92">Csla.Rules.IRuleContext</a>.</p>
 
@@ -850,8 +863,9 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Executes the inner rule from the outer rules context. Creates a chained context and if CanRunRule will execute the inner rule. <br  />
- </p>
+<p>Executes the inner rule from the outer rules context. </p>
+<p>Creates a chained context and if CanRunRule will execute the inner rule. <br  />
+</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">innerRule</td><td>The inner rule.</td></tr>
@@ -996,7 +1010,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not. </p>
+<p>Tries to get the value with explicit cast. </p>
+<p>Use this method on LazyLoaded properties to test if value has been provided or not.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td></td></tr>
@@ -1044,7 +1059,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not. </p>
+<p>Tries to get the value. </p>
+<p>Use this method on LazyLoaded properties to test if value has been provided or not.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td></td></tr>
@@ -1386,9 +1402,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_rule_context_8cs_source.html">RuleContext.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

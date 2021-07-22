@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -306,10 +316,10 @@ $(document).ready(function(){initNavTree('_csla_8_blazor_2_view_model_8cs_source
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a36865ccccbfaed83085c73c3077e0975"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a36865ccccbfaed83085c73c3077e0975">Csla.Blazor.ViewModel.ModelErrorText</a></div><div class="ttdeci">virtual string ModelErrorText</div><div class="ttdoc">Gets the first validation error message from the Model</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00258">Csla.Blazor/ViewModel.cs:259</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a3e9e9e853402e3b0b0718c04d84cca3f"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a3e9e9e853402e3b0b0718c04d84cca3f">Csla.Blazor.ViewModel.ModelPropertyChanged</a></div><div class="ttdeci">PropertyChangedEventHandler ModelPropertyChanged</div><div class="ttdoc">Event raised when the Model object raises its PropertyChanged event</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00042">Csla.Blazor/ViewModel.cs:42</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a4d8faebd94d0b03ba88f86e3b130eee6"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a4d8faebd94d0b03ba88f86e3b130eee6">Csla.Blazor.ViewModel.OnModelChanged</a></div><div class="ttdeci">virtual void OnModelChanged()</div><div class="ttdoc">Raises the ModelChanged event</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00062">Csla.Blazor/ViewModel.cs:62</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a557f10aa810ac83d4b34c642b4b11a9d"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a557f10aa810ac83d4b34c642b4b11a9d">Csla.Blazor.ViewModel.GetPropertyInfo&lt; P &gt;</a></div><div class="ttdeci">IPropertyInfo GetPropertyInfo&lt; P &gt;(Expression&lt; Func&lt; P &gt;&gt; property)</div><div class="ttdoc">Get a PropertyInfo object for a property. PropertyInfo provides access to the metastate of the proper...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00179">Csla.Blazor/ViewModel.cs:179</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a557f10aa810ac83d4b34c642b4b11a9d"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a557f10aa810ac83d4b34c642b4b11a9d">Csla.Blazor.ViewModel.GetPropertyInfo&lt; P &gt;</a></div><div class="ttdeci">IPropertyInfo GetPropertyInfo&lt; P &gt;(Expression&lt; Func&lt; P &gt;&gt; property)</div><div class="ttdoc">Get a PropertyInfo object for a property.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00179">Csla.Blazor/ViewModel.cs:179</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a7a9a0b43e2fa39e600eaebfd77852157"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a7a9a0b43e2fa39e600eaebfd77852157">Csla.Blazor.ViewModel.Exception</a></div><div class="ttdeci">Exception Exception</div><div class="ttdoc">Gets the last exception caught by the viewmodel during refresh or save operations.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00275">Csla.Blazor/ViewModel.cs:275</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a7e50410c44672104bdf9e60a59c2e0e8"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a7e50410c44672104bdf9e60a59c2e0e8">Csla.Blazor.ViewModel.OnModelChanging</a></div><div class="ttdeci">virtual void OnModelChanging(T oldValue, T newValue)</div><div class="ttdoc">Raises the ModelChanging event</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00049">Csla.Blazor/ViewModel.cs:49</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a8b667252bafc3cdc26f3b52547abac74"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a8b667252bafc3cdc26f3b52547abac74">Csla.Blazor.ViewModel.GetPropertyInfo</a></div><div class="ttdeci">IPropertyInfo GetPropertyInfo(string propertyName)</div><div class="ttdoc">Get a PropertyInfo object for a property of the Model. PropertyInfo provides access to the metastate ...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00214">Csla.Blazor/ViewModel.cs:214</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a8b667252bafc3cdc26f3b52547abac74"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a8b667252bafc3cdc26f3b52547abac74">Csla.Blazor.ViewModel.GetPropertyInfo</a></div><div class="ttdeci">IPropertyInfo GetPropertyInfo(string propertyName)</div><div class="ttdoc">Get a PropertyInfo object for a property of the Model.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00214">Csla.Blazor/ViewModel.cs:214</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_a9d9dcb1c29b689c6055336c5d5c16b83"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#a9d9dcb1c29b689c6055336c5d5c16b83">Csla.Blazor.ViewModel.CanGetObject</a></div><div class="ttdeci">static bool CanGetObject()</div><div class="ttdoc">Gets a value indicating whether the current user is authorized to retrieve an instance of the busines...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00294">Csla.Blazor/ViewModel.cs:294</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_aa121d4706afe7cecb49f4c5272566617"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#aa121d4706afe7cecb49f4c5272566617">Csla.Blazor.ViewModel.DoSaveAsync</a></div><div class="ttdeci">virtual async Task&lt; T &gt; DoSaveAsync()</div><div class="ttdoc">Override to provide custom Model save behavior</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00140">Csla.Blazor/ViewModel.cs:140</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_aa9654cc876c115cdc70366936c287641"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#aa9654cc876c115cdc70366936c287641">Csla.Blazor.ViewModel.CanEditObject</a></div><div class="ttdeci">static bool CanEditObject()</div><div class="ttdoc">Gets a value indicating whether the current user is authorized to edit/save an instance of the busine...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00305">Csla.Blazor/ViewModel.cs:305</a></div></div>
@@ -319,7 +329,7 @@ $(document).ready(function(){initNavTree('_csla_8_blazor_2_view_model_8cs_source
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_ad89869b46c9961036c927621f06cb9ca"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#ad89869b46c9961036c927621f06cb9ca">Csla.Blazor.ViewModel.OnModelPropertyChanged</a></div><div class="ttdeci">virtual void OnModelPropertyChanged(string propertyName)</div><div class="ttdoc">Raises the ModelPropertyChanged event</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00071">Csla.Blazor/ViewModel.cs:71</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_af156dffe7720492f27304fd08fff32c6"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#af156dffe7720492f27304fd08fff32c6">Csla.Blazor.ViewModel.ViewModel</a></div><div class="ttdeci">ViewModel(IDataPortal&lt; T &gt; dataPortal)</div><div class="ttdoc">Creates an instance of the type</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00079">Csla.Blazor/ViewModel.cs:79</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_afb6ad8c3f8a7e1f2da8e0e6bfa93f49b"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#afb6ad8c3f8a7e1f2da8e0e6bfa93f49b">Csla.Blazor.ViewModel.Saved</a></div><div class="ttdeci">Action Saved</div><div class="ttdoc">Event raised after Model has been saved</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00029">Csla.Blazor/ViewModel.cs:29</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_afe153dcee8bf3a0688ce852d2512d10d"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#afe153dcee8bf3a0688ce852d2512d10d">Csla.Blazor.ViewModel.GetPropertyInfo</a></div><div class="ttdeci">IPropertyInfo GetPropertyInfo(string propertyName, string id)</div><div class="ttdoc">Get a PropertyInfo object for a property of the Model. PropertyInfo provides access to the metastate ...</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00228">Csla.Blazor/ViewModel.cs:228</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_blazor_1_1_view_model_html_afe153dcee8bf3a0688ce852d2512d10d"><div class="ttname"><a href="class_csla_1_1_blazor_1_1_view_model.html#afe153dcee8bf3a0688ce852d2512d10d">Csla.Blazor.ViewModel.GetPropertyInfo</a></div><div class="ttdeci">IPropertyInfo GetPropertyInfo(string propertyName, string id)</div><div class="ttdoc">Get a PropertyInfo object for a property of the Model.</div><div class="ttdef"><b>Definition:</b> <a href="_csla_8_blazor_2_view_model_8cs_source.html#l00228">Csla.Blazor/ViewModel.cs:228</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html">Csla.DataPortalException</a></div><div class="ttdoc">This exception is returned for any errors occurring during the server-side DataPortal invocation.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00020">DataPortalException.cs:21</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_exception_html_a34ac27e4ecc74e11d80d6f5499d1ac82"><div class="ttname"><a href="class_csla_1_1_data_portal_exception.html#a34ac27e4ecc74e11d80d6f5499d1ac82">Csla.DataPortalException.BusinessExceptionMessage</a></div><div class="ttdeci">string BusinessExceptionMessage</div><div class="ttdoc">Gets the Message property from the BusinessException, falling back to the Message value from the top-...</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_exception_8cs_source.html#l00185">DataPortalException.cs:186</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_data_portal_html"><div class="ttname"><a href="class_csla_1_1_data_portal.html">Csla.DataPortal</a></div><div class="ttdoc">This is the client-side DataPortal.</div><div class="ttdef"><b>Definition:</b> <a href="_data_portal_t_8cs_source.html#l00023">DataPortalT.cs:24</a></div></div>

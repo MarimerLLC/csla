@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -206,7 +216,7 @@ $(document).ready(function(){initNavTree('_page_model_8cs_source.html',''); init
 <div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a01ef71dcaf19b4446beb85a4dd1257d2"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a01ef71dcaf19b4446beb85a4dd1257d2">Csla.AspNetCore.RazorPages.PageModel.CanDeleteItem</a></div><div class="ttdeci">static bool CanDeleteItem()</div><div class="ttdoc">Gets a value indicating whether the current user is authorized to delete an instance of the business ...</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00150">PageModel.cs:150</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a04e319ffe46bcd4f2061c3b8befb14af"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a04e319ffe46bcd4f2061c3b8befb14af">Csla.AspNetCore.RazorPages.PageModel.CanEditItem</a></div><div class="ttdeci">static bool CanEditItem()</div><div class="ttdoc">Gets a value indicating whether the current user is authorized to edit/save an instance of the busine...</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00139">PageModel.cs:139</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a1bcef4236bfb2f77b56d2090c03a8869"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a1bcef4236bfb2f77b56d2090c03a8869">Csla.AspNetCore.RazorPages.PageModel.Item</a></div><div class="ttdeci">T Item</div><div class="ttdoc">Gets or sets the business domain model object.</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00030">PageModel.cs:30</a></div></div>
-<div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a63d363e9406a635655ffb0fd842b4ee0"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a63d363e9406a635655ffb0fd842b4ee0">Csla.AspNetCore.RazorPages.PageModel.GetPropertyInfo</a></div><div class="ttdeci">PropertyInfo GetPropertyInfo(string propertyName)</div><div class="ttdoc">Get a PropertyInfo object for a property of the Model. PropertyInfo provides access to the metastate ...</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00101">PageModel.cs:101</a></div></div>
+<div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a63d363e9406a635655ffb0fd842b4ee0"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a63d363e9406a635655ffb0fd842b4ee0">Csla.AspNetCore.RazorPages.PageModel.GetPropertyInfo</a></div><div class="ttdeci">PropertyInfo GetPropertyInfo(string propertyName)</div><div class="ttdoc">Get a PropertyInfo object for a property of the Model.</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00101">PageModel.cs:101</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a64029b95e283f8cb305a3dd476669d50"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a64029b95e283f8cb305a3dd476669d50">Csla.AspNetCore.RazorPages.PageModel.CanCreateItem</a></div><div class="ttdeci">static bool CanCreateItem()</div><div class="ttdoc">Gets a value indicating whether the current user is authorized to create an instance of the business ...</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00117">PageModel.cs:117</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_a7a4ae940596aa48ab28e08d93e79b111"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#a7a4ae940596aa48ab28e08d93e79b111">Csla.AspNetCore.RazorPages.PageModel.SaveAsync</a></div><div class="ttdeci">async Task&lt; bool &gt; SaveAsync(bool forceUpdate=false)</div><div class="ttdoc">Save the Item</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00037">PageModel.cs:37</a></div></div>
 <div class="ttc" id="aclass_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model_html_ac65c38bb3a0f6c3979c853abf9976c35"><div class="ttname"><a href="class_csla_1_1_asp_net_core_1_1_razor_pages_1_1_page_model.html#ac65c38bb3a0f6c3979c853abf9976c35">Csla.AspNetCore.RazorPages.PageModel.CanGetItem</a></div><div class="ttdeci">static bool CanGetItem()</div><div class="ttdoc">Gets a value indicating whether the current user is authorized to retrieve an instance of the busines...</div><div class="ttdef"><b>Definition:</b> <a href="_page_model_8cs_source.html#l00128">PageModel.cs:128</a></div></div>

@@ -73,7 +73,7 @@ Inherited by \fBCsla\&.BusinessBase< T >\fP\&.
 .ti -1c
 .RI "virtual void \fBDelete\fP ()"
 .br
-.RI "Marks the object for deletion\&. The object will be deleted as part of the next save operation\&. "
+.RI "Marks the object for deletion\&. "
 .ti -1c
 .RI "virtual bool \fBIsPropertyBusy\fP (\fBCsla\&.Core\&.IPropertyInfo\fP property)"
 .br
@@ -105,15 +105,15 @@ Inherited by \fBCsla\&.BusinessBase< T >\fP\&.
 .ti -1c
 .RI "virtual void \fBMarkNew\fP ()"
 .br
-.RI "Marks the object as being a new object\&. This also marks the object as being dirty and ensures that it is not marked for deletion\&. "
+.RI "Marks the object as being a new object\&. "
 .ti -1c
 .RI "virtual void \fBMarkOld\fP ()"
 .br
-.RI "Marks the object as being an old (not new) object\&. This also marks the object as being unchanged (not dirty)\&. "
+.RI "Marks the object as being an old (not new) object\&. "
 .ti -1c
 .RI "void \fBMarkDeleted\fP ()"
 .br
-.RI "Marks an object for deletion\&. This also marks the object as being dirty\&. "
+.RI "Marks an object for deletion\&. "
 .ti -1c
 .RI "void \fBMarkDirty\fP ()"
 .br
@@ -165,7 +165,7 @@ Inherited by \fBCsla\&.BusinessBase< T >\fP\&.
 .ti -1c
 .RI "\fBBusinessRuleManager\fP \fBGetRegisteredRules\fP ()"
 .br
-.RI "Gets the registered rules\&. Only for unit testing and not visible to code\&. "
+.RI "Gets the registered rules\&. "
 .ti -1c
 .RI "virtual void \fBAddBusinessRules\fP ()"
 .br
@@ -844,7 +844,9 @@ Definition at line 1253 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.Delete ()\fC [virtual]\fP"
 
 .PP
-Marks the object for deletion\&. The object will be deleted as part of the next save operation\&. CSLA \&.NET supports both immediate and deferred deletion of objects\&. This method is part of the support for deferred deletion, where an object can be marked for deletion, but isn't actually deleted until the object is saved to the database\&. This method is called by the UI developer to mark the object for deletion\&. 
+Marks the object for deletion\&. The object will be deleted as part of the next save operation\&.
+.PP
+CSLA \&.NET supports both immediate and deferred deletion of objects\&. This method is part of the support for deferred deletion, where an object can be marked for deletion, but isn't actually deleted until the object is saved to the database\&. This method is called by the UI developer to mark the object for deletion\&. 
 .PP
 To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3\&. 
 .PP
@@ -1145,11 +1147,10 @@ Definition at line 1783 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "\fBBusinessRuleManager\fP Csla\&.Core\&.BusinessBase\&.GetRegisteredRules ()\fC [protected]\fP"
 
 .PP
-Gets the registered rules\&. Only for unit testing and not visible to code\&. 
+Gets the registered rules\&. Only for unit testing and not visible to code\&.
 .PP
 \fBReturns\fP
 .RS 4
-
 .RE
 .PP
 
@@ -1410,7 +1411,9 @@ Definition at line 433 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkDeleted ()\fC [protected]\fP"
 
 .PP
-Marks an object for deletion\&. This also marks the object as being dirty\&. You should call this method in your business logic in the case that you want to have the object deleted when it is saved to the database\&. 
+Marks an object for deletion\&. This also marks the object as being dirty\&.
+.PP
+You should call this method in your business logic in the case that you want to have the object deleted when it is saved to the database\&. 
 .PP
 Definition at line 309 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "void Csla\&.Core\&.BusinessBase\&.MarkDirty ()\fC [protected]\fP"
@@ -1443,7 +1446,9 @@ Definition at line 3032 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.MarkNew ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Marks the object as being a new object\&. This also marks the object as being dirty and ensures that it is not marked for deletion\&. Newly created objects are marked new by default\&. You should call this method in the implementation of DataPortal_Update when the object is deleted (due to being marked for deletion) to indicate that the object no longer reflects data in the database\&. 
+Marks the object as being a new object\&. This also marks the object as being dirty and ensures that it is not marked for deletion\&.
+.PP
+Newly created objects are marked new by default\&. You should call this method in the implementation of DataPortal_Update when the object is deleted (due to being marked for deletion) to indicate that the object no longer reflects data in the database\&. 
 .PP
 If you override this method, make sure to call the base implementation after executing your new code\&. 
 .PP
@@ -1451,7 +1456,9 @@ Definition at line 266 of file Csla/Core/BusinessBase\&.cs\&.
 .SS "virtual void Csla\&.Core\&.BusinessBase\&.MarkOld ()\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Marks the object as being an old (not new) object\&. This also marks the object as being unchanged (not dirty)\&. You should call this method in the implementation of DataPortal_Fetch to indicate that an existing object has been successfully retrieved from the database\&. 
+Marks the object as being an old (not new) object\&. This also marks the object as being unchanged (not dirty)\&.
+.PP
+You should call this method in the implementation of DataPortal_Fetch to indicate that an existing object has been successfully retrieved from the database\&. 
 .PP
 You should call this method in the implementation of DataPortal_Update to indicate that a new object has been successfully inserted into the database\&. 
 .PP

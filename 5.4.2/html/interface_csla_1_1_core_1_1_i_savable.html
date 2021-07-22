@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -132,10 +142,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aed8f31660b5889ab1f65ebea9cb141f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database, merging the result into the original object graph  <a href="interface_csla_1_1_core_1_1_i_savable.html#aed8f31660b5889ab1f65ebea9cb141f9">More...</a><br /></td></tr>
 <tr class="separator:aed8f31660b5889ab1f65ebea9cb141f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac92bbfe48fb1129ebb874706c48f507f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_csla_1_1_core_1_1_i_savable.html#ac92bbfe48fb1129ebb874706c48f507f">BeginSave</a> ()</td></tr>
-<tr class="memdesc:ac92bbfe48fb1129ebb874706c48f507f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes.  <a href="interface_csla_1_1_core_1_1_i_savable.html#ac92bbfe48fb1129ebb874706c48f507f">More...</a><br /></td></tr>
+<tr class="memdesc:ac92bbfe48fb1129ebb874706c48f507f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously.  <a href="interface_csla_1_1_core_1_1_i_savable.html#ac92bbfe48fb1129ebb874706c48f507f">More...</a><br /></td></tr>
 <tr class="separator:ac92bbfe48fb1129ebb874706c48f507f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41a37999982a4c50177232ea7250c29d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_csla_1_1_core_1_1_i_savable.html#a41a37999982a4c50177232ea7250c29d">BeginSave</a> (object userState)</td></tr>
-<tr class="memdesc:a41a37999982a4c50177232ea7250c29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes.  <a href="interface_csla_1_1_core_1_1_i_savable.html#a41a37999982a4c50177232ea7250c29d">More...</a><br /></td></tr>
+<tr class="memdesc:a41a37999982a4c50177232ea7250c29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously.  <a href="interface_csla_1_1_core_1_1_i_savable.html#a41a37999982a4c50177232ea7250c29d">More...</a><br /></td></tr>
 <tr class="separator:a41a37999982a4c50177232ea7250c29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02d05b009e48ba21971349733f3ee09c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_csla_1_1_core_1_1_i_savable.html#a02d05b009e48ba21971349733f3ee09c">SaveComplete</a> (object newObject)</td></tr>
 <tr class="memdesc:a02d05b009e48ba21971349733f3ee09c"><td class="mdescLeft">&#160;</td><td class="mdescRight">INTERNAL CSLA .NET USE ONLY.  <a href="interface_csla_1_1_core_1_1_i_savable.html#a02d05b009e48ba21971349733f3ee09c">More...</a><br /></td></tr>
@@ -159,10 +169,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aed8f31660b5889ab1f65ebea9cb141f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database, merging the result into the original object graph  <a href="interface_csla_1_1_core_1_1_i_savable.html#aed8f31660b5889ab1f65ebea9cb141f9">More...</a><br /></td></tr>
 <tr class="separator:aed8f31660b5889ab1f65ebea9cb141f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac92bbfe48fb1129ebb874706c48f507f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_csla_1_1_core_1_1_i_savable.html#ac92bbfe48fb1129ebb874706c48f507f">BeginSave</a> ()</td></tr>
-<tr class="memdesc:ac92bbfe48fb1129ebb874706c48f507f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes.  <a href="interface_csla_1_1_core_1_1_i_savable.html#ac92bbfe48fb1129ebb874706c48f507f">More...</a><br /></td></tr>
+<tr class="memdesc:ac92bbfe48fb1129ebb874706c48f507f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously.  <a href="interface_csla_1_1_core_1_1_i_savable.html#ac92bbfe48fb1129ebb874706c48f507f">More...</a><br /></td></tr>
 <tr class="separator:ac92bbfe48fb1129ebb874706c48f507f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41a37999982a4c50177232ea7250c29d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_csla_1_1_core_1_1_i_savable.html#a41a37999982a4c50177232ea7250c29d">BeginSave</a> (object userState)</td></tr>
-<tr class="memdesc:a41a37999982a4c50177232ea7250c29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes.  <a href="interface_csla_1_1_core_1_1_i_savable.html#a41a37999982a4c50177232ea7250c29d">More...</a><br /></td></tr>
+<tr class="memdesc:a41a37999982a4c50177232ea7250c29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the object to the database asynchronously.  <a href="interface_csla_1_1_core_1_1_i_savable.html#a41a37999982a4c50177232ea7250c29d">More...</a><br /></td></tr>
 <tr class="separator:a41a37999982a4c50177232ea7250c29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad81c86d9c982f639a11e075aabe5687e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_csla_1_1_core_1_1_i_savable.html#ad81c86d9c982f639a11e075aabe5687e">SaveComplete</a> (T newObject)</td></tr>
 <tr class="memdesc:ad81c86d9c982f639a11e075aabe5687e"><td class="mdescLeft">&#160;</td><td class="mdescRight">INTERNAL CSLA .NET USE ONLY.  <a href="interface_csla_1_1_core_1_1_i_savable.html#ad81c86d9c982f639a11e075aabe5687e">More...</a><br /></td></tr>
@@ -202,7 +212,8 @@ Events</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. </p>
+<p>Saves the object to the database asynchronously. </p>
+<p>The saved event will contain the new object when the save operation completes.</p>
 
 <p>Implemented in <a class="el" href="class_csla_1_1_business_list_base.html#a68f65744a78dd316ffef289d09d7b476">Csla.BusinessListBase&lt; T, C &gt;</a>, <a class="el" href="class_csla_1_1_business_binding_list_base.html#a1fa039783525a6eca0c2dc1a9bb490d2">Csla.BusinessBindingListBase&lt; T, C &gt;</a>, and <a class="el" href="class_csla_1_1_business_base.html#ae9bb2107ce5f1bf8204430eb5d363e4b">Csla.BusinessBase&lt; T &gt;</a>.</p>
 
@@ -223,7 +234,8 @@ Events</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. </p>
+<p>Saves the object to the database asynchronously. </p>
+<p>The saved event will contain the new object when the save operation completes.</p>
 
 <p>Implemented in <a class="el" href="class_csla_1_1_business_list_base.html#a68f65744a78dd316ffef289d09d7b476">Csla.BusinessListBase&lt; T, C &gt;</a>, <a class="el" href="class_csla_1_1_business_binding_list_base.html#a1fa039783525a6eca0c2dc1a9bb490d2">Csla.BusinessBindingListBase&lt; T, C &gt;</a>, and <a class="el" href="class_csla_1_1_business_base.html#ae9bb2107ce5f1bf8204430eb5d363e4b">Csla.BusinessBase&lt; T &gt;</a>.</p>
 
@@ -245,7 +257,8 @@ Events</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. </p>
+<p>Saves the object to the database asynchronously. </p>
+<p>The saved event will contain the new object when the save operation completes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">userState</td><td>User state object. </td></tr>
@@ -273,7 +286,8 @@ Events</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Saves the object to the database asynchronously. The saved event will contain the new object when the save operation completes. </p>
+<p>Saves the object to the database asynchronously. </p>
+<p>The saved event will contain the new object when the save operation completes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">userState</td><td>User state object. </td></tr>
@@ -662,10 +676,6 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this interface was generated from the following files:<ul>
-<li><a class="el" href="_i_savable_8cs_source.html">ISavable.cs</a></li>
-<li><a class="el" href="_i_savable_t_8cs_source.html">ISavableT.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

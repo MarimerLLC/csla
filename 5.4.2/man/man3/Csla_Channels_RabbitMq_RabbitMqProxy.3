@@ -51,7 +51,7 @@ Inherits \fBCsla\&.DataPortalClient\&.DataPortalProxy\fP, and IDisposable\&.
 .ti -1c
 .RI "override async Task< byte[]> \fBCallDataPortalServer\fP (byte[] serialized, string operation, string routingToken, bool isSync)"
 .br
-.RI "Create message and send to Rabbit MQ server\&. Return Response from server "
+.RI "Create message and send to Rabbit MQ server\&. "
 .in -1c
 .SS "Properties"
 
@@ -106,7 +106,7 @@ Definition at line 39 of file RabbitMqProxy\&.cs\&.
 .SS "override async Task<byte[]> Csla\&.Channels\&.RabbitMq\&.RabbitMqProxy\&.CallDataPortalServer (byte[] serialized, string operation, string routingToken, bool isSync)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Create message and send to Rabbit MQ server\&. Return Response from server 
+Create message and send to Rabbit MQ server\&. Return Response from server
 .PP
 \fBParameters\fP
 .RS 4

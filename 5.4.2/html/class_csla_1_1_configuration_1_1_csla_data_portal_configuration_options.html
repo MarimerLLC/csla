@@ -16,6 +16,11 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -30,6 +35,21 @@
    &#160;<span id="projectnumber">5.4.2</span>
    </div>
   </td>
+   <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -41,16 +61,6 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
 </div><!-- top -->
 <div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
@@ -109,10 +119,10 @@ Properties</h2></td></tr>
 <tr class="memdesc:ad30f58b8621645f5438942dc52ece394"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the fully qualified name of the ExceptionInspector class.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad30f58b8621645f5438942dc52ece394">More...</a><br /></td></tr>
 <tr class="separator:ad30f58b8621645f5438942dc52ece394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2c3f7753a778345d5f11c883e159cd1"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad2c3f7753a778345d5f11c883e159cd1">AuthorizationProvider</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:ad2c3f7753a778345d5f11c883e159cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name to be used for server-side data portal authorization. Type must implement IAuthorizeDataPortal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad2c3f7753a778345d5f11c883e159cd1">More...</a><br /></td></tr>
+<tr class="memdesc:ad2c3f7753a778345d5f11c883e159cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type name to be used for server-side data portal authorization.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ad2c3f7753a778345d5f11c883e159cd1">More...</a><br /></td></tr>
 <tr class="separator:ad2c3f7753a778345d5f11c883e159cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7db3ea07a0f5c1cb7711720460e59639"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7db3ea07a0f5c1cb7711720460e59639">Interceptor</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:a7db3ea07a0f5c1cb7711720460e59639"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. Type must implement IInterceptDataPortal.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7db3ea07a0f5c1cb7711720460e59639">More...</a><br /></td></tr>
+<tr class="memdesc:a7db3ea07a0f5c1cb7711720460e59639"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7db3ea07a0f5c1cb7711720460e59639">More...</a><br /></td></tr>
 <tr class="separator:a7db3ea07a0f5c1cb7711720460e59639"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2773114b3bef56d6d8059c7f1aa607a6"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a2773114b3bef56d6d8059c7f1aa607a6">Proxy</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a2773114b3bef56d6d8059c7f1aa607a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the default data portal proxy type  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a2773114b3bef56d6d8059c7f1aa607a6">More...</a><br /></td></tr>
@@ -123,14 +133,13 @@ Properties</h2></td></tr>
 <tr class="memdesc:a82c5b4a06c8196e660109e21af1bd0d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets a value indicating whether the server-side business object should be returned to the client as part of the <a class="el" href="class_csla_1_1_data_portal_exception.html" title="This exception is returned for any errors occurring during the server-side DataPortal invocation.">DataPortalException</a> (default is false).  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a82c5b4a06c8196e660109e21af1bd0d1">More...</a><br /></td></tr>
 <tr class="separator:a82c5b4a06c8196e660109e21af1bd0d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3ecf8003b1b370b979772914b542ddf"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ae3ecf8003b1b370b979772914b542ddf">PortalUrl</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:ae3ecf8003b1b370b979772914b542ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the data portal URL string. <br  />
-  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ae3ecf8003b1b370b979772914b542ddf">More...</a><br /></td></tr>
+<tr class="memdesc:ae3ecf8003b1b370b979772914b542ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the data portal URL string.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#ae3ecf8003b1b370b979772914b542ddf">More...</a><br /></td></tr>
 <tr class="separator:ae3ecf8003b1b370b979772914b542ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7ec737b16359c037ca6d809b0fd16e1"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#aa7ec737b16359c037ca6d809b0fd16e1">ObjectFactoryLoader</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:aa7ec737b16359c037ca6d809b0fd16e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. Type must implement IObjectFactoryLoader.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#aa7ec737b16359c037ca6d809b0fd16e1">More...</a><br /></td></tr>
+<tr class="memdesc:aa7ec737b16359c037ca6d809b0fd16e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#aa7ec737b16359c037ca6d809b0fd16e1">More...</a><br /></td></tr>
 <tr class="separator:aa7ec737b16359c037ca6d809b0fd16e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7efd0f127c3db1b6371786bff9801ae1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7efd0f127c3db1b6371786bff9801ae1">FlowSynchronizationContext</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:a7efd0f127c3db1b6371786bff9801ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy. Setting this to true may restrict or eliminate the use of background threads by LocalProxy.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7efd0f127c3db1b6371786bff9801ae1">More...</a><br /></td></tr>
+<tr class="memdesc:a7efd0f127c3db1b6371786bff9801ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy.  <a href="class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html#a7efd0f127c3db1b6371786bff9801ae1">More...</a><br /></td></tr>
 <tr class="separator:a7efd0f127c3db1b6371786bff9801ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -211,7 +220,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the type name to be used for server-side data portal authorization. Type must implement IAuthorizeDataPortal. </p>
+<p>Sets the type name to be used for server-side data portal authorization. </p>
+<p>Type must implement IAuthorizeDataPortal.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html#l00079">79</a> of file <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html">CslaDataPortalConfigurationOptions.cs</a>.</p>
 
@@ -289,7 +299,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy. Setting this to true may restrict or eliminate the use of background threads by LocalProxy. </p>
+<p>Gets or sets a value indicating whether any synchronization context should be flowed to child tasks by LocalProxy. </p>
+<p>Setting this to true may restrict or eliminate the use of background threads by LocalProxy.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html#l00165">165</a> of file <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html">CslaDataPortalConfigurationOptions.cs</a>.</p>
 
@@ -315,7 +326,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. Type must implement IInterceptDataPortal. </p>
+<p>Gets or sets the type of interceptor invoked by the data portal for pre- and post-processing of each data portal invocation. </p>
+<p>Type must implement IInterceptDataPortal.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html#l00091">91</a> of file <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html">CslaDataPortalConfigurationOptions.cs</a>.</p>
 
@@ -341,7 +353,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. Type must implement IObjectFactoryLoader. </p>
+<p>Gets or sets the type name of the factor loader used to create server-side instances of business object factories when using the FactoryDataPortal model. </p>
+<p>Type must implement IObjectFactoryLoader.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html#l00152">152</a> of file <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html">CslaDataPortalConfigurationOptions.cs</a>.</p>
 
@@ -367,8 +380,9 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets or sets the data portal URL string. <br  />
- </p>
+<p>Gets or sets the data portal URL string. </p>
+<p><br  />
+</p>
 <p>The data portal URL string.</p>
 
 <p class="definition">Definition at line <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html#l00140">140</a> of file <a class="el" href="_csla_data_portal_configuration_options_8cs_source.html">CslaDataPortalConfigurationOptions.cs</a>.</p>
@@ -452,9 +466,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_csla_data_portal_configuration_options_8cs_source.html">CslaDataPortalConfigurationOptions.cs</a></li>
-</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

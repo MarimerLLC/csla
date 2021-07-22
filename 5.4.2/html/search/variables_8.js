@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['hello_9274',['Hello',['../class_csla_1_1_validation_1_1_resource_1_1_string.html#a4cf5857e5c8a57918a4552498a347ff0',1,'Csla::Validation::Resource::String']]],
-  ['hometelephoneproperty_9275',['HomeTelephoneProperty',['../class_csla_1_1_blazor_1_1_test_1_1_fakes_1_1_fake_person.html#a269ecceb9e66eb52ae3ba6e010a12bf3',1,'Csla::Blazor::Test::Fakes::FakePerson']]]
+  ['innererrorproperty_3701',['InnerErrorProperty',['../class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_error_info.html#a35bcb0046fbb088cae3cba88573a6716',1,'Csla::Server::Hosts::DataPortalChannel::DataPortalErrorInfo']]],
+  ['isrunningproperty_3702',['IsRunningProperty',['../class_csla_1_1_xaml_1_1_busy_animation.html#a70661f74acbfe319179bf8e0b8dfa34f',1,'Csla::Xaml::BusyAnimation']]]
 ];

@@ -1,5 +1,0 @@
-var namespace_csla_1_1_testing_1_1_business_1_1_editable_root_tests =
-[
-    [ "MockEditableRoot", "class_csla_1_1_testing_1_1_business_1_1_editable_root_tests_1_1_mock_editable_root.html", "class_csla_1_1_testing_1_1_business_1_1_editable_root_tests_1_1_mock_editable_root" ],
-    [ "RootWithNullableProperty", "class_csla_1_1_testing_1_1_business_1_1_editable_root_tests_1_1_root_with_nullable_property.html", "class_csla_1_1_testing_1_1_business_1_1_editable_root_tests_1_1_root_with_nullable_property" ]
-];

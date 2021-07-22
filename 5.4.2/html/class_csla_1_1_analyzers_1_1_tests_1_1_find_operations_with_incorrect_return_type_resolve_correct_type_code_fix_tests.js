@@ -1,7 +1,0 @@
-var class_csla_1_1_analyzers_1_1_tests_1_1_find_operations_with_incorrect_return_type_resolve_correct_type_code_fix_tests =
-[
-    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_find_operations_with_incorrect_return_type_resolve_correct_type_code_fix_tests.html#abd1165fbd463b0844120dce1caa16576", null ],
-    [ "VerifyGetFixesWhenChangingToTask", "class_csla_1_1_analyzers_1_1_tests_1_1_find_operations_with_incorrect_return_type_resolve_correct_type_code_fix_tests.html#a7adcad6c802dfac757f3503e25aa371a", null ],
-    [ "VerifyGetFixesWhenChangingToTaskAndUsingDoesNotExist", "class_csla_1_1_analyzers_1_1_tests_1_1_find_operations_with_incorrect_return_type_resolve_correct_type_code_fix_tests.html#aece3b3d56dca8888d7d68ae508f4fe20", null ],
-    [ "VerifyGetFixesWhenChangingToVoid", "class_csla_1_1_analyzers_1_1_tests_1_1_find_operations_with_incorrect_return_type_resolve_correct_type_code_fix_tests.html#aa1ae5ecb411e1cd9231825efa4ad83bb", null ]
-];

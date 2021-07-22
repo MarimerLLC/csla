@@ -1,4 +1,4 @@
-.TH "Csla.BusinessBase< T >" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.TH "Csla.BusinessBase< T >" 3 "Thu Jul 22 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,7 +10,7 @@ Csla.BusinessBase< T > \- This is the base class from which most business object
 .PP
 Inherits \fBCsla\&.Core\&.BusinessBase\fP, \fBCsla\&.Core\&.ISavable< T >\fP, \fBCsla\&.Core\&.ISavable< T >\fP, and \fBCsla\&.IBusinessBase\fP\&.
 .PP
-Inherited by \fBCsla\&.Test\&.DataPortal\&.MultipleDataAccessBase< T >\fP, \fBCsla\&.Test\&.DataPortalTest\&.LegacySplitBase< T >\fP, \fBCsla\&.Test\&.DataPortalTest\&.SplitBase< T >\fP, \fBCsla\&.Test\&.DataPortalTest\&.SplitOverloadBase< T >\fP, \fBCsla\&.Test\&.PropertyGetSet\&.EditableGetSetTopBase< T >\fP, \fBCsla\&.Test\&.PropertyGetSet\&.EditableGetSetTopNFIBase< T >\fP, \fBCsla\&.Test\&.Silverlight\&.PropertyGetSet\&.AbstractGetSet< T >\fP, \fBCsla\&.Testing\&.Business\&.ApplicationContext\&.ContextBOVerifier< T >\fP, and \fBCsla\&.Validation\&.BusinessBase< T >\fP\&.
+Inherited by \fBCsla\&.Validation\&.BusinessBase< T >\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
@@ -302,8 +302,6 @@ Definition at line 79 of file Csla/BusinessBase\&.cs\&.
 
 .PP
 Override this method to return a unique identifying value for this object\&. 
-.PP
-Reimplemented in \fBCsla\&.Test\&.DataPortalTest\&.PrimitiveCriteriaSingle\fP, \fBCsla\&.Test\&.RollBack\&.RollbackRoot\fP, \fBCsla\&.Test\&.Nullable\&.NullableObject\fP, \fBCsla\&.Test\&.IO\&.TestBizObj\fP, \fBCsla\&.Test\&.DataBinding\&.ChildEntity\fP, \fBDataBindingApp\&.ListObject\&.DataObject\fP, \fBCsla\&.Test\&.ChildrenByInterface\&.Item2\fP, \fBCsla\&.Test\&.ChildrenByInterface\&.Item1\fP, \fBCsla\&.Test\&.Basic\&.GrandChild\fP, \fBCsla\&.Test\&.Basic\&.GenRootBase\fP, \fBCsla\&.Test\&.Basic\&.Child\fP, \fBCsla\&.Test\&.Security\&.PermissionsRoot2\fP, \fBCsla\&.Test\&.Security\&.PermissionsRoot\fP, \fBCsla\&.Test\&.AppContext\&.SimpleRoot\fP, \fBCsla\&.Test\&.AppContext\&.ExceptionRoot\fP, \fBCsla\&.Test\&.DataBinding\&.ChildEntity\fP, and \fBCsla\&.Test\&.Basic\&.GenRootBase\fP\&.
 .PP
 Definition at line 46 of file Csla/BusinessBase\&.cs\&.
 .SS "virtual void \fBCsla\&.BusinessBase\fP< T >\&.OnSaved (T newObject, Exception e, object userState)\fC [protected]\fP, \fC [virtual]\fP"

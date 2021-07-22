@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 259.026672
+%%BoundingBox: 0 0 500 45.977013
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,13 +19,13 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 1.930303 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 10.875000 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
-/rows 33 def
-/cols 2 def
+/rows 6 def
+/cols 9 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
 
@@ -176,36 +176,19 @@ boxfont setfont
 (Csla.Rules.IBusinessRule) cw
 (Csla.Rules.IBusinessRuleBase) cw
 (Csla.Rules.BusinessRule) cw
-(Csla.Analyzers.IntegrationTests.AsynchronousRuleOldSchool) cw
-(Csla.Analyzers.IntegrationTests.ExecuteWithAdd) cw
-(Csla.Analyzers.IntegrationTests.ExecuteWithAddAndNameof) cw
-(Csla.Analyzers.IntegrationTests.ExecuteWithoutAdd) cw
 (Csla.Rules.CommonRules.DataAnnotation) cw
 (Csla.Rules.CommonRules.Dependency) cw
 (Csla.Rules.CommonRules.InfoMessage) cw
 (Csla.Rules.CommonRules.Lambda) cw
 (Csla.Rules.ObjectRule) cw
 (Csla.Rules.PropertyRule) cw
-(Csla.Test.LogicalExecutionLocation.LocationBusinessBase.CheckRule) cw
-(Csla.Test.ValidationRules.BrokenRulesMergeRoot.RuleBroken) cw
-(Csla.Test.ValidationRules.CheckLazyInputFieldExists) cw
-(Csla.Test.ValidationRules.HasAsyncRule.Rule1) cw
-(Csla.Test.ValidationRules.HasAsyncRule.Rule2) cw
-(Csla.Test.ValidationRules.HasAsyncRule.Rule3) cw
-(Csla.Test.ValidationRules.HasBadSharedRule.BadRule) cw
-(Csla.Test.ValidationRules.HasChildren.OneItem< T >) cw
-(Csla.Test.ValidationRules.HasInvalidAsyncRule.InvalidAsyncValidationRule) cw
-(Csla.Test.ValidationRules.MyRule) cw
-(Csla.Test.ValidationRules.NoErrorRoot.AlwaysInfo) cw
-(Csla.Test.ValidationRules.NoErrorRoot.AlwaysWarns) cw
-(Csla.Test.ValidationRules.SeverityRoot.AlwaysError) cw
-(Csla.Test.ValidationRules.SeverityRoot.AlwaysInfo) cw
-(Csla.Test.ValidationRules.SeverityRoot.AlwaysWarns) cw
-(Csla.Test.ValidationRules.ShortCircuit.AlwaysFails) cw
-(Csla.Test.ValidationRules.ShortCircuit.AlwaysWarns) cw
-(Csla.Test.ValidationRules.TwoProps) cw
-(Csla.Testing.Business.BusyStatus.ItemWithAsynchRule.FiveSecondsLongRule) cw
-(Csla.Testing.Business.Validation.ИзилдрRule) cw
+(Csla.Rules.CommonRules.CommonBusinessRule) cw
+(Csla.Rules.CommonRules.MaxLength) cw
+(Csla.Rules.CommonRules.MaxValue< T >) cw
+(Csla.Rules.CommonRules.MinLength) cw
+(Csla.Rules.CommonRules.MinValue< T >) cw
+(Csla.Rules.CommonRules.RegExMatch) cw
+(Csla.Rules.CommonRules.Required) cw
 /boxwidth boxwidth marginwidth 2 mul add def
 /xspacing boxwidth distx add def
 /yspacing boxheight disty add def
@@ -217,113 +200,66 @@ boundx scalefactor div boundy scalefactor div scale
 
 % ----- classes -----
 
- (Csla.Rules.IBusinessRule) 0.000000 31.000000 box
- (Csla.Rules.IBusinessRuleBase) 0.000000 32.000000 box
- (Csla.Rules.BusinessRule) 0.000000 30.000000 box
- (Csla.Analyzers.IntegrationTests.AsynchronousRuleOldSchool) 1.000000 29.000000 box
- (Csla.Analyzers.IntegrationTests.ExecuteWithAdd) 1.000000 28.000000 box
- (Csla.Analyzers.IntegrationTests.ExecuteWithAddAndNameof) 1.000000 27.000000 box
- (Csla.Analyzers.IntegrationTests.ExecuteWithoutAdd) 1.000000 26.000000 box
- (Csla.Rules.CommonRules.DataAnnotation) 1.000000 25.000000 box
- (Csla.Rules.CommonRules.Dependency) 1.000000 24.000000 box
- (Csla.Rules.CommonRules.InfoMessage) 1.000000 23.000000 box
- (Csla.Rules.CommonRules.Lambda) 1.000000 22.000000 box
- (Csla.Rules.ObjectRule) 1.000000 21.000000 box
-1.000000 21.000000 mark
- (Csla.Rules.PropertyRule) 1.000000 20.000000 box
-1.000000 20.000000 mark
- (Csla.Test.LogicalExecutionLocation.LocationBusinessBase.CheckRule) 1.000000 19.000000 box
- (Csla.Test.ValidationRules.BrokenRulesMergeRoot.RuleBroken) 1.000000 18.000000 box
- (Csla.Test.ValidationRules.CheckLazyInputFieldExists) 1.000000 17.000000 box
- (Csla.Test.ValidationRules.HasAsyncRule.Rule1) 1.000000 16.000000 box
- (Csla.Test.ValidationRules.HasAsyncRule.Rule2) 1.000000 15.000000 box
- (Csla.Test.ValidationRules.HasAsyncRule.Rule3) 1.000000 14.000000 box
- (Csla.Test.ValidationRules.HasBadSharedRule.BadRule) 1.000000 13.000000 box
- (Csla.Test.ValidationRules.HasChildren.OneItem< T >) 1.000000 12.000000 box
- (Csla.Test.ValidationRules.HasInvalidAsyncRule.InvalidAsyncValidationRule) 1.000000 11.000000 box
- (Csla.Test.ValidationRules.MyRule) 1.000000 10.000000 box
- (Csla.Test.ValidationRules.NoErrorRoot.AlwaysInfo) 1.000000 9.000000 box
- (Csla.Test.ValidationRules.NoErrorRoot.AlwaysWarns) 1.000000 8.000000 box
- (Csla.Test.ValidationRules.SeverityRoot.AlwaysError) 1.000000 7.000000 box
- (Csla.Test.ValidationRules.SeverityRoot.AlwaysInfo) 1.000000 6.000000 box
- (Csla.Test.ValidationRules.SeverityRoot.AlwaysWarns) 1.000000 5.000000 box
- (Csla.Test.ValidationRules.ShortCircuit.AlwaysFails) 1.000000 4.000000 box
- (Csla.Test.ValidationRules.ShortCircuit.AlwaysWarns) 1.000000 3.000000 box
- (Csla.Test.ValidationRules.TwoProps) 1.000000 2.000000 box
- (Csla.Testing.Business.BusyStatus.ItemWithAsynchRule.FiveSecondsLongRule) 1.000000 1.000000 box
- (Csla.Testing.Business.Validation.ИзилдрRule) 1.000000 0.000000 box
+ (Csla.Rules.IBusinessRule) 2.500000 4.000000 box
+ (Csla.Rules.IBusinessRuleBase) 2.500000 5.000000 box
+ (Csla.Rules.BusinessRule) 2.500000 3.000000 box
+ (Csla.Rules.CommonRules.DataAnnotation) 0.000000 2.000000 box
+ (Csla.Rules.CommonRules.Dependency) 1.000000 2.000000 box
+ (Csla.Rules.CommonRules.InfoMessage) 2.000000 2.000000 box
+ (Csla.Rules.CommonRules.Lambda) 3.000000 2.000000 box
+ (Csla.Rules.ObjectRule) 4.000000 2.000000 box
+ (Csla.Rules.PropertyRule) 5.000000 2.000000 box
+ (Csla.Rules.CommonRules.CommonBusinessRule) 5.000000 1.000000 box
+ (Csla.Rules.CommonRules.MaxLength) 2.500000 0.000000 box
+ (Csla.Rules.CommonRules.MaxValue< T >) 3.500000 0.000000 box
+ (Csla.Rules.CommonRules.MinLength) 4.500000 0.000000 box
+ (Csla.Rules.CommonRules.MinValue< T >) 5.500000 0.000000 box
+ (Csla.Rules.CommonRules.RegExMatch) 6.500000 0.000000 box
+ (Csla.Rules.CommonRules.Required) 7.500000 0.000000 box
 
 % ----- relations -----
 
 solid
-0 0.000000 31.000000 out
+0 2.500000 4.000000 out
 solid
-1 0.000000 32.000000 in
+1 2.500000 5.000000 in
 solid
-1 0.000000 30.250000 out
+1 2.500000 3.250000 out
 solid
-0 0.000000 30.750000 in
+0 2.500000 3.750000 in
 solid
-1 0.000000 29.250000 out
+1 2.500000 2.250000 out
 solid
-0 0.000000 29.500000 hedge
+0.000000 5.000000 3.000000 conn
 solid
-0 0.000000 28.500000 hedge
+0 0.000000 2.750000 in
 solid
-0 0.000000 27.500000 hedge
+0 1.000000 2.750000 in
 solid
-0 0.000000 26.500000 hedge
+0 2.000000 2.750000 in
 solid
-0 0.000000 25.500000 hedge
+0 3.000000 2.750000 in
 solid
-0 0.000000 24.500000 hedge
+0 4.000000 2.750000 in
 solid
-0 0.000000 23.500000 hedge
+0 5.000000 2.750000 in
 solid
-0 0.000000 22.500000 hedge
+1 5.000000 1.250000 out
 solid
-0 0.000000 21.500000 hedge
+0 5.000000 1.750000 in
 solid
-0 0.000000 20.500000 hedge
+1 5.000000 0.250000 out
 solid
-0 0.000000 19.500000 hedge
+2.500000 7.500000 1.000000 conn
 solid
-0 0.000000 18.500000 hedge
+0 2.500000 0.750000 in
 solid
-0 0.000000 17.500000 hedge
+0 3.500000 0.750000 in
 solid
-0 0.000000 16.500000 hedge
+0 4.500000 0.750000 in
 solid
-0 0.000000 15.500000 hedge
+0 5.500000 0.750000 in
 solid
-0 0.000000 14.500000 hedge
+0 6.500000 0.750000 in
 solid
-0 0.000000 13.500000 hedge
-solid
-0 0.000000 12.500000 hedge
-solid
-0 0.000000 11.500000 hedge
-solid
-0 0.000000 10.500000 hedge
-solid
-0 0.000000 9.500000 hedge
-solid
-0 0.000000 8.500000 hedge
-solid
-0 0.000000 7.500000 hedge
-solid
-0 0.000000 6.500000 hedge
-solid
-0 0.000000 5.500000 hedge
-solid
-0 0.000000 4.500000 hedge
-solid
-0 0.000000 3.500000 hedge
-solid
-0 0.000000 2.500000 hedge
-solid
-0 0.000000 1.500000 hedge
-solid
-0 0.000000 0.500000 hedge
-solid
-0.000000 30.000000 0.500000 vedge
+0 7.500000 0.750000 in

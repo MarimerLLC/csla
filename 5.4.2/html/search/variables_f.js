@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['quantityproperty_9332',['QuantityProperty',['../class_csla_1_1_test_1_1_data_annotations_1_1_multiple_meta.html#a47346242386cbab78a8f4a7fa6153857',1,'Csla::Test::DataAnnotations::MultipleMeta']]]
+  ['usernameproperty_3727',['UsernameProperty',['../class_csla_1_1_security_1_1_username_criteria.html#a4ee272db5ab1ff45a813e1b98435ae0a',1,'Csla::Security::UsernameCriteria']]]
 ];

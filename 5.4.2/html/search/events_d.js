@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['testcleanup_10308',['TestCleanup',['../class_csla_1_1_test_1_1_threading_1_1_background_worker_sync_context_helper.html#ac2cfc93c8b3a2748d300abccfea198b3',1,'Csla::Test::Threading::BackgroundWorkerSyncContextHelper']]],
-  ['testinitialize_10309',['TestInitialize',['../class_csla_1_1_test_1_1_threading_1_1_background_worker_sync_context_helper.html#a67d12b3835d2496f644153f1c7947c38',1,'Csla::Test::Threading::BackgroundWorkerSyncContextHelper']]]
+  ['unhandledasyncexception_4387',['UnhandledAsyncException',['../interface_csla_1_1_core_1_1_i_notify_unhandled_async_exception.html#ad951c4994278f5415df7c51be596fcb2',1,'Csla::Core::INotifyUnhandledAsyncException']]],
+  ['updatecompleted_4388',['UpdateCompleted',['../class_csla_1_1_data_portal.html#a758791e66ac531972c1d79a5bf8eec82',1,'Csla.DataPortal.UpdateCompleted()'],['../interface_csla_1_1_i_data_portal.html#afb51a56a3e73efba8fe71300794fdbba',1,'Csla.IDataPortal.UpdateCompleted()']]],
+  ['updateobject_4389',['UpdateObject',['../class_csla_1_1_web_1_1_csla_data_source.html#ad33b2132456a9fe5fa22c9570eca5f5b',1,'Csla::Web::CslaDataSource']]]
 ];

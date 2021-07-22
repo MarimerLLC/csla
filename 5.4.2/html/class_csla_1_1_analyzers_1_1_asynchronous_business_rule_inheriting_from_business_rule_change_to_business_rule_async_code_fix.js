@@ -1,6 +1,0 @@
-var class_csla_1_1_analyzers_1_1_asynchronous_business_rule_inheriting_from_business_rule_change_to_business_rule_async_code_fix =
-[
-    [ "GetFixAllProvider", "class_csla_1_1_analyzers_1_1_asynchronous_business_rule_inheriting_from_business_rule_change_to_business_rule_async_code_fix.html#ae594094dd0064048d9c8bc23d848d866", null ],
-    [ "RegisterCodeFixesAsync", "class_csla_1_1_analyzers_1_1_asynchronous_business_rule_inheriting_from_business_rule_change_to_business_rule_async_code_fix.html#a62568897f7ebf61c7e48c6765a78e356", null ],
-    [ "FixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_asynchronous_business_rule_inheriting_from_business_rule_change_to_business_rule_async_code_fix.html#a4be70c8a8cef3319ad73a21b454b2815", null ]
-];

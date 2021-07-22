@@ -1,4 +1,0 @@
-var namespace_csla_1_1_test_1_1_silverlight_1_1_data_portal =
-[
-    [ "AuthorizeDataPortalTests", "class_csla_1_1_test_1_1_silverlight_1_1_data_portal_1_1_authorize_data_portal_tests.html", "class_csla_1_1_test_1_1_silverlight_1_1_data_portal_1_1_authorize_data_portal_tests" ]
-];

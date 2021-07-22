@@ -1,9 +1,4 @@
 var searchData=
 [
-  ['globalcontextproperty_9268',['GlobalContextProperty',['../class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request.html#a4f95e5aae255107a804cbab6940f8ce5',1,'Csla.Server.Hosts.DataPortalChannel.CriteriaRequest.GlobalContextProperty()'],['../class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_data_portal_response.html#af2058cbaedb84fe7807d9e1fd7134d7d',1,'Csla.Server.Hosts.DataPortalChannel.DataPortalResponse.GlobalContextProperty()'],['../class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_update_request.html#a955d233f8832762603d6f1bc72ec9e35',1,'Csla.Server.Hosts.DataPortalChannel.UpdateRequest.GlobalContextProperty()']]],
-  ['grandchildid1_9269',['GrandChildId1',['../class_csla_1_1_testing_1_1_business_1_1_editable_child_tests_1_1_grand_child_list.html#ae8a4c4e980970dd7c6dc6bc231233653',1,'Csla::Testing::Business::EditableChildTests::GrandChildList']]],
-  ['grandchildid2_9270',['GrandChildId2',['../class_csla_1_1_testing_1_1_business_1_1_editable_child_tests_1_1_grand_child_list.html#ae3cea24ec51793d0fa2fb4127cfa309a',1,'Csla::Testing::Business::EditableChildTests::GrandChildList']]],
-  ['grandchildid3_9271',['GrandChildId3',['../class_csla_1_1_testing_1_1_business_1_1_editable_child_tests_1_1_grand_child_list.html#a152e2ddabf549503fe17ecbd1da3b52e',1,'Csla::Testing::Business::EditableChildTests::GrandChildList']]],
-  ['grandchildrenproperty_9272',['GrandChildrenProperty',['../class_csla_1_1_test_1_1_basic_1_1_child.html#a8c2e174ba33d6b59a8493843413ccaae',1,'Csla::Test::Basic::Child']]],
-  ['guidtestproperty_9273',['GuidTestProperty',['../class_csla_1_1_test_1_1_serialization_1_1_binary_reader_writer_test_class.html#a17db6626166e37943dd344f45465ecb3',1,'Csla::Test::Serialization::BinaryReaderWriterTestClass']]]
+  ['hello_3700',['Hello',['../class_csla_1_1_validation_1_1_resource_1_1_string.html#a4cf5857e5c8a57918a4552498a347ff0',1,'Csla::Validation::Resource::String']]]
 ];

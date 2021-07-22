@@ -1,6 +1,5 @@
 var namespace_csla_1_1_validation =
 [
-    [ "Test", "namespace_csla_1_1_validation_1_1_test.html", "namespace_csla_1_1_validation_1_1_test" ],
     [ "Resource", "class_csla_1_1_validation_1_1_resource.html", "class_csla_1_1_validation_1_1_resource" ],
     [ "BusinessBase", "class_csla_1_1_validation_1_1_business_base.html", "class_csla_1_1_validation_1_1_business_base" ],
     [ "DecoratedRuleArgs", "class_csla_1_1_validation_1_1_decorated_rule_args.html", "class_csla_1_1_validation_1_1_decorated_rule_args" ],

@@ -1,20 +1,7 @@
 var searchData=
 [
-  ['lateboundobject_2ecs_6818',['LateBoundObject.cs',['../_late_bound_object_8cs.html',1,'']]],
-  ['lazyloadtests_2ecs_6819',['LazyLoadTests.cs',['../_lazy_load_tests_8cs.html',1,'']]],
-  ['lazysingeltontest_2ecs_6820',['LazySingeltonTest.cs',['../_lazy_singelton_test_8cs.html',1,'']]],
-  ['lazysingleton_2ecs_6821',['LazySingleton.cs',['../_lazy_singleton_8cs.html',1,'']]],
-  ['legacy_2ecs_6822',['Legacy.cs',['../_legacy_8cs.html',1,'']]],
-  ['legacysplit_2ecs_6823',['LegacySplit.cs',['../_legacy_split_8cs.html',1,'']]],
-  ['legacysplitbase_2ecs_6824',['LegacySplitBase.cs',['../_legacy_split_base_8cs.html',1,'']]],
-  ['legacysplittest_2ecs_6825',['LegacySplitTest.cs',['../_legacy_split_test_8cs.html',1,'']]],
-  ['legacytest_2ecs_6826',['LegacyTest.cs',['../_legacy_test_8cs.html',1,'']]],
-  ['linqobservablecollection_2ecs_6827',['LinqObservableCollection.cs',['../_linq_observable_collection_8cs.html',1,'']]],
-  ['linqobservablecollectiontest_2ecs_6828',['LinqObservableCollectionTest.cs',['../_linq_observable_collection_test_8cs.html',1,'']]],
-  ['listcontainerlist_2ecs_6829',['ListContainerList.cs',['../_list_container_list_8cs.html',1,'']]],
-  ['listobject_2ecs_6830',['ListObject.cs',['../_list_object_8cs.html',1,'']]],
-  ['localproxy_2ecs_6831',['LocalProxy.cs',['../_local_proxy_8cs.html',1,'']]],
-  ['locationbusinessbase_2ecs_6832',['LocationBusinessBase.cs',['../_location_business_base_8cs.html',1,'']]],
-  ['logicalexecutiondataportaltests_2ecs_6833',['LogicalExecutionDataPortalTests.cs',['../_logical_execution_data_portal_tests_8cs.html',1,'']]],
-  ['logicalexecutionlocationtests_2ecs_6834',['LogicalExecutionLocationTests.cs',['../_logical_execution_location_tests_8cs.html',1,'']]]
+  ['lateboundobject_2ecs_2780',['LateBoundObject.cs',['../_late_bound_object_8cs.html',1,'']]],
+  ['lazysingleton_2ecs_2781',['LazySingleton.cs',['../_lazy_singleton_8cs.html',1,'']]],
+  ['linqobservablecollection_2ecs_2782',['LinqObservableCollection.cs',['../_linq_observable_collection_8cs.html',1,'']]],
+  ['localproxy_2ecs_2783',['LocalProxy.cs',['../_local_proxy_8cs.html',1,'']]]
 ];

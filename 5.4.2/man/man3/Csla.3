@@ -1,8 +1,8 @@
-.TH "csla" 3 "Wed Jul 21 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
+.TH "Csla" 3 "Thu Jul 22 2021" "Version 5.4.2" "CSLA.NET" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-csla
+Csla
 .SH SYNOPSIS
 .br
 .PP
@@ -10,9 +10,480 @@ csla
 
 .in +1c
 .ti -1c
-.RI "namespace \fBnetcore\fP"
+.RI "namespace \fBAspNetCore\fP"
+.br
+.ti -1c
+.RI "namespace \fBAxml\fP"
+.br
+.ti -1c
+.RI "namespace \fBBlazor\fP"
+.br
+.ti -1c
+.RI "namespace \fBBrokeredDataPortalHost\fP"
+.br
+.ti -1c
+.RI "namespace \fBChannels\fP"
+.br
+.ti -1c
+.RI "namespace \fBConfiguration\fP"
+.br
+.ti -1c
+.RI "namespace \fBCore\fP"
+.br
+.ti -1c
+.RI "namespace \fBData\fP"
+.br
+.ti -1c
+.RI "namespace \fBDataPortalClient\fP"
+.br
+.ti -1c
+.RI "namespace \fBIosui\fP"
+.br
+.ti -1c
+.RI "namespace \fBProperties\fP"
+.br
+.ti -1c
+.RI "namespace \fBReflection\fP"
+.br
+.ti -1c
+.RI "namespace \fBRules\fP"
+.br
+.ti -1c
+.RI "namespace \fBSecurity\fP"
+.br
+.ti -1c
+.RI "namespace \fBSerialization\fP"
+.br
+.ti -1c
+.RI "namespace \fBServer\fP"
+.br
+.ti -1c
+.RI "namespace \fBThreading\fP"
+.br
+.ti -1c
+.RI "namespace \fBValidation\fP"
+.br
+.ti -1c
+.RI "namespace \fBWcfPortal\fP"
+.br
+.ti -1c
+.RI "namespace \fBWeb\fP"
+.br
+.ti -1c
+.RI "namespace \fBWindows\fP"
+.br
+.ti -1c
+.RI "namespace \fBXaml\fP"
 .br
 .in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBApplicationContext\fP"
+.br
+.RI "Provides consistent context information between the client and server \fBDataPortal\fP objects\&. "
+.ti -1c
+.RI "class \fBBusinessBase\fP"
+.br
+.RI "This is the base class from which most business objects will be derived\&. "
+.ti -1c
+.RI "class \fBBusinessBindingListBase\fP"
+.br
+.RI "This is the base class from which most business collections or lists will be derived\&. "
+.ti -1c
+.RI "class \fBBusinessListBase\fP"
+.br
+.RI "This is the base class from which most business collections or lists will be derived\&. "
+.ti -1c
+.RI "class \fBCommandBase\fP"
+.br
+.RI "This is the base class from which command objects will be derived\&. "
+.ti -1c
+.RI "class \fBCriteriaBase\fP"
+.br
+.RI "Base type from which Criteria classes can be derived in a business class\&. "
+.ti -1c
+.RI "class \fBDataPortal\fP"
+.br
+.RI "This is the client-side \fBDataPortal\fP\&. "
+.ti -1c
+.RI "class \fBDataPortalEventArgs\fP"
+.br
+.RI "Provides information about the \fBDataPortal\fP call\&. "
+.ti -1c
+.RI "class \fBDataPortalException\fP"
+.br
+.RI "This exception is returned for any errors occurring during the server-side \fBDataPortal\fP invocation\&. "
+.ti -1c
+.RI "class \fBInjectAttribute\fP"
+.br
+.RI "Specifies a parameter that is provided via dependency injection\&. "
+.ti -1c
+.RI "class \fBDataPortalOperationAttribute\fP"
+.br
+.RI "Base type for data portal operation attributes\&. "
+.ti -1c
+.RI "class \fBDataPortalRootOperationAttribute\fP"
+.br
+.RI "Base type for data portal root operation attributes\&. "
+.ti -1c
+.RI "class \fBDataPortalChildOperationAttribute\fP"
+.br
+.RI "Base type for data portal child operation attributes\&. "
+.ti -1c
+.RI "class \fBCreateAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to initialize a new domain object\&. "
+.ti -1c
+.RI "class \fBFetchAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to load existing data into the domain object\&. "
+.ti -1c
+.RI "class \fBInsertAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to insert domain object data during an update operation\&. "
+.ti -1c
+.RI "class \fBUpdateAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to update domain object data during an update operation\&. "
+.ti -1c
+.RI "class \fBExecuteAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to execute a command object\&. "
+.ti -1c
+.RI "class \fBDeleteAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to delete domain object data during an update operation\&. "
+.ti -1c
+.RI "class \fBDeleteSelfAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to delete domain object data during an explicit delete operation\&. "
+.ti -1c
+.RI "class \fBCreateChildAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to initialize a new child object\&. "
+.ti -1c
+.RI "class \fBFetchChildAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to load existing data into the child object\&. "
+.ti -1c
+.RI "class \fBInsertChildAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to insert child object data during an update operation\&. "
+.ti -1c
+.RI "class \fBUpdateChildAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to update child object data during an update operation\&. "
+.ti -1c
+.RI "class \fBDeleteSelfChildAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to delete child object data during an update operation\&. "
+.ti -1c
+.RI "class \fBExecuteChildAttribute\fP"
+.br
+.RI "Specifies a method used by the server-side data portal to execute a child command object during an update operation\&. "
+.ti -1c
+.RI "class \fBDataPortalOperationExtensions\fP"
+.br
+.RI "Extension methods for mapping \fCDataPortalOperations\fP to other system values\&. "
+.ti -1c
+.RI "class \fBDataPortalResult\fP"
+.br
+.RI "\fBDataPortalResult\fP defines the results of \fBDataPortal\fP operation\&. It contains object that was received from the server, an error (if occurred) and userState - user defined information that was passed into data portal on initial request "
+.ti -1c
+.RI "class \fBDataPortalServerResourceAttribute\fP"
+.br
+.RI "Specifies a server resource required by a business type so the data portal can route any calls to the correct server\&. "
+.ti -1c
+.RI "class \fBDataPortalServerRoutingTagAttribute\fP"
+.br
+.RI "Specifies a routing tag for use by the server-side data portal\&. "
+.ti -1c
+.RI "class \fBExtensions\fP"
+.br
+.ti -1c
+.RI "class \fBDefaultFilter\fP"
+.br
+.ti -1c
+.RI "class \fBDynamicBindingListBase\fP"
+.br
+.RI "This is the base class from which collections of editable root business objects should be derived\&. "
+.ti -1c
+.RI "class \fBDynamicListBase\fP"
+.br
+.RI "This is the base class from which collections of editable root business objects should be derived\&. "
+.ti -1c
+.RI "class \fBFilteredBindingList\fP"
+.br
+.RI "Provides a filtered view into an existing IList(Of T)\&. "
+.ti -1c
+.RI "interface \fBIBusinessBase\fP"
+.br
+.RI "Consolidated interface of public elements from the \fBBusinessBase\fP type\&. "
+.ti -1c
+.RI "interface \fBIBusinessListBase\fP"
+.br
+.RI "This is the base class from which most business collections or lists will be derived\&. "
+.ti -1c
+.RI "interface \fBICommandBase\fP"
+.br
+.RI "This is the base class from which command objects will be derived\&. "
+.ti -1c
+.RI "interface \fBIDataPortal\fP"
+.br
+.RI "Interface defining the members of the data portal type\&. "
+.ti -1c
+.RI "interface \fBIDataPortalFactory\fP"
+.br
+.RI "Defines a data portal service used to get an access to a client-side data portal instance\&. "
+.ti -1c
+.RI "interface \fBIDataPortalResult\fP"
+.br
+.RI "\fBIDataPortalResult\fP defines the results of \fBDataPortal\fP operation "
+.ti -1c
+.RI "interface \fBIReadOnlyBase\fP"
+.br
+.RI "This is a base class from which readonly business classes can be derived\&. "
+.ti -1c
+.RI "interface \fBIReadOnlyListBase\fP"
+.br
+.RI "This is the base class from which readonly collections of readonly objects should be derived\&. "
+.ti -1c
+.RI "class \fBLazySingleton\fP"
+.br
+.RI "An alternative to Lazy<T> "
+.ti -1c
+.RI "class \fBLinqObservableCollection\fP"
+.br
+.RI "Synchronized view over a source list, filtered, sorted and ordered based on a query result\&. "
+.ti -1c
+.RI "class \fBLinqObservableCollectionExtension\fP"
+.br
+.RI "Extension method for implementation of LINQ methods on \fBBusinessListBase\fP "
+.ti -1c
+.RI "class \fBMethodInfo\fP"
+.br
+.RI "Maintains metadata about a method\&. "
+.ti -1c
+.RI "class \fBNameValueListBase\fP"
+.br
+.RI "This is the base class from which readonly name/value collections should be derived\&. "
+.ti -1c
+.RI "class \fBNotUndoableAttribute\fP"
+.br
+.RI "Marks a field to indicate that the value should not be copied as part of the undo process\&. "
+.ti -1c
+.RI "class \fBObjectAuthorizationRulesAttribute\fP"
+.br
+.RI "Attribute identifying static method invoked to add object authorization rules for type\&. "
+.ti -1c
+.RI "class \fBPropertyInfo\fP"
+.br
+.RI "Maintains metadata about a property\&. "
+.ti -1c
+.RI "class \fBPropertyLoadException\fP"
+.br
+.RI "Exception indicating a failure to set a property's field\&. "
+.ti -1c
+.RI "class \fBReadOnlyBase\fP"
+.br
+.RI "This is a base class from which readonly business classes can be derived\&. "
+.ti -1c
+.RI "class \fBReadOnlyBindingListBase\fP"
+.br
+.RI "This is the base class from which readonly collections of readonly objects should be derived\&. "
+.ti -1c
+.RI "class \fBReadOnlyListBase\fP"
+.br
+.RI "This is the base class from which readonly collections of readonly objects should be derived\&. "
+.ti -1c
+.RI "class \fBRunLocalAttribute\fP"
+.br
+.RI "Marks a DataPortal_XYZ method to be run on the client even if the server-side \fBDataPortal\fP is configured for remote use\&. "
+.ti -1c
+.RI "class \fBSingleCriteria\fP"
+.br
+.RI "A single-value criteria used to retrieve business objects that only require one criteria value\&. "
+.ti -1c
+.RI "struct \fBSmartDate\fP"
+.br
+.RI "Provides a date data type that understands the concept of an empty date value\&. "
+.ti -1c
+.RI "class \fBSortedBindingList\fP"
+.br
+.RI "Provides a sorted view into an existing IList(Of T)\&. "
+.ti -1c
+.RI "class \fBTransactionalAttribute\fP"
+.br
+.RI "Marks a DataPortal_XYZ method to run within the specified transactional context\&. "
+.ti -1c
+.RI "class \fBUtilities\fP"
+.br
+.RI "Contains utility methods used by the CSLA \&.NET framework\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBDataPortalOperations\fP : int { \fBCreate\fP, \fBFetch\fP, \fBUpdate\fP, \fBDelete\fP, \fBExecute\fP }"
+.br
+.RI "List of data portal operations\&. "
+.ti -1c
+.RI "enum class \fBRelationshipTypes\fP { \fBNone\fP = 0x0, \fBChild\fP =0x1, \fBLazyLoad\fP =0x2, \fBPrivateField\fP =0x4 }"
+.br
+.RI "List of valid relationship types between a parent object and another object through a managed property\&. "
+.ti -1c
+.RI "enum class \fBTransactionalTypes\fP { \fBManual\fP, \fBTransactionScope\fP, \fBEnterpriseServices\fP }"
+.br
+.RI "Provides a list of possible transactional technologies to be used by the server-side DataPortal\&. "
+.ti -1c
+.RI "enum class \fBTransactionIsolationLevel\fP { \fBUnspecified\fP, \fBSerializable\fP, \fBRepeatableRead\fP, \fBReadCommitted\fP, \fBReadUncommitted\fP }"
+.br
+.RI "Specifies an isolation level for transactions controlled by TransactionalAttribute "
+.ti -1c
+.RI "enum class \fBCallType\fP { \fBGet\fP, \fBLet\fP, \fBMethod\fP, \fBSet\fP }"
+.br
+.RI "Valid options for calling a property or method via the Csla\&.Utilities\&.CallByName method\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate bool \fBFilterProvider\fP (object item, object filter)"
+.br
+.RI "Defines the method signature for a filter provider method used by \fBFilteredBindingList\fP\&. "
+.in -1c
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBCsla\&.CallType\fP\fC [strong]\fP"
+
+.PP
+Valid options for calling a property or method via the Csla\&.Utilities\&.CallByName method\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIGet \fP\fP
+Gets a value from a property\&. 
+.TP
+\fB\fILet \fP\fP
+Sets a value into a property\&. 
+.TP
+\fB\fIMethod \fP\fP
+Invokes a method\&. 
+.TP
+\fB\fISet \fP\fP
+Sets a value into a property\&. 
+.PP
+Definition at line 317 of file Utilities\&.cs\&.
+.SS "enum \fBCsla\&.DataPortalOperations\fP : int\fC [strong]\fP"
+
+.PP
+List of data portal operations\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICreate \fP\fP
+Create operation\&. 
+.TP
+\fB\fIFetch \fP\fP
+Fetch operation\&. 
+.TP
+\fB\fIUpdate \fP\fP
+Update operation (includes insert, update and delete self)\&. 
+.TP
+\fB\fIDelete \fP\fP
+Delete operation\&. 
+.TP
+\fB\fIExecute \fP\fP
+Execute operation\&. 
+.PP
+Definition at line 16 of file DataPortalOperations\&.cs\&.
+.SS "enum \fBCsla\&.RelationshipTypes\fP\fC [strong]\fP"
+
+.PP
+List of valid relationship types between a parent object and another object through a managed property\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINone \fP\fP
+The default value, indicating all values are cleared 
+.TP
+\fB\fIChild \fP\fP
+Property is a reference to a child object contained by the parent\&. 
+.TP
+\fB\fILazyLoad \fP\fP
+Property is a reference to a lazy loaded object\&. Attempting to get or read the property value prior to a set or load will result in an exception\&. 
+.TP
+\fB\fIPrivateField \fP\fP
+Property is stored in a private field\&. Attemting to read or write the property in FieldManager (managed fields) will throw an exception\&. NonGeneric ReadProperty/LoadProperty will call property get/set methods\&. 
+.PP
+Definition at line 18 of file RelationshipTypes\&.cs\&.
+.SS "enum \fBCsla\&.TransactionalTypes\fP\fC [strong]\fP"
+
+.PP
+Provides a list of possible transactional technologies to be used by the server-side \fBDataPortal\fP\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIManual \fP\fP
+Causes the server-side \fBDataPortal\fP to use no explicit transactional technology\&. This option allows the business developer to implement their own transactions\&. Common options include ADO\&.NET transactions and System\&.Transactions TransactionScope\&. 
+.TP
+\fB\fITransactionScope \fP\fP
+Causes the server-side \fBDataPortal\fP to use System\&.Transactions TransactionScope style transactions\&. 
+.TP
+\fB\fIEnterpriseServices \fP\fP
+Causes the server-side \fBDataPortal\fP to use Enterprise Services (COM+) transactions\&. 
+.PP
+Definition at line 16 of file TransactionalTypes\&.cs\&.
+.SS "enum \fBCsla\&.TransactionIsolationLevel\fP\fC [strong]\fP"
+
+.PP
+Specifies an isolation level for transactions controlled by \fBTransactionalAttribute\fP 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIUnspecified \fP\fP
+Shows that different isolation level than the one specified is being used, but the level cannot be determined\&. An exception is thrown if this value is set\&. Default\&. 
+.TP
+\fB\fISerializable \fP\fP
+Prevents updating or inserting until the transaction is complete\&. 
+.TP
+\fB\fIRepeatableRead \fP\fP
+Locks are placed on all data that is used in a query, preventing other users from updating the data\&. Prevents non-repeatable reads, but phantom rows are still possible\&. 
+.TP
+\fB\fIReadCommitted \fP\fP
+Shared locks are held while the data is being read to avoid reading modified data, but the data can be changed before the end of the transaction, resulting in non-repeatable reads or phantom data\&. 
+.TP
+\fB\fIReadUncommitted \fP\fP
+Shared locks are issued and no exclusive locks are honored\&. 
+.PP
+Definition at line 14 of file TransactionIsolationLevel\&.cs\&.
+.SH "Function Documentation"
+.PP 
+.SS "delegate bool Csla\&.FilterProvider (object item, object filter)"
+
+.PP
+Defines the method signature for a filter provider method used by \fBFilteredBindingList\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP The object to be filtered\&.
+.br
+\fIfilter\fP The filter criteria\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the item matches the filter\&.
+.RE
+.PP
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for CSLA\&.NET from the source code\&.

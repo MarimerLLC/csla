@@ -1,9 +1,0 @@
-var class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests =
-[
-    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests.html#a8f7566c6cf74cacfeef4b0f87c90284c", null ],
-    [ "VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist", "class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests.html#a9f45d9dbc7bac5acbd8dabbc2389926d", null ],
-    [ "VerifyGetFixesWhenPrivateConstructorNoArgumentsExists", "class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests.html#a3d70e687455c01501463a5aed0b0bc82", null ],
-    [ "VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists", "class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests.html#a8ae92ab6b3981f5f59284ffd2d505150", null ],
-    [ "VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists", "class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests.html#a188225bc58e8aaeb3054c578fb237089", null ],
-    [ "VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses", "class_csla_1_1_analyzers_1_1_tests_1_1_check_constructors_analyzer_public_constructor_code_fix_tests.html#aee48192f6d4cce7471f297a7bb93b20a", null ]
-];

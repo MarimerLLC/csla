@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 431.893677
+%%BoundingBox: 0 0 500 398.671082
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,12 +19,12 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 1.157692 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 1.254167 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
-/rows 13 def
+/rows 12 def
 /cols 2 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
@@ -185,7 +185,6 @@ boxfont setfont
 (Csla.Server.ServicedDataPortalSerializable) cw
 (Csla.Server.SimpleDataPortal) cw
 (Csla.Server.TransactionalDataPortal) cw
-(Csla.Test.DataPortal.CustomDataPortalServer) cw
 /boxwidth boxwidth marginwidth 2 mul add def
 /xspacing boxwidth distx add def
 /yspacing boxheight disty add def
@@ -197,28 +196,24 @@ boundx scalefactor div boundy scalefactor div scale
 
 % ----- classes -----
 
- (Csla.Server.IDataPortalServer) 0.000000 12.000000 box
- (Csla.DataPortalClient.IDataPortalProxy) 1.000000 11.000000 box
-1.000000 11.000000 mark
- (Csla.Server.DataPortal) 1.000000 10.000000 box
+ (Csla.Server.IDataPortalServer) 0.000000 11.000000 box
+ (Csla.DataPortalClient.IDataPortalProxy) 1.000000 10.000000 box
 1.000000 10.000000 mark
- (Csla.Server.DataPortalBroker) 1.000000 9.000000 box
- (Csla.Server.DataPortalSelector) 1.000000 8.000000 box
- (Csla.Server.FactoryDataPortal) 1.000000 7.000000 box
- (Csla.Server.ServicedDataPortalReadCommitted) 1.000000 6.000000 box
- (Csla.Server.ServicedDataPortalReadUncommitted) 1.000000 5.000000 box
- (Csla.Server.ServicedDataPortalRepeatableRead) 1.000000 4.000000 box
- (Csla.Server.ServicedDataPortalSerializable) 1.000000 3.000000 box
- (Csla.Server.SimpleDataPortal) 1.000000 2.000000 box
- (Csla.Server.TransactionalDataPortal) 1.000000 1.000000 box
- (Csla.Test.DataPortal.CustomDataPortalServer) 1.000000 0.000000 box
+ (Csla.Server.DataPortal) 1.000000 9.000000 box
+ (Csla.Server.DataPortalBroker) 1.000000 8.000000 box
+ (Csla.Server.DataPortalSelector) 1.000000 7.000000 box
+ (Csla.Server.FactoryDataPortal) 1.000000 6.000000 box
+ (Csla.Server.ServicedDataPortalReadCommitted) 1.000000 5.000000 box
+ (Csla.Server.ServicedDataPortalReadUncommitted) 1.000000 4.000000 box
+ (Csla.Server.ServicedDataPortalRepeatableRead) 1.000000 3.000000 box
+ (Csla.Server.ServicedDataPortalSerializable) 1.000000 2.000000 box
+ (Csla.Server.SimpleDataPortal) 1.000000 1.000000 box
+ (Csla.Server.TransactionalDataPortal) 1.000000 0.000000 box
 
 % ----- relations -----
 
 solid
-1 0.000000 11.250000 out
-solid
-0 0.000000 11.500000 hedge
+1 0.000000 10.250000 out
 solid
 0 0.000000 10.500000 hedge
 solid
@@ -242,4 +237,4 @@ solid
 solid
 0 0.000000 0.500000 hedge
 solid
-0.000000 12.000000 0.500000 vedge
+0.000000 11.000000 0.500000 vedge

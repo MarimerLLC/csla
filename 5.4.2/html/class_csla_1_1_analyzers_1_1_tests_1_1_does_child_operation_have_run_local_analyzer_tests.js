@@ -1,8 +1,0 @@
-var class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_analyzer_tests =
-[
-    [ "AnalyzeWhenClassIsMobileObjectAndChildOperationDoesNotHaveRunLocal", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_analyzer_tests.html#abaecc3cd809de6093480d5b442855e88", null ],
-    [ "AnalyzeWhenClassIsMobileObjectAndChildOperationHasRunLocal", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_analyzer_tests.html#a14a4b8c61e07ac036c3711d2beb1c4e9", null ],
-    [ "AnalyzeWhenClassIsMobileObjectAndRootOperationHasRunLocal", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_analyzer_tests.html#afba4d0a0fe7c4b407a6d29ac92108e8d", null ],
-    [ "AnalyzeWhenClassIsNotMobileObject", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_analyzer_tests.html#a1f1ada33a864f834259d6cf057f0008d", null ],
-    [ "VerifySupportedDiagnostics", "class_csla_1_1_analyzers_1_1_tests_1_1_does_child_operation_have_run_local_analyzer_tests.html#acff5ca9290e201afa00e65efeb44b30a", null ]
-];

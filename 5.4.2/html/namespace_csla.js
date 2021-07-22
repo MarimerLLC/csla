@@ -1,7 +1,5 @@
 var namespace_csla =
 [
-    [ "New Rules", "md__c___users_korye_source_repos_csla__source__csla__analyzers__csla__analyzers__analyzer_releases__unshipped.html#autotoc_md0", null ],
-    [ "Analyzers", "namespace_csla_1_1_analyzers.html", "namespace_csla_1_1_analyzers" ],
     [ "AspNetCore", "namespace_csla_1_1_asp_net_core.html", "namespace_csla_1_1_asp_net_core" ],
     [ "Axml", "namespace_csla_1_1_axml.html", "namespace_csla_1_1_axml" ],
     [ "Blazor", "namespace_csla_1_1_blazor.html", "namespace_csla_1_1_blazor" ],
@@ -11,7 +9,6 @@ var namespace_csla =
     [ "Core", "namespace_csla_1_1_core.html", "namespace_csla_1_1_core" ],
     [ "Data", "namespace_csla_1_1_data.html", "namespace_csla_1_1_data" ],
     [ "DataPortalClient", "namespace_csla_1_1_data_portal_client.html", "namespace_csla_1_1_data_portal_client" ],
-    [ "Ios", "namespace_csla_1_1_ios.html", "namespace_csla_1_1_ios" ],
     [ "Iosui", "namespace_csla_1_1_iosui.html", "namespace_csla_1_1_iosui" ],
     [ "Properties", "namespace_csla_1_1_properties.html", "namespace_csla_1_1_properties" ],
     [ "Reflection", "namespace_csla_1_1_reflection.html", "namespace_csla_1_1_reflection" ],
@@ -19,8 +16,6 @@ var namespace_csla =
     [ "Security", "namespace_csla_1_1_security.html", "namespace_csla_1_1_security" ],
     [ "Serialization", "namespace_csla_1_1_serialization.html", "namespace_csla_1_1_serialization" ],
     [ "Server", "namespace_csla_1_1_server.html", "namespace_csla_1_1_server" ],
-    [ "Test", "namespace_csla_1_1_test.html", "namespace_csla_1_1_test" ],
-    [ "Testing", "namespace_csla_1_1_testing.html", "namespace_csla_1_1_testing" ],
     [ "Threading", "namespace_csla_1_1_threading.html", "namespace_csla_1_1_threading" ],
     [ "Validation", "namespace_csla_1_1_validation.html", "namespace_csla_1_1_validation" ],
     [ "WcfPortal", "namespace_csla_1_1_wcf_portal.html", "namespace_csla_1_1_wcf_portal" ],

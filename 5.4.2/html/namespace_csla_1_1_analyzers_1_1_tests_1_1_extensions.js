@@ -1,7 +1,0 @@
-var namespace_csla_1_1_analyzers_1_1_tests_1_1_extensions =
-[
-    [ "DataPortalOperationQualificationTests", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_data_portal_operation_qualification_tests.html", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_data_portal_operation_qualification_tests" ],
-    [ "IMethodSymbolExtensionsTests", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_i_method_symbol_extensions_tests.html", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_i_method_symbol_extensions_tests" ],
-    [ "ITypeSymbolExtensionsTests", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_i_type_symbol_extensions_tests.html", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_i_type_symbol_extensions_tests" ],
-    [ "SyntaxNodeExtensionsTests", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_syntax_node_extensions_tests.html", "class_csla_1_1_analyzers_1_1_tests_1_1_extensions_1_1_syntax_node_extensions_tests" ]
-];

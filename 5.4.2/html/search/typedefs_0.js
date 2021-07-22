@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['backgroundworker_9386',['BackgroundWorker',['../_background_worker_tests_8cs.html#a94e0bd62873ab5b62d7457f90e5d2e47',1,'BackgroundWorkerTests.cs']]]
+  ['serialization_3729',['serialization',['../_mobile_list_8cs.html#ad412e126841c7c4f9076b1a5416804cf',1,'MobileList.cs']]]
 ];

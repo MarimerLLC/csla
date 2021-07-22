@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 35.971222
+%%BoundingBox: 0 0 500 43.165466
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,13 +19,13 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 13.900000 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 11.583333 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
 /rows 3 def
-/cols 6 def
+/cols 5 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
 
@@ -178,7 +178,6 @@ boxfont setfont
 (Csla.Core.ApplicationContextManager) cw
 (Csla.Core.ApplicationContextManagerStatic) cw
 (Csla.Core.ApplicationContextManagerTls) cw
-(Csla.Test.AppContext.TestContext) cw
 (Csla.Web.ApplicationContextManager) cw
 (Csla.Windows.ApplicationContextManager) cw
 (Csla.Xaml.ApplicationContextManager) cw
@@ -193,22 +192,21 @@ boundx scalefactor div boundy scalefactor div scale
 
 % ----- classes -----
 
- (Csla.Core.IContextManager) 2.500000 2.000000 box
+ (Csla.Core.IContextManager) 2.000000 2.000000 box
  (Csla.AspNetCore.ApplicationContextManager) 0.000000 1.000000 box
  (Csla.Core.ApplicationContextManager) 1.000000 1.000000 box
  (Csla.Core.ApplicationContextManagerStatic) 2.000000 1.000000 box
  (Csla.Core.ApplicationContextManagerTls) 3.000000 1.000000 box
- (Csla.Test.AppContext.TestContext) 4.000000 1.000000 box
- (Csla.Web.ApplicationContextManager) 5.000000 1.000000 box
+ (Csla.Web.ApplicationContextManager) 4.000000 1.000000 box
  (Csla.Windows.ApplicationContextManager) 0.500000 0.000000 box
  (Csla.Xaml.ApplicationContextManager) 1.500000 0.000000 box
 
 % ----- relations -----
 
 solid
-1 2.500000 1.250000 out
+1 2.000000 1.250000 out
 solid
-0.000000 5.000000 2.000000 conn
+0.000000 4.000000 2.000000 conn
 solid
 0 0.000000 1.750000 in
 solid
@@ -223,8 +221,6 @@ solid
 0 3.000000 1.750000 in
 solid
 0 4.000000 1.750000 in
-solid
-0 5.000000 1.750000 in
 solid
 0 0.500000 0.750000 in
 solid

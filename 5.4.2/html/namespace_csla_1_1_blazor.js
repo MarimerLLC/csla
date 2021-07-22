@@ -1,7 +1,6 @@
 var namespace_csla_1_1_blazor =
 [
     [ "Client", "namespace_csla_1_1_blazor_1_1_client.html", "namespace_csla_1_1_blazor_1_1_client" ],
-    [ "Test", "namespace_csla_1_1_blazor_1_1_test.html", "namespace_csla_1_1_blazor_1_1_test" ],
     [ "CslaPermissionRequirement", "class_csla_1_1_blazor_1_1_csla_permission_requirement.html", "class_csla_1_1_blazor_1_1_csla_permission_requirement" ],
     [ "CslaPermissionsPolicyProvider", "class_csla_1_1_blazor_1_1_csla_permissions_policy_provider.html", "class_csla_1_1_blazor_1_1_csla_permissions_policy_provider" ],
     [ "CslaValidationMessageBase", "class_csla_1_1_blazor_1_1_csla_validation_message_base.html", "class_csla_1_1_blazor_1_1_csla_validation_message_base" ],

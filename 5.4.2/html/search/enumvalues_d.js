@@ -1,9 +1,14 @@
 var searchData=
 [
-  ['readcommitted_9480',['ReadCommitted',['../namespace_csla.html#ada8965cb8c1e6f2f310db250eec59a1ca90ed941e4502c163cb075594c5f7df1c',1,'Csla']]],
-  ['readproperty_9481',['ReadProperty',['../namespace_csla_1_1_rules.html#a8b45275c8ab606df9a31ac685344b243a8810b91e424015b3e061b9a084575128',1,'Csla::Rules']]],
-  ['readuncommitted_9482',['ReadUncommitted',['../namespace_csla.html#ada8965cb8c1e6f2f310db250eec59a1ca0b900aa05ebefd3059b755ffc3934a8b',1,'Csla']]],
-  ['repeatableread_9483',['RepeatableRead',['../namespace_csla.html#ada8965cb8c1e6f2f310db250eec59a1ca2b95cfc2a1dca5195cc09451acb85c91',1,'Csla']]],
-  ['returnfalse_9484',['ReturnFalse',['../class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match.html#ad6d247a844dbaf98c89dd207067e3ca0aa4b3ffad6cf34921193b7ec96978b0d8',1,'Csla.Rules.CommonRules.RegExMatch.ReturnFalse()'],['../class_csla_1_1_validation_1_1_common_rules_1_1_reg_ex_rule_args.html#a29a6733836c1fef8b6b7ebdcc4f3721faa4b3ffad6cf34921193b7ec96978b0d8',1,'Csla.Validation.CommonRules.RegExRuleArgs.ReturnFalse()']]],
-  ['returntrue_9485',['ReturnTrue',['../class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match.html#ad6d247a844dbaf98c89dd207067e3ca0a3d629d96d126602881a861000afe0caf',1,'Csla.Rules.CommonRules.RegExMatch.ReturnTrue()'],['../class_csla_1_1_validation_1_1_common_rules_1_1_reg_ex_rule_args.html#a29a6733836c1fef8b6b7ebdcc4f3721fa3d629d96d126602881a861000afe0caf',1,'Csla.Validation.CommonRules.RegExRuleArgs.ReturnTrue()']]]
+  ['save_3805',['Save',['../namespace_csla_1_1_windows.html#a19dbfa94fe543dcfd0efc5b0f591608cac9cc8cce247e49bae79f15173ce97354',1,'Csla::Windows']]],
+  ['sbyte_3806',['SByte',['../namespace_csla_1_1_serialization_1_1_mobile.html#aa3a3833391c5508bd8be31e16fe9f394a7e76fb67fc7b4cb0004bc45f2bd92723',1,'Csla::Serialization::Mobile']]],
+  ['serializable_3807',['Serializable',['../namespace_csla.html#ada8965cb8c1e6f2f310db250eec59a1ca33909597338639745b2d76081beeb48b',1,'Csla']]],
+  ['serialization_3808',['Serialization',['../namespace_csla_1_1_core.html#ae4d1bfe03690e28c9ac1bd7066cd5c59a1adb0c1dbe31b0bf5fa0665a823707a0',1,'Csla::Core']]],
+  ['set_3809',['Set',['../namespace_csla.html#a4055baa5f7b5768b016776bf7468e7e2a5d5b78699e57104f2fa03bbdf7b9197b',1,'Csla']]],
+  ['single_3810',['Single',['../namespace_csla_1_1_serialization_1_1_mobile.html#aa3a3833391c5508bd8be31e16fe9f394a66ba162102bbf6ae31b522aec561735e',1,'Csla::Serialization::Mobile']]],
+  ['string_3811',['String',['../namespace_csla_1_1_serialization_1_1_mobile.html#aa3a3833391c5508bd8be31e16fe9f394a27118326006d3829667a400ad23d5d98',1,'Csla::Serialization::Mobile']]],
+  ['stringdictionarykey_3812',['StringDictionaryKey',['../namespace_csla_1_1_serialization_1_1_mobile.html#aa3a3833391c5508bd8be31e16fe9f394a91be77ef49872374074cfcd0de82eea8',1,'Csla::Serialization::Mobile']]],
+  ['stringwithdictionarykey_3813',['StringWithDictionaryKey',['../namespace_csla_1_1_serialization_1_1_mobile.html#aa3a3833391c5508bd8be31e16fe9f394a2b25dc59a241e04cb4cfb2594109f11d',1,'Csla::Serialization::Mobile']]],
+  ['success_3814',['Success',['../namespace_csla_1_1_rules.html#ae8e5d0a40ed4977a9b636667d06dcb50a505a83f220c02df2f85c3810cd9ceb38',1,'Csla::Rules']]],
+  ['suppressexception_3815',['SuppressException',['../namespace_csla_1_1_security.html#ab2154e99d9a194c1e397fbe0371c9702ae65094ddcf8a5ba084be9bfceef7293d',1,'Csla::Security']]]
 ];

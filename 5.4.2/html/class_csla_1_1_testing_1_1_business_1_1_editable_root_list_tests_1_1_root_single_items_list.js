@@ -1,5 +1,0 @@
-var class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_root_single_items_list =
-[
-    [ "FetchCriteria", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_root_single_items_list_1_1_fetch_criteria.html", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_root_single_items_list_1_1_fetch_criteria" ],
-    [ "DataPortal_Fetch", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_root_single_items_list.html#a2967c599b5bc7a4055fd534738b00a4b", null ]
-];

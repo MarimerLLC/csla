@@ -1,6 +1,5 @@
 var namespace_csla_1_1_web_1_1_mvc =
 [
-    [ "Test", "namespace_csla_1_1_web_1_1_mvc_1_1_test.html", "namespace_csla_1_1_web_1_1_mvc_1_1_test" ],
     [ "Controller", "class_csla_1_1_web_1_1_mvc_1_1_controller.html", "class_csla_1_1_web_1_1_mvc_1_1_controller" ],
     [ "CslaModelBinder", "class_csla_1_1_web_1_1_mvc_1_1_csla_model_binder.html", "class_csla_1_1_web_1_1_mvc_1_1_csla_model_binder" ],
     [ "HasPermissionAttribute", "class_csla_1_1_web_1_1_mvc_1_1_has_permission_attribute.html", "class_csla_1_1_web_1_1_mvc_1_1_has_permission_attribute" ],

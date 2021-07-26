@@ -15,6 +15,14 @@ Enhancements and Bug fixes over the 5.4.2 release.
 * [#2287](https://github.com/MarimerLLC/csla/issues/2287) 🐜 Private data portal method not found from base classes
 * [#2303](https://github.com/MarimerLLC/csla/issues/2303) 🐜 [DeleteSelfChild] cannot be parameterless; requires parameters that match DataPortal.UpdateChild(...)
 
+## Contributors
+
+* [@michaelcsikos](https://github.com/michaelcsikos)
+* [@ProDInfo](https://github.com/ProDInfo)
+* [@BaHXeLiSiHg](https://github.com/BaHXeLiSiHg)
+* [@ajohnstone-ks](https://github.com/ajohnstone-ks)
+* [@rockfordlhotka](https://github.com/rockfordlhotka)
+
 # CSLA .NET version 5.4.2 release
 
 [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F22)

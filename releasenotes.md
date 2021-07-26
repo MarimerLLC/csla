@@ -2,7 +2,28 @@
 
 CSLA 5 includes major enhancements, and brings support for .NET Core 3.1, .NET 5, and WebAssembly (Blazor, Uno, etc.).
 
+# CSLA .NET version 5.5.0 release
+
+Enhancements and Bug fixes over the 5.4.2 release.
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F23)
+
+* [#2095](https://github.com/MarimerLLC/csla/issues/2095) 🎉 Add support for unloading assemblies from memory (re: caching)
+* [#2377](https://github.com/MarimerLLC/csla/issues/2347) 🐜 Add missing LoadListMode implementation for some list types
+* [#2347](https://github.com/MarimerLLC/csla/issues/2347) 🐜 Remove Console.WriteLine statement in Blazor ViewModel
+* [#2302](https://github.com/MarimerLLC/csla/issues/2302) 🐜 n-level undo causing exception with SortedBindingList
+* [#2287](https://github.com/MarimerLLC/csla/issues/2287) 🐜 Private data portal method not found from base classes
+* [#2303](https://github.com/MarimerLLC/csla/issues/2303) 🐜 [DeleteSelfChild] cannot be parameterless; requires parameters that match DataPortal.UpdateChild(...)
+
 # CSLA .NET version 5.4.2 release
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F22)
+
+* [#2165](https://github.com/MarimerLLC/csla/issues/2165) 🎉 Expose PropertyName on Blazor IPropertyInfo
+* [#2171](https://github.com/MarimerLLC/csla/issues/2171) 🐜 Change UseCsla to extend IHostBuilder, not HostBuilder
+* [#2161](https://github.com/MarimerLLC/csla/issues/2161) 🐜 Fix Blazor WebAssembly loses ApplicationContext values
+* [#2109](https://github.com/MarimerLLC/csla/issues/2109) 🐜 Fix AmbiguousMatchException DataPortal issue
+* [#2075](https://github.com/MarimerLLC/csla/issues/2075) 🐜 HttpProxy compression code doesn't work with custom HttpClient
 
 Bug fixes over the 5.4.1 release.
 

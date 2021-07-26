@@ -8,13 +8,16 @@ Bug fixes over the 5.4.1 release.
 
 ## Change List
 
-[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F22)
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F22)
 
 * [#2165](https://github.com/MarimerLLC/csla/issues/2165) 🎉 Expose PropertyName on Blazor IPropertyInfo
 * [#2171](https://github.com/MarimerLLC/csla/issues/2171) 🐜 Change UseCsla to extend IHostBuilder, not HostBuilder
 * [#2161](https://github.com/MarimerLLC/csla/issues/2161) 🐜 Fix Blazor WebAssembly loses ApplicationContext values
 * [#2109](https://github.com/MarimerLLC/csla/issues/2109) 🐜 Fix AmbiguousMatchException DataPortal issue
 * [#2075](https://github.com/MarimerLLC/csla/issues/2075) 🐜 HttpProxy compression code doesn't work with custom HttpClient
+* [#2347](https://github.com/MarimerLLC/csla/issues/2347) 🐜 Remove Console.WriteLine statement in Blazor ViewModel
+* [#2302](https://github.com/MarimerLLC/csla/issues/2302) 🐜 n-level undo causing exception with SortedBindingList
+* [#2287](https://github.com/MarimerLLC/csla/issues/2287) 🐜 Private data portal method not found from base classes
 
 ## Contributors
 

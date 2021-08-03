@@ -59,11 +59,6 @@ namespace Csla.Reflection
 
       var typeOfOperation = typeof(T);
 
-      if (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute))
-      {
-        criteria = Array.Empty<object>();
-      }
-
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
       if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
         if (!throwOnError || cachedMethod != null)
@@ -180,6 +175,16 @@ namespace Csla.Reflection
 
               if (index == criteriaLength)
                 matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = score + item.Score });
+            }
+          }
+          if (matches.Count() == 0 && 
+             (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute)))
+          {
+            // implement zero parameter fallback if other matches not found
+            foreach (var item in candidates)
+            {
+              if (GetCriteriaParameters(item.MethodInfo).Length == 0)
+                matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = item.Score });
             }
           }
         }

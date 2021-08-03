@@ -49,6 +49,7 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
+        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />

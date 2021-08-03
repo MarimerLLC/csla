@@ -300,6 +300,33 @@ namespace Csla.Test.DataPortal
       var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(obj, new object[] { });
       Assert.IsNotNull(method);
     }
+
+    [TestMethod]
+    public void Issue2396DeleteSelfChildNoParams()
+    {
+      var obj = new Issue2396Edit();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfChildAttribute>(obj, new object[] { });
+      Assert.IsNotNull(method);
+      Assert.AreEqual(0, method.MethodInfo.GetParameters().Count());
+    }
+
+    [TestMethod]
+    public void Issue2396DeleteSelfChildWithParams()
+    {
+      var obj = new Issue2396EditParams();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfChildAttribute>(obj, new object[] { 1, 2 });
+      Assert.IsNotNull(method);
+      Assert.AreEqual(2, method.MethodInfo.GetParameters().Count());
+    }
+
+    [TestMethod]
+    public void Issue2396DeleteSelfChildFallbackToNoParams()
+    {
+      var obj = new Issue2396Edit();
+      var method = Csla.Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfChildAttribute>(obj, new object[] { 1, 2 });
+      Assert.IsNotNull(method);
+      Assert.AreEqual(0, method.MethodInfo.GetParameters().Count());
+    }
   }
 
   //
@@ -587,5 +614,21 @@ namespace Csla.Test.DataPortal
     protected override void DataPortal_Create()
     {
     }
+  }
+
+  [Serializable]
+  public class Issue2396Edit : BusinessBase<Issue2396Edit>
+  { 
+    [DeleteSelfChild]
+    private void DeleteSelf()
+    { }
+  }
+
+  [Serializable]
+  public class Issue2396EditParams : BusinessBase<Issue2396EditParams>
+  {
+    [DeleteSelfChild]
+    private void DeleteSelf(int x, int y)
+    { }
   }
 }

@@ -88,8 +88,18 @@ namespace Csla.Test.DataPortal
       var dp = new Server.ChildDataPortal();
       var child = await dp.FetchAsync<TestChild>();
       child.MarkForDeletion();
+      await dp.UpdateAsync(child, "deleteme", 123);
+      Assert.AreEqual("deleteme", child.Name);
+    }
+
+    [TestMethod]
+    public async Task DeleteSelfChildNoParamFallback()
+    {
+      var dp = new Server.ChildDataPortal();
+      var child = await dp.FetchAsync<TestChildDeleteFallback>();
+      child.MarkForDeletion();
       await dp.UpdateAsync(child, "update", 123);
-      Assert.AreEqual("none", child.Name);
+      Assert.AreEqual("deleted", child.Name);
     }
   }
 
@@ -187,9 +197,40 @@ namespace Csla.Test.DataPortal
     }
 
     [DeleteSelfChild]
-    private async Task DeleteSelfChild()
+    private async Task DeleteSelfChild(string s, int i)
     {
       await Task.Delay(0);
+      Name = s;
+    }
+  }
+
+  [Serializable]
+  public class TestChildDeleteFallback : BusinessBase<TestChildDeleteFallback>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
+    }
+
+    public void MarkForDeletion()
+    {
+      MarkDeleted();
+    }
+
+    [FetchChild]
+    private async Task FetchChild()
+    {
+      await Task.Delay(0);
+      Name = "none";
+      return;
+    }
+
+    [DeleteSelfChild]
+    private void DeleteSelf()
+    {
+      Name = "deleted";
     }
   }
 }

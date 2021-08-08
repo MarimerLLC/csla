@@ -20,7 +20,7 @@ Similarly, the fact that this code doesn't include a data access layer that inte
 For more detailed information about using CSLA .NET please see the [Using CSLA .NET](http://store.lhotka.net/using-csla-4-all-books) book.
 
 ## Creating the solution and Interface project
-Open Visual Studio and create a new _Console Application_ using .NET Core 5. Name it `CslaFastStart`.
+Open Visual Studio and create a new _Console Application_ using .NET 5. Name it `CslaFastStart`.
 
 ![](readme-images/CreateConsoleApp.png)
 

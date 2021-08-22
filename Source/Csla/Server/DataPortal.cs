@@ -608,7 +608,12 @@ namespace Csla.Server
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
       if (!context.IsRemotePortal && ApplicationContext.WebContextManager != null && !ApplicationContext.WebContextManager.IsValid)
-        ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+      {
+        // local data portal and no valid HttpContext
+        // if context already exists, then use existing context (from AsyncLocal or TLS)
+        if (ApplicationContext.ClientContext == null)
+          ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+      }
 
       // if the dataportal is not remote then
       // do nothing

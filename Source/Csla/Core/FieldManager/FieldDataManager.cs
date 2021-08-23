@@ -11,7 +11,6 @@ using System.IO;
 using System.Collections.Generic;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
-using Csla.Reflection;
 using System.Reflection;
 using Csla.Serialization;
 
@@ -508,11 +507,16 @@ namespace Csla.Core.FieldManager
           var item = _fieldData[index];
           if (item != null)
           {
-            var undoable = item.Value as IUndoableObject;
-            if (undoable != null)
+            if (item.Value is IUndoableObject undoable)
             {
               // current value is undoable
-              if (oldItem != null)
+              var doUndo = (oldItem != null);
+              if (!doUndo)
+              {
+                var propInfo = _propertyList.Where(r => r.Index == index).First();
+                doUndo = propInfo.RelationshipType.HasFlag(RelationshipTypes.LazyLoad);
+              }
+              if (doUndo)
                 undoable.UndoChanges(parentEditLevel, parentBindingEdit);
               else
                 _fieldData[index] = null;

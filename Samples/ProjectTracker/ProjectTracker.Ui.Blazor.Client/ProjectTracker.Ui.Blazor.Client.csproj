@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Blazor" Version="5.4.1" />
-    <PackageReference Include="Csla.Blazor.WebAssembly" Version="5.4.1" />
+    <PackageReference Include="Csla.Blazor" Version="5.5.1-R21082202" />
+    <PackageReference Include="Csla.Blazor.WebAssembly" Version="5.5.1-R21082202" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0-preview5.20210.3" />

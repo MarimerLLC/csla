@@ -545,13 +545,7 @@ namespace Csla.Core.FieldManager
         {
           var oldItem = state[index];
           var item = _fieldData[index];
-          var doUndo = item != null;
-          if (!doUndo)
-          {
-            var propInfo = _propertyList.Where(r => r.Index == index).First();
-            doUndo = propInfo.RelationshipType.HasFlag(RelationshipTypes.LazyLoad);
-          }
-          if (doUndo)
+          if (item != null)
           {
             var undoable = item.Value as IUndoableObject;
             if (undoable != null)

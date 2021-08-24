@@ -1,6 +1,6 @@
 CSLA .NET
 ====
-![Build status](https://github.com/MarimerLLC/csla/actions/workflows/ci/badge.svg)
+![Build status](https://github.com/MarimerLLC/csla/actions/workflows/ci.yaml/badge.svg)
 
 
 [![Bugs](https://img.shields.io/github/issues/marimerllc/csla/kind%2Fbug)](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug)

@@ -10,9 +10,3 @@ before_build:
 build:
   project: Source\csla.test.sln
   verbosity: minimal
-test:
-  assemblies:
-    only:
-    - Csla.Test
-    - csla.netcore.test
-    - Csla.Validation.Test

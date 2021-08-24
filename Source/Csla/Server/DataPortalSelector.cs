@@ -22,6 +22,20 @@ namespace Csla.Server
   public class DataPortalSelector : IDataPortalServer
   {
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="simpleDataPortal"></param>
+    /// <param name="factoryDataPortal"></param>
+    public DataPortalSelector(SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal)
+    {
+      SimpleDataPortal = simpleDataPortal;
+      FactoryDataPortal = factoryDataPortal;
+    }
+
+    private SimpleDataPortal SimpleDataPortal { get; set; }
+    private FactoryDataPortal FactoryDataPortal { get; set; }
+
+    /// <summary>
     /// Create a new business object.
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
@@ -37,13 +51,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          var dp = new SimpleDataPortal();
-          return await dp.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await SimpleDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          var dp = new FactoryDataPortal();
-          return await dp.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await FactoryDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -74,13 +86,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          var dp = new SimpleDataPortal();
-          return await dp.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await SimpleDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          var dp = new FactoryDataPortal();
-          return await dp.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await FactoryDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -110,13 +120,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
         if (context.FactoryInfo == null)
         {
-          var dp = new SimpleDataPortal();
-          return await dp.Update(obj, context, isSync).ConfigureAwait(false);
+          return await SimpleDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          var dp = new FactoryDataPortal();
-          return await dp.Update(obj, context, isSync).ConfigureAwait(false);
+          return await FactoryDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -147,13 +155,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          var dp = new SimpleDataPortal();
-          return await dp.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await SimpleDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          var dp = new FactoryDataPortal();
-          return await dp.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await FactoryDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)

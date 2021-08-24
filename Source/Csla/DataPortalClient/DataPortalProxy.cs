@@ -20,8 +20,13 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server.
   /// </summary>
-  public abstract class DataPortalProxy : IDataPortalProxy
+  public abstract class DataPortalProxy : IDataPortalProxy, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
@@ -72,12 +77,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null, globalContext);
+          result = new DataPortalResult(obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -86,7 +91,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -127,12 +132,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null, globalContext);
+          result = new DataPortalResult(obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -141,7 +146,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -176,12 +181,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var newobj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(newobj, null, globalContext);
+          result = new DataPortalResult(newobj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -190,7 +195,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -231,12 +236,12 @@ namespace Csla.DataPortalClient
         var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response.ErrorData == null)
         {
-          result = new DataPortalResult(null, null, globalContext);
+          result = new DataPortalResult(null, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex, globalContext);
+          result = new DataPortalResult(null, ex);
         }
         else
         {
@@ -245,7 +250,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex, null);
+        result = new DataPortalResult(null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -304,7 +309,7 @@ namespace Csla.DataPortalClient
 
     #region Criteria
 
-    private static CriteriaRequest GetBaseCriteriaRequest()
+    private CriteriaRequest GetBaseCriteriaRequest()
     {
       return new CriteriaRequest
       {
@@ -320,7 +325,7 @@ namespace Csla.DataPortalClient
       };
     }
 
-    private static UpdateRequest GetBaseUpdateCriteriaRequest()
+    private UpdateRequest GetBaseUpdateCriteriaRequest()
     {
       return new UpdateRequest
       {

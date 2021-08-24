@@ -60,7 +60,7 @@ namespace Csla.Server
 #else
       var t = Type.GetType(ExceptionInspector, true, true);
 #endif
-      return (IDataPortalExceptionInspector)Reflection.MethodCaller.CreateInstance(t);
+      return (IDataPortalExceptionInspector)Activator.CreateInstance(t);
 
     }
     #endregion

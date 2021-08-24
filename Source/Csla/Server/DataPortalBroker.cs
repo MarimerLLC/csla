@@ -17,6 +17,16 @@ namespace Csla.Server
   public class DataPortalBroker : IDataPortalServer
   {
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortalSelector"></param>
+    public DataPortalBroker(DataPortalSelector dataPortalSelector)
+    {
+      DataPortalSelector = dataPortalSelector;
+    }
+
+    private DataPortalSelector DataPortalSelector { get; set; }
+    /// <summary>
     /// Gets or sets a reference to a implementation of
     /// IDataPortalServer to be used.
     /// </summary>
@@ -39,8 +49,7 @@ namespace Csla.Server
       }
       else
       {
-        var dp = new DataPortalSelector();
-        return dp.Create(objectType, criteria, context, isSync);
+        return DataPortalSelector.Create(objectType, criteria, context, isSync);
       }      
     }
 
@@ -61,8 +70,7 @@ namespace Csla.Server
       }
       else
       {
-        var dp = new DataPortalSelector();
-        return dp.Fetch(objectType, criteria, context, isSync);
+        return DataPortalSelector.Fetch(objectType, criteria, context, isSync);
       }
     }
 
@@ -82,8 +90,7 @@ namespace Csla.Server
       }
       else
       {
-        var dp = new DataPortalSelector();
-        return dp.Update(obj, context, isSync);
+        return DataPortalSelector.Update(obj, context, isSync);
       }
     }
 
@@ -104,8 +111,7 @@ namespace Csla.Server
       }
       else
       {
-        var dp = new DataPortalSelector();
-        return dp.Delete(objectType, criteria, context, isSync);
+        return DataPortalSelector.Delete(objectType, criteria, context, isSync);
       }
     }
   }

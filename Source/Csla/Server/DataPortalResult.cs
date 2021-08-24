@@ -6,7 +6,6 @@
 // <summary>Returns data from the server-side DataPortal to the </summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Specialized;
 using Csla.Core;
 
 namespace Csla.Server
@@ -17,8 +16,13 @@ namespace Csla.Server
   /// use only.
   /// </summary>
   [Serializable]
-  public class DataPortalResult : EventArgs
+  public class DataPortalResult : EventArgs, Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// The business object being returned from
     /// the server.
@@ -32,17 +36,10 @@ namespace Csla.Server
     public Exception Error { get; private set; }
 
     /// <summary>
-    /// The global context being returned from
-    /// the server.
-    /// </summary>
-    public ContextDictionary GlobalContext { get; private set; }
-
-    /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public DataPortalResult()
     {
-      GlobalContext = ApplicationContext.ContextManager.GetGlobalContext();
     }
 
     /// <summary>
@@ -53,20 +50,6 @@ namespace Csla.Server
     public DataPortalResult(object returnObject)
     {
       ReturnObject = returnObject;
-      GlobalContext = ApplicationContext.ContextManager.GetGlobalContext();
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="returnObject">Object to return as part
-    /// of the result.</param>
-    /// <param name="globalContext">  Global context delivered via current reuest from the server
-    /// </param>
-    public DataPortalResult(object returnObject, ContextDictionary globalContext)
-    {
-      ReturnObject = returnObject;
-      GlobalContext = globalContext;
     }
 
     /// <summary>
@@ -78,13 +61,10 @@ namespace Csla.Server
     /// Error that occurred during the DataPotal call.
     /// This will be null if no errors occurred.
     /// </param>
-    /// <param name="globalContext">  Global context delivered via current reuest from the server
-    /// </param>
-    public DataPortalResult(object returnObject, Exception ex, ContextDictionary globalContext)
+    public DataPortalResult(object returnObject, Exception ex)
     {
       ReturnObject = returnObject;
       Error = ex;
-      GlobalContext = globalContext;
     }
   }
 }

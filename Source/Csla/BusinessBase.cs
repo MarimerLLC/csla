@@ -172,7 +172,7 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      T result = default(T);
+      T result = default;
       if (this.IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
       if (EditLevel > 0)
@@ -183,9 +183,10 @@ namespace Csla
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
         if (isSync)
         {
-          result = DataPortal.Update<T>((T)this);
+          result = dp.Update((T)this);
         }
         else
         {
@@ -193,7 +194,7 @@ namespace Csla
             MarkBusy();
           try
           {
-            result = await DataPortal.UpdateAsync<T>((T)this);
+            result = await dp.UpdateAsync((T)this);
           }
           finally
           {

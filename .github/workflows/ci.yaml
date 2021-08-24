@@ -1,0 +1,28 @@
+name: .NET 6
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0'
+        include-prerelease: True
+
+    - name: Build
+      run: dotnet build Source\csla.test.sln
+
+#    - name: Test
+#      run: dotnet test --no-build --verbosity normal

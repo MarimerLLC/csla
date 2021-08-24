@@ -16,8 +16,13 @@ namespace Csla.Reflection
   /// against the contained object using 
   /// late binding.
   /// </summary>
-  public class LateBoundObject
+  public class LateBoundObject : Core.IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Object instance managed by LateBoundObject.
     /// </summary>
@@ -36,8 +41,9 @@ namespace Csla.Reflection
     /// default constructor.
     /// </remarks>
     public LateBoundObject(Type objectType)
-      : this(MethodCaller.CreateInstance(objectType))
-    { }
+    {
+      Instance = ApplicationContext.CreateInstance(objectType);
+    }
 
     /// <summary>
     /// Contains the provided object within
@@ -48,7 +54,7 @@ namespace Csla.Reflection
     /// </param>
     public LateBoundObject(object instance)
     {
-      this.Instance = instance;
+      Instance = instance;
     }
 
     /// <summary>
@@ -155,6 +161,17 @@ namespace Csla.Reflection
       }
     }
 
+    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
+    {
+      get
+      {
+        if (serviceProviderMethodCaller == null)
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+        return serviceProviderMethodCaller;
+      }
+    }
+
     /// <summary>
     /// Invokes a method using the await keyword
     /// if the method returns Task,
@@ -171,7 +188,7 @@ namespace Csla.Reflection
         Instance, parameters);
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, method.MethodInfo);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, method.MethodInfo);
         await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters).ConfigureAwait(false);
       }
       catch (CallMethodException)

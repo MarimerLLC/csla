@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 #pragma warning disable
 using System;
 using System.Collections.Generic;

@@ -19,12 +19,18 @@ namespace Csla.Reflection
   /// Methods to dynamically find/invoke methods
   /// with data portal and DI provided params
   /// </summary>
-  public static class ServiceProviderMethodCaller
+  public class ServiceProviderMethodCaller : Core.IUseApplicationContext
   {
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -33,7 +39,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="target">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public static ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
       where T : DataPortalOperationAttribute
     {
       if (target == null)
@@ -51,7 +57,7 @@ namespace Csla.Reflection
     /// <param name="targetType">Type of domain object</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="throwOnError">Throw exceptions on error</param>
-    public static ServiceProviderMethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria, bool throwOnError = true)
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria, bool throwOnError = true)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)
@@ -415,7 +421,7 @@ namespace Csla.Reflection
     /// <param name="method">Method to invoke</param>
     /// <param name="parameters">Criteria params array</param>
     /// <returns></returns>
-    public static async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object[] parameters)
+    public async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object[] parameters)
     {
       if (method == null)
         throw new ArgumentNullException(obj.GetType().FullName + ".<null>() " + Resources.MethodNotImplemented);

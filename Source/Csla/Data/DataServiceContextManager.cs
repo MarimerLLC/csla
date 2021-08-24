@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !MONO && !(ANDROID || IOS) && !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="DataServiceContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -19,11 +19,17 @@ namespace Csla.Data
   /// <typeparam name="C">
   /// Type of context object to use.
   /// </typeparam>
-  public class DataServiceContextManager<C> where C : System.Data.Services.Client.DataServiceContext
+  public class DataServiceContextManager<C> : Core.IUseApplicationContext
+    where C : System.Data.Services.Client.DataServiceContext
   {
 
     private static object _lock = new object();
     private C _context;
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the DataServiceContext object for the 
@@ -32,7 +38,7 @@ namespace Csla.Data
     /// <param name="path">
     /// URI to the server-side services.
     /// </param>
-    public static DataServiceContextManager<C> GetManager(Uri path)
+    public DataServiceContextManager<C> GetManager(Uri path)
     {
 
       lock (_lock)
@@ -54,7 +60,7 @@ namespace Csla.Data
 
     private DataServiceContextManager(Uri path)
     {
-      _context = (C)(Reflection.MethodCaller.CreateInstance(typeof(C), path));
+      _context = (C)(ApplicationContext.CreateInstance(typeof(C), path));
     }
 
     /// <summary>

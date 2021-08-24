@@ -47,7 +47,8 @@ namespace Csla
     IManageProperties,
     INotifyBusy,
     IHostRules,
-    IReadOnlyBase
+    IReadOnlyBase,
+    IUseApplicationContext
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -80,6 +81,11 @@ namespace Csla
     }
 
     #endregion
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the object.
@@ -280,12 +286,12 @@ namespace Csla
         _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
         _executeResultCache = new ConcurrentDictionary<string, bool>();
-      if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      if (!ReferenceEquals(ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
         _readResultCache.Clear();
         _executeResultCache.Clear();
-        _lastPrincipal = Csla.ApplicationContext.User;
+        _lastPrincipal = ApplicationContext.User;
       }
     }
 
@@ -410,7 +416,7 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
     [Delete]
-		private void DataPortal_Delete(object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException(Resources.DeleteNotSupportedException);
     }
@@ -1400,7 +1406,7 @@ namespace Csla
       }
     }
 
-    void loadManager_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    void loadManager_UnhandledAsyncException(object sender, Csla.Core.ErrorEventArgs e)
     {
       OnUnhandledAsyncException(e);
     }
@@ -1728,16 +1734,16 @@ namespace Csla
 
     [NotUndoable]
     [NonSerialized]
-    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+    private EventHandler<Csla.Core.ErrorEventArgs> _unhandledAsyncException;
 
     /// <summary>
     /// Event raised when an exception occurs on a background
     /// thread during an asynchronous operation.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<Csla.Core.ErrorEventArgs> UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add { _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
     /// <summary>
@@ -1745,7 +1751,7 @@ namespace Csla
     /// </summary>
     /// <param name="error">Error arguments.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    protected virtual void OnUnhandledAsyncException(Csla.Core.ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
@@ -1760,7 +1766,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
-      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+      OnUnhandledAsyncException(new Csla.Core.ErrorEventArgs(originalSender, error));
     }
 
 #endregion

@@ -9,8 +9,8 @@ using System;
 using System.Security.Principal;
 using Csla.Core;
 using Csla.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla
 {
@@ -18,11 +18,29 @@ namespace Csla
   /// Provides consistent context information between the client
   /// and server DataPortal objects. 
   /// </summary>
-  public static class ApplicationContext
+  public class ApplicationContext
   {
-    #region Context Manager
+    /// <summary>
+    /// Creates a new instance of the type
+    /// </summary>
+    /// <param name="contextManager">IContextManager used to manage per-user context</param>
+    public ApplicationContext(IContextManager contextManager)
+    {
+      ContextManager = contextManager;
+    }
 
-    private static IContextManager _contextManager;
+    /// <summary>
+    /// Gets or sets the context manager responsible
+    /// for storing user and context information for
+    /// the application.
+    /// </summary>
+    /// <remarks>
+    /// ?f WebContextManager is not null and IsValid then WebContextManager is returned,
+    /// else default ContextManager is returned. 
+    /// This behaviour is to support background threads in web applications and return
+    /// to use WebContextManager when completed. 
+    /// </remarks>
+    public IContextManager ContextManager { get; private set; }
 
     internal static void SettingsChanged()
     {
@@ -32,83 +50,18 @@ namespace Csla
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
       _dataPortalActivator = null;
+      //_dataPortalActivator = null;
       _dataPortalUrl = null;
       _dataPortalProxyFactory = null;
       _dataPortalProxy = null;
       _VersionRoutingTag = null;
     }
 
-    private static IContextManager _webContextManager;
-    private static readonly Type _webManagerType;
-
-    static ApplicationContext()
-    {
-      Type _contextManagerType = null;
-      if (_contextManagerType == null)
-        _contextManagerType = Type.GetType("Csla.Windows.ApplicationContextManager, Csla.Windows");
-
-      if (_contextManagerType == null)
-        _contextManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
-
-      if (_contextManagerType != null)
-        _contextManager = (IContextManager)Activator.CreateInstance(_contextManagerType);
-
-      if (_contextManager == null)
-        _contextManager = new ApplicationContextManager();
-
-      if (_webManagerType == null)
-      {
-        _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
-        if (_webManagerType != null)
-          WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the web context manager.
-    /// Will use default WebContextManager. 
-    /// Only need to set for non-default WebContextManager.
-    /// </summary>
-    /// <value>
-    /// The web context manager.
-    /// </value>
-    public static IContextManager WebContextManager
-    {
-      get { return _webContextManager; }
-      set { _webContextManager = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the context manager responsible
-    /// for storing user and context information for
-    /// the application.
-    /// </summary>
-    /// <remarks>
-    /// Ïf WebContextManager is not null and IsValid then WebContextManager is returned,
-    /// else default ContextManager is returned. 
-    /// This behaviour is to support background threads in web applications and return
-    /// to use WebContextManager when completed. 
-    /// </remarks>
-    public static IContextManager ContextManager
-    {
-      get
-      {
-        if (WebContextManager != null && WebContextManager.IsValid)
-          return WebContextManager;
-        return _contextManager;
-      }
-      set { _contextManager = value; }
-    }
-
-    #endregion
-
-    #region User
-
     /// <summary>
     /// Get or set the current ClaimsPrincipal
     /// object representing the user's identity.
     /// </summary>
-    public static ClaimsPrincipal Principal
+    public ClaimsPrincipal Principal
     {
       get { return (ClaimsPrincipal)ContextManager.GetUser(); }
       set { ContextManager.SetUser(value); }
@@ -124,15 +77,11 @@ namespace Csla
     /// is used, otherwise the current Thread.CurrentPrincipal
     /// value is used.
     /// </remarks>
-    public static IPrincipal User
+    public IPrincipal User
     {
       get { return ContextManager.GetUser(); }
       set { ContextManager.SetUser(value); }
     }
-
-    #endregion
-
-    #region LocalContext
 
     /// <summary>
     /// Returns the application-specific context data that
@@ -147,7 +96,7 @@ namespace Csla
     /// the client and server.
     /// </para>
     /// </remarks>
-    public static ContextDictionary LocalContext
+    public ContextDictionary LocalContext
     {
       get
       {
@@ -161,11 +110,7 @@ namespace Csla
       }
     }
 
-    #endregion
-
-    #region Client/Global Context
-
-    private static readonly object _syncContext = new object();
+    private readonly object _syncContext = new object();
 
     /// <summary>
     /// Returns the application-specific context data provided
@@ -186,17 +131,17 @@ namespace Csla
     /// client setting (i.e. in your ASP.NET UI).
     /// </para>
     /// </remarks>
-    public static ContextDictionary ClientContext
+    public ContextDictionary ClientContext
     {
       get
       {
         lock (_syncContext)
         {
-          ContextDictionary ctx = ContextManager.GetClientContext();
+          ContextDictionary ctx = ContextManager.GetClientContext(ExecutionLocation);
           if (ctx == null)
           {
             ctx = new ContextDictionary();
-            ContextManager.SetClientContext(ctx);
+            ContextManager.SetClientContext(ctx, ExecutionLocation);
           }
           return ctx;
         }
@@ -218,7 +163,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     [Obsolete("Use ClientContext", false)]
-    public static ContextDictionary GlobalContext
+    public ContextDictionary GlobalContext
     {
       get
       {
@@ -232,25 +177,23 @@ namespace Csla
       }
     }
 
-    internal static void SetContext(
+    internal void SetContext(
       ContextDictionary clientContext,
       ContextDictionary globalContext)
     {
       lock (_syncContext)
-        ContextManager.SetClientContext(clientContext);
+        ContextManager.SetClientContext(clientContext, ExecutionLocation);
       ContextManager.SetGlobalContext(globalContext);
     }
 
     /// <summary>
     /// Clears all context collections.
     /// </summary>
-    public static void Clear()
+    public void Clear()
     {
       SetContext(null, null);
       ContextManager.SetLocalContext(null);
     }
-
-    #endregion
 
     #region Settings
 
@@ -264,7 +207,7 @@ namespace Csla
     /// data portal. No calls will flow to remote
     /// data portal endpoints.
     /// </remarks>
-    public static bool IsOffline { get; set; }
+    public bool IsOffline { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether CSLA
@@ -275,6 +218,25 @@ namespace Csla
 
     private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
     private static readonly object _dataPortalActivatorSync = new object();
+
+    /// <summary>
+    /// Gets the DataPortalActivator type from configuration.
+    /// </summary>
+    public static Type DataPortalActivatorType
+    {
+      get
+      {
+        var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
+        if (!string.IsNullOrWhiteSpace(typeName))
+        {
+          return Type.GetType(typeName);
+        }
+        else
+        {
+          return typeof(Csla.Server.DefaultDataPortalActivator);
+        }
+      }
+    }
 
     /// <summary>
     /// Gets or sets an instance of the IDataPortalActivator provider.
@@ -288,18 +250,7 @@ namespace Csla
           lock (_dataPortalActivatorSync)
           {
             if (_dataPortalActivator == null)
-            {
-              var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
-              if (!string.IsNullOrWhiteSpace(typeName))
-              {
-                var type = Type.GetType(typeName);
-                _dataPortalActivator = (Csla.Server.IDataPortalActivator)Reflection.MethodCaller.CreateInstance(type);
-              }
-              else
-              {
-                _dataPortalActivator = new Csla.Server.DefaultDataPortalActivator();
-              }
-            }
+              _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(DataPortalActivatorType);
           }
         }
         return _dataPortalActivator;
@@ -309,6 +260,50 @@ namespace Csla
         _dataPortalActivator = value;
       }
     }
+    //private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
+    //private static readonly object _dataPortalActivatorSync = new object();
+
+    ///// <summary>
+    ///// Gets the DataPortalActivator type from configuration.
+    ///// </summary>
+    //public static Type DataPortalActivatorType
+    //{
+    //  get
+    //  {
+    //    var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
+    //    if (!string.IsNullOrWhiteSpace(typeName))
+    //    {
+    //      return Type.GetType(typeName);
+    //    }
+    //    else
+    //    {
+    //      return typeof(Csla.Server.DefaultDataPortalActivator);
+    //    }
+    //  }
+    //}
+
+    ///// <summary>
+    ///// Gets or sets an instance of the IDataPortalActivator provider.
+    ///// </summary>
+    //public static Csla.Server.IDataPortalActivator DataPortalActivator
+    //{
+    //  get
+    //  {
+    //    if (_dataPortalActivator == null)
+    //    {
+    //      lock (_dataPortalActivatorSync)
+    //      {
+    //        if (_dataPortalActivator == null)
+    //          _dataPortalActivator = (Csla.Server.IDataPortalActivator)CreateInstance(DataPortalActivatorType);
+    //      }
+    //    }
+    //    return _dataPortalActivator;
+    //  }
+    //  set
+    //  {
+    //    _dataPortalActivator = value;
+    //  }
+    //}
 
     private static string _dataPortalUrl = null;
 
@@ -365,7 +360,7 @@ namespace Csla
     /// This value is read from the application configuration
     /// file with the key value "CslaDataPortalUrl". 
     /// </remarks>
-    public static Uri DataPortalUrl
+    public Uri DataPortalUrl
     {
       get { return new Uri(DataPortalUrlString); }
     }
@@ -407,7 +402,6 @@ namespace Csla
       set
       {
         _dataPortalProxyFactory = value;
-        DataPortal.ResetProxyFactory();
       }
     }
 
@@ -474,7 +468,6 @@ namespace Csla
       set
       {
         _dataPortalProxy = value;
-        DataPortal.ResetProxyType();
       }
     }
 
@@ -552,7 +545,7 @@ namespace Csla
 
         string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
         if (string.IsNullOrWhiteSpace(tmp))
-#if NETSTANDARD2_0 || NET5_0
+#if NETSTANDARD2_0 || NET5_0 || NET6_0
           tmp = "MobileFormatter";
 #else
           tmp = "BinaryFormatter";
@@ -570,7 +563,7 @@ namespace Csla
     /// </summary>
     public enum SerializationFormatters
     {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
       /// <summary>
       /// Use the Microsoft .NET 3.0
       /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
@@ -640,7 +633,7 @@ namespace Csla
       Xaml
     }
 
-    private static ExecutionLocations _executionLocation =
+    private ExecutionLocations _executionLocation =
 #if (ANDROID || IOS || NETFX_CORE) && !NETSTANDARD
       ExecutionLocations.MobileClient;
 #else
@@ -651,12 +644,12 @@ namespace Csla
     /// Returns a value indicating whether the application code
     /// is currently executing on the client or server.
     /// </summary>
-    public static ExecutionLocations ExecutionLocation
+    public ExecutionLocations ExecutionLocation
     {
       get { return _executionLocation; }
     }
 
-    internal static void SetExecutionLocation(ExecutionLocations location)
+    internal void SetExecutionLocation(ExecutionLocations location)
     {
       _executionLocation = location;
     }
@@ -670,7 +663,7 @@ namespace Csla
     /// Gets or sets the RuleSet name to use for static HasPermission calls.
     /// </summary>
     /// <value>The rule set.</value>
-    public static string RuleSet
+    public string RuleSet
     {
       get
       {
@@ -679,7 +672,7 @@ namespace Csla
       }
       set
       {
-        ApplicationContext.ClientContext["__ruleSet"] = value;
+        ClientContext["__ruleSet"] = value;
       }
     }
 
@@ -742,14 +735,14 @@ namespace Csla
       }
     }
 
-    private static System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
-    private static bool _defaultTransactionAsyncFlowOptionSet;
+    private System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
+    private bool _defaultTransactionAsyncFlowOptionSet;
 
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>
-    public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
+    public System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
     {
       get
       {
@@ -794,7 +787,7 @@ namespace Csla
     /// Return Logical Execution Location - Client or Server
     /// This is applicable to Local mode as well
     /// </summary>
-    public static LogicalExecutionLocations LogicalExecutionLocation
+    public LogicalExecutionLocations LogicalExecutionLocation
     {
       get
       {
@@ -810,63 +803,93 @@ namespace Csla
     /// Set logical execution location
     /// </summary>
     /// <param name="location">Location to set context to</param>
-    internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
+    internal void SetLogicalExecutionLocation(LogicalExecutionLocations location)
     {
       LocalContext["__logicalExecutionLocation"] = location;
     }
     #endregion
 
-    #region ServiceProvider
-
-    private static IServiceCollection _serviceCollection;
-
-    internal static void SetServiceCollection(IServiceCollection serviceCollection)
-    {
-      _serviceCollection = serviceCollection;
-    }
-
-    /// <summary>
-    /// Sets the default service provider for this application.
-    /// </summary>
-    public static IServiceProvider DefaultServiceProvider
-    {
-      internal get
-      {
-        var result = ContextManager.GetDefaultServiceProvider();
-        if (result == null && _serviceCollection != null)
-        {
-          result = _serviceCollection.BuildServiceProvider();
-          _serviceCollection = null;
-          DefaultServiceProvider = result;
-        }
-        return result;
-      }
-      set => ContextManager.SetDefaultServiceProvider(value);
-    }
-
     /// <summary>
     /// Sets the service provider scope for this application context.
     /// </summary>
-#pragma warning disable CS3003 // Type is not CLS-compliant
-    public static IServiceProvider CurrentServiceProvider
-#pragma warning restore CS3003 // Type is not CLS-compliant
+    public IServiceProvider CurrentServiceProvider
     {
-      internal get
-      {
-        var result = ContextManager?.GetServiceProvider();
-        if (result == null)
-        {
-          var def = DefaultServiceProvider;
-          if (def != null)
-          {
-            result = CurrentServiceProvider = def.CreateScope().ServiceProvider;
-          }
-        }
-        return result;
-      }
+      internal get => ContextManager?.GetServiceProvider();
       set => ContextManager.SetServiceProvider(value);
     }
 
-    #endregion
+    /// <summary>
+    /// Uses reflection to create an object using its 
+    /// default constructor.
+    /// </summary>
+    /// <typeparam name="T">Type of object to create.</typeparam>
+    internal T CreateInstance<T>()
+    {
+      return (T)CreateInstance(typeof(T));
+    }
+
+    /// <summary>
+    /// Uses reflection to create an object using its 
+    /// default constructor.
+    /// </summary>
+    /// <param name="objectType">Type of object to create.</param>
+    internal object CreateInstance(Type objectType)
+    {
+      object result;
+      if (CurrentServiceProvider != null)
+        result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType);
+      else
+        result = Activator.CreateInstance(objectType);
+      if (result is IUseApplicationContext tmp)
+      {
+        tmp.ApplicationContext = this;
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Uses reflection to create an object using its 
+    /// default constructor.
+    /// </summary>
+    /// <typeparam name="T">Type of object to create.</typeparam>
+    /// <param name="parameters">Parameters for constructor</param>
+    internal T CreateInstance<T>(params object[] parameters)
+    {
+      return (T)CreateInstance(typeof(T), parameters);
+    }
+
+    /// <summary>
+    /// Creates an object.
+    /// </summary>
+    /// <param name="objectType">Type of object to create</param>
+    /// <param name="parameters">Parameters for constructor</param>
+    internal object CreateInstance(Type objectType, params object[] parameters)
+    {
+      object result;
+      if (CurrentServiceProvider != null)
+        result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
+      else
+        result = Activator.CreateInstance(objectType, parameters);
+      if (result is IUseApplicationContext tmp)
+      {
+        tmp.ApplicationContext = this;
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Creates an instance of a generic type
+    /// using its default constructor.
+    /// </summary>
+    /// <param name="type">Generic type to create</param>
+    /// <param name="paramTypes">Type parameters</param>
+    /// <returns></returns>
+    internal object CreateGenericInstance(Type type, params Type[] paramTypes)
+    {
+      var genericType = type.GetGenericTypeDefinition();
+      var gt = genericType.MakeGenericType(paramTypes);
+      return CreateInstance(gt);
+    }
+
   }
 }

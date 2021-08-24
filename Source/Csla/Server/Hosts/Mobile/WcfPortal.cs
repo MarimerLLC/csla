@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="WcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -24,6 +24,19 @@ namespace Csla.Server.Hosts.Mobile
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="mobileRequestProcessor"></param>
+    public WcfPortal(MobileRequestProcessor mobileRequestProcessor)
+    {
+      processor = mobileRequestProcessor;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public MobileRequestProcessor processor { get; set; }
 
 #region IWcfPortal Members
 
@@ -46,7 +59,6 @@ namespace Csla.Server.Hosts.Mobile
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var processor = new MobileRequestProcessor();
         var createRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
@@ -93,7 +105,6 @@ namespace Csla.Server.Hosts.Mobile
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
-        var processor = new MobileRequestProcessor();
         var fetchRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
@@ -136,7 +147,6 @@ namespace Csla.Server.Hosts.Mobile
         // unpack object
         object obj = GetCriteria(request.ObjectData);
 
-        var processor = new MobileRequestProcessor();
         var updateRequest = new MobileUpdateRequest(
           obj,
           (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
@@ -182,7 +192,6 @@ namespace Csla.Server.Hosts.Mobile
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var processor = new MobileRequestProcessor();
         var deleteRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,

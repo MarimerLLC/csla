@@ -15,9 +15,14 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// IsInRole authorization rule.
   /// </summary>
-  public class IsInRole : AuthorizationRule
+  public class IsInRole : AuthorizationRule, Core.IUseApplicationContext
   {
     private List<string> _roles;
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -71,12 +76,12 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(IAuthorizationContext context)
     {
-      if (Csla.ApplicationContext.User != null)
+      if (ApplicationContext.User != null)
       {
         if (_roles.Count > 0)
         {
           foreach (var item in _roles)
-            if (Csla.ApplicationContext.User.IsInRole(item))
+            if (ApplicationContext.User.IsInRole(item))
             {
               context.HasPermission = true;
               break;
@@ -93,9 +98,14 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// IsNotInRole authorization rule.
   /// </summary>
-  public class IsNotInRole : AuthorizationRule
+  public class IsNotInRole : AuthorizationRule, Core.IUseApplicationContext
   {
     private List<string> _roles;
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -150,10 +160,10 @@ namespace Csla.Rules.CommonRules
     protected override void Execute(IAuthorizationContext context)
     {
       context.HasPermission = true;
-      if (Csla.ApplicationContext.User != null)
+      if (ApplicationContext.User != null)
       {
         foreach (var item in _roles)
-          if (Csla.ApplicationContext.User.IsInRole(item))
+          if (ApplicationContext.User.IsInRole(item))
           {
             context.HasPermission = false;
             break;

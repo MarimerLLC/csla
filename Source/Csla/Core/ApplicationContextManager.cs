@@ -24,6 +24,15 @@ namespace Csla.Core
     private const string _globalContextName = "Csla.GlobalContext";
 
     /// <summary>
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="provider">IServiceProvider object</param>
+    public ApplicationContextManager(IServiceProvider provider)
+    {
+      _provider = provider;
+    }
+
+    /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
     public bool IsValid
@@ -75,7 +84,8 @@ namespace Csla.Core
     /// <summary>
     /// Gets the client context dictionary.
     /// </summary>
-    public ContextDictionary GetClientContext()
+    /// <param name="executionLocation"></param>
+    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return _clientContext.Value;
     }
@@ -84,7 +94,8 @@ namespace Csla.Core
     /// Sets the client context dictionary.
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
-    public void SetClientContext(ContextDictionary clientContext)
+    /// <param name="executionLocation"></param>
+    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _clientContext.Value = clientContext;
     }
@@ -108,45 +119,24 @@ namespace Csla.Core
       Thread.SetData(slot, globalContext);
     }
 
-    private static IServiceProvider _provider;
-
-    /// <summary>
-    /// Gets the default IServiceProvider
-    /// </summary>
-    public IServiceProvider GetDefaultServiceProvider()
-    {
-      return _provider;
-    }
-
-    /// <summary>
-    /// Sets the default IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
-    {
-      _provider = serviceProvider;
-    }
+    private IServiceProvider _provider;
 
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
     /// <returns></returns>
-#pragma warning disable CS3002 // Return type is not CLS-compliant
     public IServiceProvider GetServiceProvider()
-#pragma warning restore CS3002 // Return type is not CLS-compliant
     {
-      return (IServiceProvider)ApplicationContext.LocalContext["__sps"] ?? GetDefaultServiceProvider();
+      return _provider;
     }
 
     /// <summary>
     /// Sets the service provider for current scope
     /// </summary>
-    /// <param name="scope">IServiceProvider instance</param>
-#pragma warning disable CS3001 // Argument type is not CLS-compliant
-    public void SetServiceProvider(IServiceProvider scope)
-#pragma warning restore CS3001 // Argument type is not CLS-compliant
+    /// <param name="provider">IServiceProvider instance</param>
+    public void SetServiceProvider(IServiceProvider provider)
     {
-      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+      _provider = provider;
     }
   }
 }

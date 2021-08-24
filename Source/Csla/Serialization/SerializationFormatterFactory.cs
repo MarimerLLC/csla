@@ -23,7 +23,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
-#if !NET5_0
+#if !NET5_0 && !NET6_0
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
         return new BinaryFormatterWrapper();
 #if !NETSTANDARD2_0
@@ -35,7 +35,7 @@ namespace Csla.Serialization
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
       {
         string customFormatterTypeName = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-        return (ISerializationFormatter)MethodCaller.CreateInstance(Type.GetType(customFormatterTypeName, true, true));
+        return (ISerializationFormatter)Activator.CreateInstance(Type.GetType(customFormatterTypeName, true, true));
       }
       else
         return new Csla.Serialization.Mobile.MobileFormatter();

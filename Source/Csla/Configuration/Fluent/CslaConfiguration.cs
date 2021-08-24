@@ -37,51 +37,6 @@ namespace Csla.Configuration
       return new CslaConfiguration();
     }
 
-#if !NETSTANDARD2_0 && !NET5_0
-    /// <summary>
-    /// Sets the web context manager.
-    /// </summary>
-    /// <param name="contextManager">Web context manager instance</param>
-    /// <remarks>
-    /// Will use default WebContextManager. 
-    /// Only need to set for non-default WebContextManager.
-    /// </remarks>
-    /// <returns></returns>
-    public CslaConfiguration WebContextManager(IContextManager contextManager)
-    {
-      ApplicationContext.WebContextManager = contextManager;
-      return this;
-    }
-#endif
-
-    /// <summary>
-    /// Sets the context manager.
-    /// </summary>
-    /// <param name="contextManager">Context manager instance.</param>
-    /// <returns>
-    /// ContextManager normally defaults to the correct value. Override for
-    /// non-standard or custom behaviors.
-    /// </returns>
-    public CslaConfiguration ContextManager(IContextManager contextManager)
-    {
-      ApplicationContext.ContextManager = contextManager;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets the context manager type.
-    /// </summary>
-    /// <param name="contextManagerType">Context manager type.</param>
-    /// <returns>
-    /// ContextManager normally defaults to the correct value. Override for
-    /// non-standard or custom behaviors.
-    /// </returns>
-    public CslaConfiguration ContextManager(Type contextManagerType)
-    {
-      ContextManager((IContextManager)Reflection.MethodCaller.CreateInstance(contextManagerType));
-      return this;
-    }
-
     /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
@@ -129,15 +84,16 @@ namespace Csla.Configuration
       return this;
     }
 
-    /// <summary>
-    /// Sets the RuleSet name to use for static HasPermission calls.
-    /// </summary>
-    /// <param name="ruleSet">The rule set.</param>
-    public CslaConfiguration RuleSet(string ruleSet)
-    {
-      ApplicationContext.RuleSet = ruleSet;
-      return this;
-    }
+    // TODO: resolve this
+    ///// <summary>
+    ///// Sets the RuleSet name to use for static HasPermission calls.
+    ///// </summary>
+    ///// <param name="ruleSet">The rule set.</param>
+    //public CslaConfiguration RuleSet(string ruleSet)
+    //{
+    //  ApplicationContext.RuleSet = ruleSet;
+    //  return this;
+    //}
 
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
@@ -146,30 +102,6 @@ namespace Csla.Configuration
     public CslaConfiguration PropertyInfoFactory(string typeName)
     {
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets the default service provider which Csla will use.
-    /// </summary>
-    /// <param name="defaultServiceProvider">IServiceProvider instance</param>
-#pragma warning disable CS3001 // Argument type is not CLS-compliant
-    public CslaConfiguration DefaultServiceProvider(IServiceProvider defaultServiceProvider)
-#pragma warning restore CS3001 // Argument type is not CLS-compliant
-    {
-      ApplicationContext.DefaultServiceProvider = defaultServiceProvider;
-      return this;
-    }
-
-    /// <summary>
-    /// Resets any ApplicationContext settings so they 
-    /// re-read their configuration from AppSettings
-    /// on next use.
-    /// </summary>
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public CslaConfiguration SettingsChanged()
-    {
-      ApplicationContext.SettingsChanged();
       return this;
     }
   }

@@ -25,10 +25,15 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules :
-    MobileObject, ISerializationNotification, IBusinessRules
+    MobileObject, ISerializationNotification, IBusinessRules, IUseApplicationContext
   {
     [NonSerialized]
     private object SyncRoot = new object();
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
@@ -203,7 +208,7 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     public static void AddRule(Type objectType, IAuthorizationRule rule)
     {
-      AddRule(objectType, rule, ApplicationContext.RuleSet);
+      AddRule(objectType, rule, ApplicationContext.DefaultRuleSet);
     }
 
     /// <summary>
@@ -306,38 +311,41 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
-    public static bool HasPermission(AuthorizationActions action, Type objectType)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType)
     {
-      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, objectType, null, ApplicationContext.RuleSet);
+      return HasPermission(action, null, objectType, null, applicationContext.RuleSet);
     }
 
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="criteria">The criteria object provided.</param>
-    public static bool HasPermission(AuthorizationActions action, Type objectType, object[] criteria)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria)
     {
-      objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, objectType, criteria, ApplicationContext.RuleSet);
+      return HasPermission(action, null, objectType, criteria, applicationContext.RuleSet);
     }
 
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="ruleSet">The rule set.</param>
     /// <returns>
     /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
     /// </returns>
-    public static bool HasPermission(AuthorizationActions action, Type objectType, string ruleSet)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet)
     {
       return HasPermission(action, null, objectType, null, ruleSet);
     }
@@ -345,11 +353,12 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-instance authorization rules.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="obj">Business object instance.</param>
-    public static bool HasPermission(AuthorizationActions action, object obj)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, object obj)
     {
-      return HasPermission(action, obj, obj.GetType(), null, ApplicationContext.RuleSet);
+      return HasPermission(action, obj, obj.GetType(), null, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -528,7 +537,7 @@ namespace Csla.Rules
       RunningRules = true;
       var rules = from r in TypeRules.Rules
                   where r.PrimaryProperty == null
-                    && CanRunRule(r, executionContext)
+                    && CanRunRule(ApplicationContext, r, executionContext)
                   orderby r.Priority
                   select r;
       BrokenRules.ClearRules(null);
@@ -600,12 +609,13 @@ namespace Csla.Rules
     /// <summary>
     /// Determines whether this rule can run the specified context mode.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="rule">The rule.</param>
     /// <param name="contextMode">The context mode.</param>
     /// <returns>
     /// 	<c>true</c> if this instance [can run rule] the specified context mode; otherwise, <c>false</c>.
     /// </returns>
-    internal static bool CanRunRule(IBusinessRuleBase rule, RuleContextModes contextMode)
+    internal static bool CanRunRule(ApplicationContext applicationContext, IBusinessRuleBase rule, RuleContextModes contextMode)
     {
       // default then just return true
       if (rule.RunMode == RunModes.Default) return true;
@@ -616,7 +626,7 @@ namespace Csla.Rules
         canRun &= (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
       if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
-        canRun &= ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
+        canRun &= applicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
 
       if ((contextMode & RuleContextModes.CheckRules) > 0)
         canRun &= (rule.RunMode & RunModes.DenyCheckRules) == 0;
@@ -635,7 +645,7 @@ namespace Csla.Rules
     {
       var rules = from r in TypeRules.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
-                    && CanRunRule(r, executionContext)
+                    && CanRunRule(ApplicationContext, r, executionContext)
                   orderby r.Priority
                   select r;
 
@@ -900,7 +910,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0)

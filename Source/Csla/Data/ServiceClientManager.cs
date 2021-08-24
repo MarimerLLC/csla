@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE && !NETCORE && !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="ServiceClientManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -21,7 +21,7 @@ namespace Csla.Data
   /// <typeparam name="T">
   /// Channel type for the ClientBase object.
   /// </typeparam>
-  public class ServiceClientManager<C, T>
+  public class ServiceClientManager<C, T> : Core.IUseApplicationContext
     where C : System.ServiceModel.ClientBase<T>
     where T : class
   {
@@ -30,12 +30,17 @@ namespace Csla.Data
     private string _name = string.Empty;
 
     /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Gets the client proxy object for the
     /// specified name.
     /// </summary>
     /// <param name="name">Unique name for the proxy object.</param>
     /// <returns></returns>
-    public static ServiceClientManager<C,T > GetManager(string name)
+    public ServiceClientManager<C,T > GetManager(string name)
     {
 
       lock (_lock)
@@ -53,7 +58,7 @@ namespace Csla.Data
 
     private ServiceClientManager(string name)
     {
-      _client = (C)(Reflection.MethodCaller.CreateInstance(typeof(C)));
+      _client = (C)(ApplicationContext.CreateInstance(typeof(C)));
     }
 
     /// <summary>

@@ -23,7 +23,7 @@ namespace Csla.Server.Dashboard
     /// <returns></returns>
     public static IDashboard GetDashboard()
     {
-      IDashboard result = null;
+      IDashboard result;
       if (_dashboard == null)
       {
         var typeName = ConfigurationManager.AppSettings["CslaDashboardType"];
@@ -34,7 +34,7 @@ namespace Csla.Server.Dashboard
           else if (typeName == "NullDashboard")
             result = new NullDashboard();
           else
-            result = (IDashboard)Reflection.MethodCaller.CreateInstance(Type.GetType(typeName));
+            result = (IDashboard)Activator.CreateInstance(Type.GetType(typeName));
         }
         else
         {

@@ -35,7 +35,8 @@ namespace Csla
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
       INotifyBusy,
-      IBusinessListBase<C>
+      IBusinessListBase<C>,
+      IUseApplicationContext
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -48,6 +49,11 @@ namespace Csla
       Initialize();
       AllowNew = true;
     }
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     #region Initialize
 
@@ -288,7 +294,8 @@ namespace Csla
     /// </summary>
     protected override C AddNewCore()
     {
-      var item = DataPortal.CreateChild<C>();
+      var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+      var item = dp.CreateChild();
       Add(item);
       return item;
     }
@@ -779,7 +786,7 @@ namespace Csla
     {
       get
       {
-        bool auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
+        bool auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
         return (IsDirty && IsValid && auth && !IsBusy);
       }
     }
@@ -870,12 +877,13 @@ namespace Csla
     {
       using (LoadListMode)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
         foreach (var child in DeletedList)
-          DataPortal.UpdateChild(child, parameters);
+          dp.UpdateChild(child, parameters);
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
+          if (child.IsDirty) dp.UpdateChild(child, parameters);
       }
     }
 
@@ -955,13 +963,14 @@ namespace Csla
 
       if (IsDirty)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
         if (isSync)
         {
-          result = DataPortal.Update<T>((T)this);
+          result = dp.Update((T)this);
         }
         else
         {
-          result = await DataPortal.UpdateAsync<T>((T)this);
+          result = await dp.UpdateAsync((T)this);
         }
       }
       else

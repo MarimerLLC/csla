@@ -1,4 +1,4 @@
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -18,11 +18,16 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server by using WCF.
   /// </summary>
-  public class WcfProxy : IDataPortalProxy
+  public class WcfProxy : IDataPortalProxy, Core.IUseApplicationContext
   {
     private static System.ServiceModel.Channels.Binding _defaultBinding;
     private const int TimeoutInMinutes = 10;
     private static string _defaultEndPoint = "WcfDataPortal";
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets or sets the default binding used to initialize
@@ -56,19 +61,6 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
-    /// Gets or sets the default URL address
-    /// for the data portal server.
-    /// </summary>
-    /// <remarks>
-    /// Deprecated: use ApplicationContext.DataPortalUrlString
-    /// </remarks>
-    public static string DefaultUrl
-    {
-      get { return ApplicationContext.DataPortalUrlString; }
-      set { ApplicationContext.DataPortalUrlString = value; }
-    }
-
-    /// <summary>
     /// Gets or sets the default WCF endpoint
     /// name for the data portal server.
     /// </summary>
@@ -85,7 +77,6 @@ namespace Csla.DataPortalClient
     /// </summary>
     public WcfProxy()
     {
-      this.DataPortalUrl = WcfProxy.DefaultUrl;
       this.Binding = WcfProxy.DefaultBinding;
       this.EndPoint = WcfProxy.DefaultEndPoint;
     }

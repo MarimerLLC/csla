@@ -21,6 +21,11 @@ namespace Csla.Server
   public class DataPortal : IDataPortalServer
   {
     /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Gets the data portal dashboard instance.
     /// </summary>
     public static Dashboard.IDashboard Dashboard { get; internal set; }
@@ -30,32 +35,14 @@ namespace Csla.Server
       Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
     }
 
-    #region Constructors
     /// <summary>
-    /// Default constructor
+    /// Creates an instance of the type.
     /// </summary>
-    public DataPortal()
-      : this("CslaAuthorizationProvider")
+    /// <param name="applicationContext"></param>
+    public DataPortal(ApplicationContext applicationContext)
     {
-
-    }
-
-    /// <summary>
-    /// This construcor accepts the App Setting name for the Csla Authorization Provider,
-    /// therefore getting the provider type from configuration file
-    /// </summary>
-    /// <param name="cslaAuthorizationProviderAppSettingName"></param>
-    protected DataPortal(string cslaAuthorizationProviderAppSettingName)
-      : this(GetAuthProviderType(cslaAuthorizationProviderAppSettingName))
-    {
-    }
-
-    /// <summary>
-    /// This constructor accepts the Authorization Provider Type as a parameter.
-    /// </summary>
-    /// <param name="authProviderType"></param>
-    protected DataPortal(Type authProviderType)
-    {
+      ApplicationContext = applicationContext;
+      var authProviderType = GetAuthProviderType("CslaAuthorizationProvider");
       if (null == authProviderType)
         throw new ArgumentNullException(nameof(authProviderType), Resources.CslaAuthenticationProviderNotSet);
       if (!typeof(IAuthorizeDataPortal).IsAssignableFrom(authProviderType))
@@ -67,7 +54,7 @@ namespace Csla.Server
         lock (_syncRoot)
         {
           if (null == _authorizer)
-            _authorizer = (IAuthorizeDataPortal)Reflection.MethodCaller.CreateInstance(authProviderType);
+            _authorizer = (IAuthorizeDataPortal)Activator.CreateInstance(authProviderType);
         }
       }
 
@@ -78,7 +65,7 @@ namespace Csla.Server
           lock (_syncRoot)
           {
             if (_interceptor == null)
-              _interceptor = (IInterceptDataPortal)Reflection.MethodCaller.CreateInstance(InterceptorType);
+              _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
           }
         }
       }
@@ -103,28 +90,37 @@ namespace Csla.Server
 
     }
 
-    #endregion
-
     #region Data Access
 
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
       {
         case TransactionIsolationLevel.Serializable:
-          return new ServicedDataPortalSerializable();
+          return ApplicationContext.CreateInstance<ServicedDataPortalSerializable>();
         case TransactionIsolationLevel.RepeatableRead:
-          return new ServicedDataPortalRepeatableRead();
+          return ApplicationContext.CreateInstance<ServicedDataPortalRepeatableRead>();
         case TransactionIsolationLevel.ReadCommitted:
-          return new ServicedDataPortalReadCommitted();
+          return ApplicationContext.CreateInstance<ServicedDataPortalReadCommitted>();
         case TransactionIsolationLevel.ReadUncommitted:
-          return new ServicedDataPortalReadUncommitted();
+          return ApplicationContext.CreateInstance<ServicedDataPortalReadUncommitted>();
         default:
           throw new ArgumentOutOfRangeException("transactionalAttribute");
       }
     }
-#endif 
+#endif
+
+    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
+    {
+      get
+      {
+        if (serviceProviderMethodCaller == null)
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+        return serviceProviderMethodCaller;
+      }
+    }
 
     /// <summary>
     /// Create a new business object.
@@ -150,16 +146,16 @@ namespace Csla.Server
 
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
         if (criteria is Server.EmptyCriteria)
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
 
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -180,7 +176,7 @@ namespace Csla.Server
 
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -244,9 +240,9 @@ namespace Csla.Server
 
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
         if (criteria is EmptyCriteria)
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
 
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
@@ -254,7 +250,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -272,7 +268,7 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -365,17 +361,17 @@ namespace Csla.Server
           if (bbase != null)
           {
             if (bbase.IsDeleted)
-              serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, null);
+              serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, null);
             else
               if (bbase.IsNew)
-                serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, null);
+                serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, null);
               else
-                serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+                serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
           }
           else if (obj is Core.ICommandObject)
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
           else
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
 
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
@@ -385,7 +381,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -403,7 +399,7 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -475,9 +471,9 @@ namespace Csla.Server
         {
           Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
           if (criteria is EmptyCriteria)
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
           else
-            serviceProviderMethodInfo = Reflection.ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
         }
@@ -485,7 +481,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -503,7 +499,7 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalBroker();
+            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -604,15 +600,14 @@ namespace Csla.Server
 
     private void SetContext(DataPortalContext context)
     {
-      _oldLocation = Csla.ApplicationContext.LogicalExecutionLocation;
+      _oldLocation = ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
-      if (!context.IsRemotePortal && ApplicationContext.WebContextManager != null && !ApplicationContext.WebContextManager.IsValid)
+      if (!context.IsRemotePortal && ApplicationContext.ClientContext != null)
       {
-        // local data portal and no valid HttpContext
-        // if context already exists, then use existing context (from AsyncLocal or TLS)
-        if (ApplicationContext.ClientContext == null)
-          ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+        // local data portal and if context already exists,
+        // then use existing context (from AsyncLocal or TLS)
+        ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
       }
 
       // if the dataportal is not remote then
@@ -716,7 +711,8 @@ namespace Csla.Server
 
 #endregion
 
-    internal static DataPortalException NewDataPortalException(string message, Exception innerException, object businessObject)
+    internal static DataPortalException NewDataPortalException(
+      string message, Exception innerException, object businessObject)
     {
       if (!ApplicationContext.DataPortalReturnObjectOnException)
         businessObject = null;

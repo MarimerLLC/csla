@@ -137,15 +137,15 @@ namespace Csla.Configuration
       return this;
     }
 
-    /// <summary>
-    /// Sets an instance of the IDataPortalActivator provider.
-    /// </summary>
-    /// <param name="activator">Activator instance</param>
-    public CslaDataPortalConfiguration Activator(Server.IDataPortalActivator activator)
-    {
-      ApplicationContext.DataPortalActivator = activator;
-      return this;
-    }
+    ///// <summary>
+    ///// Sets an instance of the IDataPortalActivator provider.
+    ///// </summary>
+    ///// <param name="activator">Activator instance</param>
+    //public CslaDataPortalConfiguration Activator(Server.IDataPortalActivator activator)
+    //{
+    //  ApplicationContext.DataPortalActivator = activator;
+    //  return this;
+    //}
 
     /// <summary>
     /// Sets the authentication type being used by the
@@ -299,7 +299,7 @@ namespace Csla.Configuration
     public CslaDataPortalConfiguration DashboardType(string typeName)
     {
       ConfigurationManager.AppSettings["CslaDashboardType"] = typeName;
-      Csla.Server.Dashboard.DashboardFactory.Reset();
+      //Csla.Server.Dashboard.DashboardFactory.Reset();
       return this;
     }
 

@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="ObjectContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -32,12 +32,18 @@ namespace Csla.Data
   /// dispose the object when the last consumer
   /// has called Dispose."
   /// </remarks>
-  public class ObjectContextManager<C> : IDisposable where C : ObjectContext
+  public class ObjectContextManager<C> : IDisposable, Core.IUseApplicationContext
+    where C : ObjectContext
   {
     private static object _lock = new object();
     private C _context;
     private string _connectionString;
     private string _label;
+
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the ObjectContextManager object for the 
@@ -46,7 +52,7 @@ namespace Csla.Data
     /// <param name="database">
     /// Database name as shown in the config file.
     /// </param>
-    public static ObjectContextManager<C> GetManager(string database)
+    public ObjectContextManager<C> GetManager(string database)
     {
       return GetManager(database, true);
     }
@@ -59,7 +65,7 @@ namespace Csla.Data
     /// Database name as shown in the config file.
     /// </param>
     /// <param name="label">Label for this context.</param>
-    public static ObjectContextManager<C> GetManager(string database, string label)
+    public ObjectContextManager<C> GetManager(string database, string label)
     {
       return GetManager(database, true, label);
     }
@@ -78,7 +84,7 @@ namespace Csla.Data
     /// used as a connection string.
     /// </param>
     /// <returns>ContextManager object for the name.</returns>
-    public static ObjectContextManager<C> GetManager(string database, bool isDatabaseName)
+    public ObjectContextManager<C> GetManager(string database, bool isDatabaseName)
     {
       return GetManager(database, isDatabaseName, "default");
     }
@@ -98,7 +104,7 @@ namespace Csla.Data
     /// </param>
     /// <param name="label">Label for this context.</param>
     /// <returns>ContextManager object for the name.</returns>
-    public static ObjectContextManager<C> GetManager(string database, bool isDatabaseName, string label)
+    public ObjectContextManager<C> GetManager(string database, bool isDatabaseName, string label)
     {
       if (isDatabaseName)
       {
@@ -135,7 +141,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      _context = (C)(Reflection.MethodCaller.CreateInstance(typeof(C), connectionString));
+      _context = (C)(ApplicationContext.CreateInstance(typeof(C), connectionString));
       _context.Connection.Open();
     }
 

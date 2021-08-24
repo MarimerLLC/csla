@@ -43,12 +43,14 @@ namespace Csla.Core
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    ContextDictionary GetClientContext();
+    /// <param name="executionLocation"></param>
+    ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
-    void SetClientContext(ContextDictionary clientContext);
+    /// <param name="executionLocation"></param>
+    void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Gets the global context.
     /// </summary>
@@ -59,16 +61,7 @@ namespace Csla.Core
     /// <param name="globalContext">Global context.</param>
     void SetGlobalContext(ContextDictionary globalContext);
     /// <summary>
-    /// Gets the default IServiceProvider
-    /// </summary>
-    IServiceProvider GetDefaultServiceProvider();
-    /// <summary>
-    /// Sets the default IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    void SetDefaultServiceProvider(IServiceProvider serviceProvider);
-    /// <summary>
-    /// Gets the service provider scope for current scope.
+    /// Gets the service provider.
     /// </summary>
 #pragma warning disable CS3002 // Return type is not CLS-compliant
     IServiceProvider GetServiceProvider();
@@ -76,9 +69,9 @@ namespace Csla.Core
     /// <summary>
     /// Sets the service provider for current scope.
     /// </summary>
-    /// <param name="scope">IServiceProvider instance</param>
+    /// <param name="provider">IServiceProvider instance</param>
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
-    void SetServiceProvider(IServiceProvider scope);
+    void SetServiceProvider(IServiceProvider provider);
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
   }
 }

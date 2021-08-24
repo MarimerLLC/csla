@@ -1,4 +1,4 @@
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="WcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -23,13 +23,23 @@ namespace Csla.Server.Hosts
   public class WcfPortal : IWcfPortal
   {
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dataPortal"></param>
+    public WcfPortal(Server.IDataPortalServer dataPortal)
+    {
+      portal = dataPortal;
+    }
+
+    private readonly Server.IDataPortalServer portal;
+
+    /// <summary>
     /// Create a new business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Create(CreateRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {
@@ -49,7 +59,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Fetch(FetchRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {
@@ -69,7 +78,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Update(UpdateRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {
@@ -89,7 +97,6 @@ namespace Csla.Server.Hosts
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public async Task<WcfResponse> Delete(DeleteRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
       object result;
       try
       {

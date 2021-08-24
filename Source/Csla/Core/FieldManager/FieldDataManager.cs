@@ -584,13 +584,14 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Paramters for method</param>
     public void UpdateChildren(params object[] parameters)
     {
+      var dp = _parent.ApplicationContext.CreateInstance<DataPortal<IFieldData>>();
       foreach (var item in _fieldData)
       {
         if (item != null)
         {
           object obj = item.Value;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
-            Csla.DataPortal.UpdateChild(obj, parameters);
+            dp.UpdateChild(obj, parameters);
         }
       }
     }

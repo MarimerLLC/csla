@@ -27,7 +27,8 @@ namespace Csla
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
       Core.ISavable, Core.ISavable<T>, Core.IParent, Server.IDataPortalTarget,
-      INotifyBusy
+      INotifyBusy,
+      Core.IUseApplicationContext
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -42,8 +43,13 @@ namespace Csla
       this.AllowNew = true;
     }
 
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
-#region Initialize
+
+    #region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -169,7 +175,7 @@ namespace Csla
     {
       get 
       {
-        bool auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
+        bool auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
         return (IsDirty && IsValid && auth && !IsBusy);
       }
     }
@@ -421,7 +427,7 @@ namespace Csla
       get 
       { 
         if (_deletedList == null)
-          _deletedList = new MobileList<C>();
+          _deletedList = (MobileList<C>)ApplicationContext.CreateInstance(typeof(MobileList<C>));
         return _deletedList; 
       }
     }
@@ -471,7 +477,8 @@ namespace Csla
     /// </summary>
     protected override object AddNewCore()
     {
-      var item = DataPortal.CreateChild<C>();
+      var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+      var item = dp.CreateChild();
       Add(item);
       return item;
     }
@@ -784,12 +791,13 @@ namespace Csla
     {
       using (LoadListMode)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
         foreach (var child in DeletedList)
-          DataPortal.UpdateChild(child, parameters);
+          dp.UpdateChild(child, parameters);
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
+          if (child.IsDirty) dp.UpdateChild(child, parameters);
       }
     }
 
@@ -879,13 +887,14 @@ namespace Csla
 
       if (IsDirty)
       {
+        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
         if (isSync)
         {
-          result = DataPortal.Update<T>((T)this);
+          result = dp.Update((T)this);
         }
         else
         {
-          result = await DataPortal.UpdateAsync<T>((T)this);
+          result = await dp.UpdateAsync((T)this);
         }
       }
       else

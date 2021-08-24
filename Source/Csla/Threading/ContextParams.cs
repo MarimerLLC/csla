@@ -17,6 +17,13 @@ namespace Csla.Threading
   /// </summary>
   internal class ContextParams
   {
+    public ContextParams(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
+    private ApplicationContext ApplicationContext { get; set; }
+
     public IPrincipal User { get; private set; }
     public Csla.Core.ContextDictionary ClientContext { get; private set; }
     public Csla.Core.ContextDictionary GlobalContext { get; private set; }
@@ -25,10 +32,10 @@ namespace Csla.Threading
 
     public ContextParams()
     {
-      this.User = Csla.ApplicationContext.User;
-      this.ClientContext = Csla.ApplicationContext.ClientContext;
+      this.User = ApplicationContext.User;
+      this.ClientContext = ApplicationContext.ClientContext;
 #pragma warning disable CS0618 // Type or member is obsolete
-      this.GlobalContext = Csla.ApplicationContext.GlobalContext;
+      this.GlobalContext = ApplicationContext.GlobalContext;
 #pragma warning restore CS0618 // Type or member is obsolete
       this.Culture = System.Globalization.CultureInfo.CurrentCulture;
       this.UICulture = System.Globalization.CultureInfo.CurrentUICulture;
@@ -36,8 +43,8 @@ namespace Csla.Threading
 
     internal void SetThreadContext()
     {
-      Csla.ApplicationContext.User = User;
-      Csla.ApplicationContext.SetContext(ClientContext, GlobalContext);
+      ApplicationContext.User = User;
+      ApplicationContext.SetContext(ClientContext, GlobalContext);
       Thread.CurrentThread.CurrentUICulture = UICulture;
       Thread.CurrentThread.CurrentCulture = Culture;
     }

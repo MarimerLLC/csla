@@ -551,7 +551,13 @@ namespace Csla.Core.FieldManager
             if (undoable != null)
             {
               // current value is undoable
-              if (oldItem != null)
+              var doUndo = (oldItem != null);
+              if (!doUndo)
+              {
+                var propInfo = _propertyList.Where(r => r.Index == index).First();
+                doUndo = propInfo.RelationshipType.HasFlag(RelationshipTypes.LazyLoad);
+              }
+              if (doUndo)
                 undoable.UndoChanges(parentEditLevel, parentBindingEdit);
               else
                 _fieldData[index] = null;

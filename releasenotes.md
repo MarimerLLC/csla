@@ -6,13 +6,14 @@ CSLA 5 includes major enhancements, and brings support for .NET Core 3.1, .NET 5
 
 Bug fixes over the 5.5.0 release.
 
-[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3AMarimerLLC%2Fcsla%2F24)
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/issues?q=project%3AMarimerLLC%2Fcsla%2F24+is%3Aclosed+)
 
 ## Contributors
 
-* [@michaelcsikos](https://github.com/michaelcsikos)
-* [@ProDInfo](https://github.com/ProDInfo)
-* [@JacoJordaan](https://github.com/JacoJordaan)
+* [@RaviPatelTheOne](https://github.com/RaviPatelTheOne)
+* [@amselem](https://github.com/amselem)
 * [@rockfordlhotka](https://github.com/rockfordlhotka)
 
 # CSLA .NET version 5.5.0 release

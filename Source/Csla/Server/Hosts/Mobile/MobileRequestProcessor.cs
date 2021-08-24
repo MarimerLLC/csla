@@ -17,7 +17,7 @@ namespace Csla.Server.Hosts.Mobile
   /// <summary>
   /// Object that processes all the requests from a client
   /// </summary>
-  public class MobileRequestProcessor : Core.IUseApplicationContext
+  public class MobileRequestProcessor
   {
     /// <summary>
     /// 
@@ -40,7 +40,6 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     public Server.IDataPortalServer serverDataPortal { get; set; }
 
-#region Factory Loader
     #region Factory Loader
 
     private IMobileFactoryLoader _factoryLoader;

@@ -18,12 +18,12 @@ namespace Csla.Server
   /// message router as discussed
   /// in Chapter 4.
   /// </summary>
-  public class DataPortal : IDataPortalServer, Core.IUseApplicationContext
+  public class DataPortal : IDataPortalServer
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the data portal dashboard instance.
@@ -35,32 +35,14 @@ namespace Csla.Server
       Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
     }
 
-    #region Constructors
     /// <summary>
-    /// Default constructor
+    /// Creates an instance of the type.
     /// </summary>
-    public DataPortal()
-      : this("CslaAuthorizationProvider")
+    /// <param name="applicationContext"></param>
+    public DataPortal(ApplicationContext applicationContext)
     {
-
-    }
-
-    /// <summary>
-    /// This construcor accepts the App Setting name for the Csla Authorization Provider,
-    /// therefore getting the provider type from configuration file
-    /// </summary>
-    /// <param name="cslaAuthorizationProviderAppSettingName"></param>
-    protected DataPortal(string cslaAuthorizationProviderAppSettingName)
-      : this(GetAuthProviderType(cslaAuthorizationProviderAppSettingName))
-    {
-    }
-
-    /// <summary>
-    /// This constructor accepts the Authorization Provider Type as a parameter.
-    /// </summary>
-    /// <param name="authProviderType"></param>
-    protected DataPortal(Type authProviderType)
-    {
+      ApplicationContext = applicationContext;
+      var authProviderType = GetAuthProviderType("CslaAuthorizationProvider");
       if (null == authProviderType)
         throw new ArgumentNullException(nameof(authProviderType), Resources.CslaAuthenticationProviderNotSet);
       if (!typeof(IAuthorizeDataPortal).IsAssignableFrom(authProviderType))
@@ -107,8 +89,6 @@ namespace Csla.Server
         return _authorizer.GetType();
 
     }
-
-    #endregion
 
     #region Data Access
 
@@ -623,12 +603,11 @@ namespace Csla.Server
       _oldLocation = ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
-      if (!context.IsRemotePortal && ApplicationContext.WebContextManager != null && !ApplicationContext.WebContextManager.IsValid)
+      if (!context.IsRemotePortal && ApplicationContext.ClientContext != null)
       {
-        // local data portal and no valid HttpContext
-        // if context already exists, then use existing context (from AsyncLocal or TLS)
-        if (ApplicationContext.ClientContext == null)
-          ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+        // local data portal and if context already exists,
+        // then use existing context (from AsyncLocal or TLS)
+        ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
       }
 
       // if the dataportal is not remote then

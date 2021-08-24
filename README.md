@@ -1,6 +1,7 @@
 CSLA .NET
 ====
-[![Build status](https://ci.appveyor.com/api/projects/status/jl2k3pjvtqca4lei/branch/main?svg=true)](https://ci.appveyor.com/project/rockfordlhotka/csla/branch/main)
+![Build status](https://github.com/MarimerLLC/csla/actions/workflows/ci/badge.svg)
+
 
 [![Bugs](https://img.shields.io/github/issues/marimerllc/csla/kind%2Fbug)](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug)
 [![Roadmap](https://img.shields.io/github/issues/marimerllc/csla/flag%2Froadmap)](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aopen+label%3Aflag%2Froadmap)

@@ -1,4 +1,4 @@
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="ConnectionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -142,7 +142,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-#if NETSTANDARD2_0 || NET5_0
+#if NETSTANDARD2_0 || NET5_0 || NET6_0
       _connection = new System.Data.SqlClient.SqlConnection(connectionString);
       _connection.Open();
 #else

@@ -23,7 +23,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
-#if !NET5_0
+#if !NET5_0 && !NET6_0
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
         return new BinaryFormatterWrapper();
 #if !NETSTANDARD2_0

@@ -61,7 +61,7 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -223,7 +223,7 @@ namespace Csla
     /// <param name="info">Serialization info object.</param>
     /// <param name="context">Serialization context object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !NET5_0
+#if !NET5_0 && !NET6_0
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 #endif

@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD2_0 && !NET5_0
+﻿#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
 //-----------------------------------------------------------------------
 // <copyright file="WcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -38,7 +38,7 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     public MobileRequestProcessor processor { get; set; }
 
-    #region IWcfPortal Members
+#region IWcfPortal Members
 
     /// <summary>
     /// Create a new business object.

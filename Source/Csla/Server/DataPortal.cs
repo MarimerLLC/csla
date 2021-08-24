@@ -92,7 +92,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -155,7 +155,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -250,7 +250,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -381,7 +381,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -481,7 +481,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try

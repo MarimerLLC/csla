@@ -129,7 +129,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     public DataPortalErrorInfo()
     { }
 
-#if !NETSTANDARD2_0 && !NET5_0
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
     /// <summary>
     /// Creates an instance of the type by copying
     /// the WcfErrorInfo data.

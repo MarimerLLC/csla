@@ -1406,7 +1406,7 @@ namespace Csla
       }
     }
 
-    void loadManager_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    void loadManager_UnhandledAsyncException(object sender, Csla.Core.ErrorEventArgs e)
     {
       OnUnhandledAsyncException(e);
     }
@@ -1734,16 +1734,16 @@ namespace Csla
 
     [NotUndoable]
     [NonSerialized]
-    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+    private EventHandler<Csla.Core.ErrorEventArgs> _unhandledAsyncException;
 
     /// <summary>
     /// Event raised when an exception occurs on a background
     /// thread during an asynchronous operation.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<Csla.Core.ErrorEventArgs> UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add { _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
     /// <summary>
@@ -1751,7 +1751,7 @@ namespace Csla
     /// </summary>
     /// <param name="error">Error arguments.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    protected virtual void OnUnhandledAsyncException(Csla.Core.ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
@@ -1766,7 +1766,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
-      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+      OnUnhandledAsyncException(new Csla.Core.ErrorEventArgs(originalSender, error));
     }
 
 #endregion

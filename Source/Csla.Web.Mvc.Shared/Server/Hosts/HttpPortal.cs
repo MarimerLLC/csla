@@ -26,6 +26,17 @@ namespace Csla.Server.Hosts
   /// </summary>
   public class HttpPortal
   {
+    private IDataPortalServer dataPortalServer;
+
+    /// <summary>
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="dataPortal">Data portal server service</param>
+    public HttpPortal(IDataPortalServer dataPortal)
+    {
+      dataPortalServer = dataPortal;
+    }
+
     /// <summary>
     /// Create and initialize an existing business object.
     /// </summary>
@@ -55,12 +66,10 @@ namespace Csla.Server.Hosts
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Create(objectType, criteria, context, true);
+        var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
@@ -104,12 +113,10 @@ namespace Csla.Server.Hosts
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Fetch(objectType, criteria, context, true);
+        var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
@@ -147,13 +154,11 @@ namespace Csla.Server.Hosts
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Update(obj, context, true);
+        var dpr = await dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
 
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
@@ -197,12 +202,10 @@ namespace Csla.Server.Hosts
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
           (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Delete(objectType, criteria, context, true);
+        var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)

@@ -20,8 +20,6 @@ namespace Csla.Web
     private const string _localContextName = "Csla.LocalContext";
     private const string _clientContextName = "Csla.ClientContext";
 
-    private IServiceProvider _defaultServiceProvider = null;
-
     /// <summary>
     /// Gets a value indicating whether this
     /// context manager is valid for use in

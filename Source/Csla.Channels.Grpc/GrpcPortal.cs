@@ -104,7 +104,7 @@ namespace Csla.Channels.Grpc
       {
         errorData = new DataPortalErrorInfo(ex);
       }
-      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, ObjectData = result.ObjectData };
       var buffer = SerializationFormatterFactory.GetFormatter().Serialize(portalResult);
       return new ResponseMessage { Body = ByteString.CopyFrom(buffer) };
     }
@@ -160,8 +160,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -205,8 +204,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -244,8 +242,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
@@ -290,8 +287,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 

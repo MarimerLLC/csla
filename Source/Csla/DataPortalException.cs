@@ -61,18 +61,6 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="info">Info about the exception.</param>
-    public DataPortalException(WcfPortal.WcfErrorInfo info)
-      : base(info.Message)
-    {
-      this.ErrorInfo = new Csla.Server.Hosts.DataPortalChannel.DataPortalErrorInfo(info);
-    }
-#endif
-
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

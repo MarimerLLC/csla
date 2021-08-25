@@ -30,7 +30,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Csla.Data.SqlClient.Fx\ConnectionManager.cs" Link="ConnectionManager.cs" />
     <Compile Include="..\Csla.Data.SqlClient.Fx\SafeSqlDataReader.cs" Link="SafeSqlDataReader.cs" />
   </ItemGroup>
 

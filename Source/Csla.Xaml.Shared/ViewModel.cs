@@ -30,6 +30,14 @@ namespace Csla.Xaml
   public abstract class ViewModel<T> : ViewModelBase<T>
   {
     /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public ViewModel(ApplicationContext applicationContext)
+      : base(applicationContext)
+    { }
+
+    /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>

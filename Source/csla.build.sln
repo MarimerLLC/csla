@@ -70,11 +70,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Channels.Grpc", "Csla.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Channels.RabbitMq", "Csla.Channels.RabbitMq\Csla.Channels.RabbitMq.csproj", "{9FA2A78C-1118-4428-8AE6-9B08A04A081A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Windows.NetCoreApp3.0", "Csla.Windows.NetCoreApp3.0\Csla.Windows.NetCoreApp3.0.csproj", "{2CB250BC-7FAA-46F5-AB59-325EC28D7A63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Windows.NetCore", "Csla.Windows.NetCoreApp3.0\Csla.Windows.NetCore.csproj", "{2CB250BC-7FAA-46F5-AB59-325EC28D7A63}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor", "Csla.Blazor\Csla.Blazor.csproj", "{CD21E84B-4FC0-4B2A-B9B1-9E44FB1CBCA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Xaml.NetCoreApp3.0", "Csla.Xaml.NetCoreApp3.0\Csla.Xaml.NetCoreApp3.0.csproj", "{E4B3B736-76E3-4594-9073-99673F72A33B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Xaml.NetCore", "Csla.Xaml.NetCoreApp3.0\Csla.Xaml.NetCore.csproj", "{E4B3B736-76E3-4594-9073-99673F72A33B}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.AspNetCore.Shared", "Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.shproj", "{6AAFE6B9-5874-4040-A074-7E9FC8BB2890}"
 EndProject

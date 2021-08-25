@@ -80,7 +80,7 @@ namespace Csla.Rules
       result = result.Replace("`", "-");
       result = result.Replace(",", "-");
       result = result.Replace("=", "-");
-      result = System.Uri.EscapeUriString(result);
+      result = Uri.EscapeDataString(result);
       result = result.Replace("%", "-");
       return result;
     }
@@ -114,9 +114,9 @@ namespace Csla.Rules
     {
       var uriText = ToString();
       if (uriText.Contains("?"))
-        uriText = uriText + "&" + Uri.EscapeUriString(key) + "=" + Uri.EscapeUriString(value);
+        uriText = uriText + "&" + Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value);
       else
-        uriText = uriText + "?" + Uri.EscapeUriString(key) + "=" + Uri.EscapeUriString(value);
+        uriText = uriText + "?" + Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value);
       _uri = new Uri(uriText);
     }
 

@@ -209,14 +209,12 @@ namespace Csla.DataPortalClient
       return operatation;
     }
 
+#pragma warning disable SYSLIB0014
     private class DefaultWebClient : WebClient
     {
       private int Timeout { get; set; }
 
-      public DefaultWebClient(int timeout)
-      {
-        Timeout = timeout;
-      }
+      public DefaultWebClient(int timeout) => Timeout = timeout;
 
       protected override WebRequest GetWebRequest(Uri address)
       {
@@ -226,5 +224,6 @@ namespace Csla.DataPortalClient
         return req;
       }
     }
+#pragma warning restore SYSLIB0014
   }
 }

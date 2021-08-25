@@ -52,14 +52,12 @@ namespace Csla.DataPortalClient
       return client;
     }
 
+#pragma warning disable SYSLIB0014
     private class CompressionWebClient : WebClient
     {
       private int Timeout { get; set; }
 
-      public CompressionWebClient(int timeout)
-      {
-        Timeout = timeout;
-      }
+      public CompressionWebClient(int timeout) => Timeout = timeout;
 
       protected override WebRequest GetWebRequest(Uri address)
       {
@@ -70,5 +68,6 @@ namespace Csla.DataPortalClient
         return req;
       }
     }
+#pragma warning restore SYSLIB0014
   }
 }

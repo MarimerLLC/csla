@@ -607,7 +607,7 @@ namespace Csla.Server
       {
         // local data portal and if context already exists,
         // then use existing context (from AsyncLocal or TLS)
-        ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+        ApplicationContext.SetContext(context.ClientContext);
       }
 
       // if the dataportal is not remote then
@@ -620,7 +620,7 @@ namespace Csla.Server
 
       // set the app context to the value we got from the
       // client
-      ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+      ApplicationContext.SetContext(context.ClientContext);
 
       // set the thread's culture to match the client
       System.Threading.Thread.CurrentThread.CurrentCulture =

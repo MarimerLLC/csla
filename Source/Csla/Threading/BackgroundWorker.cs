@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Wraps a System.ComponentModel.BackgroundWorker and transfers ApplicationContext.User, ClientContest, GlobalContext, CurrentCulture and CurrentUICulture to background thread.</summary>
+// <summary>Wraps a System.ComponentModel.BackgroundWorker and transfers ApplicationContext.User, ClientContest, CurrentCulture and CurrentUICulture to background thread.</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
@@ -11,7 +11,7 @@ using System.ComponentModel;
 namespace Csla.Threading
 {
   /// <summary>
-  /// A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, GlobalContext, CurrentCulture 
+  /// A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, CurrentCulture 
   /// and CurrentUICulture to the background thread.
   /// </summary>
   public class BackgroundWorker : System.ComponentModel.Component
@@ -178,28 +178,15 @@ namespace Csla.Threading
     private class WorkerAsyncResult
     {
       public object Result { get; private set; }
-      public Csla.Core.ContextDictionary GlobalContext { get; private set; }
       public Exception Error { get; private set; }
       public bool Cancelled { get; private set; }
 
-      public WorkerAsyncResult(object result, Csla.Core.ContextDictionary globalContext, Exception error)
+      public WorkerAsyncResult(object result, Exception error)
       {
         this.Result = result;
-        this.GlobalContext = globalContext;
         this.Error = error;
       }
     }
-
-#endregion
-
-#region GlobalContext
-
-
-    /// <summary>
-    /// Gets a reference to the global context returned from
-    /// the background thread and/or server.
-    /// </summary>
-    public Csla.Core.ContextDictionary GlobalContext { get; private set; }
 
 #endregion
 
@@ -258,7 +245,7 @@ namespace Csla.Threading
           _myDoWork.Invoke(this, doWorkEventArgs);
         }
 #pragma warning disable CS0618 // Type or member is obsolete
-        e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, ApplicationContext.GlobalContext, null);
+        e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, null);
 #pragma warning restore CS0618 // Type or member is obsolete
         e.Cancel = doWorkEventArgs.Cancel;
       }
@@ -266,7 +253,7 @@ namespace Csla.Threading
       catch (Exception ex)
       {
 #pragma warning disable CS0618 // Type or member is obsolete
-        e.Result = new WorkerAsyncResult(null, ApplicationContext.GlobalContext, ex);
+        e.Result = new WorkerAsyncResult(null, ex);
 #pragma warning restore CS0618 // Type or member is obsolete
       }
     }
@@ -288,9 +275,6 @@ namespace Csla.Threading
       if (!e.Cancelled)
       {
         var workerResult = (WorkerAsyncResult)e.Result;
-        // always set GlobalContext returned in the BW
-        // so it can be addressed in RunWorkerCompleted.
-        GlobalContext = workerResult.GlobalContext;
 
         // must check for error as accessing e.Result will throw exception
         // if e.Error is not null.

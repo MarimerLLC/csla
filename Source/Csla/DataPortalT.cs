@@ -36,12 +36,6 @@ namespace Csla
     /// </summary>
     public ApplicationContext ApplicationContext { get; set; }
 
-    /// <summary>
-    /// Gets a reference to the global context returned from
-    /// the background thread and/or server.
-    /// </summary>
-    public Csla.Core.ContextDictionary GlobalContext { get; set; }
-
     private class DataPortalAsyncRequest : Core.IUseApplicationContext
     {
       /// <summary>
@@ -52,7 +46,6 @@ namespace Csla
       public object Argument { get; set; }
       public System.Security.Principal.IPrincipal Principal { get; set; }
       public Csla.Core.ContextDictionary ClientContext { get; set; }
-      public Csla.Core.ContextDictionary GlobalContext { get; set; }
       public object UserState { get; set; }
       // passes CurrentCulture and CurrentUICulture to the async thread
       public CultureInfo CurrentCulture;
@@ -63,9 +56,6 @@ namespace Csla
         this.Argument = argument;
         this.Principal = ApplicationContext.User;
         this.ClientContext = ApplicationContext.ClientContext;
-#pragma warning disable CS0618 // Type or member is obsolete
-        this.GlobalContext = ApplicationContext.GlobalContext;
-#pragma warning restore CS0618 // Type or member is obsolete
         this.UserState = userState;
         this.CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
         this.CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
@@ -75,14 +65,12 @@ namespace Csla
     private class DataPortalAsyncResult
     {
       public T Result { get; set; }
-      public Csla.Core.ContextDictionary GlobalContext { get; set; }
       public object UserState { get; set; }
       public Exception Error { get; set; }
 
-      public DataPortalAsyncResult(T result, Csla.Core.ContextDictionary globalContext, Exception error, object userState)
+      public DataPortalAsyncResult(T result, Exception error, object userState)
       {
         this.Result = result;
-        this.GlobalContext = globalContext;
         this.UserState = userState;
         this.Error = error;
       }
@@ -127,8 +115,6 @@ namespace Csla
         try
         {
           result = await proxy.Create(objectType, criteria, dpContext, isSync);
-          if (isSync && proxy.IsServerRemote)
-            ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
         }
         catch (AggregateException ex)
         {
@@ -323,8 +309,6 @@ namespace Csla
         try
         {
           result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-          if (isSync && proxy.IsServerRemote)
-            ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
         }
         catch (AggregateException ex)
         {
@@ -654,9 +638,6 @@ namespace Csla
           HandleUpdateDataPortalException(ex, isSync, proxy);
         }
 
-        if (proxy.IsServerRemote && isSync)
-          ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-
         DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, obj, operation));
       }
       catch (Exception ex)
@@ -675,8 +656,6 @@ namespace Csla
     private void HandleDataPortalException(string operation, Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
       var result = ex.Result;
-      if (proxy.IsServerRemote && isSync)
-        ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
       var original = ex.InnerException;
       if (original.InnerException != null)
         original = original.InnerException;

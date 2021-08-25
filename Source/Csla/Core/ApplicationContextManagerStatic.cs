@@ -26,7 +26,6 @@ namespace Csla.Core
 
     private static ContextDictionary currentLocalContext = new ContextDictionary();
     private static ContextDictionary currentClientContext = new ContextDictionary();
-    private static ContextDictionary currentGlobalContext = new ContextDictionary();
     private static IPrincipal currentPrincipal = new ClaimsPrincipal();
     private static IServiceProvider currentDefaultServiceProvider;
     private static IServiceProvider currentServiceProvider;
@@ -46,14 +45,6 @@ namespace Csla.Core
     public IServiceProvider GetDefaultServiceProvider()
     {
       return currentDefaultServiceProvider;
-    }
-
-    /// <summary>
-    /// Gets the global context dictionary.
-    /// </summary>
-    public ContextDictionary GetGlobalContext()
-    {
-      return currentGlobalContext;
     }
 
     /// <summary>
@@ -90,15 +81,6 @@ namespace Csla.Core
     public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
     {
       currentDefaultServiceProvider = serviceProvider;
-    }
-
-    /// <summary>
-    /// Sets the global context dictionary.
-    /// </summary>
-    /// <param name="globalContext">Context dictionary</param>
-    public void SetGlobalContext(ContextDictionary globalContext)
-    {
-      currentGlobalContext = globalContext;
     }
 
     /// <summary>

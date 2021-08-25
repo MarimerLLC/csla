@@ -109,11 +109,6 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     void Delete(params object[] criteria);
     /// <summary>
-    /// Gets a reference to the global context returned from
-    /// the background thread and/or server.
-    /// </summary>
-    Csla.Core.ContextDictionary GlobalContext { get; }
-    /// <summary>
     /// Event raised when the operation has completed.
     /// </summary>
     /// <remarks>

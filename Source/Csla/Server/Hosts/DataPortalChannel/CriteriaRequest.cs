@@ -61,20 +61,6 @@ namespace Csla.Server.Hosts.DataPortalChannel
     }
 
     /// <summary>
-    /// Serialized data for the global context object.
-    /// </summary>
-    public static readonly PropertyInfo<byte[]> GlobalContextProperty = RegisterProperty<byte[]>(c => c.GlobalContext);
-
-    /// <summary>
-    /// Serialized data for the global context object.
-    /// </summary>
-    public byte[] GlobalContext
-    {
-      get { return GetProperty(GlobalContextProperty); }
-      set { LoadProperty(GlobalContextProperty, value); }
-    }
-
-    /// <summary>
     /// Serialized data for the client context object.
     /// </summary>
     public static readonly PropertyInfo<byte[]> ClientContextProperty = RegisterProperty<byte[]>(c => c.ClientContext);

@@ -73,7 +73,6 @@ namespace Csla.DataPortalClient
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
 
-        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
@@ -128,7 +127,6 @@ namespace Csla.DataPortalClient
 
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
@@ -177,7 +175,6 @@ namespace Csla.DataPortalClient
 
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response.ErrorData == null)
         {
           var newobj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
@@ -233,7 +230,6 @@ namespace Csla.DataPortalClient
 
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
         response = ConvertResponse(response);
-        var globalContext = (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(response.GlobalContext);
         if (response.ErrorData == null)
         {
           result = new DataPortalResult(null, null);
@@ -315,9 +311,6 @@ namespace Csla.DataPortalClient
       {
         CriteriaData = null,
         ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext),
-#pragma warning disable CS0618 // Type or member is obsolete
-        GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.GlobalContext),
-#pragma warning restore CS0618 // Type or member is obsolete
         Principal = SerializationFormatterFactory.GetFormatter()
           .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User),
         ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name,
@@ -331,9 +324,6 @@ namespace Csla.DataPortalClient
       {
         ObjectData = null,
         ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext),
-#pragma warning disable CS0618 // Type or member is obsolete
-        GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.GlobalContext),
-#pragma warning restore CS0618 // Type or member is obsolete
         Principal = SerializationFormatterFactory.GetFormatter()
           .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User),
         ClientCulture = Thread.CurrentThread.CurrentCulture.Name,

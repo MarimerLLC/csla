@@ -21,7 +21,6 @@ namespace Csla.Core
   {
     private AsyncLocal<ContextDictionary> _localContext = new AsyncLocal<ContextDictionary>();
     private AsyncLocal<ContextDictionary> _clientContext = new AsyncLocal<ContextDictionary>();
-    private const string _globalContextName = "Csla.GlobalContext";
 
     /// <summary>
     /// Creates an instance of the type
@@ -98,25 +97,6 @@ namespace Csla.Core
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _clientContext.Value = clientContext;
-    }
-
-    /// <summary>
-    /// Gets the global context dictionary.
-    /// </summary>
-    public ContextDictionary GetGlobalContext()
-    {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
-      return (ContextDictionary)Thread.GetData(slot);
-    }
-
-    /// <summary>
-    /// Sets the global context dictionary.
-    /// </summary>
-    /// <param name="globalContext">Context dictionary</param>
-    public void SetGlobalContext(ContextDictionary globalContext)
-    {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
-      Thread.SetData(slot, globalContext);
     }
 
     private IServiceProvider _provider;

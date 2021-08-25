@@ -148,42 +148,10 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Returns the application-specific context data shared
-    /// on both client and server.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The return value is a HybridDictionary. If one does
-    /// not already exist, and empty one is created and returned.
-    /// </para><para>
-    /// Note that data in this context is transferred to and from
-    /// the client and server. Any objects or data in this context
-    /// will be transferred bi-directionally across the network.
-    /// </para>
-    /// </remarks>
-    [Obsolete("Use ClientContext", false)]
-    public ContextDictionary GlobalContext
-    {
-      get
-      {
-        ContextDictionary ctx = ContextManager.GetGlobalContext();
-        if (ctx == null)
-        {
-          ctx = new ContextDictionary();
-          ContextManager.SetGlobalContext(ctx);
-        }
-        return ctx;
-      }
-    }
-
-    internal void SetContext(
-      ContextDictionary clientContext,
-      ContextDictionary globalContext)
+    internal void SetContext(ContextDictionary clientContext)
     {
       lock (_syncContext)
         ContextManager.SetClientContext(clientContext, ExecutionLocation);
-      ContextManager.SetGlobalContext(globalContext);
     }
 
     /// <summary>
@@ -191,7 +159,7 @@ namespace Csla
     /// </summary>
     public void Clear()
     {
-      SetContext(null, null);
+      SetContext(null);
       ContextManager.SetLocalContext(null);
     }
 

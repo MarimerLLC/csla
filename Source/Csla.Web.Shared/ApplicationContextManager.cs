@@ -6,9 +6,6 @@
 // <summary>Application context manager that uses HttpContext</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Core;
 using System.Web;
 
@@ -22,9 +19,6 @@ namespace Csla.Web
   {
     private const string _localContextName = "Csla.LocalContext";
     private const string _clientContextName = "Csla.ClientContext";
-    private const string _globalContextName = "Csla.GlobalContext";
-
-    private IServiceProvider _defaultServiceProvider = null;
 
     /// <summary>
     /// Gets a value indicating whether this
@@ -79,7 +73,8 @@ namespace Csla.Web
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    public ContextDictionary GetClientContext()
+    /// <param name="executionLocation"></param>
+    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return (ContextDictionary)HttpContext.Current.Items[_clientContextName];
     }
@@ -88,43 +83,10 @@ namespace Csla.Web
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
-    public void SetClientContext(ContextDictionary clientContext)
+    /// <param name="executionLocation"></param>
+    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Current.Items[_clientContextName] = clientContext;
-    }
-
-    /// <summary>
-    /// Gets the global context.
-    /// </summary>
-    public ContextDictionary GetGlobalContext()
-    {
-      return (ContextDictionary)HttpContext.Current.Items[_globalContextName];
-    }
-
-    /// <summary>
-    /// Sets the global context.
-    /// </summary>
-    /// <param name="globalContext">Global context.</param>
-    public void SetGlobalContext(ContextDictionary globalContext)
-    {
-      HttpContext.Current.Items[_globalContextName] = globalContext;
-    }
-
-    /// <summary>
-    /// Gets the default IServiceProvider
-    /// </summary>
-    public IServiceProvider GetDefaultServiceProvider()
-    {
-      return _defaultServiceProvider;
-    }
-
-    /// <summary>
-    /// Sets the default IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
-    {
-      _defaultServiceProvider = serviceProvider;
     }
 
     /// <summary>
@@ -133,7 +95,7 @@ namespace Csla.Web
     /// <returns></returns>
     public IServiceProvider GetServiceProvider()
     {
-      return (IServiceProvider)ApplicationContext.LocalContext["__sps"] ?? GetDefaultServiceProvider();
+      return (IServiceProvider)GetLocalContext()["__sps"];
     }
 
     /// <summary>
@@ -142,7 +104,7 @@ namespace Csla.Web
     /// <param name="scope">IServiceProvider instance</param>
     public void SetServiceProvider(IServiceProvider scope)
     {
-      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+      GetLocalContext()["__sps"] = scope;
     }
   }
 }

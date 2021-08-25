@@ -32,20 +32,6 @@ namespace Csla.Server.Hosts.DataPortalChannel
     }
 
     /// <summary>
-    /// Serialized GlobalContext data returned from the server (deserialize with MobileFormatter).
-    /// </summary>
-    public static readonly PropertyInfo<byte[]> GlobalContextProperty = RegisterProperty<byte[]>(c => c.GlobalContext);
-
-    /// <summary>
-    /// Serialized GlobalContext data returned from the server (deserialize with MobileFormatter).
-    /// </summary>
-    public byte[] GlobalContext
-    {
-      get { return GetProperty(GlobalContextProperty); }
-      set { LoadProperty(GlobalContextProperty, value); }
-    }
-
-    /// <summary>
     /// Serialized business object data returned from the server (deserialize with MobileFormatter).
     /// </summary>
     public static readonly PropertyInfo<byte[]> ObjectDataProperty = RegisterProperty<byte[]>(c => c.ObjectData);

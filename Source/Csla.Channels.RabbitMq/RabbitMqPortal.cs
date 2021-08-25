@@ -23,6 +23,17 @@ namespace Csla.Channels.RabbitMq
   /// </summary>
   public class RabbitMqPortal : IDisposable
   {
+    private IDataPortalServer dataPortalServer;
+
+    /// <summary>
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="dataPortal">Data portal server service</param>
+    public RabbitMqPortal(IDataPortalServer dataPortal)
+    {
+      dataPortalServer = dataPortal;
+    }
+
     /// <summary>
     /// Gets the URI for the data portal service.
     /// </summary>
@@ -204,15 +215,12 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Create(objectType, criteria, context, true);
+        var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
@@ -251,15 +259,12 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Fetch(objectType, criteria, context, true);
+        var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
@@ -292,16 +297,13 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Update(obj, context, true);
+        var dpr = await dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
 
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
@@ -340,15 +342,12 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext),
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.GlobalContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
 
-        var prtl = new Csla.Server.DataPortal();
-        var dpr = await prtl.Delete(objectType, criteria, context, true);
+        var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = new DataPortalErrorInfo(dpr.Error);
-        result.GlobalContext = SerializationFormatterFactory.GetFormatter().Serialize(dpr.GlobalContext);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)

@@ -26,7 +26,6 @@ namespace Csla.Threading
 
     public IPrincipal User { get; private set; }
     public Csla.Core.ContextDictionary ClientContext { get; private set; }
-    public Csla.Core.ContextDictionary GlobalContext { get; private set; }
     public CultureInfo UICulture { get; private set; }
     public CultureInfo Culture { get; private set; }
 
@@ -34,9 +33,6 @@ namespace Csla.Threading
     {
       this.User = ApplicationContext.User;
       this.ClientContext = ApplicationContext.ClientContext;
-#pragma warning disable CS0618 // Type or member is obsolete
-      this.GlobalContext = ApplicationContext.GlobalContext;
-#pragma warning restore CS0618 // Type or member is obsolete
       this.Culture = System.Globalization.CultureInfo.CurrentCulture;
       this.UICulture = System.Globalization.CultureInfo.CurrentUICulture;
     }
@@ -44,7 +40,7 @@ namespace Csla.Threading
     internal void SetThreadContext()
     {
       ApplicationContext.User = User;
-      ApplicationContext.SetContext(ClientContext, GlobalContext);
+      ApplicationContext.SetContext(ClientContext);
       Thread.CurrentThread.CurrentUICulture = UICulture;
       Thread.CurrentThread.CurrentCulture = Culture;
     }

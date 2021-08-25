@@ -110,7 +110,8 @@ namespace Csla.AspNetCore
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    public ContextDictionary GetClientContext()
+    /// <param name="executionLocation"></param>
+    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return (ContextDictionary)HttpContext?.Items[_clientContextName];
     }
@@ -119,46 +120,10 @@ namespace Csla.AspNetCore
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
-    public void SetClientContext(ContextDictionary clientContext)
+    /// <param name="executionLocation"></param>
+    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Items[_clientContextName] = clientContext;
-    }
-
-    /// <summary>
-    /// Gets the global context.
-    /// </summary>
-    public ContextDictionary GetGlobalContext()
-    {
-      return (ContextDictionary)HttpContext?.Items[_globalContextName];
-    }
-
-    /// <summary>
-    /// Sets the global context.
-    /// </summary>
-    /// <param name="globalContext">Global context.</param>
-    public void SetGlobalContext(ContextDictionary globalContext)
-    {
-      HttpContext.Items[_globalContextName] = globalContext;
-    }
-
-    /// <summary>
-    /// Gets the default IServiceProvider
-    /// </summary>
-    public IServiceProvider GetDefaultServiceProvider()
-    {
-      // on aspnet core we proactively detect request scope, before falling back to root application scope.
-      // this saves users from having to SetServiceProvider() at the start of every request.
-      return HttpContext?.RequestServices ?? _serviceProvider;
-    }
-
-    /// <summary>
-    /// Sets the default IServiceProvider
-    /// </summary>
-    /// <param name="serviceProvider">IServiceProvider instance</param>
-    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
-    {
-      // Service provider to be used as fallback when there is no more specific scoped service provider available.
-      _serviceProvider = serviceProvider;
     }
 
     /// <summary>
@@ -167,16 +132,16 @@ namespace Csla.AspNetCore
     /// <returns></returns>
     public IServiceProvider GetServiceProvider()
     {
-      return (IServiceProvider)ApplicationContext.LocalContext["__sps"] ?? GetDefaultServiceProvider();
+      return (IServiceProvider)GetLocalContext()["__sps"];
     }
 
     /// <summary>
     /// Sets the service provider for current scope
     /// </summary>
-    /// <param name="scope">IServiceProvider instance</param>
-    public void SetServiceProvider(IServiceProvider scope)
+    /// <param name="provider">IServiceProvider instance</param>
+    public void SetServiceProvider(IServiceProvider provider)
     {
-      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+      GetLocalContext()["__sps"] = provider;
     }
   }
 }

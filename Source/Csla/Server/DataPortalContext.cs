@@ -24,7 +24,6 @@ namespace Csla.Server
     private string _clientCulture;
     private string _clientUICulture;
     private ContextDictionary _clientContext;
-    private ContextDictionary _globalContext;
     [NonSerialized]
     private TransactionalTypes _transactionalType;
     [NonSerialized]
@@ -76,11 +75,6 @@ namespace Csla.Server
       get { return _clientContext; }
     }
 
-    internal ContextDictionary GlobalContext
-    {
-      get { return _globalContext; }
-    }
-
     /// <summary>
     /// Gets the current transactional type. Only valid
     /// in the server-side data portal methods after
@@ -118,7 +112,6 @@ namespace Csla.Server
         _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
         _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
         _clientContext = ApplicationContext.ContextManager.GetClientContext(ApplicationContext.ExecutionLocation);
-        _globalContext = ApplicationContext.ContextManager.GetGlobalContext();
       }
     }
 
@@ -130,14 +123,12 @@ namespace Csla.Server
     /// <param name="clientContext">Client context.</param>
     /// <param name="clientCulture">Client culture.</param>
     /// <param name="clientUICulture">Client UI culture.</param>
-    /// <param name="globalContext">Global context.</param>
-    public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext, ContextDictionary globalContext)
+    public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
     {
       _principal = principal;
       _clientContext = clientContext;
       _clientCulture = clientCulture;
       _clientUICulture = clientUICulture;
-      _globalContext = globalContext;
       _remotePortal = isRemotePortal;
     }
 
@@ -153,7 +144,6 @@ namespace Csla.Server
       info.AddValue("clientContext", Csla.Serialization.SerializationFormatterFactory.GetFormatter().Serialize(_clientContext));
       info.AddValue("clientCulture", _clientCulture);
       info.AddValue("clientUICulture", _clientUICulture);
-      info.AddValue("globalContext", Csla.Serialization.SerializationFormatterFactory.GetFormatter().Serialize(_globalContext));
       info.AddValue("isRemotePortal", _remotePortal);
     }
 
@@ -167,7 +157,6 @@ namespace Csla.Server
       _clientContext = (ContextDictionary)Csla.Serialization.SerializationFormatterFactory.GetFormatter().Deserialize(info.GetValue<byte[]>("clientContext"));
       _clientCulture = info.GetValue<string>("clientCulture");
       _clientUICulture = info.GetValue<string>("clientUICulture");
-      _globalContext = (ContextDictionary)Csla.Serialization.SerializationFormatterFactory.GetFormatter().Deserialize(info.GetValue<byte[]>("globalContext")); ;
       _remotePortal = info.GetValue<bool>("isRemotePortal");
     }
 

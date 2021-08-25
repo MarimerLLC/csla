@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Csla.Configuration
@@ -33,8 +34,10 @@ namespace Csla.Configuration
     public static HostBuilder UseCsla(
       this HostBuilder builder, Action<CslaConfiguration> config)
     {
-      CslaConfiguration.Configure().
-        ContextManager(typeof(Csla.Xaml.ApplicationContextManager));
+      builder.ConfigureServices(services =>
+      {
+        services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Xaml.ApplicationContextManager));
+      });
       config?.Invoke(CslaConfiguration.Configure());
       return builder;
     }

@@ -128,32 +128,5 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public DataPortalErrorInfo()
     { }
-
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
-    /// <summary>
-    /// Creates an instance of the type by copying
-    /// the WcfErrorInfo data.
-    /// </summary>
-    /// <param name="info">WcfErrorInfo object.</param>
-    public DataPortalErrorInfo(Csla.WcfPortal.WcfErrorInfo info)
-    {
-      var errorInfo = this;
-      var source = info;
-      while (source != null)
-      {
-        errorInfo.Message = source.Message;
-        errorInfo.ExceptionTypeName = source.ExceptionTypeName;
-        errorInfo.Source = source.Source;
-        errorInfo.StackTrace = source.StackTrace;
-        errorInfo.TargetSiteName = source.TargetSiteName;
-        source = source.InnerError;
-        if (source != null)
-        {
-          errorInfo.InnerError = new DataPortalErrorInfo();
-          errorInfo = errorInfo.InnerError;
-        }
-      }
-    }
-#endif
   }
 }

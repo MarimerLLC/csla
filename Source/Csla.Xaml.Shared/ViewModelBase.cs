@@ -41,12 +41,15 @@ namespace Csla.Xaml
     INotifyPropertyChanged, IViewModel
 #endif
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Create new instance of base class used to create ViewModel objects that
     /// implement their own commands/verbs/actions.
     /// </summary>
-    protected ViewModelBase()
+    protected ViewModelBase(ApplicationContext applicationContext)
     {
+      ApplicationContext = applicationContext;
       SetPropertiesAtObjectLevel();
     }
 
@@ -735,7 +738,7 @@ namespace Csla.Xaml
       // Does Model instance implement ITrackStatus 
       if (Model is ITrackStatus targetObject)
       {
-        var canDeleteInstance = BusinessRules.HasPermission(AuthorizationActions.DeleteObject, targetObject);
+        var canDeleteInstance = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, targetObject);
 
         IsDirty = targetObject.IsDirty;
         IsValid = targetObject.IsValid;
@@ -756,9 +759,9 @@ namespace Csla.Xaml
           }
           else
           {
-            CanRemove = BusinessRules.HasPermission(AuthorizationActions.DeleteObject, itemType) &&
+            CanRemove = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, itemType) &&
                         list.Count > 0 && !isObjectBusy;
-            CanAddNew = BusinessRules.HasPermission(AuthorizationActions.CreateObject, itemType) &&
+            CanAddNew = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, itemType) &&
                         !isObjectBusy;
           }
         }
@@ -780,9 +783,9 @@ namespace Csla.Xaml
         }
         else
         {
-          CanRemove = BusinessRules.HasPermission(AuthorizationActions.DeleteObject, itemType) &&
+          CanRemove = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, itemType) &&
                       list.Count > 0 && !isObjectBusy;
-          CanAddNew = BusinessRules.HasPermission(AuthorizationActions.CreateObject, itemType) &&
+          CanAddNew = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, itemType) &&
                       !isObjectBusy;
         }
       }
@@ -886,10 +889,10 @@ namespace Csla.Xaml
     {
       Type sourceType = typeof(T);
 
-      CanCreateObject = BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, sourceType);
-      CanGetObject = BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, sourceType);
-      CanEditObject = BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, sourceType);
-      CanDeleteObject = BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, sourceType);
+      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, sourceType);
+      CanGetObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, sourceType);
+      CanEditObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, sourceType);
+      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, sourceType);
 
       // call SetProperties to set "instance" values 
       OnSetProperties();

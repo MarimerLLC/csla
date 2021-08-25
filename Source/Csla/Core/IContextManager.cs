@@ -52,15 +52,6 @@ namespace Csla.Core
     /// <param name="executionLocation"></param>
     void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
-    /// Gets the global context.
-    /// </summary>
-    ContextDictionary GetGlobalContext();
-    /// <summary>
-    /// Sets the global context.
-    /// </summary>
-    /// <param name="globalContext">Global context.</param>
-    void SetGlobalContext(ContextDictionary globalContext);
-    /// <summary>
     /// Gets the service provider.
     /// </summary>
 #pragma warning disable CS3002 // Return type is not CLS-compliant

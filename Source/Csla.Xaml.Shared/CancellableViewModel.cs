@@ -25,7 +25,9 @@ namespace Csla.Xaml
 
     /// <summary>
     /// </summary>
-    protected CancellableViewModel()
+    /// <param name="applicationContext"></param>
+    protected CancellableViewModel(ApplicationContext applicationContext)
+      : base(applicationContext)
     {
       IsConcurentRefreshesAllowed = true;
     }

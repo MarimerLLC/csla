@@ -17,6 +17,14 @@ namespace Csla.Windows
   /// </summary>
   public class ApplicationContextManager : Csla.Core.ApplicationContextManager
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    public ApplicationContextManager(IServiceProvider serviceProvider)
+      : base(serviceProvider)
+    { }
+
     private static IPrincipal _principal;
 
     /// <summary>

@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.Security.Principal;
 using System.Threading;
 
@@ -15,6 +16,13 @@ namespace Csla.Xaml
   /// </summary>
   public class ApplicationContextManager : Csla.Core.ApplicationContextManager
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    public ApplicationContextManager(IServiceProvider serviceProvider)
+      : base(serviceProvider)
+    { }
+
     private static IPrincipal _principal = null;
 
     /// <summary>

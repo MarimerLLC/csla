@@ -5,18 +5,10 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using Csla.Core;
-using Csla.Serialization.Mobile;
-using Csla.Server;
+using Csla.DataPortalClient;
 using Google.Protobuf;
 using Grpc.Net.Client;
-using Csla.DataPortalClient;
-using Csla.Serialization;
 
 namespace Csla.Channels.Grpc
 {

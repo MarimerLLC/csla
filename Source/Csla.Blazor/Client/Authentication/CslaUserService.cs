@@ -10,6 +10,13 @@ namespace Csla.Blazor.Client.Authentication
   /// </summary>
   public class CslaUserService
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    public CslaUserService(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Event raised when the current user is changed.
     /// </summary>
@@ -21,7 +28,7 @@ namespace Csla.Blazor.Client.Authentication
     /// </summary>
     public CslaUserService()
     {
-      Csla.ApplicationContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+      ApplicationContext.User = new ClaimsPrincipal(new ClaimsIdentity());
     }
 
     /// <summary>
@@ -31,11 +38,11 @@ namespace Csla.Blazor.Client.Authentication
     {
       get 
       {
-        return (ClaimsPrincipal)Csla.ApplicationContext.User;
+        return (ClaimsPrincipal)ApplicationContext.User;
       }
       set
       {
-        Csla.ApplicationContext.User = value;
+        ApplicationContext.User = value;
         CurrentUserChanged?.Invoke(this, new CurrentUserChangedEventArgs() { NewUser = value });
       }
     }

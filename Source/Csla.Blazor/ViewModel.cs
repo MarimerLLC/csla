@@ -21,6 +21,16 @@ namespace Csla.Blazor
   /// </summary>
   public class ViewModel<T>
   {
+    /// <summary>
+    /// Gets or sets the applicationcontext instance
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; set; }
+
+    public ViewModel(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     private IDataPortal<T> DataPortal { get; set; }
 
     /// <summary>
@@ -280,9 +290,9 @@ namespace Csla.Blazor
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanCreateObject()
+    public bool CanCreateObject()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.CreateObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, typeof(T));
     }
 
     /// <summary>
@@ -291,9 +301,9 @@ namespace Csla.Blazor
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanGetObject()
+    public bool CanGetObject()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.GetObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, typeof(T));
     }
 
     /// <summary>
@@ -302,9 +312,9 @@ namespace Csla.Blazor
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanEditObject()
+    public bool CanEditObject()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, typeof(T));
     }
 
     /// <summary>
@@ -313,9 +323,9 @@ namespace Csla.Blazor
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanDeleteObject()
+    public bool CanDeleteObject()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, typeof(T));
     }
   }
 }

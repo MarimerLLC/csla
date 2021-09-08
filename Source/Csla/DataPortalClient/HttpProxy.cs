@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -169,6 +170,10 @@ namespace Csla.DataPortalClient
 
     private byte[] CallViaWebClient(byte[] serialized, string operation, string routingToken)
     {
+      if (!WebCallCapabilities.AreSyncWebClientMethodsSupported())
+      {
+        throw new InvalidOperationException(Resources.SyncDataAccessNotSupportedException);
+      }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";
       if (UseTextSerialization)

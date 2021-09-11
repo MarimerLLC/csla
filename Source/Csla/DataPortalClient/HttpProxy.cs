@@ -172,7 +172,7 @@ namespace Csla.DataPortalClient
     {
       if (!WebCallCapabilities.AreSyncWebClientMethodsSupported())
       {
-        throw new InvalidOperationException(Resources.SyncDataAccessNotSupportedException);
+        throw new NotSupportedException(Resources.SyncDataAccessNotSupportedException);
       }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";

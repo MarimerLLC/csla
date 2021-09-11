@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="HttpProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Exposes platform-specific web call capabilities</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Runtime.InteropServices;
 
 namespace Csla.DataPortalClient

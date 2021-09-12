@@ -1033,6 +1033,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Synchronous data access is not supported on this runtime. Please use async data access methods.
+        /// </summary>
+        public static string SyncDataAccessNotSupportedException {
+            get {
+                return ResourceManager.GetString("SyncDataAccessNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Method {0} must return Task&lt;object&gt;.
         /// </summary>
         public static string TaskOfObjectException {

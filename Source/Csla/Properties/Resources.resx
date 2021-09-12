@@ -475,4 +475,7 @@
   <data name="OneOfTwoParametersRequiredException" xml:space="preserve">
     <value>{0} requires a value for either the {1} or the {2} parameter.</value>
   </data>
+  <data name="SyncDataAccessNotSupportedException" xml:space="preserve">
+    <value>Synchronous data access is not supported on this runtime. Please use async data access methods</value>
+  </data>
 </root>

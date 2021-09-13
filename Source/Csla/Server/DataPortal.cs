@@ -603,10 +603,11 @@ namespace Csla.Server
       _oldLocation = ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
-      if (!context.IsRemotePortal && ApplicationContext.ClientContext != null)
+      if (!context.IsRemotePortal && (ApplicationContext.ClientContext != null || ApplicationContext.ClientContext.Count == 0))
       {
-        // local data portal and if context already exists,
-        // then use existing context (from AsyncLocal or TLS)
+        // local data portal and if context is empty then
+        // use context from caller, because caller could be
+        // running in a different context
         ApplicationContext.SetContext(context.ClientContext);
       }
 

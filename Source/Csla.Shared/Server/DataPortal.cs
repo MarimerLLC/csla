@@ -681,7 +681,7 @@ namespace Csla.Server
       {
         // local data portal and no valid HttpContext
         // if context already exists, then use existing context (from AsyncLocal or TLS)
-        if (ApplicationContext.ClientContext == null)
+        if (ApplicationContext.ClientContext == null || ApplicationContext.ClientContext.Count == 0)
           ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
       }
 

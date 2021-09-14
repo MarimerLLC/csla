@@ -29,47 +29,6 @@ namespace Csla
     /// </summary>
     public Csla.Core.ContextDictionary GlobalContext { get; set; }
 
-    private class DataPortalAsyncRequest
-    {
-      public object Argument { get; set; }
-      public System.Security.Principal.IPrincipal Principal { get; set; }
-      public Csla.Core.ContextDictionary ClientContext { get; set; }
-      public Csla.Core.ContextDictionary GlobalContext { get; set; }
-      public object UserState { get; set; }
-      // passes CurrentCulture and CurrentUICulture to the async thread
-      public CultureInfo CurrentCulture;
-      public CultureInfo CurrentUICulture;
-
-      public DataPortalAsyncRequest(object argument, object userState)
-      {
-        this.Argument = argument;
-        this.Principal = Csla.ApplicationContext.User;
-        this.ClientContext = Csla.ApplicationContext.ClientContext;
-#pragma warning disable CS0618 // Type or member is obsolete
-        this.GlobalContext = Csla.ApplicationContext.GlobalContext;
-#pragma warning restore CS0618 // Type or member is obsolete
-        this.UserState = userState;
-        this.CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
-        this.CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
-      }
-    }
-
-    private class DataPortalAsyncResult
-    {
-      public T Result { get; set; }
-      public Csla.Core.ContextDictionary GlobalContext { get; set; }
-      public object UserState { get; set; }
-      public Exception Error { get; set; }
-
-      public DataPortalAsyncResult(T result, Csla.Core.ContextDictionary globalContext, Exception error, object userState)
-      {
-        this.Result = result;
-        this.GlobalContext = globalContext;
-        this.UserState = userState;
-        this.Error = error;
-      }
-    }
-
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
       Server.DataPortalResult result = null;

@@ -674,77 +674,51 @@ namespace Csla.Server
 
     private void SetContext(DataPortalContext context)
     {
+      // set the logical execution location
       _oldLocation = Csla.ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
-      if (!context.IsRemotePortal && ApplicationContext.WebContextManager != null && !ApplicationContext.WebContextManager.IsValid)
+      if (context.IsRemotePortal)
       {
-        // local data portal and no valid HttpContext
-        // if context already exists, then use existing context (from AsyncLocal or TLS)
-        if (ApplicationContext.ClientContext == null || ApplicationContext.ClientContext.Count == 0)
-          ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+        // indicate that the code is physically running on the server
+        ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       }
 
-      // if the dataportal is not remote then
-      // do nothing
-      if (!context.IsRemotePortal) return;
-
-      // set the context value so everyone knows the
-      // code is running on the server
-      ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-
-      // set the app context to the value we got from the
-      // client
+      // set the app context to the value we got from the caller
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
-      // set the thread's culture to match the client
-#if !PCL46 && !PCL259// rely on NuGet bait-and-switch for actual implementation
-#if NETCORE
-      System.Globalization.CultureInfo.CurrentCulture =
-        new System.Globalization.CultureInfo(context.ClientCulture); 
-      System.Globalization.CultureInfo.CurrentUICulture = 
-        new System.Globalization.CultureInfo(context.ClientUICulture);
-#elif NETFX_CORE
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientUICulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientCulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-#else
-      System.Threading.Thread.CurrentThread.CurrentCulture =
-        new System.Globalization.CultureInfo(context.ClientCulture);
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo(context.ClientUICulture);
-#endif
-#endif
+      // set the thread's culture to match the caller
+      SetCulture(context);
 
+      // set current user principal
+      SetPrincipal(context);
+    }
+
+    private static void SetPrincipal(DataPortalContext context)
+    {
       if (ApplicationContext.AuthenticationType == "Windows")
       {
         // When using integrated security, Principal must be null
         if (context.Principal != null)
-        {
-          Csla.Security.SecurityException ex =
-            new Csla.Security.SecurityException(Resources.NoPrincipalAllowedException);
-          //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-          throw ex;
-        }
-#if !(ANDROID || IOS) && !NETFX_CORE
+          throw new Csla.Security.SecurityException(Resources.NoPrincipalAllowedException);
         // Set .NET to use integrated security
         AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
-#endif
       }
       else
       {
-        // We expect the some Principal object
+        // We expect some Principal object
         if (context.Principal == null)
-        {
-          Csla.Security.SecurityException ex =
-            new Csla.Security.SecurityException(
-              Resources.BusinessPrincipalException + " Nothing");
-          //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-          throw ex;
-        }
+          throw new Csla.Security.SecurityException(Resources.BusinessPrincipalException + " Nothing");
         ApplicationContext.User = context.Principal;
       }
+    }
+
+    private static void SetCulture(DataPortalContext context)
+    {
+      System.Threading.Thread.CurrentThread.CurrentCulture =
+        new System.Globalization.CultureInfo(context.ClientCulture);
+      System.Threading.Thread.CurrentThread.CurrentUICulture =
+        new System.Globalization.CultureInfo(context.ClientUICulture);
     }
 
     private void ClearContext(DataPortalContext context)

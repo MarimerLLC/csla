@@ -106,27 +106,14 @@ namespace Csla.Server
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(IPrincipal principal, bool isRemotePortal)
     {
-      if (isRemotePortal)
-      {
-        _principal = principal;
-        _remotePortal = isRemotePortal;
-#if NETFX_CORE
-        _clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
-        _clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
-#else
-        _clientCulture = 
-          System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-        _clientUICulture = 
-          System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-#endif
-        _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
-        _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
-      }
-      else if (ApplicationContext.WebContextManager != null && ApplicationContext.WebContextManager.IsValid)
-      {
-        _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
-        _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
-      }
+      _principal = principal;
+      _remotePortal = isRemotePortal;
+      _clientCulture =
+        System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+      _clientUICulture =
+        System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+      _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
+      _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
     }
 
     /// <summary>

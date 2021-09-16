@@ -105,14 +105,11 @@ namespace Csla.Server
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(IPrincipal principal, bool isRemotePortal)
     {
-      if (isRemotePortal)
-      {
-        _principal = principal;
-        _remotePortal = isRemotePortal;
-        _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-        _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-        _clientContext = ApplicationContext.ContextManager.GetClientContext(ApplicationContext.ExecutionLocation);
-      }
+      _principal = principal;
+      _remotePortal = isRemotePortal;
+      _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+      _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+      _clientContext = ApplicationContext.ContextManager.GetClientContext(ApplicationContext.ExecutionLocation);
     }
 
     /// <summary>

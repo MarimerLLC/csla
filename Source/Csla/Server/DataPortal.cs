@@ -603,32 +603,24 @@ namespace Csla.Server
       _oldLocation = ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
-      if (!context.IsRemotePortal && (ApplicationContext.ClientContext != null || ApplicationContext.ClientContext.Count == 0))
+      if (context.IsRemotePortal)
       {
-        // local data portal and if context is empty then
-        // use context from caller, because caller could be
-        // running in a different context
-        ApplicationContext.SetContext(context.ClientContext);
+        // indicate that the code is physically running on the server
+        ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       }
 
-      // if the dataportal is not remote then
-      // do nothing
-      if (!context.IsRemotePortal) return;
-
-      // set the context value so everyone knows the
-      // code is running on the server
-      ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-
-      // set the app context to the value we got from the
-      // client
+      // set the app context to the value we got from the caller
       ApplicationContext.SetContext(context.ClientContext);
 
-      // set the thread's culture to match the client
-      System.Threading.Thread.CurrentThread.CurrentCulture =
-        new System.Globalization.CultureInfo(context.ClientCulture);
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo(context.ClientUICulture);
+      // set the thread's culture to match the caller
+      SetCulture(context);
 
+      // set current user principal
+      SetPrincipal(context);
+    }
+
+    private void SetPrincipal(DataPortalContext context)
+    {
       if (ApplicationContext.AuthenticationType == "Windows")
       {
         // When using integrated security, Principal must be null
@@ -655,6 +647,15 @@ namespace Csla.Server
         }
         ApplicationContext.User = context.Principal;
       }
+    }
+
+    private static void SetCulture(DataPortalContext context)
+    {
+      // set the thread's culture to match the client
+      System.Threading.Thread.CurrentThread.CurrentCulture =
+        new System.Globalization.CultureInfo(context.ClientCulture);
+      System.Threading.Thread.CurrentThread.CurrentUICulture =
+        new System.Globalization.CultureInfo(context.ClientUICulture);
     }
 
     private void ClearContext(DataPortalContext context)

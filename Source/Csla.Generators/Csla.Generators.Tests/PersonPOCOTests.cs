@@ -651,23 +651,23 @@ namespace Csla.Generators.Tests
     /// Serialize and then deserialize a PersonPOCO object, exercising the generated code
     /// associated with these two operations on the PersonPOCO test object
     /// </summary>
-    /// <param name="person">The object to be serialized</param>
+    /// <param name="valueToSerialize">The object to be serialized</param>
     /// <returns>The PersonPOCO that results from serialization then deserialization</returns>
-    private PersonPOCO SerializeThenDeserialisePersonPOCO(PersonPOCO person)
+    private PersonPOCO SerializeThenDeserialisePersonPOCO(PersonPOCO valueToSerialize)
     {
       System.IO.MemoryStream serializationStream;
-      PersonPOCO deserializedPerson;
+      PersonPOCO deserializedValue;
       MobileFormatter formatter = new MobileFormatter();
 
       // Act
       using (serializationStream = new System.IO.MemoryStream())
       {
-        formatter.Serialize(serializationStream, person);
+        formatter.Serialize(serializationStream, valueToSerialize);
         serializationStream.Seek(0, System.IO.SeekOrigin.Begin);
-        deserializedPerson = formatter.Deserialize(serializationStream) as PersonPOCO;
+        deserializedValue = formatter.Deserialize(serializationStream) as PersonPOCO;
       }
 
-      return deserializedPerson;
+      return deserializedValue;
     }
 
     #endregion

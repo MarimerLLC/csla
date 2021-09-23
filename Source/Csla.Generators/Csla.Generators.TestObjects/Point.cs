@@ -10,7 +10,7 @@ namespace Csla.Generators.TestObjects
   /// Struct that can be used for testing serialization behaviour
   /// </summary>
   [AutoSerializable]
-  internal partial struct Point
+  public partial struct Point
   {
 
     public int X { get; set; }

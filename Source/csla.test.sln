@@ -45,11 +45,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Xaml.Xamarin", "Csla.X
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{D39D5C7C-5445-42CE-AE84-481A366C5E5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generators.TestObjects", "Csla.Generators\Csla.Generators.TestObjects\Csla.Generators.TestObjects.csproj", "{0A692D02-746D-42C5-9FE6-97A11B52D1E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generators.CSharp.TestObjects", "Csla.Generators\cs\Csla.Generators.CSharp.TestObjects\Csla.Generators.CSharp.TestObjects.csproj", "{0A692D02-746D-42C5-9FE6-97A11B52D1E0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generators.Tests", "Csla.Generators\Csla.Generators.Tests\Csla.Generators.Tests.csproj", "{10576319-CBF4-4C61-8511-FFAAF33E4806}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generators.CSharp.Tests", "Csla.Generators\cs\Csla.Generators.CSharp.Tests\Csla.Generators.CSharp.Tests.csproj", "{10576319-CBF4-4C61-8511-FFAAF33E4806}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generators", "Csla.Generators\Csla.Generators\Csla.Generators.csproj", "{60B7A55E-4B7E-4A0F-85E2-195CBD223164}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generators.CSharp", "Csla.Generators\cs\Csla.Generators.CSharp\Csla.Generators.CSharp.csproj", "{60B7A55E-4B7E-4A0F-85E2-195CBD223164}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

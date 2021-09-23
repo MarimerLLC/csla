@@ -84,7 +84,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor.WebAssembly", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla", "Csla\Csla.csproj", "{12ABA9E1-CBD8-459B-B3C1-D60BC73CD4F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Generators", "Csla.Generators\Csla.Generators\Csla.Generators.csproj", "{FF87EFA8-0383-4717-B0BA-8428416304FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Generators.CSharp", "Csla.Generators\cs\Csla.Generators.CSharp\Csla.Generators.CSharp.csproj", "{FF87EFA8-0383-4717-B0BA-8428416304FD}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

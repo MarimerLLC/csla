@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\Csla.Generators\Csla.Generators.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+</Project>

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Csla\Csla.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Csla\Csla.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 
   <ItemGroup>

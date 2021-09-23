@@ -105,6 +105,8 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\NET48\**\Csla.xml*" target="lib\net48" />
     <!-- CSLA Analyzers -->
     <file src="..\..\bin\Release\netstandard\netstandard1.3\Csla.Analyzers.*" target="analyzers\c#" />
+    <!-- CSLA Source Generators -->
+    <file src="..\..\bin\Release\netstandard\netstandard2.0\Csla.Generators.*" target="analyzers\c#" />
     <file src="..\..\bin\Release\netstandard\netstandard1.3\tools\*.ps1" target="tools\" />
     <!-- icon -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />

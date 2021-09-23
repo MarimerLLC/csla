@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="PersonPOCOTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Tests of serialization behaviour on the AutoSerializable class PersonPOCO</summary>
+//-----------------------------------------------------------------------
 using Csla.Serialization.Mobile;
 using Csla.Serialization;
 using CslaSerialization.UnitTests.Helpers;

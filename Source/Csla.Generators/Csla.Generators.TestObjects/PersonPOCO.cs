@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PersonPOCO.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Complex class that can be used for testing serialization behaviour</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization;
 
 namespace Csla.Generators.TestObjects

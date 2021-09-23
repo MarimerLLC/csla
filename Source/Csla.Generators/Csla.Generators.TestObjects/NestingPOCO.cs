@@ -1,4 +1,11 @@
-﻿using Csla.Serialization;
+﻿//-----------------------------------------------------------------------
+// <copyright file="NestingPOCO.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Class that can be used for testing serialization behaviour related to nested classes</summary>
+//-----------------------------------------------------------------------
+using Csla.Serialization;
 using System;
 using System.Collections.Generic;
 

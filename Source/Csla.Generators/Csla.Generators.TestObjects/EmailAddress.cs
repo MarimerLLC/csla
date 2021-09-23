@@ -1,4 +1,11 @@
-﻿using Csla.Serialization.Mobile;
+﻿//-----------------------------------------------------------------------
+// <copyright file="EmailAddress.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Class that can be used for testing serialization behaviour for classes implementing IMobileObject</summary>
+//-----------------------------------------------------------------------
+using Csla.Serialization.Mobile;
 using System;
 using System.Collections.Generic;
 using System.Text;

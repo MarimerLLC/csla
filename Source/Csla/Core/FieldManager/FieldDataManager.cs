@@ -9,10 +9,16 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using Csla.Properties;
-using Csla.Serialization.Mobile;
 using System.Reflection;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.Runtime;
+#endif
+using Csla.Properties;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
+
 
 namespace Csla.Core.FieldManager
 {
@@ -101,22 +107,54 @@ namespace Csla.Core.FieldManager
 
     #region ConsolidatedPropertyList
 
+#if NET5_0_OR_GREATER
+    private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new Dictionary<Type, Tuple<string, List<IPropertyInfo>>>();
+#else
     private static Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new Dictionary<Type, List<IPropertyInfo>>();
+#endif
 
     private static List<IPropertyInfo> GetConsolidatedList(Type type)
     {
       List<IPropertyInfo> result = null;
+
       var found = false;
+
       try
       {
-        found = _consolidatedLists.TryGetValue(type, out result);
+#if NET5_0_OR_GREATER
+        found = _consolidatedLists.TryGetValue(type, out var consolidatedListsInfo);
+
+        result = consolidatedListsInfo?.Item2;
+#else
+        result = _consolidatedLists[type];
+#endif
       }
       catch
       { /* failure will drop into !found block */ }
+
       if (!found)
       {
         lock (_consolidatedLists)
         {
+#if NET5_0_OR_GREATER
+          if (_consolidatedLists.ContainsKey(type))
+          {
+            result = _consolidatedLists[type].Item2;
+          }
+          else
+          {
+            result = CreateConsolidatedList(type);
+
+            // Cached items of consolidated lists should not be flushed if they are referenced to main application - "AssemblyLoadContext.Default".
+            // It is required for shared classes which are declared in main application but was activated first time inside active dynamic "ContextualReflectionScope".
+            // In that case, cached types are referenced to main application context and should not be flushed because
+            // "PropertyInfoManager" will not register their static CSLA properties second time - they have been registered already and cached in main application
+            // during startup.
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(type, result, OnAssemblyLoadContextUnload, true);
+
+            _consolidatedLists.Add(type, cacheInstance);
+          }
+#else
           if (_consolidatedLists.ContainsKey(type))
           {
             result = _consolidatedLists[type];
@@ -124,10 +162,13 @@ namespace Csla.Core.FieldManager
           else
           {
             result = CreateConsolidatedList(type);
+
             _consolidatedLists.Add(type, result);
           }
+#endif
         }
       }
+
       return result;
     }
 
@@ -171,9 +212,9 @@ namespace Csla.Core.FieldManager
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region  Get/Set/Find fields
+#region  Get/Set/Find fields
 
     /// <summary>
     /// Gets the <see cref="IFieldData" /> object
@@ -388,9 +429,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    #endregion
+#endregion
 
-    #region  IsValid/IsDirty/IsBusy
+#region  IsValid/IsDirty/IsBusy
 
     /// <summary>
     /// Returns a value indicating whether all
@@ -435,9 +476,9 @@ namespace Csla.Core.FieldManager
       return false;
     }
 
-    #endregion
+#endregion
 
-    #region  IUndoableObject
+#region  IUndoableObject
 
     private readonly Stack<byte[]> _stateStack = new Stack<byte[]>();
 
@@ -554,9 +595,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    #endregion
+#endregion
 
-    #region  Child Objects 
+#region  Child Objects 
 
     /// <summary>
     /// Returns a list of all child objects
@@ -616,9 +657,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    #endregion
+#endregion
 
-    #region IMobileObject Members
+#region IMobileObject Members
 
     /// <summary>
     /// Override this method to insert your field values
@@ -760,7 +801,7 @@ namespace Csla.Core.FieldManager
       base.OnSetChildren(info, formatter);
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Forces initialization of the static fields declared
@@ -786,5 +827,13 @@ namespace Csla.Core.FieldManager
         }
       }
     }
+#if NET5_0_OR_GREATER
+
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      lock (_consolidatedLists)
+        AssemblyLoadContextManager.RemoveFromCache(_consolidatedLists, context);
+    }
+#endif
   }
 }

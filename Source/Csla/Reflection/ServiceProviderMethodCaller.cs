@@ -109,7 +109,7 @@ namespace Csla.Reflection
         while (tt != null)
         {
           var ttList = tt.GetMethods(_bindingAttr).Where(m => m.GetCustomAttributes<T>().Any());
-          candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
+          candidates.AddRange(ttlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           tt = tt.BaseType;
           level--;
         }

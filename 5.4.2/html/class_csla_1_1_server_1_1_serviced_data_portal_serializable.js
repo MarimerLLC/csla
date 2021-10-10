@@ -1,7 +1,7 @@
 var class_csla_1_1_server_1_1_serviced_data_portal_serializable =
 [
-    [ "Create", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#af50f15dc815e8d49675e507d7080f33a", null ],
-    [ "Delete", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#ae011ee5725bcf24f21f89c510f3f60b2", null ],
-    [ "Fetch", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#a7ccae2896f9d5c38a720ea8c66bae10c", null ],
-    [ "Update", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#adf3b4c6022912b93e820b82c3dabda6c", null ]
+    [ "Create", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#ab36db032ee5174378cf5ea335931a582", null ],
+    [ "Delete", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#a3ea73f230be954710715811b0b2abe6b", null ],
+    [ "Fetch", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#ae11f289fc16b7c787fd7bb13f82d6cea", null ],
+    [ "Update", "class_csla_1_1_server_1_1_serviced_data_portal_serializable.html#a32745d981022f3e69048648af8ab6ab1", null ]
 ];

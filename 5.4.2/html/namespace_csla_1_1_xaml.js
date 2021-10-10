@@ -5,7 +5,7 @@ var namespace_csla_1_1_xaml =
     [ "BusyAnimation", "class_csla_1_1_xaml_1_1_busy_animation.html", "class_csla_1_1_xaml_1_1_busy_animation" ],
     [ "CancellableViewModel", "class_csla_1_1_xaml_1_1_cancellable_view_model.html", "class_csla_1_1_xaml_1_1_cancellable_view_model" ],
     [ "CslaDataProvider", "class_csla_1_1_xaml_1_1_csla_data_provider.html", "class_csla_1_1_xaml_1_1_csla_data_provider" ],
-    [ "CslaDataProviderCommandManager", "class_csla_1_1_xaml_1_1_csla_data_provider_command_manager.html", "class_csla_1_1_xaml_1_1_csla_data_provider_command_manager" ],
+    [ "CslaDataProviderCommandManager", "class_csla_1_1_xaml_1_1_csla_data_provider_command_manager.html", null ],
     [ "DataDecoratorBase", "class_csla_1_1_xaml_1_1_data_decorator_base.html", "class_csla_1_1_xaml_1_1_data_decorator_base" ],
     [ "ErrorDialog", "class_csla_1_1_xaml_1_1_error_dialog.html", "class_csla_1_1_xaml_1_1_error_dialog" ],
     [ "ErrorEventArgs", "class_csla_1_1_xaml_1_1_error_event_args.html", "class_csla_1_1_xaml_1_1_error_event_args" ],

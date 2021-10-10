@@ -1,7 +1,7 @@
 var class_csla_1_1_brokered_data_portal_host_1_1_brokered_host =
 [
-    [ "Create", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#a8947abd84df72a340bace32753691245", null ],
-    [ "Delete", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#a47d10d0fc5d4d4f356e27bc2989732e7", null ],
-    [ "Fetch", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#afe442797f8a53295aa3143de4e1315e0", null ],
-    [ "Update", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#af00c224434d77217ad7088871eb911e9", null ]
+    [ "Create", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#ac7aa8125f3d1eb43af854b75afae6332", null ],
+    [ "Delete", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#ac1bb2eb889f0b8a92a64358a4137e9f3", null ],
+    [ "Fetch", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#a72ecaa23d8162e423a9eaa350147065c", null ],
+    [ "Update", "class_csla_1_1_brokered_data_portal_host_1_1_brokered_host.html#a8df00a1cf6d43053ebf095df0529859e", null ]
 ];

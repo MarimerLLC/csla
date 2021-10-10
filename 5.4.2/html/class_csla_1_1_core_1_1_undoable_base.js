@@ -10,6 +10,5 @@ var class_csla_1_1_core_1_1_undoable_base =
     [ "UndoChangesComplete", "class_csla_1_1_core_1_1_undoable_base.html#adcc23beac78f632011ea758a74498bc6", null ],
     [ "UndoingChanges", "class_csla_1_1_core_1_1_undoable_base.html#a80770ed4bd6e3f6b70dcc1ee0ec6d57c", null ],
     [ "BindingEdit", "class_csla_1_1_core_1_1_undoable_base.html#a15ac7e90a225bdf59d7806b18b4ad5b3", null ],
-    [ "EditLevel", "class_csla_1_1_core_1_1_undoable_base.html#ac2bc7c5fa4bf83ad60b96fbe25d04f66", null ],
     [ "EditLevel", "class_csla_1_1_core_1_1_undoable_base.html#a20a1dbd05555e94cdc51b09617af2299", null ]
 ];

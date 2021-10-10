@@ -1,7 +1,6 @@
 var class_csla_1_1_reflection_1_1_service_provider_method_info =
 [
     [ "PrepForInvocation", "class_csla_1_1_reflection_1_1_service_provider_method_info.html#ad754e39a1a40e8cf68377ce0dff83924", null ],
-    [ "DataPortalMethodInfo", "class_csla_1_1_reflection_1_1_service_provider_method_info.html#ab83d700c5bc96cd1f7fdfb47d6227d35", null ],
     [ "DynamicMethod", "class_csla_1_1_reflection_1_1_service_provider_method_info.html#ad7ab299d4667e699adf967f054f494b7", null ],
     [ "IsAsyncTask", "class_csla_1_1_reflection_1_1_service_provider_method_info.html#afd7017abc41ddff6264aaaa8570f0fb0", null ],
     [ "IsAsyncTaskObject", "class_csla_1_1_reflection_1_1_service_provider_method_info.html#a9a5304ec5bee569b57750e884c20ee63", null ],

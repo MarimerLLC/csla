@@ -1,7 +1,7 @@
 var class_csla_1_1_server_1_1_data_portal_broker =
 [
-    [ "Create", "class_csla_1_1_server_1_1_data_portal_broker.html#ab26ab9e2a66f22e4b72bd89e163483b3", null ],
-    [ "Delete", "class_csla_1_1_server_1_1_data_portal_broker.html#a512dcc24f7f8f5765ac66fef5a8c3f85", null ],
-    [ "Fetch", "class_csla_1_1_server_1_1_data_portal_broker.html#abe5400e3e8e0d6d2d68ba2f4267dec62", null ],
-    [ "Update", "class_csla_1_1_server_1_1_data_portal_broker.html#af903d6309247f1f9c8fe9238429bc8fe", null ]
+    [ "Create", "class_csla_1_1_server_1_1_data_portal_broker.html#a7adbf4d1405c9fe0ba86d02fb99fe041", null ],
+    [ "Delete", "class_csla_1_1_server_1_1_data_portal_broker.html#af1bbeca41e8464dd34b7c8ec39eac54b", null ],
+    [ "Fetch", "class_csla_1_1_server_1_1_data_portal_broker.html#aee3de317af4fe21b00a7e8eebceaebf9", null ],
+    [ "Update", "class_csla_1_1_server_1_1_data_portal_broker.html#a6f3a8f454ec26f8931dbcc09aeef59ea", null ]
 ];

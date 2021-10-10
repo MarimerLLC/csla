@@ -10,6 +10,5 @@ var class_csla_1_1_read_only_list_base =
     [ "DataPortal_OnDataPortalInvokeComplete", "class_csla_1_1_read_only_list_base.html#add9c3e6675148a741cdbb71fb5721477", null ],
     [ "GetClone", "class_csla_1_1_read_only_list_base.html#a0dc34f428bd7c4788de94394b845644e", null ],
     [ "Initialize", "class_csla_1_1_read_only_list_base.html#a1b23764bccb04a7f14122edb9910f175", null ],
-    [ "ToArray", "class_csla_1_1_read_only_list_base.html#ae69a16c599b8531f6b57bcde86bf29a2", null ],
-    [ "Identity", "class_csla_1_1_read_only_list_base.html#ad2a818c591e2a344984abb9c2aafc460", null ]
+    [ "ToArray", "class_csla_1_1_read_only_list_base.html#a0b31bef8e71aed5de825a696a6988228", null ]
 ];

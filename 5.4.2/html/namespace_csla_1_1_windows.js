@@ -1,9 +1,9 @@
 var namespace_csla_1_1_windows =
 [
     [ "ApplicationContextManager", "class_csla_1_1_windows_1_1_application_context_manager.html", "class_csla_1_1_windows_1_1_application_context_manager" ],
+    [ "BindingErrorEventArgs", "class_csla_1_1_windows_1_1_binding_error_event_args.html", "class_csla_1_1_windows_1_1_binding_error_event_args" ],
     [ "BindingSourceNode", "class_csla_1_1_windows_1_1_binding_source_node.html", "class_csla_1_1_windows_1_1_binding_source_node" ],
     [ "BindingSourceRefresh", "class_csla_1_1_windows_1_1_binding_source_refresh.html", "class_csla_1_1_windows_1_1_binding_source_refresh" ],
-    [ "BindingErrorEventArgs", "class_csla_1_1_windows_1_1_binding_error_event_args.html", "class_csla_1_1_windows_1_1_binding_error_event_args" ],
     [ "BusyAnimation", "class_csla_1_1_windows_1_1_busy_animation.html", "class_csla_1_1_windows_1_1_busy_animation" ],
     [ "CslaActionCancelEventArgs", "class_csla_1_1_windows_1_1_csla_action_cancel_event_args.html", "class_csla_1_1_windows_1_1_csla_action_cancel_event_args" ],
     [ "CslaActionEventArgs", "class_csla_1_1_windows_1_1_csla_action_event_args.html", "class_csla_1_1_windows_1_1_csla_action_event_args" ],

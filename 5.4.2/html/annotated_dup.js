@@ -31,11 +31,11 @@ var annotated_dup =
           ] ]
         ] ],
         [ "CslaPermissionRequirement", "class_csla_1_1_blazor_1_1_csla_permission_requirement.html", "class_csla_1_1_blazor_1_1_csla_permission_requirement" ],
+        [ "CslaPermissionsHandler", "class_csla_1_1_blazor_1_1_csla_permissions_handler.html", "class_csla_1_1_blazor_1_1_csla_permissions_handler" ],
         [ "CslaPermissionsPolicyProvider", "class_csla_1_1_blazor_1_1_csla_permissions_policy_provider.html", "class_csla_1_1_blazor_1_1_csla_permissions_policy_provider" ],
         [ "CslaValidationMessageBase", "class_csla_1_1_blazor_1_1_csla_validation_message_base.html", "class_csla_1_1_blazor_1_1_csla_validation_message_base" ],
         [ "CslaValidator", "class_csla_1_1_blazor_1_1_csla_validator.html", "class_csla_1_1_blazor_1_1_csla_validator" ],
         [ "HasPermissionAttribute", "class_csla_1_1_blazor_1_1_has_permission_attribute.html", "class_csla_1_1_blazor_1_1_has_permission_attribute" ],
-        [ "CslaPermissionsHandler", "class_csla_1_1_blazor_1_1_csla_permissions_handler.html", "class_csla_1_1_blazor_1_1_csla_permissions_handler" ],
         [ "IPropertyInfo", "interface_csla_1_1_blazor_1_1_i_property_info.html", "interface_csla_1_1_blazor_1_1_i_property_info" ],
         [ "PropertyInfo", "class_csla_1_1_blazor_1_1_property_info.html", "class_csla_1_1_blazor_1_1_property_info" ],
         [ "ViewModel", "class_csla_1_1_blazor_1_1_view_model.html", "class_csla_1_1_blazor_1_1_view_model" ]
@@ -57,16 +57,16 @@ var annotated_dup =
         [ "ConfigurationErrorsException", "class_csla_1_1_configuration_1_1_configuration_errors_exception.html", "class_csla_1_1_configuration_1_1_configuration_errors_exception" ],
         [ "ConnectionStringSettings", "class_csla_1_1_configuration_1_1_connection_string_settings.html", "class_csla_1_1_configuration_1_1_connection_string_settings" ],
         [ "ConnectionStringSettingsCollection", "class_csla_1_1_configuration_1_1_connection_string_settings_collection.html", null ],
-        [ "CslaConfigurationOptions", "class_csla_1_1_configuration_1_1_csla_configuration_options.html", "class_csla_1_1_configuration_1_1_csla_configuration_options" ],
-        [ "CslaDataPortalConfigurationOptions", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options" ],
         [ "CslaBuilder", "class_csla_1_1_configuration_1_1_csla_builder.html", "class_csla_1_1_configuration_1_1_csla_builder" ],
         [ "CslaConfiguration", "class_csla_1_1_configuration_1_1_csla_configuration.html", "class_csla_1_1_configuration_1_1_csla_configuration" ],
+        [ "CslaConfigurationOptions", "class_csla_1_1_configuration_1_1_csla_configuration_options.html", "class_csla_1_1_configuration_1_1_csla_configuration_options" ],
         [ "CslaDataConfiguration", "class_csla_1_1_configuration_1_1_csla_data_configuration.html", "class_csla_1_1_configuration_1_1_csla_data_configuration" ],
         [ "CslaDataPortalConfiguration", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration" ],
+        [ "CslaDataPortalConfigurationOptions", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options.html", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration_options" ],
         [ "CslaSecurityConfiguration", "class_csla_1_1_configuration_1_1_csla_security_configuration.html", "class_csla_1_1_configuration_1_1_csla_security_configuration" ],
         [ "CslaSerializationConfiguration", "class_csla_1_1_configuration_1_1_csla_serialization_configuration.html", "class_csla_1_1_configuration_1_1_csla_serialization_configuration" ],
-        [ "ICslaConfiguration", "interface_csla_1_1_configuration_1_1_i_csla_configuration.html", null ],
-        [ "ICslaBuilder", "interface_csla_1_1_configuration_1_1_i_csla_builder.html", "interface_csla_1_1_configuration_1_1_i_csla_builder" ]
+        [ "ICslaBuilder", "interface_csla_1_1_configuration_1_1_i_csla_builder.html", "interface_csla_1_1_configuration_1_1_i_csla_builder" ],
+        [ "ICslaConfiguration", "interface_csla_1_1_configuration_1_1_i_csla_configuration.html", null ]
       ] ],
       [ "Core", "namespace_csla_1_1_core.html", [
         [ "FieldManager", "namespace_csla_1_1_core_1_1_field_manager.html", [
@@ -156,6 +156,7 @@ var annotated_dup =
         [ "TransactionManager", "class_csla_1_1_data_1_1_transaction_manager.html", "class_csla_1_1_data_1_1_transaction_manager" ]
       ] ],
       [ "DataPortalClient", "namespace_csla_1_1_data_portal_client.html", [
+        [ "BrokeredProxy", "class_csla_1_1_data_portal_client_1_1_brokered_proxy.html", "class_csla_1_1_data_portal_client_1_1_brokered_proxy" ],
         [ "DataPortalProxy", "class_csla_1_1_data_portal_client_1_1_data_portal_proxy.html", "class_csla_1_1_data_portal_client_1_1_data_portal_proxy" ],
         [ "DataPortalProxyDescriptor", "class_csla_1_1_data_portal_client_1_1_data_portal_proxy_descriptor.html", "class_csla_1_1_data_portal_client_1_1_data_portal_proxy_descriptor" ],
         [ "DataPortalProxyFactory", "class_csla_1_1_data_portal_client_1_1_data_portal_proxy_factory.html", "class_csla_1_1_data_portal_client_1_1_data_portal_proxy_factory" ],
@@ -166,8 +167,7 @@ var annotated_dup =
         [ "IWcfPortal", "interface_csla_1_1_data_portal_client_1_1_i_wcf_portal.html", "interface_csla_1_1_data_portal_client_1_1_i_wcf_portal" ],
         [ "LocalProxy", "class_csla_1_1_data_portal_client_1_1_local_proxy.html", "class_csla_1_1_data_portal_client_1_1_local_proxy" ],
         [ "PrimitiveCriteria", "class_csla_1_1_data_portal_client_1_1_primitive_criteria.html", "class_csla_1_1_data_portal_client_1_1_primitive_criteria" ],
-        [ "WcfProxy", "class_csla_1_1_data_portal_client_1_1_wcf_proxy.html", "class_csla_1_1_data_portal_client_1_1_wcf_proxy" ],
-        [ "BrokeredProxy", "class_csla_1_1_data_portal_client_1_1_brokered_proxy.html", "class_csla_1_1_data_portal_client_1_1_brokered_proxy" ]
+        [ "WcfProxy", "class_csla_1_1_data_portal_client_1_1_wcf_proxy.html", "class_csla_1_1_data_portal_client_1_1_wcf_proxy" ]
       ] ],
       [ "Iosui", "namespace_csla_1_1_iosui.html", [
         [ "Binding", "namespace_csla_1_1_iosui_1_1_binding.html", [
@@ -186,27 +186,27 @@ var annotated_dup =
       ] ],
       [ "Rules", "namespace_csla_1_1_rules.html", [
         [ "CommonRules", "namespace_csla_1_1_rules_1_1_common_rules.html", [
-          [ "IsInRole", "class_csla_1_1_rules_1_1_common_rules_1_1_is_in_role.html", "class_csla_1_1_rules_1_1_common_rules_1_1_is_in_role" ],
-          [ "IsNotInRole", "class_csla_1_1_rules_1_1_common_rules_1_1_is_not_in_role.html", "class_csla_1_1_rules_1_1_common_rules_1_1_is_not_in_role" ],
           [ "CommonBusinessRule", "class_csla_1_1_rules_1_1_common_rules_1_1_common_business_rule.html", "class_csla_1_1_rules_1_1_common_rules_1_1_common_business_rule" ],
           [ "DataAnnotation", "class_csla_1_1_rules_1_1_common_rules_1_1_data_annotation.html", "class_csla_1_1_rules_1_1_common_rules_1_1_data_annotation" ],
-          [ "Required", "class_csla_1_1_rules_1_1_common_rules_1_1_required.html", "class_csla_1_1_rules_1_1_common_rules_1_1_required" ],
+          [ "Dependency", "class_csla_1_1_rules_1_1_common_rules_1_1_dependency.html", "class_csla_1_1_rules_1_1_common_rules_1_1_dependency" ],
+          [ "InfoMessage", "class_csla_1_1_rules_1_1_common_rules_1_1_info_message.html", "class_csla_1_1_rules_1_1_common_rules_1_1_info_message" ],
+          [ "IsInRole", "class_csla_1_1_rules_1_1_common_rules_1_1_is_in_role.html", "class_csla_1_1_rules_1_1_common_rules_1_1_is_in_role" ],
+          [ "IsNotInRole", "class_csla_1_1_rules_1_1_common_rules_1_1_is_not_in_role.html", "class_csla_1_1_rules_1_1_common_rules_1_1_is_not_in_role" ],
+          [ "Lambda", "class_csla_1_1_rules_1_1_common_rules_1_1_lambda.html", "class_csla_1_1_rules_1_1_common_rules_1_1_lambda" ],
           [ "MaxLength", "class_csla_1_1_rules_1_1_common_rules_1_1_max_length.html", "class_csla_1_1_rules_1_1_common_rules_1_1_max_length" ],
+          [ "MaxValue", "class_csla_1_1_rules_1_1_common_rules_1_1_max_value.html", "class_csla_1_1_rules_1_1_common_rules_1_1_max_value" ],
           [ "MinLength", "class_csla_1_1_rules_1_1_common_rules_1_1_min_length.html", "class_csla_1_1_rules_1_1_common_rules_1_1_min_length" ],
           [ "MinValue", "class_csla_1_1_rules_1_1_common_rules_1_1_min_value.html", "class_csla_1_1_rules_1_1_common_rules_1_1_min_value" ],
-          [ "MaxValue", "class_csla_1_1_rules_1_1_common_rules_1_1_max_value.html", "class_csla_1_1_rules_1_1_common_rules_1_1_max_value" ],
           [ "RegExMatch", "class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match.html", "class_csla_1_1_rules_1_1_common_rules_1_1_reg_ex_match" ],
-          [ "InfoMessage", "class_csla_1_1_rules_1_1_common_rules_1_1_info_message.html", "class_csla_1_1_rules_1_1_common_rules_1_1_info_message" ],
-          [ "Lambda", "class_csla_1_1_rules_1_1_common_rules_1_1_lambda.html", "class_csla_1_1_rules_1_1_common_rules_1_1_lambda" ],
-          [ "Dependency", "class_csla_1_1_rules_1_1_common_rules_1_1_dependency.html", "class_csla_1_1_rules_1_1_common_rules_1_1_dependency" ]
+          [ "Required", "class_csla_1_1_rules_1_1_common_rules_1_1_required.html", "class_csla_1_1_rules_1_1_common_rules_1_1_required" ]
         ] ],
         [ "AuthorizationContext", "class_csla_1_1_rules_1_1_authorization_context.html", "class_csla_1_1_rules_1_1_authorization_context" ],
         [ "AuthorizationRule", "class_csla_1_1_rules_1_1_authorization_rule.html", "class_csla_1_1_rules_1_1_authorization_rule" ],
         [ "AuthorizationRuleManager", "class_csla_1_1_rules_1_1_authorization_rule_manager.html", "class_csla_1_1_rules_1_1_authorization_rule_manager" ],
         [ "BrokenRule", "class_csla_1_1_rules_1_1_broken_rule.html", "class_csla_1_1_rules_1_1_broken_rule" ],
         [ "BrokenRulesCollection", "class_csla_1_1_rules_1_1_broken_rules_collection.html", "class_csla_1_1_rules_1_1_broken_rules_collection" ],
-        [ "BrokenRulesTree", "class_csla_1_1_rules_1_1_broken_rules_tree.html", null ],
         [ "BrokenRulesNode", "class_csla_1_1_rules_1_1_broken_rules_node.html", "class_csla_1_1_rules_1_1_broken_rules_node" ],
+        [ "BrokenRulesTree", "class_csla_1_1_rules_1_1_broken_rules_tree.html", null ],
         [ "BusinessRule", "class_csla_1_1_rules_1_1_business_rule.html", "class_csla_1_1_rules_1_1_business_rule" ],
         [ "BusinessRuleAsync", "class_csla_1_1_rules_1_1_business_rule_async.html", "class_csla_1_1_rules_1_1_business_rule_async" ],
         [ "BusinessRuleBase", "class_csla_1_1_rules_1_1_business_rule_base.html", "class_csla_1_1_rules_1_1_business_rule_base" ],
@@ -214,9 +214,9 @@ var annotated_dup =
         [ "BusinessRules", "class_csla_1_1_rules_1_1_business_rules.html", "class_csla_1_1_rules_1_1_business_rules" ],
         [ "IAuthorizationContext", "interface_csla_1_1_rules_1_1_i_authorization_context.html", "interface_csla_1_1_rules_1_1_i_authorization_context" ],
         [ "IAuthorizationRule", "interface_csla_1_1_rules_1_1_i_authorization_rule.html", "interface_csla_1_1_rules_1_1_i_authorization_rule" ],
-        [ "IBusinessRuleBase", "interface_csla_1_1_rules_1_1_i_business_rule_base.html", "interface_csla_1_1_rules_1_1_i_business_rule_base" ],
         [ "IBusinessRule", "interface_csla_1_1_rules_1_1_i_business_rule.html", "interface_csla_1_1_rules_1_1_i_business_rule" ],
         [ "IBusinessRuleAsync", "interface_csla_1_1_rules_1_1_i_business_rule_async.html", "interface_csla_1_1_rules_1_1_i_business_rule_async" ],
+        [ "IBusinessRuleBase", "interface_csla_1_1_rules_1_1_i_business_rule_base.html", "interface_csla_1_1_rules_1_1_i_business_rule_base" ],
         [ "IBusinessRules", "interface_csla_1_1_rules_1_1_i_business_rules.html", "interface_csla_1_1_rules_1_1_i_business_rules" ],
         [ "IHostRules", "interface_csla_1_1_rules_1_1_i_host_rules.html", "interface_csla_1_1_rules_1_1_i_host_rules" ],
         [ "IRuleContext", "interface_csla_1_1_rules_1_1_i_rule_context.html", "interface_csla_1_1_rules_1_1_i_rule_context" ],
@@ -230,14 +230,14 @@ var annotated_dup =
         [ "ValidationException", "class_csla_1_1_rules_1_1_validation_exception.html", "class_csla_1_1_rules_1_1_validation_exception" ]
       ] ],
       [ "Security", "namespace_csla_1_1_security.html", [
+        [ "AuthorizationRules", "class_csla_1_1_security_1_1_authorization_rules.html", null ],
         [ "CslaClaimsPrincipal", "class_csla_1_1_security_1_1_csla_claims_principal.html", "class_csla_1_1_security_1_1_csla_claims_principal" ],
         [ "IAuthorizeReadWrite", "interface_csla_1_1_security_1_1_i_authorize_read_write.html", "interface_csla_1_1_security_1_1_i_authorize_read_write" ],
         [ "ICheckRoles", "interface_csla_1_1_security_1_1_i_check_roles.html", "interface_csla_1_1_security_1_1_i_check_roles" ],
         [ "ICslaIdentity", "interface_csla_1_1_security_1_1_i_csla_identity.html", "interface_csla_1_1_security_1_1_i_csla_identity" ],
         [ "ICslaPrincipal", "interface_csla_1_1_security_1_1_i_csla_principal.html", null ],
         [ "SecurityException", "class_csla_1_1_security_1_1_security_exception.html", "class_csla_1_1_security_1_1_security_exception" ],
-        [ "UsernameCriteria", "class_csla_1_1_security_1_1_username_criteria.html", "class_csla_1_1_security_1_1_username_criteria" ],
-        [ "AuthorizationRules", "class_csla_1_1_security_1_1_authorization_rules.html", null ]
+        [ "UsernameCriteria", "class_csla_1_1_security_1_1_username_criteria.html", "class_csla_1_1_security_1_1_username_criteria" ]
       ] ],
       [ "Serialization", "namespace_csla_1_1_serialization.html", [
         [ "Mobile", "namespace_csla_1_1_serialization_1_1_mobile.html", [
@@ -302,12 +302,12 @@ var annotated_dup =
             [ "UseNetDataContractAttribute", "class_csla_1_1_server_1_1_hosts_1_1_wcf_channel_1_1_use_net_data_contract_attribute.html", "class_csla_1_1_server_1_1_hosts_1_1_wcf_channel_1_1_use_net_data_contract_attribute" ],
             [ "WcfResponse", "class_csla_1_1_server_1_1_hosts_1_1_wcf_channel_1_1_wcf_response.html", "class_csla_1_1_server_1_1_hosts_1_1_wcf_channel_1_1_wcf_response" ]
           ] ],
-          [ "IWcfPortal", "interface_csla_1_1_server_1_1_hosts_1_1_i_wcf_portal.html", "interface_csla_1_1_server_1_1_hosts_1_1_i_wcf_portal" ],
-          [ "RemotingPortal", "class_csla_1_1_server_1_1_hosts_1_1_remoting_portal.html", "class_csla_1_1_server_1_1_hosts_1_1_remoting_portal" ],
-          [ "WcfPortal", "class_csla_1_1_server_1_1_hosts_1_1_wcf_portal.html", "class_csla_1_1_server_1_1_hosts_1_1_wcf_portal" ],
           [ "BrokeredPortal", "class_csla_1_1_server_1_1_hosts_1_1_brokered_portal.html", "class_csla_1_1_server_1_1_hosts_1_1_brokered_portal" ],
           [ "HttpPortal", "class_csla_1_1_server_1_1_hosts_1_1_http_portal.html", "class_csla_1_1_server_1_1_hosts_1_1_http_portal" ],
-          [ "HttpPortalController", "class_csla_1_1_server_1_1_hosts_1_1_http_portal_controller.html", "class_csla_1_1_server_1_1_hosts_1_1_http_portal_controller" ]
+          [ "HttpPortalController", "class_csla_1_1_server_1_1_hosts_1_1_http_portal_controller.html", "class_csla_1_1_server_1_1_hosts_1_1_http_portal_controller" ],
+          [ "IWcfPortal", "interface_csla_1_1_server_1_1_hosts_1_1_i_wcf_portal.html", "interface_csla_1_1_server_1_1_hosts_1_1_i_wcf_portal" ],
+          [ "RemotingPortal", "class_csla_1_1_server_1_1_hosts_1_1_remoting_portal.html", "class_csla_1_1_server_1_1_hosts_1_1_remoting_portal" ],
+          [ "WcfPortal", "class_csla_1_1_server_1_1_hosts_1_1_wcf_portal.html", "class_csla_1_1_server_1_1_hosts_1_1_wcf_portal" ]
         ] ],
         [ "AuthorizeRequest", "class_csla_1_1_server_1_1_authorize_request.html", "class_csla_1_1_server_1_1_authorize_request" ],
         [ "ChildDataPortal", "class_csla_1_1_server_1_1_child_data_portal.html", "class_csla_1_1_server_1_1_child_data_portal" ],
@@ -346,20 +346,20 @@ var annotated_dup =
         [ "BusyLocker", "class_csla_1_1_threading_1_1_busy_locker.html", "class_csla_1_1_threading_1_1_busy_locker" ]
       ] ],
       [ "Validation", "namespace_csla_1_1_validation.html", [
-        [ "Resource", "class_csla_1_1_validation_1_1_resource.html", "class_csla_1_1_validation_1_1_resource" ],
         [ "BusinessBase", "class_csla_1_1_validation_1_1_business_base.html", "class_csla_1_1_validation_1_1_business_base" ],
         [ "DecoratedRuleArgs", "class_csla_1_1_validation_1_1_decorated_rule_args.html", "class_csla_1_1_validation_1_1_decorated_rule_args" ],
         [ "ReadOnlyBase", "class_csla_1_1_validation_1_1_read_only_base.html", "class_csla_1_1_validation_1_1_read_only_base" ],
+        [ "Resource", "class_csla_1_1_validation_1_1_resource.html", "class_csla_1_1_validation_1_1_resource" ],
         [ "RuleArgs", "class_csla_1_1_validation_1_1_rule_args.html", "class_csla_1_1_validation_1_1_rule_args" ]
       ] ],
       [ "WcfPortal", "namespace_csla_1_1_wcf_portal.html", [
         [ "CriteriaRequest", "class_csla_1_1_wcf_portal_1_1_criteria_request.html", "class_csla_1_1_wcf_portal_1_1_criteria_request" ],
-        [ "WcfResponse", "class_csla_1_1_wcf_portal_1_1_wcf_response.html", "class_csla_1_1_wcf_portal_1_1_wcf_response" ],
-        [ "WcfErrorInfo", "class_csla_1_1_wcf_portal_1_1_wcf_error_info.html", "class_csla_1_1_wcf_portal_1_1_wcf_error_info" ],
-        [ "UpdateRequest", "class_csla_1_1_wcf_portal_1_1_update_request.html", "class_csla_1_1_wcf_portal_1_1_update_request" ],
         [ "IWcfPortal", "interface_csla_1_1_wcf_portal_1_1_i_wcf_portal.html", "interface_csla_1_1_wcf_portal_1_1_i_wcf_portal" ],
         [ "IWcfPortalChannel", "interface_csla_1_1_wcf_portal_1_1_i_wcf_portal_channel.html", null ],
-        [ "WcfPortalClient", "class_csla_1_1_wcf_portal_1_1_wcf_portal_client.html", "class_csla_1_1_wcf_portal_1_1_wcf_portal_client" ]
+        [ "UpdateRequest", "class_csla_1_1_wcf_portal_1_1_update_request.html", "class_csla_1_1_wcf_portal_1_1_update_request" ],
+        [ "WcfErrorInfo", "class_csla_1_1_wcf_portal_1_1_wcf_error_info.html", "class_csla_1_1_wcf_portal_1_1_wcf_error_info" ],
+        [ "WcfPortalClient", "class_csla_1_1_wcf_portal_1_1_wcf_portal_client.html", "class_csla_1_1_wcf_portal_1_1_wcf_portal_client" ],
+        [ "WcfResponse", "class_csla_1_1_wcf_portal_1_1_wcf_response.html", "class_csla_1_1_wcf_portal_1_1_wcf_response" ]
       ] ],
       [ "Web", "namespace_csla_1_1_web.html", [
         [ "Design", "namespace_csla_1_1_web_1_1_design.html", [
@@ -388,9 +388,9 @@ var annotated_dup =
       ] ],
       [ "Windows", "namespace_csla_1_1_windows.html", [
         [ "ApplicationContextManager", "class_csla_1_1_windows_1_1_application_context_manager.html", "class_csla_1_1_windows_1_1_application_context_manager" ],
+        [ "BindingErrorEventArgs", "class_csla_1_1_windows_1_1_binding_error_event_args.html", "class_csla_1_1_windows_1_1_binding_error_event_args" ],
         [ "BindingSourceNode", "class_csla_1_1_windows_1_1_binding_source_node.html", "class_csla_1_1_windows_1_1_binding_source_node" ],
         [ "BindingSourceRefresh", "class_csla_1_1_windows_1_1_binding_source_refresh.html", "class_csla_1_1_windows_1_1_binding_source_refresh" ],
-        [ "BindingErrorEventArgs", "class_csla_1_1_windows_1_1_binding_error_event_args.html", "class_csla_1_1_windows_1_1_binding_error_event_args" ],
         [ "BusyAnimation", "class_csla_1_1_windows_1_1_busy_animation.html", "class_csla_1_1_windows_1_1_busy_animation" ],
         [ "CslaActionCancelEventArgs", "class_csla_1_1_windows_1_1_csla_action_cancel_event_args.html", "class_csla_1_1_windows_1_1_csla_action_cancel_event_args" ],
         [ "CslaActionEventArgs", "class_csla_1_1_windows_1_1_csla_action_event_args.html", "class_csla_1_1_windows_1_1_csla_action_event_args" ],
@@ -408,7 +408,7 @@ var annotated_dup =
         [ "BusyAnimation", "class_csla_1_1_xaml_1_1_busy_animation.html", "class_csla_1_1_xaml_1_1_busy_animation" ],
         [ "CancellableViewModel", "class_csla_1_1_xaml_1_1_cancellable_view_model.html", "class_csla_1_1_xaml_1_1_cancellable_view_model" ],
         [ "CslaDataProvider", "class_csla_1_1_xaml_1_1_csla_data_provider.html", "class_csla_1_1_xaml_1_1_csla_data_provider" ],
-        [ "CslaDataProviderCommandManager", "class_csla_1_1_xaml_1_1_csla_data_provider_command_manager.html", "class_csla_1_1_xaml_1_1_csla_data_provider_command_manager" ],
+        [ "CslaDataProviderCommandManager", "class_csla_1_1_xaml_1_1_csla_data_provider_command_manager.html", null ],
         [ "DataDecoratorBase", "class_csla_1_1_xaml_1_1_data_decorator_base.html", "class_csla_1_1_xaml_1_1_data_decorator_base" ],
         [ "ErrorDialog", "class_csla_1_1_xaml_1_1_error_dialog.html", "class_csla_1_1_xaml_1_1_error_dialog" ],
         [ "ErrorEventArgs", "class_csla_1_1_xaml_1_1_error_event_args.html", "class_csla_1_1_xaml_1_1_error_event_args" ],
@@ -429,32 +429,27 @@ var annotated_dup =
       [ "BusinessBindingListBase", "class_csla_1_1_business_binding_list_base.html", "class_csla_1_1_business_binding_list_base" ],
       [ "BusinessListBase", "class_csla_1_1_business_list_base.html", "class_csla_1_1_business_list_base" ],
       [ "CommandBase", "class_csla_1_1_command_base.html", "class_csla_1_1_command_base" ],
+      [ "CreateAttribute", "class_csla_1_1_create_attribute.html", null ],
+      [ "CreateChildAttribute", "class_csla_1_1_create_child_attribute.html", null ],
       [ "CriteriaBase", "class_csla_1_1_criteria_base.html", "class_csla_1_1_criteria_base" ],
       [ "DataPortal", "class_csla_1_1_data_portal.html", "class_csla_1_1_data_portal" ],
+      [ "DataPortalChildOperationAttribute", "class_csla_1_1_data_portal_child_operation_attribute.html", null ],
       [ "DataPortalEventArgs", "class_csla_1_1_data_portal_event_args.html", "class_csla_1_1_data_portal_event_args" ],
       [ "DataPortalException", "class_csla_1_1_data_portal_exception.html", "class_csla_1_1_data_portal_exception" ],
-      [ "InjectAttribute", "class_csla_1_1_inject_attribute.html", null ],
       [ "DataPortalOperationAttribute", "class_csla_1_1_data_portal_operation_attribute.html", null ],
-      [ "DataPortalRootOperationAttribute", "class_csla_1_1_data_portal_root_operation_attribute.html", null ],
-      [ "DataPortalChildOperationAttribute", "class_csla_1_1_data_portal_child_operation_attribute.html", null ],
-      [ "CreateAttribute", "class_csla_1_1_create_attribute.html", null ],
-      [ "FetchAttribute", "class_csla_1_1_fetch_attribute.html", null ],
-      [ "InsertAttribute", "class_csla_1_1_insert_attribute.html", null ],
-      [ "UpdateAttribute", "class_csla_1_1_update_attribute.html", null ],
-      [ "ExecuteAttribute", "class_csla_1_1_execute_attribute.html", null ],
-      [ "DeleteAttribute", "class_csla_1_1_delete_attribute.html", null ],
-      [ "DeleteSelfAttribute", "class_csla_1_1_delete_self_attribute.html", null ],
-      [ "CreateChildAttribute", "class_csla_1_1_create_child_attribute.html", null ],
-      [ "FetchChildAttribute", "class_csla_1_1_fetch_child_attribute.html", null ],
-      [ "InsertChildAttribute", "class_csla_1_1_insert_child_attribute.html", null ],
-      [ "UpdateChildAttribute", "class_csla_1_1_update_child_attribute.html", null ],
-      [ "DeleteSelfChildAttribute", "class_csla_1_1_delete_self_child_attribute.html", null ],
-      [ "ExecuteChildAttribute", "class_csla_1_1_execute_child_attribute.html", null ],
       [ "DataPortalResult", "class_csla_1_1_data_portal_result.html", "class_csla_1_1_data_portal_result" ],
+      [ "DataPortalRootOperationAttribute", "class_csla_1_1_data_portal_root_operation_attribute.html", null ],
       [ "DataPortalServerResourceAttribute", "class_csla_1_1_data_portal_server_resource_attribute.html", "class_csla_1_1_data_portal_server_resource_attribute" ],
       [ "DataPortalServerRoutingTagAttribute", "class_csla_1_1_data_portal_server_routing_tag_attribute.html", "class_csla_1_1_data_portal_server_routing_tag_attribute" ],
+      [ "DeleteAttribute", "class_csla_1_1_delete_attribute.html", null ],
+      [ "DeleteSelfAttribute", "class_csla_1_1_delete_self_attribute.html", null ],
+      [ "DeleteSelfChildAttribute", "class_csla_1_1_delete_self_child_attribute.html", null ],
       [ "DynamicBindingListBase", "class_csla_1_1_dynamic_binding_list_base.html", "class_csla_1_1_dynamic_binding_list_base" ],
       [ "DynamicListBase", "class_csla_1_1_dynamic_list_base.html", "class_csla_1_1_dynamic_list_base" ],
+      [ "ExecuteAttribute", "class_csla_1_1_execute_attribute.html", null ],
+      [ "ExecuteChildAttribute", "class_csla_1_1_execute_child_attribute.html", null ],
+      [ "FetchAttribute", "class_csla_1_1_fetch_attribute.html", null ],
+      [ "FetchChildAttribute", "class_csla_1_1_fetch_child_attribute.html", null ],
       [ "FilteredBindingList", "class_csla_1_1_filtered_binding_list.html", "class_csla_1_1_filtered_binding_list" ],
       [ "IBusinessBase", "interface_csla_1_1_i_business_base.html", null ],
       [ "IBusinessListBase", "interface_csla_1_1_i_business_list_base.html", null ],
@@ -462,6 +457,9 @@ var annotated_dup =
       [ "IDataPortal", "interface_csla_1_1_i_data_portal.html", "interface_csla_1_1_i_data_portal" ],
       [ "IDataPortalFactory", "interface_csla_1_1_i_data_portal_factory.html", "interface_csla_1_1_i_data_portal_factory" ],
       [ "IDataPortalResult", "interface_csla_1_1_i_data_portal_result.html", "interface_csla_1_1_i_data_portal_result" ],
+      [ "InjectAttribute", "class_csla_1_1_inject_attribute.html", null ],
+      [ "InsertAttribute", "class_csla_1_1_insert_attribute.html", null ],
+      [ "InsertChildAttribute", "class_csla_1_1_insert_child_attribute.html", null ],
       [ "IReadOnlyBase", "interface_csla_1_1_i_read_only_base.html", null ],
       [ "IReadOnlyListBase", "interface_csla_1_1_i_read_only_list_base.html", null ],
       [ "LazySingleton", "class_csla_1_1_lazy_singleton.html", "class_csla_1_1_lazy_singleton" ],
@@ -479,6 +477,8 @@ var annotated_dup =
       [ "SingleCriteria", "class_csla_1_1_single_criteria.html", "class_csla_1_1_single_criteria" ],
       [ "SmartDate", "struct_csla_1_1_smart_date.html", "struct_csla_1_1_smart_date" ],
       [ "SortedBindingList", "class_csla_1_1_sorted_binding_list.html", "class_csla_1_1_sorted_binding_list" ],
-      [ "TransactionalAttribute", "class_csla_1_1_transactional_attribute.html", "class_csla_1_1_transactional_attribute" ]
+      [ "TransactionalAttribute", "class_csla_1_1_transactional_attribute.html", "class_csla_1_1_transactional_attribute" ],
+      [ "UpdateAttribute", "class_csla_1_1_update_attribute.html", null ],
+      [ "UpdateChildAttribute", "class_csla_1_1_update_child_attribute.html", null ]
     ] ]
 ];

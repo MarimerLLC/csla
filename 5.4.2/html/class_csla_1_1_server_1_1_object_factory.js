@@ -3,7 +3,7 @@ var class_csla_1_1_server_1_1_object_factory =
     [ "BypassPropertyChecks", "class_csla_1_1_server_1_1_object_factory.html#aec2abf7173b54ab789ea33aa308314a8", null ],
     [ "CheckRules", "class_csla_1_1_server_1_1_object_factory.html#addcc294b80fc4b605e70413d1984fd64", null ],
     [ "FieldExists", "class_csla_1_1_server_1_1_object_factory.html#a96f47afc5c1f20d9f00c83c15807cf8a", null ],
-    [ "GetDeletedList< C >", "class_csla_1_1_server_1_1_object_factory.html#ac58285abb1382c378f8e4c906ecedd67", null ],
+    [ "GetDeletedList< C >", "class_csla_1_1_server_1_1_object_factory.html#a441d2d8e23d1180270acf1291646b2be", null ],
     [ "LoadProperty", "class_csla_1_1_server_1_1_object_factory.html#a26cd41edd1488beee02b68b10d98d6f1", null ],
     [ "LoadProperty< P >", "class_csla_1_1_server_1_1_object_factory.html#a44c0fefe65f5d7ceb794c22043d7d594", null ],
     [ "MarkAsChild", "class_csla_1_1_server_1_1_object_factory.html#ab4d08d13d4c3dc72e105c5e917601382", null ],

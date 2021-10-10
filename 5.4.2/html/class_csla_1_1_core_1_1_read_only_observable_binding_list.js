@@ -6,6 +6,5 @@ var class_csla_1_1_core_1_1_read_only_observable_binding_list =
     [ "OnSetChildren", "class_csla_1_1_core_1_1_read_only_observable_binding_list.html#a4867b00140304f1d614cb9c9ebc8b9be", null ],
     [ "OnSetState", "class_csla_1_1_core_1_1_read_only_observable_binding_list.html#ae31f50c020cf77b717a2063f7a8e9699", null ],
     [ "SetLoadListMode", "class_csla_1_1_core_1_1_read_only_observable_binding_list.html#a0eb4e33443df62be92e1fa6c49b68e05", null ],
-    [ "IsReadOnly", "class_csla_1_1_core_1_1_read_only_observable_binding_list.html#abe0f2305afed3afa97b3761c5aa68047", null ],
-    [ "IsReadOnly", "class_csla_1_1_core_1_1_read_only_observable_binding_list.html#aa2d0d99dccb5e6e2369721ecdc14af59", null ]
+    [ "IsReadOnly", "class_csla_1_1_core_1_1_read_only_observable_binding_list.html#abe0f2305afed3afa97b3761c5aa68047", null ]
 ];

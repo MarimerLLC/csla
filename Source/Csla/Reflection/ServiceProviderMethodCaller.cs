@@ -120,7 +120,7 @@ namespace Csla.Reflection
         if (!candidates.Any() && typeOfOperation == typeof(CreateChildAttribute))
         {
           var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
-          candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
+          candidates.AddRange(ftlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
         }
       }
       else // not using factory types

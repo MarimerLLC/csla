@@ -14,9 +14,9 @@ var class_csla_1_1_business_base =
     [ "Save", "class_csla_1_1_business_base.html#a0794f477dc841a23b9eb1f6cc46127b8", null ],
     [ "SaveAndMergeAsync", "class_csla_1_1_business_base.html#af7f63f4ea83e94f149ef612cd4cc1a7a", null ],
     [ "SaveAndMergeAsync", "class_csla_1_1_business_base.html#a83546a008921472f852c4e77bb3a4655", null ],
-    [ "SaveAsync", "class_csla_1_1_business_base.html#aefbf27f106929fdc88a316bd9f20d9e1", null ],
-    [ "SaveAsync", "class_csla_1_1_business_base.html#a2adbd641bf6589a998c6970b7d23b768", null ],
-    [ "SaveAsync", "class_csla_1_1_business_base.html#a7f357d738faa44cd6ce16679d8fc637f", null ],
+    [ "SaveAsync", "class_csla_1_1_business_base.html#a6f403d6470e7f6e379d381ee8450469e", null ],
+    [ "SaveAsync", "class_csla_1_1_business_base.html#a1a45621aa0c57aa6fbd1d7eb1f4636e8", null ],
+    [ "SaveAsync", "class_csla_1_1_business_base.html#a542f47a28154be4478e5cc29c47c294c", null ],
     [ "ToString", "class_csla_1_1_business_base.html#a3fe7b2c4ce49d189bed0f7919647e49d", null ],
     [ "Saved", "class_csla_1_1_business_base.html#a22c57cb2e227bac263f487b6283b672e", null ]
 ];

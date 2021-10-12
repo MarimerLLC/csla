@@ -2,7 +2,7 @@ var class_csla_1_1_name_value_list_base =
 [
     [ "NameValuePair", "class_csla_1_1_name_value_list_base_1_1_name_value_pair.html", "class_csla_1_1_name_value_list_base_1_1_name_value_pair" ],
     [ "NameValueListBase", "class_csla_1_1_name_value_list_base.html#a5be046543cac556923529d4f375ee1be", null ],
-    [ "Clone", "class_csla_1_1_name_value_list_base.html#ab25d637df03163bd51fc9a790ba2de97", null ],
+    [ "Clone", "class_csla_1_1_name_value_list_base.html#ac3424b6b58a671cd396d5be9bb91d986", null ],
     [ "ContainsKey", "class_csla_1_1_name_value_list_base.html#af1c8d9048105e579bf9c9904c11837fd", null ],
     [ "ContainsValue", "class_csla_1_1_name_value_list_base.html#a1027a610fe8b1637613fb651db38f46f", null ],
     [ "DataPortal_OnDataPortalException", "class_csla_1_1_name_value_list_base.html#ae5aa11610beb2cdf51e0c8a1cc5f9abb", null ],

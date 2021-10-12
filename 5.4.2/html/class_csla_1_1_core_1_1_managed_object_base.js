@@ -12,6 +12,5 @@ var class_csla_1_1_core_1_1_managed_object_base =
     [ "ReadProperty", "class_csla_1_1_core_1_1_managed_object_base.html#a8951bca596c3a1fd8b1296efa8835bd2", null ],
     [ "ReadProperty< P >", "class_csla_1_1_core_1_1_managed_object_base.html#a8f741e56c7314b608cfffcedacc3cb93", null ],
     [ "ReadPropertyConvert< F, P >", "class_csla_1_1_core_1_1_managed_object_base.html#aa26348e8dd578d27fb0b6a6e9f16cfc6", null ],
-    [ "FieldManager", "class_csla_1_1_core_1_1_managed_object_base.html#acc7f1f037fe9ea47e1e30671df5b87de", null ],
-    [ "PropertyChanged", "class_csla_1_1_core_1_1_managed_object_base.html#aaf17a43fbdc88e9ecf49ba63833aa510", null ]
+    [ "FieldManager", "class_csla_1_1_core_1_1_managed_object_base.html#acc7f1f037fe9ea47e1e30671df5b87de", null ]
 ];

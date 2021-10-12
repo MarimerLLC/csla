@@ -9,7 +9,7 @@ var class_csla_1_1_linq_observable_collection =
     [ "Contains", "class_csla_1_1_linq_observable_collection.html#aa927e7e81e48f901262904a89d808a5c", null ],
     [ "CopyTo", "class_csla_1_1_linq_observable_collection.html#a7704624e9a877059e83982677cc58803", null ],
     [ "CopyTo", "class_csla_1_1_linq_observable_collection.html#a5f9f8d665d029c0299d053c77d2b6887", null ],
-    [ "GetEnumerator", "class_csla_1_1_linq_observable_collection.html#a43fdd2a550222a7108951de39449f16d", null ],
+    [ "GetEnumerator", "class_csla_1_1_linq_observable_collection.html#ac32a21096f99ede7135731cfc30ed7f4", null ],
     [ "IndexOf", "class_csla_1_1_linq_observable_collection.html#a94f3c5e72c2e33b27fa586b3c7ec945d", null ],
     [ "IndexOf", "class_csla_1_1_linq_observable_collection.html#ae7d63ac25a29348c7262da98de5f6f09", null ],
     [ "Insert", "class_csla_1_1_linq_observable_collection.html#aea3ab23379e6d57f05827c1c3e6f9249", null ],
@@ -26,6 +26,5 @@ var class_csla_1_1_linq_observable_collection =
     [ "Source", "class_csla_1_1_linq_observable_collection.html#a151f99fce68b15053e3ed7bf054b0164", null ],
     [ "SyncRoot", "class_csla_1_1_linq_observable_collection.html#ad38ac5f9b7ededcd4fb00e6e7bd834d4", null ],
     [ "this[int index]", "class_csla_1_1_linq_observable_collection.html#a2bc034ad1e776246e049a3ce729487c9", null ],
-    [ "this[int index]", "class_csla_1_1_linq_observable_collection.html#a760deb37f2bdb3a5096754358bb1faa5", null ],
     [ "CollectionChanged", "class_csla_1_1_linq_observable_collection.html#a01e3d5bf3b1cee9864fc49498964b302", null ]
 ];

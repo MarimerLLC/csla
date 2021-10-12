@@ -2,9 +2,9 @@ var class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager =
 [
     [ "FieldDataManager", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#a5f598da58c7b067498d3a451a11b3907", null ],
     [ "FieldExists", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ac712de83e417c9a1e5bc2bd629d40ba1", null ],
-    [ "GetChildren", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#a1592ad600d842ad19b909e0337279b67", null ],
+    [ "GetChildren", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ad49e3bcdce9b43b07d2cf1dd4a01e7bc", null ],
     [ "GetFieldData", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#a896fa010cf4e594f799ab5fab0040b18", null ],
-    [ "GetRegisteredProperties", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ada88dabf6398bd1ea168d057ff8967b8", null ],
+    [ "GetRegisteredProperties", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#a599c29c126292bea233b657b2e505c59", null ],
     [ "GetRegisteredProperty", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#ae629320e9fb01638a1a8981d0564e9e4", null ],
     [ "IsDirty", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#a6502e4cfbced9d7d8cec4903c85c5d96", null ],
     [ "IsFieldDirty", "class_csla_1_1_core_1_1_field_manager_1_1_field_data_manager.html#a2057b13fb5cddd9720485420ce222f3a", null ],

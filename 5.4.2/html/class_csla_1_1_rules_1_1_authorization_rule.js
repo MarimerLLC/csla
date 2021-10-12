@@ -5,8 +5,6 @@ var class_csla_1_1_rules_1_1_authorization_rule =
     [ "Execute", "class_csla_1_1_rules_1_1_authorization_rule.html#a1e67111268f16fe9760605d638e6f95d", null ],
     [ "ReadProperty", "class_csla_1_1_rules_1_1_authorization_rule.html#a13427b851d5859da41b13864d89d4bcb", null ],
     [ "Action", "class_csla_1_1_rules_1_1_authorization_rule.html#a84cce37cedcc4d07a85f6b1f05f242a1", null ],
-    [ "Action", "class_csla_1_1_rules_1_1_authorization_rule.html#ac9b55a35a80158ef41b47e589c950fed", null ],
     [ "CacheResult", "class_csla_1_1_rules_1_1_authorization_rule.html#a29128c4b57cabebf2402dd25931e9387", null ],
-    [ "Element", "class_csla_1_1_rules_1_1_authorization_rule.html#a83ca2aac0f7f25640111654dfbc75162", null ],
-    [ "Element", "class_csla_1_1_rules_1_1_authorization_rule.html#ab5a34c81da56a0e79d832e34391df4f6", null ]
+    [ "Element", "class_csla_1_1_rules_1_1_authorization_rule.html#a83ca2aac0f7f25640111654dfbc75162", null ]
 ];

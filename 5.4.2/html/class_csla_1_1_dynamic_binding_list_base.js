@@ -17,9 +17,7 @@ var class_csla_1_1_dynamic_binding_list_base =
     [ "SaveItem", "class_csla_1_1_dynamic_binding_list_base.html#af6b71dc16c9044e4eff1521e31e8d1a2", null ],
     [ "SaveItem", "class_csla_1_1_dynamic_binding_list_base.html#adf51d6af6222eaf8b9ac5497b92c73d0", null ],
     [ "SetItem", "class_csla_1_1_dynamic_binding_list_base.html#aa95b4804bab88d63b4d994ea59bf0dca", null ],
-    [ "ToArray", "class_csla_1_1_dynamic_binding_list_base.html#a3871ba4e5ed6e488a640f8e242aa97f9", null ],
-    [ "Identity", "class_csla_1_1_dynamic_binding_list_base.html#ac99eca815667bb9589393434a522dbbb", null ],
+    [ "ToArray", "class_csla_1_1_dynamic_binding_list_base.html#a59c4974a2a68dfc6f56a5cfbfcf2775b", null ],
     [ "IsBusy", "class_csla_1_1_dynamic_binding_list_base.html#a1d609bb1773f1ee43a36ea4681ede284", null ],
-    [ "Parent", "class_csla_1_1_dynamic_binding_list_base.html#ac2c74c2c0735c93e94cd547f502e7d96", null ],
     [ "Saved", "class_csla_1_1_dynamic_binding_list_base.html#a037b55293934382081f7ecefdaf2c521", null ]
 ];

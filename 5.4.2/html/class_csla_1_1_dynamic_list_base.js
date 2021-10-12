@@ -19,10 +19,8 @@ var class_csla_1_1_dynamic_list_base =
     [ "SaveItemAsync", "class_csla_1_1_dynamic_list_base.html#a4792381cbea56d6cd3f33942e4921d8f", null ],
     [ "SaveItemAsync", "class_csla_1_1_dynamic_list_base.html#a4a9fbf9547a64178ff70f1ae47975ee1", null ],
     [ "SetItem", "class_csla_1_1_dynamic_list_base.html#a027f754d82464aaea6776ec240225bb0", null ],
-    [ "ToArray", "class_csla_1_1_dynamic_list_base.html#adb7b031359c4d4d9a62d693cb497d133", null ],
-    [ "Identity", "class_csla_1_1_dynamic_list_base.html#a0b3ca1229f03b297b9cb0b7b9a833973", null ],
+    [ "ToArray", "class_csla_1_1_dynamic_list_base.html#a39f6c7544bf5393e5423ac13d1faf8e1", null ],
     [ "IsBusy", "class_csla_1_1_dynamic_list_base.html#ab86e48263258175ccdc5be4920fc077b", null ],
-    [ "Parent", "class_csla_1_1_dynamic_list_base.html#a8aceefee8a5834892fe844438960594f", null ],
     [ "RaiseReplaceEvents", "class_csla_1_1_dynamic_list_base.html#aaaabc50616a2589211a35f407aaf5701", null ],
     [ "SupportsChangeNotificationCore", "class_csla_1_1_dynamic_list_base.html#a2134c7ad83c8f0809823353301f65521", null ],
     [ "Saved", "class_csla_1_1_dynamic_list_base.html#a32b2676c64a67c8895fc45e786972eba", null ]

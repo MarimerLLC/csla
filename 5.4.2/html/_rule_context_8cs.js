@@ -1,6 +1,6 @@
 var _rule_context_8cs =
 [
-    [ "RuleContext", "class_csla_1_1_rules_1_1_rule_context.html", "class_csla_1_1_rules_1_1_rule_context" ],
+    [ "Csla.Rules.RuleContext", "class_csla_1_1_rules_1_1_rule_context.html", "class_csla_1_1_rules_1_1_rule_context" ],
     [ "RuleContextModes", "_rule_context_8cs.html#aecfeab616b260bd2447b229d06615882", [
       [ "Any", "_rule_context_8cs.html#aecfeab616b260bd2447b229d06615882aed36a1ef76a59ee3f15180e0441188ad", null ],
       [ "CheckRules", "_rule_context_8cs.html#aecfeab616b260bd2447b229d06615882a7d144a9254202f05ead9dfc26d0c7319", null ],

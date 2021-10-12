@@ -53,10 +53,7 @@ var class_csla_1_1_read_only_base =
     [ "BusinessRules", "class_csla_1_1_read_only_base.html#a9e01ae501c10cd8e6f7e07caa640450a", null ],
     [ "BusyChanged", "class_csla_1_1_read_only_base.html#a95e8e5737e03cf5553d086dcd2d29ebf", null ],
     [ "FieldManager", "class_csla_1_1_read_only_base.html#acbb931c1080f611e074b8091c727e954", null ],
-    [ "HasManagedProperties", "class_csla_1_1_read_only_base.html#a472d48b0fcb20ae07ebad4898d2d3563", null ],
-    [ "Identity", "class_csla_1_1_read_only_base.html#a6f2299c39e8545e95aa11251bbbc1e54", null ],
     [ "IsBusy", "class_csla_1_1_read_only_base.html#ac84f996e326b5e4128682878887e39ef", null ],
     [ "IsSelfBusy", "class_csla_1_1_read_only_base.html#a0741d82a0126db3d2c94c96e025397c4", null ],
-    [ "LoadManager", "class_csla_1_1_read_only_base.html#acb3ee05fdf7a250984fbaab9a01833ef", null ],
     [ "UnhandledAsyncException", "class_csla_1_1_read_only_base.html#ac4224936ab14c68b178051466fb74457", null ]
 ];

@@ -107,7 +107,7 @@ var hierarchy =
       [ "Csla.Web.Mvc.Controller", "class_csla_1_1_web_1_1_mvc_1_1_controller.html", null ]
     ] ],
     [ "Csla.Server.Hosts.WcfChannel.CreateRequest", "class_csla_1_1_server_1_1_hosts_1_1_wcf_channel_1_1_create_request.html", null ],
-    [ "CriteriaBase< SingleCriteria< C >>", null, [
+    [ "Csla.CriteriaBase< SingleCriteria< C > >", "class_csla_1_1_criteria_base.html", [
       [ "Csla.SingleCriteria< B, C >", "class_csla_1_1_single_criteria.html", null ]
     ] ],
     [ "Csla.CriteriaBase< UsernameCriteria >", "class_csla_1_1_criteria_base.html", [
@@ -768,8 +768,6 @@ var hierarchy =
     ] ],
     [ "Csla.Reflection.LateBoundObject", "class_csla_1_1_reflection_1_1_late_bound_object.html", null ],
     [ "Csla.LazySingleton< T >", "class_csla_1_1_lazy_singleton.html", null ],
-    [ "Csla.LazySingleton< Dictionary< IPropertyInfo, object > >", "class_csla_1_1_lazy_singleton.html", null ],
-    [ "Csla.LazySingleton< List< IPropertyInfo > >", "class_csla_1_1_lazy_singleton.html", null ],
     [ "List", null, [
       [ "Csla.Core.FieldManager.PropertyInfoList", "class_csla_1_1_core_1_1_field_manager_1_1_property_info_list.html", null ],
       [ "Csla.Core.MobileList< T >", "class_csla_1_1_core_1_1_mobile_list.html", null ],
@@ -778,7 +776,6 @@ var hierarchy =
     [ "MarshalByRefObject", null, [
       [ "Csla.Server.Hosts.RemotingPortal", "class_csla_1_1_server_1_1_hosts_1_1_remoting_portal.html", null ]
     ] ],
-    [ "Csla.Core.MobileList< C >", "class_csla_1_1_core_1_1_mobile_list.html", null ],
     [ "Csla.Server.Hosts.Mobile.MobileRequestProcessor", "class_csla_1_1_server_1_1_hosts_1_1_mobile_1_1_mobile_request_processor.html", null ],
     [ "Csla.Server.Hosts.Mobile.MobileResponse", "class_csla_1_1_server_1_1_hosts_1_1_mobile_1_1_mobile_response.html", null ],
     [ "object", null, [
@@ -797,7 +794,6 @@ var hierarchy =
         [ "Csla.ReadOnlyListBase< T, C >", "class_csla_1_1_read_only_list_base.html", null ]
       ] ]
     ] ],
-    [ "Csla.Core.ObservableBindingList< TC >", "class_csla_1_1_core_1_1_observable_binding_list.html", null ],
     [ "System.Collections.ObjectModel.ObservableCollection", null, [
       [ "Csla.Core.MobileObservableCollection< T >", "class_csla_1_1_core_1_1_mobile_observable_collection.html", null ]
     ] ],
@@ -807,9 +803,6 @@ var hierarchy =
     [ "PropertyChangedEventArgs", null, [
       [ "Csla.Core.MetaPropertyChangedEventArgs", "class_csla_1_1_core_1_1_meta_property_changed_event_args.html", null ]
     ] ],
-    [ "Csla.PropertyInfo< byte[]>", "class_csla_1_1_property_info.html", null ],
-    [ "Csla.PropertyInfo< Csla.Server.Hosts.DataPortalChannel.DataPortalErrorInfo >", "class_csla_1_1_property_info.html", null ],
-    [ "Csla.PropertyInfo< string >", "class_csla_1_1_property_info.html", null ],
     [ "Csla.ReadOnlyBase< CriteriaRequest >", "class_csla_1_1_read_only_base.html", [
       [ "Csla.Server.Hosts.DataPortalChannel.CriteriaRequest", "class_csla_1_1_server_1_1_hosts_1_1_data_portal_channel_1_1_criteria_request.html", null ]
     ] ],

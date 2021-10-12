@@ -58,7 +58,7 @@ var namespace_csla_1_1_core =
       [ "Serialization", "namespace_csla_1_1_core.html#ae4d1bfe03690e28c9ac1bd7066cd5c59a1adb0c1dbe31b0bf5fa0665a823707a0", null ],
       [ "Undo", "namespace_csla_1_1_core.html#ae4d1bfe03690e28c9ac1bd7066cd5c59a1cdc076b28f70afac5fcedadf99fa119", null ]
     ] ],
-    [ "AsyncFactoryDelegate< R >", "namespace_csla_1_1_core.html#ac825d910bb14e985441c2623c5d2cb5a", null ],
-    [ "AsyncFactoryDelegate< T, R >", "namespace_csla_1_1_core.html#afc18c44fd513c2443c1862603a401fc7", null ],
+    [ "AsyncFactoryDelegate< R >", "namespace_csla_1_1_core.html#a3088984d8d151c5ec478070d6ca60acc", null ],
+    [ "AsyncFactoryDelegate< T, R >", "namespace_csla_1_1_core.html#abb0298ac455b66a8628a9c567c8b947d", null ],
     [ "BusyChangedEventHandler", "namespace_csla_1_1_core.html#a6e5e9144d3f05f7275d0411443def6de", null ]
 ];

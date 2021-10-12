@@ -1,8 +1,8 @@
 var _i_business_rule_8cs =
 [
-    [ "IBusinessRuleBase", "interface_csla_1_1_rules_1_1_i_business_rule_base.html", "interface_csla_1_1_rules_1_1_i_business_rule_base" ],
-    [ "IBusinessRule", "interface_csla_1_1_rules_1_1_i_business_rule.html", "interface_csla_1_1_rules_1_1_i_business_rule" ],
-    [ "IBusinessRuleAsync", "interface_csla_1_1_rules_1_1_i_business_rule_async.html", "interface_csla_1_1_rules_1_1_i_business_rule_async" ],
+    [ "Csla.Rules.IBusinessRuleBase", "interface_csla_1_1_rules_1_1_i_business_rule_base.html", "interface_csla_1_1_rules_1_1_i_business_rule_base" ],
+    [ "Csla.Rules.IBusinessRule", "interface_csla_1_1_rules_1_1_i_business_rule.html", "interface_csla_1_1_rules_1_1_i_business_rule" ],
+    [ "Csla.Rules.IBusinessRuleAsync", "interface_csla_1_1_rules_1_1_i_business_rule_async.html", "interface_csla_1_1_rules_1_1_i_business_rule_async" ],
     [ "RunModes", "_i_business_rule_8cs.html#a86138e6f00e441cde8ce526eb5e0e1da", [
       [ "Default", "_i_business_rule_8cs.html#a86138e6f00e441cde8ce526eb5e0e1daa7a1920d61156abc05a60135aefe8bc67", null ],
       [ "DenyCheckRules", "_i_business_rule_8cs.html#a86138e6f00e441cde8ce526eb5e0e1daa22d64bcaa3d0afa0168f53c11cf336bd", null ],

@@ -17,7 +17,7 @@ var class_csla_1_1_configuration_1_1_csla_data_portal_configuration =
     [ "FlowSynchronizationContext", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a248db809e31b248ca707587a55cbd479", null ],
     [ "InterceptorType", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a668e7bc8f337c7952e2a4af1f54ad38e", null ],
     [ "InterceptorType", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a61c19e00ce1b890e0beacb63dbbcba45", null ],
-    [ "ProxyDescriptors", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ab634fe0ece0fd711b3aa6efeb9196727", null ],
+    [ "ProxyDescriptors", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a18b2ae18f830d0dfa77d146159abb577", null ],
     [ "ProxyFactoryType", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a3dc11de777d905b1319c730ba1bf96d9", null ],
     [ "ProxyFactoryType", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#ae2945113ff083804b612fdff4118577e", null ],
     [ "ServerAuthorizationProviderType", "class_csla_1_1_configuration_1_1_csla_data_portal_configuration.html#a3a29af084379020ec6f67d27e9432329", null ],

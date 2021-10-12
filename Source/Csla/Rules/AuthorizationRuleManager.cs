@@ -8,9 +8,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
-using Csla.Reflection;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.Runtime;
+#endif
 
 namespace Csla.Rules
 {
@@ -20,19 +23,35 @@ namespace Csla.Rules
   /// </summary>
   public class AuthorizationRuleManager
   {
+#if NET5_0_OR_GREATER
+    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>> _perTypeRules =
+      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>>();
+#else
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
+#endif
 
     internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
-      //type = ApplicationContext.DataPortalActivator.ResolveType(type);
-
       if (ruleSet == ApplicationContext.DefaultRuleSet)
         ruleSet = null;
 
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
+
+#if NET5_0_OR_GREATER
+      var rulesInfo = _perTypeRules.Value
+        .GetOrAdd(
+          key,
+          (t) => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
+        );
+
+      var result = rulesInfo.Item2;
+#else
       var result = _perTypeRules.Value.GetOrAdd(key, (t) => { return new AuthorizationRuleManager(); });
+#endif
+
       InitializePerTypeRules(result, type);
+
       return result;
     }
 
@@ -108,8 +127,7 @@ namespace Csla.Rules
         var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
         foreach (var key in typeRules)
         {
-          AuthorizationRuleManager manager;
-          _perTypeRules.Value.TryRemove(key.Key, out manager);
+          _perTypeRules.Value.TryRemove(key.Key, out _);
         }
       }
     }
@@ -154,5 +172,13 @@ namespace Csla.Rules
     {
       Rules = new List<IAuthorizationRule>();
     }
+#if NET5_0_OR_GREATER
+
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      lock (_perTypeRules)
+        AssemblyLoadContextManager.RemoveFromCache(_perTypeRules.Value, context, true);
+    }
+#endif
   }
 }

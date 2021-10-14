@@ -81,33 +81,34 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.dll*" target="lib\netstandard2.0" />
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.xml*" target="lib\netstandard2.0" />
     <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.resources.dll*" target="lib\netstandard2.0" />
+    <!-- Net 6.0 Assembly -->
+    <file src="..\..\bin\Release\netstandard\net6.0\**\Csla.dll*" target="lib\net6.0" />
+    <file src="..\..\bin\Release\netstandard\net6.0\**\Csla.xml*" target="lib\net6.0" />
+    <file src="..\..\bin\Release\netstandard\net6.0\**\Csla.resources.dll*" target="lib\net6.0" />
     <!-- Net 5.0 Assembly -->
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.dll*" target="lib\net5.0" />
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.xml*" target="lib\net5.0" />
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.resources.dll*" target="lib\net5.0" />
-    <!-- .NET 4.6.1 -->
-    <file src="..\..\Bin\Release\NET461\**\Csla.dll*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET461\**\Csla.pdb*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET461\**\Csla.resources.dll*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET461\**\Csla.resources.pdb*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET461\**\Csla.xml*" target="lib\net461" />
+    <!-- .NET 4.6.2 -->
+    <file src="..\..\Bin\Release\NET462\**\Csla.dll*" target="lib\net462" />
+    <file src="..\..\Bin\Release\NET462\**\Csla.pdb*" target="lib\net462" />
+    <file src="..\..\Bin\Release\NET462\**\Csla.resources.dll*" target="lib\net462" />
+    <file src="..\..\Bin\Release\NET462\**\Csla.xml*" target="lib\net462" />
     <!-- .NET 4.7.2 -->
     <file src="..\..\Bin\Release\NET472\**\Csla.dll*" target="lib\net472" />
     <file src="..\..\Bin\Release\NET472\**\Csla.pdb*" target="lib\net472" />
     <file src="..\..\Bin\Release\NET472\**\Csla.resources.dll*" target="lib\net472" />
-    <file src="..\..\Bin\Release\NET472\**\Csla.resources.pdb*" target="lib\net472" />
     <file src="..\..\Bin\Release\NET472\**\Csla.xml*" target="lib\net472" />
     <!-- .NET 4.8.0 -->
     <file src="..\..\Bin\Release\NET48\**\Csla.dll*" target="lib\net48" />
     <file src="..\..\Bin\Release\NET48\**\Csla.pdb*" target="lib\net48" />
     <file src="..\..\Bin\Release\NET48\**\Csla.resources.dll*" target="lib\net48" />
-    <file src="..\..\Bin\Release\NET48\**\Csla.resources.pdb*" target="lib\net48" />
     <file src="..\..\Bin\Release\NET48\**\Csla.xml*" target="lib\net48" />
     <!-- CSLA Analyzers -->
     <file src="..\..\bin\Release\netstandard\netstandard1.3\Csla.Analyzers.*" target="analyzers\c#" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.3\tools\*.ps1" target="tools\" />
     <!-- CSLA Source Generators -->
     <file src="..\..\bin\Release\netstandard\netstandard2.0\Csla.Generators.*" target="analyzers\c#" />
-    <file src="..\..\bin\Release\netstandard\netstandard1.3\tools\*.ps1" target="tools\" />
     <!-- icon -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>

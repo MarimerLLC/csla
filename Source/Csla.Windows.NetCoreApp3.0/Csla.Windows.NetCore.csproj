@@ -9,16 +9,8 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'netcoreapp3.1'">
-    <OutputPath>..\..\Bin\Debug\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Debug\netstandard\netcoreapp3.1\Csla.Windows.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'net5.0-windows10.0.19041.0'">
-    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\Csla.Windows.xml</DocumentationFile>
+    <BaseOutputPath>..\..\Bin</BaseOutputPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <Import Project="..\Csla.Windows.Shared\Csla.Windows.Shared.projitems" Label="Shared" />

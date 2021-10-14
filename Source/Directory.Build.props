@@ -1,24 +1,29 @@
 <Project>
  <PropertyGroup>
-   <LangVersion>8.0</LangVersion>
+   <LangVersion>latest</LangVersion>
  </PropertyGroup>
  
  <!-- Common Package Settings -->
  <PropertyGroup>
-   <Version>6.0.0.0</Version>
+   <Version>6.0.0.0-R$([System.DateTime]::Now.ToString('yyMMddhhmm'))</Version>
    <PackageLicenseExpression>MIT</PackageLicenseExpression>
    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
    <RepositoryType>GitHub</RepositoryType>
    <Company>Marimer LLC</Company>
    <Product>CSLA .NET</Product>
-   <Copyright>Copyright © 2010-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
+   <PackageTags>CSLA;Business;Rules</PackageTags>
+   <Copyright>Copyright © 2002-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
    <Authors>Marimer LLC</Authors>
+   <PackageReadmeFile>readme.md</PackageReadmeFile>
    <PackageIcon>images\csla.png</PackageIcon>   
    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+   <NeutralLanguage>en-US</NeutralLanguage>
+   <DefaultLanguage>en-US</DefaultLanguage>
  </PropertyGroup>
  
  <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
-   <None Include="$(MSBuildThisFileDirectory)..\NuGet\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />
+   <None Include="$(MSBuildThisFileDirectory)\readme.md" Pack="true" PackagePath="\" />
+   <None Include="$(MSBuildThisFileDirectory)..\Support\Logos\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />
  </ItemGroup>
 </Project>

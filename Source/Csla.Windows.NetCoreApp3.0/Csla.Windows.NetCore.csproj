@@ -5,19 +5,15 @@
     <TargetFrameworks>netcoreapp3.1;net5.0-windows10.0.19041.0</TargetFrameworks>
     <AssemblyName>Csla.Windows</AssemblyName>
     <RootNamespace>Csla.Windows</RootNamespace>
-    <ApplicationIcon />
+    <Product>CSLA .NET Windows.Forms</Product>
+    <Description>UI helpers for using CSLA .NET business types with Windows Forms.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <Import Project="..\Csla.Windows.Shared\Csla.Windows.Shared.projitems" Label="Shared" />
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">

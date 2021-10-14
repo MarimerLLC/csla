@@ -17,6 +17,10 @@ namespace Csla.Blazor
   {
     private ApplicationContext ApplicationContext { get; set; }
 
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
     public CslaPermissionsHandler(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext;

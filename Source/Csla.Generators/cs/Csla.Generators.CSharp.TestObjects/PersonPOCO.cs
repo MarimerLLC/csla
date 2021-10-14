@@ -20,7 +20,9 @@ namespace Csla.Generators.CSharp.TestObjects
   public partial class PersonPOCO
   {
 
+#pragma warning disable IDE0044 // Add readonly modifier
     private string _fieldTest = "foo";
+#pragma warning restore IDE0044 // Add readonly modifier
     private string _lastName;
 
     [AutoSerialized]

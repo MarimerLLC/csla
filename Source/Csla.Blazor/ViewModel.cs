@@ -26,6 +26,10 @@ namespace Csla.Blazor
     /// </summary>
     protected ApplicationContext ApplicationContext { get; set; }
 
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
     public ViewModel(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext;

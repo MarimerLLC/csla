@@ -12,6 +12,10 @@ namespace Csla.Blazor.Client.Authentication
   {
     private ApplicationContext ApplicationContext { get; set; }
 
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
     public CslaUserService(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext;

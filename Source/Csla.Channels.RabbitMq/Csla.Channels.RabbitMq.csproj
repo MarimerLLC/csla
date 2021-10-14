@@ -2,19 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
-    <LangVersion>preview</LangVersion>
-    <Version>6.0.0.0</Version>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>
+    <Product>CSLA .NET RabbitMQ Channel</Product>
+    <Description>RabbitMQ data portal channel for CSLA .NET.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>

@@ -3,18 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net5.0;net6.0</TargetFrameworks>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>6.0.0.0</Version>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>
+    <Product>CSLA .NET Blazor WebAssembly</Product>
+    <Description>UI helpers for using CSLA .NET business types with Blazor WebAssembly.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>

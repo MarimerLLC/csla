@@ -9,11 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using Csla.Properties;
 using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.Loader;
+
+using Csla.Properties;
+#if NET5_0_OR_GREATER
+using Csla.Runtime;
+#endif
 
 namespace Csla.Reflection
 {
@@ -55,19 +58,61 @@ namespace Csla.Reflection
 
     #region Dynamic Method Cache
 
+#if NET5_0_OR_GREATER
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache =
+      new Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>>();
+#else
     private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+#endif
 
     private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
-      var key = new MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters));
-      DynamicMethodHandle mh = null;
+      var objectType = obj.GetType();
+
       var found = false;
+
+      DynamicMethodHandle mh = null;
+
+#if NET5_0_OR_GREATER
+      var key = new MethodCacheKey(objectType.FullName, info.Name, GetParameterTypes(parameters));
+
+      try
+      {
+        found = _methodCache.TryGetValue(key, out var methodHandleInfo);
+
+        mh = methodHandleInfo?.Item2;
+      }
+      catch
+      { /* failure will drop into !found block */ }
+
+      if (!found)
+      {
+        lock (_methodCache)
+        {
+          found = _methodCache.TryGetValue(key, out var methodHandleInfo);
+
+          mh = methodHandleInfo?.Item2;
+
+          if (!found)
+          {
+            mh = new DynamicMethodHandle(info, parameters);
+
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
+
+            _methodCache.Add(key, cacheInstance);
+          }
+        }
+      }
+#else
+      var key = new MethodCacheKey(objectType.FullName, info.Name, GetParameterTypes(parameters));
+
       try
       {
         found = _methodCache.TryGetValue(key, out mh);
       }
       catch
       { /* failure will drop into !found block */ }
+
       if (!found)
       {
         lock (_methodCache)
@@ -75,10 +120,13 @@ namespace Csla.Reflection
           if (!_methodCache.TryGetValue(key, out mh))
           {
             mh = new DynamicMethodHandle(info, parameters);
+
             _methodCache.Add(key, mh);
           }
         }
       }
+#endif
+
       return mh;
     }
 
@@ -89,7 +137,40 @@ namespace Csla.Reflection
 
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
+#if NET5_0_OR_GREATER
+      var objectType = obj.GetType();
+
+      var key = new MethodCacheKey(objectType.FullName, method, GetParameterTypes(hasParameters, parameters));
+
+      DynamicMethodHandle mh;
+
+      var found = _methodCache.TryGetValue(key, out var methodHandleInfo);
+
+      mh = methodHandleInfo?.Item2;
+
+      if (!found)
+      {
+        lock (_methodCache)
+        {
+          found = _methodCache.TryGetValue(key, out methodHandleInfo);
+
+          mh = methodHandleInfo?.Item2;
+
+          if (!found)
+          {
+            var info = GetMethod(obj.GetType(), method, hasParameters, parameters);
+
+            mh = new DynamicMethodHandle(info, parameters);
+
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
+
+            _methodCache.Add(key, cacheInstance);
+          }
+        }
+      }
+#else
       var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(hasParameters, parameters));
+
       if (!_methodCache.TryGetValue(key, out DynamicMethodHandle mh))
       {
         lock (_methodCache)
@@ -97,11 +178,15 @@ namespace Csla.Reflection
           if (!_methodCache.TryGetValue(key, out mh))
           {
             var info = GetMethod(obj.GetType(), method, hasParameters, parameters);
+
             mh = new DynamicMethodHandle(info, parameters);
+
             _methodCache.Add(key, mh);
           }
         }
       }
+#endif
+
       return mh;
     }
 
@@ -115,7 +200,6 @@ namespace Csla.Reflection
     {
       if (objectType == null)
         throw new ArgumentNullException(nameof(objectType));
-
       DynamicCtorDelegate result = null;
       var found = false;
       try
@@ -164,9 +248,11 @@ namespace Csla.Reflection
       catch
       {
         string[] splitName = typeName.Split(',');
+
         if (splitName.Length > 2)
         {
           var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(AppContext.BaseDirectory + splitName[1].Trim() + ".dll");
+
           return asm.GetType(splitName[0].Trim());
         }
         else
@@ -250,47 +336,120 @@ namespace Csla.Reflection
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+#if NET5_0_OR_GREATER
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache =
+      new Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>>();
+#else
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
+#endif
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
     {
       var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
+
+#if NET5_0_OR_GREATER
+      var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
+
+      var mh = memberHandleInfo?.Item2;
+
+      if (!found)
+      {
+        lock (_memberCache)
+        {
+          found = _memberCache.TryGetValue(key, out memberHandleInfo);
+
+          mh = memberHandleInfo?.Item2;
+
+          if (!found)
+          {
+            var info = objectType.GetProperty(propertyName, propertyFlags);
+
+            if (info == null)
+              throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, propertyName));
+
+            mh = new DynamicMemberHandle(info);
+
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
+
+            _memberCache.Add(key, cacheInstance);
+          }
+        }
+      }
+#else
       if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
       {
         lock (_memberCache)
         {
           if (!_memberCache.TryGetValue(key, out mh))
           {
-            PropertyInfo info = objectType.GetProperty(propertyName, propertyFlags);
+            var info = objectType.GetProperty(propertyName, propertyFlags);
+
             if (info == null)
-              throw new InvalidOperationException(
-                string.Format(Resources.MemberNotFoundException, propertyName));
+              throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, propertyName));
+
             mh = new DynamicMemberHandle(info);
+
             _memberCache.Add(key, mh);
           }
         }
       }
+#endif
+
       return mh;
     }
 
     internal static DynamicMemberHandle GetCachedField(Type objectType, string fieldName)
     {
       var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
+
+#if NET5_0_OR_GREATER
+      var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
+
+      var mh = memberHandleInfo?.Item2;
+
+      if (!found)
+      {
+        lock (_memberCache)
+        {
+          found = _memberCache.TryGetValue(key, out memberHandleInfo);
+
+          mh = memberHandleInfo?.Item2;
+
+          if (!found)
+          {
+            var info = objectType.GetField(fieldName, fieldFlags);
+
+            if (info == null)
+              throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, fieldName));
+
+            mh = new DynamicMemberHandle(info);
+
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
+
+            _memberCache.Add(key, cacheInstance);
+          }
+        }
+      }
+#else
       if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
       {
         lock (_memberCache)
         {
           if (!_memberCache.TryGetValue(key, out mh))
           {
-            FieldInfo info = objectType.GetField(fieldName, fieldFlags);
+            var info = objectType.GetField(fieldName, fieldFlags);
+
             if (info == null)
-              throw new InvalidOperationException(
-                string.Format(Resources.MemberNotFoundException, fieldName));
+              throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, fieldName));
+
             mh = new DynamicMemberHandle(info);
+
             _memberCache.Add(key, mh);
           }
         }
       }
+#endif
+
       return mh;
     }
 
@@ -365,7 +524,7 @@ namespace Csla.Reflection
     }
 
 
-    #region Call Method
+#region Call Method
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method
@@ -1273,5 +1432,19 @@ namespace Csla.Reflection
 
       return info;
     }
+#if NET5_0_OR_GREATER
+
+    private static void OnMethodAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      lock (_methodCache)
+        AssemblyLoadContextManager.RemoveFromCache(_methodCache, context);
+    }
+
+    private static void OnMemberAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      lock (_memberCache)
+        AssemblyLoadContextManager.RemoveFromCache(_memberCache, context);
+    }
+#endif
   }
 }

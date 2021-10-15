@@ -11,6 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.Runtime;
+#endif
 using Csla.Properties;
 
 namespace Csla.Reflection
@@ -23,8 +28,14 @@ namespace Csla.Reflection
   {
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
+#if NET5_0_OR_GREATER
+    private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>> _methodCache =
+      new ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>>();
+#else
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
+#endif
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
@@ -66,9 +77,19 @@ namespace Csla.Reflection
       var typeOfOperation = typeof(T);
 
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
+
+#if NET5_0_OR_GREATER
+      if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
+      {
+        var cachedMethod = unloadableCachedMethodInfo?.Item2;
+
+#else
       if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
+      {
+#endif
         if (!throwOnError || cachedMethod != null)
           return cachedMethod;
+      }
 
       var candidates = new List<ScoredMethodInfo>();
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
@@ -99,7 +120,7 @@ namespace Csla.Reflection
         if (!candidates.Any() && typeOfOperation == typeof(CreateChildAttribute))
         {
           var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
-          candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
+          candidates.AddRange(ftlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
         }
       }
       else // not using factory types
@@ -251,6 +272,7 @@ namespace Csla.Reflection
               else
               {
                 _methodCache.TryAdd(cacheKey, null);
+
                 return null;
               }
             }
@@ -273,6 +295,7 @@ namespace Csla.Reflection
           else
           {
             _methodCache.TryAdd(cacheKey, null);
+
             return null;
           }
         }
@@ -289,7 +312,15 @@ namespace Csla.Reflection
           throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}.", ex);
         }
       }
+
+#if NET5_0_OR_GREATER
+      var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
+
+      _ = _methodCache.TryAdd(cacheKey, cacheInstance);
+#else
       _methodCache.TryAdd(cacheKey, resultingMethod);
+#endif
+
       return resultingMethod;
     }
 
@@ -496,6 +527,13 @@ namespace Csla.Reflection
         throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
     }
+#if NET5_0_OR_GREATER
+
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      AssemblyLoadContextManager.RemoveFromCache(_methodCache, context, true);
+    }
+#endif
 
     private class ScoredMethodInfo
     {

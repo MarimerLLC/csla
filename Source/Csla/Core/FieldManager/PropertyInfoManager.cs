@@ -7,9 +7,13 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using Csla.Properties;
 using System.Linq;
-using Csla.Reflection;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+
+using Csla.Runtime;
+#endif
+using Csla.Properties;
 
 namespace Csla.Core.FieldManager
 {
@@ -30,9 +34,16 @@ namespace Csla.Core.FieldManager
   public static class PropertyInfoManager
   {
     private static object _cacheLock = new object();
+
+#if NET5_0_OR_GREATER
+    private static Dictionary<Type, Tuple<string, PropertyInfoList>> _propertyInfoCache;
+
+    private static Dictionary<Type, Tuple<string, PropertyInfoList>> PropertyInfoCache
+#else
     private static Dictionary<Type, PropertyInfoList> _propertyInfoCache;
 
     private static Dictionary<Type, PropertyInfoList> PropertyInfoCache
+#endif
     {
       get
       {
@@ -40,10 +51,16 @@ namespace Csla.Core.FieldManager
         {
           lock (_cacheLock)
           {
+#if NET5_0_OR_GREATER
+            if (_propertyInfoCache == null)
+              _propertyInfoCache = new Dictionary<Type, Tuple<string, PropertyInfoList>>();
+#else
             if (_propertyInfoCache == null)
               _propertyInfoCache = new Dictionary<Type, PropertyInfoList>();
+#endif
           }
         }
+
         return _propertyInfoCache;
       }
     }
@@ -51,20 +68,51 @@ namespace Csla.Core.FieldManager
     internal static PropertyInfoList GetPropertyListCache(Type objectType)
     {
       var cache = PropertyInfoCache;
+
+#if NET5_0_OR_GREATER
+      var found = cache.TryGetValue(objectType, out var listInfo);
+
+      var list = listInfo?.Item2;
+
+      if (!found)
+      {
+        lock (cache)
+        {
+          found = cache.TryGetValue(objectType, out listInfo);
+
+          if (!found)
+          {
+            list = new PropertyInfoList();
+
+            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, list, OnAssemblyLoadContextUnload);
+
+            cache.Add(objectType, cacheInstance);
+
+            FieldDataManager.ForceStaticFieldInit(objectType);
+          }
+        }
+      }
+#else
       var found = cache.TryGetValue(objectType, out PropertyInfoList list);
+
       if (!found)
       {
         lock (cache)
         {
           found = cache.TryGetValue(objectType, out list);
+
           if (!found)
           {
             list = new PropertyInfoList();
+
             cache.Add(objectType, list);
+
             FieldDataManager.ForceStaticFieldInit(objectType);
           }
         }
       }
+#endif
+
       return list;
     }
 
@@ -145,5 +193,15 @@ namespace Csla.Core.FieldManager
     {
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);
     }
+#if NET5_0_OR_GREATER
+
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      var cache = PropertyInfoCache;
+
+      lock (cache)
+        AssemblyLoadContextManager.RemoveFromCache(cache, context);
+    }
+#endif
   }
 }

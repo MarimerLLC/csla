@@ -41,8 +41,7 @@ namespace Csla.Configuration
       builder.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       builder.Services.TryAddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       builder.Services.TryAddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
-      CslaConfiguration.Configure().
-        ContextManager(typeof(Csla.Core.ApplicationContextManagerStatic));
+      builder.Services.TryAddSingleton(typeof(Csla.Core.IContextManager), typeof(Csla.Core.ApplicationContextManagerStatic));
       config?.Invoke(CslaConfiguration.Configure());
       return builder;
     }

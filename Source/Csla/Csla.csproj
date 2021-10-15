@@ -3,17 +3,15 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net5.0;net6.0;net462;net472;net48</TargetFrameworks>
     <PackageId>Csla</PackageId>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <Product>CSLA .NET Core</Product>
+    <Description>CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.</Description>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-    <Product>CSLA .NET - Core</Product>
-    <PackageTags>CSLA Business Core</PackageTags>
-    <Description>Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
-      CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.</Description>
-    <GenerateDocumentationFile Condition="'$(Configuration)'=='Release'">true</GenerateDocumentationFile>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <LangVersion>preview</LangVersion>
+    <BaseOutputPath>..\..\Bin</BaseOutputPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

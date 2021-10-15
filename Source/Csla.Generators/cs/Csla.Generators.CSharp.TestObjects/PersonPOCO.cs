@@ -20,7 +20,9 @@ namespace Csla.Generators.CSharp.TestObjects
   public partial class PersonPOCO
   {
 
+#pragma warning disable CS0414 // Remove unused private members
     private string _fieldTest = "foo";
+#pragma warning restore CS0414 // Remove unused private members
     private string _lastName;
 
     [AutoSerialized]

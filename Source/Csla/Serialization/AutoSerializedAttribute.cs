@@ -16,12 +16,6 @@ namespace Csla.Serialization
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 	public class AutoSerializedAttribute : Attribute
 	{
-
-		public AutoSerializedAttribute()
-		{
-
-		}
-
 	}
 
 }

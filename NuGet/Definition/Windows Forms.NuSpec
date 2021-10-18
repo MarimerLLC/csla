@@ -1,48 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Csla.Windows.Forms</id>
-    <title>CSLA .NET - Windows Forms</title>
-    <tags>CSLA Windows WinForms Forms</tags>
+    <title>CSLA .NET Windows Forms</title>
+    <tags>CSLA;WinForms;Windows Forms</tags>
     <version>4.6.3-Beta10</version>
-    <authors>Marimer LLC</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
+    <readme>readme.md</readme>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>
-Supports the creation of Windows Forms applications.
-
-CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
-    </description>
-    <summary>
-Supports the creation of Windows Forms applications.
-    </summary>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Windows Forms.</description>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework="net40">
+      <group targetFramework="net462">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-      </group>
-      <group targetFramework="net45">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-      </group>
-      <group targetFramework="net461">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.Extensions.Hosting" version="3.1.9" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="3.1.9" />
-      </group>
-      <group targetFramework="netstandard2.0">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.Extensions.Hosting" version="3.1.9" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
       </group>
       <group targetFramework="netcoreapp3.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.Extensions.Hosting" version="3.1.9" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="3.1.9" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
       </group>
       <group targetFramework="net5.0-windows10.0.19041.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
+      </group>
+      <group targetFramework="net6.0-windows10.0.19041.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
         <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
@@ -51,38 +41,15 @@ Supports the creation of Windows Forms applications.
   </metadata>
   <files>
      <!-- netcoreapp3.1 Assembly -->
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.dll*" target="lib\netcoreapp3.1" />
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.pdb*" target="lib\netcoreapp3.1" />
-    <file src="..\..\bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.resources.dll*" target="lib\netcoreapp3.1" />
-    <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.resources.pdb*" target="lib\netcoreapp3.1" />
-    <file src="..\..\Bin\Release\netstandard\netcoreapp3.1\**\Csla.Windows.xml*" target="lib\netcoreapp3.1" />
+    <file src="..\..\bin\Release\netcoreapp3.1\**\Csla.Windows.*" target="lib\netcoreapp3.1" />
+     <!-- net6.0-windows10.0.19041.0 Assembly -->
+    <file src="..\..\bin\Release\net6.0-windows10.0.19041.0\**\Csla.Windows.*" target="lib\net6.0-windows10.0.19041.0" />
      <!-- net5.0-windows10.0.19041.0 Assembly -->
-    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.dll*" target="lib\net5.0-windows10.0.19041.0" />
-    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.pdb*" target="lib\net5.0-windows10.0.19041.0" />
-    <file src="..\..\bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.resources.dll*" target="lib\net5.0-windows10.0.19041.0" />
-    <file src="..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.resources.pdb*" target="lib\net5.0-windows10.0.19041.0" />
-    <file src="..\..\Bin\Release\netstandard\net5.0-windows10.0.19041.0\**\Csla.Windows.xml*" target="lib\net5.0-windows10.0.19041.0" />
-    <!-- .NET 4.0 Client -->
-    <file src="..\..\Bin\Release\NET4\**\Csla.Windows.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.Windows.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.Windows.resources.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.Windows.resources.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\NET4\**\Csla.Windows.xml*" target="lib\net40" />
-    <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.xml*" target="lib\net45" />
+    <file src="..\..\bin\Release\net5.0-windows10.0.19041.0\**\Csla.Windows.*" target="lib\net5.0-windows10.0.19041.0" />
     <!-- .NET 4.6 Client -->
-    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.dll*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.pdb*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.resources.dll*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.resources.pdb*" target="lib\net461" />
-    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.xml*" target="lib\net461" />
-    <!-- Source Files for Symbol Server -->
-    <!-- <file src="..\..\Source\**\Csla.Windows*\**\*.cs" target="src" /> -->
-    <!-- icon -->
+    <file src="..\..\Bin\Release\NET462\**\Csla.Windows.*" target="lib\net462" />
+    <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
+    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

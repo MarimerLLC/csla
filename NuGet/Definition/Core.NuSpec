@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Csla</id>
-    <title>CSLA .NET - Core</title>
+    <title>CSLA .NET Core</title>
     <tags>CSLA;Business;Rules</tags>
     <version>4.6.3-Beta2</version>
     <license type="expression">MIT</license>

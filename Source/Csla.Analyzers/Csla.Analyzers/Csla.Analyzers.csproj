@@ -6,7 +6,7 @@
     <Product>CSLA .NET Analyzers</Product>
     <Description>Custom analyzers for CSLA .NET.</Description>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <BaseOutputPath>..\..\..\Bin</BaseOutputPath>
   </PropertyGroup>
 

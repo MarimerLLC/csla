@@ -1,24 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net5.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0-windows10.0.19041.0;net6.0-windows10.0.19041.0;net462</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <AssemblyName>Csla.Xaml</AssemblyName>
     <RootNamespace>Csla.Xaml</RootNamespace>
+    <PackageId>Csla.Wpf</PackageId>
     <ApplicationIcon />
     <StartupObject />
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
-
   <ItemGroup>
-    <None Remove="E:\src\rdl\csla\Source\\readme.md" />
+    <Folder Include="Properties\" />
   </ItemGroup>
+
+  <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
     <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
@@ -38,9 +38,10 @@
       <Link>Resources\Warning.png</Link>
     </Resource>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
+  
+  <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
   <ItemGroup>

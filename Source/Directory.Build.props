@@ -23,7 +23,7 @@
  </PropertyGroup>
  
  <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
-   <None Include="$(MSBuildThisFileDirectory)\readme.md" Pack="true" PackagePath="\" />
+   <None Include="$(MSBuildThisFileDirectory)..\Source\readme.md" Pack="true" PackagePath="\" />
    <None Include="$(MSBuildThisFileDirectory)..\Support\Logos\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />
  </ItemGroup>
 </Project>

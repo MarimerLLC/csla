@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+﻿#if NETSTANDARD2_0 || NETCOREAPP3_1 || NET5_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="WebConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -30,12 +30,8 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="app">ApplicationBuilder object</param>
     /// <param name="config">Implement to configure CSLA .NET</param>
-    public static IApplicationBuilder UseCsla(
-      this IApplicationBuilder app, Action<CslaConfiguration> config)
+    public static IApplicationBuilder UseCsla(this IApplicationBuilder app, Action<CslaConfiguration> config)
     {
-      ApplicationContext.DefaultServiceProvider = app.ApplicationServices;
-      ApplicationContext.WebContextManager = 
-        new Csla.AspNetCore.ApplicationContextManager(app.ApplicationServices);
       config?.Invoke(CslaConfiguration.Configure());
       return app;
     }

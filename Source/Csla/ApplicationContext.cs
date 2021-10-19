@@ -24,8 +24,10 @@ namespace Csla
     /// Creates a new instance of the type
     /// </summary>
     /// <param name="contextManager">IContextManager used to manage per-user context</param>
-    public ApplicationContext(IContextManager contextManager)
+    /// <param name="serviceProvider">Current service provider</param>
+    public ApplicationContext(IContextManager contextManager, IServiceProvider serviceProvider)
     {
+      _serviceProvider = serviceProvider;
       ContextManager = contextManager;
     }
 
@@ -777,13 +779,15 @@ namespace Csla
     }
     #endregion
 
+    private IServiceProvider _serviceProvider;
+
     /// <summary>
     /// Sets the service provider scope for this application context.
     /// </summary>
-    public IServiceProvider CurrentServiceProvider
+    internal IServiceProvider CurrentServiceProvider
     {
-      internal get => ContextManager?.GetServiceProvider();
-      set => ContextManager.SetServiceProvider(value);
+      get => _serviceProvider;
+      set => _serviceProvider = value;
     }
 
     /// <summary>
@@ -791,7 +795,7 @@ namespace Csla
     /// default constructor.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
-    internal T CreateInstance<T>()
+    public T CreateInstance<T>()
     {
       return (T)CreateInstance(typeof(T));
     }
@@ -801,7 +805,7 @@ namespace Csla
     /// default constructor.
     /// </summary>
     /// <param name="objectType">Type of object to create.</param>
-    internal object CreateInstance(Type objectType)
+    public object CreateInstance(Type objectType)
     {
       object result;
       if (CurrentServiceProvider != null)
@@ -816,8 +820,8 @@ namespace Csla
     }
 
     /// <summary>
-    /// Uses reflection to create an object using its 
-    /// default constructor.
+    /// Creates an object using dependency injection, falling back
+    /// to Activator if no service provider is available.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
@@ -827,7 +831,8 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an object.
+    /// Creates an object using dependency injection, falling back
+    /// to Activator if no service provider is available.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>

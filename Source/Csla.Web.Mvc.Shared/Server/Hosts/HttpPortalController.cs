@@ -13,7 +13,7 @@ using System.Net.Http;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
 
-#if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +29,21 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 
   public class HttpPortalController : Controller
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance.</param>
+    public HttpPortalController(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets a value indicating whether to use
     /// text/string serialization instead of the default
@@ -119,26 +130,20 @@ namespace Csla.Server.Hosts
         await PostAsync(operation).ConfigureAwait(false);
       }
     }
-
-#elif MVC4
-  public class HttpPortalController : Controller
-  {
-    /// <summary>
-    /// Entry point for all data portal operations.
-    /// </summary>
-    /// <param name="operation">Name of the data portal operation to perform.</param>
-    /// <returns>Results from the server-side data portal.</returns>
-    [HttpPost]
-    public virtual async Task<ActionResult> PostAsync(string operation)
-    {
-      var requestData = Request.BinaryRead(Request.TotalBytes);
-      var responseData = await InvokePortal(operation, requestData).ConfigureAwait(false);
-      Response.BinaryWrite(responseData);
-      return new EmptyResult();
-    }
-#else
+#else // NET462 and MVC5
   public class HttpPortalController : ApiController
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance.</param>
+    public HttpPortalController(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Entry point for all data portal operations.
     /// </summary>
@@ -166,13 +171,13 @@ namespace Csla.Server.Hosts
       get
       {
         if (_portal == null)
-          _portal = new HttpPortal();
+          _portal = ApplicationContext.CreateInstance<HttpPortal>();
         return _portal;
       }
       set { _portal = value; }
     }
 
-#if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 
     /// <summary>
     /// Override to add elements to the HttpReponse
@@ -211,7 +216,7 @@ namespace Csla.Server.Hosts
         errorData = new DataPortalErrorInfo(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, ObjectData = result.ObjectData };
       serializer.Serialize(responseStream, portalResult);
     }
 
@@ -237,7 +242,7 @@ namespace Csla.Server.Hosts
         errorData = new DataPortalErrorInfo(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, ObjectData = result.ObjectData };
 
       var responseBuffer = new MemoryStream();
       serializer.Serialize(responseBuffer, portalResult);
@@ -269,7 +274,7 @@ namespace Csla.Server.Hosts
         errorData = new DataPortalErrorInfo(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = new DataPortalResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      var portalResult = new DataPortalResponse { ErrorData = errorData, ObjectData = result.ObjectData };
       var bytes = SerializationFormatterFactory.GetFormatter().Serialize(portalResult);
       return bytes;
     }

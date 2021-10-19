@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 using System;
 using System.Threading.Tasks;
 using Csla.Rules;
@@ -44,6 +44,17 @@ namespace Csla.Web.Mvc
   /// </summary>
   public class CslaPermissionHandler : AuthorizationHandler<CslaPermissionRequirement>
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance.</param>
+    public CslaPermissionHandler(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Handles CSLA permissions
     /// </summary>
@@ -68,7 +79,7 @@ namespace Csla.Web.Mvc
     {
       if (context.User == null || !context.User.Identity.IsAuthenticated)
         context.Fail();
-      else if (BusinessRules.HasPermission(requirement.Action, requirement.ObjectType))
+      else if (BusinessRules.HasPermission(ApplicationContext, requirement.Action, requirement.ObjectType))
         context.Succeed(requirement);
       return Task.CompletedTask;
     }

@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if NET462
+//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -9,7 +10,7 @@ using System;
 using Csla.Core;
 using System.Web;
 
-namespace Csla.Web
+namespace Csla.Web.Mvc
 {
   /// <summary>
   /// Application context manager that uses HttpContext
@@ -17,8 +18,9 @@ namespace Csla.Web
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
-    private IServiceProvider _serviceProvider;
-    private ApplicationContext ApplicationContext { 
+    private static IServiceProvider _serviceProvider;
+    internal static ApplicationContext ApplicationContext 
+    { 
       get 
       {
         return (ApplicationContext)_serviceProvider.GetService(typeof(ApplicationContext));
@@ -109,3 +111,4 @@ namespace Csla.Web
     }
   }
 }
+#endif

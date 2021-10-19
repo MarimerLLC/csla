@@ -22,6 +22,16 @@ namespace Csla.AspNetCore.RazorPages
   public class PageModel<T> : PageModel
     where T : ISavable
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    public PageModel()
+    {
+      ApplicationContext = (ApplicationContext)ApplicationContextManager.ServiceProvider.GetService(typeof(ApplicationContext));
+    }
+
     /// <summary>
     /// Gets or sets the business domain model object.
     /// </summary>
@@ -115,7 +125,7 @@ namespace Csla.AspNetCore.RazorPages
     /// <returns></returns>
     public bool CanCreateItem()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.CreateObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, typeof(T));
     }
 
     /// <summary>
@@ -126,7 +136,7 @@ namespace Csla.AspNetCore.RazorPages
     /// <returns></returns>
     public bool CanGetItem()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.GetObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, typeof(T));
     }
 
     /// <summary>
@@ -137,7 +147,7 @@ namespace Csla.AspNetCore.RazorPages
     /// <returns></returns>
     public bool CanEditItem()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, typeof(T));
     }
 
     /// <summary>
@@ -148,7 +158,7 @@ namespace Csla.AspNetCore.RazorPages
     /// <returns></returns>
     public bool CanDeleteItem()
     {
-      return BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(T));
+      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, typeof(T));
     }
   }
 }

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
-#if !NETSTANDARD2_0 && !NETCORE3_1 && !NET5_0
+#if !NETSTANDARD2_0 && !NETCOREAPP3_1 && !NET5_0_OR_GREATER
 using System;
 using System.Web;
 using System.Web.Mvc;
@@ -23,6 +23,7 @@ namespace Csla.Web.Mvc
     private AuthorizationActions _action;
     private Type _objectType;
     private string _errorMsg = ERROR_MSG;
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -33,6 +34,7 @@ namespace Csla.Web.Mvc
     {
       _action = action;
       _objectType = objectType;
+      ApplicationContext = ApplicationContextManager.ApplicationContext;
     }
 
     /// <summary>
@@ -54,9 +56,9 @@ namespace Csla.Web.Mvc
     /// <returns>True if access is authorized; otherwise, false.</returns>
     protected override bool AuthorizeCore(HttpContextBase httpContext)
     {
-      if (!Csla.ApplicationContext.User.Identity.IsAuthenticated) return false;
+      if (!ApplicationContext.User.Identity.IsAuthenticated) return false;
 
-      return BusinessRules.HasPermission(_action, _objectType);
+      return BusinessRules.HasPermission(ApplicationContext, _action, _objectType);
     }
 
     /// <summary>

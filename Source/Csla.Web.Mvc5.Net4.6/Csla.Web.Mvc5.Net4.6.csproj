@@ -22,20 +22,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\NET46\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;MVC5</DefineConstants>
+    <OutputPath>..\..\Bin\Debug\NET462\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MVC5;NET462</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\NET46\Csla.Web.Mvc5.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET462\Csla.Web.Mvc5.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\NET46\</OutputPath>
-    <DefineConstants>TRACE;MVC5</DefineConstants>
+    <OutputPath>..\..\Bin\Release\NET462\</OutputPath>
+    <DefineConstants>TRACE;MVC5;NET462</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\NET46\Csla.Web.Mvc5.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET462\Csla.Web.Mvc5.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

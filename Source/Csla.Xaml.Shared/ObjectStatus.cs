@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !XAMARIN
+#if false
 //-----------------------------------------------------------------------
 // <copyright file="ObjectStatus.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Custom PageModel for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-#if !BLAZOR
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
@@ -114,7 +113,7 @@ namespace Csla.AspNetCore.RazorPages
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanCreateItem()
+    public bool CanCreateItem()
     {
       return BusinessRules.HasPermission(AuthorizationActions.CreateObject, typeof(T));
     }
@@ -125,7 +124,7 @@ namespace Csla.AspNetCore.RazorPages
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanGetItem()
+    public bool CanGetItem()
     {
       return BusinessRules.HasPermission(AuthorizationActions.GetObject, typeof(T));
     }
@@ -136,7 +135,7 @@ namespace Csla.AspNetCore.RazorPages
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanEditItem()
+    public bool CanEditItem()
     {
       return BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(T));
     }
@@ -147,10 +146,9 @@ namespace Csla.AspNetCore.RazorPages
     /// business domain type
     /// </summary>
     /// <returns></returns>
-    public static bool CanDeleteItem()
+    public bool CanDeleteItem()
     {
       return BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(T));
     }
   }
 }
-#endif

@@ -4,6 +4,7 @@ VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{207BA2D1-EB2E-45A0-9F82-4B7975EDD8C6}"
 	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\ci.yaml = ..\.github\workflows\ci.yaml
 		csla.test.vsmdi = csla.test.vsmdi
 		Directory.Build.props = Directory.Build.props
 		Local.testsettings = Local.testsettings
@@ -52,8 +53,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor", "Csla.Blazor\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor.WebAssembly", "Csla.Blazor.WebAssembly\Csla.Blazor.WebAssembly.csproj", "{03AF908F-D855-4ED3-B24F-A0F91A84C8DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.Uwp", "Csla.Xaml.Uwp\Csla.Xaml.Uwp.csproj", "{8C1A0B30-F4E5-4245-8075-EEA88A083512}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Windows", "Csla.Windows\Csla.Windows.csproj", "{DB58F835-0427-45CA-B271-D807A75793EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Xaml.Wpf", "Csla.Xaml.Wpf\Csla.Xaml.Wpf.csproj", "{FF492DA9-7C8A-4F0C-A12F-7D346564AAD4}"
@@ -64,7 +63,6 @@ Global
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{3698d49c-25b5-4f46-bde2-14008231e68d}*SharedItemsImports = 13
 		Csla.Web.Shared\Csla.Web.Shared.projitems*{64816801-0d82-4883-aee5-82037d3ebadb}*SharedItemsImports = 13
 		Csla.AspNetCore.Shared\Csla.AspNetCore.Shared.projitems*{6aafe6b9-5874-4040-a074-7e9fc8bb2890}*SharedItemsImports = 13
-		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{8c1a0b30-f4e5-4245-8075-eea88a083512}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{bb7a0db4-f7f4-4632-b6ae-1edcdd758f16}*SharedItemsImports = 13
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{f2ff4b77-a3c4-4810-a944-cd8230599b59}*SharedItemsImports = 13
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{ff492da9-7c8a-4f0c-a12f-7d346564aad4}*SharedItemsImports = 5
@@ -612,46 +610,6 @@ Global
 		{03AF908F-D855-4ED3-B24F-A0F91A84C8DA}.Testing|x64.Build.0 = Debug|Any CPU
 		{03AF908F-D855-4ED3-B24F-A0F91A84C8DA}.Testing|x86.ActiveCfg = Debug|Any CPU
 		{03AF908F-D855-4ED3-B24F-A0F91A84C8DA}.Testing|x86.Build.0 = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|ARM.ActiveCfg = Debug|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|ARM.Build.0 = Debug|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|x64.ActiveCfg = Debug|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|x64.Build.0 = Debug|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|x86.ActiveCfg = Debug|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Debug|x86.Build.0 = Debug|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|ARM.ActiveCfg = Debug|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|ARM.Build.0 = Debug|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|x64.ActiveCfg = Debug|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|x64.Build.0 = Debug|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|x86.ActiveCfg = Debug|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Debug|x86.Build.0 = Debug|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|Any CPU.Build.0 = Release|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|ARM.ActiveCfg = Release|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|ARM.Build.0 = Release|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|x64.ActiveCfg = Release|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|x64.Build.0 = Release|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|x86.ActiveCfg = Release|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Mono Release|x86.Build.0 = Release|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|ARM.ActiveCfg = Release|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|ARM.Build.0 = Release|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|x64.ActiveCfg = Release|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|x64.Build.0 = Release|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|x86.ActiveCfg = Release|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Release|x86.Build.0 = Release|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|Any CPU.Build.0 = Debug|Any CPU
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|ARM.ActiveCfg = Debug|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|ARM.Build.0 = Debug|ARM
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|x64.ActiveCfg = Debug|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|x64.Build.0 = Debug|x64
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|x86.ActiveCfg = Debug|x86
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512}.Testing|x86.Build.0 = Debug|x86
 		{DB58F835-0427-45CA-B271-D807A75793EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB58F835-0427-45CA-B271-D807A75793EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB58F835-0427-45CA-B271-D807A75793EC}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -754,7 +712,6 @@ Global
 		{60B7A55E-4B7E-4A0F-85E2-195CBD223164} = {D39D5C7C-5445-42CE-AE84-481A366C5E5E}
 		{66F3F47E-E972-4826-A470-CCE2BDB95F81} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{03AF908F-D855-4ED3-B24F-A0F91A84C8DA} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
-		{8C1A0B30-F4E5-4245-8075-EEA88A083512} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{DB58F835-0427-45CA-B271-D807A75793EC} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{FF492DA9-7C8A-4F0C-A12F-7D346564AAD4} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 	EndGlobalSection

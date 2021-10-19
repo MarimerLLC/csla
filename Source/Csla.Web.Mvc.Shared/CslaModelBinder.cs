@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Model binder for use with CSLA .NET editable business objects.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0 || NETCORE3_1
+#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -170,36 +170,39 @@ namespace Csla.Web.Mvc
   /// </summary>
   public class CslaModelBinderProvider : IModelBinderProvider
   {
-    /// <summary>
-    /// Creates a model binder provider that uses the default
-    /// instance and child creators.
-    /// </summary>
-    public CslaModelBinderProvider()
-      : this(CreateInstance, CreateChild)
-    { }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates a model binder provider that use custom
     /// instance and child creators.
     /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance</param>
     /// <param name="instanceCreator">Instance creator for root objects.</param>
     /// <param name="childCreator">Instance creator for child objects.</param>
-    public CslaModelBinderProvider(Func<Type, Task<object>> instanceCreator, Func<IList, Type, Dictionary<string, string>, object> childCreator)
+    public CslaModelBinderProvider(ApplicationContext applicationContext, 
+      Func<Type, Task<object>> instanceCreator, Func<IList, Type, Dictionary<string, string>, object> childCreator)
     {
-      _instanceCreator = instanceCreator;
-      _childCreator = childCreator;
+      _applicationContext = applicationContext;
+      if (instanceCreator == null)
+        _instanceCreator = CreateInstance;
+      else
+        _instanceCreator = instanceCreator;
+      if (childCreator == null)
+        _childCreator = CreateChild;
+      else
+        _childCreator = childCreator;
     }
 
-    internal static Task<object> CreateInstance(Type type)
+    internal Task<object> CreateInstance(Type type)
     {
       var tcs = new TaskCompletionSource<object>();
-      tcs.SetResult(Reflection.MethodCaller.CreateInstance(type));
+      tcs.SetResult(_applicationContext.CreateInstance(type));
       return tcs.Task;
     }
 
-    internal static object CreateChild(IList parent, Type type, Dictionary<string, string> values)
+    internal object CreateChild(IList parent, Type type, Dictionary<string, string> values)
     {
-      return Reflection.MethodCaller.CreateInstance(type);
+      return _applicationContext.CreateInstance(type);
     }
 
     private readonly Func<Type, Task<object>> _instanceCreator;

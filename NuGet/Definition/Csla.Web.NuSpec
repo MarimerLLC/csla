@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Csla.AspNet</id>
+    <title>CSLA .NET ASP.NET</title>
+    <tags>CSLA;ASP.NET;Web Forms</tags>
+    <version>4.6.3-Beta2</version>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
+    <icon>images\csla.png</icon>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Web Forms.</description>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="net462">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET 4.6 -->
+    <file src="..\..\Bin\Release\net462\**\Csla.Web.*" target="lib\net462" />
+    <!-- resources -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
+  </files>
+</package>

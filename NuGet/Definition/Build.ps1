@@ -5,8 +5,8 @@ function OutputCommandLineUsageHelp()
     Write-Host "Create a NuGet build output."
     Write-Host "============================"
     Write-Host "Usage: Create.ps1 ""<NuGet Package Name>"" [/PreRelease:<PreReleaseVersion>]"
-    Write-Host ">E.g.: Create.ps1 ""Core"""
-    Write-Host ">E.g.: Create.ps1 ""Core"" /PreRelease:RC1"
+    Write-Host ">E.g.: Create.ps1 ""Csla"""
+    Write-Host ">E.g.: Create.ps1 ""Csla"" /PreRelease:RC1"
 }
 
 function Pause( $Message="Press any key to continue..." )
@@ -18,28 +18,30 @@ function Pause( $Message="Press any key to continue..." )
 
 function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
 {
-    Write-Host "Dynamically setting NuSpec version: $Version" -ForegroundColor Yellow
+    Write-Host "Dynamically setting NuSpec version: $version" -ForegroundColor Yellow
     
     # Get full path or save operation fails when launched in standalone powershell
     $nuSpecFile = Get-Item $nuSpecFilePath | Select-Object -First 1
-    
+
+    # Read XML document
+    [xml]$nuspec = Get-Content $nuSpecFile.FullName
+    $versionNode = $nuspec.getElementsByTagName( "version" )[0]
+    $versionNode.InnerText = $version
+    # Save file
+    $nuspec.Save( $nuSpecFile.FullName )
+
     # Bring the XML Linq namespace in
     [Reflection.Assembly]::LoadWithPartialName( "System.Xml.Linq" ) | Out-Null
     
     # Update the XML document with the new version
     $xDoc = [System.Xml.Linq.XDocument]::Load( $nuSpecFile.FullName )
-    $versionNode = $xDoc.Descendants( "version" ) | Select-Object -First 1
-    if ($versionNode -ne $null)
-    {
-        $versionNode.SetValue($version)
-    }
-    
+
     # Update the XML document dependencies with the new version
     $dependencies = $xDoc.Descendants( "dependency" )
     foreach( $dependency in $dependencies )
     {
         $idAttribute = $dependency.Attributes( "id" ) | Select-Object -First 1
-        if ( $idAttribute -ne $null )
+        if ( $null -ne $idAttribute )
         {
             if ( $idAttribute.Value -eq "Csla" )
             {
@@ -50,14 +52,6 @@ function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
                 $dependency.SetAttributeValue( "version", "[$version]" )
             }
             if ( $idAttribute.Value -eq "Csla.AspNet" )
-            {
-                $dependency.SetAttributeValue( "version", "[$version]" )
-            }
-            if ( $idAttribute.Value -eq "CSLA-Core" )
-            {
-                $dependency.SetAttributeValue( "version", "[$version]" )
-            }
-            if ( $idAttribute.Value -eq "CSLA-ASP.NET" )
             {
                 $dependency.SetAttributeValue( "version", "[$version]" )
             }
@@ -72,7 +66,7 @@ function UpdateNuSpecRepository( $nuSpecFilePath )
 {
     # Get Git info
     $commit = git rev-parse HEAD
-    $origin = git config --get remote.origin.url
+    $origin = git config --get remote.marimer.url
 
     Write-Host "Dynamically setting NuSpec repository:" -ForegroundColor Yellow
     Write-Host "      origin: $origin" -ForegroundColor Yellow
@@ -125,7 +119,7 @@ function CopyMaintainingSubDirectories( $basePath, $includes, $targetBasePath )
 
 ## Validate input parameters
 ## -------------------------
-if ( $package -eq $null )
+if ( $null -eq $package )
 {
     OutputCommandLineUsageHelp
     return
@@ -153,7 +147,7 @@ try
     $basePath = Get-Location
     $pathToBin = [System.IO.Path]::GetFullPath( "$basePath\..\..\Bin\$configuration" )
     $pathToNuGetPackager = [System.IO.Path]::GetFullPath( "$basePath\..\Tools\NuGet.exe" )
-    $pathToNuGetPackageOutput = [System.IO.Path]::GetFullPath( "$basePath\..\Packages" )
+    # $pathToNuGetPackageOutput = [System.IO.Path]::GetFullPath( "$basePath\..\Packages" )
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     
@@ -173,7 +167,7 @@ try
     ## Before building NuGet package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document
     ## - JH: Not sure if I should get direct from source code file or from file version of compiled library instead.
     ## - JH: Going with product version in assembly for now
-    $cslaAssembly = Get-ChildItem "$pathToBin\NET46\Csla.dll" | Select-Object -First 1
+    $cslaAssembly = Get-ChildItem "$pathToBin\net6.0\Csla.dll" | Select-Object -First 1
     ## - JH: If $preRelease is specified, then append it with a dash following the 3rd component of the quad-dotted-version number
     ##       Refer: http://docs.nuget.org/docs/Reference/Versioning 
     if ( [System.String]::IsNullOrEmpty( $preRelease ) -ne $true )
@@ -194,7 +188,7 @@ try
     
     ## Launch NuGet.exe to build package
     Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    if ( $package -ne "Templates" ) { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages -Symbols -SymbolPackageFormat snupkg }
+    if ( $package -ne "Csla.Templates" -and $package -ne "Csla.Ios" -and $package -ne "Csla.Web.Mvc" ) { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages -Symbols -SymbolPackageFormat snupkg }
     else { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages }
     
     ## Publish package to Gallery using API Key

@@ -2,35 +2,35 @@
 <package>
   <metadata>
     <id>Csla.Channels.RabbitMq</id>
-    <title>CSLA .NET - RabbitMQ data portal channel</title>
-    <tags>CSLA RabbitMQ</tags>
-    <version>4.6.3-Beta10</version>
-    <authors>Marimer LLC</authors>
+    <title>CSLA .NET RabbitMQ data portal channel</title>
+    <tags>CSLA;RabbitMQ</tags>
+    <version>4.6.3-Beta2</version>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>
-Data portal channel using RabbitMQ for transport.
-
-CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
-    </description>
-    <summary>
-Data portal channel using RabbitMQ for transport.
-    </summary>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>RabbitMQ data portal channel for CSLA .NET.</description>
     <language>en-US</language>
     <dependencies>
       <group targetFramework="netstandard2.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="RabbitMQ.Client" version="6.2.1" />
+        <dependency id="RabbitMQ.Client" version="6.2.2" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="RabbitMQ.Client" version="6.2.2" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <!-- NetStandard Assembly -->
-    <file src="..\..\bin\Release\netstandard\netstandard2.0\**\Csla.Channels.RabbitMq.*" target="lib\netstandard2.0" />
-    <!-- icon -->
+    <file src="..\..\bin\Release\netstandard2.1\**\Csla.Channels.RabbitMq.*" target="lib\netstandard2.1" />
+    <!-- net6.0 Assembly -->
+    <file src="..\..\bin\Release\net6.0\**\Csla.Channels.RabbitMq.*" target="lib\net6.0" />
+    <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

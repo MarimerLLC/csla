@@ -1,4 +1,4 @@
-#if !XAMARIN && !WINDOWS_UWP
+#if false
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataProvider.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Csla.Xamarin.Forms</id>
+    <title>CSLA .NET Xamarin.Forms</title>
+    <tags>CSLA;Xamarin;Xamarin.Forms</tags>
+    <version>4.6.3-Beta2</version>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
+    <icon>images\csla.png</icon>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Xamarin.Forms.</description>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="netstandard2.0">
+      <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <dependency id="Xamarin.Forms" version="4.8.0.1560" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- Xamarin.Forms Csla.Xaml -->
+    <file src="..\..\Bin\Xamarin\Release\netstandard2.0\**\Csla.Xaml.*" target="lib\netstandard2.0"/>
+    <!-- resources -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
+  </files>
+</package>

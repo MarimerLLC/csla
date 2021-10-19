@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Csla.Xamarin.Ios</id>
+    <title>CSLA .NET iOS Unified</title>
+    <tags>CSLA;iOS;Xamarin</tags>
+    <version>4.6.3-Beta2</version>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
+    <icon>images\csla.png</icon>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Xamarin iOS.</description>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="Xamarin.iOS0.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- Xamarin iOS Client -->
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.*" target="lib\Xamarin.iOS" />
+    <!-- resources -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
+  </files>
+</package>

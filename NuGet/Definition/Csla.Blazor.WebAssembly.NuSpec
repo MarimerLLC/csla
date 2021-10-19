@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Csla.Blazor.WebAssembly</id>
-    <title>CSLA .NET - Blazor WebAssembly support</title>
-    <tags>CSLA Blazor WebAssembly</tags>
-    <version>4.6.3-Beta10</version>
-    <authors>Marimer LLC</authors>
+    <title>CSLA .NET Blazor WebAssembly</title>
+    <tags>CSLA;Blazor;aspnetcore;WebAssembly;wasm</tags>
+    <version>4.6.3-Beta2</version>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>
-Provides UI support for client-side Blazor WebAssembly.
-
-CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
-    </description>
-    <summary>
-Provides UI support for client-side Blazor WebAssembly.
-    </summary>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Blazor WebAssembly.</description>
     <language>en-US</language>
     <dependencies>
       <group targetFramework="netstandard2.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="3.2.1" />
+        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="3.2.0" />
       </group>
       <group targetFramework="net5.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="5.0.0" />
+        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="5.0.11" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="5.0.11" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <!-- NetStandard Assembly -->
-    <file src="..\..\bin\Release\netstandard\netstandard2.1\**\Csla.Blazor.WebAssembly.*" target="lib\netstandard2.1" />
+    <file src="..\..\bin\Release\netstandard2.1\**\Csla.Blazor.WebAssembly.*" target="lib\netstandard2.1" />
     <!-- Net5.0 Assembly -->
-    <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.Blazor.WebAssembly.*" target="lib\net5.0" />
-    <!-- icon -->
+    <file src="..\..\bin\Release\net5.0\**\Csla.Blazor.WebAssembly.*" target="lib\net5.0" />
+    <!-- Net6.0 Assembly -->
+    <file src="..\..\bin\Release\net6.0\**\Csla.Blazor.WebAssembly.*" target="lib\net6.0" />
+    <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>
 </package>

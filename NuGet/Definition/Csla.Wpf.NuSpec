@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Csla.Wpf</id>
+    <title>CSLA .NET WPF</title>
+    <tags>CSLA;WPF;XAML</tags>
+    <version>4.6.3-Beta2</version>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
+    <icon>images\csla.png</icon>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with WPF.</description>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="net462">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="3.1.20" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="3.1.20" />
+      </group>
+      <group targetFramework="netcoreapp3.1">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
+      </group>
+      <group targetFramework="net5.0-windows10.0.19041.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
+      </group>
+      <group targetFramework="net6.0-windows10.0.19041.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+     <!-- netcoreapp3.1 Assembly -->
+    <file src="..\..\bin\Release\netcoreapp3.1\**\Csla.Xaml.*" target="lib\netcoreapp3.1" />
+     <!-- net5.0-windows10.0.19041.0 Assembly -->
+    <file src="..\..\bin\Release\net5.0-windows10.0.19041.0\**\Csla.Xaml.*" target="lib\net5.0-windows10.0.19041.0" />
+     <!-- net6.0-windows10.0.19041.0 Assembly -->
+    <file src="..\..\bin\Release\net6.0-windows10.0.19041.0\**\Csla.Xaml.*" target="lib\net6.0-windows10.0.19041.0" />
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET462\**\Csla.Xaml.*" target="lib\net462" />
+    <!-- resources -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
+  </files>
+</package>

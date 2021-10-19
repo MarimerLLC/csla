@@ -15,15 +15,15 @@
    <PackageTags>CSLA;Business;Rules</PackageTags>
    <Copyright>Copyright © 2002-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
    <Authors>Marimer LLC</Authors>
-   <PackageReadmeFile>readme.md</PackageReadmeFile>
-   <PackageIcon>images\csla.png</PackageIcon>   
+   <!--<PackageReadmeFile>readme.md</PackageReadmeFile>
+   <PackageIcon>images\csla.png</PackageIcon>-->   
    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
    <NeutralLanguage>en-US</NeutralLanguage>
    <DefaultLanguage>en-US</DefaultLanguage>
  </PropertyGroup>
  
- <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
+ <!--<ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
    <None Include="$(MSBuildThisFileDirectory)..\Source\readme.md" Pack="true" PackagePath="\" />
    <None Include="$(MSBuildThisFileDirectory)..\Support\Logos\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />
- </ItemGroup>
+ </ItemGroup>-->
 </Project>

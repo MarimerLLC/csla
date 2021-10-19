@@ -10,8 +10,6 @@
     <repository type="git" url="https://github.com/MarimerLLC/csla" />
     <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
-    <readme>readme.md</readme>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright © Marimer LLC.</copyright>
     <description>Code snippets and templates that supports the creation of CSLA business objects.</description>
@@ -27,6 +25,5 @@
     <file src="..\..\Support\TemplateInstaller\CslaTemplates\ItemTemplates\VisualBasic\Csla4\*.zip" target="tools\Templates\vb" />
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
-    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

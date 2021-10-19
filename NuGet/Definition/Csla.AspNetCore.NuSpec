@@ -10,8 +10,6 @@
     <repository type="git" url="https://github.com/MarimerLLC/csla" />
     <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
-    <readme>readme.md</readme>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright © Marimer LLC.</copyright>
     <description>UI helpers for using CSLA .NET business types with AspNetCore.</description>
@@ -42,6 +40,5 @@
     <file src="..\..\bin\Release\netstandard\net5.0\**\Csla.AspNetCore.*" target="lib\net5.0" />
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
-    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

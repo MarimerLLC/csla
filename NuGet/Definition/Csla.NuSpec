@@ -8,10 +8,9 @@
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
     <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <owners>Marimer LLC</owners>
     <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
-    <readme>readme.md</readme>
-    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright © Marimer LLC.</copyright>
     <description>CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.</description>
@@ -131,6 +130,5 @@
     <file src="..\..\bin\Release\netstandard2.0\Csla.Generators.*" target="analyzers\c#" />
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
-    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

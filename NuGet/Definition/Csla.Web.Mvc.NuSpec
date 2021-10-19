@@ -26,21 +26,14 @@ Supports the creation of ASP.NET MVC 5 applications.
     </dependencies>
   </metadata>
   <files>
-    <!-- .NET 4.5 Server -->
-    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.xml*" target="lib\net45" />
-    <!-- .NET 4.6 Server -->
+    <!-- .NET 4.6  -->
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.dll*" target="lib\net461" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.pdb*" target="lib\net461" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.resources.dll*" target="lib\net461" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.resources.pdb*" target="lib\net461" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.xml*" target="lib\net461" />
-    <!-- Source Files for Symbol Server -->
-    <!-- <file src="..\..\Source\**\Csla.Web.Mvc5*\**\*.cs" target="src" /> -->
-    <!-- icon -->
+    <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
+    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

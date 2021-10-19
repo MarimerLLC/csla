@@ -101,7 +101,7 @@
     <file src="..\..\bin\Release\netstandard2.0\**\Csla.resources.dll*" target="lib\netstandard2.0" />
     <!-- Net 6.0 Assembly -->
     <file src="..\..\bin\Release\net6.0\**\Csla.dll*" target="lib\net6.0" />
-    <file src="..\..\bin\Release\net5.0\**\Csla.pdb*" target="lib\net6.0" />
+    <file src="..\..\bin\Release\net6.0\**\Csla.pdb*" target="lib\net6.0" />
     <file src="..\..\bin\Release\net6.0\**\Csla.xml*" target="lib\net6.0" />
     <file src="..\..\bin\Release\net6.0\**\Csla.resources.dll*" target="lib\net6.0" />
     <!-- Net 5.0 Assembly -->

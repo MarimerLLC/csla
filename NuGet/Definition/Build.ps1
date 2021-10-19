@@ -188,7 +188,7 @@ try
     
     ## Launch NuGet.exe to build package
     Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    if ( $package -ne "Templates" ) { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages -Symbols -SymbolPackageFormat snupkg }
+    if ( $package -ne "Csla.Templates" -and $package -ne "Csla.Ios" ) { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages -Symbols -SymbolPackageFormat snupkg }
     else { & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -OutputDirectory ..\Packages }
     
     ## Publish package to Gallery using API Key

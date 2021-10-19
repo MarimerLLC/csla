@@ -17,7 +17,9 @@
     <description>UI helpers for using CSLA .NET business types with Web Forms.</description>
     <language>en-US</language>
     <dependencies>
-      <dependency id="Csla" version="[4.6.3-Beta10]" />
+      <group targetFramework="net462">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
     </dependencies>
   </metadata>
   <files>

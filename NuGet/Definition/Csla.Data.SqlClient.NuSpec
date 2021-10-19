@@ -2,36 +2,32 @@
 <package>
   <metadata>
     <id>Csla.Data.SqlClient</id>
-    <title>CSLA .NET - Microsoft.Data.SqlClient</title>
-    <tags>CSLA SqlClient</tags>
-    <version>4.6.3-Beta10</version>
-    <authors>Marimer LLC</authors>
+    <title>CSLA .NET Microsoft.Data.SqlClient</title>
+    <tags>CSLA;SqlClient;Sql Server</tags>
+    <version>4.6.3-Beta2</version>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
+    <readme>readme.md</readme>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>
-Supports the use of Microsoft.Data.SqlClient.
-
-CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
-    </description>
-    <summary>
-Supports the use of Microsoft.Data.SqlClient.
-    </summary>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>Helpers for using CSLA .NET business types with Microsoft.Data.SqlClient.</description>
     <language>en-US</language>
-    <dependencies>     
-      <dependency id="Csla" version="[4.6.3-Beta10]" />
-      <dependency id="Microsoft.Data.SqlClient" version="2.1.0" />
+    <dependencies>
+      <group targetFramework="netstandard2.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Data.SqlClient" version="3.0.1" />
+      </group>
     </dependencies>
   </metadata>
   <files>
     <!-- .NET Core 2.0 -->
-    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.dll" target="lib\netstandard2.0" />
-    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.pdb" target="lib\netstandard2.0" />
-    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.xml" target="lib\netstandard2.0" />
-    <file src="..\..\Bin\Release\netstandard\netstandard2.0\**\Csla.Data.SqlClient.deps.json" target="lib\netstandard2.0" />
-    <!-- icon -->
+    <file src="..\..\Bin\Release\netstandard2.0\**\Csla.Data.SqlClient.*" target="lib\netstandard2.0" />
+    <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
+    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

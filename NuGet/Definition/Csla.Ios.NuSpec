@@ -2,23 +2,19 @@
 <package>
   <metadata>
     <id>Csla.Xamarin.Ios</id>
-    <title>CSLA .NET - iOS Unified</title>
-    <tags>CSLA iOS Unified</tags>
-    <version>4.6.3-Beta10</version>
-    <authors>Marimer LLC</authors>
+    <title>CSLA .NET iOS Unified</title>
+    <tags>CSLA;iOS;Xamarin</tags>
+    <version>4.6.3-Beta2</version>
     <license type="expression">MIT</license>
     <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
+    <readme>readme.md</readme>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>
-Supports the creation of Xamarin iOS applications using the unified API.
-
-CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
-    </description>
-    <summary>
-Supports the creation of Xamarin iOS applications using the unified API.
-    </summary>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Xamarin iOS.</description>
     <language>en-US</language>
     <dependencies>
       <group targetFramework="Xamarin.iOS0.0">
@@ -29,7 +25,8 @@ Supports the creation of Xamarin iOS applications using the unified API.
   <files>
     <!-- Xamarin iOS Client -->
     <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.*" target="lib\Xamarin.iOS" />
-    <!-- icon -->
+    <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
+    <file src="..\..\Source\readme.md" target="\" />
   </files>
 </package>

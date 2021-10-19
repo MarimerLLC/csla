@@ -12,7 +12,6 @@
     <None Include="$(MSBuildThisFileDirectory)Upgrade.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)AuthorizationRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonRules.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DecoratedRuleArgs.cs" />

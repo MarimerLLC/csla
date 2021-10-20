@@ -23,6 +23,7 @@ namespace Csla.Server
     private bool _remotePortal;
     private string _clientCulture;
     private string _clientUICulture;
+    private ApplicationContext _applicationContext;
     private ContextDictionary _clientContext;
     [NonSerialized]
     private TransactionalTypes _transactionalType;
@@ -32,7 +33,14 @@ namespace Csla.Server
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    public ApplicationContext ApplicationContext { 
+      get { return _applicationContext; }
+      set 
+      {
+        _applicationContext = value;
+        _clientContext = value.ContextManager.GetClientContext(value.ExecutionLocation);
+      } 
+    }
 
     /// <summary>
     /// The current principal object
@@ -109,7 +117,6 @@ namespace Csla.Server
       _remotePortal = isRemotePortal;
       _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-      _clientContext = ApplicationContext.ContextManager.GetClientContext(ApplicationContext.ExecutionLocation);
     }
 
     /// <summary>

@@ -158,21 +158,21 @@ namespace Csla
       return (T)Create(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
-    //internal static object Create(Type objectType, object criteria)
-    //{
-    //  var dp = new DataPortal<object>();
-    //  try
-    //  {
-    //    return dp.DoCreateAsync(objectType, criteria, true).Result;
-    //  }
-    //  catch (AggregateException ex)
-    //  {
-    //    if (ex.InnerExceptions.Count > 0)
-    //      throw ex.InnerExceptions[0];
-    //    else
-    //      throw;
-    //  }
-    //}
+    private object Create(Type objectType, object criteria)
+    {
+      var dp = new DataPortal<object>(ApplicationContext);
+      try
+      {
+        return dp.DoCreateAsync(objectType, criteria, true).Result;
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
+    }
 
     /// <summary>
     /// Called by a factory method in a business class or

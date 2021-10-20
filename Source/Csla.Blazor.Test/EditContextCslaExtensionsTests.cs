@@ -3,16 +3,18 @@ using Csla.Blazor.Test.Fakes;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Csla.Blazor.Test
 {
-	[TestClass]
-	public class EditContextCslaExtensionsTests
-	{
+  [TestClass]
+  public class EditContextCslaExtensionsTests
+  {
 
-		[TestMethod]
-		public void ValidateModel_EmptyLastName_OneValidationMessage()
-		{
+    [TestMethod]
+    public void ValidateModel_EmptyLastName_OneValidationMessage()
+    {
       // Arrange
       FakePerson person = GetValidFakePerson();
       EditContext editContext = new EditContext(person);
@@ -28,7 +30,7 @@ namespace Csla.Blazor.Test
       // Assert
       Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
-		}
+    }
 
     [TestMethod]
     public void ValidateModel_ShortFirstName_NoValidationMessages()
@@ -260,7 +262,11 @@ namespace Csla.Blazor.Test
 
     FakePerson GetValidFakePerson()
     {
-      FakePerson person = FakePerson.NewFakePerson();
+      DataPortal<FakePerson> dataPortal;
+      FakePerson person;
+
+      dataPortal = new DataPortal<FakePerson>(Startup.ApplicationContext);
+      person = dataPortal.Create();
 
       person.FirstName = "John";
       person.LastName = "Smith";

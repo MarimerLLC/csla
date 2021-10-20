@@ -10,7 +10,12 @@ namespace Csla.Blazor.Test.Fakes
 
     public FakePersonEmailAddress NewEmailAddress()
     {
-      var emailAddress = DataPortal.CreateChild<FakePersonEmailAddress>();
+      DataPortal<FakePersonEmailAddress> dataPortal;
+
+      // Create an empty list for holding email addresses
+      dataPortal = new DataPortal<FakePersonEmailAddress>(ApplicationContext);
+
+      var emailAddress = dataPortal.CreateChild();
       this.Add(emailAddress);
       return emailAddress;
     }

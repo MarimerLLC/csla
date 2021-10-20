@@ -108,7 +108,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(objectType, method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
+          new Csla.Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
 
         DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create));
 
@@ -302,7 +302,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(objectType, method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
+          new Csla.Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
 
         DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch));
 
@@ -607,7 +607,7 @@ namespace Csla
         }
 
         dpContext =
-          new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
+          new Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
 
         DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, obj, operation));
 
@@ -796,7 +796,7 @@ namespace Csla
         var method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(objectType, method);
 
-        dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
+        dpContext = new Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
 
         DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete));
 

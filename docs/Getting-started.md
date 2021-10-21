@@ -29,6 +29,6 @@ CSLA .NET 3.8
 
 Other resources
 ---------------
-* [CSLA forum](https://github.com/marimerllc/cslaforum)
+* [CSLA forum](https://github.com/MarimerLLC/csla/discussions)
 * [Books and videos](Books-and-videos.md)
 * [Reference.md](Reference.md)

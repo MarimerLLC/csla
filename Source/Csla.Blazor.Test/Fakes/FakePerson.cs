@@ -86,12 +86,9 @@ namespace Csla.Blazor.Test.Fakes
 
     [RunLocal]
     [Create]
-    private void Create()
+    private void Create([Inject] IChildDataPortal<FakePersonEmailAddresses> dataPortal)
     {
-      DataPortal<FakePersonEmailAddresses> dataPortal;
-
       // Create an empty list for holding email addresses
-      dataPortal = new DataPortal<FakePersonEmailAddresses>(ApplicationContext);
       LoadProperty(EmailAddressesProperty, dataPortal.CreateChild());
 
       // Trigger object checks

@@ -123,7 +123,7 @@ namespace Csla.Blazor.Test
       editContext.AddCslaValidation();
 
       // Create a new child object (which is immediately invalid)
-      person.EmailAddresses.NewEmailAddress();
+      person.EmailAddresses.AddNew();
 
       // Act
       editContext.Validate();
@@ -225,7 +225,7 @@ namespace Csla.Blazor.Test
       editContext.AddCslaValidation();
 
       // Add a new, empty email address
-      FakePersonEmailAddress address = person.EmailAddresses.NewEmailAddress();
+      FakePersonEmailAddress address = person.EmailAddresses.AddNew();
       address.EmailAddress = "";
 
       // Act
@@ -246,7 +246,7 @@ namespace Csla.Blazor.Test
       editContext.AddCslaValidation();
 
       // Add a new, valid email address
-      FakePersonEmailAddress address = person.EmailAddresses.NewEmailAddress();
+      FakePersonEmailAddress address = person.EmailAddresses.AddNew();
       address.EmailAddress = "name@domain.com";
 
       // Act
@@ -262,10 +262,10 @@ namespace Csla.Blazor.Test
 
     FakePerson GetValidFakePerson()
     {
-      DataPortal<FakePerson> dataPortal;
+      IDataPortal<FakePerson> dataPortal;
       FakePerson person;
 
-      dataPortal = new DataPortal<FakePerson>(Startup.ApplicationContext);
+      dataPortal = DataPortalFactory.CreateDataPortal<FakePerson>();
       person = dataPortal.Create();
 
       person.FirstName = "John";

@@ -1,5 +1,4 @@
 ﻿using Csla.Configuration;
-using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -17,8 +16,6 @@ namespace Csla.Blazor.Test
   public class Startup
   {
 
-    private static ApplicationContext _applicationContext;
-
     [AssemblyInitialize]
     public static void Initialize(TestContext testContext)
     {
@@ -31,24 +28,19 @@ namespace Csla.Blazor.Test
 
       // Add Csla
       services.AddCsla();
-      services.AddTransient<IDataPortalServer, SimpleDataPortal>();
-
+      services.AddSingleton<Core.IContextManager, Core.ApplicationContextManagerStatic>();
       serviceProvider = services.BuildServiceProvider();
 
-      // Make the service provider available to CSLA
-      // CslaConfiguration.Configure().ServiceProviderScope(serviceProvider);
-      // CslaConfiguration.Configure().DataPortal().DefaultProxy(typeof(DataPortalClient.LocalProxy), "");
-
       // Initialise CSLA security
-      contextManager = new Core.ApplicationContextManagerStatic();
+      contextManager = (Core.ApplicationContextManagerStatic)serviceProvider.GetRequiredService<Core.IContextManager>();
       contextManager.SetDefaultServiceProvider(serviceProvider);
       genericPrincipal = new GenericPrincipal(new GenericIdentity("Fred"), new string[] { "Users" });
       contextManager.SetUser(genericPrincipal);
-      _applicationContext = new ApplicationContext(contextManager, serviceProvider);
+
+      // Set up the data portal factory for tests
+      DataPortalFactory.SetServiceProvider(serviceProvider);
 
     }
-
-    public static ApplicationContext ApplicationContext => _applicationContext;
 
   }
 }

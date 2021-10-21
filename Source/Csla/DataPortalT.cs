@@ -20,7 +20,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, Core.IUseApplicationContext
+  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, Core.IUseApplicationContext
   {
     /// <summary>
     /// Creates an instance of the type
@@ -1120,13 +1120,59 @@ namespace Csla
     }
 
     /// <summary>
+    /// Fetches an existing
+    /// child business object.
+    /// </summary>
+    public T FetchChild()
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return (T)(portal.Fetch(typeof(T)));
+    }
+
+    /// <summary>
+    /// Fetches an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="parameters">
+    /// Parameters passed to child fetch method.
+    /// </param>
+    public T FetchChild(params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return (T)(portal.Fetch(typeof(T), parameters));
+    }
+
+    /// <summary>
+    /// Fetches an existing
+    /// child business object.
+    /// </summary>
+    public async Task<T> FetchChildAsync()
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return await portal.FetchAsync<T>();
+    }
+
+    /// <summary>
+    /// Fetches an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="parameters">
+    /// Parameters passed to child fetch method.
+    /// </param>
+    public async Task<T> FetchChildAsync(params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      return await portal.FetchAsync<T>(parameters);
+    }
+
+    /// <summary>
     /// Inserts, updates or deletes an existing
     /// child business object.
     /// </summary>
     /// <param name="child">
     /// Business object to update.
     /// </param>
-    public void UpdateChild(object child)
+    public void UpdateChild(T child)
     {
       var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
       portal.Update(child);
@@ -1155,7 +1201,23 @@ namespace Csla
     /// <param name="child">
     /// Business object to update.
     /// </param>
-    public async Task UpdateChildAsync(object child)
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
+    public void UpdateChild(T child, params object[] parameters)
+    {
+      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      portal.Update(child, parameters);
+    }
+
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public async Task UpdateChildAsync(T child)
     {
       var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
       await portal.UpdateAsync(child).ConfigureAwait(false);
@@ -1171,7 +1233,7 @@ namespace Csla
     /// <param name="parameters">
     /// Parameters passed to child update method.
     /// </param>
-    public async Task UpdateChildAsync(object child, params object[] parameters)
+    public async Task UpdateChildAsync(T child, params object[] parameters)
     {
       var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
       await portal.UpdateAsync(child, parameters).ConfigureAwait(false);

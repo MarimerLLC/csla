@@ -34,10 +34,25 @@ namespace Csla.Configuration
     /// <param name="config">Implement to configure CSLA .NET</param>
     public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> config)
     {
+      // Configuration
+      config?.Invoke(CslaConfiguration.Configure());
+
+      // ApplicationContext
       services.TryAddScoped<ApplicationContext>();
       services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
+
+      // Data portal services
+      services.TryAddSingleton(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
+      services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
+      services.TryAddTransient<Server.DataPortalSelector>();
+      services.TryAddTransient<Server.SimpleDataPortal>();
+      services.TryAddTransient<Server.FactoryDataPortal>();
+      services.TryAddTransient<Server.DataPortalBroker>();
+
+      // Data portal API
       services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
-      config?.Invoke(CslaConfiguration.Configure());
+      services.TryAddTransient(typeof(IChildDataPortal<>), typeof(DataPortal<>));
+
       return new CslaBuilder(services);
     }
 

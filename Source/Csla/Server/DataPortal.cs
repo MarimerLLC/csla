@@ -10,6 +10,7 @@ using Csla.Configuration;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
+using Csla.Server.Dashboard;
 
 namespace Csla.Server
 {
@@ -30,18 +31,15 @@ namespace Csla.Server
     /// </summary>
     public static Dashboard.IDashboard Dashboard { get; internal set; }
 
-    static DataPortal()
-    {
-      Dashboard = Server.Dashboard.DashboardFactory.GetDashboard();
-    }
-
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
-    public DataPortal(ApplicationContext applicationContext)
+    /// <param name="dashboard"></param>
+    public DataPortal(ApplicationContext applicationContext, IDashboard dashboard)
     {
       ApplicationContext = applicationContext;
+      Dashboard = dashboard;
       var authProviderType = GetAuthProviderType("CslaAuthorizationProvider");
       if (null == authProviderType)
         throw new ArgumentNullException(nameof(authProviderType), Resources.CslaAuthenticationProviderNotSet);

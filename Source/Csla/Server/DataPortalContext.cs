@@ -17,30 +17,17 @@ namespace Csla.Server
   /// and server DataPortal objects. 
   /// </summary>
   [Serializable]
-  public class DataPortalContext : Csla.Serialization.Mobile.IMobileObject, Core.IUseApplicationContext
+  public class DataPortalContext : Csla.Serialization.Mobile.IMobileObject
   {
     private IPrincipal _principal;
     private bool _remotePortal;
     private string _clientCulture;
     private string _clientUICulture;
-    private ApplicationContext _applicationContext;
     private ContextDictionary _clientContext;
     [NonSerialized]
     private TransactionalTypes _transactionalType;
     [NonSerialized]
     private ObjectFactoryAttribute _factoryInfo;
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { 
-      get { return _applicationContext; }
-      set 
-      {
-        _applicationContext = value;
-        _clientContext = value.ContextManager.GetClientContext(value.ExecutionLocation);
-      } 
-    }
 
     /// <summary>
     /// The current principal object
@@ -109,14 +96,16 @@ namespace Csla.Server
     /// <summary>
     /// Creates a new DataPortalContext object.
     /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance.</param>
     /// <param name="principal">The current Principal object.</param>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
-    public DataPortalContext(IPrincipal principal, bool isRemotePortal)
+    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal)
     {
       _principal = principal;
       _remotePortal = isRemotePortal;
       _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+      _clientContext = applicationContext.ContextManager.GetClientContext(applicationContext.ExecutionLocation);
     }
 
     /// <summary>

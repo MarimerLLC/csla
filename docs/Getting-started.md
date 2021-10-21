@@ -1,11 +1,17 @@
-![](https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_mid.png)
+![](https://github.com/MarimerLLC/csla/raw/main/Support/Logos/csla%20win8_mid.png)
+
+## A Home for Your Business Logic
 
 Basics
 ------
 * Read [What is CSLA](What-is-CSLA-.NET.md)?
-* Get the framework binaries from [NuGet](http://nuget.org/packages?q=csla) or use older version from the [releases page](https://github.com/MarimerLLC/csla/releases).
+* Get the framework binaries from [NuGet](http://nuget.org/packages?q=csla) or from the [releases page](https://github.com/MarimerLLC/csla/releases).
 * Review the [CSLA Fast Start](https://github.com/MarimerLLC/csla/tree/master/Samples/CslaFastStart) sample.
 
+CSLA 6
+------
+ * CSLA 6 is under active development. The latest information is available via this GitHub repo and the [Discord server](https://discord.gg/9ahKjb7ccf).
+ 
 CSLA 5
 ------
  * Read _Using CSLA 2019_ (see the [Books and videos](Books-and-videos.md) page)
@@ -23,6 +29,6 @@ CSLA .NET 3.8
 
 Other resources
 ---------------
-* [CSLA forum](https://github.com/marimerllc/cslaforum)
+* [CSLA forum](https://github.com/MarimerLLC/csla/discussions)
 * [Books and videos](Books-and-videos.md)
 * [Reference.md](Reference.md)

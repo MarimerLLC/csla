@@ -158,12 +158,18 @@ namespace Csla
       return (T)Create(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
+    /// <summary>
+    /// Manager method for synchronous Create operation; delegating to async version
+    /// </summary>
+    /// <param name="objectType">The type of object to instantiate and initialise</param>
+    /// <param name="criteria">The criteria required to perform the creation operation</param>
+    /// <returns>Returns a new, initialised object of the type requested</returns>
+
     private object Create(Type objectType, object criteria)
     {
-      var dp = new DataPortal<object>(ApplicationContext);
       try
       {
-        return dp.DoCreateAsync(objectType, criteria, true).Result;
+        return DoCreateAsync(objectType, criteria, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -401,21 +407,26 @@ namespace Csla
       return (T)Fetch(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
-    //internal static object Fetch(Type objectType, object criteria)
-    //{
-    //  var dp = new DataPortal<object>();
-    //  try
-    //  {
-    //    return dp.DoFetchAsync(objectType, criteria, true).Result;
-    //  }
-    //  catch (AggregateException ex)
-    //  {
-    //    if (ex.InnerExceptions.Count > 0)
-    //      throw ex.InnerExceptions[0];
-    //    else
-    //      throw;
-    //  }
-    //}
+    /// <summary>
+    /// Manager method for synchronous fetch operation; delegating to async version
+    /// </summary>
+    /// <param name="objectType">The type of object to instantiate and load</param>
+    /// <param name="criteria">The criteria required to perform the load operation</param>
+    /// <returns>Returns a populated object of the type requested</returns>
+    private object Fetch(Type objectType, object criteria)
+    {
+      try
+      {
+        return DoFetchAsync(objectType, criteria, true).Result;
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
+    }
 
     /// <summary>
     /// Called by a factory method in a business class or
@@ -893,25 +904,30 @@ namespace Csla
       Delete(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
-    //internal static void Delete(Type objectType, object criteria)
-    //{
-    //  var dp = new DataPortal<object>();
-    //  try
-    //  {
-    //    var task = dp.DoDeleteAsync(objectType, criteria, true);
-    //    if (!task.IsCompleted)
-    //      task.RunSynchronously();
-    //    if (task.Exception != null)
-    //      throw task.Exception;
-    //  }
-    //  catch (AggregateException ex)
-    //  {
-    //    if (ex.InnerExceptions.Count > 0)
-    //      throw ex.InnerExceptions[0];
-    //    else
-    //      throw;
-    //  }
-    //}
+    /// <summary>
+    /// Manager method for synchronous Delete operation; delegating to async version
+    /// </summary>
+    /// <param name="objectType">The type of object to instantiate and load</param>
+    /// <param name="criteria">The criteria required to perform the load operation</param>
+    /// <returns>Returns a populated object of the type requested</returns>
+    private void Delete(Type objectType, object criteria)
+    {
+      try
+      {
+        var task = DoDeleteAsync(objectType, criteria, true);
+        if (!task.IsCompleted)
+          task.RunSynchronously();
+        if (task.Exception != null)
+          throw task.Exception;
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
+    }
 
     /// <summary>
     /// Called by a factory method in a business class or

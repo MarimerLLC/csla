@@ -265,6 +265,7 @@ namespace Csla.Blazor.Test
       IDataPortal<FakePerson> dataPortal;
       FakePerson person;
 
+      // Create an instance of a DataPortal that can be used for instantiating objects
       dataPortal = DataPortalFactory.CreateDataPortal<FakePerson>();
       person = dataPortal.Create();
 

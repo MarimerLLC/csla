@@ -26,9 +26,11 @@ namespace Csla.Blazor.Test
     /// <returns>An instance of IDataPortal<typeparamref name="T"/> for use in data access during tests</returns>
     public static IDataPortal<T> CreateDataPortal<T>()
     {
+      ApplicationContext context;
       IDataPortal<T> dataPortal;
 
-      dataPortal = _serviceProvider.GetRequiredService<IDataPortal<T>>();
+      context = _serviceProvider.GetRequiredService<ApplicationContext>();
+      dataPortal = context.CreateInstance<DataPortal<T>>();
       return dataPortal;
     }
 

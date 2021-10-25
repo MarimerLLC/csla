@@ -21,23 +21,21 @@ namespace Csla.Blazor.Test
     {
       IPrincipal genericPrincipal;
       ServiceProvider serviceProvider;
-      Core.ApplicationContextManagerStatic contextManager;
+      ApplicationContext context;
 
       // Initialise DI
       var services = new ServiceCollection();
 
       // Add Csla
       services.AddCsla();
-      services.AddSingleton<Core.IContextManager, Core.ApplicationContextManagerStatic>();
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security
-      contextManager = (Core.ApplicationContextManagerStatic)serviceProvider.GetRequiredService<Core.IContextManager>();
-      contextManager.SetDefaultServiceProvider(serviceProvider);
+      context = serviceProvider.GetRequiredService<ApplicationContext>();
       genericPrincipal = new GenericPrincipal(new GenericIdentity("Fred"), new string[] { "Users" });
-      contextManager.SetUser(genericPrincipal);
+      context.User = genericPrincipal;
 
-      // Set up the data portal factory for tests
+      // Set up the workaround for accessing DI from tests
       DataPortalFactory.SetServiceProvider(serviceProvider);
 
     }

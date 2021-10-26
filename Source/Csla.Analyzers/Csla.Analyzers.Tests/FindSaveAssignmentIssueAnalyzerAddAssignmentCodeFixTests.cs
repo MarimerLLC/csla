@@ -36,9 +36,16 @@ public class A : BusinessBase<A> { }
 
 public class VerifyGetFixes
 {
+  private IDataPortal<A> _dataPortal;
+
+  public VerifyGetFixes(IDataPortal<A> dataPortal)
+  {
+    _dataPortal = dataPortal;
+  }
+
   public void Use()
   {
-    var x = DataPortal.Fetch<A>();
+    var x = _dataPortal.Fetch<A>();
     x.Save();
   }
 }";

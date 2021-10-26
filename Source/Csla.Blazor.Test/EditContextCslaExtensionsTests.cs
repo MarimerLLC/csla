@@ -3,16 +3,18 @@ using Csla.Blazor.Test.Fakes;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Csla.Blazor.Test
 {
-	[TestClass]
-	public class EditContextCslaExtensionsTests
-	{
+  [TestClass]
+  public class EditContextCslaExtensionsTests
+  {
 
-		[TestMethod]
-		public void ValidateModel_EmptyLastName_OneValidationMessage()
-		{
+    [TestMethod]
+    public void ValidateModel_EmptyLastName_OneValidationMessage()
+    {
       // Arrange
       FakePerson person = GetValidFakePerson();
       EditContext editContext = new EditContext(person);
@@ -28,7 +30,7 @@ namespace Csla.Blazor.Test
       // Assert
       Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
 
-		}
+    }
 
     [TestMethod]
     public void ValidateModel_ShortFirstName_NoValidationMessages()
@@ -121,7 +123,7 @@ namespace Csla.Blazor.Test
       editContext.AddCslaValidation();
 
       // Create a new child object (which is immediately invalid)
-      person.EmailAddresses.NewEmailAddress();
+      person.EmailAddresses.AddNew();
 
       // Act
       editContext.Validate();
@@ -223,7 +225,7 @@ namespace Csla.Blazor.Test
       editContext.AddCslaValidation();
 
       // Add a new, empty email address
-      FakePersonEmailAddress address = person.EmailAddresses.NewEmailAddress();
+      FakePersonEmailAddress address = person.EmailAddresses.AddNew();
       address.EmailAddress = "";
 
       // Act
@@ -244,7 +246,7 @@ namespace Csla.Blazor.Test
       editContext.AddCslaValidation();
 
       // Add a new, valid email address
-      FakePersonEmailAddress address = person.EmailAddresses.NewEmailAddress();
+      FakePersonEmailAddress address = person.EmailAddresses.AddNew();
       address.EmailAddress = "name@domain.com";
 
       // Act
@@ -260,7 +262,12 @@ namespace Csla.Blazor.Test
 
     FakePerson GetValidFakePerson()
     {
-      FakePerson person = FakePerson.NewFakePerson();
+      IDataPortal<FakePerson> dataPortal;
+      FakePerson person;
+
+      // Create an instance of a DataPortal that can be used for instantiating objects
+      dataPortal = DataPortalFactory.CreateDataPortal<FakePerson>();
+      person = dataPortal.Create();
 
       person.FirstName = "John";
       person.LastName = "Smith";

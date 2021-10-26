@@ -51,15 +51,6 @@ namespace Csla.Blazor.Test.Fakes
 
     #endregion
 
-    #region Factory Methods
-
-    public static FakePerson NewFakePerson()
-    {
-      return DataPortal.Create<FakePerson>();
-    }
-
-    #endregion
-
     #region Business Rules
 
     protected override void AddBusinessRules()
@@ -95,10 +86,10 @@ namespace Csla.Blazor.Test.Fakes
 
     [RunLocal]
     [Create]
-    private void Create()
+    private void Create([Inject] IChildDataPortal<FakePersonEmailAddresses> dataPortal)
     {
       // Create an empty list for holding email addresses
-      LoadProperty(EmailAddressesProperty, DataPortal.CreateChild<FakePersonEmailAddresses>());
+      LoadProperty(EmailAddressesProperty, dataPortal.CreateChild());
 
       // Trigger object checks
       BusinessRules.CheckRules();

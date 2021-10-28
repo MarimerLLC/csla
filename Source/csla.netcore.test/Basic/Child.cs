@@ -36,32 +36,20 @@ namespace Csla.Test.Basic
       private set { LoadProperty(GrandChildrenProperty, value); }
     }
 
-    internal static Child NewChild(string data)
+    [CreateChild]
+    private void Create([Inject] IChildDataPortal<GrandChildren> dataPortal)
     {
-      Child obj = new Child();
-      obj.Data = data;
-      return obj;
+      GrandChildren = dataPortal.CreateChild();
     }
 
-    internal static Child GetChild(IDataReader dr)
+    [FetchChild]
+    private void Fetch(IDataReader dr, [Inject] IChildDataPortal<GrandChildren> dataPortal)
     {
-      Child obj = new Child();
-      obj.Fetch(dr);
-      return obj;
-    }
-
-    public Child()
-    {
-      GrandChildren = GrandChildren.NewGrandChildren();
-      MarkAsChild();
-    }
-
-    private void Fetch(IDataReader dr)
-    {
-      GrandChildren = GrandChildren.NewGrandChildren();
+      GrandChildren = dataPortal.CreateChild();
       MarkOld();
     }
 
+    [Update]
     internal void Update(IDbTransaction tr)
     {
       if (IsDeleted)

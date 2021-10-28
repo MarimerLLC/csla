@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -29,9 +30,9 @@ namespace Csla.Test.Basic
     public void TestNotUndoableField()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
+      Csla.Test.DataBinding.ParentEntity p = CreateParentEntityInstance();
 
       p.NotUndoable = "something";
       p.Data = "data";
@@ -56,9 +57,9 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestNameValueList()
     {
-      NameValueListObj nvList = NameValueListObj.GetNameValueListObj();
+      NameValueListObj nvList = GetNameValueListObjInstance();
 #pragma warning disable CS0618 // Type or member is obsolete
-      Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["NameValueListObj"]);
+      //Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["NameValueListObj"]);
 #pragma warning restore CS0618 // Type or member is obsolete
 
       Assert.AreEqual("element_1", nvList[1].Value);
@@ -76,24 +77,26 @@ namespace Csla.Test.Basic
     public void TestCommandBase()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
       CommandObject obj = new CommandObject();
-      Assert.AreEqual("Executed", obj.ExecuteServerCode().AProperty);
+      IDataPortal<CommandObject> dataPortal = DataPortalFactory.CreateDataPortal<CommandObject>();
+      obj = dataPortal.Execute(obj);
+      Assert.AreEqual("Executed", obj.AProperty);
     }
 
     [TestMethod]
     public void CreateGenRoot()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
       GenRoot root;
-      root = GenRoot.NewRoot();
+      root = CreateGenRootInstance();
       Assert.IsNotNull(root);
       Assert.AreEqual("<new>", root.Data);
 #pragma warning disable CS0618 // Type or member is obsolete
-      Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["GenRoot"]);
+      //Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["GenRoot"]);
 #pragma warning restore CS0618 // Type or member is obsolete
       Assert.AreEqual(true, root.IsNew);
       Assert.AreEqual(false, root.IsDeleted);
@@ -104,18 +107,18 @@ namespace Csla.Test.Basic
     public void InheritanceUndo()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
       GenRoot root;
-      root = GenRoot.NewRoot();
+      root = CreateGenRootInstance();
       root.BeginEdit();
       root.Data = "abc";
       root.CancelEdit();
 
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      root = GenRoot.NewRoot();
+      root = CreateGenRootInstance();
       root.BeginEdit();
       root.Data = "abc";
       root.ApplyEdit();
@@ -125,14 +128,14 @@ namespace Csla.Test.Basic
     public void CreateRoot()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
       Root root;
-      root = Csla.Test.Basic.Root.NewRoot();
+      root = CreateRootInstance();
       Assert.IsNotNull(root);
       Assert.AreEqual("<new>", root.Data);
 #pragma warning disable CS0618 // Type or member is obsolete
-      Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["Root"]);
+      //Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["Root"]);
 #pragma warning restore CS0618 // Type or member is obsolete
       Assert.AreEqual(true, root.IsNew);
       Assert.AreEqual(false, root.IsDeleted);
@@ -143,9 +146,9 @@ namespace Csla.Test.Basic
     public void AddChild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       Assert.AreEqual(1, root.Children.Count);
       Assert.AreEqual("1", root.Children[0].Data);
@@ -155,9 +158,9 @@ namespace Csla.Test.Basic
     public void AddRemoveChild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       root.Children.Remove(root.Children[0]);
       Assert.AreEqual(0, root.Children.Count);
@@ -167,9 +170,9 @@ namespace Csla.Test.Basic
     public void AddRemoveAddChild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       root.BeginEdit();
       root.Children.Remove(root.Children[0]);
@@ -185,9 +188,9 @@ namespace Csla.Test.Basic
     public void AddGrandChild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       Child child = root.Children[0];
       child.GrandChildren.Add("1");
@@ -199,9 +202,9 @@ namespace Csla.Test.Basic
     public void AddRemoveGrandChild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       Child child = root.Children[0];
       child.GrandChildren.Add("1");
@@ -213,9 +216,9 @@ namespace Csla.Test.Basic
     public void ClearChildList()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("A");
       root.Children.Add("B");
       root.Children.Add("C");
@@ -228,9 +231,9 @@ namespace Csla.Test.Basic
     public void NestedAddAcceptchild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.BeginEdit();
       root.Children.Add("A");
       root.BeginEdit();
@@ -247,9 +250,9 @@ namespace Csla.Test.Basic
     public void NestedAddDeleteAcceptChild()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.BeginEdit();
       root.Children.Add("A");
       root.BeginEdit();
@@ -276,17 +279,17 @@ namespace Csla.Test.Basic
     public void BasicEquality()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root r1 = Root.NewRoot();
+      Root r1 = CreateRootInstance();
       r1.Data = "abc";
       Assert.AreEqual(true, r1.Equals(r1), "objects should be equal on instance compare");
       Assert.AreEqual(true, Equals(r1, r1), "objects should be equal on static compare");
 
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root r2 = Root.NewRoot();
+      Root r2 = CreateRootInstance();
       r2.Data = "xyz";
       Assert.AreEqual(false, r1.Equals(r2), "objects should not be equal");
       Assert.AreEqual(false, Equals(r1, r2), "objects should not be equal");
@@ -300,9 +303,9 @@ namespace Csla.Test.Basic
     public void ChildEquality()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("abc");
       root.Children.Add("xyz");
       root.Children.Add("123");
@@ -331,9 +334,9 @@ namespace Csla.Test.Basic
     public void DeletedListTest()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       root.Children.Add("2");
       root.Children.Add("3");
@@ -356,9 +359,9 @@ namespace Csla.Test.Basic
     public void DeletedListTestWithCancel()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      Root root = Csla.Test.Basic.Root.NewRoot();
+      Root root = CreateRootInstance();
       root.Children.Add("1");
       root.Children.Add("2");
       root.Children.Add("3");
@@ -410,7 +413,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task ChildEditLevelClone()
     {
-      var list = await Csla.DataPortal.CreateAsync<RootList>();
+      var list = await CreateRootListInstanceAsync();
       list.BeginEdit();
       list.AddNew();
       var clone = (RootList)((ICloneable)list).Clone();
@@ -420,7 +423,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task ChildEditLevelDeleteClone()
     {
-      var list = await Csla.DataPortal.CreateAsync<RootList>();
+      var list = await CreateRootListInstanceAsync();
       list.BeginEdit();
       list.AddNew();
       list.RemoveAt(0);
@@ -431,7 +434,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public async Task UndoStateStack()
     {
-      var obj = await Csla.DataPortal.CreateAsync<Root>(new Root.Criteria(""));
+      var obj = await CreateRootInstanceAsync(new Root.Criteria(""));
       Assert.AreEqual("", obj.Data);
       obj.BeginEdit();
       obj.Data = "1";
@@ -456,9 +459,52 @@ namespace Csla.Test.Basic
     public void ClearContextsAfterEachTest()
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
     }
+
+    private Root CreateRootInstance()
+    {
+      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      return dataPortal.Create(new Root.Criteria());
+    }
+
+    private async Task<Root> CreateRootInstanceAsync()
+    {
+      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      return await dataPortal.CreateAsync(new Root.Criteria());
+    }
+
+    private async Task<Root> CreateRootInstanceAsync(Root.Criteria criteria)
+    {
+      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      return await dataPortal.CreateAsync(criteria);
+    }
+
+    private async Task<RootList> CreateRootListInstanceAsync()
+    {
+      IDataPortal<RootList> dataPortal = DataPortalFactory.CreateDataPortal<RootList>();
+      return await dataPortal.CreateAsync();
+    }
+
+    private GenRoot CreateGenRootInstance()
+    {
+      IDataPortal<GenRoot> dataPortal = DataPortalFactory.CreateDataPortal<GenRoot>();
+      return dataPortal.Create(new GenRootBase.Criteria());
+    }
+
+    private Csla.Test.DataBinding.ParentEntity CreateParentEntityInstance()
+    {
+      IDataPortal<Csla.Test.DataBinding.ParentEntity> dataPortal = DataPortalFactory.CreateDataPortal<Csla.Test.DataBinding.ParentEntity>();
+      return dataPortal.Create();
+    }
+
+    private NameValueListObj GetNameValueListObjInstance()
+    {
+      IDataPortal<NameValueListObj> dataPortal = DataPortalFactory.CreateDataPortal<NameValueListObj>();
+      return dataPortal.Fetch();
+    }
+
   }
 
   public class FormSimulator

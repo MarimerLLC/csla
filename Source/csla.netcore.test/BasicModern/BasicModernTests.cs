@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,7 +23,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void CreateGraph()
     {
-      var graph = Root.NewRoot();
+      var graph = CreateRoot();
       Assert.IsTrue(graph.IsNew, "IsNew");
       Assert.IsFalse(graph.IsValid, "IsValid");
       Assert.AreEqual(0, graph.Children.Count, "Children count");
@@ -31,7 +32,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MakeOldMetastateEvents()
     {
-      var graph = Root.NewRoot();
+      var graph = CreateRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
       {
@@ -52,7 +53,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MarkDeletedMetastateEvents()
     {
-      var graph = Root.NewRoot();
+      var graph = CreateRoot();
       graph.Name = "abc";
       graph = graph.Save();
       var changed = new List<string>();
@@ -76,7 +77,7 @@ namespace Csla.Test.BasicModern
     public void RootChangedMetastateEventsId()
     {
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      var graph = Root.NewRoot();
+      var graph = CreateRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
         {
@@ -99,7 +100,7 @@ namespace Csla.Test.BasicModern
     public void RootChangedMetastateEventsName()
     {
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      var graph = Root.NewRoot();
+      var graph = CreateRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
       {
@@ -144,7 +145,7 @@ namespace Csla.Test.BasicModern
     public void RootChangedMetastateEventsChild()
     {
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      var graph = Root.NewRoot();
+      var graph = CreateRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
       {
@@ -152,7 +153,9 @@ namespace Csla.Test.BasicModern
       };
       graph.Name = "abc";
       changed.Clear();
-      graph.Children.Add(Csla.DataPortal.FetchChild<Child>(123, "xyz"));
+      var child = graph.Children.AddNew();
+      child.Id = 123;
+      child.Name = "xyz";
 
       Assert.IsTrue(graph.IsDirty, "IsDirty should be true");
 
@@ -186,6 +189,12 @@ namespace Csla.Test.BasicModern
       Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable after add");
       Assert.IsFalse(changed.Contains("IsNew"), "IsNew after add");
       Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted after add");
+    }
+
+    private Root CreateRoot()
+    {
+      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      return dataPortal.Create();
     }
   }
 }

@@ -71,7 +71,7 @@ namespace Csla.Test.Basic
     {
       base.OnDeserialized(context);
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Add("GCDeserialized", "GC Deserialized");
+      //Csla.ApplicationContext.GlobalContext.Add("GCDeserialized", "GC Deserialized");
 #pragma warning restore CS0618 // Type or member is obsolete
     }
   }

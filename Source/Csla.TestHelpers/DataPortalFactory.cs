@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Csla.Blazor.Test
+namespace Csla.TestHelpers
 {
-  internal static class DataPortalFactory
+  public static class DataPortalFactory
   {
 
     private static IServiceProvider _serviceProvider;
@@ -14,7 +14,7 @@ namespace Csla.Blazor.Test
     /// Store the root service provider for use in object creation during tests
     /// </summary>
     /// <param name="serviceProvider">The root service provider that has been created</param>
-    internal static void SetServiceProvider(IServiceProvider serviceProvider)
+    public static void SetServiceProvider(IServiceProvider serviceProvider)
     {
       _serviceProvider = serviceProvider;
     }
@@ -28,6 +28,21 @@ namespace Csla.Blazor.Test
     {
       ApplicationContext context;
       IDataPortal<T> dataPortal;
+
+      context = _serviceProvider.GetRequiredService<ApplicationContext>();
+      dataPortal = context.CreateInstance<DataPortal<T>>();
+      return dataPortal;
+    }
+
+    /// <summary>
+    /// Create an instance of a typed child data portal using the DI container
+    /// </summary>
+    /// <typeparam name="T">The type which the child data portal is to service</typeparam>
+    /// <returns>An instance of IChildDataPortal<typeparamref name="T"/> for use in data access during tests</returns>
+    public static IChildDataPortal<T> CreateChildDataPortal<T>()
+    {
+      ApplicationContext context;
+      IChildDataPortal<T> dataPortal;
 
       context = _serviceProvider.GetRequiredService<ApplicationContext>();
       dataPortal = context.CreateInstance<DataPortal<T>>();

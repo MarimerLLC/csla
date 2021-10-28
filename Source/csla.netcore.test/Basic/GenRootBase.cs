@@ -35,7 +35,7 @@ namespace Csla.Test.Basic
     }
 
     [Serializable()]
-    private class Criteria : CriteriaBase<Criteria>
+    public class Criteria : CriteriaBase<Criteria>
     {
       public string _data;
 
@@ -50,28 +50,13 @@ namespace Csla.Test.Basic
       }
     }
 
-    public static GenRoot NewRoot()
-    {
-      return (GenRoot)(Csla.DataPortal.Create<GenRoot>(new Criteria()));
-    }
-
-    public static GenRoot GetRoot(string data)
-    {
-      return (GenRoot)(Csla.DataPortal.Fetch<GenRoot>(new Criteria(data)));
-    }
-
-    public static void DeleteRoot(string data)
-    {
-      Csla.DataPortal.Delete<GenRoot>(new Criteria(data));
-    }
-
     [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
       _data = crit._data;
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
+      //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 
@@ -82,7 +67,7 @@ namespace Csla.Test.Basic
       _data = crit._data;
       MarkOld();
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
+      //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 
@@ -93,7 +78,7 @@ namespace Csla.Test.Basic
       {
         //we would delete here
 #pragma warning disable CS0618 // Type or member is obsolete
-        Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
+        //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
 #pragma warning restore CS0618 // Type or member is obsolete
         MarkNew();
       }
@@ -103,14 +88,14 @@ namespace Csla.Test.Basic
         {
           //we would insert here
 #pragma warning disable CS0618 // Type or member is obsolete
-          Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Inserted");
+          //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Inserted");
 #pragma warning restore CS0618 // Type or member is obsolete
         }
         else
         {
           //we would update here
 #pragma warning disable CS0618 // Type or member is obsolete
-          Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Updated");
+          //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Updated");
 #pragma warning restore CS0618 // Type or member is obsolete
         }
         MarkOld();
@@ -122,7 +107,7 @@ namespace Csla.Test.Basic
     {
       //we would delete here
 #pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
+      //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
 #pragma warning restore CS0618 // Type or member is obsolete
     }
   }

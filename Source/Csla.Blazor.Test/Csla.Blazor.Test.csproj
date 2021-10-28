@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Csla.Blazor\Csla.Blazor.csproj" />
+    <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 

@@ -39,42 +39,17 @@ namespace Csla.Test.BasicModern
       MarkOld();
     }
 
-    public static async Task<Root> NewRootAsync()
-    {
-      return await Csla.DataPortal.CreateAsync<Root>();
-    }
-
-    public static async Task<Root> GetRootAsync(int id)
-    {
-      return await Csla.DataPortal.FetchAsync<Root>(id);
-    }
-
-    public static Root NewRoot()
-    {
-      return Csla.DataPortal.Create<Root>();
-    }
-
-    public static Root GetRoot(int id)
-    {
-      return Csla.DataPortal.Fetch<Root>(id);
-    }
-
-    public static void DeleteRoot(int id)
-    {
-      Csla.DataPortal.Delete<Root>(id);
-    }
-
     [Create]
-    protected void DataPortal_Create()
+    protected void DataPortal_Create([Inject] IChildDataPortal<ChildList> dataPortal)
     {
-      Children = Csla.DataPortal.CreateChild<ChildList>();
+      Children = dataPortal.CreateChild();
       BusinessRules.CheckRules();
     }
     
     [Fetch]
-    private void DataPortal_Fetch(int id)
+    private void DataPortal_Fetch(int id, [Inject] IChildDataPortal<ChildList> dataPortal)
     {
-      Children = Csla.DataPortal.CreateChild<ChildList>();
+      Children = dataPortal.FetchChild(id);
     }
 
     [Insert]

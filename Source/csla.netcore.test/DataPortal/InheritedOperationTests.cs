@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Csla;
 using Csla.Configuration;
+using Csla.TestHelpers;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -30,25 +31,33 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void BusinessBindingListFetch()
     {
-      var obj = PersonList.FetchPersonList();
+      var obj = FetchPersonList();
       Assert.IsNotNull(obj);
     }
 
     [TestMethod]
     public void BusinessObjectFetch()
     {
-      var obj = Csla.DataPortal.Create<PersonEdit>();
+      var obj = CreatePersonEdit();
       Assert.IsNotNull(obj);
+    }
+
+    private PersonList FetchPersonList()
+    {
+      IDataPortal<PersonList> dataPortal = DataPortalFactory.CreateDataPortal<PersonList>();
+      return dataPortal.Fetch(new PersonList.Criteria());
+    }
+
+    private PersonEdit CreatePersonEdit()
+    {
+      IDataPortal<PersonEdit> dataPortal = DataPortalFactory.CreateDataPortal<PersonEdit>();
+      return dataPortal.Create();
     }
   }
 
   [Serializable]
   public class PersonList : PersonListBase
   {
-    public static PersonList FetchPersonList()
-    {
-      return Csla.DataPortal.Fetch<PersonList>(new Criteria());
-    }
   }
 
   [Serializable]
@@ -59,7 +68,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Serializable()]
-    protected class Criteria : Csla.CriteriaBase<Criteria>
+    public class Criteria : Csla.CriteriaBase<Criteria>
     {
     }
   }

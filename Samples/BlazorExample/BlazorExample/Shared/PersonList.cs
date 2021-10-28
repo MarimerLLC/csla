@@ -10,11 +10,11 @@ namespace BlazorExample.Shared
   public class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
   {
     [Fetch]
-    private void Fetch([Inject]DataAccess.IPersonDal dal)
+    private void Fetch([Inject]DataAccess.IPersonDal dal, [Inject]IChildDataPortal<PersonInfo> personInfoPortal)
     {
       using (LoadListMode)
       {
-        var data = dal.Get().Select(d => DataPortal.FetchChild<PersonInfo>(d));
+        var data = dal.Get().Select(d => personInfoPortal.FetchChild(d));
         AddRange(data);
       }
     }

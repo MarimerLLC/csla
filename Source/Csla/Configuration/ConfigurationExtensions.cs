@@ -42,7 +42,7 @@ namespace Csla.Configuration
       services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
 
       // Data portal services
-      services.TryAddSingleton(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
+      services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
       services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
       services.TryAddTransient<Server.DataPortalSelector>();
       services.TryAddTransient<Server.SimpleDataPortal>();

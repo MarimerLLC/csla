@@ -36,13 +36,15 @@ namespace Csla.Configuration
     public static WebAssemblyHostBuilder UseCsla(
       this WebAssemblyHostBuilder builder, Action<CslaConfiguration> config)
     {
-      builder.Services.AddCsla();
-      DataPortalClient.HttpProxy.UseTextSerialization = true;
       builder.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       builder.Services.TryAddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       builder.Services.TryAddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
       builder.Services.TryAddSingleton(typeof(Csla.Core.IContextManager), typeof(Csla.Core.ApplicationContextManagerStatic));
+
+      DataPortalClient.HttpProxy.UseTextSerialization = true;
+
       config?.Invoke(CslaConfiguration.Configure());
+
       return builder;
     }
   }

@@ -37,11 +37,12 @@ function ChangeNuSpecVersion( $nuSpecFilePath, $version="0.0.0.0" )
     $xDoc = [System.Xml.Linq.XDocument]::Load( $nuSpecFile.FullName )
 
     # Update the XML document dependencies with the new version
-    $dependencies = $xDoc.Descendants( "dependency" )
+    $dependencies = $xDoc.Descendants()
     foreach( $dependency in $dependencies )
     {
+        $nameAttribute = $dependency.Name.LocalName
         $idAttribute = $dependency.Attributes( "id" ) | Select-Object -First 1
-        if ( $null -ne $idAttribute )
+        if ( "dependency" -eq $nameAttribute -and $null -ne $idAttribute)
         {
             if ( $idAttribute.Value -eq "Csla" )
             {

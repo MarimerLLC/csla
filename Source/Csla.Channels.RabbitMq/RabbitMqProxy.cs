@@ -6,12 +6,8 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Threading;
 using System.Threading.Tasks;
-using Csla.Core;
 using Csla.DataPortalClient;
-using Csla.Serialization;
-using Csla.Serialization.Mobile;
 using Csla.Server;
 using RabbitMQ.Client;
 
@@ -25,20 +21,14 @@ namespace Csla.Channels.RabbitMq
   {
     /// <summary>
     /// Creates an instance of the object, initializing
-    /// it to use the DefaultUrl value.
-    /// </summary>
-    public RabbitMqProxy()
-    {
-    }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
     /// it to use the supplied URL.
     /// </summary>
-    /// <param name="dataPortalUrl">RabbitMQ service URL</param>
-    public RabbitMqProxy(string dataPortalUrl)
+    /// <param name="applicationContext"></param>
+    /// <param name="options">Proxy options</param>
+    public RabbitMqProxy(ApplicationContext applicationContext, RabbitMqProxyOptions options)
+      : base(applicationContext)
     {
-      DataPortalUrl = dataPortalUrl;
+      DataPortalUrl = options.DataPortalUrl;
     }
 
     /// <summary>

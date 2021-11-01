@@ -52,10 +52,7 @@ namespace Csla
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
       _dataPortalActivator = null;
-      //_dataPortalActivator = null;
       _dataPortalUrl = null;
-      _dataPortalProxyFactory = null;
-      _dataPortalProxy = null;
       _VersionRoutingTag = null;
     }
 
@@ -335,46 +332,6 @@ namespace Csla
       get { return new Uri(DataPortalUrlString); }
     }
 
-    private static string _dataPortalProxyFactory;
-    ///<summary>
-    /// Gets or sets the full type name (or 'Default') of
-    /// the data portal proxy factory object to be used to get 
-    /// the DataPortalProxy instance to use when
-    /// communicating with the data portal server.
-    /// </summary>
-    /// <value>Fully qualified assembly/type name of the proxy factory class
-    /// or 'Default'.</value>
-    /// <returns></returns>
-    /// <remarks>
-    /// <para>
-    /// If this value is empty or null, a new value is read from the 
-    /// application configuration file with the key value 
-    /// "CslaDataPortalProxyFactory".
-    /// </para><para>
-    /// The proxy class must implement Csla.DataPortalClient.IDataPortalProxyFactory.
-    /// </para><para>
-    /// The value "Default" is a shortcut for using the default 
-    /// Csla.DataPortalClient.DefaultPortalProxyFactory  implementation.
-    /// </para>
-    /// </remarks>
-    public static string DataPortalProxyFactory
-    {
-      get
-      {
-        if (string.IsNullOrEmpty(_dataPortalProxyFactory))
-        {
-          _dataPortalProxyFactory = ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"];
-          if (string.IsNullOrEmpty(_dataPortalProxyFactory))
-            _dataPortalProxyFactory = "Default";
-        }
-        return _dataPortalProxyFactory;
-      }
-      set
-      {
-        _dataPortalProxyFactory = value;
-      }
-    }
-
     private static string _authenticationTypeName;
 
     /// <summary>
@@ -401,44 +358,6 @@ namespace Csla
         return _authenticationTypeName;
       }
       set { _authenticationTypeName = value; }
-    }
-
-    private static string _dataPortalProxy;
-
-    /// <summary>
-    /// Gets or sets the full type name (or 'Local') of
-    /// the data portal proxy object to be used when
-    /// communicating with the data portal server.
-    /// </summary>
-    /// <value>Fully qualified assembly/type name of the proxy class
-    /// or 'Local'.</value>
-    /// <returns></returns>
-    /// <remarks>
-    /// <para>
-    /// If this value is empty or null, a new value is read from the 
-    /// application configuration file with the key value 
-    /// "CslaDataPortalProxy".
-    /// </para><para>
-    /// The proxy class must implement Csla.Server.IDataPortalServer.
-    /// </para><para>
-    /// The value "Local" is a shortcut to running the DataPortal
-    /// "server" in the client process.
-    /// </para>
-    /// </remarks>
-    public static string DataPortalProxy
-    {
-      get
-      {
-        if (string.IsNullOrEmpty(_dataPortalProxy))
-          _dataPortalProxy = ConfigurationManager.AppSettings["CslaDataPortalProxy"];
-        if (string.IsNullOrEmpty(_dataPortalProxy))
-          _dataPortalProxy = "Local";
-        return _dataPortalProxy;
-      }
-      set
-      {
-        _dataPortalProxy = value;
-      }
     }
 
     /// <summary>

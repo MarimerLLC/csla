@@ -41,7 +41,7 @@ namespace Csla.Configuration
       builder.Services.TryAddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
       builder.Services.TryAddSingleton(typeof(Csla.Core.IContextManager), typeof(Csla.Core.ApplicationContextManagerStatic));
 
-      DataPortalClient.HttpProxy.UseTextSerialization = true;
+      Csla.Channels.Http.HttpProxy.UseTextSerialization = true;
 
       config?.Invoke(CslaConfiguration.Configure());
 

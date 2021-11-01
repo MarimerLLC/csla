@@ -8,7 +8,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Serialization;
 using Csla.Server;
@@ -20,12 +19,21 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server.
   /// </summary>
-  public abstract class DataPortalProxy : IDataPortalProxy, Core.IUseApplicationContext
+  public abstract class DataPortalProxy : IDataPortalProxy
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public DataPortalProxy(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether the data portal

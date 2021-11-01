@@ -28,14 +28,17 @@ namespace Csla.Channels.Grpc
   public class GrpcPortal : Csla.Channels.Grpc.GrpcService.GrpcServiceBase
   {
     private IDataPortalServer dataPortalServer;
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
     /// <param name="dataPortal">Data portal server service</param>
-    public GrpcPortal(IDataPortalServer dataPortal)
+    /// <param name="applicationContext"></param>
+    public GrpcPortal(IDataPortalServer dataPortal, ApplicationContext applicationContext)
     {
       dataPortalServer = dataPortal;
+      ApplicationContext = applicationContext;
     }
 
     /// <summary>
@@ -75,8 +78,9 @@ namespace Csla.Channels.Grpc
     {
       if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
       {
-        var url = $"{route}?operation={operation}";
-        var proxy = new GrpcProxy(url);
+        var options = new GrpcProxyOptions { DataPortalUrl = $"{route}?operation={operation}" };
+        var channel = ApplicationContext.CreateInstance<global::Grpc.Net.Client.GrpcChannel>();
+        var proxy = new GrpcProxy(ApplicationContext, channel, options);
         var clientRequest = new RequestMessage
         {
           Body = request.Body,

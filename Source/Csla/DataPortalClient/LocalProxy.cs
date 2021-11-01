@@ -12,7 +12,7 @@ using Csla.Configuration;
 using Csla.Server;
 using Csla.Threading;
 
-namespace Csla.DataPortalClient
+namespace Csla.Channels.Local
 {
   /// <summary>
   /// Implements a data portal proxy to relay data portal

@@ -7,7 +7,8 @@ namespace BlazorExample.Server.Controllers
   [ApiController]
   public class DataPortalController : Csla.Server.Hosts.HttpPortalController
   {
-    public DataPortalController()
+    public DataPortalController(Csla.ApplicationContext applicationContext)
+      : base(applicationContext)
     {
       UseTextSerialization = true;
     }

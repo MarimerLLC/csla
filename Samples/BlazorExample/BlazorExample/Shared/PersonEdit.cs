@@ -45,7 +45,7 @@ namespace BlazorExample.Shared
     private void Create()
     {
       Id = -1;
-      base.DataPortal_Create();
+      base.Child_Create();
     }
 
     [Fetch]

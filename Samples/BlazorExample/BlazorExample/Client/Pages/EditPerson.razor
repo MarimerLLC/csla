@@ -1,6 +1,8 @@
 ﻿@page "/EditPerson"
 @page "/EditPerson/{id}"
 @using BlazorExample.Shared
+@using Microsoft.AspNetCore.Authorization
+@inject Csla.IDataPortal<PersonEdit> personEditPortal
 @inject Csla.Blazor.ViewModel<PersonEdit> vm
 @inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "Admin")]
@@ -71,8 +73,8 @@ else
   protected override async Task OnParametersSetAsync()
   {
     if (string.IsNullOrWhiteSpace(id))
-      await vm.RefreshAsync(() => Csla.DataPortal.CreateAsync<PersonEdit>());
+      await vm.RefreshAsync(() => personEditPortal.CreateAsync());
     else
-      await vm.RefreshAsync(() => Csla.DataPortal.FetchAsync<PersonEdit>(int.Parse(id)));
+      await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
   }
 }

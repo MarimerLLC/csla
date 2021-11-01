@@ -35,8 +35,6 @@ namespace Csla.Blazor
       ApplicationContext = applicationContext;
     }
 
-    private IDataPortal<T> DataPortal { get; set; }
-
     /// <summary>
     /// Event raised after Model has been saved
     /// </summary>
@@ -85,14 +83,6 @@ namespace Csla.Blazor
     protected virtual void OnModelPropertyChanged(string propertyName)
     {
       ModelPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    /// <summary>
-    /// Creates an instance of the type
-    /// </summary>
-    public ViewModel(IDataPortal<T> dataPortal)
-    {
-      DataPortal = dataPortal;
     }
 
     /// <summary>

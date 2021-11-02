@@ -7,14 +7,10 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Linq;
-using Csla.Core.FieldManager;
-using Csla.Reflection;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Csla.Threading;
 
@@ -730,7 +726,7 @@ namespace Csla.Rules
           break;
         bool complete = false;
         // set up context
-        var context = new RuleContext((r) =>
+        var context = new RuleContext(ApplicationContext, (r) =>
         {
           if (r.Rule.IsAsync)
           {

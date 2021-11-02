@@ -85,15 +85,23 @@ namespace Csla
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        Initialize();
+        InitializeBusinessRules();
+      }
+    }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     protected ReadOnlyBase()
     {
-      Initialize();
-      InitializeBusinessRules();
     }
 
     #region Initialize

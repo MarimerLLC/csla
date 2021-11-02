@@ -685,7 +685,7 @@ namespace Csla
     public object CreateInstanceDI(Type objectType, params object[] parameters)
     {
       object result;
-      if (CurrentServiceProvider != null && parameters.Length == 0)
+      if (CurrentServiceProvider != null)
         result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
       else
         result = Activator.CreateInstance(objectType, parameters);

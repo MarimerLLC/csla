@@ -40,10 +40,8 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
-    /// <summary>
-    /// Gets or sets a reference to the current ApplicationContext.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -116,7 +114,7 @@ namespace Csla.Core.FieldManager
 #if NET5_0_OR_GREATER
     private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new Dictionary<Type, Tuple<string, List<IPropertyInfo>>>();
 #else
-    private static Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new Dictionary<Type, List<IPropertyInfo>>();
+    private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
 #endif
 
     private static List<IPropertyInfo> GetConsolidatedList(Type type)
@@ -357,8 +355,7 @@ namespace Csla.Core.FieldManager
     internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
     {
       var field = GetOrCreateFieldData(prop);
-      var fd = field as IFieldData<P>;
-      if (fd != null)
+      if (field is IFieldData<P> fd)
         fd.Value = value;
       else
         field.Value = value;
@@ -486,7 +483,7 @@ namespace Csla.Core.FieldManager
 
 #region  IUndoableObject
 
-    private readonly Stack<byte[]> _stateStack = new Stack<byte[]>();
+    private readonly Stack<byte[]> _stateStack = new();
 
     /// <summary>
     /// Gets the current edit level of the object.
@@ -499,7 +496,10 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
+        throw new UndoException(
+          string.Format(
+            Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, 
+            _parent?.GetType().Name, this.EditLevel, parentEditLevel - 1);
 
       IFieldData[] state = new IFieldData[_propertyList.Count];
 
@@ -524,13 +524,11 @@ namespace Csla.Core.FieldManager
       }
 
       // serialize the state and stack it
-      using (MemoryStream buffer = new MemoryStream())
-      {
-        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
-        var stateList = new MobileList<IFieldData>(state.ToList());
-        formatter.Serialize(buffer, stateList);
-        _stateStack.Push(buffer.ToArray());
-      }
+      using MemoryStream buffer = new MemoryStream();
+      var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+      var stateList = new MobileList<IFieldData>(state.ToList());
+      formatter.Serialize(buffer, stateList);
+      _stateStack.Push(buffer.ToArray());
     }
 
     void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
@@ -538,7 +536,9 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
+          throw new UndoException(
+            string.Format(Resources.EditLevelMismatchException, "UndoChanges"), 
+            this.GetType().Name, _parent?.GetType().Name, this.EditLevel, parentEditLevel + 1);
 
         IFieldData[] state = null;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
@@ -579,7 +579,9 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
+        throw new UndoException(
+          string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), 
+          this.GetType().Name, _parent?.GetType().Name, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {
@@ -590,8 +592,7 @@ namespace Csla.Core.FieldManager
         {
           if (item != null)
           {
-            var child = item.Value as IUndoableObject;
-            if (child != null)
+            if (item.Value is IUndoableObject child)
             {
               // cascade call to child
               child.AcceptChanges(parentEditLevel, parentBindingEdit);
@@ -631,7 +632,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Paramters for method</param>
     public void UpdateChildren(params object[] parameters)
     {
-      var dp = _parent.ApplicationContext.CreateInstanceDI<DataPortal<IFieldData>>();
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<IFieldData>>();
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -651,7 +652,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Paramters for method</param>
     public void UpdateAllChildren(params object[] parameters)
     {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      Server.ChildDataPortal portal = new Server.ChildDataPortal(ApplicationContext);
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -692,7 +693,7 @@ namespace Csla.Core.FieldManager
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
             info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(data.Value), data.IsDirty);
-          else if(!(data.Value is IMobileObject))
+          else if(data.Value is not IMobileObject)
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
       }

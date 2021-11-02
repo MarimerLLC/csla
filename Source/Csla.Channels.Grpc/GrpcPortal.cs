@@ -162,7 +162,7 @@ namespace Csla.Channels.Grpc
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -206,7 +206,7 @@ namespace Csla.Channels.Grpc
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -244,7 +244,7 @@ namespace Csla.Channels.Grpc
         object obj = GetCriteria(ApplicationContext, request.ObjectData);
 
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -289,7 +289,7 @@ namespace Csla.Channels.Grpc
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,

@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Threading.Tasks;
-using Csla.Reflection;
 
 namespace Csla.Server
 {
@@ -15,12 +14,21 @@ namespace Csla.Server
   /// Invoke data portal methods on child
   /// objects.
   /// </summary>
-  public class ChildDataPortal : Core.IUseApplicationContext
+  public class ChildDataPortal
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public ChildDataPortal(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Create a new business object.

@@ -84,12 +84,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null);
+          result = new DataPortalResult(ApplicationContext, obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -98,7 +98,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -138,12 +138,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var obj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null);
+          result = new DataPortalResult(ApplicationContext, obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -152,7 +152,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -186,12 +186,12 @@ namespace Csla.DataPortalClient
         if (response.ErrorData == null)
         {
           var newobj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
-          result = new DataPortalResult(newobj, null);
+          result = new DataPortalResult(ApplicationContext, newobj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -200,7 +200,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -240,12 +240,12 @@ namespace Csla.DataPortalClient
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
-          result = new DataPortalResult(null, null);
+          result = new DataPortalResult(ApplicationContext, null, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -254,7 +254,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;

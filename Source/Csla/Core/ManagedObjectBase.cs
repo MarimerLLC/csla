@@ -6,13 +6,10 @@
 // <summary>Base class for an object that is serializable</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Csla.Core.FieldManager;
-using Csla.Core.LoadManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
@@ -28,9 +25,10 @@ namespace Csla.Core
     INotifyPropertyChanged, IUseApplicationContext
   {
     /// <summary>
-    /// Gets or sets a reference to the current ApplicationContext.
+    /// Gets the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     #region Field Manager
 

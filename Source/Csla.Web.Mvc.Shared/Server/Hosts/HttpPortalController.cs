@@ -213,7 +213,7 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
@@ -241,7 +241,7 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
@@ -275,7 +275,7 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
       var portalResult = ApplicationContext.CreateInstance<DataPortalResponse> { ErrorData = errorData, ObjectData = result.ObjectData };

@@ -108,17 +108,19 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    /// <param name="applicationContext">Current ApplicationContext</param>
     /// <param name="ex">
     /// The Exception to encapusulate.
     /// </param>
-    public DataPortalErrorInfo(Exception ex)
+    public DataPortalErrorInfo(ApplicationContext applicationContext, Exception ex)
     {
+      ApplicationContext = applicationContext;
       this.ExceptionTypeName = ex.GetType().FullName;
       this.Message = ex.Message;
       this.StackTrace = ex.StackTrace;
       this.Source = ex.Source;
       if (ex.InnerException != null)
-        this.InnerError = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex.InnerException);
+        this.InnerError = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex.InnerException);
     }
 
     /// <summary>

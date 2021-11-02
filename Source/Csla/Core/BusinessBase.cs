@@ -57,6 +57,13 @@ namespace Csla.Core
     /// Creates an instance of the type.
     /// </summary>
     protected BusinessBase()
+    { }
+
+    /// <summary>
+    /// Method invoked after ApplicationContext
+    /// is available.
+    /// </summary>
+    protected override void OnApplicationContextSet()
     {
       InitializeIdentity();
       Initialize();

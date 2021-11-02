@@ -87,7 +87,7 @@ namespace Csla.Server
           factory, "InvokeError", new DataPortalEventArgs(context, objectType, null, operation, ex));
         throw;
       }
-      return new DataPortalResult(result);
+      return new DataPortalResult(ApplicationContext, result);
     }
 
     private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context, bool isSync)
@@ -117,7 +117,7 @@ namespace Csla.Server
         Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", new DataPortalEventArgs(context, objectType, e, operation, ex));
         throw;
       }
-      return new DataPortalResult(result);
+      return new DataPortalResult(ApplicationContext, result);
     }
 
     #endregion
@@ -147,7 +147,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-            context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
+            ApplicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
             null);
       }
@@ -176,7 +176,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
+          ApplicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
           null);
       }
@@ -207,7 +207,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          methodName + " " + Resources.FailedOnServer,
+          ApplicationContext, methodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, methodName, ex),
           obj);
 
@@ -237,7 +237,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
+          ApplicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
           null);
       }

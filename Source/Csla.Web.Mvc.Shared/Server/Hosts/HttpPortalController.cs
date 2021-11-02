@@ -171,7 +171,7 @@ namespace Csla.Server.Hosts
       get
       {
         if (_portal == null)
-          _portal = ApplicationContext.CreateInstance<HttpPortal>();
+          _portal = ApplicationContext.CreateInstanceDI<HttpPortal>();
         return _portal;
       }
       set { _portal = value; }
@@ -193,8 +193,8 @@ namespace Csla.Server.Hosts
 
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
-      var serializer = SerializationFormatterFactory.GetFormatter();
-      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var serializer = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+      var result = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       DataPortalErrorInfo errorData = null;
       if (UseTextSerialization)
       {
@@ -213,10 +213,10 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        errorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var portalResult = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       portalResult.ErrorData = errorData;
       portalResult.ObjectData = result.ObjectData;
       serializer.Serialize(responseStream, portalResult);
@@ -230,8 +230,8 @@ namespace Csla.Server.Hosts
       var requestArray = System.Convert.FromBase64String(requestString);
       var requestBuffer = new MemoryStream(requestArray);
 
-      var serializer = SerializationFormatterFactory.GetFormatter();
-      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var serializer = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+      var result = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       DataPortalErrorInfo errorData = null;
       try
       {
@@ -241,10 +241,10 @@ namespace Csla.Server.Hosts
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        errorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var portalResult = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       portalResult.ErrorData = errorData;
       portalResult.ObjectData = result.ObjectData;
 

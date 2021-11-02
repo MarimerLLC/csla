@@ -115,7 +115,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>
@@ -294,7 +294,7 @@ namespace Csla
     /// </summary>
     protected override C AddNewCore()
     {
-      var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
       var item = dp.CreateChild();
       Add(item);
       return item;
@@ -877,7 +877,7 @@ namespace Csla
     {
       using (LoadListMode)
       {
-        var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
         foreach (var child in DeletedList)
           dp.UpdateChild(child, parameters);
         DeletedList.Clear();
@@ -963,7 +963,7 @@ namespace Csla
 
       if (IsDirty)
       {
-        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
         if (isSync)
         {
           result = dp.Update((T)this);

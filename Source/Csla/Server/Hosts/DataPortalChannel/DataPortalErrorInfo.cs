@@ -116,11 +116,9 @@ namespace Csla.Server.Hosts.DataPortalChannel
       this.ExceptionTypeName = ex.GetType().FullName;
       this.Message = ex.Message;
       this.StackTrace = ex.StackTrace;
-#if !(ANDROID || IOS)
       this.Source = ex.Source;
-#endif
       if (ex.InnerException != null)
-        this.InnerError = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex.InnerException);
+        this.InnerError = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex.InnerException);
     }
 
     /// <summary>

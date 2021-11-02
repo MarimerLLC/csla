@@ -50,7 +50,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
-        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkNew();
@@ -103,7 +103,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
-        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
@@ -153,7 +153,7 @@ namespace Csla.Server
     {
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      var lb = ApplicationContext.CreateInstance<DataPortalTarget>(obj);
+      var lb = ApplicationContext.CreateInstanceDI<DataPortalTarget>(obj);
       if (lb.Instance is Core.ICommandObject)
         return await Execute(lb, context, isSync);
 
@@ -246,7 +246,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
-        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.DeleteAsync(criteria, isSync);

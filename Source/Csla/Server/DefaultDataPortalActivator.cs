@@ -19,7 +19,7 @@ namespace Csla.Server
 
     public object CreateInstance(Type requestedType)
     {
-      return ApplicationContext.CreateInstance(requestedType);
+      return ApplicationContext.CreateInstanceDI(requestedType);
     }
 
     public void InitializeInstance(object obj)

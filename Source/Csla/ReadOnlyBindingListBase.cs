@@ -41,9 +41,13 @@ namespace Csla
   [Serializable()]
   public abstract class ReadOnlyBindingListBase<T, C> : 
     Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection, 
-    ICloneable, Server.IDataPortalTarget
+    ICloneable, Server.IDataPortalTarget, Core.IUseApplicationContext
     where T : ReadOnlyBindingListBase<T, C>
   {
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -78,7 +82,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>

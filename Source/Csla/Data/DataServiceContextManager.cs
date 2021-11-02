@@ -60,7 +60,7 @@ namespace Csla.Data
 
     private DataServiceContextManager(Uri path)
     {
-      _context = (C)(ApplicationContext.CreateInstance(typeof(C), path));
+      _context = (C)(ApplicationContext.CreateInstanceDI(typeof(C), path));
     }
 
     /// <summary>

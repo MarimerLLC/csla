@@ -268,7 +268,7 @@ namespace Csla
     /// <returns>The added object</returns>
     protected override object AddNewCore()
     {
-      var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
       T item = dp.Create();
       Add(item);
       this.OnAddingNew(new AddingNewEventArgs(item));

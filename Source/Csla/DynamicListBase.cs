@@ -52,7 +52,7 @@ namespace Csla
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public DynamicListBase()
     {
@@ -299,39 +299,6 @@ namespace Csla
 
     #region  Insert, Remove, Clear
 
-#if NETFX_CORE || (ANDROID || IOS)
-    /// <summary>
-    /// Adds a new item to the list.
-    /// Uses ProcyModes.LocalOnly as default. 
-    /// Override in your own class to use other ProxyModes
-    /// </summary>
-    protected override void AddNewCore()
-    {
-      var portal = new Csla.DataPortal<T>();
-      portal.CreateCompleted += (o, e) =>
-      {
-        // call OnUnhandledAsyncException if failed
-        if (e.Error != null)
-        {
-          OnUnhandledAsyncException(new ErrorEventArgs(this, e.Error));
-        }
-        else
-        {
-          try
-          {
-            this.Add(e.Object);
-            OnAddedNew(e.Object);
-          }
-          catch (Exception ex)
-          {
-            OnUnhandledAsyncException(new ErrorEventArgs(this, ex));
-          }
-        }
-      };
-
-      portal.BeginCreate();
-    }
-#else
     /// <summary>
     /// Adds a new item to the list.
     /// </summary>
@@ -343,7 +310,6 @@ namespace Csla
       Add(item);
       return item;
     }
-#endif
 
     /// <summary>
     /// Gives the new object a parent reference to this

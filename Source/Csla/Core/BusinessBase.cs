@@ -55,7 +55,7 @@ namespace Csla.Core
   {
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected BusinessBase()
     {
@@ -1112,7 +1112,7 @@ namespace Csla.Core
       get
       {
         if (_businessRules == null)
-          _businessRules = new BusinessRules(this);
+          _businessRules = new BusinessRules(ApplicationContext, this);
         else if (_businessRules.Target == null)
           _businessRules.SetTarget(this);
         return _businessRules;

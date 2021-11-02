@@ -105,7 +105,7 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw new Csla.DataPortalException(
+        throw ApplicationContext.CreateInstance<Csla.DataPortalException>(
           "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, outval);
       }
       finally
@@ -201,7 +201,7 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw new Csla.DataPortalException(
+        throw ApplicationContext.CreateInstance<Csla.DataPortalException>(
           "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
       }
       //finally
@@ -344,7 +344,7 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        throw new Csla.DataPortalException(
+        throw ApplicationContext.CreateInstance<Csla.DataPortalException>(
           "ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
       }
       //finally

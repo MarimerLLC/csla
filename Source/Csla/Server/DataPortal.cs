@@ -138,7 +138,7 @@ namespace Csla.Server
 
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Create, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, criteria, DataPortalOperations.Create));
         DataPortalResult result;
         DataPortalMethodInfo method;
 
@@ -232,7 +232,7 @@ namespace Csla.Server
 
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, criteria, DataPortalOperations.Fetch));
         DataPortalResult result;
         DataPortalMethodInfo method;
 
@@ -330,7 +330,7 @@ namespace Csla.Server
           operation = DataPortalOperations.Execute;
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, obj, operation));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, obj, operation));
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
@@ -455,7 +455,7 @@ namespace Csla.Server
 
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Delete, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, criteria, DataPortalOperations.Delete));
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);

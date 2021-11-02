@@ -37,6 +37,18 @@ namespace Csla.Configuration
       return new CslaConfiguration();
     }
 
+    internal bool UseDataPortalServer { get; set; } = false;
+
+    /// <summary>
+    /// Register services necessary for the
+    /// server-side data portal to function.
+    /// </summary>
+    public CslaConfiguration WithDataPortalServer()
+    {
+      UseDataPortalServer = true;
+      return this;
+    }
+
     /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of

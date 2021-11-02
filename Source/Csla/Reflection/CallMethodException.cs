@@ -41,7 +41,7 @@ namespace Csla.Reflection
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message text describing the exception.</param>
     /// <param name="ex">Inner exception object.</param>

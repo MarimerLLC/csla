@@ -71,7 +71,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="dataPortalContext">
     /// Data portal context object.
@@ -94,7 +94,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="dataPortalContext">
     /// Data portal context object.

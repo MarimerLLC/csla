@@ -28,7 +28,7 @@ namespace Csla.Core
     public Exception Error { get; protected set; }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="originalSender">
     /// Reference to the original sender of the event.

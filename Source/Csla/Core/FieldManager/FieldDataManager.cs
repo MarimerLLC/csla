@@ -41,7 +41,7 @@ namespace Csla.Core.FieldManager
     private IFieldData[] _fieldData;
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public FieldDataManager() { }
 

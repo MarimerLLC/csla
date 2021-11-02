@@ -16,7 +16,7 @@ namespace Csla.Configuration
   public class ConfigurationErrorsException : Exception
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public ConfigurationErrorsException()
     {
@@ -24,7 +24,7 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     public ConfigurationErrorsException(string message)
@@ -34,7 +34,7 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     /// <param name="innerException">Inner exception object.</param>

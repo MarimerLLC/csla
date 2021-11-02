@@ -22,7 +22,7 @@ namespace Csla.Core
     INotifyPropertyChanging
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected BindableBase()
     { }

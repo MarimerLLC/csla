@@ -27,7 +27,7 @@ namespace Csla.Core
     private bool _valueIsMobile;
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public MobileDictionary()
     {

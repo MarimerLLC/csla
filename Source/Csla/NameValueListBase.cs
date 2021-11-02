@@ -24,8 +24,13 @@ namespace Csla
   [Serializable]
   public abstract class NameValueListBase<K, V> : 
     Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, 
-    ICloneable, Core.IBusinessObject, Server.IDataPortalTarget
+    ICloneable, Core.IBusinessObject, Server.IDataPortalTarget,
+    IUseApplicationContext
   {
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     #region Core Implementation
 
@@ -249,7 +254,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>

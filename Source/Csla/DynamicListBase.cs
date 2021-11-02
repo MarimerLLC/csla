@@ -184,7 +184,7 @@ namespace Csla
 
         Exception error = null;
         T result = default(T);
-        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
         try
         {
           result = await dp.UpdateAsync((T)savable);
@@ -305,7 +305,7 @@ namespace Csla
     /// <returns>The added object</returns>
     protected override T AddNewCore()
     {
-      var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
       T item = dp.Create();
       Add(item);
       return item;

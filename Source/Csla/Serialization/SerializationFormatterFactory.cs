@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Configuration;
-using Csla.Reflection;
 
 namespace Csla.Serialization
 {
@@ -21,24 +20,15 @@ namespace Csla.Serialization
     /// <summary>
     /// Creates a serialization formatter object.
     /// </summary>
-    public static ISerializationFormatter GetFormatter()
+    public static ISerializationFormatter GetFormatter(ApplicationContext applicationContext)
     {
-#if !NET5_0 && !NET6_0
-      if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
-        return new BinaryFormatterWrapper();
-#if !NETSTANDARD2_0
-      else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.NetDataContractSerializer)
-        return new NetDataContractSerializerWrapper();
-#endif
-      else
-#endif
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
       {
         string customFormatterTypeName = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-        return (ISerializationFormatter)Activator.CreateInstance(Type.GetType(customFormatterTypeName, true, true));
+        return (ISerializationFormatter)applicationContext.CreateInstanceDI(Type.GetType(customFormatterTypeName, true, true));
       }
       else
-        return new Csla.Serialization.Mobile.MobileFormatter();
+        return applicationContext.CreateInstanceDI<Mobile.MobileFormatter>();
     }
   }
 }

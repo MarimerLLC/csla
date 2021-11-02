@@ -42,7 +42,7 @@ namespace Csla.Reflection
     /// </remarks>
     public LateBoundObject(Type objectType)
     {
-      Instance = ApplicationContext.CreateInstance(objectType);
+      Instance = ApplicationContext.CreateInstanceDI(objectType);
     }
 
     /// <summary>
@@ -167,7 +167,7 @@ namespace Csla.Reflection
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }

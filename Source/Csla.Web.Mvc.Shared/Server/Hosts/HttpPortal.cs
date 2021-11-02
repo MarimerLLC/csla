@@ -48,13 +48,13 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Create(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var result = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(request.CriteriaData);
+        object criteria = GetCriteria(ApplicationContext, request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
@@ -62,21 +62,21 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
-        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
+          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -94,13 +94,13 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var result = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(request.CriteriaData);
+        object criteria = GetCriteria(ApplicationContext, request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
@@ -108,21 +108,21 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
-        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
+          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -140,30 +140,30 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Update(UpdateRequest request)
 #pragma warning restore 1998
     {
-      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var result = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
         // unpack object
-        object obj = GetCriteria(request.ObjectData);
+        object obj = GetCriteria(ApplicationContext, request.ObjectData);
 
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
 
-        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -181,13 +181,13 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Delete(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
+      var result = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(request.CriteriaData);
+        object criteria = GetCriteria(ApplicationContext, request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
@@ -195,21 +195,21 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter().Deserialize(request.Principal),
+          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter().Deserialize(request.ClientContext));
+          (ContextDictionary)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
-        result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
+          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+        result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -221,11 +221,11 @@ namespace Csla.Server.Hosts
 
     #region Criteria
 
-    private static object GetCriteria(byte[] criteriaData)
+    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
     {
       object criteria = null;
       if (criteriaData != null)
-        criteria = SerializationFormatterFactory.GetFormatter().Deserialize(criteriaData);
+        criteria = SerializationFormatterFactory.GetFormatter(applicationContext).Deserialize(criteriaData);
       return criteria;
     }
 

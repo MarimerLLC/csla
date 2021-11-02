@@ -31,7 +31,7 @@ namespace Csla.Core.FieldManager
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class FieldDataManager : MobileObject, IUndoableObject
+  public class FieldDataManager : MobileObject, IUndoableObject, IUseApplicationContext
   {
     private string _businessObjectType;
     [NonSerialized]
@@ -41,12 +41,18 @@ namespace Csla.Core.FieldManager
     private IFieldData[] _fieldData;
 
     /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     public FieldDataManager() { }
 
-    internal FieldDataManager(Type businessObjectType)
+    internal FieldDataManager(ApplicationContext applicationContext, Type businessObjectType)
     {
+      ApplicationContext = applicationContext;
       SetPropertyList(businessObjectType);
       _fieldData = new IFieldData[_propertyList.Count];
     }
@@ -520,7 +526,7 @@ namespace Csla.Core.FieldManager
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        var formatter = SerializationFormatterFactory.GetFormatter();
+        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
         var stateList = new MobileList<IFieldData>(state.ToList());
         formatter.Serialize(buffer, stateList);
         _stateStack.Push(buffer.ToArray());
@@ -538,7 +544,7 @@ namespace Csla.Core.FieldManager
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter();
+          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
           state = ((MobileList<IFieldData>)(formatter.Deserialize(buffer))).ToArray();
         }
 
@@ -625,7 +631,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Paramters for method</param>
     public void UpdateChildren(params object[] parameters)
     {
-      var dp = _parent.ApplicationContext.CreateInstance<DataPortal<IFieldData>>();
+      var dp = _parent.ApplicationContext.CreateInstanceDI<DataPortal<IFieldData>>();
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -685,7 +691,7 @@ namespace Csla.Core.FieldManager
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
-            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter().Serialize(data.Value), data.IsDirty);
+            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(data.Value), data.IsDirty);
           else if(!(data.Value is IMobileObject))
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
@@ -755,7 +761,7 @@ namespace Csla.Core.FieldManager
             typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
             !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
-            data.Value = SerializationFormatterFactory.GetFormatter().Deserialize((byte[])value.Value);
+            data.Value = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize((byte[])value.Value);
           }
           else data.Value = value.Value;
 

@@ -26,7 +26,7 @@ namespace Csla
     /// </summary>
     public LazySingleton()
     {
-      _delegate = () => (T)ApplicationContext.CreateInstance(typeof(T));
+      _delegate = () => (T)ApplicationContext.CreateInstanceDI(typeof(T));
     }
 
     /// <summary>

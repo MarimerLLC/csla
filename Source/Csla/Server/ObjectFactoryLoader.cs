@@ -56,7 +56,7 @@ namespace Csla.Server
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      return ApplicationContext.CreateInstance(ft);
+      return ApplicationContext.CreateInstanceDI(ft);
     }
   }
 }

@@ -24,13 +24,18 @@ namespace Csla.Core
   /// </summary>
   [Serializable()]
   public abstract class UndoableBase : Csla.Core.BindableBase,
-    Csla.Core.IUndoableObject
+    Csla.Core.IUndoableObject, IUseApplicationContext
   {
     // keep a stack of object state values.
     [NotUndoable()]
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
     [NotUndoable]
     private bool _bindingEdit;
+
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -152,7 +157,7 @@ namespace Csla.Core
             // this is a mobile object, store the serialized value
             using (MemoryStream buffer = new MemoryStream())
             {
-              var formatter = SerializationFormatterFactory.GetFormatter();
+              var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
               formatter.Serialize(buffer, value);
               state.Add(fieldName, buffer.ToArray());
             }
@@ -170,7 +175,7 @@ namespace Csla.Core
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        var formatter = SerializationFormatterFactory.GetFormatter();
+        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -222,7 +227,7 @@ namespace Csla.Core
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter();
+          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
           state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
         }
 
@@ -266,7 +271,7 @@ namespace Csla.Core
               using (MemoryStream buffer = new MemoryStream((byte[])state[fieldName]))
               {
                 buffer.Position = 0;
-                var formatter = SerializationFormatterFactory.GetFormatter();
+                var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
                 var obj = formatter.Deserialize(buffer);
                 h.DynamicMemberSet(this, obj);
               }

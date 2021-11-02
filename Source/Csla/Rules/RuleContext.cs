@@ -216,8 +216,8 @@ namespace Csla.Rules
     internal RuleContext(Action<IRuleContext> completeHandler)
     {
       _completeHandler = completeHandler;
-      _outputPropertyValues = (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateGenericInstance(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
-      _dirtyProperties = (LazySingleton<List<IPropertyInfo>>)ApplicationContext.CreateGenericInstance(typeof(LazySingleton<List<IPropertyInfo>>));
+      _outputPropertyValues = (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateGenericInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
+      _dirtyProperties = (LazySingleton<List<IPropertyInfo>>)ApplicationContext.CreateGenericInstanceDI(typeof(LazySingleton<List<IPropertyInfo>>));
     }
 
     internal RuleContext(Action<IRuleContext> completeHandler, RuleContextModes executeContext) : this(completeHandler)

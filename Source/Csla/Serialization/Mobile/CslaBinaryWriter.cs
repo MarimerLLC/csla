@@ -13,12 +13,15 @@ namespace Csla.Serialization.Mobile
   public class CslaBinaryWriter : ICslaWriter
   {
     private readonly Dictionary<string, int> keywordsDictionary;
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Create new instance of CslaBinaryWriter class
     /// </summary>
-    public CslaBinaryWriter()
+    /// <param name="applicationContext"></param>
+    public CslaBinaryWriter(ApplicationContext applicationContext)
     {
+      ApplicationContext = applicationContext;
       keywordsDictionary = new Dictionary<string, int>();
     }
 
@@ -101,7 +104,7 @@ namespace Csla.Serialization.Mobile
       {
         using (MemoryStream buffer = new MemoryStream())
         {
-          var formatter = SerializationFormatterFactory.GetFormatter();
+          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
           formatter.Serialize(buffer, target);
           var data = buffer.ToArray();
           Write(CslaKnownTypes.IMobileObject, writer);

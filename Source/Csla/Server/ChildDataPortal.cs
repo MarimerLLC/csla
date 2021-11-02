@@ -82,7 +82,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
       try
       {
-        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
@@ -105,7 +105,7 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw ApplicationContext.CreateInstance<Csla.DataPortalException>(
+        throw ApplicationContext.CreateInstanceDI<Csla.DataPortalException>(
           "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, outval);
       }
       finally
@@ -178,7 +178,7 @@ namespace Csla.Server
       try
       {
         // create an instance of the business object
-        obj = ApplicationContext.CreateInstance<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
         obj.Child_OnDataPortalInvoke(eventArgs);
@@ -201,7 +201,7 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw ApplicationContext.CreateInstance<Csla.DataPortalException>(
+        throw ApplicationContext.CreateInstanceDI<Csla.DataPortalException>(
           "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
       }
       //finally
@@ -321,7 +321,7 @@ namespace Csla.Server
 
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      DataPortalTarget lb = ApplicationContext.CreateInstance<DataPortalTarget>(obj);
+      DataPortalTarget lb = ApplicationContext.CreateInstanceDI<DataPortalTarget>(obj);
       //ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
 
       try
@@ -344,7 +344,7 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        throw ApplicationContext.CreateInstance<Csla.DataPortalException>(
+        throw ApplicationContext.CreateInstanceDI<Csla.DataPortalException>(
           "ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
       }
       //finally

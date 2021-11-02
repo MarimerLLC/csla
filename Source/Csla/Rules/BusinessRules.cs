@@ -25,15 +25,32 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules :
-    MobileObject, ISerializationNotification, IBusinessRules, IUseApplicationContext
+    MobileObject, ISerializationNotification, IBusinessRules
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    public BusinessRules()
+    { }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// <param name="target">Target business object.</param>
+    public BusinessRules(ApplicationContext applicationContext, IHostRules target)
+    {
+      ApplicationContext = applicationContext;
+      SetTarget(target);
+    }
+
     [NonSerialized]
     private object SyncRoot = new object();
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
@@ -153,21 +170,6 @@ namespace Csla.Rules
     internal object Target
     {
       get { return _target; }
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    public BusinessRules()
-    { }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="target">Target business object.</param>
-    internal BusinessRules(IHostRules target)
-    {
-      SetTarget(target);
     }
 
     /// <summary>

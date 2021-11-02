@@ -710,41 +710,12 @@ namespace Csla
     }
 
     /// <summary>
-    /// Uses reflection to create an object using its 
-    /// default constructor.
-    /// </summary>
-    /// <typeparam name="T">Type of object to create.</typeparam>
-    public T CreateInstance<T>()
-    {
-      return (T)CreateInstance(typeof(T));
-    }
-
-    /// <summary>
-    /// Uses reflection to create an object using its 
-    /// default constructor.
-    /// </summary>
-    /// <param name="objectType">Type of object to create.</param>
-    public object CreateInstance(Type objectType)
-    {
-      object result;
-      if (CurrentServiceProvider != null)
-        result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType);
-      else
-        result = Activator.CreateInstance(objectType);
-      if (result is IUseApplicationContext tmp)
-      {
-        tmp.ApplicationContext = this;
-      }
-      return result;
-    }
-
-    /// <summary>
     /// Creates an object using dependency injection, falling back
     /// to Activator if no service provider is available.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
-    internal T CreateInstance<T>(params object[] parameters)
+    public T CreateInstance<T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
     }
@@ -755,7 +726,7 @@ namespace Csla
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
-    internal object CreateInstance(Type objectType, params object[] parameters)
+    public object CreateInstance(Type objectType, params object[] parameters)
     {
       object result;
       if (CurrentServiceProvider != null)

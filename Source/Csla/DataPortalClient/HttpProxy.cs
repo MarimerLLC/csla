@@ -7,11 +7,40 @@
 //-----------------------------------------------------------------------
 using Csla.DataPortalClient;
 using Csla.Properties;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+
+namespace Csla.Configuration
+{
+  /// <summary>
+  /// Implement extension methods for base .NET configuration
+  /// </summary>
+  public static class HttpProxyExtensions
+  {
+    /// <summary>
+    /// Configure data portal client to use HttpProxy.
+    /// </summary>
+    /// <param name="builder">CslaBuilder object</param>
+    /// <param name="options">Data portal proxy options</param>
+    public static ICslaBuilder UseHttpProxy(this ICslaBuilder builder, Action<Csla.Channels.Http.HttpProxyOptions> options)
+    {
+      var proxyOptions = new Csla.Channels.Http.HttpProxyOptions();
+      options?.Invoke(proxyOptions);
+      builder.Services.AddTransient(typeof(IDataPortalProxy),
+        sp =>
+        {
+          var applicationContext = sp.GetRequiredService<ApplicationContext>();
+          var client = sp.GetRequiredService<HttpClient>();
+          return new Csla.Channels.Http.HttpProxy(applicationContext, client, proxyOptions);
+        });
+      return builder;
+    }
+  }
+}
 
 namespace Csla.Channels.Http
 {

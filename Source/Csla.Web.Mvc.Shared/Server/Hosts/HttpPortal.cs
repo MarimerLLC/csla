@@ -27,14 +27,17 @@ namespace Csla.Server.Hosts
   public class HttpPortal
   {
     private IDataPortalServer dataPortalServer;
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="dataPortal">Data portal server service</param>
-    public HttpPortal(IDataPortalServer dataPortal)
+    public HttpPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal)
     {
       dataPortalServer = dataPortal;
+      ApplicationContext = applicationContext;
     }
 
     /// <summary>
@@ -45,7 +48,7 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Create(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -68,12 +71,12 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -91,7 +94,7 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -114,12 +117,12 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -137,7 +140,7 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Update(UpdateRequest request)
 #pragma warning restore 1998
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -154,13 +157,13 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
 
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -178,7 +181,7 @@ namespace Csla.Server.Hosts
     public async Task<DataPortalResponse> Delete(CriteriaRequest request)
 #pragma warning restore 1998
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -201,12 +204,12 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally

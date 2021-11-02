@@ -24,14 +24,17 @@ namespace Csla.Channels.RabbitMq
   public class RabbitMqPortal : IDisposable
   {
     private IDataPortalServer dataPortalServer;
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="dataPortal">Data portal server service</param>
-    public RabbitMqPortal(IDataPortalServer dataPortal)
+    public RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal)
     {
       dataPortalServer = dataPortal;
+      ApplicationContext = applicationContext;
     }
 
     /// <summary>
@@ -121,7 +124,7 @@ namespace Csla.Channels.RabbitMq
 
     private async void InvokePortal(BasicDeliverEventArgs ea, byte[] requestData)
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         var request = SerializationFormatterFactory.GetFormatter().Deserialize(requestData);
@@ -129,7 +132,7 @@ namespace Csla.Channels.RabbitMq
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
       }
 
       try
@@ -141,7 +144,8 @@ namespace Csla.Channels.RabbitMq
       {
         try
         {
-          result = new DataPortalResponse { ErrorData = new DataPortalErrorInfo(ex) };
+          result = ApplicationContext.CreateInstance<DataPortalResponse>();
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
           var response = SerializationFormatterFactory.GetFormatter().Serialize(result);
           SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
         }
@@ -197,7 +201,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     public async Task<DataPortalResponse> Create(CriteriaRequest request)
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -220,12 +224,12 @@ namespace Csla.Channels.RabbitMq
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -241,7 +245,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -264,12 +268,12 @@ namespace Csla.Channels.RabbitMq
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -285,7 +289,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     public async Task<DataPortalResponse> Update(UpdateRequest request)
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -302,13 +306,13 @@ namespace Csla.Channels.RabbitMq
         var dpr = await dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
 
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally
@@ -324,7 +328,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     public async Task<DataPortalResponse> Delete(CriteriaRequest request)
     {
-      var result = new DataPortalResponse();
+      var result = ApplicationContext.CreateInstance<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
@@ -347,12 +351,12 @@ namespace Csla.Channels.RabbitMq
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = new DataPortalErrorInfo(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = new DataPortalErrorInfo(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ex);
         throw;
       }
       finally

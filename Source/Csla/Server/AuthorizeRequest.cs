@@ -16,12 +16,12 @@ namespace Csla.Server
   /// Object containing information about the
   /// client request to the data portal.
   /// </summary>
-  public class AuthorizeRequest : Core.IUseApplicationContext
+  public class AuthorizeRequest
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the type of business object affected by
@@ -40,8 +40,9 @@ namespace Csla.Server
     /// </summary>
     public DataPortalOperations Operation { get; private set; }
 
-    internal AuthorizeRequest(Type objectType, object requestObject, DataPortalOperations operation)
+    internal AuthorizeRequest(ApplicationContext applicationContext, Type objectType, object requestObject, DataPortalOperations operation)
     {
+      ApplicationContext = applicationContext;
       this.ObjectType = objectType;
       this.RequestObject = requestObject;
       this.Operation = operation;

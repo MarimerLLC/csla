@@ -70,7 +70,7 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (!(criteria is IMobileObject))
+        if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
         }
@@ -122,7 +122,7 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (!(criteria is IMobileObject))
+        if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
         }
@@ -225,7 +225,7 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (!(criteria is IMobileObject))
+        if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
         }
@@ -315,28 +315,26 @@ namespace Csla.DataPortalClient
 
     private CriteriaRequest GetBaseCriteriaRequest()
     {
-      return new CriteriaRequest
-      {
-        CriteriaData = null,
-        ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext),
-        Principal = SerializationFormatterFactory.GetFormatter()
-          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User),
-        ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name,
-        ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name
-      };
+      var result = ApplicationContext.CreateInstance<CriteriaRequest>();
+      result.CriteriaData = null;
+      result.ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext);
+      result.Principal = SerializationFormatterFactory.GetFormatter()
+          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User);
+      result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+      return result;
     }
 
     private UpdateRequest GetBaseUpdateCriteriaRequest()
     {
-      return new UpdateRequest
-      {
-        ObjectData = null,
-        ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext),
-        Principal = SerializationFormatterFactory.GetFormatter()
-          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User),
-        ClientCulture = Thread.CurrentThread.CurrentCulture.Name,
-        ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name
-      };
+      var result = ApplicationContext.CreateInstance<UpdateRequest>();
+      result.ObjectData = null;
+      result.ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext);
+      result.Principal = SerializationFormatterFactory.GetFormatter()
+          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User);
+      result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
+      result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
+      return result;
     }
 
     #endregion Criteria

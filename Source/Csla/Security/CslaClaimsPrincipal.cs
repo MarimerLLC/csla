@@ -20,14 +20,14 @@ namespace Csla.Security
   public class CslaClaimsPrincipal : ClaimsPrincipal, ICslaPrincipal
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public CslaClaimsPrincipal()
       : base(new ClaimsIdentity())
     { }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="principal">Source principal from which to copy identity</param>
     public CslaClaimsPrincipal(ClaimsPrincipal principal)
@@ -49,7 +49,7 @@ namespace Csla.Security
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="identity">Identity object for the user.</param>
     public CslaClaimsPrincipal(IIdentity identity)
@@ -57,7 +57,7 @@ namespace Csla.Security
     { }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="identities">List of claims identity objects for the user.</param>
     public CslaClaimsPrincipal(IEnumerable<ClaimsIdentity> identities)

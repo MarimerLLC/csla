@@ -33,7 +33,7 @@ namespace Csla
     where T : ReadOnlyListBase<T, C>
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected ReadOnlyListBase()
     {

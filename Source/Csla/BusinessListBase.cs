@@ -41,7 +41,7 @@ namespace Csla
     where C : Core.IEditableBusinessObject
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected BusinessListBase()
     {

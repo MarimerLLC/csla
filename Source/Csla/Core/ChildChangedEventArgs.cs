@@ -44,7 +44,7 @@ namespace Csla.Core
     public ListChangedEventArgs ListChangedArgs { get; private set; }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="childObject">
     /// Reference to the child object that was changed.
@@ -62,7 +62,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="childObject">
     /// Reference to the child object that was changed.
@@ -77,7 +77,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="childObject">
     /// Reference to the child object that was changed.

@@ -36,14 +36,14 @@ namespace Csla.Server
     public Exception Error { get; private set; }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public DataPortalResult()
     {
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
@@ -53,7 +53,7 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>

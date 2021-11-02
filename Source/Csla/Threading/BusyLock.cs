@@ -56,7 +56,7 @@ namespace Csla.Threading
     private TimeSpan _timeout;
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="target">Target object.</param>
     /// <param name="timeout">Timeout value.</param>

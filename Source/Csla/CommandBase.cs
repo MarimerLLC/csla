@@ -50,7 +50,7 @@ namespace Csla
     where T : CommandBase<T>
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public CommandBase()
     {

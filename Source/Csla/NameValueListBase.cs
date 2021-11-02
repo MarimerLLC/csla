@@ -129,7 +129,7 @@ namespace Csla
     #endregion
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected NameValueListBase()
     {
@@ -161,7 +161,7 @@ namespace Csla
 
 #if (ANDROID || IOS) || NETFX_CORE
       /// <summary>
-      /// Creates an instance of the object.
+      /// Creates an instance of the type.
       /// </summary>
       public NameValuePair()
       { }
@@ -186,7 +186,7 @@ namespace Csla
       }
 
       /// <summary>
-      /// Creates an instance of the object.
+      /// Creates an instance of the type.
       /// </summary>
       /// <param name="key">The key.</param>
       /// <param name="value">The value.</param>

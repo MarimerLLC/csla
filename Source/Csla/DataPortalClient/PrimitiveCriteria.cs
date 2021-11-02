@@ -17,7 +17,7 @@ namespace Csla.DataPortalClient
   public class PrimitiveCriteria : IMobileObject
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public PrimitiveCriteria() { }
 

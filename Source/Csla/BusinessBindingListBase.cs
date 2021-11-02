@@ -34,7 +34,7 @@ namespace Csla
   {
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected BusinessBindingListBase()
     {

@@ -33,7 +33,7 @@ namespace Csla.Core
     private bool _bindingEdit;
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected UndoableBase()
     {

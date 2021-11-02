@@ -33,17 +33,24 @@ namespace Csla
     where T : ReadOnlyListBase<T, C>
   {
     /// <summary>
-    /// Gets or sets a reference to the current ApplicationContext.
+    /// Gets the current ApplicationContext
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        Initialize();
+      }
+    }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     protected ReadOnlyListBase()
-    {
-      Initialize();
-    }
+    { }
 
     #region Initialize
 

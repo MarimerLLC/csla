@@ -62,7 +62,7 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -71,12 +71,12 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
         throw;
       }
       finally
@@ -108,7 +108,7 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -117,12 +117,12 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
         throw;
       }
       finally
@@ -148,7 +148,7 @@ namespace Csla.Server.Hosts
         object obj = GetCriteria(ApplicationContext, request.ObjectData);
 
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -157,13 +157,13 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, dpr.Error);
 
         result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
         throw;
       }
       finally
@@ -195,7 +195,7 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
-          (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
+          ApplicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
@@ -204,12 +204,12 @@ namespace Csla.Server.Hosts
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
-          result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
+          result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, dpr.Error);
         result.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
-        result.ErrorData = ApplicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result.ErrorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
         throw;
       }
       finally

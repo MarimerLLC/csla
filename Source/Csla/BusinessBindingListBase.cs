@@ -38,15 +38,20 @@ namespace Csla
     /// </summary>
     protected BusinessBindingListBase()
     {
-      InitializeIdentity();
-      Initialize();
-      this.AllowNew = true;
     }
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        InitializeIdentity();
+        Initialize();
+        this.AllowNew = true;
+      }
+    }
 
 
     #region Initialize
@@ -427,7 +432,7 @@ namespace Csla
       get 
       { 
         if (_deletedList == null)
-          _deletedList = (MobileList<C>)ApplicationContext.CreateInstanceDI(typeof(MobileList<C>));
+          _deletedList = (MobileList<C>)ApplicationContext.CreateGenericInstanceDI(typeof(MobileList<>), typeof(C));
         return _deletedList; 
       }
     }

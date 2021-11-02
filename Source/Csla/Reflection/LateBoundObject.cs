@@ -18,10 +18,8 @@ namespace Csla.Reflection
   /// </summary>
   public class LateBoundObject : Core.IUseApplicationContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
     /// Object instance managed by LateBoundObject.

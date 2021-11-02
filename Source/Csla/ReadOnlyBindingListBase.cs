@@ -44,18 +44,22 @@ namespace Csla
     ICloneable, Server.IDataPortalTarget, Core.IUseApplicationContext
     where T : ReadOnlyBindingListBase<T, C>
   {
-    /// <summary>
-    /// Gets or sets a reference to the current ApplicationContext.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        Initialize();
+      }
+    }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     protected ReadOnlyBindingListBase()
-    {
-      Initialize();
-    }
+    { }
 
 #region Initialize
 

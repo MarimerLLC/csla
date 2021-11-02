@@ -17,14 +17,13 @@ using Csla.Reflection;
 
 namespace Csla.Server
 {
-  internal class DataPortalTarget : LateBoundObject, Core.IUseApplicationContext
+  internal class DataPortalTarget : LateBoundObject
   {
 #if NET5_0_OR_GREATER
     private static readonly ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>> _methodNameList =
       new ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>>();
 #else
-    private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList =
-      new ConcurrentDictionary<Type, DataPortalMethodNames>();
+    private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList = new();
 #endif
 
     private readonly IDataPortalTarget _target;
@@ -265,7 +264,7 @@ namespace Csla.Server
 
   internal class DataPortalMethodNames
   {
-    public static readonly DataPortalMethodNames Default = new DataPortalMethodNames();
+    public static readonly DataPortalMethodNames Default = new();
     public string OnDataPortalInvoke { get; set; } = "DataPortal_OnDataPortalInvoke";
     public string OnDataPortalInvokeComplete { get; set; } = "DataPortal_OnDataPortalInvokeComplete";
     public string OnDataPortalException { get; set; } = "DataPortal_OnDataPortalException";

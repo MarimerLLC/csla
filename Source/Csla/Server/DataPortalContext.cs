@@ -93,8 +93,8 @@ namespace Csla.Server
       internal set { _factoryInfo = value; }
     }
 
-    ApplicationContext IUseApplicationContext.ApplicationContext { get; set; }
-    private ApplicationContext ApplicationContext { get => ((IUseApplicationContext)this).ApplicationContext; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
     /// Creates a new DataPortalContext object.
@@ -104,6 +104,7 @@ namespace Csla.Server
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal)
     {
+      ApplicationContext = applicationContext;
       _principal = principal;
       _remotePortal = isRemotePortal;
       _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
@@ -114,13 +115,15 @@ namespace Csla.Server
     /// <summary>
     /// Creates a new DataPortalContext object.
     /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance.</param>
     /// <param name="principal">The current Principal object.</param>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     /// <param name="clientContext">Client context.</param>
     /// <param name="clientCulture">Client culture.</param>
     /// <param name="clientUICulture">Client UI culture.</param>
-    public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
+    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
     {
+      ApplicationContext = applicationContext;
       _principal = principal;
       _clientContext = clientContext;
       _clientCulture = clientCulture;

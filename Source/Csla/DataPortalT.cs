@@ -39,12 +39,9 @@ namespace Csla
     private ApplicationContext ApplicationContext { get; set; }
     private DataPortalClient.IDataPortalProxy DataPortalProxy { get; set; }
 
-    private class DataPortalAsyncRequest : Core.IUseApplicationContext
+    private class DataPortalAsyncRequest
     {
-      /// <summary>
-      /// Gets or sets the current ApplicationContext object.
-      /// </summary>
-      public ApplicationContext ApplicationContext { get; set; }
+      private ApplicationContext ApplicationContext { get; set; }
 
       public object Argument { get; set; }
       public System.Security.Principal.IPrincipal Principal { get; set; }
@@ -54,8 +51,9 @@ namespace Csla
       public CultureInfo CurrentCulture;
       public CultureInfo CurrentUICulture;
 
-      public DataPortalAsyncRequest(object argument, object userState)
+      public DataPortalAsyncRequest(ApplicationContext applicationContext, object argument, object userState)
       {
+        ApplicationContext = applicationContext;
         this.Argument = argument;
         this.Principal = ApplicationContext.User;
         this.ClientContext = ApplicationContext.ClientContext;
@@ -1063,7 +1061,7 @@ namespace Csla
     /// </summary>
     public T CreateChild()
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Create(typeof(T)));
     }
 
@@ -1076,7 +1074,7 @@ namespace Csla
     /// </param>
     public T CreateChild(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Create(typeof(T), parameters));
     }
 
@@ -1086,7 +1084,7 @@ namespace Csla
     /// </summary>
     public async Task<T> CreateChildAsync()
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.CreateAsync<T>();
     }
 
@@ -1099,7 +1097,7 @@ namespace Csla
     /// </param>
     public async Task<T> CreateChildAsync(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.CreateAsync<T>(parameters);
     }
 
@@ -1109,7 +1107,7 @@ namespace Csla
     /// </summary>
     public T FetchChild()
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Fetch(typeof(T)));
     }
 
@@ -1122,7 +1120,7 @@ namespace Csla
     /// </param>
     public T FetchChild(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Fetch(typeof(T), parameters));
     }
 
@@ -1132,7 +1130,7 @@ namespace Csla
     /// </summary>
     public async Task<T> FetchChildAsync()
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.FetchAsync<T>();
     }
 
@@ -1145,7 +1143,7 @@ namespace Csla
     /// </param>
     public async Task<T> FetchChildAsync(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.FetchAsync<T>(parameters);
     }
 
@@ -1158,7 +1156,7 @@ namespace Csla
     /// </param>
     public void UpdateChild(T child)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       portal.Update(child);
     }
 
@@ -1174,7 +1172,7 @@ namespace Csla
     /// </param>
     public void UpdateChild(object child, params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       portal.Update(child, parameters);
     }
 
@@ -1190,7 +1188,7 @@ namespace Csla
     /// </param>
     public void UpdateChild(T child, params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       portal.Update(child, parameters);
     }
 
@@ -1203,7 +1201,7 @@ namespace Csla
     /// </param>
     public async Task UpdateChildAsync(T child)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       await portal.UpdateAsync(child).ConfigureAwait(false);
     }
 
@@ -1219,7 +1217,7 @@ namespace Csla
     /// </param>
     public async Task UpdateChildAsync(T child, params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstanceDI<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
   }

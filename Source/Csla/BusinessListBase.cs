@@ -44,16 +44,23 @@ namespace Csla
     /// Creates an instance of the type.
     /// </summary>
     protected BusinessListBase()
-    {
-      InitializeIdentity();
-      Initialize();
-      AllowNew = true;
-    }
+    { }
 
     /// <summary>
-    /// Gets or sets the current ApplicationContext object.
+    /// Gets the current ApplicationContext
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        InitializeIdentity();
+        Initialize();
+        AllowNew = true;
+      }
+    }
 
     #region Initialize
 

@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.IO;
 using System.ComponentModel;
 using Csla.Properties;
@@ -28,14 +27,33 @@ namespace Csla.Core
   {
     // keep a stack of object state values.
     [NotUndoable()]
-    private Stack<byte[]> _stateStack = new Stack<byte[]>();
+    private readonly Stack<byte[]> _stateStack = new();
     [NotUndoable]
     private bool _bindingEdit;
+    [NotUndoable]
+    private ApplicationContext _applicationContext;
+
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext 
+    { 
+      get => _applicationContext;
+      set
+      {
+        _applicationContext = value;
+        OnApplicationContextSet();
+      }
+    }
+
+    /// <summary>
+    /// Method invoked after ApplicationContext
+    /// is available.
+    /// </summary>
+    protected virtual void OnApplicationContextSet()
+    { }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -155,12 +173,10 @@ namespace Csla.Core
           else if (value is IMobileObject)
           {
             // this is a mobile object, store the serialized value
-            using (MemoryStream buffer = new MemoryStream())
-            {
-              var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
-              formatter.Serialize(buffer, value);
-              state.Add(fieldName, buffer.ToArray());
-            }
+            using MemoryStream buffer = new MemoryStream();
+            var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+            formatter.Serialize(buffer, value);
+            state.Add(fieldName, buffer.ToArray());
           }
           else
           {
@@ -268,13 +284,11 @@ namespace Csla.Core
             else if (value is IMobileObject && state[fieldName] != null)
             {
               // this is a mobile object, deserialize the value
-              using (MemoryStream buffer = new MemoryStream((byte[])state[fieldName]))
-              {
-                buffer.Position = 0;
-                var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
-                var obj = formatter.Deserialize(buffer);
-                h.DynamicMemberSet(this, obj);
-              }
+              using MemoryStream buffer = new MemoryStream((byte[])state[fieldName]);
+              buffer.Position = 0;
+              var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+              var obj = formatter.Deserialize(buffer);
+              h.DynamicMemberSet(this, obj);
             }
             else
             {
@@ -365,27 +379,10 @@ namespace Csla.Core
       return typeName + "." + memberName;
     }
 
-
-    #region Helper Functions
-
-    private static bool NotUndoableField(FieldInfo field)
-    {
-      return Attribute.IsDefined(field, typeof(NotUndoableAttribute));
-    }
-
-    private static string GetFieldName(FieldInfo field)
-    {
-      return field.DeclaringType.FullName + "!" + field.Name;
-    }
-
-    #endregion
-
-    #region  Reset child edit level
-
     internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel, bool bindingEdit)
     {
       int targetLevel = parentEditLevel;
-      if (bindingEdit && targetLevel > 0 && !(child is FieldManager.FieldDataManager))
+      if (bindingEdit && targetLevel > 0 && child is not FieldManager.FieldDataManager)
         targetLevel--;
       // if item's edit level is too high,
       // reduce it to match list
@@ -396,10 +393,6 @@ namespace Csla.Core
       while (child.EditLevel < targetLevel)
         child.CopyState(targetLevel, false);
     }
-
-    #endregion
-
-    #region MobileObject overrides
 
     /// <summary>
     /// Override this method to insert your field values
@@ -450,7 +443,5 @@ namespace Csla.Core
       }
       base.OnSetState(info, mode);
     }
-
-    #endregion
   }
 }

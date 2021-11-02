@@ -194,7 +194,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Create " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Create", error),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Create, IsSync = isSync });
@@ -203,7 +203,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Create " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Create", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Create, IsSync = isSync });
@@ -286,7 +286,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Fetch " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Fetch", error),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
@@ -295,7 +295,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Fetch " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Fetch", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
@@ -417,7 +417,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Update " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", error),
             obj);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
@@ -426,7 +426,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Update " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
             obj);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
@@ -517,7 +517,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Delete " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", error),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Delete, IsSync = isSync });
@@ -526,7 +526,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Delete " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Delete, IsSync = isSync });
@@ -712,14 +712,14 @@ namespace Csla.Server
 #endregion
 
     internal static DataPortalException NewDataPortalException(
-      string message, Exception innerException, object businessObject)
+      ApplicationContext applicationContext, string message, Exception innerException, object businessObject)
     {
       if (!ApplicationContext.DataPortalReturnObjectOnException)
         businessObject = null;
 
       throw new DataPortalException(
         message,
-        innerException, new DataPortalResult(businessObject));
+        innerException, new DataPortalResult(applicationContext, businessObject));
     }
 
     /// <summary>

@@ -6,6 +6,7 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,5 +18,9 @@ namespace Csla.Configuration
   /// </summary>
   public interface ICslaConfiguration
   {
+    /// <summary>
+    /// Gets the current service collection.
+    /// </summary>
+    IServiceCollection Services { get; }
   }
 }

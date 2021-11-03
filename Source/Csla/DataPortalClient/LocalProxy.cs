@@ -9,41 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Configuration;
-using Csla.DataPortalClient;
 using Csla.Server;
-using Csla.Threading;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Csla.Configuration
-{
-  /// <summary>
-  /// Implement extension methods for base .NET configuration
-  /// </summary>
-  public static class LocalProxyExtensions
-  {
-    /// <summary>
-    /// Configure data portal client to use LocalProxy.
-    /// </summary>
-    /// <param name="builder">CslaBuilder object</param>
-    public static ICslaBuilder UseLocalProxy(this ICslaBuilder builder)
-    {
-      return AddLocalProxy(builder, null);
-    }
-
-    /// <summary>
-    /// Configure data portal client to use LocalProxy.
-    /// </summary>
-    /// <param name="builder">CslaBuilder object</param>
-    /// <param name="options">Data portal proxy options</param>
-    public static ICslaBuilder AddLocalProxy(this ICslaBuilder builder, Action<Csla.Channels.Local.LocalProxyOptions> options)
-    {
-      var proxyOptions = new Csla.Channels.Local.LocalProxyOptions();
-      options?.Invoke(proxyOptions);
-      builder.Services.AddTransient(typeof(IDataPortalProxy), typeof(Channels.Local.LocalProxy));
-      return builder;
-    }
-  }
-}
 
 namespace Csla.Channels.Local
 {

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
@@ -20,7 +21,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaDataPortalConfiguration DataPortal(this ICslaConfiguration config)
     {
-      return new CslaDataPortalConfiguration();
+      return new CslaDataPortalConfiguration(config);
     }
   }
 
@@ -30,6 +31,25 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaDataPortalConfiguration
   {
+    /// <summary>
+    /// Gets or sets the current configuration object.
+    /// </summary>
+    public ICslaConfiguration CslaConfiguration { get; set; }
+
+    /// <summary>
+    /// Gets the current service collection.
+    /// </summary>
+    public IServiceCollection Services { get => CslaConfiguration.Services; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="config">Current configuration object</param>
+    public CslaDataPortalConfiguration(ICslaConfiguration config)
+    {
+      CslaConfiguration = config;
+    }
+
     /// <summary>
     /// Sets the type of the IDataPortalActivator provider.
     /// </summary>

@@ -38,7 +38,7 @@ namespace Csla.Configuration
       var builder = new CslaBuilder(services);
 
       // Configuration
-      var options = CslaConfiguration.Configure();
+      var options = new CslaConfiguration(services);
       config?.Invoke(options);
 
       // ApplicationContext

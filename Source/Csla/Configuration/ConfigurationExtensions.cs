@@ -32,28 +32,28 @@ namespace Csla.Configuration
     /// Add CSLA .NET services for use by the application.
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
-    /// <param name="config">Implement to configure CSLA .NET</param>
-    public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> config)
+    /// <param name="options">Options for configuring CSLA .NET</param>
+    public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> options)
     {
       var builder = new CslaBuilder(services);
 
       // Configuration
-      var options = new CslaConfiguration(services);
-      config?.Invoke(options);
+      var cslaOptions = new CslaConfiguration(services);
+      options?.Invoke(cslaOptions);
 
       // ApplicationContext
       services.TryAddScoped<ApplicationContext>();
       services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
 
       // Data portal services
-      if (options.UseDataPortalServer)
+      if (cslaOptions.DataPortal().UseDataPortalServer)
       {
         services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
-        services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
         services.TryAddTransient<Server.DataPortalSelector>();
         services.TryAddTransient<Server.SimpleDataPortal>();
         services.TryAddTransient<Server.FactoryDataPortal>();
         services.TryAddTransient<Server.DataPortalBroker>();
+        services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
       }
 
       // Data portal API

@@ -67,6 +67,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
+    [field: NotUndoable]
     public ApplicationContext ApplicationContext { get; set; }
 
 

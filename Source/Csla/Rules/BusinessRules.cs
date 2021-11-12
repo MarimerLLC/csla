@@ -21,7 +21,7 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules :
-    MobileObject, ISerializationNotification, IBusinessRules
+    MobileObject, ISerializationNotification, IBusinessRules, IUseApplicationContext
   {
     /// <summary>
     /// Creates an instance of the type.
@@ -41,11 +41,9 @@ namespace Csla.Rules
     }
 
     [NonSerialized]
-    private object SyncRoot = new object();
+    private object SyncRoot = new();
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
     private ApplicationContext ApplicationContext { get; set; }
 
     // list of broken rules for this business object.
@@ -231,7 +229,7 @@ namespace Csla.Rules
       else
         oldRule = mgr.Rules.FirstOrDefault(c => c.Element == null && c.Action == rule.Action);
       if (oldRule != null)
-        throw new ArgumentException("rule");
+        throw new ArgumentException(nameof(rule));
     }
 
     /// <summary>
@@ -587,7 +585,7 @@ namespace Csla.Rules
     private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
-        throw new ArgumentNullException("property");
+        throw new ArgumentNullException(nameof(property));
 
       if (_suppressRuleChecking)
         return new List<string>();
@@ -886,7 +884,7 @@ namespace Csla.Rules
       return new RunRulesResult(affectedProperties, dirtyProperties);
     }
 
-    private async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
+    private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
     {
       try
       {
@@ -1077,10 +1075,10 @@ namespace Csla.Rules
     private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
     {
       // is this a single editable object 
-      if (obj is Csla.Core.BusinessBase)
+      if (obj is Csla.Core.BusinessBase bbase)
       {
         var nodeKey = counter++;
-        var bo = (Csla.Core.BusinessBase)obj;
+        var bo = bbase;
         long myChildBrokenRuleCount = bo.BrokenRulesCollection.Count;
         var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj };
         list.Add(node);

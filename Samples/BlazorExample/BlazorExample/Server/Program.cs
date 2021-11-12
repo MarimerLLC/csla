@@ -24,7 +24,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCsla(options => options
-  .WithDataPortalServer()).UseLocalProxy();
+  .DataPortal()
+    .AddServerSideDataPortal()
+    .UseLocalProxy());
 
 //for EF Db
 //builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.EF.PersonEFDal));

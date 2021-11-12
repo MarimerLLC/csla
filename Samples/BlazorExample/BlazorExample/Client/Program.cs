@@ -1,4 +1,5 @@
 using BlazorExample.Client;
+using BlazorExample.Shared;
 using Csla.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -15,7 +16,10 @@ builder.Services.AddOptions();
 builder.Services.AddSingleton<AuthenticationStateProvider, CurrentUserAuthenticationStateProvider>();
 builder.Services.AddSingleton<CurrentUserService>();
 
-builder.Services.AddCsla().UseHttpProxy(options => options.DataPortalUrl = "/api/DataPortal");
+builder.Services.AddCsla(o=>o
+  .WithBlazorWebAssembly()
+  .DataPortal()
+    .UseHttpProxy(options => options.DataPortalUrl = "/api/DataPortal"));
 
 builder.UseCsla();
 

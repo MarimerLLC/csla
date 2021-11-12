@@ -26,10 +26,8 @@ namespace Csla.Data
     private static object _lock = new object();
     private C _context;
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the DataServiceContext object for the 

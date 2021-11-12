@@ -7,7 +7,6 @@
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.DataPortalClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -45,16 +44,16 @@ namespace Csla.Configuration
       services.TryAddScoped<ApplicationContext>();
       services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
 
-      // Data portal services
-      if (cslaOptions.DataPortal().UseDataPortalServer)
-      {
-        services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
-        services.TryAddTransient<Server.DataPortalSelector>();
-        services.TryAddTransient<Server.SimpleDataPortal>();
-        services.TryAddTransient<Server.FactoryDataPortal>();
-        services.TryAddTransient<Server.DataPortalBroker>();
-        services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
-      }
+      //// Data portal services
+      //if (cslaOptions.DataPortal().UseDataPortalServer)
+      //{
+      //  services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
+      //  services.TryAddTransient<Server.DataPortalSelector>();
+      //  services.TryAddTransient<Server.SimpleDataPortal>();
+      //  services.TryAddTransient<Server.FactoryDataPortal>();
+      //  services.TryAddTransient<Server.DataPortalBroker>();
+      //  services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
+      //}
 
       // Data portal API
       services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
@@ -72,6 +71,23 @@ namespace Csla.Configuration
     {
       config.Bind("csla", new CslaConfigurationOptions());
       return config;
+    }
+
+    /// <summary>
+    /// Add services required to host the server-side
+    /// data portal.
+    /// </summary>
+    /// <param name="builder"></param>
+    public static CslaDataPortalConfiguration AddServerSideDataPortal(this CslaDataPortalConfiguration builder)
+    {
+      var services = builder.Services;
+      services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
+      services.TryAddTransient<Server.DataPortalSelector>();
+      services.TryAddTransient<Server.SimpleDataPortal>();
+      services.TryAddTransient<Server.FactoryDataPortal>();
+      services.TryAddTransient<Server.DataPortalBroker>();
+      services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
+      return builder;
     }
   }
 }

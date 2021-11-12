@@ -29,10 +29,8 @@ namespace Csla.Data
     private C _client;
     private string _name = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the client proxy object for the

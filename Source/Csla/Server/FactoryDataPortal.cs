@@ -19,10 +19,8 @@ namespace Csla.Server
   /// </summary>
   public class FactoryDataPortal : IDataPortalServer, Core.IUseApplicationContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     #region Factory Loader
 

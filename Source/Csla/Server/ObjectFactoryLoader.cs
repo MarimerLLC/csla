@@ -17,10 +17,8 @@ namespace Csla.Server
   /// </summary>
   public class ObjectFactoryLoader : IObjectFactoryLoader, Core.IUseApplicationContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the type of the object factory.

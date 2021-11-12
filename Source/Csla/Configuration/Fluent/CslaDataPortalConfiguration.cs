@@ -50,17 +50,17 @@ namespace Csla.Configuration
       CslaConfiguration = config;
     }
 
-    internal bool UseDataPortalServer { get; set; } = false;
+    //internal bool UseDataPortalServer { get; set; } = false;
 
-    /// <summary>
-    /// Register services necessary for the
-    /// server-side data portal to function.
-    /// </summary>
-    public CslaDataPortalConfiguration EnableDataPortalServer()
-    {
-      UseDataPortalServer = true;
-      return this;
-    }
+    ///// <summary>
+    ///// Register services necessary for the
+    ///// server-side data portal to function.
+    ///// </summary>
+    //public CslaDataPortalConfiguration EnableDataPortalServer()
+    //{
+    //  UseDataPortalServer = true;
+    //  return this;
+    //}
 
     /// <summary>
     /// Sets the type of the IDataPortalActivator provider.

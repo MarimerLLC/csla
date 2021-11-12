@@ -27,10 +27,8 @@ namespace Csla.Server
       ApplicationContext = applicationContext;
     }
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Create a new business object.

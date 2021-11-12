@@ -212,7 +212,7 @@ namespace Csla.Rules
 
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _completeHandler = completeHandler;
       _outputPropertyValues = 
         (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
@@ -229,6 +229,7 @@ namespace Csla.Rules
 
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
     {
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       ApplicationContext = applicationContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;

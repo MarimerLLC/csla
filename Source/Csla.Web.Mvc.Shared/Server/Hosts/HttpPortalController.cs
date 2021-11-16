@@ -269,7 +269,7 @@ namespace Csla.Server.Hosts
         {
           Position = 0
         };
-        var request = SerializationFormatterFactory.GetFormatter().Deserialize(buffer.ToArray());
+        var request = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(buffer.ToArray());
         result = await CallPortal(operation, request);
       }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -278,8 +278,10 @@ namespace Csla.Server.Hosts
         errorData = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = ApplicationContext.CreateInstance<DataPortalResponse> { ErrorData = errorData, ObjectData = result.ObjectData };
-      var bytes = SerializationFormatterFactory.GetFormatter().Serialize(portalResult);
+      var portalResult = ApplicationContext.CreateInstance<DataPortalResponse>();
+      portalResult.ErrorData = errorData;
+      portalResult.ObjectData = result.ObjectData;
+      var bytes = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(portalResult);
       return bytes;
     }
 #endif

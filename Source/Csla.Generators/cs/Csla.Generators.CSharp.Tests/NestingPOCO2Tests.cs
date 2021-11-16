@@ -11,6 +11,8 @@ using System.Text;
 using Csla.Serialization.Mobile;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Generators.CSharp.TestObjects;
+using Microsoft.Extensions.DependencyInjection;
+using Csla.Configuration;
 
 namespace Csla.Generators.CSharp.Tests
 {
@@ -69,9 +71,14 @@ namespace Csla.Generators.CSharp.Tests
 
     private NestingPOCO2 SerializeThenDeserialiseNestingPOCO2(NestingPOCO2 valueToSerialize)
     {
+      IServiceCollection services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      var ApplicationContext = provider.GetService<ApplicationContext>();
+
       System.IO.MemoryStream serializationStream;
       NestingPOCO2 deserializedValue;
-      MobileFormatter formatter = new MobileFormatter();
+      MobileFormatter formatter = new MobileFormatter(ApplicationContext);
 
       // Act
       using (serializationStream = new System.IO.MemoryStream())

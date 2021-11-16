@@ -48,12 +48,9 @@ namespace Csla.Rules
   /// Context information provided to a business rule
   /// when it is invoked.
   /// </summary>
-  public class RuleContext : IRuleContext, Core.IUseApplicationContext
+  public class RuleContext : IRuleContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the rule object.
@@ -213,20 +210,27 @@ namespace Csla.Rules
       get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
     }
 
-    internal RuleContext(Action<IRuleContext> completeHandler)
+    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler)
     {
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _completeHandler = completeHandler;
-      _outputPropertyValues = new LazySingleton<Dictionary<IPropertyInfo, object>>();
-      _dirtyProperties = new LazySingleton<List<IPropertyInfo>>();
+      _outputPropertyValues = 
+        (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
+      _dirtyProperties = 
+        (LazySingleton<List<IPropertyInfo>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<List<IPropertyInfo>>));
     }
 
-    internal RuleContext(Action<IRuleContext> completeHandler, RuleContextModes executeContext) : this(completeHandler)
+    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, RuleContextModes executeContext) 
+      : this(applicationContext, completeHandler)
     {
+      ApplicationContext = applicationContext;
       ExecuteContext = executeContext;
     }
 
-    internal RuleContext(Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
+    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
     {
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      ApplicationContext = applicationContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
       _dirtyProperties = dirtyProperties;
@@ -236,12 +240,13 @@ namespace Csla.Rules
     /// <summary>
     /// Creates a RuleContext instance for testing.
     /// </summary>
+    /// <param name="applicationContext">Current ApplicationContext</param>
     /// <param name="completeHandler">Callback for async rule.</param>
     /// <param name="rule">Reference to the rule object.</param>
     /// <param name="target">Target business object.</param>
     /// <param name="inputPropertyValues">Input property values used by the rule.</param>
-    public RuleContext(Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues)
-      : this(completeHandler)
+    public RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues)
+      : this(applicationContext, completeHandler)
     {
       Rule = rule;
       if (rule.PrimaryProperty != null)
@@ -264,7 +269,7 @@ namespace Csla.Rules
     /// </remarks>
     public IRuleContext GetChainedContext(IBusinessRuleBase rule)
     {
-      var result = new RuleContext(_completeHandler, _outputPropertyValues, _dirtyProperties, ExecuteContext);
+      var result = new RuleContext(ApplicationContext, _completeHandler, _outputPropertyValues, _dirtyProperties, ExecuteContext);
       result.Rule = rule;
       result.OriginPropertyName = OriginPropertyName;
       result.InputPropertyValues = InputPropertyValues;

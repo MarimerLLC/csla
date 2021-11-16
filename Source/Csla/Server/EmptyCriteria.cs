@@ -17,7 +17,10 @@ namespace Csla.Server
   [Serializable]
   public sealed class EmptyCriteria : Csla.Core.MobileObject
   {
-    private EmptyCriteria() { }
+    /// <summary>
+    /// Creates a new instance of the type.
+    /// </summary>
+    public EmptyCriteria() { }
 
     /// <summary>
     /// Gets an instance of EmptyCriteria

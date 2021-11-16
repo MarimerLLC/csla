@@ -6,13 +6,10 @@
 // <summary>Base class for an object that is serializable</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Csla.Core.FieldManager;
-using Csla.Core.LoadManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
@@ -25,8 +22,14 @@ namespace Csla.Core
   /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
-    INotifyPropertyChanged
+    INotifyPropertyChanged, IUseApplicationContext
   {
+    /// <summary>
+    /// Gets the current ApplicationContext.
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+
     #region Field Manager
 
     private FieldDataManager _fieldManager;
@@ -39,7 +42,7 @@ namespace Csla.Core
       get
       {
         if (_fieldManager == null)
-          _fieldManager = new FieldDataManager(GetType());
+          _fieldManager = new FieldDataManager(ApplicationContext, GetType());
         return _fieldManager;
       }
     } 

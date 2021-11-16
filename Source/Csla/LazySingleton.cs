@@ -15,10 +15,8 @@ namespace Csla
     private readonly Func<T> _delegate;
     private bool _isValueCreated;
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
@@ -26,7 +24,7 @@ namespace Csla
     /// </summary>
     public LazySingleton()
     {
-      _delegate = () => (T)ApplicationContext.CreateInstance(typeof(T));
+      _delegate = () => (T)ApplicationContext.CreateInstanceDI(typeof(T));
     }
 
     /// <summary>

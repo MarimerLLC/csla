@@ -183,7 +183,7 @@ namespace Csla
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
       {
-        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
         if (isSync)
         {
           result = dp.Update((T)this);

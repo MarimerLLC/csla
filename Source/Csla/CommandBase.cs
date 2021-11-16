@@ -50,7 +50,7 @@ namespace Csla
     where T : CommandBase<T>
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public CommandBase()
     {
@@ -207,7 +207,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>

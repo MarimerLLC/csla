@@ -39,5 +39,6 @@ else
   protected override async Task OnParametersSetAsync()
   {
      await vm.RefreshAsync(() => personListPortal.FetchAsync());
+     var temp = vm.Exception;
   }
 }

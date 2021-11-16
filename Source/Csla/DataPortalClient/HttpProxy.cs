@@ -5,20 +5,15 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using Csla.Core;
+using Csla.DataPortalClient;
 using Csla.Properties;
-using Csla.Serialization;
-using Csla.Serialization.Mobile;
-using Csla.Server;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace Csla.DataPortalClient
+namespace Csla.Channels.Http
 {
   /// <summary>
   /// Implements a data portal proxy to relay data portal
@@ -27,44 +22,17 @@ namespace Csla.DataPortalClient
   public class HttpProxy : DataPortalProxy
   {
     /// <summary>
-    /// Creates an instance of the object, initializing
-    /// it to use the DefaultUrl
-    /// values.
+    /// Creates an instance of the type, initializing
+    /// it to use the supplied HttpClient object and options.
     /// </summary>
-    public HttpProxy()
-    {
-    }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
-    /// it to use the supplied URL.
-    /// </summary>
-    /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public HttpProxy(string dataPortalUrl)
-    {
-      DataPortalUrl = dataPortalUrl;
-    }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
-    /// it to use the supplied HttpClient object.
-    /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="httpClient">HttpClient instance</param>
-    public HttpProxy(HttpClient httpClient)
+    /// <param name="options">Options for HttpProxy</param>
+    public HttpProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options)
+      : base(applicationContext)
     {
       _httpClient = httpClient;
-    }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
-    /// it to use the supplied HttpClient object and URL.
-    /// </summary>
-    /// <param name="httpClient">HttpClient instance</param>
-    /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public HttpProxy(HttpClient httpClient, string dataPortalUrl)
-    {
-      _httpClient = httpClient;
-      DataPortalUrl = dataPortalUrl;
+      DataPortalUrl = options.DataPortalUrl;
     }
 
     private static HttpClient _httpClient;

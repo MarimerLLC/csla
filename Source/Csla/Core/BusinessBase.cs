@@ -50,25 +50,25 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification,
-    IDataErrorInfo,
-    Core.IUseApplicationContext
+    IDataErrorInfo
   {
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected BusinessBase()
+    { }
+
+    /// <summary>
+    /// Method invoked after ApplicationContext
+    /// is available.
+    /// </summary>
+    protected override void OnApplicationContextSet()
     {
       InitializeIdentity();
       Initialize();
       InitializeBusinessRules();
     }
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
-
 
     #region Initialize
 
@@ -1039,7 +1039,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
 #endregion
@@ -1112,7 +1112,7 @@ namespace Csla.Core
       get
       {
         if (_businessRules == null)
-          _businessRules = new BusinessRules(this);
+          _businessRules = new BusinessRules(ApplicationContext, this);
         else if (_businessRules.Target == null)
           _businessRules.SetTarget(this);
         return _businessRules;
@@ -3304,7 +3304,7 @@ namespace Csla.Core
       {
         if (_fieldManager == null)
         {
-          _fieldManager = new FieldDataManager(this.GetType());
+          _fieldManager = new FieldDataManager(ApplicationContext, this.GetType());
           UndoableBase.ResetChildEditLevel(_fieldManager, this.EditLevel, this.BindingEdit);
         }
         return _fieldManager;

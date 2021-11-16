@@ -37,11 +37,8 @@ namespace Csla.Reflection
       new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
 #endif
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
-
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Find a method based on data portal criteria

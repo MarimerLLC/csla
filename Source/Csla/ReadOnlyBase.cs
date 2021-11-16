@@ -85,15 +85,23 @@ namespace Csla
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        Initialize();
+        InitializeBusinessRules();
+      }
+    }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected ReadOnlyBase()
     {
-      Initialize();
-      InitializeBusinessRules();
     }
 
     #region Initialize
@@ -164,7 +172,7 @@ namespace Csla
       get
       {
         if (_businessRules == null)
-          _businessRules = new BusinessRules(this);
+          _businessRules = ApplicationContext.CreateInstanceDI<BusinessRules>(ApplicationContext, this);
         else if (_businessRules.Target == null)
           _businessRules.SetTarget(this);
         return _businessRules;
@@ -380,7 +388,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>
@@ -1469,7 +1477,7 @@ namespace Csla
       {
         if (_fieldManager == null)
         {
-          _fieldManager = new FieldDataManager(this.GetType());
+          _fieldManager = new FieldDataManager(ApplicationContext, this.GetType());
         }
         return _fieldManager;
       }

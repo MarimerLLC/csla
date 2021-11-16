@@ -1,5 +1,4 @@
 using Csla.Configuration;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 string BlazorClientPolicy = "AllowAllOrigins";
@@ -19,10 +18,15 @@ builder.Services.AddCors(options =>
       .AllowAnyMethod();
     });
 });
-builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddCsla();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCsla(options => options
+  .DataPortal()
+    .AddServerSideDataPortal()
+    .UseLocalProxy());
 
 //for EF Db
 //builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.EF.PersonEFDal));
@@ -58,7 +62,7 @@ else
   app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();

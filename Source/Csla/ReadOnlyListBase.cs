@@ -29,16 +29,28 @@ namespace Csla
 #endif
     Csla.Core.IReadOnlyCollection,
     ICloneable, Server.IDataPortalTarget,
-    IReadOnlyListBase<C>
+    IReadOnlyListBase<C>, Core.IUseApplicationContext
     where T : ReadOnlyListBase<T, C>
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Gets the current ApplicationContext
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        Initialize();
+      }
+    }
+
+    /// <summary>
+    /// Creates an instance of the type.
     /// </summary>
     protected ReadOnlyListBase()
-    {
-      Initialize();
-    }
+    { }
 
     #region Initialize
 
@@ -74,7 +86,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>

@@ -47,7 +47,8 @@ namespace Csla.Serialization.Mobile
     /// Get an instance of the writer that is used to write data to serialization stream
     /// </summary>
     /// <returns>Instance of the writer that is used to write data to serialization stream</returns>
-    public  static ICslaWriter GetCslaWriter()
+    /// <param name="applicationContext"></param>
+    public static ICslaWriter GetCslaWriter(ApplicationContext applicationContext)
     {
       if (_writerType == null)
       {
@@ -61,14 +62,15 @@ namespace Csla.Serialization.Mobile
           _writerType = Type.GetType(writerType);
         }
       }
-      return (ICslaWriter)Activator.CreateInstance(_writerType);
+      return (ICslaWriter)applicationContext.CreateInstanceDI(_writerType);
     }
 
     /// <summary>
     /// Get an instance of the reader that is used to read data to serialization stream
     /// </summary>
     /// <returns>Instance of the reader that is used to read data to serialization stream</returns>
-    public  static ICslaReader GetCslaReader()
+    /// <param name="applicationContext"></param>
+    public static ICslaReader GetCslaReader(ApplicationContext applicationContext)
     {
       if (_readerType == null)
       {
@@ -82,7 +84,7 @@ namespace Csla.Serialization.Mobile
           _readerType = Type.GetType(readerType);
         }
       }
-      return (ICslaReader)Activator.CreateInstance(_readerType);
+      return (ICslaReader)applicationContext.CreateInstanceDI(_readerType);
     }
   }
 }

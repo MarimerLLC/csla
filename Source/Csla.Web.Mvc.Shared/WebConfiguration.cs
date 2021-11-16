@@ -22,19 +22,19 @@ namespace Csla.Configuration
     /// <param name="app">ApplicationBuilder object</param>
     public static IApplicationBuilder UseCsla(this IApplicationBuilder app)
     {
-      return UseCsla(app, null);
+      return app;
     }
 
+#if NET6_0_OR_GREATER
     /// <summary>
     /// Configures the application to use CSLA .NET
     /// </summary>
     /// <param name="app">ApplicationBuilder object</param>
-    /// <param name="config">Implement to configure CSLA .NET</param>
-    public static IApplicationBuilder UseCsla(this IApplicationBuilder app, Action<CslaConfiguration> config)
+    public static WebApplicationBuilder UseCsla(this WebApplicationBuilder app)
     {
-      config?.Invoke(CslaConfiguration.Configure());
       return app;
     }
+#endif
   }
 }
 #endif

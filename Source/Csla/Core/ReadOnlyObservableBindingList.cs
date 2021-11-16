@@ -29,7 +29,7 @@ namespace Csla.Core
     Core.IReadOnlyBindingList
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// 
     public ReadOnlyObservableBindingList()

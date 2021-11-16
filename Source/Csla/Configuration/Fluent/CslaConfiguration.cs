@@ -6,35 +6,28 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Csla.Configuration
 {
-  /// <summary>
-  /// Extension method for CslaDataPortalConfiguration
-  /// </summary>
-  public static class CslaConfigurationExtension
-  {
-    /// <summary>
-    /// Extension method for CslaDataPortalConfiguration
-    /// </summary>
-    public static CslaConfiguration Configure(this ICslaConfiguration config)
-    {
-      return new CslaConfiguration();
-    }
-  }
-
   /// <summary>
   /// Use this type to configure the settings for CSLA .NET.
   /// </summary>
   public class CslaConfiguration : ICslaConfiguration
   {
     /// <summary>
-    /// Gets an instance of the configuration root type.
+    /// Gets or sets the current service collection.
     /// </summary>
-    public static CslaConfiguration Configure()
+    public IServiceCollection Services { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    public CslaConfiguration(IServiceCollection services)
     {
-      return new CslaConfiguration();
+      Services = services;
     }
 
     /// <summary>

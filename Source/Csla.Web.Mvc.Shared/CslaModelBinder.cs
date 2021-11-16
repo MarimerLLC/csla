@@ -196,13 +196,13 @@ namespace Csla.Web.Mvc
     internal Task<object> CreateInstance(Type type)
     {
       var tcs = new TaskCompletionSource<object>();
-      tcs.SetResult(_applicationContext.CreateInstance(type));
+      tcs.SetResult(_applicationContext.CreateInstanceDI(type));
       return tcs.Task;
     }
 
     internal object CreateChild(IList parent, Type type, Dictionary<string, string> values)
     {
-      return _applicationContext.CreateInstance(type);
+      return _applicationContext.CreateInstanceDI(type);
     }
 
     private readonly Func<Type, Task<object>> _instanceCreator;

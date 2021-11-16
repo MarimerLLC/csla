@@ -36,7 +36,7 @@ namespace Csla.Core
     public int ExpectedEditLevel;
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
     /// <param name="typeName">The type name of the object that caused this issue</param>
@@ -53,7 +53,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
     /// <param name="ex">Inner exception.</param>

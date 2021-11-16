@@ -40,10 +40,8 @@ namespace Csla.Data
     private string _connectionString;
     private string _label;
 
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets the ObjectContextManager object for the 
@@ -141,7 +139,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      _context = (C)(ApplicationContext.CreateInstance(typeof(C), connectionString));
+      _context = (C)(ApplicationContext.CreateInstanceDI(typeof(C), connectionString));
       _context.Connection.Open();
     }
 

@@ -21,7 +21,8 @@ namespace BlazorExample.Server.Controllers
 
     public override Task PostAsync([FromQuery] string operation)
     {
-      return base.PostAsync(operation);
+      var result = base.PostAsync(operation);
+      return result;
     }
   }
 }

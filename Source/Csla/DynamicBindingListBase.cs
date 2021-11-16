@@ -48,19 +48,26 @@ namespace Csla
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
     {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public DynamicBindingListBase()
-    {
-      InitializeIdentity();
-      Initialize();
-      AllowNew = true;
-    }
+    { }
 
     /// <summary>
-    /// Gets or sets the current ApplicationContext object.
+    /// Gets the current ApplicationContext
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        InitializeIdentity();
+        Initialize();
+        AllowNew = true;
+      }
+    }
 
     #region Initialize
 
@@ -268,7 +275,7 @@ namespace Csla
     /// <returns>The added object</returns>
     protected override object AddNewCore()
     {
-      var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
       T item = dp.Create();
       Add(item);
       this.OnAddingNew(new AddingNewEventArgs(item));

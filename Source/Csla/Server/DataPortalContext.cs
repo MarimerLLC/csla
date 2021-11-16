@@ -17,7 +17,7 @@ namespace Csla.Server
   /// and server DataPortal objects. 
   /// </summary>
   [Serializable]
-  public class DataPortalContext : Csla.Serialization.Mobile.IMobileObject
+  public class DataPortalContext : Csla.Serialization.Mobile.IMobileObject, IUseApplicationContext
   {
     private IPrincipal _principal;
     private bool _remotePortal;
@@ -93,6 +93,9 @@ namespace Csla.Server
       internal set { _factoryInfo = value; }
     }
 
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+
     /// <summary>
     /// Creates a new DataPortalContext object.
     /// </summary>
@@ -101,6 +104,7 @@ namespace Csla.Server
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal)
     {
+      ApplicationContext = applicationContext;
       _principal = principal;
       _remotePortal = isRemotePortal;
       _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
@@ -111,13 +115,15 @@ namespace Csla.Server
     /// <summary>
     /// Creates a new DataPortalContext object.
     /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance.</param>
     /// <param name="principal">The current Principal object.</param>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     /// <param name="clientContext">Client context.</param>
     /// <param name="clientCulture">Client culture.</param>
     /// <param name="clientUICulture">Client UI culture.</param>
-    public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
+    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
     {
+      ApplicationContext = applicationContext;
       _principal = principal;
       _clientContext = clientContext;
       _clientCulture = clientCulture;
@@ -133,8 +139,8 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.GetState(Serialization.Mobile.SerializationInfo info)
     {
-      info.AddValue("principal", Csla.Serialization.SerializationFormatterFactory.GetFormatter().Serialize(_principal));
-      info.AddValue("clientContext", Csla.Serialization.SerializationFormatterFactory.GetFormatter().Serialize(_clientContext));
+      info.AddValue("principal", Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(_principal));
+      info.AddValue("clientContext", Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(_clientContext));
       info.AddValue("clientCulture", _clientCulture);
       info.AddValue("clientUICulture", _clientUICulture);
       info.AddValue("isRemotePortal", _remotePortal);
@@ -146,8 +152,8 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.SetState(Serialization.Mobile.SerializationInfo info)
     {
-      _principal = (IPrincipal)Csla.Serialization.SerializationFormatterFactory.GetFormatter().Deserialize(info.GetValue<byte[]>("principal"));
-      _clientContext = (ContextDictionary)Csla.Serialization.SerializationFormatterFactory.GetFormatter().Deserialize(info.GetValue<byte[]>("clientContext"));
+      _principal = (IPrincipal)Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(info.GetValue<byte[]>("principal"));
+      _clientContext = (ContextDictionary)Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(info.GetValue<byte[]>("clientContext"));
       _clientCulture = info.GetValue<string>("clientCulture");
       _clientUICulture = info.GetValue<string>("clientUICulture");
       _remotePortal = info.GetValue<bool>("isRemotePortal");

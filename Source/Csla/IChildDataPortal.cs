@@ -40,7 +40,8 @@ namespace Csla
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
-    Task UpdateChildAsync(T obj);
+    /// <param name="parameters">Additional, optional parameters to pass</param>
+    Task UpdateChildAsync(T obj, params object[] parameters);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default

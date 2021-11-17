@@ -1,4 +1,5 @@
 ﻿using Csla.Configuration;
+using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -27,7 +28,7 @@ namespace Csla.Blazor.Test
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddCsla();
+      services.AddCsla(options => options.DataPortal().AddServerSideDataPortal().UseLocalProxy());
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security
@@ -36,7 +37,7 @@ namespace Csla.Blazor.Test
       context.User = genericPrincipal;
 
       // Set up the workaround for accessing DI from tests
-      DataPortalFactory.SetServiceProvider(serviceProvider);
+      RootServiceProvider.SetServiceProvider(serviceProvider);
 
     }
 

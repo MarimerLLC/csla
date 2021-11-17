@@ -8,17 +8,6 @@ namespace Csla.TestHelpers
   public static class DataPortalFactory
   {
 
-    private static IServiceProvider _serviceProvider;
-
-    /// <summary>
-    /// Store the root service provider for use in object creation during tests
-    /// </summary>
-    /// <param name="serviceProvider">The root service provider that has been created</param>
-    public static void SetServiceProvider(IServiceProvider serviceProvider)
-    {
-      _serviceProvider = serviceProvider;
-    }
-
     /// <summary>
     /// Create an instance of a typed data portal using the DI container
     /// </summary>
@@ -26,11 +15,9 @@ namespace Csla.TestHelpers
     /// <returns>An instance of IDataPortal<typeparamref name="T"/> for use in data access during tests</returns>
     public static IDataPortal<T> CreateDataPortal<T>()
     {
-      ApplicationContext context;
       IDataPortal<T> dataPortal;
 
-      context = _serviceProvider.GetRequiredService<ApplicationContext>();
-      dataPortal = context.CreateInstance<DataPortal<T>>();
+      dataPortal = RootServiceProvider.GetRequiredService<IDataPortal<T>>();
       return dataPortal;
     }
 
@@ -41,11 +28,9 @@ namespace Csla.TestHelpers
     /// <returns>An instance of IChildDataPortal<typeparamref name="T"/> for use in data access during tests</returns>
     public static IChildDataPortal<T> CreateChildDataPortal<T>()
     {
-      ApplicationContext context;
       IChildDataPortal<T> dataPortal;
 
-      context = _serviceProvider.GetRequiredService<ApplicationContext>();
-      dataPortal = context.CreateInstance<DataPortal<T>>();
+      dataPortal = RootServiceProvider.GetRequiredService<IChildDataPortal<T>>();
       return dataPortal;
     }
 

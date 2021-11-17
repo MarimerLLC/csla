@@ -28,7 +28,7 @@ namespace Csla.Test
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddCsla();
+      services.AddCsla(options => options.DataPortal().AddServerSideDataPortal().UseLocalProxy());
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security
@@ -37,7 +37,7 @@ namespace Csla.Test
       context.User = genericPrincipal;
 
       // Set up the workaround for accessing DI from tests
-      DataPortalFactory.SetServiceProvider(serviceProvider);
+      RootServiceProvider.SetServiceProvider(serviceProvider);
 
     }
 

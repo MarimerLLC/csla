@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System.Linq;
 using System.Security.Claims;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,11 +27,13 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void CloneClaimsPrincipal()
     {
+      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+
       Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileFormatter";
       var i = new ClaimsIdentity();
       i.AddClaim(new Claim("name", "Franklin"));
       var p = new ClaimsPrincipal(i);
-      var p1 = (ClaimsPrincipal)Core.ObjectCloner.Clone(p);
+      var p1 = (ClaimsPrincipal)Core.ObjectCloner.GetInstance(applicationContext).Clone(p);
       Assert.AreNotSame(p, p1, "Should be different instances");
       Assert.AreEqual(p.Claims.Count(), p1.Claims.Count(), "Should have same number of claims");
       var c = p1.Claims.Where(r => r.Type == "name").First();

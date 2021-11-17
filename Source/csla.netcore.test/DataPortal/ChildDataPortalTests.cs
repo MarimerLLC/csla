@@ -81,6 +81,7 @@ namespace Csla.Test.DataPortal
     {
       var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
       var child = await dp.FetchChildAsync();
+      // An overload of UpdateChildAsync that accepts parameters? Is that a thing any more?
       //await dp.UpdateChildAsync(child, "update", 123);
       Assert.AreEqual("update/123", child.Name);
     }
@@ -91,6 +92,7 @@ namespace Csla.Test.DataPortal
       var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
       var child = await dp.FetchChildAsync();
       child.MarkForDeletion();
+      // An overload of UpdateChildAsync that accepts parameters? Is that a thing any more?
       //await dp.UpdateChildAsync(child, "deleteme", 123);
       Assert.AreEqual("deleteme", child.Name);
     }
@@ -101,6 +103,7 @@ namespace Csla.Test.DataPortal
       var dp = DataPortalFactory.CreateChildDataPortal<TestChildDeleteFallback>();
       var child = await dp.FetchChildAsync();
       child.MarkForDeletion();
+      // An overload of UpdateChildAsync that accepts parameters? Is that a thing any more?
       //await dp.UpdateChildAsync(child, "update", 123);
       Assert.AreEqual("deleted", child.Name);
     }

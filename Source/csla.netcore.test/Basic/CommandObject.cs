@@ -27,6 +27,11 @@ namespace Csla.Test.Basic
       }
     }
 
+    [Create]
+    protected void DataPortal_Create()
+    {
+    }
+
     [Execute]
 	protected void DataPortal_Execute()
     {

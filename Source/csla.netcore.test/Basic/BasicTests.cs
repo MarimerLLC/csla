@@ -79,8 +79,8 @@ namespace Csla.Test.Basic
 #pragma warning disable CS0618 // Type or member is obsolete
       //Csla.ApplicationContext.GlobalContext.Clear();
 #pragma warning restore CS0618 // Type or member is obsolete
-      CommandObject obj = new CommandObject();
       IDataPortal<CommandObject> dataPortal = DataPortalFactory.CreateDataPortal<CommandObject>();
+      CommandObject obj = dataPortal.Create();
       obj = dataPortal.Execute(obj);
       Assert.AreEqual("Executed", obj.AProperty);
     }

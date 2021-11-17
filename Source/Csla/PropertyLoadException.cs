@@ -18,7 +18,7 @@ namespace Csla
   public class PropertyLoadException : Exception
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
     public PropertyLoadException(string message)
@@ -26,7 +26,7 @@ namespace Csla
     { }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
     /// <param name="ex">Inner exception.</param>

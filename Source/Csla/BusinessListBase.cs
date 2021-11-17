@@ -41,19 +41,26 @@ namespace Csla
     where C : Core.IEditableBusinessObject
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected BusinessListBase()
-    {
-      InitializeIdentity();
-      Initialize();
-      AllowNew = true;
-    }
+    { }
 
     /// <summary>
-    /// Gets or sets the current ApplicationContext object.
+    /// Gets the current ApplicationContext
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        InitializeIdentity();
+        Initialize();
+        AllowNew = true;
+      }
+    }
 
     #region Initialize
 
@@ -115,7 +122,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>
@@ -294,7 +301,7 @@ namespace Csla
     /// </summary>
     protected override C AddNewCore()
     {
-      var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
       var item = dp.CreateChild();
       Add(item);
       return item;
@@ -877,7 +884,7 @@ namespace Csla
     {
       using (LoadListMode)
       {
-        var dp = ApplicationContext.CreateInstance<DataPortal<C>>();
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
         foreach (var child in DeletedList)
           dp.UpdateChild(child, parameters);
         DeletedList.Clear();
@@ -963,7 +970,7 @@ namespace Csla
 
       if (IsDirty)
       {
-        var dp = ApplicationContext.CreateInstance<DataPortal<T>>();
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
         if (isSync)
         {
           result = dp.Update((T)this);

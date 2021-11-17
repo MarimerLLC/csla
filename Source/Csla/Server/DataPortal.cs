@@ -96,13 +96,13 @@ namespace Csla.Server
       switch (transactionalAttribute.TransactionIsolationLevel)
       {
         case TransactionIsolationLevel.Serializable:
-          return ApplicationContext.CreateInstance<ServicedDataPortalSerializable>();
+          return ApplicationContext.CreateInstanceDI<ServicedDataPortalSerializable>();
         case TransactionIsolationLevel.RepeatableRead:
-          return ApplicationContext.CreateInstance<ServicedDataPortalRepeatableRead>();
+          return ApplicationContext.CreateInstanceDI<ServicedDataPortalRepeatableRead>();
         case TransactionIsolationLevel.ReadCommitted:
-          return ApplicationContext.CreateInstance<ServicedDataPortalReadCommitted>();
+          return ApplicationContext.CreateInstanceDI<ServicedDataPortalReadCommitted>();
         case TransactionIsolationLevel.ReadUncommitted:
-          return ApplicationContext.CreateInstance<ServicedDataPortalReadUncommitted>();
+          return ApplicationContext.CreateInstanceDI<ServicedDataPortalReadUncommitted>();
         default:
           throw new ArgumentOutOfRangeException("transactionalAttribute");
       }
@@ -115,7 +115,7 @@ namespace Csla.Server
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }
@@ -138,7 +138,7 @@ namespace Csla.Server
 
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Create, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, criteria, DataPortalOperations.Create));
         DataPortalResult result;
         DataPortalMethodInfo method;
 
@@ -174,7 +174,7 @@ namespace Csla.Server
 
             break;
           default:
-            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
+            portal = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -194,7 +194,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Create " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Create", error),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Create, IsSync = isSync });
@@ -203,7 +203,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Create " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Create", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Create, IsSync = isSync });
@@ -232,7 +232,7 @@ namespace Csla.Server
 
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, criteria, DataPortalOperations.Fetch));
         DataPortalResult result;
         DataPortalMethodInfo method;
 
@@ -266,7 +266,7 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
+            portal = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -286,7 +286,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Fetch " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Fetch", error),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
@@ -295,7 +295,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Fetch " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Fetch", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
@@ -330,7 +330,7 @@ namespace Csla.Server
           operation = DataPortalOperations.Execute;
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, obj, operation));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, obj, operation));
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
@@ -397,7 +397,7 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
+            portal = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -417,7 +417,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Update " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", error),
             obj);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
@@ -426,7 +426,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Update " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
             obj);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
@@ -455,7 +455,7 @@ namespace Csla.Server
 
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Delete, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
+        AuthorizeRequest(new AuthorizeRequest(ApplicationContext, objectType, criteria, DataPortalOperations.Delete));
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
@@ -497,7 +497,7 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = ApplicationContext.CreateInstance<DataPortalBroker>();
+            portal = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
@@ -517,7 +517,7 @@ namespace Csla.Server
         else
           error = ex;
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Delete " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", error),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Delete, IsSync = isSync });
@@ -526,7 +526,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         var fex = DataPortal.NewDataPortalException(
-            "DataPortal.Delete " + Resources.FailedOnServer,
+            ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Delete, IsSync = isSync });
@@ -712,14 +712,14 @@ namespace Csla.Server
 #endregion
 
     internal static DataPortalException NewDataPortalException(
-      string message, Exception innerException, object businessObject)
+      ApplicationContext applicationContext, string message, Exception innerException, object businessObject)
     {
       if (!ApplicationContext.DataPortalReturnObjectOnException)
         businessObject = null;
 
       throw new DataPortalException(
         message,
-        innerException, new DataPortalResult(businessObject));
+        innerException, new DataPortalResult(applicationContext, businessObject));
     }
 
     /// <summary>

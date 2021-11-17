@@ -8,7 +8,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Serialization;
 using Csla.Server;
@@ -20,12 +19,21 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server.
   /// </summary>
-  public abstract class DataPortalProxy : IDataPortalProxy, Core.IUseApplicationContext
+  public abstract class DataPortalProxy : IDataPortalProxy
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public DataPortalProxy(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether the data portal
@@ -62,26 +70,26 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (!(criteria is IMobileObject))
+        if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = SerializationFormatterFactory.GetFormatter().Serialize(criteria);
+        request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
         request = ConvertRequest(request);
-        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
         serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync);
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
+        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
 
         if (response.ErrorData == null)
         {
-          var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null);
+          var obj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
+          result = new DataPortalResult(ApplicationContext, obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -90,7 +98,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -114,28 +122,28 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (!(criteria is IMobileObject))
+        if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = SerializationFormatterFactory.GetFormatter().Serialize(criteria);
+        request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync);
 
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
+        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
-          var obj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(obj, null);
+          var obj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
+          result = new DataPortalResult(ApplicationContext, obj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -144,7 +152,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -166,24 +174,24 @@ namespace Csla.DataPortalClient
       try
       {
         var request = GetBaseUpdateCriteriaRequest();
-        request.ObjectData = SerializationFormatterFactory.GetFormatter().Serialize(obj);
+        request.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(obj);
         request = ConvertRequest(request);
 
-        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync);
 
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
+        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
-          var newobj = SerializationFormatterFactory.GetFormatter().Deserialize(response.ObjectData);
-          result = new DataPortalResult(newobj, null);
+          var newobj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
+          result = new DataPortalResult(ApplicationContext, newobj, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -192,7 +200,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -217,27 +225,27 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest();
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (!(criteria is IMobileObject))
+        if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = SerializationFormatterFactory.GetFormatter().Serialize(criteria);
+        request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = SerializationFormatterFactory.GetFormatter().Serialize(request);
+        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync);
 
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter().Deserialize(serialized);
+        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
-          result = new DataPortalResult(null, null);
+          result = new DataPortalResult(ApplicationContext, null, null);
         }
         else if (response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
-          result = new DataPortalResult(null, ex);
+          result = new DataPortalResult(ApplicationContext, null, ex);
         }
         else
         {
@@ -246,7 +254,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        result = new DataPortalResult(null, ex);
+        result = new DataPortalResult(ApplicationContext, null, ex);
       }
       if (result.Error != null)
         throw result.Error;
@@ -307,28 +315,26 @@ namespace Csla.DataPortalClient
 
     private CriteriaRequest GetBaseCriteriaRequest()
     {
-      return new CriteriaRequest
-      {
-        CriteriaData = null,
-        ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext),
-        Principal = SerializationFormatterFactory.GetFormatter()
-          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User),
-        ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name,
-        ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name
-      };
+      var result = ApplicationContext.CreateInstanceDI<CriteriaRequest>();
+      result.CriteriaData = null;
+      result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
+      result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
+          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User);
+      result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+      return result;
     }
 
     private UpdateRequest GetBaseUpdateCriteriaRequest()
     {
-      return new UpdateRequest
-      {
-        ObjectData = null,
-        ClientContext = SerializationFormatterFactory.GetFormatter().Serialize(ApplicationContext.ClientContext),
-        Principal = SerializationFormatterFactory.GetFormatter()
-          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User),
-        ClientCulture = Thread.CurrentThread.CurrentCulture.Name,
-        ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name
-      };
+      var result = ApplicationContext.CreateInstanceDI<UpdateRequest>();
+      result.ObjectData = null;
+      result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
+      result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
+          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User);
+      result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
+      result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
+      return result;
     }
 
     #endregion Criteria

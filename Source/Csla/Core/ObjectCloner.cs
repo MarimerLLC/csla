@@ -16,8 +16,29 @@ namespace Csla.Core
   /// clone of a complete object graph. Objects are
   /// copied at the field level.
   /// </summary>
-  public static class ObjectCloner
+  public class ObjectCloner
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public ObjectCloner(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
+    /// <summary>
+    /// Gets an instance of ObjectCloner.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// <returns></returns>
+    public static ObjectCloner GetInstance(ApplicationContext applicationContext)
+    {
+      return new ObjectCloner(applicationContext);
+    }
+
     /// <summary>
     /// Clones an object.
     /// </summary>
@@ -37,17 +58,14 @@ namespace Csla.Core
     /// for serialization as the other serializers don't
     /// exist.</para>
     /// </remarks>
-    public static object Clone(object obj)
+    public object Clone(object obj)
     {
-      using (MemoryStream buffer = new MemoryStream())
-      {
-        ISerializationFormatter formatter =
-          SerializationFormatterFactory.GetFormatter();
-        formatter.Serialize(buffer, obj);
-        buffer.Position = 0;
-        object temp = formatter.Deserialize(buffer);
-        return temp;
-      }
+      using var buffer = new MemoryStream();
+      ISerializationFormatter formatter =
+        SerializationFormatterFactory.GetFormatter(ApplicationContext);
+      formatter.Serialize(buffer, obj);
+      buffer.Position = 0;
+      return formatter.Deserialize(buffer);
     }
   }
 }

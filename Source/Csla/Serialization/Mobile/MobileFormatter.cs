@@ -24,6 +24,17 @@ namespace Csla.Serialization.Mobile
 #endif
   public sealed class MobileFormatter : ISerializationFormatter
   {
+    private ApplicationContext ApplicationContext { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public MobileFormatter(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     #region Serialize
 
     /// <summary>
@@ -39,7 +50,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void Serialize(Stream serializationStream, object graph)
     {
-      ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter();
+      ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter(ApplicationContext);
       writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
@@ -214,7 +225,7 @@ namespace Csla.Serialization.Mobile
       if (serializationStream == null)
         return null;
 
-      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(ApplicationContext);
       var data = reader.Read(serializationStream);
       return DeserializeAsDTO(data);
     }
@@ -232,7 +243,7 @@ namespace Csla.Serialization.Mobile
       if (buffer.Length == 0)
         return null;
       using var serializationStream = new MemoryStream(buffer);
-      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(ApplicationContext);
       var data = reader.Read(serializationStream);
       return DeserializeAsDTO(data);
     }
@@ -276,7 +287,7 @@ namespace Csla.Serialization.Mobile
           }
           else
           {
-            IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
+            IMobileObject mobile = (IMobileObject)ApplicationContext.CreateInstance(type);
 
             _deserializationReferences.Add(info.ReferenceId, mobile);
 
@@ -335,7 +346,7 @@ namespace Csla.Serialization.Mobile
 
 #endregion
 
-#region Static Helpers
+#region Helpers
 
     /// <summary>
     /// Serializes the object into a byte array.
@@ -345,11 +356,11 @@ namespace Csla.Serialization.Mobile
     /// IMobileObject.
     /// </param>
     /// <returns></returns>
-    public static byte[] Serialize(object obj)
+    public byte[] SerializeToByteArray(object obj)
     {
       using (var buffer = new System.IO.MemoryStream())
       {
-        var formatter = new MobileFormatter();
+        var formatter = new MobileFormatter(ApplicationContext);
         formatter.Serialize(buffer, obj);
         return buffer.ToArray();
       }
@@ -363,9 +374,9 @@ namespace Csla.Serialization.Mobile
     /// IMobileObject.
     /// </param>
     /// <returns></returns>
-    public static List<SerializationInfo> SerializeToDTO(object obj)
+    public List<SerializationInfo> SerializeToDTO(object obj)
     {
-      var formatter = new MobileFormatter();
+      var formatter = new MobileFormatter(ApplicationContext);
       return formatter.SerializeAsDTO(obj);
     }
 
@@ -374,9 +385,9 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="serialized">DTO Graph to deserialize</param>
     /// <returns>Deserialized object</returns>
-    public static object DeserializeFromDTO(List<SerializationInfo> serialized)
+    public object DeserializeFromDTO(List<SerializationInfo> serialized)
     {
-      var formatter = new MobileFormatter();
+      var formatter = new MobileFormatter(ApplicationContext);
       return formatter.DeserializeAsDTO(serialized);
     }
 
@@ -392,14 +403,14 @@ namespace Csla.Serialization.Mobile
     /// byte stream. The object must implement
     /// IMobileObject to be deserialized.
     /// </returns>
-    public static object Deserialize(byte[] data)
+    public object DeserializeFromByteArray(byte[] data)
     {
       if (data == null)
         return null;
 
       using (var buffer = new System.IO.MemoryStream(data))
       {
-        var formatter = new MobileFormatter();
+        var formatter = new MobileFormatter(ApplicationContext);
         return formatter.Deserialize(buffer);
       }
     }
@@ -416,12 +427,12 @@ namespace Csla.Serialization.Mobile
     /// byte stream. The object must implement
     /// IMobileObject to be deserialized.
     /// </returns>
-    public static object Deserialize(List<SerializationInfo> data)
+    public object DeserializeFromSerializationInfo(List<SerializationInfo> data)
     {
       if (data == null)
         return null;
 
-      var formatter = new MobileFormatter();
+      var formatter = new MobileFormatter(ApplicationContext);
       return formatter.DeserializeAsDTO(data);
     }
 #endregion

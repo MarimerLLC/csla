@@ -12,14 +12,12 @@ namespace Csla.Server
 {
   internal class DefaultDataPortalActivator : IDataPortalActivator, Core.IUseApplicationContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     public object CreateInstance(Type requestedType)
     {
-      return ApplicationContext.CreateInstance(requestedType);
+      return ApplicationContext.CreateInstanceDI(requestedType);
     }
 
     public void InitializeInstance(object obj)

@@ -9,7 +9,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 
-namespace Csla.DataPortalClient
+namespace Csla.Channels.Http
 {
   /// <summary>
   /// Implements a data portal proxy to relay data portal
@@ -17,6 +17,16 @@ namespace Csla.DataPortalClient
   /// </summary>
   public class HttpCompressionProxy : HttpProxy
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// <param name="httpClient">HttpClient instance</param>
+    /// <param name="options">Options for HttpProxy</param>
+    public HttpCompressionProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options)
+      : base(applicationContext, httpClient, options)
+    { }
+
     /// <summary>
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.

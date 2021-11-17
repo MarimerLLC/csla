@@ -18,7 +18,7 @@ namespace Csla
   public class MethodInfo : Csla.Core.IMemberInfo
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="name">Name of the method.</param>
     public MethodInfo(string name)

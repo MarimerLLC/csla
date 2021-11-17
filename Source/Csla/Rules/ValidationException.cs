@@ -19,7 +19,7 @@ namespace Csla.Rules
   {
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public ValidationException()
     {
@@ -27,7 +27,7 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     public ValidationException(string message)
@@ -37,7 +37,7 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     /// <param name="innerException">Inner exception object.</param>

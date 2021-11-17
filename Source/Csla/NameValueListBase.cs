@@ -24,8 +24,22 @@ namespace Csla
   [Serializable]
   public abstract class NameValueListBase<K, V> : 
     Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, 
-    ICloneable, Core.IBusinessObject, Server.IDataPortalTarget
+    ICloneable, Core.IBusinessObject, Server.IDataPortalTarget,
+    IUseApplicationContext
   {
+    /// <summary>
+    /// Gets the current ApplicationContext
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
+      get => ApplicationContext;
+      set
+      {
+        ApplicationContext = value;
+        Initialize();
+      }
+    }
 
     #region Core Implementation
 
@@ -129,12 +143,10 @@ namespace Csla
     #endregion
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     protected NameValueListBase()
-    {
-      Initialize();
-    }
+    { }
 
     #region Initialize
 
@@ -161,7 +173,7 @@ namespace Csla
 
 #if (ANDROID || IOS) || NETFX_CORE
       /// <summary>
-      /// Creates an instance of the object.
+      /// Creates an instance of the type.
       /// </summary>
       public NameValuePair()
       { }
@@ -186,7 +198,7 @@ namespace Csla
       }
 
       /// <summary>
-      /// Creates an instance of the object.
+      /// Creates an instance of the type.
       /// </summary>
       /// <param name="key">The key.</param>
       /// <param name="value">The value.</param>
@@ -249,7 +261,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.Clone(this);
+      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>

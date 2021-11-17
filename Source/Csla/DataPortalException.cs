@@ -20,7 +20,7 @@ namespace Csla
   public class DataPortalException : Exception
   {
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
     /// <param name="businessObject">The business object
@@ -33,7 +33,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
     /// <param name="ex">Inner exception.</param>
@@ -47,7 +47,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">
     /// Exception message.
@@ -62,7 +62,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="info">Info about the exception.</param>
     public DataPortalException(DataPortalErrorInfo info)

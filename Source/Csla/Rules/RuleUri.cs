@@ -29,7 +29,7 @@ namespace Csla.Rules
     { }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="uri">The rule:// URI.</param>
     public RuleUri(Uri uri)
@@ -40,7 +40,7 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
@@ -50,7 +50,7 @@ namespace Csla.Rules
     { }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="typeName">Name of the rule type.</param>
     /// <param name="propertyName">Name of the business object property or the string literal "null".</param>

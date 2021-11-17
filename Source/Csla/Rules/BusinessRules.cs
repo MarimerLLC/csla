@@ -7,14 +7,10 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Linq;
-using Csla.Core.FieldManager;
-using Csla.Reflection;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Csla.Threading;
 
@@ -27,13 +23,28 @@ namespace Csla.Rules
   public class BusinessRules :
     MobileObject, ISerializationNotification, IBusinessRules, IUseApplicationContext
   {
-    [NonSerialized]
-    private object SyncRoot = new object();
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    public BusinessRules()
+    { }
 
     /// <summary>
-    /// Gets or sets the current ApplicationContext object.
+    /// Creates an instance of the type.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    /// <param name="applicationContext"></param>
+    /// <param name="target">Target business object.</param>
+    public BusinessRules(ApplicationContext applicationContext, IHostRules target)
+    {
+      ApplicationContext = applicationContext;
+      SetTarget(target);
+    }
+
+    [NonSerialized]
+    private object SyncRoot = new();
+
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext ApplicationContext { get; set; }
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
@@ -156,21 +167,6 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    public BusinessRules()
-    { }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="target">Target business object.</param>
-    internal BusinessRules(IHostRules target)
-    {
-      SetTarget(target);
-    }
-
-    /// <summary>
     /// Associates a business rule with the business object.
     /// </summary>
     /// <param name="rule">Rule object.</param>
@@ -233,7 +229,7 @@ namespace Csla.Rules
       else
         oldRule = mgr.Rules.FirstOrDefault(c => c.Element == null && c.Action == rule.Action);
       if (oldRule != null)
-        throw new ArgumentException("rule");
+        throw new ArgumentException(nameof(rule));
     }
 
     /// <summary>
@@ -589,7 +585,7 @@ namespace Csla.Rules
     private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
-        throw new ArgumentNullException("property");
+        throw new ArgumentNullException(nameof(property));
 
       if (_suppressRuleChecking)
         return new List<string>();
@@ -728,7 +724,7 @@ namespace Csla.Rules
           break;
         bool complete = false;
         // set up context
-        var context = new RuleContext((r) =>
+        var context = new RuleContext(ApplicationContext, (r) =>
         {
           if (r.Rule.IsAsync)
           {
@@ -888,7 +884,7 @@ namespace Csla.Rules
       return new RunRulesResult(affectedProperties, dirtyProperties);
     }
 
-    private async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
+    private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
     {
       try
       {
@@ -1079,10 +1075,10 @@ namespace Csla.Rules
     private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
     {
       // is this a single editable object 
-      if (obj is Csla.Core.BusinessBase)
+      if (obj is Csla.Core.BusinessBase bbase)
       {
         var nodeKey = counter++;
-        var bo = (Csla.Core.BusinessBase)obj;
+        var bo = bbase;
         long myChildBrokenRuleCount = bo.BrokenRulesCollection.Count;
         var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj };
         list.Add(node);

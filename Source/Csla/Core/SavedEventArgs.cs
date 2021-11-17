@@ -48,7 +48,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="newObject">
     /// The object that was returned as a
@@ -62,7 +62,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     /// <param name="newObject">
     /// The object that was returned as a

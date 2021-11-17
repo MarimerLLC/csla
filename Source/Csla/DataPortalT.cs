@@ -20,28 +20,28 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, Core.IUseApplicationContext
+  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>
   {
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
     /// <param name="applicationContext">ApplicationContext</param>
-    public DataPortal(ApplicationContext applicationContext)
+    /// <param name="proxy"></param>
+    public DataPortal(ApplicationContext applicationContext, DataPortalClient.IDataPortalProxy proxy)
     {
       ApplicationContext = applicationContext;
+      DataPortalProxy = proxy;
     }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    private DataPortalClient.IDataPortalProxy DataPortalProxy { get; set; }
 
-    private class DataPortalAsyncRequest : Core.IUseApplicationContext
+    private class DataPortalAsyncRequest
     {
-      /// <summary>
-      /// Gets or sets the current ApplicationContext object.
-      /// </summary>
-      public ApplicationContext ApplicationContext { get; set; }
+      private ApplicationContext ApplicationContext { get; set; }
 
       public object Argument { get; set; }
       public System.Security.Principal.IPrincipal Principal { get; set; }
@@ -51,8 +51,9 @@ namespace Csla
       public CultureInfo CurrentCulture;
       public CultureInfo CurrentUICulture;
 
-      public DataPortalAsyncRequest(object argument, object userState)
+      public DataPortalAsyncRequest(ApplicationContext applicationContext, object argument, object userState)
       {
+        ApplicationContext = applicationContext;
         this.Argument = argument;
         this.Principal = ApplicationContext.User;
         this.ClientContext = ApplicationContext.ClientContext;
@@ -82,7 +83,7 @@ namespace Csla
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }
@@ -93,8 +94,6 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
-        DataPortal.OnDataPortalInitInvoke(null);
-
         if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
@@ -105,12 +104,10 @@ namespace Csla
           method = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null, false);
         else
           method = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
-        var proxy = GetDataPortalProxy(objectType, method);
+        var proxy = GetDataPortalProxy(method);
 
         dpContext =
           new Csla.Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
-
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create));
 
         try
         {
@@ -131,11 +128,9 @@ namespace Csla
         {
           HandleCreateDataPortalException(ex, isSync, proxy);
         }
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create));
       }
-      catch (Exception ex)
+      catch
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create, ex));
         throw;
       }
       return result.ReturnObject;
@@ -296,8 +291,6 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
-        DataPortal.OnDataPortalInitInvoke(null);
-
         if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
@@ -305,12 +298,10 @@ namespace Csla
             objectType.Name));
 
         var method = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
-        var proxy = GetDataPortalProxy(objectType, method);
+        var proxy = GetDataPortalProxy(method);
 
         dpContext =
           new Csla.Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
-
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch));
 
         try
         {
@@ -332,11 +323,9 @@ namespace Csla
         {
           HandleFetchDataPortalException(ex, isSync, proxy);
         }
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch));
       }
-      catch (Exception ex)
+      catch
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch, ex));
         throw;
       }
       return result.ReturnObject;
@@ -494,11 +483,9 @@ namespace Csla
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
-      DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
       try
       {
-        DataPortal.OnDataPortalInitInvoke(null);
         DataPortalClient.IDataPortalProxy proxy = null;
         var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
@@ -565,7 +552,7 @@ namespace Csla
           }
           if (method == null)
             method = new Csla.Server.DataPortalMethodInfo();
-          proxy = GetDataPortalProxy(objectType, method.RunLocal);
+          proxy = GetDataPortalProxy(method.RunLocal);
         }
         else
         {
@@ -573,7 +560,6 @@ namespace Csla
           var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
           if (obj is Core.ICommandObject)
           {
-            operation = DataPortalOperations.Execute;
             if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
@@ -614,13 +600,11 @@ namespace Csla
               method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
             }
           }
-          proxy = GetDataPortalProxy(objectType, method);
+          proxy = GetDataPortalProxy(method);
         }
 
         dpContext =
           new Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
-
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, obj, operation));
 
         try
         {
@@ -648,12 +632,9 @@ namespace Csla
         {
           HandleUpdateDataPortalException(ex, isSync, proxy);
         }
-
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, obj, operation));
       }
-      catch (Exception ex)
+      catch
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, obj, operation, ex));
         throw;
       }
       return (T)result.ReturnObject;
@@ -797,19 +778,15 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
-        DataPortal.OnDataPortalInitInvoke(null);
-
         if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
           throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "delete",
             objectType.Name));
 
         var method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
-        var proxy = GetDataPortalProxy(objectType, method);
+        var proxy = GetDataPortalProxy(method);
 
         dpContext = new Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
-
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete));
 
         try
         {
@@ -831,12 +808,9 @@ namespace Csla
         {
           HandleDeleteDataPortalException(ex, isSync, proxy);
         }
-
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete));
       }
-      catch (Exception ex)
+      catch
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete, ex));
         throw;
       }
     }
@@ -1051,28 +1025,20 @@ namespace Csla
       return await DoUpdateAsync(command, false);
     }
 
-    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, Reflection.ServiceProviderMethodInfo method)
+    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo method)
     {
       if (method != null)
-        return GetDataPortalProxy(objectType, method.MethodInfo.RunLocal());
+        return GetDataPortalProxy(method.MethodInfo.RunLocal());
       else
-        return GetDataPortalProxy(objectType, false);
+        return GetDataPortalProxy(false);
     }
 
-    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
+    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(bool forceLocal)
     {
       if (forceLocal || ApplicationContext.IsOffline)
-      {
-        return ApplicationContext.CreateInstance<DataPortalClient.LocalProxy>();
-      }
+        return ApplicationContext.CreateInstanceDI<Csla.Channels.Local.LocalProxy>();
       else
-      {
-        // load dataportal factory if loaded 
-        if (ProxyFactory == null)
-          LoadDataPortalProxyFactory();
-
-        return ProxyFactory.Create(objectType);
-      }
+        return DataPortalProxy;
     }
 
     private System.Security.Principal.IPrincipal GetPrincipal()
@@ -1095,7 +1061,7 @@ namespace Csla
     /// </summary>
     public T CreateChild()
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Create(typeof(T)));
     }
 
@@ -1108,7 +1074,7 @@ namespace Csla
     /// </param>
     public T CreateChild(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Create(typeof(T), parameters));
     }
 
@@ -1118,7 +1084,7 @@ namespace Csla
     /// </summary>
     public async Task<T> CreateChildAsync()
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.CreateAsync<T>();
     }
 
@@ -1131,7 +1097,7 @@ namespace Csla
     /// </param>
     public async Task<T> CreateChildAsync(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.CreateAsync<T>(parameters);
     }
 
@@ -1141,7 +1107,7 @@ namespace Csla
     /// </summary>
     public T FetchChild()
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Fetch(typeof(T)));
     }
 
@@ -1154,7 +1120,7 @@ namespace Csla
     /// </param>
     public T FetchChild(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return (T)(portal.Fetch(typeof(T), parameters));
     }
 
@@ -1164,7 +1130,7 @@ namespace Csla
     /// </summary>
     public async Task<T> FetchChildAsync()
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.FetchAsync<T>();
     }
 
@@ -1177,7 +1143,7 @@ namespace Csla
     /// </param>
     public async Task<T> FetchChildAsync(params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       return await portal.FetchAsync<T>(parameters);
     }
 
@@ -1190,7 +1156,7 @@ namespace Csla
     /// </param>
     public void UpdateChild(T child)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       portal.Update(child);
     }
 
@@ -1206,7 +1172,7 @@ namespace Csla
     /// </param>
     public void UpdateChild(object child, params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       portal.Update(child, parameters);
     }
 
@@ -1222,7 +1188,7 @@ namespace Csla
     /// </param>
     public void UpdateChild(T child, params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       portal.Update(child, parameters);
     }
 
@@ -1235,7 +1201,7 @@ namespace Csla
     /// </param>
     public async Task UpdateChildAsync(T child)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       await portal.UpdateAsync(child).ConfigureAwait(false);
     }
 
@@ -1251,91 +1217,8 @@ namespace Csla
     /// </param>
     public async Task UpdateChildAsync(T child, params object[] parameters)
     {
-      var portal = ApplicationContext.CreateInstance<Server.ChildDataPortal>();
+      var portal = new Server.ChildDataPortal(ApplicationContext);
       await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
-    }
-
-    private DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;
-
-    /// <summary>
-    /// Loads the data portal factory.
-    /// </summary>
-    internal void LoadDataPortalProxyFactory()
-    {
-      if (_dataProxyFactory == null)
-      {
-        if (String.IsNullOrEmpty(ApplicationContext.DataPortalProxyFactory) || ApplicationContext.DataPortalProxyFactory == "Default")
-        {
-          _dataProxyFactory = ApplicationContext.CreateInstance<DataPortalClient.DataPortalProxyFactory>();
-        }
-        else
-        {
-          var proxyFactoryType =
-            Type.GetType(ApplicationContext.DataPortalProxyFactory) ??
-            throw new InvalidOperationException(
-              string.Format(Resources.UnableToLoadDataPortalProxyFactory, ApplicationContext.DataPortalProxyFactory));
-
-          _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory)Activator.CreateInstance(proxyFactoryType);
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets a reference to a ProxyFactory object
-    /// that is used to create an instance of the data
-    /// portal proxy object.
-    /// </summary>
-    public DataPortalClient.IDataPortalProxyFactory ProxyFactory
-    {
-      get
-      {
-        if (_dataProxyFactory == null)
-          LoadDataPortalProxyFactory();
-        return _dataProxyFactory;
-      }
-      set
-      {
-        _dataProxyFactory = value;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the assembly qualified type
-    /// name of the proxy object to be loaded
-    /// by the data portal. "Local" is a special
-    /// value used to indicate that the data
-    /// portal should run in local mode.
-    /// </summary>
-    /// <remarks>
-    /// Deprecated: use ApplicationContext.DataPortalProxy
-    /// </remarks>
-    public string ProxyTypeName
-    {
-      get { return ApplicationContext.DataPortalProxy; }
-      set { ApplicationContext.DataPortalProxy = value; }
-    }
-
-    /// <summary>
-    /// Resets the data portal proxy type, so the
-    /// next data portal call will reload the proxy
-    /// type based on current configuration values.
-    /// </summary>
-    public void ResetProxyFactory()
-    {
-      _dataProxyFactory = null;
-    }
-
-    /// <summary>
-    /// Resets the data portal proxy type, so the
-    /// next data portal call will reload the proxy
-    /// type based on current configuration values.
-    /// </summary>
-    public void ResetProxyType()
-    {
-      if (_dataProxyFactory != null)
-      {
-        _dataProxyFactory.ResetProxyType();
-      }
     }
   }
 

@@ -18,10 +18,8 @@ namespace Csla.Reflection
   /// </summary>
   public class LateBoundObject : Core.IUseApplicationContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
     /// Object instance managed by LateBoundObject.
@@ -42,7 +40,7 @@ namespace Csla.Reflection
     /// </remarks>
     public LateBoundObject(Type objectType)
     {
-      Instance = ApplicationContext.CreateInstance(objectType);
+      Instance = ApplicationContext.CreateInstanceDI(objectType);
     }
 
     /// <summary>
@@ -167,7 +165,7 @@ namespace Csla.Reflection
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstance(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }

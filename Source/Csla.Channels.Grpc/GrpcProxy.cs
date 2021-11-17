@@ -20,32 +20,16 @@ namespace Csla.Channels.Grpc
   {
     /// <summary>
     /// Creates an instance of the object, initializing
-    /// it to use the supplied URL.
-    /// </summary>
-    /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public GrpcProxy(string dataPortalUrl)
-      : this(null, dataPortalUrl)
-    { }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
-    /// it to use the supplied GrpcChannel object.
-    /// </summary>
-    /// <param name="channel">GrpcChannel instance</param>
-    public GrpcProxy(GrpcChannel channel)
-      : this(channel, ApplicationContext.DataPortalUrlString)
-    { }
-
-    /// <summary>
-    /// Creates an instance of the object, initializing
     /// it to use the supplied GrpcChannel object and URL.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="channel">GrpcChannel instance</param>
-    /// <param name="dataPortalUrl">Server endpoint URL</param>
-    public GrpcProxy(GrpcChannel channel, string dataPortalUrl)
+    /// <param name="options">Proxy options</param>
+    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options)
+      : base(applicationContext)
     {
       _channel = channel;
-      DataPortalUrl = dataPortalUrl;
+      DataPortalUrl = options.DataPortalUrl;
     }
 
     private GrpcChannel _channel;

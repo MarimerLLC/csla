@@ -18,10 +18,8 @@ namespace Csla.Server
   [Serializable]
   public class DataPortalResult : EventArgs, Core.IUseApplicationContext
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
+    internal ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
     /// The business object being returned from
@@ -36,32 +34,35 @@ namespace Csla.Server
     public Exception Error { get; private set; }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public DataPortalResult()
     {
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
-    public DataPortalResult(object returnObject)
+    public DataPortalResult(ApplicationContext applicationContext, object returnObject)
     {
+      ApplicationContext = applicationContext;
       ReturnObject = returnObject;
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
     /// <param name="ex">
     /// Error that occurred during the DataPotal call.
     /// This will be null if no errors occurred.
     /// </param>
-    public DataPortalResult(object returnObject, Exception ex)
+    public DataPortalResult(ApplicationContext applicationContext, object returnObject, Exception ex)
     {
       ReturnObject = returnObject;
       Error = ex;

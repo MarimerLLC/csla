@@ -56,7 +56,7 @@ namespace Csla.Serialization.Mobile
       #region IMobileObject Members
 
       /// <summary>
-      /// Creates an instance of the object.
+      /// Creates an instance of the type.
       /// </summary>
       public FieldData() { }
 
@@ -337,7 +337,7 @@ namespace Csla.Serialization.Mobile
     #region IMobileObject Members
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the type.
     /// </summary>
     public SerializationInfo() { }
 

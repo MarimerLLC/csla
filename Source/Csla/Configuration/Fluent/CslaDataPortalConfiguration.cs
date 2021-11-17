@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
@@ -20,7 +21,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaDataPortalConfiguration DataPortal(this ICslaConfiguration config)
     {
-      return new CslaDataPortalConfiguration();
+      return new CslaDataPortalConfiguration(config);
     }
   }
 
@@ -31,91 +32,35 @@ namespace Csla.Configuration
   public class CslaDataPortalConfiguration
   {
     /// <summary>
-    /// Configure the default data portal proxy type and URL.
+    /// Gets or sets the current configuration object.
     /// </summary>
-    /// <param name="type">Type of data portal proxy</param>
-    /// <param name="defaultUrl">Default server URL</param>
-    /// <returns></returns>
-    public CslaDataPortalConfiguration DefaultProxy(Type type, string defaultUrl)
-    {
-      DefaultProxy(type.AssemblyQualifiedName, defaultUrl);
-      return this;
-    }
+    public ICslaConfiguration CslaConfiguration { get; set; }
 
     /// <summary>
-    /// Configure the default data portal proxy type and URL.
+    /// Gets the current service collection.
     /// </summary>
-    /// <param name="typeName">Assembly qualified type name</param>
-    /// <param name="defaultUrl">Default server URL</param>
-    /// <returns></returns>
-    public CslaDataPortalConfiguration DefaultProxy(string typeName, string defaultUrl)
-    {
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = typeName;
-      ConfigurationManager.AppSettings["CslaDataPortalUrl"] = defaultUrl;
-      return this;
-    }
+    public IServiceCollection Services { get => CslaConfiguration.Services; }
 
     /// <summary>
-    /// Adds resource/type to data portal proxy mappings
-    /// for use by the data portal.
+    /// Creates an instance of the type.
     /// </summary>
-    /// <param name="descriptors">Data portal type/resource to proxy mapping</param>
-    /// <returns></returns>
-    public CslaDataPortalConfiguration ProxyDescriptors(List<Tuple<string, string, string>> descriptors)
+    /// <param name="config">Current configuration object</param>
+    public CslaDataPortalConfiguration(ICslaConfiguration config)
     {
-      DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors?.Clear();
-
-      foreach (var item in descriptors)
-      {
-        if (int.TryParse(item.Item1, out int result))
-        {
-          Csla.DataPortalClient.DataPortalProxyFactory.AddDescriptor(
-            result,
-            new DataPortalClient.DataPortalProxyDescriptor { ProxyTypeName = item.Item2, DataPortalUrl = item.Item3 });
-        }
-        else
-        {
-          try
-          {
-            var type = Type.GetType(item.Item1);
-            Csla.DataPortalClient.DataPortalProxyFactory.AddDescriptor(
-              type,
-              new DataPortalClient.DataPortalProxyDescriptor { ProxyTypeName = item.Item2, DataPortalUrl = item.Item3 });
-          }
-          catch (NullReferenceException ex)
-          {
-            throw new ArgumentException(item.Item1, ex);
-          }
-        }
-      }
-      return this;
+      CslaConfiguration = config;
     }
 
-    ///<summary>
-    /// Sets the type for the data portal proxy factory 
-    /// object to be used to get 
-    /// the DataPortalProxy instance to use when
-    /// communicating with the data portal server.
-    /// </summary>
-    /// <param name="type">Proxy factory type</param>
-    public CslaDataPortalConfiguration ProxyFactoryType(Type type)
-    {
-      ProxyFactoryType(type.AssemblyQualifiedName);
-      return this;
-    }
+    //internal bool UseDataPortalServer { get; set; } = false;
 
-    ///<summary>
-    /// Sets the full type name (or 'Default') of
-    /// the data portal proxy factory object to be used to get 
-    /// the DataPortalProxy instance to use when
-    /// communicating with the data portal server.
-    /// </summary>
-    /// <param name="typeName">Assembly qualified type name</param>
-    public CslaDataPortalConfiguration ProxyFactoryType(string typeName)
-    {
-      ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = typeName;
-      return this;
-    }
+    ///// <summary>
+    ///// Register services necessary for the
+    ///// server-side data portal to function.
+    ///// </summary>
+    //public CslaDataPortalConfiguration EnableDataPortalServer()
+    //{
+    //  UseDataPortalServer = true;
+    //  return this;
+    //}
 
     /// <summary>
     /// Sets the type of the IDataPortalActivator provider.

@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.19.1" />
     <PackageReference Include="Grpc.Net.Client" Version="2.40.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.41.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.42.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 

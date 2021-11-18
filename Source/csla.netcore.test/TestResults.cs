@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="TestResults.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Static, dictionary-style container for test results</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;

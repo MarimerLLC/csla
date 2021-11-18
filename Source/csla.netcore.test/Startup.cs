@@ -1,4 +1,11 @@
-﻿using Csla.Configuration;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Startup.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Initialisation of environment for test runs</summary>
+//-----------------------------------------------------------------------
+using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

@@ -37,7 +37,7 @@ namespace Csla.Test.Basic
     {
       lock (locker)
       {
-        //Csla.ApplicationContext.GlobalContext.Add("CommandObject", "DataPortal_Execute called");
+        TestResults.Add("CommandObject", "DataPortal_Execute called");
         _property = "Executed";
       }
     }

@@ -32,7 +32,7 @@ namespace csla.netcore.test.DataPortal
       // Csla.DataPortalClient.DataPortalProxyFactory.DataPortalTypeProxyDescriptors?.Clear();
     }
 
-    // Not sure I understand the purpose of these; how do these relate to the changes for CSLA 6?
+    // I don't think these tests are relevant anymore, since the changes for CSLA 6 do away with DataPortalProxyFactory
     //[TestMethod]
     //public void ProxyFactoryGetTypeName()
     //{

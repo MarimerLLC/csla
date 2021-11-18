@@ -60,9 +60,7 @@ namespace Csla.Test.Basic
         Children = dataPortal.CreateChild();
       }
       CreatedDomain = AppDomain.CurrentDomain.Id;
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Root", "Created");
     }
 
     [Fetch]
@@ -74,72 +72,47 @@ namespace Csla.Test.Basic
         Children = dataPortal.CreateChild();
       }
       MarkOld();
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Root", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("clientcontext",
-      //    ApplicationContext.ClientContext["clientcontext"]);
-
-      //Csla.ApplicationContext.GlobalContext.Add("globalcontext",
-      //ApplicationContext.GlobalContext["globalcontext"]);
-
-      //ApplicationContext.GlobalContext.Remove("globalcontext");
-      //ApplicationContext.GlobalContext["globalcontext"] = "new global value";
-
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Root", "Inserted");
     }
 
     [Update]
     protected void DataPortal_Update()
     {
       //we would update here
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Root", "Updated");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Root", "Deleted self");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Root", "Deleted");
     }
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext.Add("Deserialized", "root Deserialized");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("Deserialized", "root Deserialized");
     }
 
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext["dpinvoke"] = ApplicationContext.GlobalContext["global"];
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("dpinvoke", "Invoked");
     }
 
     protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      //Csla.ApplicationContext.GlobalContext["dpinvokecomplete"] = ApplicationContext.GlobalContext["global"];
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("dpinvokecomplete", "InvokeCompleted");
     }
 
     internal int GetEditLevel()

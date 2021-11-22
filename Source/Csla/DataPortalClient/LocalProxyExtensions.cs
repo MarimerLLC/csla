@@ -34,7 +34,12 @@ namespace Csla.Configuration
     {
       var proxyOptions = new Csla.Channels.Local.LocalProxyOptions();
       options?.Invoke(proxyOptions);
-      config.Services.AddTransient(typeof(IDataPortalProxy), typeof(Channels.Local.LocalProxy));
+      config.Services.AddTransient(typeof(IDataPortalProxy), 
+        sp =>
+        {
+          var applicationContext = sp.GetRequiredService<ApplicationContext>();
+          return new Csla.Channels.Local.LocalProxy(applicationContext, proxyOptions);
+        });
       return config;
     }
   }

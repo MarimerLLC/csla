@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Csla.Configuration;
 using Csla.Server;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Channels.Local
 {
@@ -18,25 +19,33 @@ namespace Csla.Channels.Local
   /// calls to an application server hosted locally 
   /// in the client process and AppDomain.
   /// </summary>
-  public class LocalProxy : DataPortalClient.IDataPortalProxy
+  public class LocalProxy : DataPortalClient.IDataPortalProxy, IDisposable
   {
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
-    /// <param name="dataportal">Server-side data portal instance</param>
     /// <param name="applicationContext">ApplicationContext</param>
-    public LocalProxy(Server.IDataPortalServer dataportal, ApplicationContext applicationContext)
+    /// <param name="options">Options instance</param>
+    public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
     {
-      _portal = dataportal;
       ApplicationContext = applicationContext;
+      Options = options;
+
+      if (Options.CreateScopePerCall)
+      {
+        _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
+        ApplicationContext = _scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+      }
+
+      _portal = ApplicationContext.CurrentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
     }
 
-    private readonly Server.IDataPortalServer _portal;
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
     private ApplicationContext ApplicationContext { get; set; }
+    private readonly LocalProxyOptions Options;
+
+    private readonly IServiceScope _scope;
+    private readonly Server.IDataPortalServer _portal;
+    private bool disposedValue;
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -175,6 +184,32 @@ namespace Csla.Channels.Local
         else
           return bool.Parse(ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"]);
       }
+    }
+
+    /// <summary>
+    /// Dispose current object
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+      if (!disposedValue)
+      {
+        if (disposing)
+        {
+          _scope?.Dispose();
+        }
+        disposedValue = true;
+      }
+    }
+
+    /// <summary>
+    /// Dispose current object
+    /// </summary>
+    public void Dispose()
+    {
+      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+      Dispose(disposing: true);
+      GC.SuppressFinalize(this);
     }
   }
 }

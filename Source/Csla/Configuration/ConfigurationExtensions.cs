@@ -53,7 +53,10 @@ namespace Csla.Configuration
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
       if (!proxyInit)
-        AddServerSideDataPortal(cslaOptions.DataPortal());
+      {
+        cslaOptions.DataPortal().UseLocalProxy();
+        cslaOptions.DataPortal().AddServerSideDataPortal();
+      }
 
       return builder;
     }
@@ -77,7 +80,6 @@ namespace Csla.Configuration
     public static CslaDataPortalConfiguration AddServerSideDataPortal(this CslaDataPortalConfiguration builder)
     {
       var services = builder.Services;
-      services.TryAddTransient(typeof(IDataPortalProxy), typeof(Channels.Local.LocalProxy));
       services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
       services.TryAddTransient<Server.DataPortalSelector>();
       services.TryAddTransient<Server.SimpleDataPortal>();

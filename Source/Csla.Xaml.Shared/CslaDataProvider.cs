@@ -1,4 +1,4 @@
-#if false
+#if !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataProvider.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

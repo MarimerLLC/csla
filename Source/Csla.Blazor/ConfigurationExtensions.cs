@@ -40,7 +40,7 @@ namespace Csla.Configuration
       options?.Invoke(blazorOptions);
 
       // use Blazor server context manager
-      var managerTypeName = "Csla.Blazor.Server.ApplicationContextManager, Csla.AspNetCore";
+      var managerTypeName = "Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore";
       var managerType = Type.GetType(managerTypeName, false);
       if (managerType == null)
         throw new TypeLoadException(managerTypeName);

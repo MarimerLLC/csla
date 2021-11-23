@@ -308,51 +308,6 @@ namespace Csla.Windows
 
     #endregion
 
-    #region DisableWhenClean
-
-    /// <summary>
-    /// Gets the disable when clean value.
-    /// </summary>
-    /// <param name="ctl">Reference to Control.</param>
-    [Category("Csla")]
-    [Description("If True, then the dirtiness of the underlying business object will cause this button to be enabled or disabled.")]
-    [Bindable(true)]
-    [DefaultValue(false)]
-    [Obsolete("Use instead DisableWhenUseless")]
-    [Browsable(false)]
-    public bool GetDisableWhenClean(Control ctl)
-    {
-      if (_sources.ContainsKey(ctl))
-        return _sources[ctl].DisableWhenClean;
-
-      return CslaActionExtenderProperties.DisableWhenCleanDefault;
-    }
-
-    /// <summary>
-    /// Sets the disable when clean value.
-    /// </summary>
-    /// <param name="ctl">Reference to Control.</param>
-    /// <param name="value">Value for property.</param>
-    [Category("Csla")]
-    [Description("If True, then the dirtiness of the underlying business object will cause this button to be enabled or disabled.")]
-    [Bindable(true)]
-    [DefaultValue(true)]
-    [Obsolete("Use instead DisableWhenUseless")]
-    [Browsable(false)]
-    public void SetDisableWhenClean(Control ctl, bool value)
-    {
-      if (_sources.ContainsKey(ctl))
-        _sources[ctl].DisableWhenClean = value;
-      else
-      {
-        CslaActionExtenderProperties props = new CslaActionExtenderProperties();
-        props.DisableWhenClean = value;
-        _sources.Add(ctl, props);
-      }
-    }
-
-    #endregion
-
     #region DisableWhenUseless
 
     /// <summary>

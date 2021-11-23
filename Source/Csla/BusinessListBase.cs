@@ -999,68 +999,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    [Obsolete]
-    public void BeginSave()
-    {
-      BeginSave(null, null);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="userState">User state object.</param>
-    [Obsolete]
-    public void BeginSave(object userState)
-    {
-      BeginSave(null, userState);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="handler">
-    /// Method called when the operation is complete.
-    /// </param>
-    [Obsolete]
-    public void BeginSave(EventHandler<SavedEventArgs> handler)
-    {
-      BeginSave(handler, null);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="handler">
-    /// Method called when the operation is complete.
-    /// </param>
-    /// <param name="userState">User state object.</param>
-    [Obsolete]
-    public async void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
-    {
-      Exception error = null;
-      T result = default(T);
-      try
-      {
-        result = await SaveAsync(userState, false);
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0];
-        else
-          error = ex;
-      }
-      catch (Exception ex)
-      {
-        error = ex;
-      }
-      if (handler != null)
-        handler(result, new SavedEventArgs(result, error, userState));
-    }
-
-    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_xyz method.
     /// </summary>
@@ -1143,12 +1081,6 @@ namespace Csla
     async Task ISavable.SaveAndMergeAsync(bool forceUpdate)
     {
       await SaveAndMergeAsync();
-    }
-
-    [Obsolete]
-    void ISavable.BeginSave()
-    {
-      BeginSave();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)

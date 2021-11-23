@@ -25,7 +25,7 @@ namespace Csla.Configuration
     /// <returns></returns>
     public static ICslaConfiguration AddBlazorServerSupport(this ICslaConfiguration config)
     {
-      return AddBlazorServerSupport(config, null);
+      return AddServerSideBlazor(config, null);
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace Csla.Configuration
     /// <param name="config">ICslaConfiguration instance</param>
     /// <param name="options">Options object</param>
     /// <returns></returns>
-    public static ICslaConfiguration AddBlazorServerSupport(this ICslaConfiguration config, Action<BlazorServerConfigurationOptions> options)
+    public static ICslaConfiguration AddServerSideBlazor(this ICslaConfiguration config, Action<BlazorServerConfigurationOptions> options)
     {
       var blazorOptions = new BlazorServerConfigurationOptions();
       options?.Invoke(blazorOptions);

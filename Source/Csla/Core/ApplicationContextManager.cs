@@ -8,8 +8,6 @@
 using System;
 using System.Security.Principal;
 using System.Threading;
-using Csla;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Core
 {
@@ -19,8 +17,8 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
-    private AsyncLocal<ContextDictionary> _localContext = new AsyncLocal<ContextDictionary>();
-    private AsyncLocal<ContextDictionary> _clientContext = new AsyncLocal<ContextDictionary>();
+    private AsyncLocal<ContextDictionary> _localContext = new();
+    private AsyncLocal<ContextDictionary> _clientContext = new();
 
     /// <summary>
     /// Creates an instance of the type

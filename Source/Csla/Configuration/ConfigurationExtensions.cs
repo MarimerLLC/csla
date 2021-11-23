@@ -43,7 +43,7 @@ namespace Csla.Configuration
       options?.Invoke(cslaOptions);
 
       // ApplicationContext defaults
-      services.TryAddScoped<ApplicationContext>();
+      services.AddScoped<ApplicationContext>();
       services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
 
       // Data portal API defaults

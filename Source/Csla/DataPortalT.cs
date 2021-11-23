@@ -186,105 +186,6 @@ namespace Csla
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    /// <summary>
-    /// Event raised when the operation has completed.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    public event EventHandler<DataPortalResult<T>> CreateCompleted;
-
-    /// <summary>
-    /// Raises the event.
-    /// </summary>
-    /// <param name="e">
-    /// The parameter provided to the event handler.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    protected virtual void OnCreateCompleted(DataPortalResult<T> e)
-    {
-      CreateCompleted?.Invoke(this, e);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to create a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    [Obsolete]
-    public void BeginCreate()
-    {
-      BeginCreate(Server.EmptyCriteria.Instance);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to create a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    [Obsolete]
-    public void BeginCreate(object criteria)
-    {
-      BeginCreate(criteria, null);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to create a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public async void BeginCreate(object criteria, object userState)
-    {
-      try
-      {
-        var obj = await CreateAsync(criteria);
-        OnCreateCompleted(new DataPortalResult<T>(obj, null, userState));
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          OnCreateCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
-        else
-          OnCreateCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-      catch (Exception ex)
-      {
-        OnCreateCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-    }
-
     private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync)
     {
       Server.DataPortalResult result = null;
@@ -337,54 +238,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Event raised when the operation has completed.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    public event EventHandler<DataPortalResult<T>> FetchCompleted;
-
-    /// <summary>
-    /// Raises the event.
-    /// </summary>
-    /// <param name="e">
-    /// The parameter provided to the event handler.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    protected virtual void OnFetchCompleted(DataPortalResult<T> e)
-    {
-      FetchCompleted?.Invoke(this, e);
-    }
-
-    /// <summary>
     /// Called by a factory method in a business class to Fetch 
     /// a new object, which is loaded with default
     /// values from the database.
@@ -426,57 +279,6 @@ namespace Csla
     public async Task<T> FetchAsync(params object[] criteria)
     {
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to Fetch a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    [Obsolete]
-    public void BeginFetch()
-    {
-      BeginFetch(Server.EmptyCriteria.Instance);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to Fetch a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    [Obsolete]
-    public void BeginFetch(object criteria)
-    {
-      BeginFetch(criteria, null);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to Fetch a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public async void BeginFetch(object criteria, object userState)
-    {
-      try
-      {
-        var obj = await FetchAsync(criteria);
-        OnFetchCompleted(new DataPortalResult<T>(obj, null, userState));
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          OnFetchCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
-        else
-          OnFetchCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-      catch (Exception ex)
-      {
-        OnFetchCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
     }
 
     internal async Task<T> DoUpdateAsync(T obj, bool isSync)
@@ -657,54 +459,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Event raised when the operation has completed.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    public event EventHandler<DataPortalResult<T>> UpdateCompleted;
-
-    /// <summary>
-    /// Raises the event.
-    /// </summary>
-    /// <param name="e">
-    /// The parameter provided to the event handler.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    protected virtual void OnUpdateCompleted(DataPortalResult<T> e)
-    {
-      UpdateCompleted?.Invoke(this, e);
-    }
-
-    /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
@@ -721,44 +475,6 @@ namespace Csla
           throw ex.InnerExceptions[0];
         else
           throw;
-      }
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to update an object.
-    /// </summary>
-    /// <param name="obj">Object to update.</param>
-    [Obsolete]
-    public void BeginUpdate(T obj)
-    {
-      BeginUpdate(obj, null);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to update an object.
-    /// </summary>
-    /// <param name="obj">Object to update.</param>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public async void BeginUpdate(T obj, object userState)
-    {
-      try
-      {
-        var result = await UpdateAsync(obj);
-        OnUpdateCompleted(new DataPortalResult<T>(result, null, userState));
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          OnUpdateCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
-        else
-          OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-      catch (Exception ex)
-      {
-        OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
     }
 
@@ -821,54 +537,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Event raised when the operation has completed.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    public event EventHandler<DataPortalResult<T>> DeleteCompleted;
-
-    /// <summary>
-    /// Raises the event.
-    /// </summary>
-    /// <param name="e">
-    /// The parameter provided to the event handler.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// If your application is running in WPF, this event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// If your application is running in Windows Forms,
-    /// this event will be raised on a background thread.
-    /// If you also set DataPortal.SynchronizationObject
-    /// to a Windows Forms form or control, then the event
-    /// will be raised on the UI thread automatically.
-    /// </para><para>
-    /// In any other environment (such as ASP.NET), this
-    /// event will be raised on a background thread.
-    /// </para>
-    /// </remarks>
-    [Obsolete]
-    protected virtual void OnDeleteCompleted(DataPortalResult<T> e)
-    {
-      DeleteCompleted?.Invoke(this, e);
-    }
-
-    /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
     /// </summary>
@@ -908,63 +576,9 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    [Obsolete]
-    public void BeginDelete(object criteria)
-    {
-      BeginDelete(criteria, null);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to delete an object.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public async void BeginDelete(object criteria, object userState)
-    {
-      try
-      {
-        await DoDeleteAsync(typeof(T), criteria, true);
-        OnDeleteCompleted(new DataPortalResult<T>(default(T), null, userState));
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
-        else
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-      catch (Exception ex)
-      {
-        OnDeleteCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to delete an object.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
     public async Task DeleteAsync(params object[] criteria)
     {
       await DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
-    }
-
-    /// <summary>
-    /// Event indicating an execute operation is complete.
-    /// </summary>
-    [Obsolete]
-    public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
-
-    /// <summary>
-    /// Raises the ExecuteCompleted event.
-    /// </summary>
-    /// <param name="e">Event arguments.</param>
-    [Obsolete]
-    protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
-    {
-      ExecuteCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -975,44 +589,6 @@ namespace Csla
     public T Execute(T command)
     {
       return Update(command);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to execute a command object.
-    /// </summary>
-    /// <param name="command">Command object to execute.</param>
-    [Obsolete]
-    public void BeginExecute(T command)
-    {
-      BeginExecute(command, null);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to execute a command object.
-    /// </summary>
-    /// <param name="command">Command object to execute.</param>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public async void BeginExecute(T command, object userState)
-    {
-      try
-      {
-        var result = await UpdateAsync(command);
-        OnExecuteCompleted(new DataPortalResult<T>(result, null, userState));
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          OnExecuteCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
-        else
-          OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
-      catch (Exception ex)
-      {
-        OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, userState));
-      }
     }
 
     /// <summary>

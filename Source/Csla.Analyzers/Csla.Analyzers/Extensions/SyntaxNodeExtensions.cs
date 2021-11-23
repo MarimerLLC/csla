@@ -14,7 +14,7 @@ namespace Csla.Analyzers.Extensions
         return false;
       }
 
-      if (@this.Kind() == SyntaxKind.UsingDirective)
+      if (@this.IsKind(SyntaxKind.UsingDirective))
       {
         var usingNode = @this as UsingDirectiveSyntax;
 

@@ -8,6 +8,7 @@
 using System;
 using System.Security.Principal;
 using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Xaml
 {
@@ -21,7 +22,24 @@ namespace Csla.Xaml
     /// </summary>
     public ApplicationContextManager(IServiceProvider serviceProvider)
       : base(serviceProvider)
-    { }
+    {
+      _serviceProvider = serviceProvider;
+    }
+
+    private static IServiceProvider _serviceProvider;
+    private static ApplicationContext applicationContext;
+
+    internal static ApplicationContext ApplicationContext 
+    { 
+      get
+      {
+        if (applicationContext == null)
+        {
+          applicationContext = _serviceProvider.GetRequiredService<ApplicationContext>();
+        }
+        return applicationContext;
+      }
+    }
 
     private static IPrincipal _principal = null;
 

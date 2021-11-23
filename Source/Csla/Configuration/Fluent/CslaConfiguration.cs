@@ -77,17 +77,6 @@ namespace Csla.Configuration
       return this;
     }
 
-    // TODO: resolve this
-    ///// <summary>
-    ///// Sets the RuleSet name to use for static HasPermission calls.
-    ///// </summary>
-    ///// <param name="ruleSet">The rule set.</param>
-    //public CslaConfiguration RuleSet(string ruleSet)
-    //{
-    //  ApplicationContext.RuleSet = ruleSet;
-    //  return this;
-    //}
-
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>

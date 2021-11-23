@@ -273,22 +273,6 @@ namespace Csla
     /// to the business object type.
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
-    [Obsolete]
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
-    {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
-    }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <returns></returns>
@@ -336,23 +320,6 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
-    }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <param name="relationship">Relationship with property value.</param>
-    /// <returns></returns>
-    [Obsolete]
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, RelationshipTypes relationship)
-    {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, relationship));
     }
 
     /// <summary>

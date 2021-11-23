@@ -266,134 +266,6 @@ namespace Csla
       new GraphMerger().MergeGraph(this, await SaveAsync(forceUpdate));
     }
 
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    [Obsolete]
-    public void BeginSave()
-    {
-      BeginSave(null);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public void BeginSave(object userState)
-    {
-      BeginSave(false, null, userState);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="handler">
-    /// Method called when the operation is complete.
-    /// </param>
-    [Obsolete]
-    public void BeginSave(EventHandler<SavedEventArgs> handler)
-    {
-      BeginSave(false, handler, null);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="forceUpdate">
-    /// If true, triggers overriding IsNew and IsDirty. 
-    /// If false then it is the same as calling Save().
-    /// </param>
-    /// <param name="handler">
-    /// Method called when the operation is complete.
-    /// </param>
-    /// <param name="userState">User state data.</param>
-    [Obsolete]
-    public async void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
-    {
-      T result = default(T);
-      Exception error = null;
-      try
-      {
-        result = await SaveAsync(forceUpdate, userState, false);
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0];
-        else
-          error = ex;
-      }
-      catch (Exception ex)
-      {
-        error = ex;
-      }
-
-      if (error != null)
-        OnSaved(null, error, userState);
-      handler?.Invoke(this, new SavedEventArgs(result, error, userState));
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="forceUpdate">
-    /// If true, triggers overriding IsNew and IsDirty. 
-    /// If false then it is the same as calling Save().
-    /// </param>
-    /// <remarks>
-    /// This overload is designed for use in web applications
-    /// when implementing the Update method in your 
-    /// data wrapper object.
-    /// </remarks>
-    [Obsolete]
-    public void BeginSave(bool forceUpdate)
-    {
-      this.BeginSave(forceUpdate, null);
-    }
-
-    /// <summary>
-    /// Starts an async operation to save the object to the database.
-    /// </summary>
-    /// <param name="forceUpdate">
-    /// If true, triggers overriding IsNew and IsDirty. 
-    /// If false then it is the same as calling Save().
-    /// </param>
-    /// <param name="handler">
-    /// Delegate reference to a callback handler that will
-    /// be invoked when the async operation is complete.
-    /// </param>
-    /// <remarks>
-    /// This overload is designed for use in web applications
-    /// when implementing the Update method in your 
-    /// data wrapper object.
-    /// </remarks>
-    [Obsolete]
-    public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
-    {
-      this.BeginSave(forceUpdate, handler, null);
-    }
-
-    /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to false and IsDirty to True.
-    /// </summary>
-    /// <param name="handler">
-    /// Delegate reference to a callback handler that will
-    /// be invoked when the async operation is complete.
-    /// </param>
-    /// <param name="userState">User state data.</param>
-    /// <remarks>
-    /// This overload is designed for use in web applications
-    /// when implementing the Update method in your 
-    /// data wrapper object.
-    /// </remarks>
-    [Obsolete]
-    public void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
-    {
-      this.BeginSave(false, handler, userState);
-    }
-
     #endregion
 
     #region ISavable Members
@@ -535,22 +407,6 @@ namespace Csla
     /// to the business object type.
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
-    [Obsolete]
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
-    {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, string.Empty, defaultValue));
-    }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <returns></returns>
@@ -598,23 +454,6 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
-    }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <param name="relationship">Relationship with property value.</param>
-    /// <returns></returns>
-    [Obsolete]
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, RelationshipTypes relationship)
-    {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, relationship));
     }
 
     /// <summary>

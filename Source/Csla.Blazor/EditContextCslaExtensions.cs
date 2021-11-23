@@ -44,32 +44,18 @@ namespace Csla.Blazor
     /// <param name="messages">The validation message store to be updated during validation</param>
     private static void ValidateModel(EditContext editContext, ValidationMessageStore messages)
     {
-      ICheckRules model;
-
-      // Get access to the model via the required interface
-      model = editContext.Model as ICheckRules;
-
-      // Check if the model was provided, and correctly cast
-      if (editContext.Model == null)
+      if (editContext.Model is ICheckRules model)
       {
-        throw new ArgumentNullException(nameof(editContext.Model));
-      }
-      if (model == null)
-      {
-        throw new ArgumentException(
-          string.Format(Csla.Properties.Resources.InterfaceNotImplementedException, 
-          nameof(editContext.Model), nameof(ICheckRules)));
-      }
-
-      // Transfer broken rules of severity Error to the ValidationMessageStore
-      messages.Clear();
-      foreach (var brokenRuleNode in BusinessRules.GetAllBrokenRules(model))
-      {
-        foreach (var brokenRule in brokenRuleNode.BrokenRules)
-        if (brokenRule.Severity == RuleSeverity.Error)
+        // Transfer broken rules of severity Error to the ValidationMessageStore
+        messages.Clear();
+        foreach (var brokenRuleNode in BusinessRules.GetAllBrokenRules(model))
         {
-          // Add a new message for each broken rule
-          messages.Add(new FieldIdentifier(brokenRuleNode.Object, brokenRule.Property), brokenRule.Description);
+          foreach (var brokenRule in brokenRuleNode.BrokenRules)
+            if (brokenRule.Severity == RuleSeverity.Error)
+            {
+              // Add a new message for each broken rule
+              messages.Add(new FieldIdentifier(brokenRuleNode.Object, brokenRule.Property), brokenRule.Description);
+            }
         }
       }
 
@@ -86,29 +72,19 @@ namespace Csla.Blazor
     /// <param name="fieldIdentifier">Identifier that indicates the field being validated</param>
     private static void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier)
     {
-      ICheckRules model;
-
-      // Get access to the model via the required interface
-      model = fieldIdentifier.Model as ICheckRules;
-
-      // Check if the model was provided, and correctly cast
-      if (model == null)
+      if (fieldIdentifier.Model is ICheckRules model)
       {
-        throw new ArgumentException(
-          string.Format(Csla.Properties.Resources.InterfaceNotImplementedException,
-          nameof(fieldIdentifier.Model), nameof(ICheckRules)));
-      }
-
-      // Transfer any broken rules of severity Error for the required property to the store
-      messages.Clear(fieldIdentifier);
-      foreach (BrokenRule brokenRule in model.GetBrokenRules())
-      {
-        if (brokenRule.Severity == RuleSeverity.Error)
+        // Transfer any broken rules of severity Error for the required property to the store
+        messages.Clear(fieldIdentifier);
+        foreach (BrokenRule brokenRule in model.GetBrokenRules())
         {
-          if (fieldIdentifier.FieldName.Equals(brokenRule.Property))
+          if (brokenRule.Severity == RuleSeverity.Error)
           {
-            // Add a message for each broken rule on the property under validation
-            messages.Add(fieldIdentifier, brokenRule.Description);
+            if (fieldIdentifier.FieldName.Equals(brokenRule.Property))
+            {
+              // Add a message for each broken rule on the property under validation
+              messages.Add(fieldIdentifier, brokenRule.Description);
+            }
           }
         }
       }

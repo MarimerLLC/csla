@@ -61,7 +61,7 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaPropertyInfoFactory"]; }
       set
-      {        
+      {
         ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = value;
       }
     }
@@ -85,18 +85,6 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaReader"]; }
       set { ConfigurationManager.AppSettings["CslaReader"] = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets a delegate reference to the method
-    /// called to create instances of factory objects
-    /// as requested by the MobileFactory attribute on
-    /// a CSLA Light business object.
-    /// </summary>
-    public string MobileFactoryLoader
-    {
-      get { return ConfigurationManager.AppSettings["CslaMobileFactoryLoader"]; }
-      set { ConfigurationManager.AppSettings["CslaMobileFactoryLoader"] = value; }
     }
 
     /// <summary>

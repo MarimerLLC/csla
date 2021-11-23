@@ -39,13 +39,6 @@ namespace Csla.Configuration
       var blazorOptions = new BlazorServerConfigurationOptions();
       options?.Invoke(blazorOptions);
 
-      // use Blazor server context manager
-      var managerTypeName = "Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore";
-      var managerType = Type.GetType(managerTypeName, false);
-      if (managerType == null)
-        throw new TypeLoadException(managerTypeName);
-      config.Services.AddScoped(typeof(Csla.Core.IContextManager), managerType);
-
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       if (blazorOptions.UseCslaPermissionsPolicy)

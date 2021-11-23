@@ -44,7 +44,7 @@ namespace Csla.Configuration
 
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
-      services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
+      RegisterContextManager(services);
 
       // Data portal API defaults
       services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
@@ -61,6 +61,34 @@ namespace Csla.Configuration
       return builder;
     }
 
+    private static void RegisterContextManager(IServiceCollection services)
+    {
+      var contextManagerType = typeof(Core.IContextManager);
+
+      var managerInit = services.Where(i => i.ServiceType.Equals(contextManagerType)).Any();
+      if (managerInit) return;
+
+      if (LoadContextManager(services, "Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore")) return;
+      if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
+      if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
+      if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
+      if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
+
+      // default to AsyncLocal context manager
+      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+    }
+
+    private static bool LoadContextManager(IServiceCollection services, string managerTypeName)
+    {
+      var managerType = Type.GetType(managerTypeName, false);
+      if (managerType != null)
+      {
+        services.AddScoped(typeof(Core.IContextManager), managerType);
+        return true;
+      }
+      return false;
+    }
+
     /// <summary>
     /// Configure CSLA .NET settings from .NET Core configuration
     /// subsystem.
@@ -70,23 +98,6 @@ namespace Csla.Configuration
     {
       config.Bind("csla", new CslaConfigurationOptions());
       return config;
-    }
-
-    /// <summary>
-    /// Add services required to host the server-side
-    /// data portal.
-    /// </summary>
-    /// <param name="builder"></param>
-    public static CslaDataPortalConfiguration AddServerSideDataPortal(this CslaDataPortalConfiguration builder)
-    {
-      var services = builder.Services;
-      services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
-      services.TryAddTransient<Server.DataPortalSelector>();
-      services.TryAddTransient<Server.SimpleDataPortal>();
-      services.TryAddTransient<Server.FactoryDataPortal>();
-      services.TryAddTransient<Server.DataPortalBroker>();
-      services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
-      return builder;
     }
   }
 }

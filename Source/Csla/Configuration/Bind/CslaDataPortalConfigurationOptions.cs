@@ -17,22 +17,22 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaDataPortalConfigurationOptions
   {
-    /// <summary>
-    /// Returns the authentication type being used by the
-    /// CSLA .NET framework.
-    /// </summary>
-    /// <remarks>
-    /// This value is read from the application configuration
-    /// file with the key value "CslaAuthentication". The value
-    /// "Windows" indicates CSLA .NET should use Windows integrated
-    /// (or AD) security. Any other value indicates the use of
-    /// custom security derived from CslaPrincipal.
-    /// </remarks>
-    public string AuthenticationType
-    {
-      get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
-      set { ConfigurationManager.AppSettings["CslaAuthentication"] = value; }
-    }
+    ///// <summary>
+    ///// Returns the authentication type being used by the
+    ///// CSLA .NET framework.
+    ///// </summary>
+    ///// <remarks>
+    ///// This value is read from the application configuration
+    ///// file with the key value "CslaAuthentication". The value
+    ///// "Windows" indicates CSLA .NET should use Windows integrated
+    ///// (or AD) security. Any other value indicates the use of
+    ///// custom security derived from CslaPrincipal.
+    ///// </remarks>
+    //public string AuthenticationType
+    //{
+    //  get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
+    //  set { ConfigurationManager.AppSettings["CslaAuthentication"] = value; }
+    //}
 
     /// <summary>
     /// Gets a value indicating whether objects should be
@@ -92,27 +92,6 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaDataPortalInterceptor"]; }
       set { ConfigurationManager.AppSettings["CslaDataPortalInterceptor"] = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the default data portal proxy type 
-    /// </summary>
-    public string Proxy
-    {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalProxy"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalProxy"] = value; }
-    }
-
-    ///<summary>
-    /// Gets or sets the full type name of
-    /// the data portal proxy factory object to be used to get 
-    /// the <see cref="IDataPortalProxy"/> instance to use when
-    /// communicating with the data portal server.
-    /// </summary>
-    public string ProxyFactory
-    {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = value; }
     }
 
     /// <summary>

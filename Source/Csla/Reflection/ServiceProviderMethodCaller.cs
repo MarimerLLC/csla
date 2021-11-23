@@ -202,7 +202,8 @@ namespace Csla.Reflection
             }
           }
           if (matches.Count() == 0 && 
-             (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute)))
+             (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute)
+             || typeOfOperation == typeof(UpdateChildAttribute)))
           {
             // implement zero parameter fallback if other matches not found
             foreach (var item in candidates)

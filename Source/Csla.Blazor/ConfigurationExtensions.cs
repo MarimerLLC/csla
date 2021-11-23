@@ -23,7 +23,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">ICslaConfiguration instance</param>
     /// <returns></returns>
-    public static ICslaConfiguration AddBlazorServerSupport(this ICslaConfiguration config)
+    public static ICslaConfiguration AddServerSideBlazor(this ICslaConfiguration config)
     {
       return AddServerSideBlazor(config, null);
     }
@@ -43,8 +43,8 @@ namespace Csla.Configuration
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       if (blazorOptions.UseCslaPermissionsPolicy)
       {
-        config.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
-        config.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
+        config.Services.AddTransient<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+        config.Services.AddTransient<IAuthorizationHandler, CslaPermissionsHandler>();
       }
       return config;
     }

@@ -38,12 +38,26 @@ namespace Csla.Xaml
     { }
 
     /// <summary>
+    /// Event raised when SaveAsync completes.
+    /// </summary>
+    public event Action<T> SaveComplete;
+
+    /// <summary>
+    /// Raises SaveComplete event.
+    /// </summary>
+    protected virtual void OnSaveComplete()
+    {
+      SaveComplete?.Invoke(Model);
+    }
+
+    /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
     public virtual async void SaveAsync(object sender, ExecuteEventArgs e)
     {
       await SaveAsync();
+      OnSaveComplete();
     }
 
     /// <summary>

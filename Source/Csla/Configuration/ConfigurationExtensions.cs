@@ -24,7 +24,7 @@ namespace Csla.Configuration
     /// Add CSLA .NET services for use by the application.
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
-    public static ICslaBuilder AddCsla(this IServiceCollection services)
+    public static IServiceCollection AddCsla(this IServiceCollection services)
     {
       return AddCsla(services, null);
     }
@@ -34,10 +34,8 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="options">Options for configuring CSLA .NET</param>
-    public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> options)
+    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaConfiguration> options)
     {
-      ICslaBuilder builder = new CslaBuilder(services);
-
       // Custom configuration
       var cslaOptions = new CslaConfiguration(services);
       options?.Invoke(cslaOptions);
@@ -58,7 +56,7 @@ namespace Csla.Configuration
         cslaOptions.DataPortal().AddServerSideDataPortal();
       }
 
-      return builder;
+      return services;
     }
 
     private static void RegisterContextManager(IServiceCollection services)

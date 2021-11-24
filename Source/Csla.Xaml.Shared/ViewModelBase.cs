@@ -589,31 +589,6 @@ namespace Csla.Xaml
       }
     }
 
-#if (ANDROID || IOS) || XAMARIN
-    /// <summary>
-    /// Adds a new item to the Model (if it
-    /// is a collection).
-    /// </summary>
-    protected virtual void BeginAddNew()
-    {
-#if ANDROID || IOS
-      var ibl = (Model as System.ComponentModel.IBindingList);
-#else
-      var ibl = (Model as IBindingList);
-#endif
-      if (ibl != null)
-      {
-        ibl.AddNew();
-      }
-      else
-      {
-        // else try to use as IObservableBindingList
-        var iobl = ((IObservableBindingList)Model);
-        iobl.AddNew();
-      }
-      OnSetProperties();
-    }
-#else
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).
@@ -635,7 +610,6 @@ namespace Csla.Xaml
       OnSetProperties();
       return result;
     }
-#endif
 
     /// <summary>
     /// Removes an item from the Model (if it

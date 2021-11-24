@@ -1,0 +1,33 @@
+﻿<Window x:Class="WpfExample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfExample"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="30" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="30" />
+    </Grid.RowDefinitions>
+    <Grid Name="toolbarArea" Grid.Row="0" Background="LightGray" >
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Button Name="closeButton" Content="Home" Grid.Column="0" Click="CloseAction" Style="{StaticResource toolbarButton}" />
+      <ContentControl Grid.Column="1" x:Name="toolbarContent" />
+      <Button Name="loginButton" Content="Login" Grid.Column="2" Click="LoginAction" Style="{StaticResource toolbarButton}" />
+    </Grid>
+    <ContentControl Name="contentArea" Grid.Row="1" />
+    <Grid Name="statusbarArea" Grid.Row="2" Background="LightGray">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <ContentControl Grid.Column="0" x:Name="statusbarContent" />
+    </Grid>
+  </Grid>
+</Window>

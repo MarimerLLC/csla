@@ -32,7 +32,7 @@ namespace Csla.Xaml
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
 #if ANDROID || IOS || XAMARIN
-    public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
+  public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
     INotifyPropertyChanged, IViewModel
@@ -515,7 +515,7 @@ namespace Csla.Xaml
     /// Model by invoking an action.
     /// </summary>
     /// <param name="factory">Factory method to invoke</param>
-    protected virtual async Task<T> RefreshAsync<F>(Func<Task<T>> factory)
+    public virtual async Task<T> RefreshAsync<F>(Func<Task<T>> factory)
     {
       T result = default;
       try
@@ -535,7 +535,7 @@ namespace Csla.Xaml
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    protected virtual async Task<T> SaveAsync()
+    public virtual async Task<T> SaveAsync()
     {
       try
       {

@@ -11,16 +11,13 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    <TextBlock Text="Id" Grid.Row="0" Grid.Column="0" />
-    <TextBlock Text="{Binding Id}" Grid.Row="0" Grid.Column="1" />
-    <TextBlock Text="Name" Grid.Row="1" Grid.Column="0" />
-    <TextBox Text="{Binding Name}" Grid.Row="1" Grid.Column="1" Width="200" />
-    <Button Content="Save" Grid.Row="2" Grid.Column="1" IsEnabled="{Binding IsSavable}" Click="SavePerson" />
+    <TextBlock Text="Name" Grid.Row="0" Grid.Column="0" />
+    <TextBox Text="{Binding Name}" Grid.Row="0" Grid.Column="1" Width="200" />
+    <Button Content="Save" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding IsSavable}" Click="SavePerson" />
   </Grid>
 </UserControl>

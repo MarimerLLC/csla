@@ -20,7 +20,7 @@ namespace Csla.Xaml
   /// InvokeMethod or Invoke.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-  public abstract class ViewModel<T> : ViewModelBase<T>
+  public class ViewModel<T> : ViewModelBase<T>
   {
     /// <summary>
     /// Saves the Model, first committing changes

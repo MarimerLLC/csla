@@ -38,17 +38,16 @@ namespace Csla.Xaml
     INotifyPropertyChanged, IViewModel
 #endif
   {
-    private ApplicationContext ApplicationContext { get; set; }
-
     /// <summary>
     /// Create new instance of base class used to create ViewModel objects that
     /// implement their own commands/verbs/actions.
     /// </summary>
-    protected ViewModelBase(ApplicationContext applicationContext)
+    protected ViewModelBase()
     {
-      ApplicationContext = applicationContext;
       SetPropertiesAtObjectLevel();
     }
+
+    private ApplicationContext ApplicationContext { get => Csla.Xaml.ApplicationContextManager.ApplicationContext; }
 
 #if ANDROID || IOS || XAMARIN || WINDOWS_UWP
     private T _model;
@@ -378,7 +377,7 @@ namespace Csla.Xaml
                         !isObjectBusy;
           }
         }
-        else 
+        else
         {
           CanRemove = false;
           CanAddNew = false;
@@ -502,10 +501,10 @@ namespace Csla.Xaml
     {
       Type sourceType = typeof(T);
 
-      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, sourceType);
-      CanGetObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, sourceType);
-      CanEditObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, sourceType);
-      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, sourceType);
+      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, sourceType);
+      CanGetObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.GetObject, sourceType);
+      CanEditObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, sourceType);
+      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, sourceType);
 
       // call SetProperties to set "instance" values 
       OnSetProperties();
@@ -554,7 +553,7 @@ namespace Csla.Xaml
         }
 
         IsBusy = true;
-        Model = (T) await savable.SaveAsync();
+        Model = (T)await savable.SaveAsync();
       }
       finally
       {
@@ -589,6 +588,31 @@ namespace Csla.Xaml
       }
     }
 
+#if (ANDROID || IOS) || XAMARIN
+    /// <summary>
+    /// Adds a new item to the Model (if it
+    /// is a collection).
+    /// </summary>
+    protected virtual void BeginAddNew()
+    {
+#if ANDROID || IOS
+      var ibl = (Model as System.ComponentModel.IBindingList);
+#else
+      var ibl = (Model as IBindingList);
+#endif
+      if (ibl != null)
+      {
+        ibl.AddNew();
+      }
+      else
+      {
+        // else try to use as IObservableBindingList
+        var iobl = ((IObservableBindingList)Model);
+        iobl.AddNew();
+      }
+      OnSetProperties();
+    }
+#else
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).
@@ -610,6 +634,7 @@ namespace Csla.Xaml
       OnSetProperties();
       return result;
     }
+#endif
 
     /// <summary>
     /// Removes an item from the Model (if it

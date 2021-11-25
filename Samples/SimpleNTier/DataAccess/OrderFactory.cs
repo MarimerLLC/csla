@@ -41,10 +41,10 @@ namespace DataAccess
     {
       var obj = (OrderList)MethodCaller.CreateInstance(typeof(OrderList));
       obj.RaiseListChangedEvents = false;
-
+      SetIsReadOnly(obj, false);
       obj.AddRange(from r in MockDb.Orders
                    select GetOrderInfo(r.Id, r.CustomerName));
-
+      SetIsReadOnly(obj, true);
       obj.RaiseListChangedEvents = true;
       return obj;
     }

@@ -50,7 +50,7 @@ namespace Csla.Analyzers
     private static void RegisterNewCodeFix(CodeFixContext context, SyntaxNode root, MethodDeclarationSyntax methodNode,
       SyntaxKind visibility, string description, Diagnostic diagnostic)
     {
-      var publicModifier = methodNode.Modifiers.Where(_ => _.Kind() == SyntaxKind.PublicKeyword).First();
+      var publicModifier = methodNode.Modifiers.Where(_ => _.IsKind(SyntaxKind.PublicKeyword)).First();
       var visibilityNode = SyntaxFactory.Token(publicModifier.LeadingTrivia, visibility,
         publicModifier.TrailingTrivia);
       var modifiers = methodNode.Modifiers.Replace(publicModifier, visibilityNode);

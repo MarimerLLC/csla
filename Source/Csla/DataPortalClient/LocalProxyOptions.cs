@@ -12,5 +12,11 @@ namespace Csla.Channels.Local
   /// </summary>
   public class LocalProxyOptions
   {
+    /// <summary>
+    /// Gets or sets a value indicating whether the LocalProxy
+    /// should create a DI scope for each data portal call.
+    /// (default is true)
+    /// </summary>
+    public bool CreateScopePerCall { get; set; } = true;
   }
 }

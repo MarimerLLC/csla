@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
+using System;
 using Csla.Blazor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,20 +21,32 @@ namespace Csla.Configuration
     /// <summary>
     /// Configures services to provide CSLA Blazor server support
     /// </summary>
-    /// <param name="builder">ICslaBuilder instance</param>
+    /// <param name="config">ICslaConfiguration instance</param>
+    /// <returns></returns>
+    public static ICslaConfiguration AddServerSideBlazor(this ICslaConfiguration config)
+    {
+      return AddServerSideBlazor(config, null);
+    }
+
+    /// <summary>
+    /// Configures services to provide CSLA Blazor server support
+    /// </summary>
+    /// <param name="config">ICslaConfiguration instance</param>
     /// <param name="options">Options object</param>
     /// <returns></returns>
-    public static ICslaBuilder WithBlazorServerSupport(this ICslaBuilder builder, BlazorServerConfigurationOptions options = null)
+    public static ICslaConfiguration AddServerSideBlazor(this ICslaConfiguration config, Action<BlazorServerConfigurationOptions> options)
     {
-      if (options == null)
-        options = new BlazorServerConfigurationOptions();
-      builder.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
-      if (options.UseCslaPermissionsPolicy)
+      var blazorOptions = new BlazorServerConfigurationOptions();
+      options?.Invoke(blazorOptions);
+
+      // use Blazor viewmodel
+      config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      if (blazorOptions.UseCslaPermissionsPolicy)
       {
-        builder.Services.AddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
-        builder.Services.AddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
+        config.Services.AddTransient<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+        config.Services.AddTransient<IAuthorizationHandler, CslaPermissionsHandler>();
       }
-      return builder;
+      return config;
     }
   }
 

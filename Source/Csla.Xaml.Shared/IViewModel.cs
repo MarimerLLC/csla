@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Defines a CSLA .NET viewmodel</summary>
 //-----------------------------------------------------------------------
-
-
 #if ANDROID
 namespace Csla.Axml
 #elif IOS

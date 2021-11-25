@@ -7,6 +7,8 @@
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
+using Csla.DataPortalClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -22,7 +24,7 @@ namespace Csla.Configuration
     /// Add CSLA .NET services for use by the application.
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
-    public static ICslaBuilder AddCsla(this IServiceCollection services)
+    public static IServiceCollection AddCsla(this IServiceCollection services)
     {
       return AddCsla(services, null);
     }
@@ -32,34 +34,61 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="options">Options for configuring CSLA .NET</param>
-    public static ICslaBuilder AddCsla(this IServiceCollection services, Action<CslaConfiguration> options)
+    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaConfiguration> options)
     {
-      var builder = new CslaBuilder(services);
-
-      // Configuration
+      // Custom configuration
       var cslaOptions = new CslaConfiguration(services);
       options?.Invoke(cslaOptions);
 
-      // ApplicationContext
-      services.TryAddScoped<ApplicationContext>();
-      services.TryAddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
+      // ApplicationContext defaults
+      services.AddScoped<ApplicationContext>();
+      RegisterContextManager(services);
 
-      //// Data portal services
-      //if (cslaOptions.DataPortal().UseDataPortalServer)
-      //{
-      //  services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
-      //  services.TryAddTransient<Server.DataPortalSelector>();
-      //  services.TryAddTransient<Server.SimpleDataPortal>();
-      //  services.TryAddTransient<Server.FactoryDataPortal>();
-      //  services.TryAddTransient<Server.DataPortalBroker>();
-      //  services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
-      //}
-
-      // Data portal API
+      // Data portal API defaults
       services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
       services.TryAddTransient(typeof(IChildDataPortal<>), typeof(DataPortal<>));
 
-      return builder;
+      // LocalProxy is always necessary to support RunLocal
+      services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
+      services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
+
+      // Default to using LocalProxy and local data portal
+      var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
+      if (!proxyInit)
+      {
+        cslaOptions.DataPortal().UseLocalProxy();
+        cslaOptions.DataPortal().AddServerSideDataPortal();
+      }
+
+      return services;
+    }
+
+    private static void RegisterContextManager(IServiceCollection services)
+    {
+      var contextManagerType = typeof(Core.IContextManager);
+
+      var managerInit = services.Where(i => i.ServiceType.Equals(contextManagerType)).Any();
+      if (managerInit) return;
+
+      if (LoadContextManager(services, "Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore")) return;
+      if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
+      if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
+      if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
+      if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
+
+      // default to AsyncLocal context manager
+      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+    }
+
+    private static bool LoadContextManager(IServiceCollection services, string managerTypeName)
+    {
+      var managerType = Type.GetType(managerTypeName, false);
+      if (managerType != null)
+      {
+        services.AddScoped(typeof(Core.IContextManager), managerType);
+        return true;
+      }
+      return false;
     }
 
     /// <summary>
@@ -71,23 +100,6 @@ namespace Csla.Configuration
     {
       config.Bind("csla", new CslaConfigurationOptions());
       return config;
-    }
-
-    /// <summary>
-    /// Add services required to host the server-side
-    /// data portal.
-    /// </summary>
-    /// <param name="builder"></param>
-    public static CslaDataPortalConfiguration AddServerSideDataPortal(this CslaDataPortalConfiguration builder)
-    {
-      var services = builder.Services;
-      services.TryAddTransient(typeof(Server.IDataPortalServer), typeof(Csla.Server.DataPortal));
-      services.TryAddTransient<Server.DataPortalSelector>();
-      services.TryAddTransient<Server.SimpleDataPortal>();
-      services.TryAddTransient<Server.FactoryDataPortal>();
-      services.TryAddTransient<Server.DataPortalBroker>();
-      services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
-      return builder;
     }
   }
 }

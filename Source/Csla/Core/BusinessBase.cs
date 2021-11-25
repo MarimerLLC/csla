@@ -25,6 +25,7 @@ using Csla.Rules;
 using System.Security;
 using Csla.Core.FieldManager;
 using System.Reflection;
+using System.Collections;
 
 namespace Csla.Core
 {
@@ -50,7 +51,8 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification,
-    IDataErrorInfo
+    IDataErrorInfo,
+    INotifyDataErrorInfo
   {
 
     /// <summary>
@@ -1314,7 +1316,7 @@ namespace Csla.Core
 
 #endregion
 
-#region IDataErrorInfo
+    #region IDataErrorInfo
 
     string IDataErrorInfo.Error
     {
@@ -1327,6 +1329,13 @@ namespace Csla.Core
           return String.Empty;
       }
     }
+
+    IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
+    {
+      return BusinessRules.GetBrokenRules().Select(r => r.Description);
+    }
+
+    bool INotifyDataErrorInfo.HasErrors => !IsSelfValid;
 
     string IDataErrorInfo.this[string columnName]
     {
@@ -1344,9 +1353,53 @@ namespace Csla.Core
       }
     }
 
-#endregion
+    [NonSerialized]
+    [NotUndoable]
+    private EventHandler<DataErrorsChangedEventArgs> _errorsChanged;
 
-#region Serialization Notification
+    event EventHandler<DataErrorsChangedEventArgs> INotifyDataErrorInfo.ErrorsChanged
+    {
+      add
+      {
+        _errorsChanged = (EventHandler<DataErrorsChangedEventArgs>)
+          System.Delegate.Combine(_errorsChanged, value);
+      }
+      remove
+      {
+        _errorsChanged = (EventHandler<DataErrorsChangedEventArgs>)
+          System.Delegate.Remove(_errorsChanged, value);
+      }
+    }
+
+    /// <summary>
+    /// Call to indicate that errors have changed for a property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    protected virtual void OnErrorsChanged(string propertyName)
+    {
+      _errorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      base.OnPropertyChanged(propertyInfo);
+      OnErrorsChanged(propertyInfo.Name);
+    }
+
+    #endregion
+
+    #region Serialization Notification
 
     void ISerializationNotification.Deserialized()
     {
@@ -3744,6 +3797,6 @@ namespace Csla.Core
       return BrokenRulesCollection;
     }
 
-#endregion
+    #endregion
   }
 }

@@ -1,12 +1,14 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !XAMARIN && !NETFX_CORE
+//-----------------------------------------------------------------------
 // <copyright file="XamlConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
+using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
+using Csla.Xaml;
 
 namespace Csla.Configuration
 {
@@ -21,19 +23,37 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <returns></returns>
-    public static ICslaConfiguration WithXaml(this ICslaConfiguration config)
+    public static ICslaConfiguration AddXaml(this ICslaConfiguration config)
     {
-      config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Xaml.ApplicationContextManager));
-      return config;
+      return AddXaml(config, null);
     }
 
     /// <summary>
-    /// Configures the application to use CSLA .NET
+    /// Registers services necessary for Xaml-based
+    /// environments.
     /// </summary>
-    /// <param name="builder">HostBuilder instance</param>
-    public static HostBuilder UseCsla(this HostBuilder builder)
+    /// <param name="config">CslaConfiguration object</param>
+    /// <param name="options">XamlOptions action</param>
+    /// <returns></returns>
+    public static ICslaConfiguration AddXaml(this ICslaConfiguration config, Action<XamlOptions> options)
     {
-      return builder;
+      var xamlOptions = new XamlOptions();
+      options?.Invoke(xamlOptions);
+
+      // use correct mode for raising PropertyChanged events
+      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = Csla.ApplicationContext.PropertyChangedModes.Xaml.ToString();
+
+      config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      return config;
     }
   }
+
+  /// <summary>
+  /// Configuration options for AddXaml method
+  /// </summary>
+  public class XamlOptions
+  {
+
+  }
 }
+#endif

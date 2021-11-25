@@ -43,7 +43,7 @@ public class A
 }";
       var rootNode = await GetRootAsync(code);
       var invocationNode = rootNode.DescendantNodes(_ => true)
-        .Where(_ => _.Kind() == SyntaxKind.InvocationExpression).First();
+        .Where(_ => _.IsKind(SyntaxKind.InvocationExpression)).First();
 
       Assert.IsNotNull(invocationNode.FindParent<ArrowExpressionClauseSyntax>());
     }
@@ -60,7 +60,7 @@ public class A
 }";
       var rootNode = await GetRootAsync(code);
       var invocationNode = rootNode.DescendantNodes(_ => true)
-        .Where(_ => _.Kind() == SyntaxKind.InvocationExpression).First();
+        .Where(_ => _.IsKind(SyntaxKind.InvocationExpression)).First();
 
       Assert.IsNull(invocationNode.FindParent<AwaitExpressionSyntax>());
     }

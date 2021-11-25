@@ -11,8 +11,8 @@
       <ListView.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Name}" Width="100" Margin="3"/>
-            <Button Content="Edit" Margin="3" Height="20" Click="EditPerson"/>
+            <TextBlock Text="{Binding Name}" Width="100" VerticalAlignment="Center" Margin="3" />
+            <Button Content="Edit" Click="EditPerson" />
           </StackPanel>
         </DataTemplate>
       </ListView.ItemTemplate>

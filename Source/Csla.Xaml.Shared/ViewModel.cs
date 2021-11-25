@@ -6,13 +6,6 @@
 // </copyright>
 // <summary>Base class used to create ViewModel objects,</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-
 #if ANDROID
 namespace Csla.Axml
 #elif IOS
@@ -30,34 +23,12 @@ namespace Csla.Xaml
   public class ViewModel<T> : ViewModelBase<T>
   {
     /// <summary>
-    /// Creates an instance of the type.
-    /// </summary>
-    /// <param name="applicationContext"></param>
-    public ViewModel(ApplicationContext applicationContext)
-      : base(applicationContext)
-    { }
-
-    /// <summary>
-    /// Event raised when SaveAsync completes.
-    /// </summary>
-    public event Action<T> SaveComplete;
-
-    /// <summary>
-    /// Raises SaveComplete event.
-    /// </summary>
-    protected virtual void OnSaveComplete()
-    {
-      SaveComplete?.Invoke(Model);
-    }
-
-    /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
     public virtual async void SaveAsync(object sender, ExecuteEventArgs e)
     {
       await SaveAsync();
-      OnSaveComplete();
     }
 
     /// <summary>
@@ -75,7 +46,11 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void AddNew(object sender, ExecuteEventArgs e)
     {
+#if ANDROID || IOS
+      BeginAddNew();
+#else
       DoAddNew();
+#endif
     }
 
     /// <summary>

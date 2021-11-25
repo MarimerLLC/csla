@@ -27,16 +27,19 @@ namespace WpfExample.Pages
     private async void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
       var context = Context as PersonInfo;
-      if (context == null)
-        ViewModel.Model = await _portal.CreateAsync();
-      else
-        ViewModel.Model = await _portal.FetchAsync(context.Id);
+      ViewModel.Model = await ViewModel.RefreshAsync<PersonEdit>(async () =>
+      {
+        if (context == null)
+          return await _portal.CreateAsync();
+        else
+          return await _portal.FetchAsync(context.Id);
+      });
       DataContext = ViewModel;
     }
 
     private async void SavePerson(object sender, RoutedEventArgs e)
     {
-      ViewModel.Model = await _portal.UpdateAsync(ViewModel.Model);
+      await ViewModel.SaveAsync();
       MainWindow.Instance.ShowPage(typeof(PersonListPage));
     }
   }

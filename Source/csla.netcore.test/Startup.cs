@@ -1,5 +1,11 @@
-﻿using Csla.Configuration;
-using Csla.TestHelpers;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Startup.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Initialisation of environment for test runs</summary>
+//-----------------------------------------------------------------------
+using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -9,8 +15,9 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
-namespace Csla.Blazor.Test
+namespace Csla.Test
 {
 
   [TestClass]
@@ -28,6 +35,7 @@ namespace Csla.Blazor.Test
       var services = new ServiceCollection();
 
       // Add Csla
+      services.AddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddCsla();
       serviceProvider = services.BuildServiceProvider();
 

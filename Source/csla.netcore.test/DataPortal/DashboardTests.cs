@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Csla;
 using Csla.Configuration;
+using Csla.Server.Dashboard;
+using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -27,36 +30,44 @@ namespace csla.netcore.test.DataPortal
   [TestClass]
   public class DashboardTests
   {
-    [TestCleanup]
-    public void TestCleanup()
-    {
-      new CslaConfiguration().DataPortal().DashboardType("");
-    }
+    //    [TestCleanup]
+    //    public void TestCleanup()
+    //    {
+    //      new CslaConfiguration().DataPortal().DashboardType("");
+    //    }
 
     [TestMethod]
     public void DashboardDefaultIsNullDashboard()
     {
-      new CslaConfiguration().DataPortal().DashboardType("");
-      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      ServiceProvider serviceProvider;
+
+      // Initialise DI, and add Csla using default settings
+      var services = new ServiceCollection();
+      services.AddCsla();
+      serviceProvider = services.BuildServiceProvider();
+
+      IDashboard dashboard = serviceProvider.GetRequiredService<IDashboard>();
       Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
     }
 
-    [TestMethod]
-    public void DashboardUseRealDashboard()
-    {
-      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
-      Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.Dashboard));
-    }
+    // This would really be testing the behaviour of the service provider not the dashboard
+    // That doesn't really feel all that appropriate as a test
+    // [TestMethod]
+    // public void DashboardUseRealDashboard()
+    // {
+    //   new CslaConfiguration().DataPortal().DashboardType("Dashboard");
+    //   var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+    //   Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.Dashboard));
+    // }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task DashboardSuccessCounter()
     {
-      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      IServiceProvider serviceProvider = InitialiseServiceProviderUsingRealDashboard();
+      var dashboard = serviceProvider.GetRequiredService<IDashboard>();
 
-      var obj = Csla.DataPortal.Create<SimpleType>();
+      var obj = CreateSimpleType(serviceProvider);
 
       await Task.Delay(500);
 
@@ -66,17 +77,19 @@ namespace csla.netcore.test.DataPortal
       Assert.AreEqual(1, dashboard.CompletedCalls, "completed");
     }
 
+    // This test fails when included. Are failures not being recorded correctly?
+    // N.B. This test was already ignored before CSLA 6, so it appears it used to fail before too!
+    [Ignore]
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    [Ignore]
     public async Task DashboardFailureCounter()
     {
-      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
-      
+      IServiceProvider serviceProvider = InitialiseServiceProviderUsingRealDashboard();
+      var dashboard = serviceProvider.GetRequiredService<IDashboard>();
+
       try
       {
-        var obj = Csla.DataPortal.Fetch<SimpleType>("123");
+        var obj = FetchSimpleType(serviceProvider, "123");
       }
       catch { /*expected failure*/ }
 
@@ -88,18 +101,20 @@ namespace csla.netcore.test.DataPortal
       Assert.AreEqual(0, dashboard.CompletedCalls, "completed");
     }
 
+    // This test fails when included. Are failures not being recorded correctly?
+    // N.B. This test was already ignored before CSLA 6, so it appears it used to fail before too!
+    [Ignore]
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    [Ignore]
     public async Task DashboardRecentActivity()
     {
-      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      IServiceProvider serviceProvider = InitialiseServiceProviderUsingRealDashboard();
+      var dashboard = serviceProvider.GetRequiredService<IDashboard>();
 
-      var obj = Csla.DataPortal.Fetch<SimpleType>(123);
+      var obj = FetchSimpleType(serviceProvider, 123);
       try
       {
-        obj = Csla.DataPortal.Fetch<SimpleType>("123");
+        obj = FetchSimpleType(serviceProvider, "123");
       }
       catch { /*expected failure*/ }
 
@@ -110,6 +125,40 @@ namespace csla.netcore.test.DataPortal
       Assert.IsTrue(activity.Average(r => r.Runtime.TotalMilliseconds) > 0, "runtime");
       Assert.AreEqual(typeof(SimpleType).AssemblyQualifiedName, activity.Select(r => r.ObjectType).First().AssemblyQualifiedName);
       Assert.AreEqual(DataPortalOperations.Fetch, activity.Select(r => r.Operation).First());
+    }
+
+    private SimpleType CreateSimpleType(IServiceProvider serviceProvider)
+    {
+      IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
+      return dataPortal.Create();
+    }
+
+    private SimpleType FetchSimpleType(IServiceProvider serviceProvider, int id)
+    {
+      IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
+      return dataPortal.Fetch(id);
+    }
+
+    private SimpleType FetchSimpleType(IServiceProvider serviceProvider, string idString)
+    {
+      IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
+      return dataPortal.Fetch(idString);
+    }
+
+    private IServiceProvider InitialiseServiceProviderUsingRealDashboard()
+    {
+      ServiceProvider serviceProvider;
+
+      // Initialise DI
+      var services = new ServiceCollection();
+
+      // Add Csla, using the real dashboard
+      services.AddSingleton<IDashboard, Dashboard>();
+      services.AddCsla();
+      serviceProvider = services.BuildServiceProvider();
+
+      return serviceProvider;
+
     }
   }
 

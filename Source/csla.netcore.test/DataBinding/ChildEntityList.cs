@@ -20,15 +20,6 @@ namespace Csla.Test.DataBinding
       this.MarkAsChild();
     }
 
-    #region "factory methods"
-
-    public static ChildEntityList NewChildEntityList()
-    {
-      return new ChildEntityList();
-    }
-
-    #endregion
-
     #region "Criteria"
 
     [Serializable()]
@@ -45,11 +36,6 @@ namespace Csla.Test.DataBinding
       {
         //child.Update(tr);
       }
-    }
-
-    public static ChildEntityList GetList()
-    {
-      return Csla.DataPortal.Fetch<ChildEntityList>(new Criteria());
     }
 
     [Fetch]

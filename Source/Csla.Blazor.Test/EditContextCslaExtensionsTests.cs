@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Csla.TestHelpers;
 
 namespace Csla.Blazor.Test
 {

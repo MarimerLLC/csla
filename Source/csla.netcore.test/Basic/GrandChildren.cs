@@ -17,17 +17,8 @@ namespace Csla.Test.Basic
     {
         public void Add(string data)
         {
-            this.Add(GrandChild.NewGrandChild(data));
-        }
-
-        internal static GrandChildren NewGrandChildren()
-        {
-            return new GrandChildren();
-        }
-
-        internal static GrandChildren GetGrandChildren(IDataReader dr)
-        {
-            return null;
+            var grandChild = this.AddNew();
+            grandChild.Data = data;
         }
 
         internal void Update(IDbTransaction tr)

@@ -17,18 +17,8 @@ namespace Csla.Test.Basic
     {
         public void Add(string data)
         {
-            this.Add(Child.NewChild(data));
-        }
-
-
-        internal static Children NewChildren()
-        {
-            return new Children();
-        }
-
-        internal static Children GetChildren(IDataReader dr)
-        {
-            return null;
+            var child = this.AddNew();
+            child.Data = data;
         }
 
         internal void Update(IDbTransaction tr)
@@ -37,11 +27,6 @@ namespace Csla.Test.Basic
             {
                 child.Update(tr);
             }
-        }
-
-        public Children()
-        {
-            this.MarkAsChild();
         }
 
         public int DeletedCount

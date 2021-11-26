@@ -14,18 +14,10 @@ namespace Csla.Test.Basic
     [Serializable()]
     public class NameValueListObj : NameValueListBase<int, string>
     {
-        public static NameValueListObj GetNameValueListObj()
-        {
-            return Csla.DataPortal.Fetch<NameValueListObj>();
-        }
-
         [Fetch]
         protected void DataPortal_Fetch()
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("NameValueListObj", "Fetched");
-#pragma warning restore CS0618 // Type or member is obsolete
+            TestResults.Add("NameValueListObj", "Fetched");
 
             this.IsReadOnly = false;
             for (int i = 0; i < 10; i++)

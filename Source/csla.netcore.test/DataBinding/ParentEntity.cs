@@ -18,7 +18,7 @@ namespace Csla.Test.DataBinding
   {
     #region "Business methods"
 
-    private ChildEntityList _children = ChildEntityList.NewChildEntityList();
+    private ChildEntityList _children;
     [NotUndoable()]
     private string _notUndoable;
 
@@ -80,25 +80,6 @@ namespace Csla.Test.DataBinding
 
     #endregion
 
-    #region "Factory Methods"
-
-    public static ParentEntity NewParentEntity()
-    {
-      return Csla.DataPortal.Create<ParentEntity>();
-    }
-
-    public static ParentEntity GetParentEntity(int ID)
-    {
-      return Csla.DataPortal.Fetch<ParentEntity>(new Criteria(ID));
-    }
-
-    public static void DeleteParentEntity(int ID)
-    {
-      Csla.DataPortal.Delete<ParentEntity>(new Criteria(ID));
-    }
-
-    #endregion
-
     #region "Criteria"
 
     [Serializable()]
@@ -118,34 +99,30 @@ namespace Csla.Test.DataBinding
 
     [RunLocal()]
     [Create]
-    protected void DataPortal_Create()
+    protected void DataPortal_Create([Inject] IChildDataPortal<ChildEntityList> dataPortal)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Created");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Created");
+      _children = dataPortal.CreateChild();
       BusinessRules.CheckRules();
       Console.WriteLine("DataPortal_Create");
     }
 
     [Fetch]
-    protected void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria, [Inject] IChildDataPortal<ChildEntityList> dataPortal)
     {
+      _children = dataPortal.CreateChild();
       Console.WriteLine("DataPortal_Fetch");
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Fetched");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Fetched");
       BusinessRules.CheckRules();
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Inserted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Inserted");
       Console.WriteLine("DataPortal_Insert");
     }
 
@@ -153,30 +130,24 @@ namespace Csla.Test.DataBinding
     protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Updated");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Updated");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted Self");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Deleted Self");
     }
 
     [Delete]
     protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Deleted");
     }
 
     #endregion

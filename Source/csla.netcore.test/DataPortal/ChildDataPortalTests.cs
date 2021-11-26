@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Csla;
 using Csla.Configuration;
+using Csla.TestHelpers;
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -30,75 +31,77 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task CreateChildNoCriteria()
     {
-      var child = await Csla.DataPortal.CreateChildAsync<TestChild>();
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.CreateChildAsync();
       Assert.AreEqual("none", child.Name);
     }
 
     [TestMethod]
     public async Task CreateChildInt32Criteria()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.CreateAsync<TestChild>(123);
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.CreateChildAsync(123);
       Assert.AreEqual("Int32", child.Name);
     }
 
     [TestMethod]
     public async Task CreateChildMultipleCriteria()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.CreateAsync<TestChild>("abc", 123);
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.CreateChildAsync("abc", 123);
       Assert.AreEqual("2", child.Name);
     }
 
     [TestMethod]
     public async Task FetchChildNoCriteria()
     {
-      var child = await Csla.DataPortal.FetchChildAsync<TestChild>();
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.FetchChildAsync();
       Assert.AreEqual("none", child.Name);
     }
 
     [TestMethod]
     public async Task FetchChildInt32Criteria()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChild>(123);
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.FetchChildAsync(123);
       Assert.AreEqual("Int32", child.Name);
     }
 
     [TestMethod]
     public async Task FetchChildMultipleCriteria()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChild>("abc", 123);
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.FetchChildAsync("abc", 123);
       Assert.AreEqual("2", child.Name);
     }
 
     [TestMethod]
     public async Task UpdateChild()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChild>();
-      await dp.UpdateAsync(child, "update", 123);
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.FetchChildAsync();
+      await dp.UpdateChildAsync(child, "update", 123);
       Assert.AreEqual("update/123", child.Name);
     }
 
     [TestMethod]
     public async Task DeleteSelfChild()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChild>();
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChild>();
+      var child = await dp.FetchChildAsync();
       child.MarkForDeletion();
-      await dp.UpdateAsync(child, "deleteme", 123);
+      await dp.UpdateChildAsync(child, "deleteme", 123);
       Assert.AreEqual("deleteme", child.Name);
     }
 
     [TestMethod]
     public async Task DeleteSelfChildNoParamFallback()
     {
-      var dp = new Server.ChildDataPortal();
-      var child = await dp.FetchAsync<TestChildDeleteFallback>();
+      var dp = DataPortalFactory.CreateChildDataPortal<TestChildDeleteFallback>();
+      var child = await dp.FetchChildAsync();
       child.MarkForDeletion();
-      await dp.UpdateAsync(child, "update", 123);
+      await dp.UpdateChildAsync(child, "update", 123);
       Assert.AreEqual("deleted", child.Name);
     }
   }

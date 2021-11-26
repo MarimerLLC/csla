@@ -15,6 +15,7 @@ using Csla.Serialization.Mobile;
 using System.Collections.Generic;
 using System.IO;
 using Csla;
+using Csla.TestHelpers;
 
 #if !NUNIT
 
@@ -30,94 +31,96 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace csla.netcore.test.Configuration
 {
-  //[TestClass]
-  //public class ReadConfigFromDotnetCoreSubsystemTests
-  //{
-  //  [TestMethod]
-  //  public void ReadConfigCore()
-  //  {
-  //    var config = new ConfigurationBuilder()
-  //           .AddJsonFile("appsettings.coresettings.test.json")
-  //           .Build()
-  //           .ConfigureCsla();
+  [TestClass]
+  public class ReadConfigFromDotnetCoreSubsystemTests
+  {
 
-  //    Assert.AreEqual(PropertyChangedModes.Windows,(PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), ConfigurationManager.AppSettings["CslaPropertyChangedMode"]));
-  //    Assert.AreEqual("test1,test2", ConfigurationManager.AppSettings["CslaPropertyInfoFactory"], "CslaPropertyInfoFactory");
-  //    Assert.AreEqual("testReader", ConfigurationManager.AppSettings["CslaReader"], "CslaReader");
-  //    Assert.AreEqual("testSerializationFormatter", ConfigurationManager.AppSettings["CslaSerializationFormatter"], "CslaSerializationFormatter");
-  //    Assert.AreEqual("10", ConfigurationManager.AppSettings["CslaPrincipalCacheSize"], "CslaPrincipalCacheSize");
-  //    Assert.IsInstanceOfType(CslaReaderWriterFactory.GetCslaWriter(), typeof(TestCslaWriter), "CslaWriter");
-  //    Assert.AreEqual("testDbProvider", ConfigurationManager.AppSettings["CslaDbProvider"], "CslaDbProvider");
-  //    Assert.AreEqual("RepeatableRead", ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"], "DefaultTransactionIsolationLevel");
-  //    Assert.AreEqual("60", ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"], "DefaultTransactionTimeoutInSeconds");                
-  //  }
+    [Ignore]
+    [TestMethod]
+    public void ReadConfigCore()
+    {
+      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      var config = new ConfigurationBuilder()
+             .AddJsonFile("appsettings.coresettings.test.json")
+             .Build()
+             .ConfigureCsla();
 
-  //  [TestCleanup]
-  //  public void ClearContextsAfterEachTest()
-  //  {
-  //    CleanupContextAndConfigurations();
-  //  }
+      Assert.AreEqual(PropertyChangedModes.Windows, (PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), ConfigurationManager.AppSettings["CslaPropertyChangedMode"]));
+      Assert.AreEqual("test1,test2", ConfigurationManager.AppSettings["CslaPropertyInfoFactory"], "CslaPropertyInfoFactory");
+      Assert.AreEqual("testReader", ConfigurationManager.AppSettings["CslaReader"], "CslaReader");
+      Assert.AreEqual("testSerializationFormatter", ConfigurationManager.AppSettings["CslaSerializationFormatter"], "CslaSerializationFormatter");
+      Assert.AreEqual("10", ConfigurationManager.AppSettings["CslaPrincipalCacheSize"], "CslaPrincipalCacheSize");
+      Assert.IsInstanceOfType(CslaReaderWriterFactory.GetCslaWriter(applicationContext), typeof(TestCslaWriter), "CslaWriter");
+      Assert.AreEqual("testDbProvider", ConfigurationManager.AppSettings["CslaDbProvider"], "CslaDbProvider");
+      Assert.AreEqual("RepeatableRead", ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"], "DefaultTransactionIsolationLevel");
+      Assert.AreEqual("60", ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"], "DefaultTransactionTimeoutInSeconds");
+    }
 
-  //  private static void CleanupContextAndConfigurations()
-  //  {
-  //    ApplicationContext.AuthenticationType = null;
-  //    ApplicationContext.DataPortalActivator = null;
-  //    ConfigurationManager.AppSettings["CslaDataPortalActivator"] = null;
-  //    ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
-  //    ConfigurationManager.AppSettings["CslaMobileFactoryLoader"] = null;
-  //    ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = null;
-  //    ConfigurationManager.AppSettings["CslaReader"] = null; FactoryDataPortal.FactoryLoader = null;
-  //    ApplicationContext.DataPortalReturnObjectOnException = true;
-  //    DataPortalExceptionHandler.ExceptionInspector = null;
-  //    Csla.Server.DataPortal.InterceptorType = null;
-  //    ApplicationContext.DataPortalProxyFactory = string.Empty;
-  //    ApplicationContext.DataPortalProxy = null;
-  //    CslaReaderWriterFactory.SetCslaWriterType(null);
-  //    CslaReaderWriterFactory.SetCslaReaderType(null);
-  //    ConfigurationManager.AppSettings["CslaReader"] = null;
-  //    Csla.Configuration.ConfigurationManager.AppSettings["CslaWriter"] = null;
-  //    ApplicationContext.UseReflectionFallback = true;
-  //    ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-  //    ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.ReadCommitted;
-  //    ApplicationContext.DefaultTransactionTimeoutInSeconds = 90;
-  //    ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileFormatter";
-  //    new Csla.Configuration.CslaConfiguration()
-  //       .PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Xaml)
-  //       .PropertyInfoFactory(null)
-  //       .UseReflectionFallback(true);
-  //    ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-  //    ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = null;
-  //  }
+    [TestCleanup]
+    public void ClearContextsAfterEachTest()
+    {
+      CleanupContextAndConfigurations();
+    }
 
-  //  [TestInitialize]
-  //  public void CleanupConfigurationBeforeEachTest()
-  //  {
-  //    CleanupContextAndConfigurations();
-  //  }
+    private static void CleanupContextAndConfigurations()
+    {
+      //ApplicationContext.AuthenticationType = null;
+      //ApplicationContext.DataPortalActivator = null;
+      //ConfigurationManager.AppSettings["CslaDataPortalActivator"] = null;
+      //ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
+      //ConfigurationManager.AppSettings["CslaMobileFactoryLoader"] = null;
+      //ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"] = null;
+      //ConfigurationManager.AppSettings["CslaReader"] = null; FactoryDataPortal.FactoryLoader = null;
+      //ApplicationContext.DataPortalReturnObjectOnException = true;
+      //DataPortalExceptionHandler.ExceptionInspector = null;
+      //Csla.Server.DataPortal.InterceptorType = null;
+      //// ApplicationContext.DataPortalProxy = null;
+      //CslaReaderWriterFactory.SetCslaWriterType(null);
+      //CslaReaderWriterFactory.SetCslaReaderType(null);
+      //ConfigurationManager.AppSettings["CslaReader"] = null;
+      //Csla.Configuration.ConfigurationManager.AppSettings["CslaWriter"] = null;
+      //ApplicationContext.UseReflectionFallback = true;
+      //ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      //ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.ReadCommitted;
+      //ApplicationContext.DefaultTransactionTimeoutInSeconds = 90;
+      //ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileFormatter";
+      ////new Csla.Configuration.CslaConfiguration()
+      ////   .PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Xaml)
+      ////   .PropertyInfoFactory(null)
+      ////   .UseReflectionFallback(true);
+      //ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      //ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = null;
+    }
 
-  //  [TestMethod]
-  //  public void DataPortalConfigCore()
-  //  {
-  //    var config = new ConfigurationBuilder()
-  //          .AddJsonFile("appsettings.dataportal.test.json")
-  //          .Build()
-  //          .ConfigureCsla();
+    [TestInitialize]
+    public void CleanupConfigurationBeforeEachTest()
+    {
+      CleanupContextAndConfigurations();
+    }
 
-  //    Assert.AreEqual("testAuthentication", AuthenticationType, nameof(AuthenticationType));
-  //    Assert.AreEqual(true, AutoCloneOnUpdate, nameof(AutoCloneOnUpdate));
-  //    Assert.IsInstanceOfType(DataPortalActivator, typeof(TestActivator), nameof(DataPortalActivator));
-  //    Assert.AreEqual("testProxyFactory", DataPortalProxyFactory, nameof(DataPortalProxyFactory));
-  //    Assert.AreEqual(true, DataPortalReturnObjectOnException, nameof(DataPortalReturnObjectOnException));
-  //    Assert.AreEqual("testProxy", DataPortalProxy, nameof(DataPortalProxy));
-  //    Assert.AreEqual("testProxyUrl", DataPortalUrlString, nameof(DataPortalUrlString));
-  //    Assert.AreEqual("testExceptionInspector", Csla.Server.DataPortalExceptionHandler.ExceptionInspector, nameof(Csla.Server.DataPortalExceptionHandler.ExceptionInspector));
-  //    Assert.IsInstanceOfType(FactoryDataPortal.FactoryLoader, typeof(TestObjectFactoryLoader), "CslaObjectFactoryLoader");
-  //    Assert.AreEqual("testInterceptor", ConfigurationManager.AppSettings["CslaDataPortalInterceptor"], "InterceptorType");
-  //    Assert.AreEqual("testAuthorizationProvider", ConfigurationManager.AppSettings["CslaAuthorizationProvider"], "CslaAuthorizationProvider");
-  //  }
-  //}
+    [Ignore]
+    [TestMethod]
+    public void DataPortalConfigCore()
+    {
+      var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.dataportal.test.json")
+            .Build()
+            .ConfigureCsla();
 
-  public class TestObjectFactoryLoader : IObjectFactoryLoader
+      Assert.AreEqual("testAuthentication", AuthenticationType, nameof(AuthenticationType));
+      Assert.AreEqual(true, AutoCloneOnUpdate, nameof(AutoCloneOnUpdate));
+      // Assert.IsInstanceOfType(DataPortalActivator, typeof(TestActivator), nameof(DataPortalActivator));
+      Assert.AreEqual(true, DataPortalReturnObjectOnException, nameof(DataPortalReturnObjectOnException));
+      // Assert.AreEqual("testProxy", DataPortalProxy, nameof(DataPortalProxy));
+      Assert.AreEqual("testProxyUrl", DataPortalUrlString, nameof(DataPortalUrlString));
+      Assert.AreEqual("testExceptionInspector", Csla.Server.DataPortalExceptionHandler.ExceptionInspector, nameof(Csla.Server.DataPortalExceptionHandler.ExceptionInspector));
+      Assert.IsInstanceOfType(FactoryDataPortal.FactoryLoader, typeof(TestObjectFactoryLoader), "CslaObjectFactoryLoader");
+      Assert.AreEqual("testInterceptor", ConfigurationManager.AppSettings["CslaDataPortalInterceptor"], "InterceptorType");
+      Assert.AreEqual("testAuthorizationProvider", ConfigurationManager.AppSettings["CslaAuthorizationProvider"], "CslaAuthorizationProvider");
+    }
+  }
+
+    public class TestObjectFactoryLoader : IObjectFactoryLoader
   {
     public object GetFactory(string factoryName)
     {

@@ -35,7 +35,8 @@ namespace Csla.Test
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddCsla(options => options.DataPortal().AddServerSideDataPortal().UseLocalProxy());
+      services.AddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
+      services.AddCsla();
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security

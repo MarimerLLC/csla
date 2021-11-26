@@ -28,7 +28,7 @@ namespace Csla.Blazor.Test
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddCsla(options => options.DataPortal().AddServerSideDataPortal().UseLocalProxy());
+      services.AddCsla();
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security

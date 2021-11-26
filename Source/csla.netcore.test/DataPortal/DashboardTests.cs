@@ -1,183 +1,213 @@
-﻿////-----------------------------------------------------------------------
-//// <copyright file="DashboardTests.cs" company="Marimer LLC">
-////     Copyright (c) Marimer LLC. All rights reserved.
-////     Website: https://cslanet.com
-//// </copyright>
-//// <summary>no summary</summary>
-////-----------------------------------------------------------------------
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Csla;
-//using Csla.Configuration;
-//using Csla.TestHelpers;
-//#if !NUNIT
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//#else
-//using NUnit.Framework;
-//using TestClass = NUnit.Framework.TestFixtureAttribute;
-//using TestInitialize = NUnit.Framework.SetUpAttribute;
-//using TestCleanup = NUnit.Framework.TearDownAttribute;
-//using TestMethod = NUnit.Framework.TestAttribute;
-//#endif 
+﻿//-----------------------------------------------------------------------
+// <copyright file="DashboardTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Csla;
+using Csla.Configuration;
+using Csla.Server.Dashboard;
+using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
+using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
-//namespace csla.netcore.test.DataPortal
-//{
-//  [TestClass]
-//  public class DashboardTests
-//  {
-//    [TestCleanup]
-//    public void TestCleanup()
-//    {
-//      new CslaConfiguration().DataPortal().DashboardType("");
-//    }
+namespace csla.netcore.test.DataPortal
+{
+  [TestClass]
+  public class DashboardTests
+  {
+    //    [TestCleanup]
+    //    public void TestCleanup()
+    //    {
+    //      new CslaConfiguration().DataPortal().DashboardType("");
+    //    }
 
-//    [TestMethod]
-//    public void DashboardDefaultIsNullDashboard()
-//    {
-//      new CslaConfiguration().DataPortal().DashboardType("");
-//      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
-//      Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
-//    }
+    [TestMethod]
+    public void DashboardDefaultIsNullDashboard()
+    {
+      ServiceProvider serviceProvider;
 
-//    [TestMethod]
-//    public void DashboardUseRealDashboard()
-//    {
-//      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-//      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
-//      Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.Dashboard));
-//    }
+      // Initialise DI, and add Csla using default settings
+      var services = new ServiceCollection();
+      services.AddCsla();
+      serviceProvider = services.BuildServiceProvider();
 
-//    [TestMethod]
-//    [TestCategory("SkipWhenLiveUnitTesting")]
-//    public async Task DashboardSuccessCounter()
-//    {
-//      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-//      var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      IDashboard dashboard = serviceProvider.GetRequiredService<IDashboard>();
+      Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
+    }
 
-//      var obj = CreateSimpleType();
+    // This would really be testing the behaviour of the service provider not the dashboard
+    // That doesn't really feel all that appropriate as a test
+    // [TestMethod]
+    // public void DashboardUseRealDashboard()
+    // {
+    //   new CslaConfiguration().DataPortal().DashboardType("Dashboard");
+    //   var dashboard = Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+    //   Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.Dashboard));
+    // }
 
-//      await Task.Delay(500);
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task DashboardSuccessCounter()
+    {
+      IServiceProvider serviceProvider = InitialiseServiceProviderUsingRealDashboard();
+      var dashboard = serviceProvider.GetRequiredService<IDashboard>();
 
-//      Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
-//      Assert.AreEqual(1, dashboard.TotalCalls, "total");
-//      Assert.AreEqual(0, dashboard.FailedCalls, "failed");
-//      Assert.AreEqual(1, dashboard.CompletedCalls, "completed");
-//    }
+      var obj = CreateSimpleType(serviceProvider);
 
-//    [TestMethod]
-//    [TestCategory("SkipWhenLiveUnitTesting")]
-//    [Ignore]
-//    public async Task DashboardFailureCounter()
-//    {
-//      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-//      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
-      
-//      try
-//      {
-//        var obj = FetchSimpleType("123");
-//      }
-//      catch { /*expected failure*/ }
+      await Task.Delay(500);
 
-//      await Task.Delay(500);
+      Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
+      Assert.AreEqual(1, dashboard.TotalCalls, "total");
+      Assert.AreEqual(0, dashboard.FailedCalls, "failed");
+      Assert.AreEqual(1, dashboard.CompletedCalls, "completed");
+    }
 
-//      Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
-//      Assert.AreEqual(1, dashboard.TotalCalls, "total");
-//      Assert.AreEqual(1, dashboard.FailedCalls, "failed");
-//      Assert.AreEqual(0, dashboard.CompletedCalls, "completed");
-//    }
+    // This test fails when included. Are failures not being recorded correctly?
+    // N.B. This test was already ignored before CSLA 6, so it appears it used to fail before too!
+    [Ignore]
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task DashboardFailureCounter()
+    {
+      IServiceProvider serviceProvider = InitialiseServiceProviderUsingRealDashboard();
+      var dashboard = serviceProvider.GetRequiredService<IDashboard>();
 
-//    [TestMethod]
-//    [TestCategory("SkipWhenLiveUnitTesting")]
-//    [Ignore]
-//    public async Task DashboardRecentActivity()
-//    {
-//      new CslaConfiguration().DataPortal().DashboardType("Dashboard");
-//      var dashboard = (Csla.Server.Dashboard.Dashboard)Csla.Server.Dashboard.DashboardFactory.GetDashboard();
+      try
+      {
+        var obj = FetchSimpleType(serviceProvider, "123");
+      }
+      catch { /*expected failure*/ }
 
-//      var obj = FetchSimpleType(123);
-//      try
-//      {
-//        obj = FetchSimpleType("123");
-//      }
-//      catch { /*expected failure*/ }
+      await Task.Delay(500);
 
-//      await Task.Delay(500);
+      Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
+      Assert.AreEqual(1, dashboard.TotalCalls, "total");
+      Assert.AreEqual(1, dashboard.FailedCalls, "failed");
+      Assert.AreEqual(0, dashboard.CompletedCalls, "completed");
+    }
 
-//      var activity = dashboard.GetRecentActivity();
-//      Assert.AreEqual(2, activity.Count, "count");
-//      Assert.IsTrue(activity.Average(r => r.Runtime.TotalMilliseconds) > 0, "runtime");
-//      Assert.AreEqual(typeof(SimpleType).AssemblyQualifiedName, activity.Select(r => r.ObjectType).First().AssemblyQualifiedName);
-//      Assert.AreEqual(DataPortalOperations.Fetch, activity.Select(r => r.Operation).First());
-//    }
+    // This test fails when included. Are failures not being recorded correctly?
+    // N.B. This test was already ignored before CSLA 6, so it appears it used to fail before too!
+    [Ignore]
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task DashboardRecentActivity()
+    {
+      IServiceProvider serviceProvider = InitialiseServiceProviderUsingRealDashboard();
+      var dashboard = serviceProvider.GetRequiredService<IDashboard>();
 
-//    private SimpleType CreateSimpleType()
-//    {
-//      IDataPortal<SimpleType> dataPortal = DataPortalFactory.CreateDataPortal<SimpleType>();
-//      return dataPortal.Create();
-//    }
+      var obj = FetchSimpleType(serviceProvider, 123);
+      try
+      {
+        obj = FetchSimpleType(serviceProvider, "123");
+      }
+      catch { /*expected failure*/ }
 
-//    private SimpleType FetchSimpleType(int id)
-//    {
-//      IDataPortal<SimpleType> dataPortal = DataPortalFactory.CreateDataPortal<SimpleType>();
-//      return dataPortal.Fetch(id);
-//    }
+      await Task.Delay(500);
 
-//    private SimpleType FetchSimpleType(string idString)
-//    {
-//      IDataPortal<SimpleType> dataPortal = DataPortalFactory.CreateDataPortal<SimpleType>();
-//      return dataPortal.Fetch(idString);
-//    }
-//  }
+      var activity = dashboard.GetRecentActivity();
+      Assert.AreEqual(2, activity.Count, "count");
+      Assert.IsTrue(activity.Average(r => r.Runtime.TotalMilliseconds) > 0, "runtime");
+      Assert.AreEqual(typeof(SimpleType).AssemblyQualifiedName, activity.Select(r => r.ObjectType).First().AssemblyQualifiedName);
+      Assert.AreEqual(DataPortalOperations.Fetch, activity.Select(r => r.Operation).First());
+    }
 
-//  [Serializable]
-//  public class SimpleType : BusinessBase<SimpleType>
-//  {
-//    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-//    public int Id
-//    {
-//      get { return GetProperty(IdProperty); }
-//      set { SetProperty(IdProperty, value); }
-//    }
+    private SimpleType CreateSimpleType(IServiceProvider serviceProvider)
+    {
+      IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
+      return dataPortal.Create();
+    }
 
-//    [Create]
-//    private void DataPortal_Create()
-//    {
-//      BusinessRules.CheckRules();
-//    }
+    private SimpleType FetchSimpleType(IServiceProvider serviceProvider, int id)
+    {
+      IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
+      return dataPortal.Fetch(id);
+    }
 
-//    [Fetch]
-//    private void DataPortal_Fetch(int id)
-//    {
-//      // TODO: load values into object
-//      System.Threading.Thread.Sleep(10);
-//    }
+    private SimpleType FetchSimpleType(IServiceProvider serviceProvider, string idString)
+    {
+      IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
+      return dataPortal.Fetch(idString);
+    }
 
-//    [Insert]
-//    protected void DataPortal_Insert()
-//    {
-//      // TODO: insert object's data
-//    }
+    private IServiceProvider InitialiseServiceProviderUsingRealDashboard()
+    {
+      ServiceProvider serviceProvider;
 
-//    [Update]
-//    protected void DataPortal_Update()
-//    {
-//      // TODO: update object's data
-//    }
+      // Initialise DI
+      var services = new ServiceCollection();
 
-//    [DeleteSelf]
-//    protected void DataPortal_DeleteSelf()
-//    {
-//      DataPortal_Delete(ReadProperty(IdProperty));
-//    }
+      // Add Csla, using the real dashboard
+      services.AddSingleton<IDashboard, Dashboard>();
+      services.AddCsla();
+      serviceProvider = services.BuildServiceProvider();
 
-//    [Delete]
-//    private void DataPortal_Delete(int id)
-//    {
-//      // TODO: delete object's data
-//    }
+      return serviceProvider;
 
-//  }
-//}
+    }
+  }
+
+  [Serializable]
+  public class SimpleType : BusinessBase<SimpleType>
+  {
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    [Fetch]
+    private void DataPortal_Fetch(int id)
+    {
+      // TODO: load values into object
+      System.Threading.Thread.Sleep(10);
+    }
+
+    [Insert]
+    protected void DataPortal_Insert()
+    {
+      // TODO: insert object's data
+    }
+
+    [Update]
+    protected void DataPortal_Update()
+    {
+      // TODO: update object's data
+    }
+
+    [DeleteSelf]
+    protected void DataPortal_DeleteSelf()
+    {
+      DataPortal_Delete(ReadProperty(IdProperty));
+    }
+
+    [Delete]
+    private void DataPortal_Delete(int id)
+    {
+      // TODO: delete object's data
+    }
+
+  }
+}

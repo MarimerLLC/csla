@@ -52,26 +52,6 @@ namespace Csla.Test.Serialization
       }
     }
 
-    // BinaryFormatter dropped as of CSLA 6?
-    //[TestMethod]
-    //public void UseBinaryFormatter()
-    //{
-    //  ApplicationContext applicationContext;
-    //  applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
-    //  try
-    //  {
-    //    Csla.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "BinaryFormatter";
-    //    var serializer = ApplicationContext.SerializationFormatter;
-    //    Assert.AreEqual(ApplicationContext.SerializationFormatters.BinaryFormatter, serializer);
-    //    var s = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
-    //    Assert.IsInstanceOfType(s, typeof(Csla.Serialization.BinaryFormatterWrapper));
-    //  }
-    //  finally
-    //  {
-    //    Csla.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileFormatter";
-    //  }
-    //}
-
     [TestMethod]
     public void UseCustomFormatter()
     {

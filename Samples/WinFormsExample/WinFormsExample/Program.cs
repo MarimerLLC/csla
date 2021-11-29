@@ -25,7 +25,7 @@ namespace WinFormsExample
 
           // register other services here
           .AddTransient<DataAccess.IPersonDal, DataAccess.PersonDal>()
-          .AddCsla()
+          .AddCsla(options => options.AddWindowsForms())
       ).Build();
 
       var form = Host.Services.GetService<MainForm>();

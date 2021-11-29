@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Csla.Configuration
 {
@@ -17,22 +16,38 @@ namespace Csla.Configuration
   {
     /// <summary>
     /// Registers services necessary for Windows Forms
+    /// environments.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <returns></returns>
-    public static ICslaConfiguration WithWindowsForms(this ICslaConfiguration config)
+    public static ICslaConfiguration AddWindowsForms(this ICslaConfiguration config)
     {
-      config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Windows.ApplicationContextManager));
-      return config;
+      return AddWindowsForms(config, null);
     }
 
     /// <summary>
-    /// Configures the application to use CSLA .NET
+    /// Registers services necessary for Windows Forms
+    /// environments.
     /// </summary>
-    /// <param name="builder">IHostBuilder instance</param>
-    public static IHostBuilder UseCsla(this IHostBuilder builder)
+    /// <param name="config">CslaConfiguration object</param>
+    /// <param name="options">XamlOptions action</param>
+    /// <returns></returns>
+    public static ICslaConfiguration AddWindowsForms(this ICslaConfiguration config, Action<WindowsFormsOptions> options)
     {
-      return builder;
+      var xamlOptions = new WindowsFormsOptions();
+      options?.Invoke(xamlOptions);
+
+      // use correct mode for raising PropertyChanged events
+      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = Csla.ApplicationContext.PropertyChangedModes.Windows.ToString();
+      return config;
     }
+  }
+
+  /// <summary>
+  /// Configuration options for AddWindowsForms method
+  /// </summary>
+  public class WindowsFormsOptions
+  {
+
   }
 }

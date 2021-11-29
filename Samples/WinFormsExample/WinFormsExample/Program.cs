@@ -18,13 +18,17 @@ namespace WinFormsExample
       Host = new HostBuilder()
         .ConfigureServices((hostContext, services) => services
           // register window and page types here
-          .AddSingleton<Form1>()
+          .AddSingleton<MainForm>()
+          .AddTransient<Pages.HomePage>()
+          .AddTransient<Pages.PersonEditPage>()
+          .AddTransient<Pages.PersonListPage>()
 
           // register other services here
+          .AddTransient<DataAccess.IPersonDal, DataAccess.PersonDal>()
           .AddCsla()
       ).Build();
 
-      var form = Host.Services.GetService<Form1>();
+      var form = Host.Services.GetService<MainForm>();
       Application.Run(form);
     }
   }

@@ -13,10 +13,10 @@ namespace BusinessLibrary
     private void Create() { }
 
     [Fetch]
-    private void Fetch([Inject]DataAccess.IPersonDal dal)
+    private void Fetch([Inject]DataAccess.IPersonDal dal, [Inject]IChildDataPortal<PersonInfo> personPortal)
     {
       IsReadOnly = false;
-      var data = dal.Get().Select(d => DataPortal.FetchChild<PersonInfo>(d));
+      var data = dal.Get().Select(d => personPortal.FetchChild(d));
       AddRange(data);
       IsReadOnly = true;
     }

@@ -163,64 +163,6 @@ namespace Csla.Web.Mvc
       }
     }
   }
-
-  /// <summary>
-  /// Model binder provider that will use the CslaModelBinder for
-  /// any type that implements the IBusinessBase interface.
-  /// </summary>
-  public class CslaModelBinderProvider : IModelBinderProvider
-  {
-    private ApplicationContext _applicationContext;
-
-    /// <summary>
-    /// Creates a model binder provider that use custom
-    /// instance and child creators.
-    /// </summary>
-    /// <param name="applicationContext">ApplicationContext instance</param>
-    /// <param name="instanceCreator">Instance creator for root objects.</param>
-    /// <param name="childCreator">Instance creator for child objects.</param>
-    public CslaModelBinderProvider(ApplicationContext applicationContext, 
-      Func<Type, Task<object>> instanceCreator, Func<IList, Type, Dictionary<string, string>, object> childCreator)
-    {
-      _applicationContext = applicationContext;
-      if (instanceCreator == null)
-        _instanceCreator = CreateInstance;
-      else
-        _instanceCreator = instanceCreator;
-      if (childCreator == null)
-        _childCreator = CreateChild;
-      else
-        _childCreator = childCreator;
-    }
-
-    internal Task<object> CreateInstance(Type type)
-    {
-      var tcs = new TaskCompletionSource<object>();
-      tcs.SetResult(_applicationContext.CreateInstanceDI(type));
-      return tcs.Task;
-    }
-
-    internal object CreateChild(IList parent, Type type, Dictionary<string, string> values)
-    {
-      return _applicationContext.CreateInstanceDI(type);
-    }
-
-    private readonly Func<Type, Task<object>> _instanceCreator;
-    private readonly Func<IList, Type, Dictionary<string, string>, object> _childCreator;
-
-    /// <summary>
-    /// Gets the CslaModelBinder provider.
-    /// </summary>
-    /// <param name="context">Model binder provider context.</param>
-    public IModelBinder GetBinder(ModelBinderProviderContext context)
-    {
-      if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType))
-        return new CslaModelBinder(_instanceCreator, _childCreator);
-      if (typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
-        return new CslaModelBinder(_instanceCreator);
-      return null;
-    }
-  }
 }
 #elif !NETSTANDARD
 using System;

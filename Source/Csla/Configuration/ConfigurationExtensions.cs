@@ -51,13 +51,14 @@ namespace Csla.Configuration
       // LocalProxy is always necessary to support RunLocal
       services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
       services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
+      // Server-side data portal is always necessary to support RunLocal
+      cslaOptions.DataPortal().AddServerSideDataPortal();
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
       if (!proxyInit)
       {
         cslaOptions.DataPortal().UseLocalProxy();
-        cslaOptions.DataPortal().AddServerSideDataPortal();
       }
 
       return services;

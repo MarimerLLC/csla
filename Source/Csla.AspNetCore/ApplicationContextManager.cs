@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Security.Claims;
 
 namespace Csla.AspNetCore
@@ -22,32 +21,14 @@ namespace Csla.AspNetCore
     private const string _localContextName = "Csla.LocalContext";
     private const string _clientContextName = "Csla.ClientContext";
 
-    private static IServiceProvider _serviceProvider;
-
     /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
     /// </summary>
-    /// <param name="serviceProvider">ASP.NET Core IServiceProvider</param>
     /// <param name="httpContextAccessor">HttpContext accessor</param>
-    public ApplicationContextManager(IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
+    public ApplicationContextManager(IHttpContextAccessor httpContextAccessor)
     {
       HttpContext = httpContextAccessor.HttpContext;
-      if (_serviceProvider == null)
-        _serviceProvider = serviceProvider;
-    }
-
-    internal static IServiceProvider ServiceProvider
-    {
-      get => _serviceProvider;
-    }
-
-    internal static ApplicationContext ApplicationContext
-    {
-      get
-      {
-        return (ApplicationContext)_serviceProvider.GetService(typeof(ApplicationContext));
-      }
     }
 
     /// <summary>
@@ -124,22 +105,21 @@ namespace Csla.AspNetCore
       HttpContext.Items[_clientContextName] = clientContext;
     }
 
-    /// <summary>
-    /// Gets the service provider for current scope
-    /// </summary>
-    /// <returns></returns>
-    public IServiceProvider GetServiceProvider()
-    {
-      return (IServiceProvider)GetLocalContext()["__sps"];
-    }
+    private const string _applicationContextName = "Csla.ApplicationContext";
 
     /// <summary>
-    /// Sets the service provider for current scope
+    /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    /// <param name="provider">IServiceProvider instance</param>
-    public void SetServiceProvider(IServiceProvider provider)
+    public virtual ApplicationContext ApplicationContext
     {
-      GetLocalContext()["__sps"] = provider;
+      get
+      {
+        return (ApplicationContext)HttpContext?.Items[_applicationContextName];
+      }
+      set
+      {
+        HttpContext.Items[_applicationContextName] = value;
+      }
     }
   }
 }

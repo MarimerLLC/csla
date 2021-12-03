@@ -34,7 +34,7 @@ namespace Csla.Web.Mvc
     {
       _action = action;
       _objectType = objectType;
-      ApplicationContext = ApplicationContextManager.ApplicationContext;
+      ApplicationContext = ApplicationContextManager.GetApplicationContext();
     }
 
     /// <summary>

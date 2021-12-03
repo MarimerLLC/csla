@@ -33,8 +33,17 @@ namespace Csla.Channels.Local
 
       if (Options.CreateScopePerCall)
       {
+        // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
-        ApplicationContext = _scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+        var provider = _scope.ServiceProvider;
+
+        // create and initialize new "server-side" ApplicationContext and manager
+        var parentContext = applicationContext;
+        var ctx = new Csla.Core.ApplicationContextManager();
+        ctx.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
+        ctx.SetUser(parentContext.User);
+        ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+        ApplicationContext.ContextManager = ctx;
       }
 
       _portal = ApplicationContext.CurrentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
@@ -196,7 +205,8 @@ namespace Csla.Channels.Local
       {
         if (disposing)
         {
-          _scope?.Dispose();
+          if (Options.CreateScopePerCall)
+            _scope?.Dispose();
         }
         disposedValue = true;
       }

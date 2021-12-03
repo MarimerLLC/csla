@@ -24,8 +24,8 @@ namespace Csla.Core
     /// </summary>
     public bool IsValid => true;
 
-    private static ContextDictionary currentLocalContext = new ContextDictionary();
-    private static ContextDictionary currentClientContext = new ContextDictionary();
+    private static ContextDictionary currentLocalContext = new();
+    private static ContextDictionary currentClientContext = new();
     private static IPrincipal currentPrincipal = new ClaimsPrincipal();
     private static IServiceProvider currentDefaultServiceProvider;
     private static IServiceProvider currentServiceProvider;
@@ -117,5 +117,12 @@ namespace Csla.Core
     {
       currentPrincipal = principal;
     }
+
+    private static ApplicationContext _applicationContext;
+
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
   }
 }

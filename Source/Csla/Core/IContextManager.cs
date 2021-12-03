@@ -51,5 +51,9 @@ namespace Csla.Core
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
     void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation);
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    ApplicationContext ApplicationContext { get; set; }
   }
 }

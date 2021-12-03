@@ -6,6 +6,7 @@
 // <summary>Interface defining an authorization context</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Security.Principal;
 
 namespace Csla.Rules 
 {
@@ -41,5 +42,10 @@ namespace Csla.Rules
     /// Gets an object which is the criteria specified in the data portal call, if any.
     /// </summary>
     object[] Criteria { get; }
+
+    /// <summary>
+    /// Gets the current user principal.
+    /// </summary>
+    IPrincipal User { get; }
   }
 }

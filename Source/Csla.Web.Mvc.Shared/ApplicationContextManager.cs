@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContext</summary>
 //-----------------------------------------------------------------------
-using System;
 using Csla.Core;
 using System.Web;
 
@@ -18,26 +17,6 @@ namespace Csla.Web.Mvc
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
-    private static IServiceProvider _serviceProvider;
-    internal static ApplicationContext ApplicationContext 
-    { 
-      get 
-      {
-        return (ApplicationContext)_serviceProvider.GetService(typeof(ApplicationContext));
-      }
-    }
-
-    /// <summary>
-    /// Creates an instance of the type.
-    /// </summary>
-    /// <param name="serviceProvider">Service provider instance.</param>
-    public ApplicationContextManager(IServiceProvider serviceProvider)
-    {
-      if (serviceProvider == null)
-        throw new ArgumentNullException(nameof(serviceProvider));
-      _serviceProvider = serviceProvider;
-    }
-
     private const string _localContextName = "Csla.LocalContext";
     private const string _clientContextName = "Csla.ClientContext";
 
@@ -108,6 +87,31 @@ namespace Csla.Web.Mvc
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Current.Items[_clientContextName] = clientContext;
+    }
+    private const string _applicationContextName = "Csla.ApplicationContext";
+
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public virtual ApplicationContext ApplicationContext
+    {
+      get
+      {
+        return (ApplicationContext)HttpContext.Current.Items[_applicationContextName];
+      }
+      set
+      {
+        HttpContext.Current.Items[_applicationContextName] = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets a reference to the current ApplicationContext.
+    /// </summary>
+    /// <returns></returns>
+    public static ApplicationContext GetApplicationContext()
+    {
+      return (ApplicationContext)HttpContext.Current.Items[_applicationContextName];
     }
   }
 }

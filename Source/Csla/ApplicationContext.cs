@@ -29,20 +29,15 @@ namespace Csla
     {
       _serviceProvider = serviceProvider;
       ContextManager = contextManager;
+      ContextManager.ApplicationContext = this;
     }
 
     /// <summary>
-    /// Gets or sets the context manager responsible
+    /// Gets the context manager responsible
     /// for storing user and context information for
     /// the application.
     /// </summary>
-    /// <remarks>
-    /// ?f WebContextManager is not null and IsValid then WebContextManager is returned,
-    /// else default ContextManager is returned. 
-    /// This behaviour is to support background threads in web applications and return
-    /// to use WebContextManager when completed. 
-    /// </remarks>
-    public IContextManager ContextManager { get; private set; }
+    public IContextManager ContextManager { get; internal set; }
 
     internal static void SettingsChanged()
     {

@@ -47,7 +47,7 @@ namespace Csla.Xaml
       SetPropertiesAtObjectLevel();
     }
 
-    private ApplicationContext ApplicationContext { get => Csla.Xaml.ApplicationContextManager.ApplicationContext; }
+    private ApplicationContext ApplicationContext { get => Csla.Xaml.ApplicationContextManager.GetApplicationContext(); }
 
 #if ANDROID || IOS || XAMARIN || WINDOWS_UWP
     private T _model;

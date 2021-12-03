@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AsyncController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinderProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaPermissionRequirement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HasPermissionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlExtensions.cs" />

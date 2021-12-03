@@ -136,5 +136,24 @@ namespace Csla.Core
     {
       _provider = provider;
     }
+
+    private const string _applicationContextName = "Csla.ApplicationContext";
+
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext
+    {
+      get
+      {
+        var slot = Thread.GetNamedDataSlot(_applicationContextName);
+        return Thread.GetData(slot) as ApplicationContext;
+      }
+      set
+      {
+        var slot = Thread.GetNamedDataSlot(_applicationContextName);
+        Thread.SetData(slot, value);
+      }
+    }
   }
 }

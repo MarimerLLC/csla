@@ -510,7 +510,7 @@ namespace Csla.Core
 
       if (!_readResultCache.TryGetValue(property.Name, out result))
       {
-        result = BusinessRules.HasPermission(AuthorizationActions.ReadProperty, property);
+        result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, property);
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ReadProperty, property))
         {
           // store value in cache
@@ -585,7 +585,7 @@ namespace Csla.Core
 
       if (!_writeResultCache.TryGetValue(property.Name, out result))
       {
-        result = BusinessRules.HasPermission(AuthorizationActions.WriteProperty, property);
+        result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.WriteProperty, property);
         if (BusinessRules.CachePermissionResult(AuthorizationActions.WriteProperty, property))
         {
           // store value in cache
@@ -678,7 +678,7 @@ namespace Csla.Core
 
       if (!_executeResultCache.TryGetValue(method.Name, out result))
       {
-        result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
+        result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ExecuteMethod, method);
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ExecuteMethod, method))
         {
           // store value in cache

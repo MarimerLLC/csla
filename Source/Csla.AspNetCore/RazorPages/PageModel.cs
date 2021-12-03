@@ -27,9 +27,9 @@ namespace Csla.AspNetCore.RazorPages
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public PageModel()
+    public PageModel(ApplicationContext applicationContext)
     {
-      ApplicationContext = (ApplicationContext)ApplicationContextManager.ServiceProvider.GetService(typeof(ApplicationContext));
+      ApplicationContext = applicationContext;
     }
 
     /// <summary>

@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinderProvider.cs" />

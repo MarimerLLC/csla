@@ -1,4 +1,7 @@
 using Csla.Configuration;
+using Csla.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IConfigureOptions<MvcOptions>, CslaModelBinderMvcOptions>();
+builder.Services.AddTransient(typeof(Csla.DataPortalClient.IDataPortalProxy), typeof(Csla.Channels.Test.TestProxy));
 builder.Services.AddCsla();
 builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
 

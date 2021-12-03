@@ -7,7 +7,8 @@ namespace RazorPagesExample.Pages.People
 {
   public class DeleteModel : PageModel<PersonEdit>
   {
-    public DeleteModel(IDataPortal<PersonEdit> portal)
+    public DeleteModel(ApplicationContext applicationContext, IDataPortal<PersonEdit> portal)
+      : base(applicationContext)
     {
       _portal = portal;
     }

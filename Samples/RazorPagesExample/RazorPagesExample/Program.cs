@@ -7,9 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddMvcOptions(options =>
+{
+  options.ModelBinderProviders.Insert(0, new CslaModelBinderProvider());
+});
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<IConfigureOptions<MvcOptions>, CslaModelBinderMvcOptions>();
 builder.Services.AddTransient(typeof(Csla.DataPortalClient.IDataPortalProxy), typeof(Csla.Channels.Test.TestProxy));
 builder.Services.AddCsla();
 builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));

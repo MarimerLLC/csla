@@ -6,7 +6,8 @@ namespace RazorPagesExample.Pages.People
 {
   public class EditModel : PageModel<PersonEdit>
   {
-    public EditModel(IDataPortal<PersonEdit> portal)
+    public EditModel(ApplicationContext applicationContext, IDataPortal<PersonEdit> portal)
+      : base(applicationContext)
     {
       _portal = portal;
     }

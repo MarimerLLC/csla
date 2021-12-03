@@ -1,0 +1,101 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="LocalProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Implements a data portal proxy to relay data portal</summary>
+//-----------------------------------------------------------------------
+using Csla.Server;
+
+namespace Csla.Channels.Test
+{
+  /// <summary>
+  /// Implements a data portal proxy to relay data portal
+  /// calls to an application server hosted locally 
+  /// in the client process and AppDomain.
+  /// </summary>
+  public class TestProxy : DataPortalClient.IDataPortalProxy
+  {
+    /// <summary>
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="applicationContext">ApplicationContext</param>
+    /// <param name="options">Options instance</param>
+    public TestProxy(Server.IDataPortalServer dataPortalServer)
+    {
+      _portal = dataPortalServer;
+    }
+
+    private readonly Server.IDataPortalServer _portal;
+
+    /// <summary>
+    /// Called by <see cref="DataPortal" /> to create a
+    /// new business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
+    /// <param name="criteria">Criteria object describing business object.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Create(
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+        return await _portal.Create(objectType, criteria, context, isSync);
+    }
+
+    /// <summary>
+    /// Called by <see cref="DataPortal" /> to load an
+    /// existing business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
+    /// <param name="criteria">Criteria object describing business object.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+        return await _portal.Fetch(objectType, criteria, context, isSync);
+    }
+
+    /// <summary>
+    /// Called by <see cref="DataPortal" /> to update a
+    /// business object.
+    /// </summary>
+    /// <param name="obj">The business object to update.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    {
+        return await _portal.Update(obj, context, isSync);
+    }
+
+    /// <summary>
+    /// Called by <see cref="DataPortal" /> to delete a
+    /// business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
+    /// <param name="criteria">Criteria object describing business object.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+      return await _portal.Delete(objectType, criteria, context, isSync);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this proxy will invoke
+    /// a remote data portal server, or run the "server-side"
+    /// data portal in the caller's process and AppDomain.
+    /// </summary>
+    public bool IsServerRemote
+    {
+      get { return false; }
+    }
+  }
+}

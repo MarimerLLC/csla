@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
 {
@@ -35,6 +36,7 @@ namespace Csla.Configuration
     {
       var localOptions = new AspNetCoreConfigurationOptions();
       options?.Invoke(localOptions);
+      config.Services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions { CreateScopePerCall = false });
       return config;
     }
   }

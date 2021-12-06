@@ -20,9 +20,9 @@ namespace RazorPagesExample.Pages.People
       Item = await _portal.FetchAsync(id);
     }
 
-    public async Task<ActionResult> OnPost()
+    public async Task<ActionResult> OnPost(int id)
     {
-      await _portal.DeleteAsync(Item.Id);
+      await _portal.DeleteAsync(id);
       return RedirectToPage("/People/Index");
     }
   }

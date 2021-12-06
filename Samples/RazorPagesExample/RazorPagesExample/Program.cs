@@ -12,7 +12,6 @@ builder.Services.AddRazorPages().AddMvcOptions(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddTransient(typeof(Csla.DataPortalClient.IDataPortalProxy), typeof(Csla.Channels.Test.TestProxy));
 builder.Services.AddCsla(options => options.AddAspNetCore());
 builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
 

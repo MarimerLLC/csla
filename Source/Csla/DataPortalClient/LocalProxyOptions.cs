@@ -18,5 +18,14 @@ namespace Csla.Channels.Local
     /// (default is true)
     /// </summary>
     public bool CreateScopePerCall { get; set; } = true;
+    /// <summary>
+    /// Gets or sets a value indicating whether any
+    /// synchronization context should be flowed to
+    /// child tasks by LocalProxy. Setting this 
+    /// to true may restrict or eliminate the 
+    /// use of background threads by LocalProxy.
+    /// (default is false)
+    /// </summary>
+    public bool FlowSynchronizationContext { get; set; } = false;
   }
 }

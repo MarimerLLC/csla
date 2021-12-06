@@ -8,7 +8,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Csla.Configuration;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -75,7 +74,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
@@ -103,7 +102,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
@@ -130,7 +129,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Update(obj, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
@@ -158,7 +157,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
@@ -176,23 +175,6 @@ namespace Csla.Channels.Local
     public bool IsServerRemote
     {
       get { return false; }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether any
-    /// synchronization context should be flowed to
-    /// child tasks. Setting this to true may restrict
-    /// or eliminate the use of background threads.
-    /// </summary>
-    public bool FlowSynchronizationContext
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] == null)
-          return false;
-        else
-          return bool.Parse(ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"]);
-      }
     }
 
     /// <summary>

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using Csla.DataPortalClient;
 using Csla.Server;
 
 namespace Csla.Configuration
@@ -17,23 +16,6 @@ namespace Csla.Configuration
   /// </summary>
   public class CslaDataPortalConfigurationOptions
   {
-    ///// <summary>
-    ///// Returns the authentication type being used by the
-    ///// CSLA .NET framework.
-    ///// </summary>
-    ///// <remarks>
-    ///// This value is read from the application configuration
-    ///// file with the key value "CslaAuthentication". The value
-    ///// "Windows" indicates CSLA .NET should use Windows integrated
-    ///// (or AD) security. Any other value indicates the use of
-    ///// custom security derived from CslaPrincipal.
-    ///// </remarks>
-    //public string AuthenticationType
-    //{
-    //  get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
-    //  set { ConfigurationManager.AppSettings["CslaAuthentication"] = value; }
-    //}
-
     /// <summary>
     /// Gets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()method 
@@ -132,25 +114,6 @@ namespace Csla.Configuration
     {
       get { return ConfigurationManager.AppSettings["CslaObjectFactoryLoader"]; }
       set { ConfigurationManager.AppSettings["CslaObjectFactoryLoader"] = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether any
-    /// synchronization context should be flowed to
-    /// child tasks by LocalProxy. Setting this 
-    /// to true may restrict or eliminate the 
-    /// use of background threads by LocalProxy.
-    /// </summary>
-    public bool FlowSynchronizationContext
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] == null)
-          return false;
-        else
-          return bool.Parse(ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"]);
-      }
-      set { ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] = value.ToString(); }
     }
   }
 }

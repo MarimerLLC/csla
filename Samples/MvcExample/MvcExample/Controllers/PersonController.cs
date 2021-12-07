@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Csla;
 using BusinessLibrary;
@@ -11,24 +7,38 @@ namespace CslaMvcExample.Controllers
 {
   public class PersonController : Csla.Web.Mvc.Controller
   {
+    public PersonController(
+      IDataPortal<PersonList> personListPortal,
+      IDataPortal<PersonEdit> personEditPortal,
+      IDataPortal<PersonInfo> personInfoPortal)
+    {
+      PersonListPortal = personListPortal;
+      PersonEditPortal = personEditPortal;
+      PersonInfoPortal = personInfoPortal;
+    }
+
+    private IDataPortal<PersonList> PersonListPortal;
+    private IDataPortal<PersonEdit> PersonEditPortal;
+    private IDataPortal<PersonInfo> PersonInfoPortal;
+
     // GET: Person
     public async Task<ActionResult> Index()
     {
-      var list = await DataPortal.FetchAsync<PersonList>();
+      var list = await PersonListPortal.FetchAsync();
       return View(list);
     }
 
     // GET: Person/Details/5
     public async Task<ActionResult> Details(int id)
     {
-      var obj = await DataPortal.FetchAsync<PersonInfo>(id);
+      var obj = await PersonInfoPortal.FetchAsync(id);
       return View(obj);
     }
 
     // GET: Person/Create
     public async Task<ActionResult> Create()
     {
-      var obj = await DataPortal.CreateAsync<PersonEdit>();
+      var obj = await PersonEditPortal.CreateAsync();
       return View(obj);
     }
 
@@ -53,7 +63,7 @@ namespace CslaMvcExample.Controllers
     // GET: Person/Edit/5
     public async Task<ActionResult> Edit(int id)
     {
-      var obj = await DataPortal.FetchAsync<PersonEdit>(id);
+      var obj = await PersonEditPortal.FetchAsync(id);
       return View(obj);
     }
 
@@ -79,7 +89,7 @@ namespace CslaMvcExample.Controllers
     // GET: Person/Delete/5
     public async Task<ActionResult> Delete(int id)
     {
-      var obj = await DataPortal.FetchAsync<PersonInfo>(id);
+      var obj = await PersonInfoPortal.FetchAsync(id);
       return View(obj);
     }
 
@@ -90,7 +100,7 @@ namespace CslaMvcExample.Controllers
     {
       try
       {
-        await DataPortal.DeleteAsync<PersonEdit>(id);
+        await PersonEditPortal.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
       }
       catch

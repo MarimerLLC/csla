@@ -313,7 +313,8 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType)
     {
-      //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, applicationContext.User, objectType, null, applicationContext.RuleSet);
     }
@@ -327,7 +328,8 @@ namespace Csla.Rules
     /// <param name="criteria">The criteria object provided.</param>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria)
     {
-      //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
       // no object specified so must use RuleSet from ApplicationContext
       return HasPermission(action, null, applicationContext.User, objectType, criteria, applicationContext.RuleSet);
     }
@@ -344,6 +346,8 @@ namespace Csla.Rules
     /// </returns>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet)
     {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
       return HasPermission(action, null, applicationContext.User, objectType, null, ruleSet);
     }
 
@@ -355,6 +359,8 @@ namespace Csla.Rules
     /// <param name="obj">Business object instance.</param>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, object obj)
     {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
       return HasPermission(action, obj, applicationContext.User, obj.GetType(), null, applicationContext.RuleSet);
     }
 

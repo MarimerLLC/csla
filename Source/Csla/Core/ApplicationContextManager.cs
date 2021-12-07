@@ -93,6 +93,24 @@ namespace Csla.Core
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get => _applicationContext.Value; set => _applicationContext.Value = value; }
+    public ApplicationContext ApplicationContext 
+    {
+      get
+      {
+        return _applicationContext.Value;
+      }
+      set
+      {
+        _applicationContext.Value = value;
+        OnApplicationContextSet();
+      }
+    }
+
+    /// <summary>
+    /// Method called when the ApplicationContext
+    /// property has been set to a new value.
+    /// </summary>
+    protected virtual void OnApplicationContextSet()
+    { }
   }
 }

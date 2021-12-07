@@ -9,6 +9,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Csla.Xaml;
+using Microsoft.Extensions.Hosting;
 
 namespace Csla.Configuration
 {
@@ -41,10 +42,27 @@ namespace Csla.Configuration
       options?.Invoke(xamlOptions);
 
       // use correct mode for raising PropertyChanged events
-      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = Csla.ApplicationContext.PropertyChangedModes.Xaml.ToString();
+      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = 
+        Csla.ApplicationContext.PropertyChangedModes.Xaml.ToString();
 
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       return config;
+    }
+
+    /// <summary>
+    /// Initializes CSLA for use by Xaml apps.
+    /// </summary>
+    /// <param name="host"></param>
+    /// <returns></returns>
+    public static IHost UseCsla(this IHost host)
+    {
+      // create instance of ApplicationContext so the
+      // Csla.Xaml.ApplicationContextManager gets a static
+      // reference for use by UI helpers.
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+      var context = host.Services.GetService(typeof(ApplicationContext));
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+      return host;
     }
   }
 

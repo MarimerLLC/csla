@@ -38,15 +38,6 @@ namespace Csla.Xaml
     INotifyPropertyChanged, IViewModel
 #endif
   {
-    /// <summary>
-    /// Create new instance of base class used to create ViewModel objects that
-    /// implement their own commands/verbs/actions.
-    /// </summary>
-    protected ViewModelBase()
-    {
-      SetPropertiesAtObjectLevel();
-    }
-
     private ApplicationContext ApplicationContext { get => Csla.Xaml.ApplicationContextManager.GetApplicationContext(); }
 
 #if ANDROID || IOS || XAMARIN || WINDOWS_UWP
@@ -423,7 +414,11 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanCreateObject
     {
-      get { return _canCreateObject; }
+      get
+      {
+        SetPropertiesAtObjectLevel(); 
+        return _canCreateObject;
+      }
       protected set
       {
         if (_canCreateObject != value)
@@ -442,7 +437,11 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanGetObject
     {
-      get { return _canGetObject; }
+      get 
+      { 
+        SetPropertiesAtObjectLevel(); 
+        return _canGetObject; 
+      }
       protected set
       {
         if (_canGetObject != value)
@@ -462,7 +461,11 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanEditObject
     {
-      get { return _canEditObject; }
+      get 
+      { 
+        SetPropertiesAtObjectLevel(); 
+        return _canEditObject; 
+      }
       protected set
       {
         if (_canEditObject != value)
@@ -482,7 +485,11 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanDeleteObject
     {
-      get { return _canDeleteObject; }
+      get 
+      { 
+        SetPropertiesAtObjectLevel(); 
+        return _canDeleteObject; 
+      }
       protected set
       {
         if (_canDeleteObject != value)
@@ -493,12 +500,18 @@ namespace Csla.Xaml
       }
     }
 
+    private bool ObjectPropertiesSet;
+
     /// <summary>
     /// This method is only called from constuctor to set default values immediately.
     /// Sets the properties at object level.
     /// </summary>
     private void SetPropertiesAtObjectLevel()
     {
+      if (ObjectPropertiesSet)
+        return;
+      ObjectPropertiesSet = true;
+
       Type sourceType = typeof(T);
 
       CanCreateObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, sourceType);

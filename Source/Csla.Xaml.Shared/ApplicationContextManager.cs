@@ -18,21 +18,23 @@ namespace Csla.Xaml
   public class ApplicationContextManager : Csla.Core.ApplicationContextManager
   {
     private static IPrincipal _principal = null;
+    private static ApplicationContext applicationContext;
 
     /// <summary>
-    /// Creates an instance of the type.
+    /// Method called when the ApplicationContext
+    /// property has been set to a new value.
     /// </summary>
-    public ApplicationContextManager()
-    {
-      applicationContext = base.ApplicationContext;
-    }
-
-    private static ApplicationContext applicationContext;
+    protected override void OnApplicationContextSet() => applicationContext = base.ApplicationContext;
 
     /// <summary>
     /// Gets the current ApplicationContext.
     /// </summary>
-    public static ApplicationContext GetApplicationContext () => applicationContext;
+    public static ApplicationContext GetApplicationContext()
+    {
+      if (applicationContext == null)
+        throw new InvalidOperationException($"{nameof(applicationContext)} == null");
+      return applicationContext;
+    }
 
     /// <summary>
     /// Gets the current principal.

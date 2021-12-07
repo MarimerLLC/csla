@@ -26,6 +26,8 @@ namespace WpfExample
           .AddTransient<DataAccess.IPersonDal, DataAccess.PersonDal>()
           .AddCsla(options => options.AddXaml())
         ).Build();
+
+      Host.UseCsla();
     }
 
     private void OnStartup(object sender, StartupEventArgs e)

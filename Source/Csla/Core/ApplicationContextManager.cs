@@ -17,17 +17,8 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
-    private AsyncLocal<ContextDictionary> _localContext = new();
-    private AsyncLocal<ContextDictionary> _clientContext = new();
-
-    /// <summary>
-    /// Creates an instance of the type
-    /// </summary>
-    /// <param name="provider">IServiceProvider object</param>
-    public ApplicationContextManager(IServiceProvider provider)
-    {
-      _provider = provider;
-    }
+    private readonly AsyncLocal<ContextDictionary> _localContext = new();
+    private readonly AsyncLocal<ContextDictionary> _clientContext = new();
 
     /// <summary>
     /// Returns a value indicating whether the context is valid.
@@ -97,24 +88,11 @@ namespace Csla.Core
       _clientContext.Value = clientContext;
     }
 
-    private IServiceProvider _provider;
+    private readonly AsyncLocal<ApplicationContext> _applicationContext = new();
 
     /// <summary>
-    /// Gets the service provider for current scope
+    /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    /// <returns></returns>
-    public IServiceProvider GetServiceProvider()
-    {
-      return _provider;
-    }
-
-    /// <summary>
-    /// Sets the service provider for current scope
-    /// </summary>
-    /// <param name="provider">IServiceProvider instance</param>
-    public void SetServiceProvider(IServiceProvider provider)
-    {
-      _provider = provider;
-    }
+    public ApplicationContext ApplicationContext { get => _applicationContext.Value; set => _applicationContext.Value = value; }
   }
 }

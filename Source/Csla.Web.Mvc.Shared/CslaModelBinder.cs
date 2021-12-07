@@ -8,7 +8,6 @@
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -22,58 +21,33 @@ namespace Csla.Web.Mvc
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
-    /// Creates a model binder with an instance creator for root objects.
-    /// </summary>
-    /// <param name="instanceCreator">Instance creator for root objects.</param>
-    public CslaModelBinder(Func<Type, Task<object>> instanceCreator)
-    {
-      _instanceCreator = instanceCreator;
-    }
-
-    /// <summary>
-    /// Creates a model binder with instance creators for root and child objects.
-    /// </summary>
-    /// <param name="instanceCreator">Instance creator for root objects.</param>
-    /// <param name="childCreator">Instance creator for child objects.</param>
-    public CslaModelBinder(Func<Type, Task<object>> instanceCreator, Func<IList, Type, Dictionary<string, string>, object> childCreator)
-    {
-      _instanceCreator = instanceCreator;
-      _childCreator = childCreator;
-    }
-
-    private readonly Func<Type, Task<object>> _instanceCreator;
-    private readonly Func<IList, Type, Dictionary<string, string>, object> _childCreator;
-
-    /// <summary>
     /// Bind the form data to a new instance of an IBusinessBase object.
     /// </summary>
     /// <param name="bindingContext">Binding context</param>
-    public async Task BindModelAsync(ModelBindingContext bindingContext)
+    public Task BindModelAsync(ModelBindingContext bindingContext)
     {
+      var applicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));
       }
 
-      var result = await _instanceCreator(bindingContext.ModelType);
-      if (result == null)
-        return;
-
-      if (typeof(Core.IEditableCollection).IsAssignableFrom(bindingContext.ModelType))
+      bindingContext.Result = ModelBindingResult.Failed();
+      var result = applicationContext.CreateInstanceDI(bindingContext.ModelType);
+      if (result != null)
       {
-        BindBusinessListBase(bindingContext, result);
+        if (typeof(Core.IEditableCollection).IsAssignableFrom(bindingContext.ModelType))
+        {
+          BindBusinessListBase(bindingContext, result);
+          bindingContext.Result = ModelBindingResult.Success(result);
+        }
+        else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(bindingContext.ModelType))
+        {
+          BindBusinessBase(bindingContext, result);
+          bindingContext.Result = ModelBindingResult.Success(result);
+        }
       }
-      else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(bindingContext.ModelType))
-      {
-        BindBusinessBase(bindingContext, result);
-      }
-      else
-      {
-        return;
-      }
-
-      bindingContext.Result = ModelBindingResult.Success(result);
-      return;
+      return Task.CompletedTask;
     }
 
     private void BindBusinessBase(ModelBindingContext bindingContext, object result)
@@ -93,6 +67,7 @@ namespace Csla.Web.Mvc
 
     private void BindBusinessListBase(ModelBindingContext bindingContext, object result)
     {
+      var applicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
       var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
       var childType = Utilities.GetChildItemType(bindingContext.ModelType);
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
@@ -101,9 +76,7 @@ namespace Csla.Web.Mvc
       var itemCount = formKeys.Count() / properties.Count();
       for (int i = 0; i < itemCount; i++)
       {
-        var child = _childCreator(
-          list, childType,
-          GetFormValuesForObject(bindingContext.ActionContext.HttpContext.Request.Form, bindingContext.ModelName, i, properties));
+        var child = applicationContext.CreateInstanceDI(childType);
         MarkAsChild(child);
         if (child == null)
           throw new InvalidOperationException($"Could not create instance of child type {childType}");
@@ -116,21 +89,6 @@ namespace Csla.Web.Mvc
         if (!list.Contains(child))
           list.Add(child);
       }
-    }
-
-    private Dictionary<string, string> GetFormValuesForObject(
-              Microsoft.AspNetCore.Http.IFormCollection formData,
-              string modelName,
-              int index,
-              Core.FieldManager.PropertyInfoList properties)
-    {
-      var result = new Dictionary<string, string>();
-      foreach (var item in properties)
-      {
-        var key = $"{modelName}[{index}].{item.Name}";
-        result.Add(item.Name, formData[key]);
-      }
-      return result;
     }
 
     private void BindSingleProperty(ModelBindingContext bindingContext, object result, Core.IPropertyInfo item, string index)
@@ -161,64 +119,6 @@ namespace Csla.Web.Mvc
       {
         throw new Exception($"Could not map {index} to model", ex);
       }
-    }
-  }
-
-  /// <summary>
-  /// Model binder provider that will use the CslaModelBinder for
-  /// any type that implements the IBusinessBase interface.
-  /// </summary>
-  public class CslaModelBinderProvider : IModelBinderProvider
-  {
-    private ApplicationContext _applicationContext;
-
-    /// <summary>
-    /// Creates a model binder provider that use custom
-    /// instance and child creators.
-    /// </summary>
-    /// <param name="applicationContext">ApplicationContext instance</param>
-    /// <param name="instanceCreator">Instance creator for root objects.</param>
-    /// <param name="childCreator">Instance creator for child objects.</param>
-    public CslaModelBinderProvider(ApplicationContext applicationContext, 
-      Func<Type, Task<object>> instanceCreator, Func<IList, Type, Dictionary<string, string>, object> childCreator)
-    {
-      _applicationContext = applicationContext;
-      if (instanceCreator == null)
-        _instanceCreator = CreateInstance;
-      else
-        _instanceCreator = instanceCreator;
-      if (childCreator == null)
-        _childCreator = CreateChild;
-      else
-        _childCreator = childCreator;
-    }
-
-    internal Task<object> CreateInstance(Type type)
-    {
-      var tcs = new TaskCompletionSource<object>();
-      tcs.SetResult(_applicationContext.CreateInstanceDI(type));
-      return tcs.Task;
-    }
-
-    internal object CreateChild(IList parent, Type type, Dictionary<string, string> values)
-    {
-      return _applicationContext.CreateInstanceDI(type);
-    }
-
-    private readonly Func<Type, Task<object>> _instanceCreator;
-    private readonly Func<IList, Type, Dictionary<string, string>, object> _childCreator;
-
-    /// <summary>
-    /// Gets the CslaModelBinder provider.
-    /// </summary>
-    /// <param name="context">Model binder provider context.</param>
-    public IModelBinder GetBinder(ModelBinderProviderContext context)
-    {
-      if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType))
-        return new CslaModelBinder(_instanceCreator, _childCreator);
-      if (typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
-        return new CslaModelBinder(_instanceCreator);
-      return null;
     }
   }
 }

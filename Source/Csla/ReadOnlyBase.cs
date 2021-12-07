@@ -217,7 +217,7 @@ namespace Csla
 
       if (!_readResultCache.TryGetValue(property.Name, out result))
       {
-        result = BusinessRules.HasPermission(AuthorizationActions.ReadProperty, property);
+        result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, property);
         // store value in cache
         _readResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
       }
@@ -318,7 +318,7 @@ namespace Csla
 
       if (!_executeResultCache.TryGetValue(method.Name, out result))
       {
-        result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
+        result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ExecuteMethod, method);
         _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
       }
       return result;

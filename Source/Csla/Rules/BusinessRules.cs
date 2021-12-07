@@ -13,6 +13,7 @@ using Csla.Serialization.Mobile;
 using Csla.Core;
 using System.Threading.Tasks;
 using Csla.Threading;
+using System.Security.Principal;
 
 namespace Csla.Rules
 {
@@ -314,7 +315,7 @@ namespace Csla.Rules
     {
       //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, objectType, null, applicationContext.RuleSet);
+      return HasPermission(action, null, applicationContext.User, objectType, null, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -328,7 +329,7 @@ namespace Csla.Rules
     {
       //objectType = ApplicationContext.DataPortalActivator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, objectType, criteria, applicationContext.RuleSet);
+      return HasPermission(action, null, applicationContext.User, objectType, criteria, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -343,7 +344,7 @@ namespace Csla.Rules
     /// </returns>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet)
     {
-      return HasPermission(action, null, objectType, null, ruleSet);
+      return HasPermission(action, null, applicationContext.User, objectType, null, ruleSet);
     }
 
     /// <summary>
@@ -354,37 +355,23 @@ namespace Csla.Rules
     /// <param name="obj">Business object instance.</param>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, object obj)
     {
-      return HasPermission(action, obj, obj.GetType(), null, applicationContext.RuleSet);
+      return HasPermission(action, obj, applicationContext.User, obj.GetType(), null, applicationContext.RuleSet);
     }
 
-    /// <summary>
-    /// Checks per-instance authorization rules.
-    /// </summary>
-    /// <param name="action">Authorization action.</param>
-    /// <param name="obj">Business object instance.</param>
-    /// <param name="ruleSet">The rule set.</param>
-    /// <returns>
-    /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
-    /// </returns>
-    public static bool HasPermission(AuthorizationActions action, object obj, string ruleSet)
-    {
-      return HasPermission(action, obj, obj.GetType(), null, ruleSet);
-    }
-
-    private static bool HasPermission(AuthorizationActions action, object obj, Type objType, object[] criteria, string ruleSet)
+    private static bool HasPermission(AuthorizationActions action, object obj, IPrincipal user, Type objType, object[] criteria, string ruleSet)
     {
 
       if (action == AuthorizationActions.ReadProperty ||
           action == AuthorizationActions.WriteProperty ||
           action == AuthorizationActions.ExecuteMethod)
-        throw new ArgumentOutOfRangeException(nameof(action));
+        throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
 
       bool result = true;
       var rule =
         AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType, Criteria = criteria };
+        var context = new AuthorizationContext(rule, user, obj, objType) { Criteria = criteria };
         rule.Execute(context);
         result = context.HasPermission;
       }
@@ -394,9 +381,10 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-property authorization rules.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="element">Property or method to check.</param>
-    public bool HasPermission(AuthorizationActions action, Csla.Core.IMemberInfo element)
+    public bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Csla.Core.IMemberInfo element)
     {
       if (_suppressRuleChecking)
         return true;
@@ -405,14 +393,14 @@ namespace Csla.Rules
           action == AuthorizationActions.DeleteObject ||
           action == AuthorizationActions.GetObject ||
           action == AuthorizationActions.EditObject)
-        throw new ArgumentOutOfRangeException(nameof(action));
+        throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
 
       bool result = true;
       var rule =
         TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext { Rule = rule, Target = this.Target, TargetType = this.Target.GetType() };
+        var context = new AuthorizationContext(rule, applicationContext.User, this.Target, this.Target.GetType());
         rule.Execute(context);
         result = context.HasPermission;
       }
@@ -425,7 +413,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="action">Authorization action.</param>
     /// <param name="element">Property or method to check.</param>
-    public bool CachePermissionResult(AuthorizationActions action, Csla.Core.IMemberInfo element)
+    public bool CachePermissionResult(AuthorizationActions action, IMemberInfo element)
     {
       // cannot cache result when suppressRuleChecking as HasPermission is then short circuited to return true.
       if (_suppressRuleChecking)

@@ -6,6 +6,7 @@
 // <summary>Implement extension methods data portal channel</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using Csla.Channels.Local;
 using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,9 @@ namespace Csla.Configuration
     /// <param name="options">Data portal proxy options</param>
     public static CslaDataPortalConfiguration UseLocalProxy(this CslaDataPortalConfiguration config, Action<LocalProxyOptions> options)
     {
-      var proxyOptions = new LocalProxyOptions();
+      var existingOptions = config.Services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).FirstOrDefault();
+      if (existingOptions?.ImplementationInstance is not LocalProxyOptions proxyOptions)
+        proxyOptions = new LocalProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy, LocalProxy>();
       config.Services.AddTransient((p) => proxyOptions);

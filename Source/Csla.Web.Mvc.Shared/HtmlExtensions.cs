@@ -83,6 +83,11 @@ namespace Csla.Web.Mvc
       return new HtmlString(result);
     }
 
+    private static ApplicationContext GetApplication(IHtmlHelper htmlHelper)
+    {
+      return (ApplicationContext)htmlHelper.ViewContext.HttpContext.Items["Csla.ApplicationContext"];
+    }
+
     /// <summary>
     /// Conditionally render HTML output according to the provided authorization action and underlyiong object type.
     /// </summary>
@@ -99,7 +104,8 @@ namespace Csla.Web.Mvc
                                     HtmlString granted,
                                     HtmlString denied)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return granted;
       else
         return denied;
@@ -121,7 +127,8 @@ namespace Csla.Web.Mvc
                                     HtmlString granted,
                                     string denied)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return granted;
       else
         return new HtmlString(denied);
@@ -143,7 +150,8 @@ namespace Csla.Web.Mvc
                                     string granted,
                                     string denied)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return new HtmlString(granted);
       else
         return new HtmlString(denied);
@@ -167,8 +175,7 @@ namespace Csla.Web.Mvc
                                     HtmlString granted,
                                     HtmlString denied)
     {
-      var instance = target as Csla.Security.IAuthorizeReadWrite;
-      if (instance == null) return denied;
+      if (target is not Csla.Security.IAuthorizeReadWrite instance) return denied;
 
       if ((action == Rules.AuthorizationActions.ReadProperty && instance.CanReadProperty(member.Name)) ||
           (action == Rules.AuthorizationActions.WriteProperty && instance.CanWriteProperty(member.Name)) ||
@@ -196,8 +203,7 @@ namespace Csla.Web.Mvc
                                     HtmlString granted,
                                     string denied)
     {
-      var instance = target as Csla.Security.IAuthorizeReadWrite;
-      if (instance == null) return new HtmlString(denied);
+      if (target is not Csla.Security.IAuthorizeReadWrite instance) return new HtmlString(denied);
 
       if ((action == Rules.AuthorizationActions.ReadProperty && instance.CanReadProperty(member.Name)) ||
           (action == Rules.AuthorizationActions.WriteProperty && instance.CanWriteProperty(member.Name)) ||
@@ -250,7 +256,8 @@ namespace Csla.Web.Mvc
                                     Type objectType,
                                     Func<IHtmlHelper, HtmlString> grantedAction)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return grantedAction.Invoke(htmlHelper);
       else
         return HtmlString.Empty;
@@ -274,8 +281,7 @@ namespace Csla.Web.Mvc
                                     Func<IHtmlHelper, HtmlString> grantedAction,
                                     Func<IHtmlHelper, HtmlString> denieddAction)
     {
-      var instance = target as Csla.Security.IAuthorizeReadWrite;
-      if (instance == null) return denieddAction.Invoke(htmlHelper);
+      if (target is not Csla.Security.IAuthorizeReadWrite instance) return denieddAction.Invoke(htmlHelper);
 
       if ((action == Rules.AuthorizationActions.ReadProperty && instance.CanReadProperty(member.Name)) ||
           (action == Rules.AuthorizationActions.WriteProperty && instance.CanWriteProperty(member.Name)) ||
@@ -302,6 +308,11 @@ namespace Csla.Web.Mvc
   /// </summary>
   public static class HtmlExtensions
   {
+    private static ApplicationContext GetApplication(HtmlHelper htmlHelper)
+    {
+      return (ApplicationContext)htmlHelper.ViewContext.HttpContext.Items["Csla.ApplicationContext"];
+    }
+
     /// <summary>
     /// Conditionally render HTML output according to the provided authorization action and underlyiong object type.
     /// </summary>
@@ -318,7 +329,8 @@ namespace Csla.Web.Mvc
                                     MvcHtmlString granted,
                                     MvcHtmlString denied)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return granted;
       else
         return denied;
@@ -340,7 +352,8 @@ namespace Csla.Web.Mvc
                                     MvcHtmlString granted,
                                     string denied)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return granted;
       else
         return MvcHtmlString.Create(denied);
@@ -362,7 +375,8 @@ namespace Csla.Web.Mvc
                                     string granted,
                                     string denied)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return MvcHtmlString.Create(granted);
       else
         return MvcHtmlString.Create(denied);
@@ -469,7 +483,8 @@ namespace Csla.Web.Mvc
                                     Type objectType,
                                     Func<HtmlHelper, MvcHtmlString> grantedAction)
     {
-      if (Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.ApplicationContext, action, objectType))
+      var applicationContext = GetApplication(htmlHelper);
+      if (Csla.Rules.BusinessRules.HasPermission(applicationContext, action, objectType))
         return grantedAction.Invoke(htmlHelper);
       else
         return MvcHtmlString.Empty;

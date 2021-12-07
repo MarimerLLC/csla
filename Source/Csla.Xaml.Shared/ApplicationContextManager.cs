@@ -17,31 +17,22 @@ namespace Csla.Xaml
   /// </summary>
   public class ApplicationContextManager : Csla.Core.ApplicationContextManager
   {
+    private static IPrincipal _principal = null;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public ApplicationContextManager(IServiceProvider serviceProvider)
-      : base(serviceProvider)
+    public ApplicationContextManager()
     {
-      _serviceProvider = serviceProvider;
+      applicationContext = base.ApplicationContext;
     }
 
-    private static IServiceProvider _serviceProvider;
     private static ApplicationContext applicationContext;
 
-    internal static ApplicationContext ApplicationContext 
-    { 
-      get
-      {
-        if (applicationContext == null)
-        {
-          applicationContext = _serviceProvider.GetRequiredService<ApplicationContext>();
-        }
-        return applicationContext;
-      }
-    }
-
-    private static IPrincipal _principal = null;
+    /// <summary>
+    /// Gets the current ApplicationContext.
+    /// </summary>
+    public static ApplicationContext GetApplicationContext () => applicationContext;
 
     /// <summary>
     /// Gets the current principal.

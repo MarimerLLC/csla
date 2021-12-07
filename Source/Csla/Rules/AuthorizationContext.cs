@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+using System.Security.Principal;
 
 namespace Csla.Rules
 {
@@ -41,6 +42,12 @@ namespace Csla.Rules
     /// </summary>
     public object[] Criteria { get; internal set; }
 
+
+    /// <summary>
+    /// Gets the current user principal.
+    /// </summary>
+    public IPrincipal User { get; internal set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthorizationContext"/> class.
     /// </summary>
@@ -52,11 +59,13 @@ namespace Csla.Rules
     /// Creates a AuthorizationContext instance for unit testing.
     /// </summary>
     /// <param name="rule">The rule.</param>
+    /// <param name="user">The current user.</param>
     /// <param name="target">The target.</param>
     /// <param name="targetType">Type of the target.</param>
-    public AuthorizationContext(IAuthorizationRule rule, object target, Type targetType)
+    public AuthorizationContext(IAuthorizationRule rule, IPrincipal user, object target, Type targetType)
     {
       Rule = rule;
+      User = user;
       Target = target;
       TargetType = targetType;
     }

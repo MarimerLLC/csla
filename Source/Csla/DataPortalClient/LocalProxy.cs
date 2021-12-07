@@ -8,7 +8,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Csla.Configuration;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,8 +32,17 @@ namespace Csla.Channels.Local
 
       if (Options.CreateScopePerCall)
       {
+        // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
-        ApplicationContext = _scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+        var provider = _scope.ServiceProvider;
+
+        // create and initialize new "server-side" ApplicationContext and manager
+        var parentContext = applicationContext;
+        var ctx = new Csla.Core.ApplicationContextManager();
+        ctx.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
+        ctx.SetUser(parentContext.User);
+        ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+        ApplicationContext.ContextManager = ctx;
       }
 
       _portal = ApplicationContext.CurrentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
@@ -66,7 +74,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
@@ -94,7 +102,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
@@ -121,7 +129,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Update(obj, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
@@ -149,7 +157,7 @@ namespace Csla.Channels.Local
       }
       else
       {
-        if (!FlowSynchronizationContext || SynchronizationContext.Current == null)
+        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
           return await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
         else
           return await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
@@ -170,23 +178,6 @@ namespace Csla.Channels.Local
     }
 
     /// <summary>
-    /// Gets a value indicating whether any
-    /// synchronization context should be flowed to
-    /// child tasks. Setting this to true may restrict
-    /// or eliminate the use of background threads.
-    /// </summary>
-    public bool FlowSynchronizationContext
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"] == null)
-          return false;
-        else
-          return bool.Parse(ConfigurationManager.AppSettings["CslaFlowSynchronizationContext"]);
-      }
-    }
-
-    /// <summary>
     /// Dispose current object
     /// </summary>
     /// <param name="disposing"></param>
@@ -196,7 +187,8 @@ namespace Csla.Channels.Local
       {
         if (disposing)
         {
-          _scope?.Dispose();
+          if (Options.CreateScopePerCall)
+            _scope?.Dispose();
         }
         disposedValue = true;
       }

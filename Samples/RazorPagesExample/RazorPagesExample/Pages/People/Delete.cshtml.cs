@@ -1,25 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessLibrary;
+﻿using BusinessLibrary;
 using Csla;
 using Csla.AspNetCore.RazorPages;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPagesExample.Pages.People
 {
   public class DeleteModel : PageModel<PersonEdit>
   {
-    public async Task OnGet(int id)
+    public DeleteModel(ApplicationContext applicationContext, IDataPortal<PersonEdit> portal)
+      : base(applicationContext)
     {
-      Item = await DataPortal.FetchAsync<PersonEdit>(id);
+      _portal = portal;
     }
 
-    public async Task<ActionResult> OnPost()
+    private IDataPortal<PersonEdit> _portal;
+
+    public async Task OnGet(int id)
     {
-      await DataPortal.DeleteAsync<PersonEdit>(Item.Id);
+      Item = await _portal.FetchAsync(id);
+    }
+
+    public async Task<ActionResult> OnPost(int id)
+    {
+      await _portal.DeleteAsync(id);
       return RedirectToPage("/People/Index");
     }
   }

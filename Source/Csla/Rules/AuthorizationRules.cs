@@ -15,12 +15,9 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// IsInRole authorization rule.
   /// </summary>
-  public class IsInRole : AuthorizationRule, Core.IUseApplicationContext
+  public class IsInRole : AuthorizationRule
   {
     private List<string> _roles;
-
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -74,12 +71,12 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(IAuthorizationContext context)
     {
-      if (ApplicationContext.User != null)
+      if (context.User != null)
       {
         if (_roles.Count > 0)
         {
           foreach (var item in _roles)
-            if (ApplicationContext.User.IsInRole(item))
+            if (context.User.IsInRole(item))
             {
               context.HasPermission = true;
               break;
@@ -96,12 +93,9 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// IsNotInRole authorization rule.
   /// </summary>
-  public class IsNotInRole : AuthorizationRule, Core.IUseApplicationContext
+  public class IsNotInRole : AuthorizationRule
   {
     private List<string> _roles;
-
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -156,10 +150,10 @@ namespace Csla.Rules.CommonRules
     protected override void Execute(IAuthorizationContext context)
     {
       context.HasPermission = true;
-      if (ApplicationContext.User != null)
+      if (context.User != null)
       {
         foreach (var item in _roles)
-          if (ApplicationContext.User.IsInRole(item))
+          if (context.User.IsInRole(item))
           {
             context.HasPermission = false;
             break;

@@ -13,8 +13,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddOptions();
-builder.Services.AddSingleton<AuthenticationStateProvider, CurrentUserAuthenticationStateProvider>();
-builder.Services.AddSingleton<CurrentUserService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CurrentUserAuthenticationStateProvider>();
+builder.Services.AddScoped<CurrentUserService>();
 
 builder.Services.AddCsla(o=>o
   .WithBlazorWebAssembly()

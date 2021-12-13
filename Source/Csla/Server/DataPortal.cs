@@ -530,33 +530,6 @@ namespace Csla.Server
     }
 
     private IInterceptDataPortal _interceptor = null;
-    private static Type _interceptorType = null;
-    private static bool _InterceptorTypeSet = false;
-
-    /// <summary>
-    /// Gets or sets the type of interceptor invoked
-    /// by the data portal for pre- and post-processing
-    /// of each data portal invocation.
-    /// </summary>
-    public static Type InterceptorType 
-    {
-      get
-      {
-        if (!_InterceptorTypeSet)
-        {
-          var typeName = ConfigurationManager.AppSettings["CslaDataPortalInterceptor"];
-          if (!string.IsNullOrWhiteSpace(typeName))
-            InterceptorType = Type.GetType(typeName);
-          _InterceptorTypeSet = true;
-        }
-        return _interceptorType;
-      }
-      set
-      {
-        _interceptorType = value;
-        _InterceptorTypeSet = true;
-      }
-    }
 
     internal void Complete(InterceptArgs e)
     {

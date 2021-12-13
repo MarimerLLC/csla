@@ -6,6 +6,9 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -38,6 +41,32 @@ namespace Csla.Configuration
       services.TryAddTransient<Server.FactoryDataPortal>();
       services.TryAddTransient<Server.DataPortalBroker>();
       services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
+      services.AddTransient<IInterceptDataPortal, Server.Interceptors.ServerSide.RevalidatingInterceptor>();
+      return builder;
+    }
+
+    /// <summary>
+    /// Register an interceptor for data portal operations
+    /// </summary>
+    /// <param name="builder">The builder instance we are extending</param>
+    /// <typeparam name="T">The type of interceptor that is to be registered</typeparam>
+    /// <returns>The extended object, thus enabling method chaining/fluent configuration</returns>
+    public static CslaDataPortalConfiguration AddInterceptor<T>(this CslaDataPortalConfiguration builder) where T : class, Server.IInterceptDataPortal
+    {
+      var services = builder.Services;
+      services.AddTransient<IInterceptDataPortal, T>();
+      return builder;
+    }
+
+    /// <summary>
+    /// Disable the revalidating interceptor used for data portal operations
+    /// </summary>
+    /// <param name="builder">The builder instance we are extending</param>
+    /// <returns>The extended object, thus enabling method chaining/fluent configuration</returns>
+    public static CslaDataPortalConfiguration DisableServerSideRevalidation(this CslaDataPortalConfiguration builder)
+    {
+      var services = builder.Services;
+      ConfigurationManager.AppSettings["CslaDisableServerSideRevalidation"] = true.ToString();
       return builder;
     }
   }

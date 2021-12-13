@@ -35,7 +35,7 @@ namespace Csla.Test
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
+      services.AddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
       services.AddCsla();
       serviceProvider = services.BuildServiceProvider();
 

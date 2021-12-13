@@ -34,9 +34,10 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="dashboard"></param>
-    public DataPortal(ApplicationContext applicationContext, IDashboard dashboard)
+    /// <param name="applicationContext">The context in which the DataPortal request is being performed</param>
+    /// <param name="dashboard">The instance of the dashboard for instrumentation</param>
+    /// <param name="interceptionManager">The interception manager instance for dataportal operations</param>
+    public DataPortal(ApplicationContext applicationContext, IDashboard dashboard, InterceptionManager interceptionManager)
     {
       ApplicationContext = applicationContext;
       Dashboard = dashboard;
@@ -56,17 +57,7 @@ namespace Csla.Server
         }
       }
 
-      if (InterceptorType != null)
-      {
-        if (_interceptor == null)
-        {
-          lock (_syncRoot)
-          {
-            if (_interceptor == null)
-              _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
-          }
-        }
-      }
+      _interceptor = interceptionManager;
     }
 
     private static Type GetAuthProviderType(string cslaAuthorizationProviderAppSettingName)
@@ -577,8 +568,7 @@ namespace Csla.Server
         Dashboard.CompleteCall(e);
       }
 
-      if (_interceptor != null)
-        _interceptor.Complete(e);
+      _interceptor.Complete(e);
     }
 
     internal void Initialize(InterceptArgs e)
@@ -586,8 +576,7 @@ namespace Csla.Server
       ApplicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
       Dashboard.InitializeCall(e);
 
-      if (_interceptor != null)
-        _interceptor.Initialize(e);
+      _interceptor.Initialize(e);
     }
 
 #endregion

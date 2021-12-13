@@ -24,7 +24,7 @@ namespace Csla.Server.Interceptors.ServerSide
     /// <summary>
     /// Public constructor, intended to be executed by DI
     /// </summary>
-    /// <param name="applicationContext"></param>
+    /// <param name="applicationContext">The context under which the DataPortal operation is executing</param>
     public RevalidatingInterceptor(ApplicationContext applicationContext)
     {
       _applicationContext = applicationContext;

@@ -5,15 +5,22 @@
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
-using Csla.Reflection;
 using System;
 
 namespace Csla.Server
 {
-  internal class DefaultDataPortalActivator : IDataPortalActivator, Core.IUseApplicationContext
+  internal class DefaultDataPortalActivator : IDataPortalActivator
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public DefaultDataPortalActivator(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     private ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     public object CreateInstance(Type requestedType)
     {

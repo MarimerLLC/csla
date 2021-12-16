@@ -5,6 +5,9 @@
 // </copyright>
 // <summary>Implementation of the authorizer that</summary>
 //-----------------------------------------------------------------------
+using System;
+using Csla.Properties;
+using Csla.Rules;
 using Csla.Security;
 
 namespace Csla.Server
@@ -35,40 +38,32 @@ namespace Csla.Server
     /// </param>
     public void Authorize(AuthorizeRequest clientRequest)
     {
-      if (clientRequest.Operation == DataPortalOperations.Create)
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server &&
+          ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
       {
-        if (!Rules.BusinessRules.HasPermission(
-          ApplicationContext, Rules.AuthorizationActions.CreateObject, clientRequest.ObjectType))
-          throw new SecurityException($"{clientRequest.ObjectType.Name}.{clientRequest.Operation}");
-        return;
-      }
-      if (clientRequest.Operation == DataPortalOperations.Fetch)
-      {
-        if (!Rules.BusinessRules.HasPermission(
-          ApplicationContext, Rules.AuthorizationActions.GetObject, clientRequest.ObjectType))
-          throw new SecurityException($"{clientRequest.ObjectType.Name}.{clientRequest.Operation}");
-        return;
-      }
-      if (clientRequest.Operation == DataPortalOperations.Update)
-      {
-        if (!Rules.BusinessRules.HasPermission(
-          ApplicationContext, Rules.AuthorizationActions.EditObject, clientRequest.ObjectType))
-          throw new SecurityException($"{clientRequest.ObjectType.Name}.{clientRequest.Operation}");
-        return;
-      }
-      if (clientRequest.Operation == DataPortalOperations.Delete)
-      {
-        if (!Rules.BusinessRules.HasPermission(
-          ApplicationContext, Rules.AuthorizationActions.DeleteObject, clientRequest.ObjectType))
-          throw new SecurityException($"{clientRequest.ObjectType.Name}.{clientRequest.Operation}");
-        return;
-      }
-      if (clientRequest.Operation == DataPortalOperations.Execute)
-      {
-        if (!Rules.BusinessRules.HasPermission(
-          ApplicationContext, Rules.AuthorizationActions.EditObject, clientRequest.ObjectType))
-          throw new SecurityException($"{clientRequest.ObjectType.Name}.{clientRequest.Operation}");
-        return;
+        if (clientRequest.Operation == DataPortalOperations.Update ||
+            clientRequest.Operation == DataPortalOperations.Execute)
+        {
+          // Per-Instance checks
+          if (!BusinessRules.HasPermission(ApplicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.RequestObject))
+          {
+            throw new SecurityException(
+               string.Format(Resources.UserNotAuthorizedException,
+                   clientRequest.Operation.ToSecurityActionDescription(),
+                   clientRequest.ObjectType.Name)
+               );
+          }
+        }
+
+        // Per-Type checks
+        if (!BusinessRules.HasPermission(ApplicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.ObjectType))
+        {
+          throw new SecurityException(
+             string.Format(Resources.UserNotAuthorizedException,
+                 clientRequest.Operation.ToSecurityActionDescription(),
+                 clientRequest.ObjectType.Name)
+             );
+        }
       }
     }
   }

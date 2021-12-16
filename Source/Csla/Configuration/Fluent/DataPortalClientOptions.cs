@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Client-side data portal options.</summary>
 //-----------------------------------------------------------------------
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
@@ -13,6 +14,30 @@ namespace Csla.Configuration
   /// </summary>
   public class DataPortalClientOptions
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="options"></param>
+    public DataPortalClientOptions(CslaOptions options)
+    {
+      CslaOptions = options;
+    }
+
+    /// <summary>
+    /// Gets the current configuration object.
+    /// </summary>
+    internal CslaOptions CslaOptions { get; set; }
+
+    /// <summary>
+    /// Gets the current configuration object.
+    /// </summary>
+    internal DataPortalServerOptions DataPortalServerOptions { get => CslaOptions.DataPortalServerOptions; }
+
+    /// <summary>
+    /// Gets the current service collection.
+    /// </summary>
+    public IServiceCollection Services { get => CslaOptions.Services; }
+
     /// <summary>
     /// Gets or sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()

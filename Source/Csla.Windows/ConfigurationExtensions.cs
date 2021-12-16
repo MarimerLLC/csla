@@ -20,7 +20,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <returns></returns>
-    public static ICslaConfiguration AddWindowsForms(this ICslaConfiguration config)
+    public static CslaOptions AddWindowsForms(this CslaOptions config)
     {
       return AddWindowsForms(config, null);
     }
@@ -32,7 +32,7 @@ namespace Csla.Configuration
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
     /// <returns></returns>
-    public static ICslaConfiguration AddWindowsForms(this ICslaConfiguration config, Action<WindowsFormsOptions> options)
+    public static CslaOptions AddWindowsForms(this CslaOptions config, Action<WindowsFormsOptions> options)
     {
       var xamlOptions = new WindowsFormsOptions();
       options?.Invoke(xamlOptions);

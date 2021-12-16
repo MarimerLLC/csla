@@ -29,12 +29,12 @@ namespace Csla.Server
     {
       ApplicationContext = applicationContext;
       FactoryLoader = factoryLoader;
-      Inspector = inspector;
+      ExceptionInspector = inspector;
     }
 
     private ApplicationContext ApplicationContext { get; set; }
     private IObjectFactoryLoader FactoryLoader { get; set; }
-    private IDataPortalExceptionInspector Inspector { get; set; }
+    private IDataPortalExceptionInspector ExceptionInspector { get; set; }
 
     #region Method invokes
 
@@ -123,7 +123,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
             ApplicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
-            new DataPortalExceptionHandler(Inspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
+            new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
             null);
       }
     }
@@ -152,7 +152,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(Inspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
+          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
           null);
       }
     }
@@ -183,7 +183,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           ApplicationContext, methodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(Inspector).InspectException(obj.GetType(), obj, null, methodName, ex),
+          new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, methodName, ex),
           obj);
 
       }
@@ -213,7 +213,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(Inspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
+          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
           null);
       }
     }

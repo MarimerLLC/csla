@@ -5,26 +5,29 @@
 // </copyright>
 // <summary>Use this type to configure the settings</summary>
 //-----------------------------------------------------------------------
+using System;
+
 namespace Csla.Configuration
 {
   /// <summary>
   /// Extension method for CslaSerializationConfiguration
   /// </summary>
-  public static class CslaSerializationConfigurationExtension
+  public static class CslaSerializationConfigurationExtensions
   {
     /// <summary>
     /// Extension method for CslaSerializationConfiguration
     /// </summary>
-    public static CslaSerializationConfiguration Serialization(this ICslaConfiguration config)
+    public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions> options)
     {
-      return new CslaSerializationConfiguration();
+      options?.Invoke(config.SerializationOptions);
+      return config;
     }
   }
 
   /// <summary>
   /// Use this type to configure the settings for serialization.
   /// </summary>
-  public class CslaSerializationConfiguration
+  public class SerializationOptions
   {
     /// <summary>
     /// Sets the serialization formatter type used by CSLA .NET
@@ -33,7 +36,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="formatterName">Formatter name (one of MobileFormatter, 
     /// BinaryFormatter, NetDataContractSerializer, or type name)</param>
-    public CslaSerializationConfiguration SerializationFormatter(string formatterName)
+    public SerializationOptions SerializationFormatter(string formatterName)
     {
       ConfigurationManager.AppSettings["CslaSerializationFormatter"] = formatterName;
       return this;
@@ -44,7 +47,7 @@ namespace Csla.Configuration
     /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public CslaSerializationConfiguration MobileWriter(string typeName)
+    public SerializationOptions MobileWriter(string typeName)
     {
       ConfigurationManager.AppSettings["CslaWriter"] = typeName;
       return this;
@@ -55,7 +58,7 @@ namespace Csla.Configuration
     /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
     /// <param name="typeName">Assembly qualified type name</param>
-    public CslaSerializationConfiguration MobileReader(string typeName)
+    public SerializationOptions MobileReader(string typeName)
     {
       ConfigurationManager.AppSettings["CslaReader"] = typeName;
       return this;

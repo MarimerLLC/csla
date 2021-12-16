@@ -24,7 +24,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <returns></returns>
-    public static ICslaConfiguration AddXaml(this ICslaConfiguration config)
+    public static CslaOptions AddXaml(this CslaOptions config)
     {
       return AddXaml(config, null);
     }
@@ -36,7 +36,7 @@ namespace Csla.Configuration
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
     /// <returns></returns>
-    public static ICslaConfiguration AddXaml(this ICslaConfiguration config, Action<XamlOptions> options)
+    public static CslaOptions AddXaml(this CslaOptions config, Action<XamlOptions> options)
     {
       var xamlOptions = new XamlOptions();
       options?.Invoke(xamlOptions);

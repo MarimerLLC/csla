@@ -14,20 +14,21 @@ namespace Csla.Configuration
   /// <summary>
   /// Use this type to configure the settings for CSLA .NET.
   /// </summary>
-  public class CslaConfiguration : ICslaConfiguration
+  public class CslaOptions
   {
     /// <summary>
-    /// Gets or sets the current service collection.
+    /// Gets the current service collection.
     /// </summary>
-    public IServiceCollection Services { get; set; }
+    public IServiceCollection Services { get; private set; }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="services">Service collection</param>
-    public CslaConfiguration(IServiceCollection services)
+    public CslaOptions(IServiceCollection services)
     {
       Services = services;
+      DataPortalClientOptions = new DataPortalClientOptions(this);
     }
 
     /// <summary>
@@ -36,7 +37,7 @@ namespace Csla.Configuration
     /// System.Linq.Expressions (true, default).
     /// </summary>
     /// <param name="value">Value</param>
-    public CslaConfiguration UseReflectionFallback(bool value)
+    public CslaOptions UseReflectionFallback(bool value)
     {
       ApplicationContext.UseReflectionFallback = value;
       return this;
@@ -47,7 +48,7 @@ namespace Csla.Configuration
     /// raise PropertyChanged events.
     /// </summary>
     /// <param name="mode">Property changed mode</param>
-    public CslaConfiguration PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
+    public CslaOptions PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
     {
       ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = mode.ToString();
       return this;
@@ -68,7 +69,7 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public CslaConfiguration VersionRoutingTag(string version)
+    public CslaOptions VersionRoutingTag(string version)
     {
       if (!string.IsNullOrWhiteSpace(version))
         if (version.Contains("-") || version.Contains("/"))
@@ -81,10 +82,31 @@ namespace Csla.Configuration
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
     /// <param name="typeName">Factory type name</param>
-    public CslaConfiguration PropertyInfoFactory(string typeName)
+    public CslaOptions PropertyInfoFactory(string typeName)
     {
       ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
       return this;
     }
+
+    /// <summary>
+    /// Gets the SecurityOptions instance.
+    /// </summary>
+    internal SecurityOptions SecurityOptions { get; set; } = new SecurityOptions();
+    /// <summary>
+    /// Gets the SerializationOptions instance.
+    /// </summary>
+    internal SerializationOptions SerializationOptions { get; set; } = new SerializationOptions();
+    /// <summary>
+    /// Gets the DataPortalClientOptions instance.
+    /// </summary>
+    internal DataPortalClientOptions DataPortalClientOptions { get; private set; }
+    /// <summary>
+    /// Gets the DataPortalServerOptions instance.
+    /// </summary>
+    internal DataPortalServerOptions DataPortalServerOptions { get; private set; } = new DataPortalServerOptions();
+    /// <summary>
+    /// Gets the DataOptions instance.
+    /// </summary>
+    internal DataOptions DataOptions { get; set; } = new DataOptions();
   }
 }

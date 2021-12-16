@@ -50,12 +50,9 @@ namespace Csla.Configuration
       services.AddScoped((p) => opt);
       services.AddScoped(typeof(IAuthorizeDataPortal), opt.AuthorizerProviderType);
       services.AddScoped((p) => opt.InterceptorProviders);
-      if (opt.ObjectFactoryLoaderType != null)
-        services.AddScoped(typeof(IObjectFactoryLoader), opt.ObjectFactoryLoaderType);
-      if (opt.ActivatorType != null)
-        services.AddTransient(typeof(IDataPortalActivator), opt.ActivatorType);
-      if (opt.ExceptionInspectorType != null)
-        services.AddScoped(typeof(IDataPortalExceptionInspector), opt.ExceptionInspectorType);
+      services.AddScoped(typeof(IObjectFactoryLoader), opt.ObjectFactoryLoaderType);
+      services.AddTransient(typeof(IDataPortalActivator), opt.ActivatorType);
+      services.AddScoped(typeof(IDataPortalExceptionInspector), opt.ExceptionInspectorType);
 
       services.TryAddTransient(typeof(IDataPortalServer), typeof(DataPortal));
       services.TryAddTransient<DataPortalSelector>();
@@ -159,12 +156,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ExceptionInspector.
     /// </summary>
-    public Type ExceptionInspectorType { get; set; }
+    public Type ExceptionInspectorType { get; set; } = typeof(DefaultExceptionInspector);
 
     /// <summary>
     /// Gets or sets the type of the Activator.
     /// </summary>
-    public Type ActivatorType { get; set; }
+    public Type ActivatorType { get; set; } = typeof(DefaultDataPortalActivator);
 
     /// <summary>
     /// Gets or sets the type name of the factor loader used to create
@@ -172,6 +169,6 @@ namespace Csla.Configuration
     /// the FactoryDataPortal model. Type must implement
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
-    public Type ObjectFactoryLoaderType { get; set; }
+    public Type ObjectFactoryLoaderType { get; set; } = typeof(ObjectFactoryLoader);
   }
 }

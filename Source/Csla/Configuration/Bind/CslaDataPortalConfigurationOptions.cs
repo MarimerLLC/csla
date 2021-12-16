@@ -37,46 +37,6 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Gets or sets an instance of the <see cref="IDataPortalActivator"/> provider.
-    /// </summary>
-    public string Activator
-    {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalActivator"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalActivator"] = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the fully qualified name of the ExceptionInspector class.
-    /// </summary>
-    public string ExceptionInspector
-    {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"] = value; }
-    }
-
-    /// <summary>
-    /// Sets the type name to be used for server-side data portal
-    /// authorization. Type must implement <see cref="IAuthorizeDataPortal"/>.
-    /// </summary>
-    public string AuthorizationProvider
-    {
-      get { return ConfigurationManager.AppSettings["CslaAuthorizationProvider"]; }
-      set { ConfigurationManager.AppSettings["CslaAuthorizationProvider"] = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the type of interceptor invoked
-    /// by the data portal for pre- and post-processing
-    /// of each data portal invocation. Type must implement
-    /// IInterceptDataPortal.
-    /// </summary>
-    public string Interceptor
-    {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalInterceptor"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalInterceptor"] = value; }
-    }
-
-    /// <summary>
     /// Gets or sets a value indicating whether the
     /// server-side business object should be returned to
     /// the client as part of the <see cref="DataPortalException"/> 
@@ -91,29 +51,7 @@ namespace Csla.Configuration
         else
           return bool.Parse(ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"]);
       }
-      set { Csla.ApplicationContext.DataPortalReturnObjectOnException = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the data portal URL string.    
-    /// </summary>
-    /// <value>The data portal URL string.</value>
-    public string PortalUrl
-    {
-      get { return ConfigurationManager.AppSettings["CslaDataPortalUrl"]; }
-      set { ConfigurationManager.AppSettings["CslaDataPortalUrl"] = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the type name of the factor loader used to create
-    /// server-side instances of business object factories when using
-    /// the FactoryDataPortal model. Type must implement
-    /// <see cref="IObjectFactoryLoader"/>.
-    /// </summary>
-    public string ObjectFactoryLoader
-    {
-      get { return ConfigurationManager.AppSettings["CslaObjectFactoryLoader"]; }
-      set { ConfigurationManager.AppSettings["CslaObjectFactoryLoader"] = value; }
+      set { ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString(); }
     }
   }
 }

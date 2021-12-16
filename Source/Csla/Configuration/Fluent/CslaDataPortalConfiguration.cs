@@ -6,7 +6,6 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -23,6 +22,19 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaDataPortalConfiguration DataPortal(this ICslaConfiguration config)
     {
+      return DataPortal(config, null);
+    }
+    
+    /// <summary>
+    /// Extension method for CslaDataPortalConfiguration
+    /// </summary>
+    /// <param name="config"></param>
+    /// <param name="options"></param>
+    public static CslaDataPortalConfiguration DataPortal(this ICslaConfiguration config, Action<DataPortalClientOptions> options)
+    {
+      var opt = new DataPortalClientOptions();
+      options?.Invoke(opt);
+      config.Services.AddScoped((p) => opt);
       return new CslaDataPortalConfiguration(config);
     }
 
@@ -88,87 +100,5 @@ namespace Csla.Configuration
     {
       CslaConfiguration = config;
     }
-  }
-
-  /// <summary>
-  /// Server-side data portal options.
-  /// </summary>
-  public class DataPortalServerOptions
-  {
-    /// <summary>
-    /// Gets or sets a value indicating whether objects should be
-    /// automatically cloned by the data portal Update()
-    /// method when using a local data portal configuration.
-    /// </summary>
-    public bool AutoCloneOnUpdate
-    {
-      get
-      {
-        bool result = true;
-        string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
-        if (!string.IsNullOrEmpty(setting))
-          result = bool.Parse(setting);
-        return result;
-      }
-      set 
-      {
-        ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString();
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the
-    /// server-side business object should be returned to
-    /// the client as part of the DataPortalException.
-    /// </summary>
-    /// <param name="value">Value (default is false)</param>
-    public bool DataPortalReturnObjectOnException
-    {
-      get
-      {
-        bool result = false;
-        string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
-        if (!string.IsNullOrEmpty(setting))
-          result = bool.Parse(setting);
-        return result;
-      }
-      set
-      {
-        ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets a value containing the type of the
-    /// IDataPortalAuthorizer to be used by the data portal.
-    /// An instance of this type is created using dependency
-    /// injection.
-    /// </summary>
-    public Type AuthorizerProviderType { get; set; } = typeof(ActiveAuthorizer);
-
-    /// <summary>
-    /// Gets a list of the IInterceptDataPortal instances
-    /// that should be executed by the server-side data portal.
-    /// injection.
-    /// </summary>
-    public List<IInterceptDataPortal> InterceptorProviders { get; } = new List<IInterceptDataPortal>();
-
-    /// <summary>
-    /// Gets or sets the type of the ExceptionInspector.
-    /// </summary>
-    public Type ExceptionInspectorType { get; set; } = typeof(DefaultExceptionInspector);
-
-    /// <summary>
-    /// Gets or sets the type of the Activator.
-    /// </summary>
-    public Type ActivatorType { get; set; } = typeof(DefaultDataPortalActivator);
-
-    /// <summary>
-    /// Gets or sets the type name of the factor loader used to create
-    /// server-side instances of business object factories when using
-    /// the FactoryDataPortal model. Type must implement
-    /// <see cref="IObjectFactoryLoader"/>.
-    /// </summary>
-    public Type ObjectFactoryLoaderType { get; set; } = typeof(ObjectFactoryLoader);
   }
 }

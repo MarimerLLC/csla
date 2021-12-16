@@ -112,9 +112,9 @@ namespace csla.netcore.test.Configuration
       // Assert.IsInstanceOfType(DataPortalActivator, typeof(TestActivator), nameof(DataPortalActivator));
       Assert.AreEqual(true, DataPortalReturnObjectOnException, nameof(DataPortalReturnObjectOnException));
       // Assert.AreEqual("testProxy", DataPortalProxy, nameof(DataPortalProxy));
-      Assert.AreEqual("testProxyUrl", DataPortalUrlString, nameof(DataPortalUrlString));
-      Assert.AreEqual("testExceptionInspector", Csla.Server.DataPortalExceptionHandler.ExceptionInspector, nameof(Csla.Server.DataPortalExceptionHandler.ExceptionInspector));
-      Assert.IsInstanceOfType(FactoryDataPortal.FactoryLoader, typeof(TestObjectFactoryLoader), "CslaObjectFactoryLoader");
+      // Assert.AreEqual("testProxyUrl", DataPortalUrlString, nameof(DataPortalUrlString));
+      //Assert.AreEqual("testExceptionInspector", Csla.Server.DataPortalExceptionHandler.ExceptionInspector, nameof(Csla.Server.DataPortalExceptionHandler.ExceptionInspector));
+      //Assert.IsInstanceOfType(FactoryDataPortal.FactoryLoader, typeof(TestObjectFactoryLoader), "CslaObjectFactoryLoader");
       Assert.AreEqual("testInterceptor", ConfigurationManager.AppSettings["CslaDataPortalInterceptor"], "InterceptorType");
       Assert.AreEqual("testAuthorizationProvider", ConfigurationManager.AppSettings["CslaAuthorizationProvider"], "CslaAuthorizationProvider");
     }

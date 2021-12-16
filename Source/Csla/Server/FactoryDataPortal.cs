@@ -17,43 +17,24 @@ namespace Csla.Server
   /// invokes an object factory rather than directly
   /// interacting with the business object.
   /// </summary>
-  public class FactoryDataPortal : IDataPortalServer, Core.IUseApplicationContext
+  public class FactoryDataPortal : IDataPortalServer
   {
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
-
-    #region Factory Loader
-
-    private static IObjectFactoryLoader _factoryLoader;
-
     /// <summary>
-    /// Gets or sets a delegate reference to the method
-    /// called to create instances of factory objects
-    /// as requested by the ObjectFactory attribute on
-    /// a CSLA .NET business object.
+    /// Creates an instance of the type.
     /// </summary>
-    public static IObjectFactoryLoader FactoryLoader
+    /// <param name="applicationContext"></param>
+    /// <param name="factoryLoader"></param>
+    /// <param name="inspector"></param>
+    public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector)
     {
-      get
-      {
-        if (_factoryLoader == null)
-        {
-          string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
-          if (!string.IsNullOrEmpty(setting))
-            _factoryLoader =
-              (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
-          else
-          _factoryLoader = new ObjectFactoryLoader();
-        }
-        return _factoryLoader;
-      }
-      set
-      {
-        _factoryLoader = value;
-      }
+      ApplicationContext = applicationContext;
+      FactoryLoader = factoryLoader;
+      Inspector = inspector;
     }
 
-    #endregion
+    private ApplicationContext ApplicationContext { get; set; }
+    private IObjectFactoryLoader FactoryLoader { get; set; }
+    private IDataPortalExceptionInspector Inspector { get; set; }
 
     #region Method invokes
 
@@ -63,18 +44,16 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, null, operation);
 
       Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
-      object result = null;
+      object result;
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, factory, methodName);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
-        var error = result as Exception;
-        if (error != null)
+        if (result is Exception error)
           throw error;
 
-        var busy = result as Csla.Core.ITrackStatus;
-        if (busy != null && busy.IsBusy)
+        if (result is Csla.Core.ITrackStatus busy && busy.IsBusy)
           throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
 
         Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
@@ -94,18 +73,16 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, e, operation);
 
       Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
-      object result = null;
+      object result;
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, factory, methodName, e);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
-        var error = result as Exception;
-        if (error != null)
+        if (result is Exception error)
           throw error;
 
-        var busy = result as Csla.Core.ITrackStatus;
-        if (busy != null && busy.IsBusy)
+        if (result is Csla.Core.ITrackStatus busy && busy.IsBusy)
           throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
 
         Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
@@ -135,7 +112,7 @@ namespace Csla.Server
     {
       try
       {
-        DataPortalResult result = null;
+        DataPortalResult result;
         if (criteria is EmptyCriteria)
           result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
@@ -146,7 +123,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
             ApplicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
-            new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
+            new DataPortalExceptionHandler(Inspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
             null);
       }
     }
@@ -164,7 +141,7 @@ namespace Csla.Server
     {
       try
       {
-        DataPortalResult result = null;
+        DataPortalResult result;
         if (criteria is EmptyCriteria)
           result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
@@ -175,7 +152,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
+          new DataPortalExceptionHandler(Inspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
           null);
       }
     }
@@ -193,7 +170,7 @@ namespace Csla.Server
       string methodName = string.Empty;
       try
       {
-        DataPortalResult result = null;
+        DataPortalResult result;
         if (obj is Core.ICommandObject)
           methodName = context.FactoryInfo.ExecuteMethodName;
         else
@@ -206,7 +183,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           ApplicationContext, methodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, methodName, ex),
+          new DataPortalExceptionHandler(Inspector).InspectException(obj.GetType(), obj, null, methodName, ex),
           obj);
 
       }
@@ -225,7 +202,7 @@ namespace Csla.Server
     {
       try
       {
-        DataPortalResult result = null;
+        DataPortalResult result;
         if (criteria is EmptyCriteria)
           result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
@@ -236,7 +213,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
+          new DataPortalExceptionHandler(Inspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
           null);
       }
     }

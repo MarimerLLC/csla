@@ -46,8 +46,6 @@ namespace Csla
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
-      _dataPortalActivator = null;
-      _dataPortalUrl = null;
       _VersionRoutingTag = null;
     }
 
@@ -178,74 +176,6 @@ namespace Csla
     /// </summary>
     public static bool UseReflectionFallback { get; set; } = false;
 
-    private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
-    private static readonly object _dataPortalActivatorSync = new();
-
-    /// <summary>
-    /// Gets the DataPortalActivator type from configuration.
-    /// </summary>
-    public static Type DataPortalActivatorType
-    {
-      get
-      {
-        var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
-        if (!string.IsNullOrWhiteSpace(typeName))
-        {
-          return Type.GetType(typeName);
-        }
-        else
-        {
-          return typeof(Csla.Server.DefaultDataPortalActivator);
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets an instance of the IDataPortalActivator provider.
-    /// </summary>
-    public static Csla.Server.IDataPortalActivator DataPortalActivator
-    {
-      get
-      {
-        if (_dataPortalActivator == null)
-        {
-          lock (_dataPortalActivatorSync)
-          {
-            if (_dataPortalActivator == null)
-              _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(DataPortalActivatorType);
-          }
-        }
-        return _dataPortalActivator;
-      }
-      set
-      {
-        _dataPortalActivator = value;
-      }
-    }
-
-    private static string _dataPortalUrl = null;
-
-    /// <summary>
-    /// Gets or sets the data portal URL string.
-    /// If not set on Get will read CslaDataPortalUrl from config file. 
-    /// </summary>
-    /// <value>The data portal URL string.</value>
-    public static string DataPortalUrlString
-    {
-      get
-      {
-        if (_dataPortalUrl == null)
-        {
-          _dataPortalUrl = ConfigurationManager.AppSettings["CslaDataPortalUrl"];
-        }
-        return _dataPortalUrl;
-      }
-      set
-      {
-        _dataPortalUrl = value;
-      }
-    }
-
     private static string _VersionRoutingTag = null;
 
     /// <summary>
@@ -267,20 +197,6 @@ namespace Csla
             throw new ArgumentException("valueRoutingToken");
         _VersionRoutingTag = value;
       }
-    }
-
-    /// <summary>
-    /// Returns the URL for the DataPortal server.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks>
-    /// This value is read from the application configuration
-    /// file with the key value "CslaDataPortalUrl". 
-    /// </remarks>
-    public Uri DataPortalUrl
-    {
-      get { return new Uri(DataPortalUrlString); }
     }
 
     private static string _authenticationTypeName;
@@ -332,7 +248,7 @@ namespace Csla
     private static bool _dataPortalReturnObjectOnExceptionSet = false;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the
+    /// Gets a value indicating whether the
     /// server-side business object should be returned to
     /// the client as part of the DataPortalException
     /// (default is false).
@@ -350,7 +266,7 @@ namespace Csla
         }
         return _dataPortalReturnObjectOnException;
       }
-      set
+      private set
       {
         _dataPortalReturnObjectOnException = value;
         _dataPortalReturnObjectOnExceptionSet = true;

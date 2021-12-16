@@ -22,5 +22,11 @@ namespace Csla.Configuration
     /// Gets the current service collection.
     /// </summary>
     IServiceCollection Services { get; }
+
+    /// <summary>
+    /// Expose configuration for the dataportal
+    /// </summary>
+    CslaDataPortalConfiguration DataPortalConfiguration { get; }
+
   }
 }

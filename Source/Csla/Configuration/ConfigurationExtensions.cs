@@ -54,9 +54,8 @@ namespace Csla.Configuration
       // Server-side data portal is always necessary to support RunLocal
       cslaOptions.DataPortal().AddServerSideDataPortal();
 
-      // Configure interception
-      services.AddTransient<Server.InterceptionManager>();
-      ConfigureInterceptors(services);
+      // Apply final configuration
+      cslaOptions.ApplyFinalConfiguration();
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
@@ -96,23 +95,9 @@ namespace Csla.Configuration
       return false;
     }
 
-    /// <summary>
-    /// Apply registration changes to the interceptors in use using configuration
-    /// </summary>
-    /// <param name="services">The IServiceCollection to affect by changes to registration</param>
-    private static void ConfigureInterceptors(IServiceCollection services)
+    private static void ApplyFinalConfiguration(this ICslaConfiguration builder)
     {
-      bool disableRevalidation;
-      ServiceDescriptor target;
-
-      // Remove the revalidating interceptor if it has been disabled
-      if (Boolean.TryParse(ConfigurationManager.AppSettings["CslaDisableServerSideRevalidation"], out disableRevalidation) && disableRevalidation)
-      {
-        target = services.FirstOrDefault(svc => svc.ServiceType == typeof(Server.IInterceptDataPortal) &&
-          svc.ImplementationType == typeof(Server.Interceptors.ServerSide.RevalidatingInterceptor));
-        if (target is not null)
-          services.Remove(target);
-      }
+      builder.DataPortal().ApplyFinalConfiguration();
     }
 
     /// <summary>

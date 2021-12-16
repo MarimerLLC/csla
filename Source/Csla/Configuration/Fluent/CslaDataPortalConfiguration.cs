@@ -22,7 +22,7 @@ namespace Csla.Configuration
     /// </summary>
     public static CslaDataPortalConfiguration DataPortal(this ICslaConfiguration config)
     {
-      return new CslaDataPortalConfiguration(config);
+      return config.DataPortalConfiguration;
     }
 
     /// <summary>
@@ -39,34 +39,28 @@ namespace Csla.Configuration
       services.TryAddTransient<Server.FactoryDataPortal>();
       services.TryAddTransient<Server.DataPortalBroker>();
       services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Csla.Server.Dashboard.NullDashboard));
-      services.AddTransient<IInterceptDataPortal, Server.Interceptors.ServerSide.RevalidatingInterceptor>();
       return builder;
     }
 
     /// <summary>
-    /// Register an interceptor for data portal operations
+    /// Gain access to the dataportal interceptor configuration
     /// </summary>
     /// <param name="builder">The builder instance we are extending</param>
-    /// <typeparam name="T">The type of interceptor that is to be registered</typeparam>
-    /// <returns>The extended object, thus enabling method chaining/fluent configuration</returns>
-    public static CslaDataPortalConfiguration AddInterceptor<T>(this CslaDataPortalConfiguration builder) where T : class, Server.IInterceptDataPortal
+    /// <returns>The interceptor configuration instance</returns>
+    public static CslaDataPortalInterceptorConfiguration Interceptors(this CslaDataPortalConfiguration builder)
     {
-      var services = builder.Services;
-      services.AddTransient<IInterceptDataPortal, T>();
-      return builder;
+      return builder.DataPortalInterceptorConfiguration;
     }
 
     /// <summary>
-    /// Disable the revalidating interceptor used for data portal operations
+    /// Apply the configuration that has been built
     /// </summary>
-    /// <param name="builder">The builder instance we are extending</param>
-    /// <returns>The extended object, thus enabling method chaining/fluent configuration</returns>
-    public static CslaDataPortalConfiguration DisableServerSideRevalidation(this CslaDataPortalConfiguration builder)
+    /// <param name="builder">The CslaDataPortalConfiguration instance that we are extending</param>
+    internal static void ApplyFinalConfiguration(this CslaDataPortalConfiguration builder)
     {
-      var services = builder.Services;
-      ConfigurationManager.AppSettings["CslaDisableServerSideRevalidation"] = true.ToString();
-      return builder;
+      builder.Interceptors().ApplyFinalConfiguration();
     }
+
   }
 
   /// <summary>
@@ -81,6 +75,11 @@ namespace Csla.Configuration
     public ICslaConfiguration CslaConfiguration { get; set; }
 
     /// <summary>
+    /// Gets the current interceptor configuration object.
+    /// </summary>
+    public CslaDataPortalInterceptorConfiguration DataPortalInterceptorConfiguration { get; private set; } 
+
+    /// <summary>
     /// Gets the current service collection.
     /// </summary>
     public IServiceCollection Services { get => CslaConfiguration.Services; }
@@ -92,6 +91,7 @@ namespace Csla.Configuration
     public CslaDataPortalConfiguration(ICslaConfiguration config)
     {
       CslaConfiguration = config;
+      DataPortalInterceptorConfiguration = new CslaDataPortalInterceptorConfiguration(config);
     }
 
     /// <summary>
@@ -117,5 +117,6 @@ namespace Csla.Configuration
       ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
       return this;
     }
+
   }
 }

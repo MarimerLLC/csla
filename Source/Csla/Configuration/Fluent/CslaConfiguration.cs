@@ -21,6 +21,12 @@ namespace Csla.Configuration
     /// </summary>
     public IServiceCollection Services { get; set; }
 
+    private readonly CslaDataPortalConfiguration _dataPortalConfiguration;
+    /// <summary>
+    /// Expose the data portal configuration information
+    /// </summary>
+    public CslaDataPortalConfiguration DataPortalConfiguration { get => _dataPortalConfiguration; }
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -28,6 +34,7 @@ namespace Csla.Configuration
     public CslaConfiguration(IServiceCollection services)
     {
       Services = services;
+      _dataPortalConfiguration= new CslaDataPortalConfiguration(this);
     }
 
     /// <summary>

@@ -26,11 +26,10 @@ namespace Csla.Configuration
 
     /// <summary>
     /// Sets the type of the IDataPortalAuthorizer to be 
-    /// used by the data portal. An instance of this type 
-    /// is created using dependency injection.
+    /// used by the data portal. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void AddAuthorizerProvider<T>() where T : IAuthorizeDataPortal
+    public void RegisterAuthorizerProvider<T>() where T : IAuthorizeDataPortal
     {
       AuthorizerProviderType = typeof(T);
     } 
@@ -40,7 +39,35 @@ namespace Csla.Configuration
     /// that should be executed by the server-side data portal.
     /// injection.
     /// </summary>
-    public List<IInterceptDataPortal> InterceptorProviders { get; } = new List<IInterceptDataPortal>();
+    internal List<Type> InterceptorProviders { get; } = new List<Type>();
+
+    /// <summary>
+    /// Adds the type of an IInterceptDataPortal that will
+    /// be executed by the server-side data portal.
+    /// </summary>
+    public void AddInterceptorProvider<T>() where T: IInterceptDataPortal
+    {
+      InterceptorProviders.Add(typeof(T));
+    }
+
+    /// <summary>
+    /// Adds the type of an IInterceptDataPortal that will
+    /// be executed by the server-side data portal.
+    /// </summary>
+    /// <param name="index">Index at which new item should be added.</param>
+    public void AddInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    {
+      InterceptorProviders.Insert(index, typeof(T));
+    }
+
+    /// <summary>
+    /// Removes a type of an IInterceptDataPortal.
+    /// </summary>
+    /// <param name="index">Index from which item will be removed.</param>
+    public void RemoveInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    {
+      InterceptorProviders.RemoveAt(index);
+    }
 
     /// <summary>
     /// Gets or sets the type of the ExceptionInspector.
@@ -51,7 +78,7 @@ namespace Csla.Configuration
     /// Sets the type of the ExceptionInspector.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void AddExceptionInspector<T>() where T: IDataPortalExceptionInspector
+    public void RegisterExceptionInspector<T>() where T: IDataPortalExceptionInspector
     {
       ExceptionInspectorType = typeof(T);
     }
@@ -65,7 +92,7 @@ namespace Csla.Configuration
     /// Sets the type of the Activator.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void AddActivator<T>() where T: IDataPortalActivator
+    public void RegisterActivator<T>() where T: IDataPortalActivator
     {
       ActivatorType = typeof(T);
     }
@@ -85,7 +112,7 @@ namespace Csla.Configuration
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void AddObjectFactoryLoader<T>() where T: IObjectFactoryLoader
+    public void RegisterObjectFactoryLoader<T>() where T: IObjectFactoryLoader
     {
       ObjectFactoryLoaderType = typeof(T);
     }

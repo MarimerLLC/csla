@@ -51,6 +51,23 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Sets the authentication type being used by the
+    /// CSLA .NET framework.
+    /// </summary>
+    /// <param name="authenticationType"></param>
+    /// <remarks>
+    /// Set to "Windows" to use OS impersonation. Any other
+    /// value causes the data portal to flow the client-side
+    /// user principal to the server. Client and server must
+    /// use the same authentication type.
+    /// </remarks>
+    public DataPortalClientOptions AuthenticationType(string authenticationType)
+    {
+      ApplicationContext.AuthenticationType = authenticationType;
+      return this;
+    }
+
+    /// <summary>
     /// Sets a value indicating whether the
     /// server-side business object should be returned to
     /// the client as part of the DataPortalException.

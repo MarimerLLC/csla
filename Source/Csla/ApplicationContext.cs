@@ -43,7 +43,6 @@ namespace Csla
     {
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
-      _authenticationTypeName = null;
     }
 
     /// <summary>
@@ -179,33 +178,13 @@ namespace Csla
     /// </summary>
     public static string VersionRoutingTag { get; internal set; }
 
-    private static string _authenticationTypeName;
-
     /// <summary>
     /// Gets the authentication type being used by the
     /// CSLA .NET framework.
     /// </summary>
     /// <value></value>
     /// <returns></returns>
-    /// <remarks>
-    /// This value is read from the application configuration
-    /// file with the key value "CslaAuthentication". The value
-    /// "Windows" indicates CSLA .NET should use Windows integrated
-    /// (or AD) security. Any other value indicates the use of
-    /// custom security derived from CslaPrincipal.
-    /// </remarks>
-    public static string AuthenticationType
-    {
-      get
-      {
-        if (string.IsNullOrWhiteSpace(_authenticationTypeName))
-          _authenticationTypeName = ConfigurationManager.AppSettings["CslaAuthentication"];
-        if (string.IsNullOrWhiteSpace(_authenticationTypeName))
-          _authenticationTypeName = "Csla";
-        return _authenticationTypeName;
-      }
-      set { _authenticationTypeName = value; }
-    }
+    public static string AuthenticationType { get; internal set; } = "Csla";
 
     /// <summary>
     /// Gets a value indicating whether objects should be

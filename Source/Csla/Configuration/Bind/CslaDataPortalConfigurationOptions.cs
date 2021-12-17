@@ -15,7 +15,13 @@ namespace Csla.Configuration
   public class CslaDataPortalConfigurationOptions
   {
     /// <summary>
-    /// Gets a value indicating whether objects should be
+    /// Gets or sets the authentication type being used by the
+    /// CSLA .NET framework.
+    /// </summary>
+    public string AuthenticationType { get => ApplicationContext.AuthenticationType; set => ApplicationContext.AuthenticationType = value; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()method 
     /// when using a local data portal configuration.
     /// </summary>

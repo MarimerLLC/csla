@@ -6,9 +6,6 @@
 // <summary>Object containing information about the</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Properties;
-using Csla.Rules;
-using Csla.Security;
 
 namespace Csla.Server
 {
@@ -18,11 +15,6 @@ namespace Csla.Server
   /// </summary>
   public class AuthorizeRequest
   {
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    private ApplicationContext ApplicationContext { get; set; }
-
     /// <summary>
     /// Gets the type of business object affected by
     /// the client request.
@@ -40,45 +32,11 @@ namespace Csla.Server
     /// </summary>
     public DataPortalOperations Operation { get; private set; }
 
-    internal AuthorizeRequest(ApplicationContext applicationContext, Type objectType, object requestObject, DataPortalOperations operation)
+    internal AuthorizeRequest(Type objectType, object requestObject, DataPortalOperations operation)
     {
-      ApplicationContext = applicationContext;
-      this.ObjectType = objectType;
-      this.RequestObject = requestObject;
-      this.Operation = operation;
-    }
-
-    /// <summary>
-    /// Checks that the current identity has permission to carry out this operation,
-    /// and if not throws a <c>SecurityException</c>.
-    /// </summary>
-    /// <exception cref="SecurityException">Thrown if the current principal does 
-    /// not have permission to carry out this operation.</exception>
-    public void CheckPermissions()
-    {
-      if (Operation == DataPortalOperations.Update || 
-          Operation == DataPortalOperations.Execute)
-      { 
-         // Per-Instance checks
-         if (!BusinessRules.HasPermission(ApplicationContext, Operation.ToAuthAction(), RequestObject))
-         {
-            throw new SecurityException(
-               string.Format(Resources.UserNotAuthorizedException,
-                   Operation.ToSecurityActionDescription(),
-                   ObjectType.Name)
-               );
-         }
-      }
-
-      // Per-Type checks
-      if (!BusinessRules.HasPermission(ApplicationContext, Operation.ToAuthAction(), ObjectType))
-      {
-         throw new SecurityException(
-            string.Format(Resources.UserNotAuthorizedException,
-                Operation.ToSecurityActionDescription(),
-                ObjectType.Name)
-            );
-      }
+      ObjectType = objectType;
+      RequestObject = requestObject;
+      Operation = operation;
     }
   }
 }

@@ -29,7 +29,6 @@ namespace Csla.Test.Serialization
     {
       ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
 
-      Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileFormatter";
       var i = new ClaimsIdentity();
       i.AddClaim(new Claim("name", "Franklin"));
       var p = new ClaimsPrincipal(i);

@@ -1,26 +1,26 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ICslaConfiguration.cs" company="Marimer LLC">
+// <copyright file="CslaDataConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using Csla.Core;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Configuration
 {
   /// <summary>
-  /// Use this type to configure the settings for CSLA .NET.
+  /// Extension method for CslaDataConfiguration
   /// </summary>
-  public interface ICslaConfiguration
+  public static class DataConfigurationExtensions
   {
     /// <summary>
-    /// Gets the current service collection.
+    /// Extension method for CslaDataConfiguration
     /// </summary>
-    IServiceCollection Services { get; }
+    public static CslaOptions Data(this CslaOptions config, Action<DataOptions> options)
+    {
+      options?.Invoke(config.DataOptions);
+      return config;
+    }
   }
 }

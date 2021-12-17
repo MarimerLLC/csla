@@ -6,9 +6,6 @@
 // <summary>Creates the factory object that</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Core.FieldManager
 {
@@ -18,34 +15,24 @@ namespace Csla.Core.FieldManager
   /// </summary>
   public static class PropertyInfoFactory
   {
-    private static Csla.Core.IPropertyInfoFactory _factory;
+    /// <summary>
+    /// Gets the PropertyInfoFactory type.
+    /// </summary>
+    public static Type FactoryType { get; internal set; } = typeof(DefaultPropertyInfoFactory);
+
+    private static IPropertyInfoFactory _factory;
 
     /// <summary>
-    /// Gets or sets the factory object that
+    /// Gets the factory object that
     /// creates PropertyInfo objects.
     /// </summary>
-    public static Csla.Core.IPropertyInfoFactory Factory
+    public static IPropertyInfoFactory Factory
     {
       get
       {
         if (_factory == null)
-        {
-          var typeName = Csla.Configuration.ConfigurationManager.AppSettings["CslaPropertyInfoFactory"];
-          if (string.IsNullOrEmpty(typeName))
-          {
-            _factory = new DefaultPropertyInfoFactory();
-          }
-          else
-          {
-            var type = Type.GetType(typeName);
-            _factory = (Csla.Core.IPropertyInfoFactory)Activator.CreateInstance(type);
-          }
-        }
+            _factory = (IPropertyInfoFactory)Activator.CreateInstance(FactoryType);
         return _factory;
-      }
-      set
-      {
-        _factory = value;
       }
     }
   }

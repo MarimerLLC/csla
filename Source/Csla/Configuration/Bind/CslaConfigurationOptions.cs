@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Contains configuration options which can be loaded </summary>
 //-----------------------------------------------------------------------
-
-using Csla.Security;
-using Csla.Serialization.Mobile;
 using System;
+using System.Transactions;
 
 namespace Csla.Configuration
 {
@@ -22,10 +20,9 @@ namespace Csla.Configuration
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public string PropertyChangedMode
+    public ApplicationContext.PropertyChangedModes PropertyChangedMode
     {
-      get { return ConfigurationManager.AppSettings["CslaPropertyChangedMode"]; }
-      set { ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = value; }
+      get => ApplicationContext.PropertyChangedMode; set => ApplicationContext.PropertyChangedMode = value;
     }
 
     /// <summary>
@@ -41,72 +38,19 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public string VersionRoutingTag
-    {
-      get { return ConfigurationManager.AppSettings["CslaVersionRoutingTag"]; }
-      set
-      {
-        if (!string.IsNullOrWhiteSpace(value))
-          if (value.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
-        ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = value;
-        ApplicationContext.VersionRoutingTag = null;
-      }
-    }
-
-    /// <summary>
-    /// Sets the factory type that creates PropertyInfo objects.
-    /// </summary>
-    public string PropertyInfoFactory
-    {
-      get { return ConfigurationManager.AppSettings["CslaPropertyInfoFactory"]; }
-      set
-      {
-        ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = value;
-      }
-    }
+    public string VersionRoutingTag { get => ApplicationContext.VersionRoutingTag; set => ApplicationContext.VersionRoutingTag = value; }
 
     /// <summary>
     /// Gets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).
     /// </summary>
-    public string SerializationFormatter
-    {
-      get { return ConfigurationManager.AppSettings["CslaSerializationFormatter"]; }
-      set { ConfigurationManager.AppSettings["CslaSerializationFormatter"] = value; }
-    }
-
-    /// <summary>
-    /// Sets type of the writer that is used to read data to
-    /// serialization stream in SerializationFormatterFactory.GetFormatter().
-    /// </summary>
-    public string Reader
-    {
-      get { return ConfigurationManager.AppSettings["CslaReader"]; }
-      set { ConfigurationManager.AppSettings["CslaReader"] = value; }
-    }
-
-    /// <summary>
-    /// Sets the type name of the factor loader used to create
-    /// server-side instances of business object factories when using
-    /// the FactoryDataPortal model. Type must implement
-    /// IObjectFactoryLoader.
-    /// </summary>
-    public string ObjectFactoryLoader
-    {
-      get { return ConfigurationManager.AppSettings["CslaObjectFactoryLoader"]; }
-      set { ConfigurationManager.AppSettings["CslaObjectFactoryLoader"] = value; }
-    }
+    public Type SerializationFormatter { get => ApplicationContext.SerializationFormatter; set => ApplicationContext.SerializationFormatter = value; }
 
     /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
-    public string DefaultTransactionIsolationLevel
-    {
-      get { return ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"]; }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = value; }
-    }
+    public TransactionIsolationLevel DefaultTransactionIsolationLevel { get => ApplicationContext.DefaultTransactionIsolationLevel; set => ApplicationContext.DefaultTransactionIsolationLevel = value; }
 
     /// <summary>
     /// Gets or sets the default transaction timeout in seconds.
@@ -114,59 +58,13 @@ namespace Csla.Configuration
     /// <value>
     /// The default transaction timeout in seconds.
     /// </value>
-    public int DefaultTransactionTimeoutInSeconds
-    {
-      get { return int.Parse(ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] ?? "0"); }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = value.ToString(); }
-    }
+    public int DefaultTransactionTimeoutInSeconds { get => ApplicationContext.DefaultTransactionTimeoutInSeconds; set => ApplicationContext.DefaultTransactionTimeoutInSeconds = value; }
 
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects. (Enabled or Suppress)
     /// </summary>
-    public string DefaultTransactionAsyncFlowOption
-    {
-      get { return ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"]; }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = value.ToString(); }
-    }
-
-    /// <summary>
-    /// Gets the maximum cache size
-    /// </summary>
-    public int PrincipalCacheSize
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] != null)
-        {
-          return int.Parse(ConfigurationManager.AppSettings["CslaPrincipalCacheSize"]);
-        }
-
-        return PrincipalCache.MaxCacheSize;
-      }
-
-      set { ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] = value.ToString(); }
-    }
-
-    /// <summary>
-    /// Get an instance of the writer that is used to write data to serialization stream
-    /// Instance has to implement <see cref="ICslaWriter"/>.
-    /// </summary>
-    public string MobileWriter
-    {
-      get { return ConfigurationManager.AppSettings["CslaWriter"]; }
-      set { ConfigurationManager.AppSettings["CslaWriter"] = value; }
-    }
-
-    /// <summary>
-    /// CslaDbProvider
-    /// Instance has to implement <see cref="ICslaWriter"/>.
-    /// </summary>
-    public string CslaDbProvider
-    {
-      get { return ConfigurationManager.AppSettings["CslaDbProvider"]; }
-      set { ConfigurationManager.AppSettings["CslaDbProvider"] = value; }
-    }
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get => ApplicationContext.DefaultTransactionAsyncFlowOption; set => ApplicationContext.DefaultTransactionAsyncFlowOption = value; }
 
     /// <summary>
     /// Gets or sets the data portal configuration options

@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Factory used to create the appropriate</summary>
 //-----------------------------------------------------------------------
-using System;
-using Csla.Configuration;
-
 namespace Csla.Serialization
 {
   /// <summary>
@@ -22,13 +19,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter(ApplicationContext applicationContext)
     {
-      if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
-      {
-        string customFormatterTypeName = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-        return (ISerializationFormatter)applicationContext.CreateInstanceDI(Type.GetType(customFormatterTypeName, true, true));
-      }
-      else
-        return applicationContext.CreateInstanceDI<Mobile.MobileFormatter>();
+      return applicationContext.CreateInstanceDI<ISerializationFormatter>(ApplicationContext.SerializationFormatter);
     }
   }
 }

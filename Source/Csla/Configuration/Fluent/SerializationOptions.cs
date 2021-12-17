@@ -1,29 +1,14 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CslaSerializationConfiguration.cs" company="Marimer LLC">
+// <copyright file="SerializationOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Use this type to configure the settings</summary>
+// <summary>Use this type to configure the settings for serialization.</summary>
 //-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Configuration
 {
-  /// <summary>
-  /// Extension method for CslaSerializationConfiguration
-  /// </summary>
-  public static class CslaSerializationConfigurationExtensions
-  {
-    /// <summary>
-    /// Extension method for CslaSerializationConfiguration
-    /// </summary>
-    public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions> options)
-    {
-      options?.Invoke(config.SerializationOptions);
-      return config;
-    }
-  }
-
   /// <summary>
   /// Use this type to configure the settings for serialization.
   /// </summary>
@@ -32,13 +17,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
-    /// n-level undo, etc).
+    /// n-level undo, etc). Default is MobileFormatter.
     /// </summary>
-    /// <param name="formatterName">Formatter name (one of MobileFormatter, 
-    /// BinaryFormatter, NetDataContractSerializer, or type name)</param>
-    public SerializationOptions SerializationFormatter(string formatterName)
+    /// <param name="formatterType">Serialization formatter type.</param>
+    public SerializationOptions SerializationFormatter(Type formatterType)
     {
-      ConfigurationManager.AppSettings["CslaSerializationFormatter"] = formatterName;
+      ApplicationContext.SerializationFormatter = formatterType;
       return this;
     }
 

@@ -48,11 +48,7 @@ namespace Csla.Configuration
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).
     /// </summary>
-    public string SerializationFormatter
-    {
-      get { return ConfigurationManager.AppSettings["CslaSerializationFormatter"]; }
-      set { ConfigurationManager.AppSettings["CslaSerializationFormatter"] = value; }
-    }
+    public Type SerializationFormatter { get => ApplicationContext.SerializationFormatter; set => ApplicationContext.SerializationFormatter = value; }
 
     /// <summary>
     /// Sets type of the writer that is used to read data to

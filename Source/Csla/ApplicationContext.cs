@@ -221,55 +221,7 @@ namespace Csla
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).
     /// </summary>
-    public static SerializationFormatters SerializationFormatter
-    {
-      get
-      {
-        var result = SerializationFormatters.CustomFormatter;
-
-        string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-        if (string.IsNullOrWhiteSpace(tmp))
-#if NETSTANDARD2_0 || NET5_0 || NET6_0
-          tmp = "MobileFormatter";
-#else
-          tmp = "BinaryFormatter";
-#endif
-        if (Enum.TryParse(tmp, true, out SerializationFormatters serializationFormatter))
-          result = serializationFormatter;
-
-        return result;
-      }
-    }
-
-    /// <summary>
-    /// Enum representing the serialization formatters
-    /// supported by CSLA .NET.
-    /// </summary>
-    public enum SerializationFormatters
-    {
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
-      /// <summary>
-      /// Use the Microsoft .NET 3.0
-      /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
-      /// NetDataContractSerializer</see> provided as part of WCF.
-      /// </summary>
-      NetDataContractSerializer,
-#endif
-      /// <summary>
-      /// Use the standard Microsoft .NET
-      /// <see cref="BinaryFormatter"/>.
-      /// </summary>
-      BinaryFormatter,
-      /// <summary>
-      /// Use a custom formatter provided by type found
-      /// at <appSetting key="CslaSerializationFormatter"></appSetting>
-      /// </summary>
-      CustomFormatter,
-      /// <summary>
-      /// Use the CSLA .NET MobileFormatter
-      /// </summary>
-      MobileFormatter
-    }
+    public static Type SerializationFormatter { get; internal set; } = typeof(Serialization.Mobile.MobileFormatter);
 
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should

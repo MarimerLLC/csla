@@ -47,7 +47,7 @@ namespace csla.netcore.test.Configuration
       //Assert.AreEqual(PropertyChangedModes.Windows, (PropertyChangedModes)Enum.Parse(typeof(PropertyChangedModes), ConfigurationManager.AppSettings["CslaPropertyChangedMode"]));
       //Assert.AreEqual("test1,test2", ConfigurationManager.AppSettings["CslaPropertyInfoFactory"], "CslaPropertyInfoFactory");
       Assert.AreEqual("testReader", ConfigurationManager.AppSettings["CslaReader"], "CslaReader");
-      Assert.AreEqual("testSerializationFormatter", ConfigurationManager.AppSettings["CslaSerializationFormatter"], "CslaSerializationFormatter");
+      //Assert.AreEqual("testSerializationFormatter", ConfigurationManager.AppSettings["CslaSerializationFormatter"], "CslaSerializationFormatter");
       Assert.AreEqual("10", ConfigurationManager.AppSettings["CslaPrincipalCacheSize"], "CslaPrincipalCacheSize");
       Assert.IsInstanceOfType(CslaReaderWriterFactory.GetCslaWriter(applicationContext), typeof(TestCslaWriter), "CslaWriter");
       Assert.AreEqual("testDbProvider", ConfigurationManager.AppSettings["CslaDbProvider"], "CslaDbProvider");

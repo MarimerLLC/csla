@@ -46,17 +46,8 @@ namespace Csla.Core
     /// <remarks>
     /// <para>The object to be cloned must be serializable.</para>
     /// <para>The serialization is performed using the formatter
-    /// specified in the application's configuration file
-    /// using the CslaSerializationFormatter key.</para>
-    /// <para>In full .NET the default is to use the 
-    /// System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-    /// </para>. You may also choose to use the Microsoft .NET 3.0
-    /// System.Runtime.Serialization.NetDataContractSerializer
-    /// NetDataContractSerializer provided as part of WCF.
-    /// <para>In UWP and Blazor the only
-    /// option is to use the CSLA .NET MobileFormatter
-    /// for serialization as the other serializers don't
-    /// exist.</para>
+    /// specified in ApplicationContext.</para>
+    /// <para>The default is to use the MobileFormatter.</para>
     /// </remarks>
     public object Clone(object obj)
     {

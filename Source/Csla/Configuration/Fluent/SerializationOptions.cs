@@ -6,6 +6,7 @@
 // <summary>Use this type to configure the settings for serialization.</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Configuration
 {
@@ -30,10 +31,9 @@ namespace Csla.Configuration
     /// Sets type of the writer that is used to write data to 
     /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
-    /// <param name="typeName">Assembly qualified type name</param>
-    public SerializationOptions MobileWriter(string typeName)
+    public SerializationOptions MobileWriter<T>() where T : ICslaWriter
     {
-      ConfigurationManager.AppSettings["CslaWriter"] = typeName;
+      CslaReaderWriterFactory.WriterType = typeof(T);
       return this;
     }
 
@@ -41,10 +41,9 @@ namespace Csla.Configuration
     /// Sets type of the writer that is used to read data to 
     /// serialization stream in SerializationFormatterFactory.GetFormatter().
     /// </summary>
-    /// <param name="typeName">Assembly qualified type name</param>
-    public SerializationOptions MobileReader(string typeName)
+    public SerializationOptions MobileReader<T>() where T : ICslaReader
     {
-      ConfigurationManager.AppSettings["CslaReader"] = typeName;
+      CslaReaderWriterFactory.ReaderType = typeof(T);
       return this;
     }
   }

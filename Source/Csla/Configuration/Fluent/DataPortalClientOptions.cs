@@ -39,46 +39,27 @@ namespace Csla.Configuration
     public IServiceCollection Services { get => CslaOptions.Services; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether objects should be
+    /// Sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.
     /// </summary>
-    public bool AutoCloneOnUpdate
+    /// <param name="autoCloneOnUpdate"></param>
+    public DataPortalClientOptions AutoCloneOnUpdate(bool autoCloneOnUpdate)
     {
-      get
-      {
-        bool result = true;
-        string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
-        if (!string.IsNullOrEmpty(setting))
-          result = bool.Parse(setting);
-        return result;
-      }
-      set
-      {
-        ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString();
-      }
+      ApplicationContext.AutoCloneOnUpdate = autoCloneOnUpdate;
+      return this;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the
+    /// Sets a value indicating whether the
     /// server-side business object should be returned to
     /// the client as part of the DataPortalException.
     /// </summary>
-    /// <param name="value">Value (default is false)</param>
-    public bool DataPortalReturnObjectOnException
+    /// <param name="returnObjectOnException"></param>
+    public DataPortalClientOptions DataPortalReturnObjectOnException(bool returnObjectOnException)
     {
-      get
-      {
-        bool result = false;
-        string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
-        if (!string.IsNullOrEmpty(setting))
-          result = bool.Parse(setting);
-        return result;
-      }
-      set
-      {
-        ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString();
-      }
+      ApplicationContext.DataPortalReturnObjectOnException = returnObjectOnException;
+      return this;
     }
   }
 }

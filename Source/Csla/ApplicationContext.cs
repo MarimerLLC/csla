@@ -41,7 +41,6 @@ namespace Csla
 
     internal static void SettingsChanged()
     {
-      _dataPortalReturnObjectOnExceptionSet = false;
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
@@ -213,20 +212,7 @@ namespace Csla
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.
     /// </summary>
-    public static bool AutoCloneOnUpdate
-    {
-      get
-      {
-        bool result = true;
-        string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
-        if (!string.IsNullOrEmpty(setting))
-          result = bool.Parse(setting);
-        return result;
-      }
-    }
-
-    private static bool _dataPortalReturnObjectOnException = false;
-    private static bool _dataPortalReturnObjectOnExceptionSet = false;
+    public static bool AutoCloneOnUpdate { get; internal set; } = true;
 
     /// <summary>
     /// Gets a value indicating whether the
@@ -234,25 +220,7 @@ namespace Csla
     /// the client as part of the DataPortalException
     /// (default is false).
     /// </summary>
-    public static bool DataPortalReturnObjectOnException
-    {
-      get
-      {
-        if (!_dataPortalReturnObjectOnExceptionSet)
-        {
-          string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
-          if (!string.IsNullOrEmpty(setting))
-            DataPortalReturnObjectOnException = bool.Parse(setting);
-          _dataPortalReturnObjectOnExceptionSet = true;
-        }
-        return _dataPortalReturnObjectOnException;
-      }
-      private set
-      {
-        _dataPortalReturnObjectOnException = value;
-        _dataPortalReturnObjectOnExceptionSet = true;
-      }
-    }
+    public static bool DataPortalReturnObjectOnException { get; internal set; }
 
     /// <summary>
     /// Enum representing the locations code can execute.

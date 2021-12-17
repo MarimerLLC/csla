@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using Csla.Server;
-
 namespace Csla.Configuration
 {
 
@@ -21,20 +19,7 @@ namespace Csla.Configuration
     /// automatically cloned by the data portal Update()method 
     /// when using a local data portal configuration.
     /// </summary>
-    public bool AutoCloneOnUpdate
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] == null)
-          return false;
-        else
-          return bool.Parse(ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"]);
-      }
-      set
-      {
-        ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = value.ToString();
-      }
-    }
+    public bool AutoCloneOnUpdate { get => ApplicationContext.AutoCloneOnUpdate; set => ApplicationContext.AutoCloneOnUpdate = value; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the
@@ -42,16 +27,6 @@ namespace Csla.Configuration
     /// the client as part of the <see cref="DataPortalException"/> 
     /// (default is false).
     /// </summary>
-    public bool ReturnObjectOnException
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] == null)
-          return false;
-        else
-          return bool.Parse(ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"]);
-      }
-      set { ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"] = value.ToString(); }
-    }
+    public bool ReturnObjectOnException { get => ApplicationContext.DataPortalReturnObjectOnException; set => ApplicationContext.DataPortalReturnObjectOnException = value; } 
   }
 }

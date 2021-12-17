@@ -38,7 +38,7 @@ namespace Csla.Configuration
       options?.Invoke(xamlOptions);
 
       // use correct mode for raising PropertyChanged events
-      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = Csla.ApplicationContext.PropertyChangedModes.Windows.ToString();
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
       return config;
     }
   }

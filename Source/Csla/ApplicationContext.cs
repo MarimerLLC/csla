@@ -42,7 +42,6 @@ namespace Csla
     internal static void SettingsChanged()
     {
       _dataPortalReturnObjectOnExceptionSet = false;
-      _propertyChangedModeSet = false;
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
@@ -343,33 +342,11 @@ namespace Csla
       MobileFormatter
     }
 
-    private static PropertyChangedModes _propertyChangedMode = PropertyChangedModes.Xaml;
-    private static bool _propertyChangedModeSet;
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public static PropertyChangedModes PropertyChangedMode
-    {
-      get
-      {
-        if (!_propertyChangedModeSet)
-        {
-          string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
-          if (string.IsNullOrEmpty(tmp))
-            tmp = "Xaml";
-          _propertyChangedMode = (PropertyChangedModes)
-            Enum.Parse(typeof(PropertyChangedModes), tmp);
-          _propertyChangedModeSet = true;
-        }
-        return _propertyChangedMode;
-      }
-      set
-      {
-        _propertyChangedMode = value;
-        _propertyChangedModeSet = true;
-      }
-    }
+    public static PropertyChangedModes PropertyChangedMode { get; set; }
 
     /// <summary>
     /// Enum representing the way in which CSLA .NET

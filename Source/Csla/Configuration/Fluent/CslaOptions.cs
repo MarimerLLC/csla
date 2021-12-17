@@ -50,7 +50,7 @@ namespace Csla.Configuration
     /// <param name="mode">Property changed mode</param>
     public CslaOptions PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
     {
-      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = mode.ToString();
+      ApplicationContext.PropertyChangedMode = mode;
       return this;
     }
 
@@ -81,10 +81,9 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
-    /// <param name="typeName">Factory type name</param>
-    public CslaOptions PropertyInfoFactory(string typeName)
+    public CslaOptions RegisterPropertyInfoFactory<T>() where T : IPropertyInfoFactory
     {
-      ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = typeName;
+      Core.FieldManager.PropertyInfoFactory.FactoryType = typeof(T);
       return this;
     }
 

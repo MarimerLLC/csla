@@ -6,6 +6,7 @@
 // <summary>Contains configuration options which can be loaded </summary>
 //-----------------------------------------------------------------------
 
+using Csla.Configuration;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using System;
@@ -22,10 +23,9 @@ namespace Csla.Configuration
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public string PropertyChangedMode
+    public ApplicationContext.PropertyChangedModes PropertyChangedMode
     {
-      get { return ConfigurationManager.AppSettings["CslaPropertyChangedMode"]; }
-      set { ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = value; }
+      get => ApplicationContext.PropertyChangedMode; set => ApplicationContext.PropertyChangedMode = value;
     }
 
     /// <summary>
@@ -51,18 +51,6 @@ namespace Csla.Configuration
             throw new ArgumentException("valueRoutingToken");
         ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = value;
         ApplicationContext.VersionRoutingTag = null;
-      }
-    }
-
-    /// <summary>
-    /// Sets the factory type that creates PropertyInfo objects.
-    /// </summary>
-    public string PropertyInfoFactory
-    {
-      get { return ConfigurationManager.AppSettings["CslaPropertyInfoFactory"]; }
-      set
-      {
-        ConfigurationManager.AppSettings["CslaPropertyInfoFactory"] = value;
       }
     }
 

@@ -42,8 +42,7 @@ namespace Csla.Configuration
       options?.Invoke(xamlOptions);
 
       // use correct mode for raising PropertyChanged events
-      ConfigurationManager.AppSettings["CslaPropertyChangedMode"] = 
-        Csla.ApplicationContext.PropertyChangedModes.Xaml.ToString();
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
 
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       return config;

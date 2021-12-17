@@ -39,12 +39,6 @@ namespace Csla
     /// </summary>
     public IContextManager ContextManager { get; internal set; }
 
-    internal static void SettingsChanged()
-    {
-      _transactionIsolationLevelSet = false;
-      _defaultTransactionTimeoutInSecondsSet = false;
-    }
-
     /// <summary>
     /// Get or set the current ClaimsPrincipal
     /// object representing the user's identity.
@@ -290,39 +284,13 @@ namespace Csla
       }
     }
 
-    private static TransactionIsolationLevel _transactionIsolationLevel = TransactionIsolationLevel.Unspecified;
-    private static bool _transactionIsolationLevelSet = false;
-
     /// <summary>
     /// Gets or sets the default transaction isolation level.
     /// </summary>
     /// <value>
     /// The default transaction isolation level.
     /// </value>
-    public static TransactionIsolationLevel DefaultTransactionIsolationLevel
-    {
-      get
-      {
-        if (!_transactionIsolationLevelSet)
-        {
-          string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
-          if (!string.IsNullOrEmpty(tmp))
-          {
-            _transactionIsolationLevel = (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
-          }
-          _transactionIsolationLevelSet = true;
-        }
-        return _transactionIsolationLevel;
-      }
-      set
-      {
-        _transactionIsolationLevel = value;
-        _transactionIsolationLevelSet = true;
-      }
-    }
-
-    private static int _defaultTransactionTimeoutInSeconds = 600;
-    private static bool _defaultTransactionTimeoutInSecondsSet = false;
+    public static TransactionIsolationLevel DefaultTransactionIsolationLevel { get; internal set; } = TransactionIsolationLevel.Unspecified;
 
     /// <summary>
     /// Gets or sets the default transaction timeout in seconds.
@@ -330,51 +298,14 @@ namespace Csla
     /// <value>
     /// The default transaction timeout in seconds.
     /// </value>
-    public static int DefaultTransactionTimeoutInSeconds
-    {
-      get
-      {
-        if (!_defaultTransactionTimeoutInSecondsSet)
-        {
-          var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
-          _defaultTransactionTimeoutInSeconds = string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
-          _defaultTransactionTimeoutInSecondsSet = true;
-        }
-        return _defaultTransactionTimeoutInSeconds;
-      }
-      set
-      {
-        _defaultTransactionTimeoutInSeconds = value;
-        _defaultTransactionTimeoutInSecondsSet = true;
-      }
-    }
-
-    private System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
-    private bool _defaultTransactionAsyncFlowOptionSet;
+    public static int DefaultTransactionTimeoutInSeconds { get; internal set; } = 30;
 
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>
-    public System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
-    {
-      get
-      {
-        if (!_defaultTransactionAsyncFlowOptionSet)
-        {
-          _defaultTransactionAsyncFlowOptionSet = true;
-          var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"];
-          if (!Enum.TryParse<System.Transactions.TransactionScopeAsyncFlowOption>(tmp, out _defaultTransactionAsyncFlowOption))
-            _defaultTransactionAsyncFlowOption = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
-        }
-        return _defaultTransactionAsyncFlowOption;
-      }
-      set
-      {
-        _defaultTransactionAsyncFlowOption = value;
-        _defaultTransactionAsyncFlowOptionSet = true;
-      }
-    }
+    public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
+      { get; internal set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
 
     #endregion
 

@@ -5,11 +5,10 @@
 // </copyright>
 // <summary>Contains configuration options which can be loaded </summary>
 //-----------------------------------------------------------------------
-
-using Csla.Configuration;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using System;
+using System.Transactions;
 
 namespace Csla.Configuration
 {
@@ -61,25 +60,9 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Sets the type name of the factor loader used to create
-    /// server-side instances of business object factories when using
-    /// the FactoryDataPortal model. Type must implement
-    /// IObjectFactoryLoader.
-    /// </summary>
-    public string ObjectFactoryLoader
-    {
-      get { return ConfigurationManager.AppSettings["CslaObjectFactoryLoader"]; }
-      set { ConfigurationManager.AppSettings["CslaObjectFactoryLoader"] = value; }
-    }
-
-    /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
-    public string DefaultTransactionIsolationLevel
-    {
-      get { return ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"]; }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = value; }
-    }
+    public TransactionIsolationLevel DefaultTransactionIsolationLevel { get => ApplicationContext.DefaultTransactionIsolationLevel; set => ApplicationContext.DefaultTransactionIsolationLevel = value; }
 
     /// <summary>
     /// Gets or sets the default transaction timeout in seconds.
@@ -87,21 +70,13 @@ namespace Csla.Configuration
     /// <value>
     /// The default transaction timeout in seconds.
     /// </value>
-    public int DefaultTransactionTimeoutInSeconds
-    {
-      get { return int.Parse(ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] ?? "0"); }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = value.ToString(); }
-    }
+    public int DefaultTransactionTimeoutInSeconds { get => ApplicationContext.DefaultTransactionTimeoutInSeconds; set => ApplicationContext.DefaultTransactionTimeoutInSeconds = value; }
 
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects. (Enabled or Suppress)
     /// </summary>
-    public string DefaultTransactionAsyncFlowOption
-    {
-      get { return ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"]; }
-      set { ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = value.ToString(); }
-    }
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get => ApplicationContext.DefaultTransactionAsyncFlowOption; set => ApplicationContext.DefaultTransactionAsyncFlowOption = value; }
 
     /// <summary>
     /// Gets the maximum cache size

@@ -1,32 +1,17 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CslaDataConfiguration.cs" company="Marimer LLC">
+// <copyright file="DataOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using System;
+using System.Transactions;
 
 namespace Csla.Configuration
 {
   /// <summary>
-  /// Extension method for CslaDataConfiguration
-  /// </summary>
-  public static class CslaDataConfigurationExtensions
-  {
-    /// <summary>
-    /// Extension method for CslaDataConfiguration
-    /// </summary>
-    public static CslaOptions Data(this CslaOptions config, Action<DataOptions> options)
-    {
-      options?.Invoke(config.DataOptions);
-      return config;
-    }
-  }
-
-  /// <summary>
   /// Use this type to configure the settings for the
-  /// CSLA .NET data portal.
+  /// CSLA .NET data subsystem.
   /// </summary>
   public class DataOptions
   {
@@ -36,7 +21,7 @@ namespace Csla.Configuration
     /// <param name="level">The default transaction isolation level</param>
     public DataOptions DefaultTransactionIsolationLevel(TransactionIsolationLevel level)
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = level.ToString();
+      ApplicationContext.DefaultTransactionIsolationLevel = level;
       return this;
     }
 
@@ -46,7 +31,7 @@ namespace Csla.Configuration
     /// <param name="seconds">The default transaction timeout in seconds</param>
     public DataOptions DefaultTransactionTimeoutInSeconds(int seconds)
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = seconds.ToString();
+      ApplicationContext.DefaultTransactionTimeoutInSeconds = seconds;
       return this;
     }
 
@@ -55,9 +40,9 @@ namespace Csla.Configuration
     /// used to create new TransactionScope objects.
     /// </summary>
     /// <param name="asyncFlowOption">Async flow option</param>
-    public DataOptions DefaultTransactionAsyncFlowOption(System.Transactions.TransactionScopeAsyncFlowOption asyncFlowOption)
+    public DataOptions DefaultTransactionAsyncFlowOption(TransactionScopeAsyncFlowOption asyncFlowOption)
     {
-      ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"] = asyncFlowOption.ToString();
+      ApplicationContext.DefaultTransactionAsyncFlowOption = asyncFlowOption;
       return this;
     }
   }

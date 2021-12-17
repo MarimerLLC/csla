@@ -29,6 +29,7 @@ namespace Csla.Data
   /// dispose the connection when the last consumer
   /// has called Dispose."
   /// </remarks>
+  [Obsolete("Use dependency injection", false)]
   public class ConnectionManager<C> : IDisposable, Core.IUseApplicationContext
     where C : IDbConnection, new()
   {

@@ -28,6 +28,7 @@ namespace Csla.Data
   /// dispose the connection when the last consumer
   /// has called Dispose."
   /// </remarks>
+  [Obsolete("Use dependency injection", false)]
   public class ConnectionManager : IDisposable, Core.IUseApplicationContext
   {
     private static object _lock = new object();

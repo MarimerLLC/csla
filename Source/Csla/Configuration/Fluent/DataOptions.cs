@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.Transactions;
 
 namespace Csla.Configuration
@@ -53,6 +54,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="dbProvider"></param>
     /// <returns></returns>
+    [Obsolete("Use dependency injection", false)]
     public DataOptions DbProvider(string dbProvider)
     {
       Data.ConnectionManager.DbProvider = dbProvider;

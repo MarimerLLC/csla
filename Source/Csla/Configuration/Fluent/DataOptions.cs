@@ -45,5 +45,19 @@ namespace Csla.Configuration
       ApplicationContext.DefaultTransactionAsyncFlowOption = asyncFlowOption;
       return this;
     }
+
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+    /// <summary>
+    /// Sets the invariant name of a provider for
+    /// use by DbProviderFactories.GetFactory().
+    /// </summary>
+    /// <param name="dbProvider"></param>
+    /// <returns></returns>
+    public DataOptions DbProvider(string dbProvider)
+    {
+      Data.ConnectionManager.DbProvider = dbProvider;
+      return this;
+    }
+#endif
   }
 }

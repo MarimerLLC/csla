@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Contains configuration options which can be loaded </summary>
 //-----------------------------------------------------------------------
-using Csla.Security;
-using Csla.Serialization.Mobile;
 using System;
 using System.Transactions;
 
@@ -50,16 +48,6 @@ namespace Csla.Configuration
     public Type SerializationFormatter { get => ApplicationContext.SerializationFormatter; set => ApplicationContext.SerializationFormatter = value; }
 
     /// <summary>
-    /// Sets type of the writer that is used to read data to
-    /// serialization stream in SerializationFormatterFactory.GetFormatter().
-    /// </summary>
-    public string Reader
-    {
-      get { return ConfigurationManager.AppSettings["CslaReader"]; }
-      set { ConfigurationManager.AppSettings["CslaReader"] = value; }
-    }
-
-    /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
     public TransactionIsolationLevel DefaultTransactionIsolationLevel { get => ApplicationContext.DefaultTransactionIsolationLevel; set => ApplicationContext.DefaultTransactionIsolationLevel = value; }
@@ -77,44 +65,6 @@ namespace Csla.Configuration
     /// used to create new TransactionScope objects. (Enabled or Suppress)
     /// </summary>
     public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get => ApplicationContext.DefaultTransactionAsyncFlowOption; set => ApplicationContext.DefaultTransactionAsyncFlowOption = value; }
-
-    /// <summary>
-    /// Gets the maximum cache size
-    /// </summary>
-    public int PrincipalCacheSize
-    {
-      get
-      {
-        if (ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] != null)
-        {
-          return int.Parse(ConfigurationManager.AppSettings["CslaPrincipalCacheSize"]);
-        }
-
-        return PrincipalCache.MaxCacheSize;
-      }
-
-      set { ConfigurationManager.AppSettings["CslaPrincipalCacheSize"] = value.ToString(); }
-    }
-
-    /// <summary>
-    /// Get an instance of the writer that is used to write data to serialization stream
-    /// Instance has to implement <see cref="ICslaWriter"/>.
-    /// </summary>
-    public string MobileWriter
-    {
-      get { return ConfigurationManager.AppSettings["CslaWriter"]; }
-      set { ConfigurationManager.AppSettings["CslaWriter"] = value; }
-    }
-
-    /// <summary>
-    /// CslaDbProvider
-    /// Instance has to implement <see cref="ICslaWriter"/>.
-    /// </summary>
-    public string CslaDbProvider
-    {
-      get { return ConfigurationManager.AppSettings["CslaDbProvider"]; }
-      set { ConfigurationManager.AppSettings["CslaDbProvider"] = value; }
-    }
 
     /// <summary>
     /// Gets or sets the data portal configuration options

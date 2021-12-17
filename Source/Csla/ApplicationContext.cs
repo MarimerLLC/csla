@@ -8,7 +8,6 @@
 using System;
 using System.Security.Principal;
 using Csla.Core;
-using Csla.Configuration;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -19,30 +19,10 @@ namespace Csla.Security
   {
     private static List<IPrincipal> _cache = new List<IPrincipal>();
 
-    private static int _maxCacheSize;
-
     /// <summary>
     /// Gets the maximum cache size
     /// </summary>
-    public static int MaxCacheSize
-    {
-      get
-      {
-        if (_maxCacheSize == 0)
-        {
-          string tmp = Csla.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
-          if (string.IsNullOrEmpty(tmp))
-            _maxCacheSize = 10;
-          else
-            _maxCacheSize = Convert.ToInt32(tmp);
-        }
-        return _maxCacheSize;
-      }
-      internal set
-      {
-        _maxCacheSize = value;
-      }
-    }
+    public static int MaxCacheSize { get; internal set; } = 10;
 
     /// <summary>
     /// Gets a principal from the cache based on

@@ -65,6 +65,7 @@ namespace Csla.Configuration
 
       services.TryAddScoped<DataPortalExceptionHandler>();
       services.TryAddTransient(typeof(IDataPortalServer), typeof(DataPortal));
+      services.TryAddScoped<InterceptorManager>();
       services.TryAddTransient<DataPortalSelector>();
       services.TryAddTransient<SimpleDataPortal>();
       services.TryAddTransient<FactoryDataPortal>();

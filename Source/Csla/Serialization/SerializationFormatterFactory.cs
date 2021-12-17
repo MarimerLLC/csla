@@ -19,7 +19,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter(ApplicationContext applicationContext)
     {
-      return applicationContext.CreateInstanceDI<ISerializationFormatter>(ApplicationContext.SerializationFormatter);
+      return (ISerializationFormatter)applicationContext.CreateInstanceDI(ApplicationContext.SerializationFormatter);
     }
   }
 }

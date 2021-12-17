@@ -33,7 +33,7 @@ namespace Csla.Server
     private IDashboard Dashboard { get; set; }
     private DataPortalServerOptions Options { get; set; }
     private IAuthorizeDataPortal Authorizer { get; set; }
-    private List<IInterceptDataPortal> InterceptorList { get; set; }
+    private InterceptorManager InterceptorManager { get; set; }
     private IObjectFactoryLoader FactoryLoader { get; set; }
     private IDataPortalActivator Activator { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
@@ -56,7 +56,7 @@ namespace Csla.Server
       IDashboard dashboard, 
       CslaOptions options,
       IAuthorizeDataPortal authorizer,
-      List<IInterceptDataPortal> interceptors,
+      InterceptorManager interceptors,
       IObjectFactoryLoader factoryLoader,
       IDataPortalActivator activator,
       IDataPortalExceptionInspector exceptionInspector,
@@ -66,7 +66,7 @@ namespace Csla.Server
       Dashboard = dashboard;
       Options = options.DataPortalServerOptions;
       Authorizer = authorizer;
-      InterceptorList = interceptors;
+      InterceptorManager = interceptors;
       FactoryLoader = factoryLoader;
       Activator = activator;
       ExceptionInspector = exceptionInspector;
@@ -530,16 +530,14 @@ namespace Csla.Server
 
     internal void Complete(InterceptArgs e)
     {
-      var timer = ApplicationContext.ClientContext.GetValueOrNull("__dataportaltimer");
-      if (timer != null)
-      {
-        var startTime = (DateTimeOffset)timer;
-        e.Runtime = DateTimeOffset.Now - startTime;
-        Dashboard.CompleteCall(e);
-      }
+      InterceptorManager.Complete(e);
 
-      for (int index = InterceptorList.Count - 1; index >= 0; index--)
-        InterceptorList[index].Complete(e);
+      var timer = ApplicationContext.ClientContext.GetValueOrNull("__dataportaltimer");
+      if (timer == null) return;
+
+      var startTime = (DateTimeOffset)timer;
+      e.Runtime = DateTimeOffset.Now - startTime;
+      Dashboard.CompleteCall(e);
     }
 
     internal void Initialize(InterceptArgs e)
@@ -547,8 +545,7 @@ namespace Csla.Server
       ApplicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
       Dashboard.InitializeCall(e);
 
-      foreach (var interceptor in InterceptorList)
-        interceptor.Initialize(e);
+      InterceptorManager.Initialize(e);
     }
 
 #endregion

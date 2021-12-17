@@ -45,7 +45,6 @@ namespace Csla
       _transactionIsolationLevelSet = false;
       _defaultTransactionTimeoutInSecondsSet = false;
       _authenticationTypeName = null;
-      _VersionRoutingTag = null;
     }
 
     /// <summary>
@@ -175,33 +174,16 @@ namespace Csla
     /// </summary>
     public static bool UseReflectionFallback { get; set; } = false;
 
-    private static string _VersionRoutingTag = null;
-
     /// <summary>
-    /// Gets or sets a value representing the application version
+    /// Gets a value representing the application version
     /// for use in server-side data portal routing.
     /// </summary>
-    public static string VersionRoutingTag
-    {
-      get
-      {
-        if (string.IsNullOrWhiteSpace(_VersionRoutingTag))
-          _VersionRoutingTag = ConfigurationManager.AppSettings["CslaVersionRoutingTag"];
-        return _VersionRoutingTag;
-      }
-      internal set
-      {
-        if (!string.IsNullOrWhiteSpace(value))
-          if (value.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
-        _VersionRoutingTag = value;
-      }
-    }
+    public static string VersionRoutingTag { get; internal set; }
 
     private static string _authenticationTypeName;
 
     /// <summary>
-    /// Returns the authentication type being used by the
+    /// Gets the authentication type being used by the
     /// CSLA .NET framework.
     /// </summary>
     /// <value></value>

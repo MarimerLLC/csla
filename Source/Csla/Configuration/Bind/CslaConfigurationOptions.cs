@@ -41,18 +41,7 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public string VersionRoutingTag
-    {
-      get { return ConfigurationManager.AppSettings["CslaVersionRoutingTag"]; }
-      set
-      {
-        if (!string.IsNullOrWhiteSpace(value))
-          if (value.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
-        ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = value;
-        ApplicationContext.VersionRoutingTag = null;
-      }
-    }
+    public string VersionRoutingTag { get => ApplicationContext.VersionRoutingTag; set => ApplicationContext.VersionRoutingTag = value; }
 
     /// <summary>
     /// Gets the serialization formatter type used by CSLA .NET

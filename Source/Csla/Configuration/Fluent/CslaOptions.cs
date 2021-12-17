@@ -74,7 +74,7 @@ namespace Csla.Configuration
       if (!string.IsNullOrWhiteSpace(version))
         if (version.Contains("-") || version.Contains("/"))
           throw new ArgumentException("VersionRoutingTag");
-      ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = version;
+      ApplicationContext.VersionRoutingTag = version;
       return this;
     }
 

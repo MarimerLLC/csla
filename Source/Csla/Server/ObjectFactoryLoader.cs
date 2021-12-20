@@ -15,9 +15,17 @@ namespace Csla.Server
   /// Class containing the default implementation for
   /// the FactoryLoader delegate used by the data portal host.
   /// </summary>
-  public class ObjectFactoryLoader : IObjectFactoryLoader, Core.IUseApplicationContext
+  public class ObjectFactoryLoader : IObjectFactoryLoader
   {
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public ObjectFactoryLoader(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
     private ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>

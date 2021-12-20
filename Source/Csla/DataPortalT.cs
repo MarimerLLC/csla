@@ -293,7 +293,8 @@ namespace Csla
         if (factoryInfo != null)
         {
           Csla.Server.DataPortalMethodInfo method = null;
-          var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
+          var factoryLoader = ApplicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+          var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
 
           if (obj is Core.ICommandObject)
           {

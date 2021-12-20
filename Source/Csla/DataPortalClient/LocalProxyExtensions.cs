@@ -22,7 +22,7 @@ namespace Csla.Configuration
     /// Configure data portal client to use LocalProxy.
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
-    public static CslaDataPortalConfiguration UseLocalProxy(this CslaDataPortalConfiguration config)
+    public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config)
     {
       return UseLocalProxy(config, null);
     }
@@ -32,7 +32,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
-    public static CslaDataPortalConfiguration UseLocalProxy(this CslaDataPortalConfiguration config, Action<LocalProxyOptions> options)
+    public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config, Action<LocalProxyOptions> options)
     {
       var existingOptions = config.Services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).FirstOrDefault();
       if (existingOptions?.ImplementationInstance is not LocalProxyOptions proxyOptions)

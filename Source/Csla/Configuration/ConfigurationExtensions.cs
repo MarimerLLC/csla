@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0 || NET5_0 || NET6_0
+﻿#if NETSTANDARD2_0 || NET5_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -9,7 +9,6 @@
 using System;
 using System.Linq;
 using Csla.DataPortalClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -34,11 +33,14 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="options">Options for configuring CSLA .NET</param>
-    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaConfiguration> options)
+    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions> options)
     {
       // Custom configuration
-      var cslaOptions = new CslaConfiguration(services);
+      var cslaOptions = new CslaOptions(services);
       options?.Invoke(cslaOptions);
+
+      // capture options object
+      services.AddScoped((p) => cslaOptions);
 
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
@@ -94,23 +96,6 @@ namespace Csla.Configuration
       }
       return false;
     }
-
-    private static void ApplyFinalConfiguration(this ICslaConfiguration builder)
-    {
-      builder.DataPortal().ApplyFinalConfiguration();
-    }
-
-    /// <summary>
-    /// Configure CSLA .NET settings from .NET Core configuration
-    /// subsystem.
-    /// </summary>
-    /// <param name="config">Configuration object</param>
-    public static IConfiguration ConfigureCsla(this IConfiguration config)
-    {
-      config.Bind("csla", new CslaConfigurationOptions());
-      return config;
-    }
-
   }
 }
 #endif

@@ -58,7 +58,11 @@ namespace Csla.Configuration
       options?.Invoke(opt);
       var services = builder.Services;
       services.TryAddScoped(typeof(IAuthorizeDataPortal), opt.AuthorizerProviderType);
-      services.TryAddScoped((p) => opt.InterceptorProviders);
+      foreach (Type interceptorType in opt.InterceptorProviders)
+      {
+        services.AddScoped(typeof(IInterceptDataPortal), interceptorType);
+      }
+      // services.TryAddScoped((p) => opt.InterceptorProviders);
       services.TryAddScoped(typeof(IObjectFactoryLoader), opt.ObjectFactoryLoaderType);
       services.TryAddScoped(typeof(IDataPortalActivator), opt.ActivatorType);
       services.TryAddScoped(typeof(IDataPortalExceptionInspector), opt.ExceptionInspectorType);

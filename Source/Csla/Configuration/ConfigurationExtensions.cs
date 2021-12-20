@@ -56,9 +56,6 @@ namespace Csla.Configuration
       // Server-side data portal is always necessary to support RunLocal
       cslaOptions.DataPortal().AddServerSideDataPortal();
 
-      // Apply final configuration
-      cslaOptions.ApplyFinalConfiguration();
-
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
       if (!proxyInit)

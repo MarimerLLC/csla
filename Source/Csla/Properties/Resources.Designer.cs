@@ -19,7 +19,7 @@ namespace Csla.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -921,6 +921,24 @@ namespace Csla.Properties {
         public static string RuleMessageRequired {
             get {
                 return ResourceManager.GetString("RuleMessageRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A dataportal exception occurred on the server. See server logs for details. Request Id: {identifier}.
+        /// </summary>
+        public static string SanitizedServerSideDataPortalException {
+            get {
+                return ResourceManager.GetString("SanitizedServerSideDataPortalException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An exception has occured during a server-side dataportal operation. Request Id: {identifier}\r\n{ex}.
+        /// </summary>
+        public static string ServerSideDataPortalException {
+            get {
+                return ResourceManager.GetString("ServerSideDataPortalException", resourceCulture);
             }
         }
         

@@ -72,7 +72,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ExceptionInspector.
     /// </summary>
-    internal Type ExceptionInspectorType { get; set; } = typeof(DefaultExceptionInspector);
+    internal Type ExceptionInspectorType { get; set; } = typeof(SanitizingExceptionInspector);
 
     /// <summary>
     /// Sets the type of the ExceptionInspector.

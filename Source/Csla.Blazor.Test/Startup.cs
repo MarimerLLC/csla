@@ -26,9 +26,9 @@ namespace Csla.Blazor.Test
 
       // Initialise DI
       var services = new ServiceCollection();
+      services.AddCslaTesting();
 
       // Add Csla
-      services.AddCsla();
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security

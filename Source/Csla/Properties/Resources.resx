@@ -479,9 +479,12 @@
     <value>Synchronous data access is not supported on this runtime. Please use async data access methods</value>
   </data>
   <data name="SanitizedServerSideDataPortalException" xml:space="preserve">
-    <value>A dataportal exception occurred on the server. See server logs for details. Request Id: {identifier}</value>
+    <value>A dataportal exception occurred on the server. Details are available from the server logs</value>
   </data>
   <data name="ServerSideDataPortalException" xml:space="preserve">
-    <value>An exception has occured during a server-side dataportal operation. Request Id: {identifier}\r\n{ex}</value>
+    <value>An exception has occured during a server-side dataportal operation. Request Id: {identifier}</value>
+  </data>
+  <data name="SanitizedServerSideDataPortalDetailedException" xml:space="preserve">
+    <value>An exception has occured during a server-side dataportal operation. Request Id: {0}</value>
   </data>
 </root>

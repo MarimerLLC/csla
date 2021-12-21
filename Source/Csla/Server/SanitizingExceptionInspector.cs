@@ -41,7 +41,7 @@ namespace Csla.Server
     /// throws a generic, less detailed exception for return to the client
     /// </summary>
     /// <param name="objectType">Type of the object.</param>
-    /// <param name="businessObject">The business object , if available.</param>
+    /// <param name="businessObject">The business object, if available.</param>
     /// <param name="criteria">The criteria.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="ex">The exception.</param>
@@ -53,12 +53,13 @@ namespace Csla.Server
         return;
 
       // Shortcut if we are running in development (max. developer productivity)
-      //if (_hostEnvironment.IsDevelopment())
-      //  return;
+      if (_hostEnvironment.IsDevelopment())
+        return;
 
       // Sanitize in all remaining scenarios
       string identifier = Guid.NewGuid().ToString();
-      _logger.LogError(Properties.Resources.ServerSideDataPortalException, identifier, ex.ToString());
+      string message = Properties.Resources.ServerSideDataPortalException + Environment.NewLine + ex.ToString();
+      _logger.LogError(message, identifier);
       throw new SanitizedServerSideDataPortalException(identifier);
     }
   }

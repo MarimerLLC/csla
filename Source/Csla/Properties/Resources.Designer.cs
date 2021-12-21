@@ -925,7 +925,16 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A dataportal exception occurred on the server. See server logs for details. Request Id: {identifier}.
+        ///   Looks up a localized string similar to An exception has occured during a server-side dataportal operation. Request Id: {0}.
+        /// </summary>
+        public static string SanitizedServerSideDataPortalDetailedException {
+            get {
+                return ResourceManager.GetString("SanitizedServerSideDataPortalDetailedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A dataportal exception occurred on the server. Details are available from the server logs.
         /// </summary>
         public static string SanitizedServerSideDataPortalException {
             get {
@@ -934,7 +943,7 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An exception has occured during a server-side dataportal operation. Request Id: {identifier}\r\n{ex}.
+        ///   Looks up a localized string similar to An exception has occured during a server-side dataportal operation. Request Id: {identifier}.
         /// </summary>
         public static string ServerSideDataPortalException {
             get {

@@ -33,10 +33,9 @@ namespace Csla.Test
 
       // Initialise DI
       var services = new ServiceCollection();
+      services.AddCslaTesting();
 
       // Add Csla
-      services.AddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
-      services.AddCsla();
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security

@@ -312,14 +312,15 @@ namespace Csla.Reflection
         }
       }
 
+      if (resultingMethod != null)
+      {
 #if NET5_0_OR_GREATER
-      var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
-
-      _ = _methodCache.TryAdd(cacheKey, cacheInstance);
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
+        _ = _methodCache.TryAdd(cacheKey, cacheInstance);
 #else
-      _methodCache.TryAdd(cacheKey, resultingMethod);
+        _methodCache.TryAdd(cacheKey, resultingMethod);
 #endif
-
+      }
       return resultingMethod;
     }
 

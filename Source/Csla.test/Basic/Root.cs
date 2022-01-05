@@ -61,11 +61,6 @@ namespace Csla.Test.Basic
       }
     }
 
-    public static void DeleteRoot(string data)
-    {
-      Csla.DataPortal.Delete<Root>(new Criteria(data));
-    }
-
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,29 +29,32 @@ namespace Csla.Test.DataPortalTest
         [TestMethod]
         public void TestDpCreate()
         {
-            LegacySplit test = LegacySplit.NewObject();
+            LegacySplit test = NewLegacySplit();
             Assert.AreEqual("Created", TestResults.GetResult("LegacySplit"));
         }
+
         [TestMethod]
         public void TestDpFetch()
         {
-            LegacySplit test = LegacySplit.GetObject(5);
+            LegacySplit test = GetLegacySplit(5);
             Assert.AreEqual("Fetched", TestResults.GetResult("LegacySplit"));
         }
+
         [TestMethod]
         public void TestDpInsert()
         {
-            LegacySplit test = LegacySplit.NewObject();
+            LegacySplit test = NewLegacySplit();
             test.Save();
             Assert.AreEqual("Inserted", TestResults.GetResult("LegacySplit"));
         }
+
         [TestMethod]
         public void TestDpUpdate()
         {
             LegacySplit test = null;
             try
             {
-                test = LegacySplit.NewObject();
+                test = NewLegacySplit();
                 test = test.Save();
                 test.Id = 5;
             }
@@ -58,19 +62,21 @@ namespace Csla.Test.DataPortalTest
             test.Save();
             Assert.AreEqual("Updated", TestResults.GetResult("LegacySplit"));
         }
+
         [TestMethod]
         public void TestDpDelete()
         {
-            LegacySplit.DeleteObject(5);
+            DeleteLegacySplit(5);
             Assert.AreEqual("Deleted", TestResults.GetResult("LegacySplit"));
         }
+
         [TestMethod]
         public void TestDpDeleteSelf()
         {
             LegacySplit test = null;
             try
             {
-                test = LegacySplit.NewObject();
+                test = NewLegacySplit();
                 test = test.Save();
                 test.Delete();
             }
@@ -79,5 +85,25 @@ namespace Csla.Test.DataPortalTest
             Assert.AreEqual("SelfDeleted", TestResults.GetResult("LegacySplit"));
         }
 
+        private LegacySplit NewLegacySplit()
+        {
+            IDataPortal<LegacySplit> dataPortal = DataPortalFactory.CreateDataPortal<LegacySplit>();
+
+            return dataPortal.Create();
+        }
+
+        private LegacySplit GetLegacySplit(int id)
+        {
+            IDataPortal<LegacySplit> dataPortal = DataPortalFactory.CreateDataPortal<LegacySplit>();
+
+            return dataPortal.Fetch(new LegacySplitBase<LegacySplit>.Criteria(id));
+        }
+
+        private void DeleteLegacySplit(int id)
+        {
+            IDataPortal<LegacySplit> dataPortal = DataPortalFactory.CreateDataPortal<LegacySplit>();
+
+            dataPortal.Delete(new LegacySplitBase<LegacySplit>.Criteria(id));
+        }
     }
 }

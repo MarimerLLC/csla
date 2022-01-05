@@ -58,7 +58,7 @@ namespace Csla.Test.Basic
 
             NameValueListObj nvList = dataPortal.Fetch();
             // TODO: Fix test
-            Assert.AreEqual("Fetched", TestResults.GetResult("NameValueListObj"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("NameValueListObj"));
 
             Assert.AreEqual("element_1", nvList[1].Value);
 

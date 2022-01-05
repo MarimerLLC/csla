@@ -132,7 +132,7 @@ namespace Csla.Test.IO
         public void DeleteRootImmediate()
         {
             TestResults.Reinitialise();
-            Csla.Test.Basic.Root.DeleteRoot("test");
+            DeleteRoot("test");
             Assert.AreEqual("Deleted", TestResults.GetResult("Root"));
         }
 
@@ -154,6 +154,13 @@ namespace Csla.Test.IO
             IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
 
             return dataPortal.Fetch(new Basic.Root.Criteria(data));
+        }
+
+        private void DeleteRoot(string data)
+        {
+          IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+
+          dataPortal.Delete(new Basic.Root.Criteria(data));
         }
     }
 }

@@ -26,16 +26,6 @@ namespace Csla.Test.DataPortalTest
 
     #endregion
 
-
-    #region Factory Methods
-
-    public static void DeleteObject(int id)
-    {
-      Csla.DataPortal.Delete<Legacy>(new Criteria(id));
-    }
-
-    #endregion
-
     #region Data Access
 
     [Serializable()]

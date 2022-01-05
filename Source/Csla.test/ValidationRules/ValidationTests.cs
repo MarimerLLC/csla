@@ -15,6 +15,7 @@ using Csla.Rules;
 using UnitDriven;
 using Csla.Serialization;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace Csla.Test.ValidationRules
       //works now because we are calling ValidationRules.CheckRules() in DataPortal_Create
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      var root = await CreateHasRulesManagerAsync();
       context.Assert.AreEqual("<new>", root.Name);
       context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
       context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
@@ -69,7 +70,7 @@ namespace Csla.Test.ValidationRules
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
       TestResults.Reinitialise();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>(new HasRulesManager2.Criteria("<new>"));
+      var root = await CreateHasRulesManager2Async("<new>");
       Assert.AreEqual("<new>", root.Name);
       Assert.AreEqual(true, root.IsValid, "should be valid on create");
       Assert.AreEqual(0, root.BrokenRulesCollection.Count);
@@ -100,7 +101,7 @@ namespace Csla.Test.ValidationRules
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      var root = await CreateHasRulesManagerAsync();
       context.Assert.AreEqual("<new>", root.Name);
       context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
       context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
@@ -180,7 +181,7 @@ namespace Csla.Test.ValidationRules
       //property in DataPortal_Create.  If it used HasRulesManager, it would fail
       //the first assert, but pass the others
       TestResults.Reinitialise();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>(new HasRulesManager2.Criteria("test"));
+      var root = await CreateHasRulesManager2Async("test");
       Assert.AreEqual(true, root.IsValid);
       root.BeginEdit();
       root.Name = "";
@@ -199,7 +200,7 @@ namespace Csla.Test.ValidationRules
     public async Task BreakRequiredRule()
     {
       TestResults.Reinitialise();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      var root = await CreateHasRulesManagerAsync();
       root.Name = "";
       Assert.AreEqual(false, root.IsValid, "should not be valid");
       Assert.AreEqual(1, root.BrokenRulesCollection.Count);
@@ -212,7 +213,7 @@ namespace Csla.Test.ValidationRules
     {
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      var root = await CreateHasRulesManagerAsync();
       root.Name = "12345678901";
       context.Assert.AreEqual(false, root.IsValid, "should not be valid");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
@@ -232,7 +233,7 @@ namespace Csla.Test.ValidationRules
     {
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      var root = await CreateHasRulesManagerAsync();
       root.Name = "12345678901";
       context.Assert.AreEqual(false, root.IsValid, "should not be valid before clone");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
@@ -295,7 +296,7 @@ namespace Csla.Test.ValidationRules
       TestResults.Reinitialise();
       using (UnitTestContext context = GetContext())
       {
-        var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>();
+        var root = await CreateHasRulesManager2Async();
         string expected = root.Name;
         root.BeginEdit();
         root.Name = "";
@@ -316,10 +317,10 @@ namespace Csla.Test.ValidationRules
     {
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      var root = await Csla.DataPortal.CreateAsync<HasChildren>();
+      var root = await CreateWithoutCriteriaAsync<HasChildren>();
       context.Assert.AreEqual(false, root.IsValid);
       root.BeginEdit();
-      root.ChildList.Add(Csla.DataPortal.CreateChild<Child>());
+      root.ChildList.Add(CreateChildWithoutCriteria<Child>());
       context.Assert.AreEqual(true, root.IsValid);
 
       root.CancelEdit();
@@ -363,7 +364,7 @@ namespace Csla.Test.ValidationRules
     public void MinMaxValue()
     {
       var context = GetContext();
-      var root = Csla.DataPortal.Create<UsesCommonRules>();
+      var root = CreateWithoutCriteria<UsesCommonRules>();
       context.Assert.AreEqual(1, root.Data);
 
       context.Assert.IsFalse(root.IsValid);
@@ -387,7 +388,7 @@ namespace Csla.Test.ValidationRules
     public void MinMaxNullableValue()
     {
       var context = GetContext();
-      var root = Csla.DataPortal.Create<MinMaxNullableRules>();
+      var root = CreateWithoutCriteria<MinMaxNullableRules>();
       context.Assert.IsNull(root.DataNullable);
 
       context.Assert.IsFalse(root.IsValid);
@@ -412,7 +413,7 @@ namespace Csla.Test.ValidationRules
     {
       var context = GetContext();
 
-      var root = Csla.DataPortal.Create<UsesCommonRules>();
+      var root = CreateWithoutCriteria<UsesCommonRules>();
       root.Data = 15;
       context.Assert.IsTrue(root.IsValid, "Should start valid");
 
@@ -518,6 +519,49 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+    private T CreateWithoutCriteria<T>()
+    {
+      IDataPortal<T> dataPortal = DataPortalFactory.CreateDataPortal<T>();
+
+      return dataPortal.Create();
+    }
+
+    private async Task<T> CreateWithoutCriteriaAsync<T>()
+    {
+      IDataPortal<T> dataPortal = DataPortalFactory.CreateDataPortal<T>();
+
+      return await dataPortal.CreateAsync();
+    }
+
+    private T CreateChildWithoutCriteria<T>()
+    {
+      IChildDataPortal<T> dataPortal = DataPortalFactory.CreateChildDataPortal<T>();
+
+      return dataPortal.CreateChild();
+    }
+
+    private async Task<HasRulesManager> CreateHasRulesManagerAsync()
+    {
+      IDataPortal<HasRulesManager> dataPortal = DataPortalFactory.CreateDataPortal<HasRulesManager>();
+
+      return await dataPortal.CreateAsync(new HasRulesManager.Criteria());
+    }
+
+    private async Task<HasRulesManager2> CreateHasRulesManager2Async()
+    {
+      IDataPortal<HasRulesManager2> dataPortal = DataPortalFactory.CreateDataPortal<HasRulesManager2>();
+
+      return await dataPortal.CreateAsync();
+    }
+
+    private async Task<HasRulesManager2> CreateHasRulesManager2Async(string ident)
+    {
+      IDataPortal<HasRulesManager2> dataPortal = DataPortalFactory.CreateDataPortal<HasRulesManager2>();
+
+      return await dataPortal.CreateAsync(new HasRulesManager2.Criteria(ident));
+    }
+
   }
 
   [Serializable]
@@ -922,5 +966,6 @@ namespace Csla.Test.ValidationRules
       ctx.AddSuccessResult(false);
       Assert.IsTrue(true, "Must not fail.");
     }
+
   }
 }

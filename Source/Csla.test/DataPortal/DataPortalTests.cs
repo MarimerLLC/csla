@@ -229,35 +229,35 @@ namespace Csla.Test.DataPortal
 
       try
       {
-        var single = Csla.Test.DataPortalTest.Single.NewObject();
+        DataPortalTest.Single single = NewSingle();
 
-        Assert.AreEqual(TestResults.GetResult("Single"], "Created");
+        Assert.AreEqual(TestResults.GetResult("Single"), "Created");
         Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Create Called");
 
         TestResults.Reinitialise();
 
         single.Save();
 
-        Assert.AreEqual(TestResults.GetResult("Single"], "Inserted");
+        Assert.AreEqual(TestResults.GetResult("Single"), "Inserted");
         Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Update Called");
 
         TestResults.Reinitialise();
 
-        single = Csla.Test.DataPortalTest.Single.GetObject(1);
+        single = GetSingle(1);
 
-        Assert.AreEqual(TestResults.GetResult("Single"], "Fetched");
+        Assert.AreEqual(TestResults.GetResult("Single"), "Fetched");
         Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Fetch Called");
 
         TestResults.Reinitialise();
 
         single.Save();
 
-        Assert.AreEqual(TestResults.GetResult("Single"], "Updated");
+        Assert.AreEqual(TestResults.GetResult("Single"), "Updated");
         Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Update Called");
 
         TestResults.Reinitialise();
 
-        Csla.Test.DataPortalTest.Single.DeleteObject(1);
+        DeleteSingle(1);
 
         Assert.AreEqual(TestResults.GetResult("Single"), "Deleted");
         Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Delete Called");
@@ -330,6 +330,27 @@ namespace Csla.Test.DataPortal
     private void ClientPortal_DataPortalInvokeComplete(DataPortalEventArgs obj)
     {
       TestResults.Add("dpinvokecomplete", "true");
+    }
+
+    private DataPortalTest.Single NewSingle()
+    {
+      IDataPortal<DataPortalTest.Single> dataPortal = DataPortalFactory.CreateDataPortal<DataPortalTest.Single>();
+
+      return dataPortal.Create();
+    }
+
+    private DataPortalTest.Single GetSingle(int id)
+    {
+      IDataPortal<DataPortalTest.Single> dataPortal = DataPortalFactory.CreateDataPortal<DataPortalTest.Single>();
+
+      return dataPortal.Fetch(id);
+    }
+
+    private void DeleteSingle(int id)
+    {
+      IDataPortal<DataPortalTest.Single> dataPortal = DataPortalFactory.CreateDataPortal<DataPortalTest.Single>();
+
+      dataPortal.Delete(id);
     }
 
   }

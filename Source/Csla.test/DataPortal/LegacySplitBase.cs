@@ -27,30 +27,10 @@ namespace Csla.Test.DataPortalTest
 
     #endregion
 
-
-    #region Factory Methods
-
-    public static T NewObject()
-    {
-      return Csla.DataPortal.Create<T>();
-    }
-
-    public static T GetObject(int id)
-    {
-      return Csla.DataPortal.Fetch<T>(new Criteria(id));
-    }
-
-    public static void DeleteObject(int id)
-    {
-      Csla.DataPortal.Delete<T>(new Criteria(id));
-    }
-
-    #endregion
-
     #region Data Access
 
     [Serializable()]
-    private class Criteria : CriteriaBase<Criteria>
+    internal class Criteria : CriteriaBase<Criteria>
     {
       private int _id;
       public int Id

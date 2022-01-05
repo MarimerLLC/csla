@@ -13,6 +13,7 @@ using Csla;
 using Csla.Security;
 using Csla.Core;
 using Csla.Serialization;
+using Csla.Test;
 
 namespace cslalighttest.CslaDataProvider
 {
@@ -112,32 +113,21 @@ namespace cslalighttest.CslaDataProvider
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
     }
 
-    internal static CustomerContact GetCustomerContact(int customerId, int id, string firstName, string lastName, DateTime birthday) 
-    {
-      return DataPortal.FetchChild<CustomerContact>(customerId, id, firstName, lastName, birthday);
-    }
-
     protected void Child_DeleteSelf()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext["CustomerContactDelete"] = "Deleted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty);
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("CustomerContactDelete", "Deleted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
     }
 
     protected void Child_Insert()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext["CustomerContactInsert"] = "Inserted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty);
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("CustomerContactInsert", "Inserted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
       CustomerContactList parent = this.Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty, grandParent.Name);
     }
     protected void Child_Update()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext["CustomerContactUpdate"] = "Updated  Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty);
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("CustomerContactUpdate", "Updated  Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
       CustomerContactList parent = this.Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty,grandParent.Name);

@@ -30,7 +30,7 @@ namespace Csla.Test.AppDomainTests
     {
       IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
 
-      ////Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       int local = AppDomain.CurrentDomain.Id;
       Basic.Root r = dataPortal.Create(new Basic.Root.Criteria());
       int remote = r.CreatedDomain;
@@ -45,8 +45,7 @@ namespace Csla.Test.AppDomainTests
     [TestCleanup]
     public void ClearContextsAfterEachTest()
     {
-      // TODO: Fix test cleanup
-      ////Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
     }
   }
 }

@@ -50,7 +50,7 @@ namespace Csla.Test.AppContext
     {
       lock (this)
       {
-        //Csla.ApplicationContext.GlobalContext.Add(this._Name, this._Name);
+        TestResults.Add(this._Name, this._Name);
         //Csla.ApplicationContext.ClientContext.Add(this._Name, this._Name);
       }
       while (_run)

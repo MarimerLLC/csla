@@ -14,7 +14,7 @@ namespace Csla.Test.DataPortal
   //  [TestMethod]
   //  public void Test_LogicalExecution_Values()
   //  {
-  //    //ApplicationContext.Clear();      
+  //    TestResults.Reinitialise();      
 
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "Default value of 'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client'");
 
@@ -23,17 +23,17 @@ namespace Csla.Test.DataPortal
   //    dataPortal.Create(typeof(LogicalExecutionTestBusiness), null, new DataPortalContext(null, false), true).Wait();
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Create"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Create'");
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Create'");
-  //    //ApplicationContext.Clear();
+  //    TestResults.Reinitialise();
 
   //    dataPortal.Fetch(typeof(LogicalExecutionTestBusiness), null, new DataPortalContext(null, false), true).Wait();
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Fetch"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Fetch'");
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Fetch'");
-  //    //ApplicationContext.Clear();
+  //    TestResults.Reinitialise();
 
   //    dataPortal.Delete(typeof(LogicalExecutionTestBusiness), null, new DataPortalContext(null, false), true).Wait();
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Delete"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Delete'");
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Delete'");
-  //    //ApplicationContext.Clear();
+  //    TestResults.Reinitialise();
 
   //    dataPortal.Update(new LogicalExecutionTestBusiness(), new DataPortalContext(null, false), true).Wait();
   //    Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Update"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Update'");

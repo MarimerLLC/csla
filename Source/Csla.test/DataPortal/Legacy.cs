@@ -54,43 +54,43 @@ namespace Csla.Test.DataPortalTest
 		protected void DataPortal_Create()
     {
       _id = 0;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Legacy", "Created");
+      TestResults.Reinitialise();
+      TestResults.Add("Legacy", "Created");
     }
 
     protected void DataPortal_Fetch(object criteria)
     {
       _id = ((Criteria)criteria).Id;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Legacy", "Fetched");
+      TestResults.Reinitialise();
+      TestResults.Add("Legacy", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Legacy", "Inserted");
+      TestResults.Reinitialise();
+      TestResults.Add("Legacy", "Inserted");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Legacy", "Updated");
+      TestResults.Reinitialise();
+      TestResults.Add("Legacy", "Updated");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Legacy", "Deleted");
+      TestResults.Reinitialise();
+      TestResults.Add("Legacy", "Deleted");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Legacy", "SelfDeleted");
+      TestResults.Reinitialise();
+      TestResults.Add("Legacy", "SelfDeleted");
     }
 
     #endregion

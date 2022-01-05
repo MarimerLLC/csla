@@ -28,7 +28,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void TestNotUndoableField()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
 
             p.NotUndoable = "something";
@@ -48,7 +48,7 @@ namespace Csla.Test.Basic
         public void TestReadOnlyList()
         {
             //ReadOnlyList list = ReadOnlyList.GetReadOnlyList();
-           // Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["ReadOnlyList"]);
+           Assert.AreEqual("Fetched", TestResults.GetResult("ReadOnlyList"));
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace Csla.Test.Basic
 
             NameValueListObj nvList = dataPortal.Fetch();
             // TODO: Fix test
-            //Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["NameValueListObj"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("NameValueListObj"]);
 
             Assert.AreEqual("element_1", nvList[1].Value);
 
@@ -76,7 +76,7 @@ namespace Csla.Test.Basic
         {
             IDataPortal<CommandObject> dataPortal = DataPortalFactory.CreateDataPortal<CommandObject>();
 
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             CommandObject obj = new CommandObject();
             obj = dataPortal.Execute(obj);
             Assert.AreEqual("Executed", obj.AProperty);
@@ -85,13 +85,12 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void CreateGenRoot()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             GenRoot root;
             root = NewGenRoot();
             Assert.IsNotNull(root);
             Assert.AreEqual("<new>", root.Data);
-            // TODO: Fix test
-            //Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["GenRoot"]);
+            Assert.AreEqual("Created", TestResults.GetResult("GenRoot"));
             Assert.AreEqual(true, root.IsNew);
             Assert.AreEqual(false, root.IsDeleted);
             Assert.AreEqual(true, root.IsDirty);
@@ -100,14 +99,14 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void InheritanceUndo()
         {
-          //Csla.ApplicationContext.GlobalContext.Clear();
+          TestResults.Reinitialise();
           GenRoot root;
           root = NewGenRoot();
           root.BeginEdit();
           root.Data = "abc";
           root.CancelEdit();
 
-          //Csla.ApplicationContext.GlobalContext.Clear();
+          TestResults.Reinitialise();
           root = NewGenRoot();
           root.BeginEdit();
           root.Data = "abc";
@@ -117,13 +116,12 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void CreateRoot()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root;
             root = NewRoot();
             Assert.IsNotNull(root);
             Assert.AreEqual("<new>", root.Data);
-            // TODO: Fix test
-            //Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["Root"]);
+            Assert.AreEqual("Created", TestResults.GetResult("Root"));
             Assert.AreEqual(true, root.IsNew);
             Assert.AreEqual(false, root.IsDeleted);
             Assert.AreEqual(true, root.IsDirty);
@@ -132,7 +130,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void AddChild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("1");
             Assert.AreEqual(1, root.Children.Count);
@@ -142,7 +140,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void AddRemoveChild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("1");
             root.Children.Remove(root.Children[0]);
@@ -152,7 +150,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void AddRemoveAddChild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("1");
             root.BeginEdit();
@@ -168,7 +166,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void AddGrandChild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("1");
             Child child = root.Children[0];
@@ -180,7 +178,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void AddRemoveGrandChild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("1");
             Child child = root.Children[0];
@@ -195,7 +193,7 @@ namespace Csla.Test.Basic
         //[TestMethod]
         //public void CloneGraph()
         //{
-        //    //Csla.ApplicationContext.GlobalContext.Clear();
+        //    TestResults.Reinitialise();
         //    Root root = NewRoot();
         //    FormSimulator form = new FormSimulator(root);
         //    SerializableListener listener = new SerializableListener(root);
@@ -210,14 +208,14 @@ namespace Csla.Test.Basic
         //    Assert.AreEqual<int>(1, child.GrandChildren.Count);
         //    Assert.AreEqual<string>("1", child.GrandChildren[0].Data);
 
-        //    Assert.AreEqual<string>("root Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["Deserialized"])));
-        //    Assert.AreEqual<string>("GC Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["GCDeserialized"])));
+        //    Assert.AreEqual<string>("root Deserialized", ((string)(TestResults.GetResult("Deserialized"))));
+        //    Assert.AreEqual<string>("GC Deserialized", ((string)(TestResults.GetResult("GCDeserialized"))));
         //}
 
         [TestMethod]
         public void ClearChildList()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("A");
             root.Children.Add("B");
@@ -230,7 +228,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void NestedAddAcceptchild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.BeginEdit();
             root.Children.Add("A");
@@ -247,7 +245,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void NestedAddDeleteAcceptChild()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.BeginEdit();
             root.Children.Add("A");
@@ -274,13 +272,13 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void BasicEquality()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root r1 = NewRoot();
             r1.Data = "abc";
             Assert.AreEqual(true, r1.Equals(r1), "objects should be equal on instance compare");
             Assert.AreEqual(true, Equals(r1, r1), "objects should be equal on static compare");
 
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root r2 = NewRoot();
             r2.Data = "xyz";
             Assert.AreEqual(false, r1.Equals(r2), "objects should not be equal");
@@ -294,7 +292,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void ChildEquality()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Root root = NewRoot();
             root.Children.Add("abc");
             root.Children.Add("xyz");
@@ -323,7 +321,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void DeletedListTest()
         {
-          //Csla.ApplicationContext.GlobalContext.Clear();
+          TestResults.Reinitialise();
           Root root = NewRoot();
           root.Children.Add("1");
           root.Children.Add("2");
@@ -346,7 +344,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void DeletedListTestWithCancel()
         {
-          //Csla.ApplicationContext.GlobalContext.Clear();
+          TestResults.Reinitialise();
           Root root = NewRoot();
           root.Children.Add("1");
           root.Children.Add("2");
@@ -398,7 +396,7 @@ namespace Csla.Test.Basic
 
         [TestCleanup]
         public void ClearContextsAfterEachTest() {
-          ////Csla.ApplicationContext.GlobalContext.Clear();
+          TestResults.Reinitialise();
         }
 
         private Root NewRoot()

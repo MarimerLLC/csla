@@ -71,7 +71,7 @@ namespace Csla.Test.AppContext
             Criteria crit = criteria as Criteria;
             this._Data = crit.Data;
 
-            //Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
+            //TestResults.Add("Root", "Created");
         }
         /// <summary>
         /// Handles DataPortal fetch calls
@@ -83,7 +83,7 @@ namespace Csla.Test.AppContext
             this._Data = crit.Data;
 
             this.MarkOld();
-            //Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
+            //TestResults.Add("Root", "Fetched");
         }
         /// <summary>
         /// 
@@ -93,16 +93,16 @@ namespace Csla.Test.AppContext
         {
             if (this.IsDeleted)
             {
-                //Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
+                //TestResults.Add("Root", "Deleted");
                 this.MarkNew();
             }
             else
             {
                 //if (this.IsNew)
                 //{
-                //    Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
+                //    TestResults.Add("Root", "Inserted");
                 //}
-                //else Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
+                //else TestResults.Add("Root", "Updated");
                 
                 this.MarkOld();
             }
@@ -114,7 +114,7 @@ namespace Csla.Test.AppContext
         [Delete]
 		protected void DataPortal_Delete(object criteria)
         {
-            //Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
+            //TestResults.Add("Root", "Deleted");
         }
     }
 }

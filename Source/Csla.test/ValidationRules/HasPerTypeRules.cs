@@ -33,7 +33,7 @@ namespace Csla.Test.ValidationRules
     public void OnlySharedRules()
     {
       UnitTestContext context = GetContext();
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasOnlyPerTypeRules root = new HasOnlyPerTypeRules();
@@ -54,7 +54,7 @@ namespace Csla.Test.ValidationRules
     public void StringRequired()
     {
       UnitTestContext context = GetContext();
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasPerTypeRules root = new HasPerTypeRules();
@@ -82,7 +82,7 @@ namespace Csla.Test.ValidationRules
     public void NoDoubleInit()
     {
       UnitTestContext context = GetContext();
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasPerTypeRules2 root = new HasPerTypeRules2();
@@ -101,7 +101,7 @@ namespace Csla.Test.ValidationRules
     public void LoadRuleSets()
     {
       UnitTestContext context = GetContext();
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
       var root = new HasRuleSetRules();
 

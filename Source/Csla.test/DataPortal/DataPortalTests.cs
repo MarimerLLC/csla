@@ -133,33 +133,35 @@ namespace Csla.Test.DataPortal
         public void StronglyTypedDataPortalMethods()
         {
             //test strongly-typed DataPortal_Fetch method
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456);
 
-            Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["StronglyTypedDP"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("StronglyTypedDP"));
             Assert.AreEqual("fetched existing data", root.Data);
             Assert.AreEqual(456, root.Id); 
        
             //test strongly-typed DataPortal_Create method
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP();
 
-            Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["StronglyTypedDP"]);
+            Assert.AreEqual("Created", TestResults.GetResult("StronglyTypedDP"));
             Assert.AreEqual("new default data", root2.Data);
             Assert.AreEqual(56, root2.Id);
 
             //test strongly-typed DataPortal_Delete method
             Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567);
-            Assert.AreEqual(567, Csla.ApplicationContext.GlobalContext["StronglyTypedDP_Criteria"]);
+            Assert.AreEqual(567, TestResults.GetResult("StronglyTypedDP_Criteria"));
         }
 
         [TestMethod]
         
         public void EncapsulatedIsBusyFails()
         {
+          IDataPortal<EncapsulatedBusy> dataPortal = DataPortalFactory.CreateDataPortal<EncapsulatedBusy>();
+
           try
           {
-            var obj = Csla.DataPortal.Fetch<EncapsulatedBusy>();
+            var obj = dataPortal.Fetch();
           }
           catch (DataPortalException ex)
           {
@@ -173,9 +175,11 @@ namespace Csla.Test.DataPortal
         
         public void FactoryIsBusyFails()
         {
+          IDataPortal<FactoryBusy> dataPortal = DataPortalFactory.CreateDataPortal<FactoryBusy>();
+
           try
           {
-            var obj = Csla.DataPortal.Fetch<FactoryBusy>();
+            var obj = dataPortal.Fetch();
           }
           catch (DataPortalException ex)
           {
@@ -197,17 +201,17 @@ namespace Csla.Test.DataPortal
 
             //try
             //{
-            //    ApplicationContext.GlobalContext.Clear();
+            //    TestResults.Reinitialise();
             //    DpRoot root = dataPortal.Create(new DpRoot.Criteria());
 
             //    root.Data = "saved";
-            //    //Csla.ApplicationContext.GlobalContext.Clear();
+            //    TestResults.Reinitialise();
             //    root = root.Save();
 
-            //    Assert.IsTrue((bool)ApplicationContext.GlobalContext["dpinvoke"], "DataPortalInvoke not called");
-            //    Assert.IsTrue((bool)ApplicationContext.GlobalContext["dpinvokecomplete"], "DataPortalInvokeComplete not called");
-            //    Assert.IsTrue((bool)ApplicationContext.GlobalContext["serverinvoke"], "Server DataPortalInvoke not called");
-            //    Assert.IsTrue((bool)ApplicationContext.GlobalContext["serverinvokecomplete"], "Server DataPortalInvokeComplete not called");
+            //    Assert.IsTrue((bool)TestResults.GetResult("dpinvoke"], "DataPortalInvoke not called");
+            //    Assert.IsTrue((bool)TestResults.GetResult("dpinvokecomplete"], "DataPortalInvokeComplete not called");
+            //    Assert.IsTrue((bool)TestResults.GetResult("serverinvoke"], "Server DataPortalInvoke not called");
+            //    Assert.IsTrue((bool)TestResults.GetResult("serverinvokecomplete"], "Server DataPortalInvokeComplete not called");
             //}
             //finally
             //{
@@ -216,120 +220,119 @@ namespace Csla.Test.DataPortal
             //}
         }
 
-        // TODO: Fix tests
-        //[TestMethod]
-        
-        //public void DataPortalBrokerTests()
-        //{
-        //  ApplicationContext.GlobalContext.Clear();
-        //  Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer();
+    [TestMethod]
 
-        //  try
-        //  {
-        //    var single = Csla.Test.DataPortalTest.Single.NewObject();
+    public void DataPortalBrokerTests()
+    {
+      TestResults.Reinitialise();
+      Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer();
 
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Created");
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Create Called");
+      try
+      {
+        var single = Csla.Test.DataPortalTest.Single.NewObject();
 
-        //    ApplicationContext.GlobalContext.Clear();
+        Assert.AreEqual(TestResults.GetResult("Single"], "Created");
+        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Create Called");
 
-        //    single.Save();
+        TestResults.Reinitialise();
 
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Inserted");
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Update Called");
+        single.Save();
 
-        //    ApplicationContext.GlobalContext.Clear();
+        Assert.AreEqual(TestResults.GetResult("Single"], "Inserted");
+        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Update Called");
 
-        //    single = Csla.Test.DataPortalTest.Single.GetObject(1);
+        TestResults.Reinitialise();
 
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Fetched");
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Fetch Called");
+        single = Csla.Test.DataPortalTest.Single.GetObject(1);
 
-        //    ApplicationContext.GlobalContext.Clear();
+        Assert.AreEqual(TestResults.GetResult("Single"], "Fetched");
+        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Fetch Called");
 
-        //    single.Save();
+        TestResults.Reinitialise();
 
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Updated");
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Update Called");
+        single.Save();
 
-        //    ApplicationContext.GlobalContext.Clear();
+        Assert.AreEqual(TestResults.GetResult("Single"], "Updated");
+        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Update Called");
 
-        //    Csla.Test.DataPortalTest.Single.DeleteObject(1);
+        TestResults.Reinitialise();
 
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Deleted");
-        //    Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Delete Called");
-        //  }
-        //  finally
-        //  {
-        //    ApplicationContext.GlobalContext.Clear();
-        //    Csla.Server.DataPortalBroker.DataPortalServer = null;
-        //  }
-        //}
+        Csla.Test.DataPortalTest.Single.DeleteObject(1);
 
-        //[TestMethod]
-        
-        //public void CallDataPortalOverrides()
-        //{
-        //    //Csla.ApplicationContext.GlobalContext.Clear();
-        //    ParentEntity parent = ParentEntity.NewParentEntity();
-        //    parent.Data = "something";
-
-        //    Assert.AreEqual(false, parent.IsDeleted);
-        //    Assert.AreEqual(true, parent.IsValid);
-        //    Assert.AreEqual(true, parent.IsNew);
-        //    Assert.AreEqual(true, parent.IsDirty);
-        //    Assert.AreEqual(true, parent.IsSavable);
-
-        //    parent = parent.Save();
-
-        //    Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
-
-        //    Assert.AreEqual(false, parent.IsDeleted);
-        //    Assert.AreEqual(true, parent.IsValid);
-        //    Assert.AreEqual(false, parent.IsNew);
-        //    Assert.AreEqual(false, parent.IsDirty);
-        //    Assert.AreEqual(false, parent.IsSavable);
-
-        //    parent.Data = "something new";
-
-        //    Assert.AreEqual(false, parent.IsDeleted);
-        //    Assert.AreEqual(true, parent.IsValid);
-        //    Assert.AreEqual(false, parent.IsNew);
-        //    Assert.AreEqual(true, parent.IsDirty);
-        //    Assert.AreEqual(true, parent.IsSavable);
-
-        //    parent = parent.Save();
-
-        //    Assert.AreEqual("Updated", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
-
-        //    parent.Delete();
-        //    Assert.AreEqual(true, parent.IsDeleted);
-        //    parent = parent.Save();
-        //    Assert.AreEqual("Deleted Self", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
-
-        //    ParentEntity.DeleteParentEntity(33);
-        //    Assert.AreEqual("Deleted", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
-        //    Assert.AreEqual(false, parent.IsDeleted);
-        //    Assert.AreEqual(true, parent.IsValid);
-        //    Assert.AreEqual(true, parent.IsNew);
-        //    Assert.AreEqual(true, parent.IsDirty);
-        //    Assert.AreEqual(true, parent.IsSavable);
-
-        //    ParentEntity.GetParentEntity(33);
-        //    Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
-        //}
-
-        //private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)
-        //{
-        //    ApplicationContext.GlobalContext["dpinvoke"] = true;
-        //}
-
-        //private void ClientPortal_DataPortalInvokeComplete(DataPortalEventArgs obj)
-        //{
-        //    ApplicationContext.GlobalContext["dpinvokecomplete"] = true;
-        //}
-        
+        Assert.AreEqual(TestResults.GetResult("Single"), "Deleted");
+        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Delete Called");
+      }
+      finally
+      {
+        TestResults.Reinitialise();
+        Csla.Server.DataPortalBroker.DataPortalServer = null;
+      }
     }
+
+    [TestMethod]
+
+    public void CallDataPortalOverrides()
+    {
+      TestResults.Reinitialise();
+      ParentEntity parent = ParentEntity.NewParentEntity();
+      parent.Data = "something";
+
+      Assert.AreEqual(false, parent.IsDeleted);
+      Assert.AreEqual(true, parent.IsValid);
+      Assert.AreEqual(true, parent.IsNew);
+      Assert.AreEqual(true, parent.IsDirty);
+      Assert.AreEqual(true, parent.IsSavable);
+
+      parent = parent.Save();
+
+      Assert.AreEqual("Inserted", TestResults.GetResult("ParentEntity"));
+
+      Assert.AreEqual(false, parent.IsDeleted);
+      Assert.AreEqual(true, parent.IsValid);
+      Assert.AreEqual(false, parent.IsNew);
+      Assert.AreEqual(false, parent.IsDirty);
+      Assert.AreEqual(false, parent.IsSavable);
+
+      parent.Data = "something new";
+
+      Assert.AreEqual(false, parent.IsDeleted);
+      Assert.AreEqual(true, parent.IsValid);
+      Assert.AreEqual(false, parent.IsNew);
+      Assert.AreEqual(true, parent.IsDirty);
+      Assert.AreEqual(true, parent.IsSavable);
+
+      parent = parent.Save();
+
+      Assert.AreEqual("Updated", TestResults.GetResult("ParentEntity"));
+
+      parent.Delete();
+      Assert.AreEqual(true, parent.IsDeleted);
+      parent = parent.Save();
+      Assert.AreEqual("Deleted Self", TestResults.GetResult("ParentEntity"));
+
+      ParentEntity.DeleteParentEntity(33);
+      Assert.AreEqual("Deleted", TestResults.GetResult("ParentEntity"));
+      Assert.AreEqual(false, parent.IsDeleted);
+      Assert.AreEqual(true, parent.IsValid);
+      Assert.AreEqual(true, parent.IsNew);
+      Assert.AreEqual(true, parent.IsDirty);
+      Assert.AreEqual(true, parent.IsSavable);
+
+      ParentEntity.GetParentEntity(33);
+      Assert.AreEqual("Fetched", TestResults.GetResult("ParentEntity"));
+    }
+
+    private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)
+    {
+      TestResults.Add("dpinvoke", "true");
+    }
+
+    private void ClientPortal_DataPortalInvokeComplete(DataPortalEventArgs obj)
+    {
+      TestResults.Add("dpinvokecomplete", "true");
+    }
+
+  }
 
   [Serializable]
   public class EncapsulatedBusy : BusinessBase<EncapsulatedBusy>

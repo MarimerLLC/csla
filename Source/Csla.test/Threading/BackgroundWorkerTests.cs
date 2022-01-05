@@ -100,8 +100,7 @@
 //          var UIThreadid = Thread.CurrentThread.ManagedThreadId;
 
 //          Csla.ApplicationContext.User = new ClaimsPrincipal();
-//          Csla.ApplicationContext.ClientContext["BWTEST"] = "TEST";
-//          Csla.ApplicationContext.GlobalContext["BWTEST"] = "TEST";
+//          TestResults.Add("BWTEST", "TEST");
 
 
 //          Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("FR");
@@ -117,8 +116,7 @@
 
 //            // make sure that user, clientcontext, globalcontext, currentCulture and currentUIculture are sent 
 //            context.Assert.IsTrue(Csla.ApplicationContext.User is ClaimsPrincipal);
-//            context.Assert.AreEqual("TEST", Csla.ApplicationContext.GlobalContext["BWTEST"]);
-//            context.Assert.AreEqual("TEST", Csla.ApplicationContext.ClientContext["BWTEST"]);
+//            context.Assert.AreEqual("TEST", TestResults.GetResult("BWTEST"));
 //            context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentCulture.Name.ToUpper());
 //            context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentUICulture.Name.ToUpper());
 //          };

@@ -210,22 +210,12 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-
-    internal static Customer GetCustomer(int customerID)
-    {
-      Customer newCustomer = new Customer();
-      newCustomer.DataPortal_Fetch(customerID);
-      newCustomer.MarkAsChild();
-      newCustomer.MarkOld();
-      return newCustomer;
-    }
-
-    protected void DataPortal_Fetch(int criteria)
+    protected void DataPortal_Fetch(int criteria, [Inject] IChildDataPortal<CustomerContactList> childDataPortal)
     {
       LoadProperty(IdProperty, criteria);
       LoadProperty(NameProperty, "Customer Name for Id: " + criteria.ToString());
       LoadProperty(DateCreatedProperty, new SmartDate(new DateTime(2000 + criteria, 1, 1)));
-      LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(criteria));
+      LoadProperty(ContactsProperty, childDataPortal.FetchChild(criteria));
       LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
       LoadProperty(TypeProperty, CustomeType.Inactive);
 
@@ -233,13 +223,13 @@ namespace cslalighttest.CslaDataProvider
         throw new ApplicationException("Test for Silverlight DataSource Error!");
     }
 
-    protected void DataPortal_Create(int criteria)
+    protected void DataPortal_Create(int criteria, [Inject] IChildDataPortal<CustomerContactList> childDataPortal)
     {
       LoadProperty(IdProperty, criteria);
       LoadProperty(NameProperty, "New Customer for Id: " + criteria.ToString());
       LoadProperty(DateCreatedProperty, new SmartDate(DateTime.Today));
       LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
-      LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
+      LoadProperty(ContactsProperty, childDataPortal.FetchChild(0));
     }
 
     [DeleteSelf]

@@ -13,6 +13,7 @@ using Csla;
 using Csla.Security;
 using Csla.Core;
 using Csla.Serialization;
+using Csla.Test;
 
 namespace cslalighttest.CslaDataProvider
 {
@@ -41,9 +42,7 @@ namespace cslalighttest.CslaDataProvider
     {
       if (this.Items[0].ThrowException)
         throw new Exception();
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext["CustomerWithErrorUpdate"] = "Updating CustomerWithError List";
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("CustomerWithErrorUpdate", "Updating CustomerWithError List");
     }
 
   }

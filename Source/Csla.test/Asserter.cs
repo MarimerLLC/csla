@@ -52,6 +52,11 @@ namespace UnitDriven
       Assert.AreEqual(expected, actual);
     }
 
+    public void AreEqual<T>(T expected, T actual, string message)
+    {
+      Assert.AreEqual(expected, actual, message);
+    }
+
     public void Try(Action p)
     {
       p.Invoke();

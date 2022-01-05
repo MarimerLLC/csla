@@ -53,7 +53,7 @@ namespace Csla.Test.Basic
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
-            //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
+            //TestResults.Add("GenRoot", "Created");
         }
 
         protected void DataPortal_Fetch(object criteria)
@@ -61,7 +61,7 @@ namespace Csla.Test.Basic
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
             MarkOld();
-            //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
+            //TestResults.Add("GenRoot", "Fetched");
         }
 
         [Update]
@@ -70,7 +70,7 @@ namespace Csla.Test.Basic
             if (IsDeleted)
             {
                 //we would delete here
-                //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
+                //TestResults.Add("GenRoot", "Deleted");
                 MarkNew();
             }
             else
@@ -78,12 +78,12 @@ namespace Csla.Test.Basic
                 if (IsNew)
                 {
                     //we would insert here
-                    //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Inserted");
+                    //TestResults.Add("GenRoot", "Inserted");
                 }
                 else 
                 {
                     //we would update here
-                    //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Updated");
+                    //TestResults.Add("GenRoot", "Updated");
                 }
                 MarkOld();
             }
@@ -93,7 +93,7 @@ namespace Csla.Test.Basic
 		protected void DataPortal_Delete(object Criteria)
         {
             //we would delete here
-            //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
+            //TestResults.Add("GenRoot", "Deleted");
         }
     }
 }

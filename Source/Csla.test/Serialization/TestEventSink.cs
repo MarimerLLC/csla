@@ -24,16 +24,14 @@ namespace Csla.Test.Serialization
         private void PrivateOnIsDirtyChanged(object sender, 
             System.ComponentModel.PropertyChangedEventArgs e)
         {
-            Csla.ApplicationContext.GlobalContext["Test.PrivateOnIsDirtyChanged"] = 
-                "Test.PrivateOnIsDirtyChanged";
+            TestResults.Add("Test.PrivateOnIsDirtyChanged", "Test.PrivateOnIsDirtyChanged");
             Console.WriteLine("PrivateOnIsDirtyChanged event handler output assigned with reg method");
         }
 
         public void OnIsDirtyChanged(object sender,
             System.ComponentModel.PropertyChangedEventArgs e)
         {
-            Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"] = 
-                "Test.OnIsDirtyChanged";
+            TestResults.Add("Test.OnIsDirtyChanged", "Test.OnIsDirtyChanged");
         }
     }
 }

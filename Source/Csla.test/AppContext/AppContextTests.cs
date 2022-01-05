@@ -33,15 +33,15 @@ namespace Csla.Test.AppContext
     public void SimpleTest()
     {
       // TODO: Fix test
-      //ApplicationContext.Clear();
+      TestResults.Reinitialise();
       //ApplicationContext.ClientContext["v1"] = "client";
-      //ApplicationContext.GlobalContext["v2"] = "client";
+      //TestResults.Add("v2"] = "client";
 
       //SimpleRoot root = SimpleRoot.GetSimpleRoot("data");
 
       //Assert.AreEqual("client", ApplicationContext.ClientContext["v1"], "client context didn't roundtrip");
-      //Assert.AreEqual("client", ApplicationContext.GlobalContext["v2"], "global context didn't roundtrip");
-      //Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Root"], "global context missing server value");
+      //Assert.AreEqual("client", TestResults.GetResult("v2"], "global context didn't roundtrip");
+      //Assert.AreEqual("Fetched", TestResults.GetResult("Root"], "global context missing server value");
     }
 
     #endregion
@@ -73,7 +73,7 @@ namespace Csla.Test.AppContext
         ThreadList.Add(t);
       }
 
-      //ApplicationContext.Clear();
+      TestResults.Reinitialise();
       Exception ex = null;
       try
       {
@@ -117,7 +117,7 @@ namespace Csla.Test.AppContext
     public void ClientContext()
     {
       // TODO: Fix test
-      ////Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
       //Csla.ApplicationContext.ClientContext.Add("clientcontext", "client context data");
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
@@ -128,53 +128,19 @@ namespace Csla.Test.AppContext
       //Assert.AreEqual(true, root.IsDirty, "Object should be dirty");
       //Assert.AreEqual(true, root.IsValid, "Object should be valid");
 
-      ////Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       //root = root.Save();
 
       //Assert.IsNotNull(root, "Root object should not be null");
-      //Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"], "Object not inserted");
+      //Assert.AreEqual("Inserted", TestResults.GetResult("Root"], "Object not inserted");
       //Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
       //Assert.AreEqual(false, root.IsNew, "Object should not be new");
       //Assert.AreEqual(false, root.IsDeleted, "Object should not be deleted");
       //Assert.AreEqual(false, root.IsDirty, "Object should not be dirty");
 
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Client context data lost");
-      //Assert.AreEqual("client context data", Csla.ApplicationContext.GlobalContext["clientcontext"], "Global context data lost");
-      //Assert.AreEqual("new global value", Csla.ApplicationContext.GlobalContext["globalcontext"], "New global value lost");
-    }
-    #endregion
-
-    #region GlobalContext
-    /// <summary>
-    /// Test the Global Context
-    /// </summary>
-    [TestMethod()]
-    public void GlobalContext()
-    {
-      // TODO: Fix test
-      ////Csla.ApplicationContext.GlobalContext.Clear();
-
-      //ApplicationContext.GlobalContext["globalcontext"] = "global context data";
-      //Assert.AreEqual("global context data", ApplicationContext.GlobalContext["globalcontext"], "first");
-
-      //Csla.Test.Basic.Root root = Csla.Test.Basic.Root.NewRoot();
-      //root.Data = "saved";
-      //Assert.AreEqual("saved", root.Data);
-      //Assert.AreEqual(true, root.IsDirty);
-      //Assert.AreEqual(true, root.IsValid);
-
-      ////Csla.ApplicationContext.GlobalContext.Clear();
-      //root = root.Save();
-
-      //Assert.IsNotNull(root);
-      ////Assert.IsNotNull(Thread.GetData(Thread.GetNamedDataSlot("Csla.GlobalContext")));
-      //Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
-      //Assert.AreEqual("saved", root.Data);
-      //Assert.AreEqual(false, root.IsNew);
-      //Assert.AreEqual(false, root.IsDeleted);
-      //Assert.AreEqual(false, root.IsDirty);
-
-      //Assert.AreEqual("new global value", ApplicationContext.GlobalContext["globalcontext"], "Second");
+      //Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"], "Global context data lost");
+      //Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"], "New global value lost");
     }
     #endregion
 
@@ -193,35 +159,35 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void DataPortalEvents()
     {
-      // TODO: Fix test
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.Clear();
-      //ApplicationContext.GlobalContext["global"] = "global";
+      IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
 
-      //Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-      //Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
+      TestResults.Reinitialise();
+      TestResults.Add("global", "global");
 
-      //Csla.Test.Basic.Root root = Csla.Test.Basic.Root.GetRoot("testing");
+      dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+      dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
-      //Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-      //Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
+      Basic.Root root = dataPortal.Fetch(new Basic.Root.Criteria("testing"));
 
-      ////Populated in the handlers below
-      //Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvoke"], "Client invoke incorrect");
-      //Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"], "Client invoke complete");
+      dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+      dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
-      ////populated in the Root Dataportal handlers.
-      //Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["dpinvoke"], "Server invoke incorrect");
-      //Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["dpinvokecomplete"], "Server invoke compelte incorrect");
+      //Populated in the handlers below
+      Assert.AreEqual("global", TestResults.GetResult("ClientInvoke"), "Client invoke incorrect");
+      Assert.AreEqual("global", TestResults.GetResult("ClientInvokeComplete"), "Client invoke complete");
+
+      //populated in the Root Dataportal handlers.
+      Assert.AreEqual("global", TestResults.GetResult("dpinvoke"), "Server invoke incorrect");
+      Assert.AreEqual("global", TestResults.GetResult("dpinvokecomplete"), "Server invoke compelte incorrect");
     }
 
     private void OnDataPortaInvoke(DataPortalEventArgs e)
     {
-      //Csla.ApplicationContext.GlobalContext["ClientInvoke"] = ApplicationContext.GlobalContext["global"];
+      TestResults.Add("ClientInvoke", TestResults.GetResult("global"));
     }
     private void OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      //Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"] = ApplicationContext.GlobalContext["global"];
+      TestResults.Add("ClientInvokeComplete", TestResults.GetResult("global"));
     }
     #endregion
 
@@ -234,8 +200,7 @@ namespace Csla.Test.AppContext
     {
       IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
       
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.Clear();
+      TestResults.Reinitialise();
 
       ExceptionRoot root;
       try
@@ -250,8 +215,7 @@ namespace Csla.Test.AppContext
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
       }
 
-      // TODO: Fix test
-      //Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
+      Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
     }
     #endregion
 
@@ -261,7 +225,7 @@ namespace Csla.Test.AppContext
     {
       IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
       
-      //ApplicationContext.GlobalContext.Clear();
+      //TestResults.Reinitialise();
       ExceptionRoot root = null;
       try
       {
@@ -279,8 +243,7 @@ namespace Csla.Test.AppContext
         Assert.Fail("Unexpected exception: " + ex.ToString());
       }
 
-      // TODO: Fix test
-      //Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
+      Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
     }
     #endregion
 
@@ -292,7 +255,7 @@ namespace Csla.Test.AppContext
       
       try
       {
-        //ApplicationContext.GlobalContext.Clear();
+        TestResults.Reinitialise();
         //ApplicationContext.DataPortalReturnObjectOnException = true;
 
         ExceptionRoot root;
@@ -323,8 +286,7 @@ namespace Csla.Test.AppContext
         }
 
         Assert.AreEqual("boom", root.Data, "Business object not returned");
-        // TODO: Fix test
-        //Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
+        Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
       }
       finally
       {
@@ -339,8 +301,7 @@ namespace Csla.Test.AppContext
     public void FailDeleteContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.Clear();
+      TestResults.Reinitialise();
 
       ExceptionRoot root = null;
       try
@@ -355,23 +316,29 @@ namespace Csla.Test.AppContext
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Delete failed"), "Exception message incorrect");
       }
       Assert.IsNull(root, "Business object returned");
-      // TODO: Fix test
-      //Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
+      Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
     }
     #endregion
 
     [TestCleanup]
     public void ClearContextsAfterEachTest()
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.Clear();
+      //TestResults.Reinitialise();
+      TestResults.Reinitialise();
     }
 
     [TestInitialize]
     public void SetScopedSp()
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.Clear();
+      //TestResults.Reinitialise();
+      TestResults.Reinitialise();
+    }
+
+    private Basic.Root GetRoot(string data)
+    {
+      IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+
+      return dataPortal.Fetch(new Basic.Root.Criteria(data));
     }
 
   }

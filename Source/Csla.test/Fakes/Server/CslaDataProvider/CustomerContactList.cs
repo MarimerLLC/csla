@@ -27,17 +27,12 @@ namespace cslalighttest.CslaDataProvider
 
     private CustomerContactList() { }
 
-    internal static CustomerContactList GetCustomerContactList(int customerID)
-    {
-      return DataPortal.FetchChild<CustomerContactList>(customerID);
-    }
-
-    private void Child_Fetch(int customerID)
+    private void Child_Fetch(int customerID, [Inject] IChildDataPortal<CustomerContact> childDataPortal)
     {
       this.RaiseListChangedEvents = false;
       for (int i = 1; i <= customerID; i++)
       {
-        Add(CustomerContact.GetCustomerContact(customerID, i, "First Name # " + i.ToString(), "Last Name # " + i.ToString(), new DateTime(1980 + i, 1, 1)));
+        Add(childDataPortal.FetchChild(customerID, i, "First Name # " + i.ToString(), "Last Name # " + i.ToString(), new DateTime(1980 + i, 1, 1)));
       }
       this.RaiseListChangedEvents = true;
     }

@@ -83,7 +83,7 @@ namespace Csla.Test.ObjectFactory
 
     public void Delete(string criteria)
     {
-      //Csla.ApplicationContext.GlobalContext["ObjectFactory"] = "Delete";
+      TestResults.Add("ObjectFactory", "Delete");
     }
 
     private TransactionalTypes _transactionalType;

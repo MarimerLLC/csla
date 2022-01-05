@@ -36,7 +36,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void RemoveNewItem()
     {
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       _isListSaved = false;
       ERlist list = new ERlist();
       ERitem item = list.AddNew();
@@ -53,7 +53,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void RemoveOldItem()
     {
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       _isListSaved = false;
 
       ERlist list = new ERlist();

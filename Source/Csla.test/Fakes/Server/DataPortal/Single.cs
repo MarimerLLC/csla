@@ -56,10 +56,8 @@ namespace Csla.Test.DataPortalTest
     private void DoCreate(int id)
     {
       Id = id;
-#pragma warning disable CS0618 // Type or member is obsolete
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Single", "Created");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("Single", "Created");
       MethodCalled = "Created";
       if (id == 9999)
         throw new Exception("Bad data");
@@ -78,10 +76,8 @@ namespace Csla.Test.DataPortalTest
     private void DoFetch(int id)
     {
       Id = id;
-#pragma warning disable CS0618 // Type or member is obsolete
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Single", "Fetched");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("Single", "Fetched");
       MethodCalled = "Fetched";
       if (id == 9999)
         throw new Exception("Bad data");
@@ -103,30 +99,24 @@ namespace Csla.Test.DataPortalTest
     {
       var insertOrUpdate = isUpdate ? "Updated" : "Inserted";
 
-#pragma warning disable CS0618 // Type or member is obsolete
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Single", insertOrUpdate);
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("Single", insertOrUpdate);
       MethodCalled = insertOrUpdate;
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      ////Csla.ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Single", "SelfDeleted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("Single", "SelfDeleted");
       MethodCalled = "SelfDeleted";
     }
 
     [Delete]
 		private void DataPortal_Delete(int id)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      ////Csla.ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Single", "Deleted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("Single", "Deleted");
       MethodCalled = "Deleted";
     }
   }

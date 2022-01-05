@@ -18,8 +18,8 @@ namespace Csla.Test.Basic
 
         protected void DataPortal_Fetch()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("NameValueListObj", "Fetched");
+            TestResults.Reinitialise();
+            TestResults.Add("NameValueListObj", "Fetched");
 
             this.IsReadOnly = false;
             for (int i = 0; i < 10; i++)

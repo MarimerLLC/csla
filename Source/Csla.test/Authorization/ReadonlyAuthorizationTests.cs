@@ -43,14 +43,14 @@ namespace Csla.Test.Authorization
     //[TestMethod()]
     //public void TestAllowInstanceAndShared()
     //{
-    //  ApplicationContext.GlobalContext.Clear();
+    //  TestResults.Reinitialise();
     //  Csla.ApplicationContext.User = GetPrincipal("Admin");
     //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();
     //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
     //  Assert.AreEqual("John", person.FirstName,"Should be able read first name");
     //  Assert.AreEqual("Doe", person.LastName, "Should be able read first name");
     //  Csla.ApplicationContext.User = new ClaimsPrincipal();
-    //  ApplicationContext.GlobalContext.Clear();
+    //  TestResults.Reinitialise();
     //  Csla.ApplicationContext.User = GetPrincipal("Admin");
     //  ReadOnlyPerson clone = person.Clone();
     //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
@@ -64,7 +64,7 @@ namespace Csla.Test.Authorization
     //public void TestDenyInstanceAndShared()
     //{
       
-    //  ApplicationContext.GlobalContext.Clear();
+    //  TestResults.Reinitialise();
     //  Csla.ApplicationContext.User = GetPrincipal("Admin");
     //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();
     //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
@@ -78,7 +78,7 @@ namespace Csla.Test.Authorization
     //public void TestDenyInstanceAndSharedForClone()
     //{
 
-    //  ApplicationContext.GlobalContext.Clear();
+    //  TestResults.Reinitialise();
     //  Csla.ApplicationContext.User = GetPrincipal("Admin");
     //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson().Clone();
     //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));

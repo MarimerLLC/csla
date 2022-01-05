@@ -92,7 +92,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       //we would update here
     }
@@ -104,19 +104,19 @@ namespace Csla.Test.DataPortal
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
     }
 
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["serverinvoke"] = true;
+      TestResults.Add("serverinvoke", "true");
     }
 
     protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["serverinvokecomplete"] = true;
+      TestResults.Add("serverinvokecomplete", "true");
     }
 
     #endregion

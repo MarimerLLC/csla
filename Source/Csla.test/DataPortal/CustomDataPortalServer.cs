@@ -12,7 +12,7 @@ namespace Csla.Test.DataPortal
       var dp = new DataPortalSelector();
       var result = await dp.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Create Called";
+      TestResults.Add("CustomDataPortalServer", "Create Called");
 
       return result;
     }
@@ -22,7 +22,7 @@ namespace Csla.Test.DataPortal
       var dp = new DataPortalSelector();
       var result = await dp.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Fetch Called";
+      TestResults.Add("CustomDataPortalServer", "Fetch Called");
 
       return result;
     }
@@ -32,7 +32,7 @@ namespace Csla.Test.DataPortal
       var dp = new DataPortalSelector();
       var result = await dp.Update(obj, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Update Called";
+      TestResults.Add("CustomDataPortalServer", "Update Called");
 
       return result;
     }
@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortal
       var dp = new DataPortalSelector();
       var result = await dp.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Delete Called";
+      TestResults.Add("CustomDataPortalServer", "Delete Called");
 
       return result;
     }

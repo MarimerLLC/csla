@@ -65,43 +65,43 @@ namespace Csla.Test.DataPortalTest
 		protected void DataPortal_Create()
     {
       _id = 0;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Split", "Created");
+      TestResults.Reinitialise();
+      TestResults.Add("Split", "Created");
     }
 
     private void DataPortal_Fetch(Criteria criteria)
     {
       _id = criteria.Id;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Split", "Fetched");
+      TestResults.Reinitialise();
+      TestResults.Add("Split", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Split", "Inserted");
+      TestResults.Reinitialise();
+      TestResults.Add("Split", "Inserted");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Split", "Updated");
+      TestResults.Reinitialise();
+      TestResults.Add("Split", "Updated");
     }
 
     [Delete]
 		private void DataPortal_Delete(Criteria criteria)
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Split", "Deleted");
+      TestResults.Reinitialise();
+      TestResults.Add("Split", "Deleted");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("Split", "SelfDeleted");
+      TestResults.Reinitialise();
+      TestResults.Add("Split", "SelfDeleted");
     }
 
     #endregion

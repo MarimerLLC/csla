@@ -13,6 +13,7 @@ using Csla;
 using Csla.Security;
 using Csla.Core;
 using Csla.Serialization;
+using Csla.Test;
 
 namespace cslalighttest.CslaDataProvider
 {
@@ -21,12 +22,12 @@ namespace cslalighttest.CslaDataProvider
   {
     private CustomerList() { }
 
-    protected void DataPortal_Fetch()
+    protected void DataPortal_Fetch([Inject] IDataPortal<Customer> customerDataPortal)
     {
       int maxCustomer = (new Random()).Next(3, 10);
       for (int i = 1; i < maxCustomer; i++)
       {
-        Add(Customer.GetCustomer(i));
+        Add(customerDataPortal.Fetch(i));
       }
     }
 
@@ -41,9 +42,7 @@ namespace cslalighttest.CslaDataProvider
     {
       if (this.Items[0].ThrowException)
         throw new Exception();
-#pragma warning disable CS0618 // Type or member is obsolete
-      Csla.ApplicationContext.GlobalContext["CustomerUpdate"] = "Updating Customer List";
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Add("CustomerUpdate", "Updating Customer List");
     }
   }
 }

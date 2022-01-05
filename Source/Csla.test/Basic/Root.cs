@@ -72,7 +72,7 @@ namespace Csla.Test.Basic
       using (BypassPropertyChecks)
         Data = crit._data;
       CreatedDomain = AppDomain.CurrentDomain.Id;
-      Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
+      TestResults.Add("Root", "Created");
     }
 
     protected void DataPortal_Fetch(object criteria)
@@ -81,56 +81,55 @@ namespace Csla.Test.Basic
       using (BypassPropertyChecks)
         Data = crit._data;
       MarkOld();
-      Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
+      TestResults.Add("Root", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      Csla.ApplicationContext.GlobalContext.Add("clientcontext",
-          ApplicationContext.ClientContext["clientcontext"]);
+      TestResults.Add("clientcontext",
+          ApplicationContext.ClientContext["clientcontext"].ToString());
 
-      Csla.ApplicationContext.GlobalContext.Add("globalcontext",
-      ApplicationContext.GlobalContext["globalcontext"]);
+      TestResults.Overwrite("globalcontext",
+        TestResults.GetResult("globalcontext"));
 
-      ApplicationContext.GlobalContext.Remove("globalcontext");
-      ApplicationContext.GlobalContext["globalcontext"] = "new global value";
+      TestResults.Overwrite("globalcontext", "new global value");
 
-      Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
+      TestResults.Add("Root", "Inserted");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
       //we would update here
-      Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
+      TestResults.Add("Root", "Updated");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
+      TestResults.Add("Root", "Deleted self");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
-      Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
+      TestResults.Add("Root", "Deleted");
     }
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
-      Csla.ApplicationContext.GlobalContext.Add("Deserialized", "root Deserialized");
+      TestResults.Add("Deserialized", "root Deserialized");
     }
 
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["dpinvoke"] = ApplicationContext.GlobalContext["global"];
+      TestResults.Add("dpinvoke", TestResults.GetResult("global"));
     }
 
     protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["dpinvokecomplete"] = ApplicationContext.GlobalContext["global"];
+      TestResults.Add("dpinvokecomplete", TestResults.GetResult("global"));
     }
 
   }

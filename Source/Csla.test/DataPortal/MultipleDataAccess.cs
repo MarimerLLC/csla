@@ -68,15 +68,15 @@ namespace Csla.Test.DataPortal
     [Fetch]
     private void Fetch(List<int?> values)
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Method", "Fetch(List<int?> values)");
+      //TestResults.Reinitialise();
+      //TestResults.Add("Method", "Fetch(List<int?> values)");
     }
 
     [Fetch]
     private void Fetch(List<DateTime?> values)
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Method", "Fetch(List<DateTime?> values)");
+      //TestResults.Reinitialise();
+      //TestResults.Add("Method", "Fetch(List<DateTime?> values)");
     }
   }
 }

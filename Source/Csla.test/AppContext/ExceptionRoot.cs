@@ -57,8 +57,8 @@ namespace Csla.Test.AppContext
       this._Data = crit.Data;
       this.MarkOld();
 
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
-      //Csla.ApplicationContext.GlobalContext["create"] = "create";
+      TestResults.Add("Root", "Fetched");
+      TestResults.Add("create", "create");
       throw new ApplicationException("Fail fetch");
     }
 
@@ -67,8 +67,8 @@ namespace Csla.Test.AppContext
       Criteria crit = criteria as Criteria;
       this._Data = crit.Data;
 
-      //Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
-      //Csla.ApplicationContext.GlobalContext["create"] = "create";
+      TestResults.Add("Root", "Created");
+      TestResults.Add("create", "create");
       throw new ApplicationException("Fail create");
     }
 
@@ -76,32 +76,32 @@ namespace Csla.Test.AppContext
     protected void DataPortal_Insert()
     {
       //we would insert here
-      //Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
-      //Csla.ApplicationContext.GlobalContext["create"] = "create";
+      TestResults.Add("Root", "Inserted");
+      TestResults.Add("create", "create");
       throw new ApplicationException("Fail insert");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
-      //Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
-      //Csla.ApplicationContext.GlobalContext["create"] = "create";
+      TestResults.Add("Root", "Updated");
+      TestResults.Add("create", "create");
       throw new ApplicationException("Fail update");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
-      //Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
-      //Csla.ApplicationContext.GlobalContext["create"] = "create";
+      TestResults.Add("Root", "Deleted");
+      TestResults.Add("create", "create");
       throw new ApplicationException("Fail delete");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      //Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
-      //Csla.ApplicationContext.GlobalContext["create"] = "create";
+      TestResults.Add("Root", "Deleted");
+      TestResults.Add("create", "create");
       throw new ApplicationException("Fail delete self");
     }
   }

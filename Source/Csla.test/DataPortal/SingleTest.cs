@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,14 +29,14 @@ namespace Csla.Test.DataPortalTest
         [TestMethod]
         public void TestDpCreate()
         {
-            Single test = Single.NewObject();
-            Assert.AreEqual("Created", ApplicationContext.GlobalContext["Single"]);
+            Single test = NewSingle();
+            Assert.AreEqual("Created", TestResults.GetResult("Single"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
-            Single test = Single.GetObject(5);
-            Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Single"]);
+            Single test = GetSingle(5);
+            Assert.AreEqual("Fetched", TestResults.GetResult("Single"));
         }
         [TestMethod]
         public void TestDpInsert()
@@ -43,11 +44,11 @@ namespace Csla.Test.DataPortalTest
             Single test = null;
             try
             {
-                test = Single.NewObject();
+                test = NewSingle();
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["Single"]);
+            Assert.AreEqual("Inserted", TestResults.GetResult("Single"));
         }
         [TestMethod]
         public void TestDpUpdate()
@@ -55,19 +56,19 @@ namespace Csla.Test.DataPortalTest
             Single test = null;
             try
             {
-                test = Single.NewObject();
+                test = NewSingle();
                 test = test.Save();
                 test.Id = 5;
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Updated", ApplicationContext.GlobalContext["Single"]);
+            Assert.AreEqual("Updated", TestResults.GetResult("Single"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
-            Single.DeleteObject(5);
-            Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["Single"]);
+            DeleteSingle(5);
+            Assert.AreEqual("Deleted", TestResults.GetResult("Single"));
         }
         [TestMethod]
         public void TestDpDeleteSelf()
@@ -75,14 +76,34 @@ namespace Csla.Test.DataPortalTest
             Single test = null;
             try
             {
-                test = Single.NewObject();
+                test = NewSingle();
                 test = test.Save();
                 test.Delete();
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["Single"]);
+            Assert.AreEqual("SelfDeleted", TestResults.GetResult("Single"));
         }
 
-    }
+        private Single NewSingle()
+        {
+            IDataPortal<Single> dataPortal = DataPortalFactory.CreateDataPortal<Single>();
+
+            return dataPortal.Create();
+        }
+
+        private Single GetSingle(int id)
+        {
+            IDataPortal<Single> dataPortal = DataPortalFactory.CreateDataPortal<Single>();
+
+            return dataPortal.Fetch(id);
+        }
+
+        private void DeleteSingle(int id)
+        {
+            IDataPortal<Single> dataPortal = DataPortalFactory.CreateDataPortal<Single>();
+
+            dataPortal.Delete(id);
+        }
+  }
 }

@@ -58,10 +58,8 @@ namespace Csla.Test.DataPortalTest
     private void DoCreate(int id)
     {
       Id = id;
-#pragma warning disable CS0618 // Type or member is obsolete
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("PrimitiveCriteriaSingle", "Created");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("PrimitiveCriteriaSingle", "Created");
       MethodCalled = "Created";
       if (id == 9999)
         throw new Exception("Bad data");
@@ -90,10 +88,8 @@ namespace Csla.Test.DataPortalTest
     private void DoFetch(int id)
     {
       Id = id;
-#pragma warning disable CS0618 // Type or member is obsolete
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("PrimitiveCriteriaSingle", "Fetched");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("PrimitiveCriteriaSingle", "Fetched");
       MethodCalled = "Fetched";
       if (id == 9999)
         throw new Exception("Bad data");
@@ -113,10 +109,8 @@ namespace Csla.Test.DataPortalTest
     {
       var insertOrUpdate = isUpdate ? "Updated" : "Inserted";
 
-#pragma warning disable CS0618 // Type or member is obsolete
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("PrimitiveCriteriaSingle", insertOrUpdate);
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("PrimitiveCriteriaSingle", insertOrUpdate);
       MethodCalled = insertOrUpdate;
     }
 
@@ -128,10 +122,8 @@ namespace Csla.Test.DataPortalTest
     [Delete]
 		private void DataPortal_Delete(int id)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-      ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("PrimitiveCriteriaSingle", "Deleted");
-#pragma warning restore CS0618 // Type or member is obsolete
+      TestResults.Reinitialise();
+      TestResults.Add("PrimitiveCriteriaSingle", "Deleted");
       MethodCalled = "Deleted+" + id.ToString();
     }
 

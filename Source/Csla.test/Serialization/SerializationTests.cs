@@ -82,15 +82,15 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestWithoutSerializableHandler()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       SerializationRoot root = new SerializationRoot();
       nonSerializableEventHandler handler = new nonSerializableEventHandler();
       handler.Reg(root);
       root.Data = "something";
-      context.Assert.AreEqual(1, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
+      context.Assert.AreEqual("1", TestResults.GetResult("PropertyChangedFiredCount"));
       root.Data = "something else";
-      context.Assert.AreEqual(2, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
+      context.Assert.AreEqual("2", TestResults.GetResult("PropertyChangedFiredCount"));
 
       //serialize an object with eventhandling objects that are nonserializable
       root = root.Clone();
@@ -100,22 +100,22 @@ namespace Csla.Test.Serialization
       //when the clone method performs serialization, the nonserializable 
       //object containing an event handler for the propertyChanged event
       //is lost
-      context.Assert.AreEqual(2, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
+      context.Assert.AreEqual("2", TestResults.GetResult("PropertyChangedFiredCount"));
       context.Assert.Success();
     }
     
     [TestMethod()]
     public void Clone()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       SerializationRoot root = new SerializationRoot();
 
       root = (SerializationRoot)root.Clone();
 
       context.Assert.AreEqual(
-        true, 
-        Csla.ApplicationContext.GlobalContext["Deserialized"],
+        "true", 
+        TestResults.GetResult("Deserialized"),
         "Deserialized not called");
       context.Assert.Success();
     }
@@ -123,7 +123,7 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void SerializableEvents()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
 
       SerializationRoot root = new SerializationRoot();
@@ -149,54 +149,54 @@ namespace Csla.Test.Serialization
 
       context.Assert.AreEqual(
         "OnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["OnIsDirtyChanged"],
+        TestResults.GetResult("OnIsDirtyChanged"),
         "Didn't call local handler");
 
       context.Assert.AreEqual(
         "StaticOnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["StaticOnIsDirtyChanged"],
+        TestResults.GetResult("StaticOnIsDirtyChanged"),
         "Didn't call static handler");
 
       Assert.AreEqual(
         "PublicStaticOnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["PublicStaticOnIsDirtyChanged"],
+        TestResults.GetResult("PublicStaticOnIsDirtyChanged"),
         "Didn't call public static handler");
 
       Assert.AreEqual(
         "Test.OnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"],
+        TestResults.GetResult("Test.OnIsDirtyChanged"),
         "Didn't call serializable handler");
 
       Assert.AreEqual(
         "Test.PrivateOnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["Test.PrivateOnIsDirtyChanged"],
+        TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
         "Didn't call serializable private handler");
 
       root = (SerializationRoot)root.Clone();
 
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
       root.Data = "xyz";
 
       context.Assert.AreEqual("xyz", root.Data, "Data value not set");
 
-      context.Assert.AreEqual(null, Csla.ApplicationContext.GlobalContext["OnIsDirtyChanged"],
+      context.Assert.AreEqual(null, TestResults.GetResult("OnIsDirtyChanged"),
           "Called local handler after clone");
 
-      context.Assert.AreEqual(null, Csla.ApplicationContext.GlobalContext["StaticOnIsDirtyChanged"],
+      context.Assert.AreEqual(null, TestResults.GetResult("StaticOnIsDirtyChanged"),
           "Called static handler after clone");
 
       context.Assert.AreEqual(
         "PublicStaticOnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["PublicStaticOnIsDirtyChanged"],
+        TestResults.GetResult("PublicStaticOnIsDirtyChanged"),
         "Didn't call public static handler after clone");
 
       context.Assert.AreEqual(
         "Test.OnIsDirtyChanged",
-        Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"],
+        TestResults.GetResult("Test.OnIsDirtyChanged"),
         "Didn't call serializable handler after clone");
 
-      context.Assert.AreEqual(null, Csla.ApplicationContext.GlobalContext["Test.PrivateOnIsDirtyChanged"],
+      context.Assert.AreEqual(null, TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
           "Called serializable private handler after clone");
 
       context.Assert.Success();
@@ -451,20 +451,20 @@ namespace Csla.Test.Serialization
     private void OnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
     {
       // TODO: Fix test
-      //Csla.ApplicationContext.GlobalContext["OnIsDirtyChanged"] = "OnIsDirtyChanged";
+      //TestResults.GetResult("OnIsDirtyChanged"] = "OnIsDirtyChanged";
     }
 
     private static void StaticOnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
     {
       // TODO: Fix test
-      //Csla.ApplicationContext.GlobalContext["StaticOnIsDirtyChanged"] =
+      //TestResults.GetResult("StaticOnIsDirtyChanged"] =
       //    "StaticOnIsDirtyChanged";
     }
 
     public static void PublicStaticOnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
     {
       // TODO: Fix test
-      //Csla.ApplicationContext.GlobalContext["PublicStaticOnIsDirtyChanged"] =
+      //TestResults.GetResult("PublicStaticOnIsDirtyChanged"] =
       //    "PublicStaticOnIsDirtyChanged";
     }
 

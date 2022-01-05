@@ -29,7 +29,7 @@ namespace Csla.Test.Nullable
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableProperty()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             NullableObject nullRoot = NullableObject.NewNullableObject();
             nullRoot.NullableInteger = null;
             nullRoot.Name = null;
@@ -41,7 +41,7 @@ namespace Csla.Test.Nullable
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableField()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             NullableObject nullRoot = NullableObject.NewNullableObject();
             nullRoot._nullableIntMember = null;
             Assert.AreEqual(null, nullRoot._nullableIntMember);
@@ -51,7 +51,7 @@ namespace Csla.Test.Nullable
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableAfterClone()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             NullableObject nullRoot = NullableObject.NewNullableObject();
             nullRoot._nullableIntMember = null;
             nullRoot.NullableInteger = null;
@@ -64,7 +64,7 @@ namespace Csla.Test.Nullable
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void TestNullableAfterEditCycle()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
             NullableObject nullRoot = NullableObject.NewNullableObject();
             nullRoot.NullableInteger = null;
             nullRoot._nullableIntMember = null;

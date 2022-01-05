@@ -37,7 +37,7 @@ namespace Csla.Test.ObjectFactory
       Csla.ApplicationContext.DataPortalProxy = "Local";
       Csla.DataPortal.ResetProxyType();
       Csla.Server.FactoryDataPortal.FactoryLoader = null;
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
     }
 
     [TestMethod]
@@ -198,57 +198,17 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
 
-#if DEBUG
-    [TestMethod]
-    [Ignore]
-    public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
-    {
-      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(6);
-      var root = new Root();
-      root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
-      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-      Assert.AreEqual("ReadCommitted", root.IsolationLevel, "Transactional isolation should match");
-
-      Assert.AreEqual("Update", root.Data, "Data should match");
-      Assert.IsFalse(root.IsNew, "Should not be new");
-      Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    }
-
-    [TestMethod]
-    [Ignore]
-    public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
-    {
-      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(7);
-      var root = new Root();
-      root.Data = "abc";
-      
-      root = Csla.DataPortal.Update<Root>(root);
-      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-      Assert.AreEqual("RepeatableRead", root.IsolationLevel, "Transactional isolation should match");
-
-      Assert.AreEqual("Update", root.Data, "Data should match");
-      Assert.IsFalse(root.IsNew, "Should not be new");
-      Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    }
-#endif
-
     [TestMethod]
     public void Delete()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
 
       Csla.DataPortal.Delete<Root>("abc");
 
-      Assert.AreEqual("Delete", Csla.ApplicationContext.GlobalContext["ObjectFactory"].ToString(), "Data should match");
+      Assert.AreEqual("Delete", TestResults.GetResult("ObjectFactory"), "Data should match");
     }
 
     [TestMethod]
@@ -265,7 +225,7 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void DataPortalExecute_OnCommandObjectWithLocalProxy_CallsFactoryExecute()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       Csla.Server.FactoryDataPortal.FactoryLoader = null;
       var test = CommandObject.Execute();
       // return value is set in Execute method in CommandObjectFactory
@@ -278,7 +238,7 @@ namespace Csla.Test.ObjectFactory
     {
       try
       {
-        //Csla.ApplicationContext.GlobalContext.Clear();
+        TestResults.Reinitialise();
         Csla.Server.FactoryDataPortal.FactoryLoader = null;
         var test = CommandObjectMissingFactoryMethod.Execute();
       }

@@ -24,7 +24,7 @@ namespace Csla.Test.Serialization
         {
             _count += 1;
             Console.WriteLine(_count.ToString());
-            Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"] = _count;
+            TestResults.Add("PropertyChangedFiredCount", _count.ToString());
         }
     }
 }

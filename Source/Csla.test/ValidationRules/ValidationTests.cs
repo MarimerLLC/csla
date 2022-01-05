@@ -37,7 +37,7 @@ namespace Csla.Test.ValidationRules
     {
       //works now because we are calling ValidationRules.CheckRules() in DataPortal_Create
       UnitTestContext context = GetContext();
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
       context.Assert.AreEqual("<new>", root.Name);
       context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
@@ -68,7 +68,7 @@ namespace Csla.Test.ValidationRules
     public async Task TestValidationRulesWithPublicProperty()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>(new HasRulesManager2.Criteria("<new>"));
       Assert.AreEqual("<new>", root.Name);
       Assert.AreEqual(true, root.IsValid, "should be valid on create");
@@ -98,7 +98,7 @@ namespace Csla.Test.ValidationRules
     public async Task TestValidationAfterEditCycle()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
       context.Assert.AreEqual("<new>", root.Name);
@@ -179,7 +179,7 @@ namespace Csla.Test.ValidationRules
       //this test uses HasRulesManager2, which assigns criteria._name to its public
       //property in DataPortal_Create.  If it used HasRulesManager, it would fail
       //the first assert, but pass the others
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>(new HasRulesManager2.Criteria("test"));
       Assert.AreEqual(true, root.IsValid);
       root.BeginEdit();
@@ -198,7 +198,7 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakRequiredRule()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
       root.Name = "";
       Assert.AreEqual(false, root.IsValid, "should not be valid");
@@ -210,7 +210,7 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakLengthRule()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
       root.Name = "12345678901";
@@ -230,7 +230,7 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakLengthRuleAndClone()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
       root.Name = "12345678901";
@@ -255,7 +255,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod()]
     public void RegExSSN()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
 
       HasRegEx root = new HasRegEx();
@@ -292,7 +292,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public async Task VerifyUndoableStateStackOnClone()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       using (UnitTestContext context = GetContext())
       {
         var root = await Csla.DataPortal.CreateAsync<HasRulesManager2>();
@@ -314,7 +314,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod()]
     public async Task ListChangedEventTrigger()
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await Csla.DataPortal.CreateAsync<HasChildren>();
       context.Assert.AreEqual(false, root.IsValid);

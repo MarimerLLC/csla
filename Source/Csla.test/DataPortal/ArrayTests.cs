@@ -12,26 +12,29 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class ArrayTests
   {
-    // TODO: Fix tests
-    //[TestMethod]
-    //public void Test_DataPortal_Array()
-    //{
-    //  _ = ArrayDataPortalClass.Get(new int[] { 1, 2, 3 });
-    //  Assert.AreEqual("Fetch(int[] values)", ApplicationContext.GlobalContext["Method"]);
-    //
-    //  _ = ArrayDataPortalClass.Get(new string[] { "a", "b", "c" });
-    //  Assert.AreEqual("Fetch(string[] values)", ApplicationContext.GlobalContext["Method"]);
-    //}
-    //
-    //[TestMethod]
-    //public void Test_DataPortal_Params()
-    //{
-    //  _ = ArrayDataPortalClass.GetParams(1, 2, 3);
-    //  Assert.AreEqual("Fetch(int[] values)", ApplicationContext.GlobalContext["Method"]);
-    //
-    //  _ = ArrayDataPortalClass.GetParams("a", "b", "c");
-    //  Assert.AreEqual("Fetch(string[] values)", ApplicationContext.GlobalContext["Method"]);
-    //}
+    [TestMethod]
+    public void Test_DataPortal_Array()
+    {
+      IDataPortal<ArrayDataPortalClass> dataPortal = DataPortalFactory.CreateDataPortal<ArrayDataPortalClass>();
+
+      _ = dataPortal.Fetch(new int[] { 1, 2, 3 });
+      Assert.AreEqual("Fetch(int[] values)", TestResults.GetResult("Method"));
+
+      _ = dataPortal.Fetch(new string[] { "a", "b", "c" });
+      Assert.AreEqual("Fetch(string[] values)", TestResults.GetResult("Method"));
+    }
+
+    [TestMethod]
+    public void Test_DataPortal_Params()
+    {
+      IDataPortal<ArrayDataPortalClass> dataPortal = DataPortalFactory.CreateDataPortal<ArrayDataPortalClass>();
+
+      _ = dataPortal.Fetch(1, 2, 3);
+      Assert.AreEqual("Fetch(int[] values)", TestResults.GetResult("Method"));
+
+      _ = dataPortal.Fetch("a", "b", "c");
+      Assert.AreEqual("Fetch(string[] values)", TestResults.GetResult("Method"));
+    }
 
     [TestMethod]
     [ExpectedException(typeof(AmbiguousMatchException))]
@@ -77,12 +80,10 @@ namespace Csla.Test.DataPortal
       IChildDataPortal<ArrayDataPortalClass> childDataPortal = DataPortalFactory.CreateChildDataPortal<ArrayDataPortalClass>();
 
       _ = childDataPortal.FetchChild(new int[] { 1, 2, 3 });
-      // TODO: Fix tests
-      //Assert.AreEqual("FetchChild(int[] values)", ApplicationContext.GlobalContext["Method"]);
+      Assert.AreEqual("FetchChild(int[] values)", TestResults.GetResult("Method"));
 
       _ = childDataPortal.FetchChild(new string[] { "a", "b", "c" });
-      // TODO: Fix tests
-      //Assert.AreEqual("FetchChild(string[] values)", ApplicationContext.GlobalContext["Method"]);
+      Assert.AreEqual("FetchChild(string[] values)", TestResults.GetResult("Method"));
     }
 
     [TestMethod]
@@ -91,12 +92,10 @@ namespace Csla.Test.DataPortal
       IChildDataPortal<ArrayDataPortalClass> childDataPortal = DataPortalFactory.CreateChildDataPortal<ArrayDataPortalClass>();
 
       _ = childDataPortal.FetchChild(1, 2, 3);
-      // TODO: Fix tests
-      //Assert.AreEqual("FetchChild(int[] values)", ApplicationContext.GlobalContext["Method"]);
+      Assert.AreEqual("FetchChild(int[] values)", TestResults.GetResult("Method"));
 
       _ = childDataPortal.FetchChild("a", "b", "c");
-      // TODO: Fix tests
-      //Assert.AreEqual("FetchChild(string[] values)", ApplicationContext.GlobalContext["Method"]);
+      Assert.AreEqual("FetchChild(string[] values)", TestResults.GetResult("Method"));
     }
 
   }
@@ -109,29 +108,29 @@ namespace Csla.Test.DataPortal
     [Fetch]
     private void Fetch(int[] values)
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Method", "Fetch(int[] values)");
+      //TestResults.Reinitialise();
+      //TestResults.Add("Method", "Fetch(int[] values)");
     }
 
     [Fetch]
     private void Fetch(string[] values)
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Method", "Fetch(string[] values)");
+      //TestResults.Reinitialise();
+      //TestResults.Add("Method", "Fetch(string[] values)");
     }
 
     [FetchChild]
     private void FetchChild(int[] values)
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Method", "FetchChild(int[] values)");
+      //TestResults.Reinitialise();
+      //TestResults.Add("Method", "FetchChild(int[] values)");
     }
 
     [FetchChild]
     private void FetchChild(string[] values)
     {
-      //ApplicationContext.GlobalContext.Clear();
-      //ApplicationContext.GlobalContext.Add("Method", "FetchChild(string[] values)");
+      //TestResults.Reinitialise();
+      //TestResults.Add("Method", "FetchChild(string[] values)");
     }
   }
 

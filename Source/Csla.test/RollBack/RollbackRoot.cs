@@ -83,7 +83,7 @@ namespace Csla.Test.RollBack
     {
       Criteria crit = (Criteria)(criteria);
       _data = crit._data;
-      Csla.ApplicationContext.GlobalContext["Root"] = "Created";
+      TestResults.Add("Root", "Created");
     }
 
     protected void DataPortal_Fetch(object criteria)
@@ -91,20 +91,20 @@ namespace Csla.Test.RollBack
       Criteria crit = (Criteria)(criteria);
       _data = crit._data;
       MarkOld();
-      Csla.ApplicationContext.GlobalContext["Root"] = "Fetched";
+      TestResults.Add("Root", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
+      TestResults.Add("Root", "Inserted");
     }
 
     [Update]
     protected void DataPortal_Update()
     {
       //we would update here
-      Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
+      TestResults.Add("Root", "Updated");
 
       if (_fail)
         throw new Exception("fail Update");
@@ -113,20 +113,20 @@ namespace Csla.Test.RollBack
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      Csla.ApplicationContext.GlobalContext["Root"] = "Deleted self";
+      TestResults.Add("Root", "Deleted self");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
-      Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
+      TestResults.Add("Root", "Deleted");
     }
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       base.OnDeserialized(context);
-      Csla.ApplicationContext.GlobalContext["Deserialized"] = "root Deserialized";
+      TestResults.Add("Deserialized", "root Deserialized");
     }
   }
 }

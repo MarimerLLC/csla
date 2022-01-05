@@ -33,7 +33,7 @@ namespace Csla.Test.DPException
         
         public void CheckInnerExceptionsOnSave()
         {
-            Csla.ApplicationContext.Clear();
+            TestResults.Reinitialise();
 
             Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
             root.FirstName = "Billy";
@@ -72,14 +72,14 @@ namespace Csla.Test.DPException
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
+            Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
         }
 #endif
 
         [TestMethod()]
         public void CheckInnerExceptionsOnDelete()
         {
-            Csla.ApplicationContext.Clear();
+            TestResults.Reinitialise();
 
             string baseException = string.Empty;
             string baseInnerException = string.Empty;
@@ -104,13 +104,13 @@ namespace Csla.Test.DPException
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
+            Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
         }
 
         [TestMethod()]
         public void CheckInnerExceptionsOnFetch()
         {
-            //Csla.ApplicationContext.GlobalContext.Clear();
+            TestResults.Reinitialise();
 
             string baseException = string.Empty;
             string baseInnerException = string.Empty;
@@ -137,7 +137,7 @@ namespace Csla.Test.DPException
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
+            Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
         }
     }
 }

@@ -79,8 +79,8 @@ namespace Csla.Test.DataPortalTest
     {
       using (BypassPropertyChecks)
         Id = 0;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Created0");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Created0");
       BusinessRules.CheckRules();
     }
 
@@ -89,8 +89,8 @@ namespace Csla.Test.DataPortalTest
     {
       using (BypassPropertyChecks)
         Id = 0;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Created");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Created");
       BusinessRules.CheckRules();
     }
 
@@ -99,8 +99,8 @@ namespace Csla.Test.DataPortalTest
     {
       using (BypassPropertyChecks)
         Id = 0;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Created1");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Created1");
       BusinessRules.CheckRules();
     }
 
@@ -108,27 +108,27 @@ namespace Csla.Test.DataPortalTest
     {
       using (BypassPropertyChecks)
         Id = criteria.Id;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Fetched");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Fetched");
     }
     private void DataPortal_Fetch(OtherCriteria criteria)
     {
       using (BypassPropertyChecks)
         Id = criteria.Id;
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Fetched1");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Fetched1");
     }
     [Delete]
 		private void DataPortal_Delete(Criteria criteria)
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Deleted");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Deleted");
     }
     [Delete]
 		private void DataPortal_Delete(OtherCriteria criteria)
     {
-      //Csla.ApplicationContext.GlobalContext.Clear();
-      ApplicationContext.GlobalContext.Add("SingleOverload", "Deleted1");
+      TestResults.Reinitialise();
+      TestResults.Add("SingleOverload", "Deleted1");
     }
     #endregion
   }

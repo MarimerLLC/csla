@@ -86,7 +86,7 @@ namespace Csla.Test.Nullable
             Criteria crit = (Criteria)(criteria);
             _name = crit._name;
             //Name = crit._name;
-            Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Created");
+            TestResults.Add("NullableObject", "Created");
         }
 
         protected void DataPortal_Fetch(object criteria)
@@ -94,7 +94,7 @@ namespace Csla.Test.Nullable
             Criteria crit = (Criteria)(criteria);
             _name = crit._name;
             MarkOld();
-            Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Fetched");
+            TestResults.Add("NullableObject", "Fetched");
         }
 
         [Update]
@@ -103,7 +103,7 @@ namespace Csla.Test.Nullable
             if (IsDeleted)
             {
                 //we would delete here
-                Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Deleted");
+                TestResults.Add("NullableObject", "Deleted");
                 MarkNew();
             }
             else
@@ -111,12 +111,12 @@ namespace Csla.Test.Nullable
                 if (this.IsNew)
                 {
                     //we would insert here
-                    Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Inserted");
+                    TestResults.Add("NullableObject", "Inserted");
                 }
                 else
                 {
                     //we would update here
-                    Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Updated");
+                    TestResults.Add("NullableObject", "Updated");
                 }
                 MarkOld();
             }
@@ -126,7 +126,7 @@ namespace Csla.Test.Nullable
 		protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
-            Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Deleted");
+            TestResults.Add("NullableObject", "Deleted");
         }
 
 

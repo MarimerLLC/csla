@@ -57,7 +57,7 @@
 //    [TestMethod()]
 //    public void TestAuthCloneRules()
 //    {
-//      ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 
 //      Csla.ApplicationContext.User = GetPrincipal("Admin");
 
@@ -99,7 +99,7 @@
 //      //Do they work under cloning as well?
 //      DataPortal.DpRoot NewRoot = root.Clone();
 
-//      ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 
 //      //Is it denying read properly?
 //      Assert.AreEqual("[DenyReadOnProperty] Can't read property", NewRoot.DenyReadOnProperty,
@@ -136,7 +136,7 @@
 //    [TestMethod()]
 //    public void TestAuthBeginEditRules()
 //    {
-//      ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 
 //      Csla.ApplicationContext.User = GetPrincipal("Admin");
 
@@ -252,7 +252,7 @@
 //    [TestMethod()]
 //    public void TestAuthorizationAfterEditCycle()
 //    {
-//      //Csla.ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 //      Csla.Test.Security.PermissionsRoot pr = Csla.Test.Security.PermissionsRoot.NewPermissionsRoot();
 
 //      Csla.ApplicationContext.User = GetPrincipal("Admin");
@@ -273,7 +273,7 @@
 //    [TestMethod]
 //    public void TestUnauthorizedAccessToGet()
 //    {
-//      //Csla.ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 
 //      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
 
@@ -294,7 +294,7 @@
 //    [TestMethod]
 //    public void TestAuthorizedAccess()
 //    {
-//      //Csla.ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 //      Csla.ApplicationContext.User = GetPrincipal("Admin");
 
 //      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
@@ -312,7 +312,7 @@
 //    [TestMethod]
 //    public void TestAuthExecute()
 //    {
-//      //Csla.ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 //      Csla.ApplicationContext.User = GetPrincipal("Admin");
 
 //      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
@@ -330,7 +330,7 @@
 //    [ExpectedException(typeof(Csla.Security.SecurityException))]
 //    public void TestUnAuthExecute()
 //    {
-//      //Csla.ApplicationContext.GlobalContext.Clear();
+//      TestResults.Reinitialise();
 
 //      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
 

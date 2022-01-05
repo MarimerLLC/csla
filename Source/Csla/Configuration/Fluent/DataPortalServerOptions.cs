@@ -39,7 +39,7 @@ namespace Csla.Configuration
     /// that should be executed by the server-side data portal.
     /// injection.
     /// </summary>
-    internal List<Type> InterceptorProviders { get; } = new List<Type>() { typeof(DefaultExceptionInspector) };
+    internal List<Type> InterceptorProviders { get; } = new List<Type>() { typeof(Csla.Server.Interceptors.ServerSide.RevalidatingInterceptor) };
 
     /// <summary>
     /// Adds the type of an IInterceptDataPortal that will
@@ -72,7 +72,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ExceptionInspector.
     /// </summary>
-    internal Type ExceptionInspectorType { get; set; } = typeof(SanitizingExceptionInspector);
+    internal Type ExceptionInspectorType { get; set; } = typeof(DefaultExceptionInspector);
 
     /// <summary>
     /// Sets the type of the ExceptionInspector.

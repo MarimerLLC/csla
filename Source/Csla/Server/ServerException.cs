@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SanitizedServerSideDataPortalException.cs" company="Marimer LLC">
+// <copyright file="ServerException.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -16,7 +16,7 @@ namespace Csla.Server
   /// avoid the transmission of sensitive server-side information
   /// to the client in remote data portal operations
   /// </summary>
-  public class SanitizedServerSideDataPortalException : Exception
+  public class ServerException : Exception
   {
 
     private const string IdentifierKey = "identifier";
@@ -25,7 +25,7 @@ namespace Csla.Server
     /// Constructor.
     /// </summary>
     /// <param name="identifier">The unique identifier for this exception</param>
-    public SanitizedServerSideDataPortalException(string identifier) : base(Properties.Resources.SanitizedServerSideDataPortalException)
+    public ServerException(string identifier) : base(Properties.Resources.SanitizedServerSideDataPortalException)
     {
       Data.Add(IdentifierKey, identifier);
     }

@@ -60,7 +60,7 @@ namespace Csla.Server
       string identifier = Guid.NewGuid().ToString();
       string message = Properties.Resources.ServerSideDataPortalException + Environment.NewLine + ex.ToString();
       _logger.LogError(message, identifier);
-      throw new SanitizedServerSideDataPortalException(identifier);
+      throw new ServerException(identifier);
     }
   }
 }

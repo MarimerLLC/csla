@@ -26,10 +26,10 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(string.Empty, result.Name);
 
       result = dataPortal.Fetch(new List<int?>());
-      //Assert.AreEqual("Fetch(List<int?> values)", ApplicationContext.GlobalContext["Method"]);
+      Assert.AreEqual("Fetch(List<int?> values)", TestResults.GetResult("Method"));
 
       result = dataPortal.Fetch(new List<DateTime?>());
-      //Assert.AreEqual("Fetch(List<DateTime?> values)", ApplicationContext.GlobalContext["Method"]);
+      Assert.AreEqual("Fetch(List<DateTime?> values)", TestResults.GetResult("Method"));
     }
 
     [TestMethod]

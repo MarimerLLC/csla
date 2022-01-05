@@ -46,7 +46,7 @@ namespace Csla.Test.EditableRootList
       list.RemoveAt(0);
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
-      Assert.IsNull(ApplicationContext.GlobalContext["DP"], "Object should not have done a delete");
+      Assert.IsNull(TestResults.GetResult("DP"), "Object should not have done a delete");
       Assert.IsTrue(item.IsNew, "Object should be new after delete");
     }
 
@@ -68,7 +68,7 @@ namespace Csla.Test.EditableRootList
       list.RemoveAt(0);
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
-      Assert.AreEqual("DeleteSelf", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have deleted itself");
+      Assert.AreEqual("DeleteSelf", TestResults.GetResult("DP"), "Object should have deleted itself");
       Assert.IsTrue(_itemIsNew, "Object should be new after delete");
     }
 
@@ -101,7 +101,7 @@ namespace Csla.Test.EditableRootList
       list[0].Data = "test";
       obj.EndEdit();
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
-      Assert.AreEqual("Insert", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been inserted");
+      Assert.AreEqual("Insert", TestResults.GetResult("DP"), "Object should have been inserted");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
 
@@ -126,7 +126,7 @@ namespace Csla.Test.EditableRootList
       Assert.IsTrue(list[0].IsDirty, "Object should be dirty");
       obj.EndEdit();
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
-      Assert.AreEqual("Update", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been updated");
+      Assert.AreEqual("Update", TestResults.GetResult("DP"), "Object should have been updated");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
 

@@ -25,8 +25,8 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
 
-      int value = (int)ApplicationContext.GlobalContext["Shared"];
-      ApplicationContext.GlobalContext["Shared"] = ++value;
+      int value = int.Parse(TestResults.GetResult("Shared"));
+      TestResults.Add("Shared", (++value).ToString());
     }
 
     public void Validate()
@@ -49,8 +49,8 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
 
-      int value = (int)ApplicationContext.GlobalContext["Shared"];
-      ApplicationContext.GlobalContext["Shared"] = ++value;
+      int value = int.Parse(TestResults.GetResult("Shared"));
+      TestResults.Add("Shared", (++value).ToString());
     }
 
     public void Validate()
@@ -74,8 +74,8 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
 
-      int value = (int)ApplicationContext.GlobalContext["Shared"];
-      ApplicationContext.GlobalContext["Shared"] = ++value;
+      int value = int.Parse(TestResults.GetResult("Shared"));
+      TestResults.Add("Shared", (++value).ToString());
     }
 
     public void Validate()

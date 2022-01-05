@@ -29,20 +29,20 @@ namespace Csla.Test.DataPortalTest
         public void TestDpCreate()
         {
             LegacySplit test = LegacySplit.NewObject();
-            Assert.AreEqual("Created", ApplicationContext.GlobalContext["LegacySplit"]);
+            Assert.AreEqual("Created", TestResults.GetResult("LegacySplit"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
             LegacySplit test = LegacySplit.GetObject(5);
-            Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["LegacySplit"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("LegacySplit"));
         }
         [TestMethod]
         public void TestDpInsert()
         {
             LegacySplit test = LegacySplit.NewObject();
             test.Save();
-            Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["LegacySplit"]);
+            Assert.AreEqual("Inserted", TestResults.GetResult("LegacySplit"));
         }
         [TestMethod]
         public void TestDpUpdate()
@@ -56,13 +56,13 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Updated", ApplicationContext.GlobalContext["LegacySplit"]);
+            Assert.AreEqual("Updated", TestResults.GetResult("LegacySplit"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
             LegacySplit.DeleteObject(5);
-            Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["LegacySplit"]);
+            Assert.AreEqual("Deleted", TestResults.GetResult("LegacySplit"));
         }
         [TestMethod]
         public void TestDpDeleteSelf()
@@ -76,7 +76,7 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["LegacySplit"]);
+            Assert.AreEqual("SelfDeleted", TestResults.GetResult("LegacySplit"));
         }
 
     }

@@ -29,25 +29,25 @@ namespace Csla.Test.DataPortalTest
         public void TestDpCreate()
         {
             SplitOverload test = SplitOverload.NewObject();
-            Assert.AreEqual("Created", ApplicationContext.GlobalContext["SplitOverload"]);
+            Assert.AreEqual("Created", TestResults.GetResult("SplitOverload"));
         }
         [TestMethod]
         public void TestDpCreateWithCriteria()
         {
             SplitOverload test = SplitOverload.NewObjectWithCriteria();
-            Assert.AreEqual("Created1", ApplicationContext.GlobalContext["SplitOverload"]);
+            Assert.AreEqual("Created1", TestResults.GetResult("SplitOverload"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
             SplitOverload test = SplitOverload.GetObject(5);
-            Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["SplitOverload"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("SplitOverload"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
             SplitOverload.DeleteObject(5);
-            Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["SplitOverload"]);
+            Assert.AreEqual("Deleted", TestResults.GetResult("SplitOverload"));
         }
 
     }

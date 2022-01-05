@@ -30,15 +30,13 @@ namespace Csla.Test.DataPortalTest
         public void TestDpCreate()
         {
             Legacy test = NewLegacy();
-            // TODO: Fix test
-            //Assert.AreEqual("Created", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Created", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
             Legacy test = GetLegacy(5);
-            // TODO: Fix test
-            //Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpInsert()
@@ -50,8 +48,7 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            // TODO: Fix test
-            //Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Inserted", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpUpdate()
@@ -65,15 +62,13 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            // TODO: Fix test
-            //Assert.AreEqual("Updated", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Updated", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
             DeleteLegacy(5);
-            // TODO: Fix test
-            // Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Deleted", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpDeleteSelf()
@@ -87,8 +82,7 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            // TODO: Fix test
-            // Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("SelfDeleted", TestResults.GetResult("Legacy"));
         }
         
         private Legacy NewLegacy()

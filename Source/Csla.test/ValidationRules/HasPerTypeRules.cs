@@ -34,7 +34,7 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
-      ApplicationContext.GlobalContext["Shared"] = 0;
+      TestResults.Add("Shared", "0");
 
       HasOnlyPerTypeRules root = new HasOnlyPerTypeRules();
       root.Validate();
@@ -55,7 +55,7 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
-      ApplicationContext.GlobalContext["Shared"] = 0;
+      TestResults.Add("Shared", "0");
 
       HasPerTypeRules root = new HasPerTypeRules();
       root.Validate();
@@ -83,13 +83,13 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
-      ApplicationContext.GlobalContext["Shared"] = 0;
+      TestResults.Add("Shared", "0");
 
       HasPerTypeRules2 root = new HasPerTypeRules2();
       root = new HasPerTypeRules2();
 
       int expected = (_initialized ? 0 : 1);
-      int actual = (int)ApplicationContext.GlobalContext["Shared"];
+      int actual = int.Parse(TestResults.GetResult("Shared"));
       context.Assert.AreEqual(expected, actual, "Rules should init just once");
 
       _initialized = true;

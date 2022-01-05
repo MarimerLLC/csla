@@ -44,25 +44,25 @@ namespace Csla.Test.EditableRootList
     [Insert]
     protected void DataPortal_Insert()
     {
-      ApplicationContext.GlobalContext["DP"] = "Insert";
+      TestResults.Add("DP", "Insert");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
-      ApplicationContext.GlobalContext["DP"] = "Update";
+      TestResults.Add("DP", "Update");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      ApplicationContext.GlobalContext["DP"] = "DeleteSelf";
+      TestResults.Add("DP", "DeleteSelf");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
-      ApplicationContext.GlobalContext["DP"] = "Delete";
+      TestResults.Add("DP", "Delete");
     }
   }
 }

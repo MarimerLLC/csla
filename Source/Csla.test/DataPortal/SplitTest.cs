@@ -29,13 +29,13 @@ namespace Csla.Test.DataPortalTest
         public void TestDpCreate()
         {
             Split test = Split.NewObject();
-            Assert.AreEqual("Created", ApplicationContext.GlobalContext["Split"]);
+            Assert.AreEqual("Created", TestResults.GetResult("Split"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
             Split test = Split.GetObject(5);
-            Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Split"]);
+            Assert.AreEqual("Fetched", TestResults.GetResult("Split"));
         }
         [TestMethod]
         public void TestDpInsert()
@@ -47,7 +47,7 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["Split"]);
+            Assert.AreEqual("Inserted", TestResults.GetResult("Split"));
         }
         [TestMethod]
         public void TestDpUpdate()
@@ -61,13 +61,13 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Updated", ApplicationContext.GlobalContext["Split"]);
+            Assert.AreEqual("Updated", TestResults.GetResult("Split"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
             Split.DeleteObject(5);
-            Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["Split"]);
+            Assert.AreEqual("Deleted", TestResults.GetResult("Split"));
         }
         [TestMethod]
         public void TestDpDeleteSelf()
@@ -81,7 +81,7 @@ namespace Csla.Test.DataPortalTest
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["Split"]);
+            Assert.AreEqual("SelfDeleted", TestResults.GetResult("Split"));
         }
 
     }

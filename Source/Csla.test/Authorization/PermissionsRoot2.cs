@@ -69,21 +69,22 @@ namespace Csla.Test.Security
 
     public static void AddObjectAuthorizationRules()
     {
-      // add rules for default ruleset
-      var orgRuleSet = ApplicationContext.RuleSet;
-      try
-      {
-        ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User"));
-        ApplicationContext.RuleSet = "custom1";
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "Admin"));
-        ApplicationContext.RuleSet = "custom2";
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"));
-      }
-      finally
-      {
-        ApplicationContext.RuleSet = orgRuleSet;
-      }
+      // TODO: Fix rulesets
+      //// add rules for default ruleset
+      //var orgRuleSet = ApplicationContext.RuleSet;
+      //try
+      //{
+      //  ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      //  BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User"));
+      //  ApplicationContext.RuleSet = "custom1";
+      //  BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "Admin"));
+      //  ApplicationContext.RuleSet = "custom2";
+      //  BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"));
+      //}
+      //finally
+      //{
+      //  ApplicationContext.RuleSet = orgRuleSet;
+      //}
     }
 
     protected override void AddBusinessRules()
@@ -93,14 +94,6 @@ namespace Csla.Test.Security
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
     }
 
-    #endregion
-
-    #region "factory methods"
-
-    public static PermissionsRoot NewPermissionsRoot()
-    {
-      return Csla.DataPortal.Create<PermissionsRoot>();
-    }
     #endregion
 
     #region "Criteria"

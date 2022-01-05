@@ -32,9 +32,9 @@ namespace Csla.Test.BusinessListBase
     }
 
     [Create]
-		protected void DataPortal_Create()
+	protected void DataPortal_Create([Inject] IChildDataPortal<ChildList> childDataPortal)
     {
-      Children = Csla.DataPortal.CreateChild<ChildList>();
+      Children = childDataPortal.CreateChild();
       BusinessRules.CheckRules();
     }
 
@@ -51,9 +51,9 @@ namespace Csla.Test.BusinessListBase
     }
 
     [DeleteSelf]
-    protected void DataPortal_DeleteSelf()
+    protected void DataPortal_DeleteSelf([Inject] IChildDataPortal<ChildList> childDataPortal)
     {
-      Children = Csla.DataPortal.CreateChild<ChildList>();
+      Children = childDataPortal.CreateChild();
     }
   }
 }

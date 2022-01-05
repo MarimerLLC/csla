@@ -78,26 +78,26 @@ namespace Csla.Test.ChildChanged
 
       }
 
-      private void DataPortal_Fetch()
+      private void DataPortal_Fetch([Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBO> simpleBOListPortal)
       {
         Depth = 0;
         LoadProperty(NameProperty, "Jupiter");
-        LoadProperty(ChildProperty, Csla.DataPortal.FetchChild<SimpleBO>(Depth + 1));
-        LoadProperty(ChildListProperty, Csla.DataPortal.FetchChild<SimpleBOList>(Depth + 1));
+        LoadProperty(ChildProperty, simpleBOPortal.FetchChild(Depth + 1));
+        LoadProperty(ChildListProperty, simpleBOListPortal.FetchChild(Depth + 1));
 
         BusinessRules.CheckRules();
 
       }
 
-      private void Child_Fetch(int depth)
+      private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBO> simpleBOListPortal)
       {
         Depth = depth;
         LoadProperty(NameProperty, "Saturn");
 
         if (depth < 4)
         {
-          LoadProperty(ChildProperty, Csla.DataPortal.FetchChild<SimpleBO>(Depth + 1));
-          LoadProperty(ChildListProperty, Csla.DataPortal.FetchChild<SimpleBOList>(Depth + 1));
+          LoadProperty(ChildProperty, simpleBOPortal.FetchChild(Depth + 1));
+          LoadProperty(ChildListProperty, simpleBOListPortal.FetchChild(Depth + 1));
         }
 
         BusinessRules.CheckRules();

@@ -16,6 +16,7 @@ using Csla.Serialization;
 using UnitDriven;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -41,7 +42,7 @@ namespace Csla.Test.DataAnnotations
     {
       var context = GetContext();
 
-      var dp = new Csla.DataPortal<Single>();
+      var dp = DataPortalFactory.CreateDataPortal<Single>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -59,7 +60,7 @@ namespace Csla.Test.DataAnnotations
     {
       var context = GetContext();
 
-      var dp = new Csla.DataPortal<Multiple>();
+      var dp = DataPortalFactory.CreateDataPortal<Multiple>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -78,7 +79,7 @@ namespace Csla.Test.DataAnnotations
     {
       var context = GetContext();
 
-      var dp = new Csla.DataPortal<Custom>();
+      var dp = DataPortalFactory.CreateDataPortal<Custom>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 

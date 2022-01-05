@@ -18,11 +18,6 @@ namespace Csla.Test.Basic
 
     private static object locker = new object();
 
-    public CommandObject ExecuteServerCode()
-    {
-      return Csla.DataPortal.Execute(this);
-    }
-
     private string _property = "";
     public string AProperty
     {
@@ -33,7 +28,7 @@ namespace Csla.Test.Basic
     }
 
     [Execute]
-		protected void DataPortal_Execute()
+	protected void DataPortal_Execute()
     {
       lock (locker)
       {

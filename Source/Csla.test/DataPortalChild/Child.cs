@@ -15,16 +15,6 @@ namespace Csla.Test.DataPortalChild
   [Serializable]
   public class Child : BusinessBase<Child>
   {
-    public static Child NewChild()
-    {
-      return Csla.DataPortal.CreateChild<Child>();
-    }
-
-    public static Child GetChild()
-    {
-      return Csla.DataPortal.FetchChild<Child>();
-    }
-
     public Child()
     {
       MarkAsChild();

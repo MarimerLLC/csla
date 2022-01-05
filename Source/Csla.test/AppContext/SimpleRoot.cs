@@ -61,33 +61,6 @@ namespace Csla.Test.AppContext
                 this._Data = Data;
             }
         }
-        /// <summary>
-        /// Creates a new SimpleRoot object
-        /// </summary>
-        /// <returns></returns>
-        public static SimpleRoot NewSimpleRoot()
-        {
-            Criteria crit = new Criteria();
-            object result = Csla.DataPortal.Create<SimpleRoot>(crit);
-            return result as SimpleRoot;
-        }
-        /// <summary>
-        /// Gets a SimpleRoot object
-        /// </summary>
-        /// <param name="Data"></param>
-        /// <returns></returns>
-        public static SimpleRoot GetSimpleRoot(string Data)
-        {
-          return Csla.DataPortal.Fetch<SimpleRoot>(new Criteria(Data)) as SimpleRoot;
-        }
-        /// <summary>
-        /// Deletes a SimpleRoot object
-        /// </summary>
-        /// <param name="Data"></param>
-        public static void DeleteSimpleRoot(string Data)
-        {
-          Csla.DataPortal.Delete<SimpleRoot>(new Criteria(Data));
-        }
 
         /// <summary>
         /// Handles new DataPortal Create calls
@@ -98,7 +71,7 @@ namespace Csla.Test.AppContext
             Criteria crit = criteria as Criteria;
             this._Data = crit.Data;
 
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
+            //Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
         }
         /// <summary>
         /// Handles DataPortal fetch calls
@@ -110,7 +83,7 @@ namespace Csla.Test.AppContext
             this._Data = crit.Data;
 
             this.MarkOld();
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
+            //Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
         }
         /// <summary>
         /// 
@@ -120,16 +93,16 @@ namespace Csla.Test.AppContext
         {
             if (this.IsDeleted)
             {
-                Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
+                //Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
                 this.MarkNew();
             }
             else
             {
-                if (this.IsNew)
-                {
-                    Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
-                }
-                else Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
+                //if (this.IsNew)
+                //{
+                //    Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
+                //}
+                //else Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
                 
                 this.MarkOld();
             }
@@ -141,7 +114,7 @@ namespace Csla.Test.AppContext
         [Delete]
 		protected void DataPortal_Delete(object criteria)
         {
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
+            //Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
         }
     }
 }

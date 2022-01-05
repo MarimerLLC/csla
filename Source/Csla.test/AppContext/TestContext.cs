@@ -24,6 +24,8 @@ namespace Csla.Test.AppContext
       get { return true; }
     }
 
+    public ApplicationContext ApplicationContext { get; set; }
+
     public IPrincipal GetUser()
     {
       IPrincipal result = Thread.CurrentPrincipal;
@@ -52,14 +54,14 @@ namespace Csla.Test.AppContext
       _myContext[_localContextName] = localContext;
     }
 
-    public ContextDictionary GetClientContext()
+    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (_myContext[_clientContextName] == null)
-        SetClientContext(new ContextDictionary());
+        SetClientContext(new ContextDictionary(), executionLocation);
       return (ContextDictionary) _myContext[_clientContextName];
     }
 
-    public void SetClientContext(ContextDictionary clientContext)
+    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _myContext[_clientContextName] = clientContext;
     }
@@ -110,7 +112,7 @@ namespace Csla.Test.AppContext
     /// <param name="scope">IServiceProvider instance</param>
     public void SetServiceProvider(IServiceProvider scope)
     {
-      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+      ApplicationContext.LocalContext["__sps"] = scope;
     }
   }
 }

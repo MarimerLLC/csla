@@ -15,11 +15,6 @@ namespace Csla.Test.DataPortalChild
   [Serializable]
   public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
-    public static ChildList GetList()
-    {
-      return Csla.DataPortal.FetchChild<ChildList>();
-    }
-
     public ChildList()
     {
       MarkAsChild();

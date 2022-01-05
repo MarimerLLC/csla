@@ -84,14 +84,6 @@ namespace Csla.Test.Security
 
     #endregion
 
-    #region "factory methods"
-
-    public static PermissionsRoot NewPermissionsRoot()
-    {
-      return Csla.DataPortal.Create<PermissionsRoot>();
-    }
-    #endregion
-
     #region "Criteria"
 
     [Serializable()]

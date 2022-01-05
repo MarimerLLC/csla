@@ -26,11 +26,11 @@ namespace Csla.Test.AppContext
       {
         lock (this)
         {
-          if (Csla.ApplicationContext.ClientContext[this._Name] == null ||
-              Csla.ApplicationContext.GlobalContext[this._Name] == null)
-          {
-            return true;
-          }
+          //if (Csla.ApplicationContext.ClientContext[this._Name] == null ||
+          //    Csla.ApplicationContext.GlobalContext[this._Name] == null)
+          //{
+          //  return true;
+          //}
           return false;
         }
       }
@@ -50,8 +50,8 @@ namespace Csla.Test.AppContext
     {
       lock (this)
       {
-        Csla.ApplicationContext.GlobalContext.Add(this._Name, this._Name);
-        Csla.ApplicationContext.ClientContext.Add(this._Name, this._Name);
+        //Csla.ApplicationContext.GlobalContext.Add(this._Name, this._Name);
+        //Csla.ApplicationContext.ClientContext.Add(this._Name, this._Name);
       }
       while (_run)
       {

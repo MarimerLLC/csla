@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Csla.Rules;
-using Csla.Testing.Business.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules

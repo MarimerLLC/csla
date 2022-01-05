@@ -34,7 +34,7 @@ namespace Csla.Test.Basic
         }
 
         [Serializable()]
-        private class Criteria : CriteriaBase<Criteria>
+        internal class Criteria : CriteriaBase<Criteria>
         {
             public string _data;
 
@@ -49,26 +49,11 @@ namespace Csla.Test.Basic
             }
         }
 
-        public static GenRoot NewRoot()
-        {
-            return (GenRoot)(Csla.DataPortal.Create<GenRoot>(new Criteria()));
-        }
-
-        public static GenRoot GetRoot(string data)
-        {
-          return (GenRoot)(Csla.DataPortal.Fetch<GenRoot>(new Criteria(data)));
-        }
-
-        public static void DeleteRoot(string data)
-        {
-          Csla.DataPortal.Delete<GenRoot>(new Criteria(data));
-        }
-
         private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
-            Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
+            //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
         }
 
         protected void DataPortal_Fetch(object criteria)
@@ -76,7 +61,7 @@ namespace Csla.Test.Basic
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
             MarkOld();
-            Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
+            //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Fetched");
         }
 
         [Update]
@@ -85,7 +70,7 @@ namespace Csla.Test.Basic
             if (IsDeleted)
             {
                 //we would delete here
-                Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
+                //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
                 MarkNew();
             }
             else
@@ -93,12 +78,12 @@ namespace Csla.Test.Basic
                 if (IsNew)
                 {
                     //we would insert here
-                    Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Inserted");
+                    //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Inserted");
                 }
                 else 
                 {
                     //we would update here
-                    Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Updated");
+                    //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Updated");
                 }
                 MarkOld();
             }
@@ -108,7 +93,7 @@ namespace Csla.Test.Basic
 		protected void DataPortal_Delete(object Criteria)
         {
             //we would delete here
-            Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
+            //Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");
         }
     }
 }

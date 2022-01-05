@@ -29,16 +29,6 @@ namespace Csla.Test.DataPortalTest
 
     #region Factory Methods
 
-    public static Legacy NewObject()
-    {
-      return Csla.DataPortal.Create<Legacy>();
-    }
-
-    public static Legacy GetObject(int id)
-    {
-      return Csla.DataPortal.Fetch<Legacy>(new Criteria(id));
-    }
-
     public static void DeleteObject(int id)
     {
       Csla.DataPortal.Delete<Legacy>(new Criteria(id));
@@ -49,7 +39,7 @@ namespace Csla.Test.DataPortalTest
     #region Data Access
 
     [Serializable()]
-    private class Criteria
+    internal class Criteria
     {
       private int _id;
       public int Id
@@ -64,42 +54,42 @@ namespace Csla.Test.DataPortalTest
 		protected void DataPortal_Create()
     {
       _id = 0;
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Created");
     }
 
     protected void DataPortal_Fetch(object criteria)
     {
       _id = ((Criteria)criteria).Id;
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Inserted");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Updated");
     }
 
     [Delete]
 		protected void DataPortal_Delete(object criteria)
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "Deleted");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Legacy", "SelfDeleted");
     }
 

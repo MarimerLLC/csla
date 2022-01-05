@@ -28,7 +28,7 @@ namespace Csla.Test.RollBack
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void NoFail()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
 
       root.BeginEdit();
@@ -39,7 +39,7 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsValid, "isvalid is true");
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       RollbackRoot tmp = (RollbackRoot)(root.Clone());
       root.ApplyEdit();
       root = root.Save();
@@ -56,7 +56,7 @@ namespace Csla.Test.RollBack
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void YesFail()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
 
       root.BeginEdit();
@@ -68,7 +68,7 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsValid, "isvalid is true");
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       RollbackRoot tmp = (RollbackRoot)(root.Clone());
       try
       {
@@ -93,7 +93,7 @@ namespace Csla.Test.RollBack
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void YesFailCancel()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
       Assert.AreEqual(true, root.IsDirty, "isdirty is true");
       Assert.AreEqual("<new>", root.Data, "data is '<new>'");
@@ -107,7 +107,7 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsValid, "isvalid is true");
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       RollbackRoot tmp = (RollbackRoot)(root.Clone());
       try
       {

@@ -47,11 +47,6 @@ namespace Csla.Test.DataBinding
             }
         }
 
-        public static ChildEntityList GetList()
-        {
-            return Csla.DataPortal.Fetch<ChildEntityList>(new Criteria());
-        }
-
         [Fetch]
         private void DataPortal_Fetch(object criteria)
         {

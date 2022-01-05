@@ -37,7 +37,7 @@ namespace Csla.Test.ObjectFactory
       Csla.ApplicationContext.DataPortalProxy = "Local";
       Csla.DataPortal.ResetProxyType();
       Csla.Server.FactoryDataPortal.FactoryLoader = null;
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
     }
 
     [TestMethod]
@@ -241,7 +241,7 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void Delete()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
@@ -265,7 +265,7 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void DataPortalExecute_OnCommandObjectWithLocalProxy_CallsFactoryExecute()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.Server.FactoryDataPortal.FactoryLoader = null;
       var test = CommandObject.Execute();
       // return value is set in Execute method in CommandObjectFactory
@@ -278,7 +278,7 @@ namespace Csla.Test.ObjectFactory
     {
       try
       {
-        Csla.ApplicationContext.GlobalContext.Clear();
+        //Csla.ApplicationContext.GlobalContext.Clear();
         Csla.Server.FactoryDataPortal.FactoryLoader = null;
         var test = CommandObjectMissingFactoryMethod.Execute();
       }

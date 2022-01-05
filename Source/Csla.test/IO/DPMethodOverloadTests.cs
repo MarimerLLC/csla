@@ -29,7 +29,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateNoCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 
@@ -42,7 +42,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 
@@ -55,7 +55,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithOtherCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 
@@ -68,7 +68,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNullCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 
@@ -81,7 +81,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNoCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 
@@ -94,7 +94,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 
@@ -107,7 +107,7 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithOtherCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       TestBizObj obj;
 

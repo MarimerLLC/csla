@@ -45,7 +45,7 @@ namespace Csla.Test.DataPortal
     #region "Criteria class"
 
     [Serializable()]
-    private class Criteria
+    internal class Criteria
     {
       public string _data;
 
@@ -59,22 +59,6 @@ namespace Csla.Test.DataPortal
         this._data = data;
       }
     }
-
-    #endregion
-
-    #region "New root + constructor"
-
-    public static DpRoot NewRoot()
-    {
-      Criteria crit = new Criteria();
-      return (Csla.DataPortal.Create<DpRoot>(crit));
-    }
-
-    public static DpRoot GetRoot(string data)
-    {
-      return (Csla.DataPortal.Fetch<DpRoot>(new Criteria(data)));
-    }
-
 
     #endregion
 

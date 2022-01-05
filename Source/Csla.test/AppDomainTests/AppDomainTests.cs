@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,28 +22,31 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace Csla.Test.AppDomainTests
 {
-    [TestClass]
-    public class  AppDomainTestClass
+  [TestClass]
+  public class AppDomainTestClass
+  {
+    [TestMethod]
+    public void AppDomainTestIsCalled()
     {
-        [TestMethod]
-        public void AppDomainTestIsCalled()
-        {
-            Csla.ApplicationContext.GlobalContext.Clear();
-            int local= AppDomain.CurrentDomain.Id;
-            Basic.Root r = Basic.Root.NewRoot();
-            int remote = r.CreatedDomain;
+      IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
 
-            if (System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] == null)
-              Assert.AreEqual(local, remote, "Local and Remote AppDomains should be the same");
-            else
-              Assert.IsFalse((local == remote), "Local and Remote AppDomains should be different");
-  
-        }
+      ////Csla.ApplicationContext.GlobalContext.Clear();
+      int local = AppDomain.CurrentDomain.Id;
+      Basic.Root r = dataPortal.Create(new Basic.Root.Criteria());
+      int remote = r.CreatedDomain;
 
-        [TestCleanup]
-        public void ClearContextsAfterEachTest()
-        {
-            Csla.ApplicationContext.GlobalContext.Clear();
-        }
+      if (System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] == null)
+        Assert.AreEqual(local, remote, "Local and Remote AppDomains should be the same");
+      else
+        Assert.IsFalse((local == remote), "Local and Remote AppDomains should be different");
+
     }
+
+    [TestCleanup]
+    public void ClearContextsAfterEachTest()
+    {
+      // TODO: Fix test cleanup
+      ////Csla.ApplicationContext.GlobalContext.Clear();
+    }
+  }
 }

@@ -35,7 +35,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void CreateWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       var obj = Csla.DataPortal.Create<InitializeRoot>("abc");
       Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
@@ -48,7 +48,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       var obj = Csla.DataPortal.Fetch<InitializeRoot>("abc");
       Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
@@ -60,7 +60,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchListWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       var obj = Csla.DataPortal.Fetch<InitializeListRoot>();
       Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeListRoot"].ToString(), "Initialize should have run");
@@ -75,7 +75,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void InterceptException()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       try
       {
@@ -91,10 +91,10 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void UpdateWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       var obj = Csla.DataPortal.Fetch<InitializeRoot>("abc");
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       obj.Name = "xyz";
       obj = obj.Save();
@@ -110,10 +110,10 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void UpdateListWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       var obj = Csla.DataPortal.Fetch<InitializeListRoot>();
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       obj[0].Name = "xyz";
       obj = obj.Save();
@@ -130,7 +130,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void ExecuteCommandWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
 
       var obj = new InterceptorCommand();
       obj = Csla.DataPortal.Execute(obj);

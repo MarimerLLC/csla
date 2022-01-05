@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnitDriven;
+using Csla.TestHelpers;
 
 
 #if NUNIT
@@ -31,10 +32,10 @@ namespace Csla.Test.BusinessListBase
     
     public void CreateList()
     {
-      var obj = Csla.DataPortal.Create<RootList>();
+      var obj = CreateRootList();
       Assert.IsNotNull(obj);
 
-      var obj2 = Csla.DataPortal.Create<Root>();
+      var obj2 = CreateRoot();
       Assert.IsNotNull(obj2.Children);
     }
 
@@ -42,7 +43,7 @@ namespace Csla.Test.BusinessListBase
     public void RootAddNewCore()
     {
       bool changed = false;
-      var obj = Csla.DataPortal.Create<RootList>();
+      var obj = CreateRootList();
       obj.CollectionChanged += (o, e) =>
         {
           changed = true;
@@ -58,7 +59,7 @@ namespace Csla.Test.BusinessListBase
     {
       bool childChanged = false;
       bool changed = false;
-      var obj = Csla.DataPortal.Create<Root>();
+      var obj = CreateRoot();
       obj.ChildChanged += (o, e) =>
         {
           childChanged = true;
@@ -81,7 +82,7 @@ namespace Csla.Test.BusinessListBase
       {
         Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
 
-        var rootList = Csla.DataPortal.Create<RootList>();
+        var rootList = CreateRootList();
         rootList.BeginEdit();
         var child = rootList.AddNew();
 
@@ -102,7 +103,7 @@ namespace Csla.Test.BusinessListBase
     [TestMethod]
     public void UndoRootAcceptAdd()
     {
-      var obj = Csla.DataPortal.Create<RootList>();
+      var obj = CreateRootList();
       obj.BeginEdit();
       obj.AddNew();
       obj.ApplyEdit();
@@ -116,7 +117,7 @@ namespace Csla.Test.BusinessListBase
     [TestMethod]
     public void UndoRootCancelAdd()
     {
-      var obj = Csla.DataPortal.Create<RootList>();
+      var obj = CreateRootList();
       obj.BeginEdit();
       obj.AddNew();
       Assert.IsTrue(obj.IsDirty);
@@ -131,7 +132,7 @@ namespace Csla.Test.BusinessListBase
     [TestMethod]
     public void UndoChildAcceptAdd()
     {
-      var obj = Csla.DataPortal.Create<Root>();
+      var obj = CreateRoot();
       obj.BeginEdit();
       obj.Children.AddNew();
       obj.ApplyEdit();
@@ -145,7 +146,7 @@ namespace Csla.Test.BusinessListBase
     [TestMethod]
     public void UndoChildCancelAdd()
     {
-      var obj = Csla.DataPortal.Create<Root>();
+      var obj = CreateRoot();
       obj.BeginEdit();
       obj.Children.AddNew();
       Assert.IsTrue(obj.Children.IsDirty);
@@ -162,12 +163,12 @@ namespace Csla.Test.BusinessListBase
     {
 
       bool changed = false;
-      var obj = Csla.DataPortal.CreateChild<ChildList>();
+      var obj = CreateChildList();
       obj.CollectionChanged += (o, e) =>
       {
         changed = true;
       };
-      var child = Csla.DataPortal.CreateChild<Child>(); // object is marked as child
+      var child = CreateChild(); // object is marked as child
       obj.Insert(0, child);
       Assert.IsTrue(changed);
       Assert.AreEqual(child, obj[0]);
@@ -178,7 +179,7 @@ namespace Csla.Test.BusinessListBase
     public void InsertNonChildFails()
     {
       bool changed = false;
-      var obj = Csla.DataPortal.CreateChild<ChildList>();
+      var obj = CreateChildList();
       obj.CollectionChanged += (o, e) =>
       {
         changed = true;
@@ -194,12 +195,12 @@ namespace Csla.Test.BusinessListBase
     {
 
       bool changed = false;
-      var obj = Csla.DataPortal.CreateChild<ChildList>();
+      var obj = CreateChildList();
       obj.CollectionChanged += (o, e) =>
       {
         changed = true;
       };
-      var child = Csla.DataPortal.CreateChild<Child>(); // object is marked as child
+      var child = CreateChild(); // object is marked as child
 
       Assert.IsTrue(obj.RaiseListChangedEvents);
       using (obj.SuppressListChangedEvents)
@@ -212,5 +213,34 @@ namespace Csla.Test.BusinessListBase
       Assert.IsTrue(obj.RaiseListChangedEvents);
       Assert.AreEqual(child, obj[0]);
     }
+
+    private Root CreateRoot()
+    {
+      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+
+      return dataPortal.Create();
+    }
+
+    private RootList CreateRootList()
+    {
+      IDataPortal<RootList> dataPortal = DataPortalFactory.CreateDataPortal<RootList>();
+
+      return dataPortal.Create();
+    }
+
+    private ChildList CreateChildList()
+    {
+      IChildDataPortal<ChildList> childDataPortal = DataPortalFactory.CreateChildDataPortal<ChildList>();
+
+      return childDataPortal.CreateChild();
+    }
+
+    private Child CreateChild()
+    {
+      IChildDataPortal<Child> childDataPortal = DataPortalFactory.CreateChildDataPortal<Child>();
+
+      return childDataPortal.CreateChild();
+    }
+
   }
 }

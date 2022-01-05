@@ -110,7 +110,7 @@ namespace Csla.Test.DPException
         [TestMethod()]
         public void CheckInnerExceptionsOnFetch()
         {
-            Csla.ApplicationContext.GlobalContext.Clear();
+            //Csla.ApplicationContext.GlobalContext.Clear();
 
             string baseException = string.Empty;
             string baseInnerException = string.Empty;

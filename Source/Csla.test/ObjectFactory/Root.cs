@@ -52,6 +52,11 @@ namespace Csla.Test.ObjectFactory
       set { SetProperty(TransactionTimeoutProperty, value); }
     }
 
+    public ApplicationContext.ExecutionLocations ExecutionLocation
+    {
+      get { return ApplicationContext.ExecutionLocation; }
+    }
+
     public void MarkAsNew()
     {
       MarkNew();

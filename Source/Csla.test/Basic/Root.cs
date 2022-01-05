@@ -46,7 +46,7 @@ namespace Csla.Test.Basic
     }
 
     [Serializable()]
-    private class Criteria
+    internal class Criteria
     {
       public string _data;
 
@@ -59,16 +59,6 @@ namespace Csla.Test.Basic
       {
         this._data = data;
       }
-    }
-
-    public static Root NewRoot()
-    {
-      return Csla.DataPortal.Create<Root>(new Criteria());
-    }
-
-    public static Root GetRoot(string data)
-    {
-      return Csla.DataPortal.Fetch<Root>(new Criteria(data));
     }
 
     public static void DeleteRoot(string data)

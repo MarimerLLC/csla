@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla.Serialization;
+using Csla.TestHelpers;
 
 namespace Csla.Test.BypassPropertyChecks
 {
@@ -23,7 +24,9 @@ namespace Csla.Test.BypassPropertyChecks
 
     public static BypassBusinessBaseUsingFactory GetObject()
     {
-      return Csla.DataPortal.Fetch<BypassBusinessBaseUsingFactory>();
+      IDataPortal<BypassBusinessBaseUsingFactory> dataPortal = DataPortalFactory.CreateDataPortal<BypassBusinessBaseUsingFactory>();
+
+      return dataPortal.Fetch();
     }
 
     protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");

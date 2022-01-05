@@ -7,11 +7,11 @@
 //-----------------------------------------------------------------------
 using Csla;
 using Csla.DataPortalClient;
-using Csla.Testing.Business.ReadOnlyTest;
 using System;
 using UnitDriven;
 using Csla.Testing.Business.BusyStatus;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -33,9 +33,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task TestBusy()
     {
+      IDataPortal<ItemWithAsynchRule> dataPortal = DataPortalFactory.CreateDataPortal<ItemWithAsynchRule>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      var item = await DataPortal.FetchAsync<ItemWithAsynchRule>("an id");
+      var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
       context.Assert.IsTrue(item.IsBusy, "Should be busy");
       context.Assert.IsFalse(item.IsSavable, "Should not be savable");
@@ -59,8 +61,10 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task TestSaveWhileBusy()
     {
+      IDataPortal<ItemWithAsynchRule> dataPortal = DataPortalFactory.CreateDataPortal<ItemWithAsynchRule>();
+      
       UnitTestContext context = GetContext();
-      var item = await DataPortal.FetchAsync<ItemWithAsynchRule>("an id");
+      var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
       context.Assert.IsTrue(item.IsBusy);
       context.Assert.IsFalse(item.IsSavable);
@@ -108,8 +112,10 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task TestNotBusy()
     {
+      IDataPortal<ItemWithAsynchRule> dataPortal = DataPortalFactory.CreateDataPortal<ItemWithAsynchRule>();
+
       UnitTestContext context = GetContext();
-      var item = await DataPortal.FetchAsync<ItemWithAsynchRule>("an id");
+      var item = await dataPortal.FetchAsync("an id");
       item.ValidationComplete += (o2, e2) =>
       {
         context.Assert.IsFalse(item.IsBusy);
@@ -166,9 +172,10 @@ namespace cslalighttest.BusyStatus
     [ExpectedException(typeof(InvalidOperationException))]
     public async Task TestSaveWhileBusyNetOnly()
     {
+      IDataPortal<ItemWithAsynchRule> dataPortal = DataPortalFactory.CreateDataPortal<ItemWithAsynchRule>();
 
       UnitTestContext context = GetContext();
-      var item = await DataPortal.FetchAsync<ItemWithAsynchRule>("an id");
+      var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
       context.Assert.IsTrue(item.IsBusy);
       context.Assert.IsFalse(item.IsSavable);
@@ -207,9 +214,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task TestSaveWhileNotBusyNetOnly()
     {
+      IDataPortal<ItemWithAsynchRule> dataPortal = DataPortalFactory.CreateDataPortal<ItemWithAsynchRule>();
+
       UnitTestContext context = GetContext();
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-      var item = await DataPortal.FetchAsync<ItemWithAsynchRule>("an id");
+      var item = await dataPortal.FetchAsync("an id");
       item.ValidationComplete += (o2, e2) =>
       {
         context.Assert.IsFalse(item.IsBusy);
@@ -253,9 +262,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task TestSaveWhileNotBusyNoActiveRuleNetOnly()
     {
+      IDataPortal<ItemWithAsynchRule> dataPortal = DataPortalFactory.CreateDataPortal<ItemWithAsynchRule>();
+
       UnitTestContext context = GetContext();
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
-      var item = await DataPortal.FetchAsync<ItemWithAsynchRule>("an id");
+      var item = await dataPortal.FetchAsync("an id");
       item.OperationResult = "something";
       context.Assert.IsFalse(item.IsBusy);
       context.Assert.IsTrue(item.IsSavable);

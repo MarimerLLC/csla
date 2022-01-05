@@ -99,7 +99,7 @@ namespace Csla.Test.DataPortal
     [Create]
     protected void DataPortal_Create()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Created");
       BusinessRules.CheckRules();
       Console.WriteLine("DataPortal_Create");
@@ -115,7 +115,7 @@ namespace Csla.Test.DataPortal
       }
 
       Console.WriteLine("DataPortal_Fetch");
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Fetched");
       BusinessRules.CheckRules();
     }
@@ -151,7 +151,7 @@ namespace Csla.Test.DataPortal
       cm2.ExecuteNonQuery();
       cn.Close();
 
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Inserted");
       Console.WriteLine("DataPortal_Insert");
     }
@@ -161,7 +161,7 @@ namespace Csla.Test.DataPortal
     protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Updated");
     }
 
@@ -169,7 +169,7 @@ namespace Csla.Test.DataPortal
     protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Deleted Self");
     }
 
@@ -183,7 +183,7 @@ namespace Csla.Test.DataPortal
       }
 
       Console.WriteLine("DataPortal_Delete");
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("TransactionRoot", "Deleted");
     }
 
@@ -193,7 +193,7 @@ namespace Csla.Test.DataPortal
 
     protected override void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
       Csla.ApplicationContext.GlobalContext.Add("OnDataPortalException", "Called");
       Console.WriteLine("OnDataPortalException called");
     }

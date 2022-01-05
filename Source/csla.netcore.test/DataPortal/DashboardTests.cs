@@ -151,6 +151,7 @@ namespace csla.netcore.test.DataPortal
 
       // Initialise DI
       var services = new ServiceCollection();
+      services.AddCslaTesting();
 
       // Add Csla, using the real dashboard
       services.AddSingleton<IDashboard, Dashboard>();

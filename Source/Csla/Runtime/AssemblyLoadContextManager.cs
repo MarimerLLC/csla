@@ -35,12 +35,12 @@ namespace Csla.Runtime
         {
             if (objectType == null)
             {
-                throw new ArgumentNullException("objectType");
+                throw new ArgumentNullException(nameof(objectType));
             }
 
             if (cachingItem == null)
             {
-              throw new ArgumentNullException("cachingItem");
+              throw new ArgumentNullException(nameof(cachingItem));
             }
 
             if (unloadAction == null)

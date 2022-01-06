@@ -401,9 +401,20 @@ namespace Csla
     {
       return (T)GetClone();
     }
-#endregion
+    #endregion
 
-#region Data Access
+    #region Data Access
+
+    /// <summary>
+    /// Gets an instance of the client-side
+    /// data portal for use in lazy loading
+    /// of child types.
+    /// </summary>
+    /// <typeparam name="C">Type of child.</typeparam>
+    protected IDataPortal<C> GetDataPortal<C>()
+    {
+      return (IDataPortal<C>)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortal<C>));
+    }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]

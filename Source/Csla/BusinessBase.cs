@@ -86,6 +86,17 @@ namespace Csla
     #region Data Access
 
     /// <summary>
+    /// Gets an instance of the client-side
+    /// data portal for use in lazy loading
+    /// of child types.
+    /// </summary>
+    /// <typeparam name="C">Type of child.</typeparam>
+    protected IDataPortal<C> GetDataPortal<C>()
+    {
+      return (IDataPortal<C>)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortal<C>));
+    }
+
+    /// <summary>
     /// Saves the object to the database.
     /// </summary>
     /// <remarks>

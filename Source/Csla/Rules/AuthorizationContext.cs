@@ -7,7 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+using System.Security.Claims;
 using System.Security.Principal;
+using Csla.Core;
 
 namespace Csla.Rules
 {
@@ -42,32 +44,38 @@ namespace Csla.Rules
     /// </summary>
     public object[] Criteria { get; internal set; }
 
+    /// <summary>
+    /// Creates a AuthorizationContext instance for unit testing.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// <param name="rule">The rule.</param>
+    /// <param name="target">The target.</param>
+    /// <param name="targetType">Type of the target.</param>
+    public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRule rule, object target, Type targetType)
+    {
+      Rule = rule;
+      User = applicationContext.User;
+      LocalContext = applicationContext.LocalContext;
+      ClientContext = applicationContext.ClientContext;
+      Target = target;
+      TargetType = targetType;
+    }
 
     /// <summary>
     /// Gets the current user principal.
     /// </summary>
-    public IPrincipal User { get; internal set; }
-
+    public IPrincipal User { get; }
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthorizationContext"/> class.
+    /// Gets the current user ClaimsPrincipal.
     /// </summary>
-    public AuthorizationContext()
-    {
-    }
-
+    public ClaimsPrincipal Principal { get => User as ClaimsPrincipal; }
     /// <summary>
-    /// Creates a AuthorizationContext instance for unit testing.
+    /// Gets the LocalContext.
     /// </summary>
-    /// <param name="rule">The rule.</param>
-    /// <param name="user">The current user.</param>
-    /// <param name="target">The target.</param>
-    /// <param name="targetType">Type of the target.</param>
-    public AuthorizationContext(IAuthorizationRule rule, IPrincipal user, object target, Type targetType)
-    {
-      Rule = rule;
-      User = user;
-      Target = target;
-      TargetType = targetType;
-    }
+    public ContextDictionary LocalContext { get; }
+    /// <summary>
+    /// Gets the ClientContext.
+    /// </summary>
+    public ContextDictionary ClientContext { get; }
   }
 }

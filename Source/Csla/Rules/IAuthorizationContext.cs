@@ -6,7 +6,9 @@
 // <summary>Interface defining an authorization context</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Security.Claims;
 using System.Security.Principal;
+using Csla.Core;
 
 namespace Csla.Rules 
 {
@@ -47,5 +49,17 @@ namespace Csla.Rules
     /// Gets the current user principal.
     /// </summary>
     IPrincipal User { get; }
+    /// <summary>
+    /// Gets the current user ClaimsPrincipal.
+    /// </summary>
+    ClaimsPrincipal Principal { get; }
+    /// <summary>
+    /// Gets the LocalContext.
+    /// </summary>
+    ContextDictionary LocalContext { get; }
+    /// <summary>
+    /// Gets the ClientContext.
+    /// </summary>
+    ContextDictionary ClientContext { get; }
   }
 }

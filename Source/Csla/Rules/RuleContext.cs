@@ -8,11 +8,10 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Core;
 using Csla.Properties;
-using Csla.Threading;
+using System.Security.Principal;
+using System.Security.Claims;
 
 namespace Csla.Rules
 {
@@ -213,6 +212,9 @@ namespace Csla.Rules
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      User = ApplicationContext.User;
+      LocalContext = ApplicationContext.LocalContext;
+      ClientContext = ApplicationContext.ClientContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = 
         (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
@@ -223,22 +225,23 @@ namespace Csla.Rules
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, RuleContextModes executeContext) 
       : this(applicationContext, completeHandler)
     {
-      ApplicationContext = applicationContext;
       ExecuteContext = executeContext;
     }
 
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      ApplicationContext = applicationContext;
+      ExecuteContext = executeContext;
+      User = ApplicationContext.User;
+      LocalContext = ApplicationContext.LocalContext;
+      ClientContext = ApplicationContext.ClientContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
       _dirtyProperties = dirtyProperties;
-      ExecuteContext = executeContext;
     }
 
     /// <summary>
-    /// Creates a RuleContext instance for testing.
+    /// Creates a RuleContext instance for unit tests.
     /// </summary>
     /// <param name="applicationContext">Current ApplicationContext</param>
     /// <param name="completeHandler">Callback for async rule.</param>
@@ -504,5 +507,22 @@ namespace Csla.Rules
       value = (T)InputPropertyValues[propertyInfo];
       return true;
     }
+
+    /// <summary>
+    /// Gets the current user principal.
+    /// </summary>
+    public IPrincipal User { get; }
+    /// <summary>
+    /// Gets the current user ClaimsPrincipal.
+    /// </summary>
+    public ClaimsPrincipal Principal { get => User as ClaimsPrincipal; }
+    /// <summary>
+    /// Gets the LocalContext.
+    /// </summary>
+    public ContextDictionary LocalContext { get; }
+    /// <summary>
+    /// Gets the ClientContext.
+    /// </summary>
+    public ContextDictionary ClientContext { get; }
   }
 }

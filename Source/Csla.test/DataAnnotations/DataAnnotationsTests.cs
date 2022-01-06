@@ -37,12 +37,20 @@ namespace Csla.Test.DataAnnotations
   [TestClass]
   public class DataAnnotationsTests : TestBase
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public async Task SingleAttribute()
     {
       var context = GetContext();
 
-      var dp = DataPortalFactory.CreateDataPortal<Single>();
+      var dp = _testDIContext.CreateDataPortal<Single>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -60,7 +68,7 @@ namespace Csla.Test.DataAnnotations
     {
       var context = GetContext();
 
-      var dp = DataPortalFactory.CreateDataPortal<Multiple>();
+      var dp = _testDIContext.CreateDataPortal<Multiple>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -79,7 +87,7 @@ namespace Csla.Test.DataAnnotations
     {
       var context = GetContext();
 
-      var dp = DataPortalFactory.CreateDataPortal<Custom>();
+      var dp = _testDIContext.CreateDataPortal<Custom>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 

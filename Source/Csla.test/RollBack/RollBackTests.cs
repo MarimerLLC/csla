@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,12 +25,22 @@ namespace Csla.Test.RollBack
   [TestClass]
   public class RollBackTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void NoFail()
     {
+      IDataPortal<RollbackRoot> dataPortal = _testDIContext.CreateDataPortal<RollbackRoot>();
+
       TestResults.Reinitialise();
-      RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
+      RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot(dataPortal);
 
       root.BeginEdit();
       root.Data = "saved";
@@ -56,8 +67,10 @@ namespace Csla.Test.RollBack
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void YesFail()
     {
+      IDataPortal<RollbackRoot> dataPortal = _testDIContext.CreateDataPortal<RollbackRoot>();
+
       TestResults.Reinitialise();
-      RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
+      RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot(dataPortal);
 
       root.BeginEdit();
       root.Data = "saved";
@@ -93,8 +106,10 @@ namespace Csla.Test.RollBack
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void YesFailCancel()
     {
+      IDataPortal<RollbackRoot> dataPortal = _testDIContext.CreateDataPortal<RollbackRoot>();
+
       TestResults.Reinitialise();
-      RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
+      RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot(dataPortal);
       Assert.AreEqual(true, root.IsDirty, "isdirty is true");
       Assert.AreEqual("<new>", root.Data, "data is '<new>'");
 
@@ -132,7 +147,9 @@ namespace Csla.Test.RollBack
     [TestMethod]
     public void EditParentEntity()
     {
-      Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
+      IDataPortal<DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<DataBinding.ParentEntity>();
+
+      Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity(dataPortal);
       p.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(p_PropertyChanged);
 
       p.BeginEdit();

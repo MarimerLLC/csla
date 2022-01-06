@@ -31,7 +31,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Fetch]
-    private void Fetch(int id)
+    private new void Fetch(int id)
     {
       using (BypassPropertyChecks)
       {

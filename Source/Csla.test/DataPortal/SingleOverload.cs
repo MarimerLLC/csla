@@ -27,23 +27,23 @@ namespace Csla.Test.DataPortalTest
 
     #region Factory Methods
 
-    public static SingleOverload NewObject()
+    public static SingleOverload NewObject(IDataPortal<SingleOverload> dataPortal)
     {
-      return Csla.DataPortal.Create<SingleOverload>();
+      return dataPortal.Create();
     }
-    public static SingleOverload NewObjectWithCriteria()
+    public static SingleOverload NewObjectWithCriteria(IDataPortal<SingleOverload> dataPortal)
     {
-      return Csla.DataPortal.Create<SingleOverload>(new OtherCriteria(0));
-    }
-
-    public static SingleOverload GetObject(int id)
-    {
-      return Csla.DataPortal.Fetch<SingleOverload>(new Criteria(id));
+      return dataPortal.Create(new OtherCriteria(0));
     }
 
-    public static void DeleteObject(int id)
+    public static SingleOverload GetObject(int id, IDataPortal<SingleOverload> dataPortal)
     {
-      Csla.DataPortal.Delete<SingleOverload>(new Criteria(id));
+      return dataPortal.Fetch(new Criteria(id));
+    }
+
+    public static void DeleteObject(int id, IDataPortal<SingleOverload> dataPortal)
+    {
+      dataPortal.Delete(new Criteria(id));
     }
 
     #endregion

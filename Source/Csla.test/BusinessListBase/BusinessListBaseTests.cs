@@ -28,8 +28,15 @@ namespace Csla.Test.BusinessListBase
   [TestClass]
   public class BusinessListBaseTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
-    
     public void CreateList()
     {
       var obj = CreateRootList();
@@ -216,28 +223,28 @@ namespace Csla.Test.BusinessListBase
 
     private Root CreateRoot()
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
       return dataPortal.Create();
     }
 
     private RootList CreateRootList()
     {
-      IDataPortal<RootList> dataPortal = DataPortalFactory.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
 
       return dataPortal.Create();
     }
 
     private ChildList CreateChildList()
     {
-      IChildDataPortal<ChildList> childDataPortal = DataPortalFactory.CreateChildDataPortal<ChildList>();
+      IChildDataPortal<ChildList> childDataPortal = _testDIContext.CreateChildDataPortal<ChildList>();
 
       return childDataPortal.CreateChild();
     }
 
     private Child CreateChild()
     {
-      IChildDataPortal<Child> childDataPortal = DataPortalFactory.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
       return childDataPortal.CreateChild();
     }

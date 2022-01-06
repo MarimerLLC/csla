@@ -10,6 +10,7 @@ using Csla.DataPortalClient;
 using System;
 using UnitDriven;
 using System.Security.Claims;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -34,6 +35,14 @@ namespace Csla.Test.BypassPropertyChecks
       foreach (var item in roles)
         identity.AddClaim(new Claim(ClaimTypes.Role, item));
       return new ClaimsPrincipal(identity);
+    }
+
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
     [TestMethod]
@@ -264,10 +273,12 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassFactory()
     {
+      IDataPortal<BypassBusinessBaseUsingFactory> dataPortal = _testDIContext.CreateDataPortal<BypassBusinessBaseUsingFactory>();
+
       UnitTestContext context = GetContext();
       //Csla.ApplicationContext.User = GetPrincipal("Admin");
 
-      BypassBusinessBaseUsingFactory obj = BypassBusinessBaseUsingFactory.GetObject();
+      BypassBusinessBaseUsingFactory obj = BypassBusinessBaseUsingFactory.GetObject(dataPortal);
       context.Assert.AreEqual(false, obj.IsDirty);
       context.Assert.AreEqual(7, obj.ReadId2ByPass());
       context.Assert.Success();

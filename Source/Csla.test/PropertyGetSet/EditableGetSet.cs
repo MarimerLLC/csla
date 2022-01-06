@@ -209,10 +209,11 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-    public static EditableGetSet GetObject()
+    public static EditableGetSet GetObject(IDataPortal<EditableGetSet> dataPortal)
     {
-      return Csla.DataPortal.Fetch<EditableGetSet>();
+      return dataPortal.Fetch();
     }
+
     #endregion
 
     #region Data Access
@@ -324,10 +325,11 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-    public static EditableGetSet GetObject()
+    public static EditableGetSet GetObject(IDataPortal<EditableGetSet> dataPortal)
     {
-      return Csla.DataPortal.Fetch<EditableGetSet>();
+      return dataPortal.Fetch();
     }
+
     #endregion
 
     #region Data Access

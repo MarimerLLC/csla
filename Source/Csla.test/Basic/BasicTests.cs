@@ -25,11 +25,21 @@ namespace Csla.Test.Basic
     [TestClass]
     public class BasicTests
     {
+        private TestDIContext _testDIContext;
+
+        [TestInitialize]
+        public void TestInitialize(TestContext context)
+        {
+          _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
         [TestMethod]
         public void TestNotUndoableField()
         {
+            IDataPortal<DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<DataBinding.ParentEntity>();
+
             TestResults.Reinitialise();
-            Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
+            Csla.Test.DataBinding.ParentEntity p = DataBinding.ParentEntity.NewParentEntity(dataPortal);
 
             p.NotUndoable = "something";
             p.Data = "data";
@@ -54,7 +64,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void TestNameValueList()
         {
-            IDataPortal<NameValueListObj> dataPortal = DataPortalFactory.CreateDataPortal<NameValueListObj>();
+            IDataPortal<NameValueListObj> dataPortal = _testDIContext.CreateDataPortal<NameValueListObj>();
 
             NameValueListObj nvList = dataPortal.Fetch();
             // TODO: Fix test
@@ -74,7 +84,7 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void TestCommandBase()
         {
-            IDataPortal<CommandObject> dataPortal = DataPortalFactory.CreateDataPortal<CommandObject>();
+            IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
 
             TestResults.Reinitialise();
             CommandObject obj = new CommandObject();
@@ -401,13 +411,13 @@ namespace Csla.Test.Basic
 
         private Root NewRoot()
         {
-          IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+          IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
           return dataPortal.Create(new Root.Criteria());
         }
 
         private GenRoot NewGenRoot()
         {
-          IDataPortal<GenRoot> dataPortal = DataPortalFactory.CreateDataPortal<GenRoot>();
+          IDataPortal<GenRoot> dataPortal = _testDIContext.CreateDataPortal<GenRoot>();
           return dataPortal.Create(new GenRoot.Criteria());
         }
       }

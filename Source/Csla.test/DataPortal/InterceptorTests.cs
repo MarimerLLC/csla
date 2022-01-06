@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.Configuration;
 using Csla.TestHelpers;
 #if !NUNIT && !ANDROID
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,18 +20,25 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class InterceptorTests
   {
+    private TestDIContext _testDIContext;
+
     [TestInitialize]
     public void Setup()
     {
-      Csla.Server.DataPortal.InterceptorType = typeof(TestInterceptor);
-      Csla.ApplicationContext.DataPortalActivator = new TestActivator();
+      _testDIContext = TestDIContextFactory.CreateContext(
+        options => options
+        .DataPortal()
+        .AddServerSideDataPortal(config => 
+        {
+          config.AddInterceptorProvider<TestInterceptor>();
+          config.RegisterActivator<TestActivator>();
+        }
+        ));
     }
 
     [TestCleanup]
     public void Cleanup()
     {
-      Csla.Server.DataPortal.InterceptorType = null;
-      Csla.ApplicationContext.DataPortalActivator = null;
     }
 
     [TestMethod]
@@ -131,7 +139,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void ExecuteCommandWithIntercept()
     {
-      IDataPortal<InterceptorCommand> dataPortal = DataPortalFactory.CreateDataPortal<InterceptorCommand>();
+      IDataPortal<InterceptorCommand> dataPortal = _testDIContext.CreateDataPortal<InterceptorCommand>();
 
       TestResults.Reinitialise();
 
@@ -149,21 +157,21 @@ namespace Csla.Test.DataPortal
 
     private InitializeRoot CreateInitializeRoot(string ident)
     {
-      IDataPortal<InitializeRoot> dataPortal = DataPortalFactory.CreateDataPortal<InitializeRoot>();
+      IDataPortal<InitializeRoot> dataPortal = _testDIContext.CreateDataPortal<InitializeRoot>();
 
       return dataPortal.Create(ident);
     }
 
     private InitializeRoot GetInitializeRoot(string ident)
     {
-      IDataPortal<InitializeRoot> dataPortal = DataPortalFactory.CreateDataPortal<InitializeRoot>();
+      IDataPortal<InitializeRoot> dataPortal = _testDIContext.CreateDataPortal<InitializeRoot>();
 
       return dataPortal.Fetch(ident);
     }
 
     private InitializeListRoot GetInitializeListRoot()
     {
-      IDataPortal<InitializeListRoot> dataPortal = DataPortalFactory.CreateDataPortal<InitializeListRoot>();
+      IDataPortal<InitializeListRoot> dataPortal = _testDIContext.CreateDataPortal<InitializeListRoot>();
 
       return dataPortal.Fetch();
     }

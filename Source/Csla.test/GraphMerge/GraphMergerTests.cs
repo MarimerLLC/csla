@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Core;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -27,10 +28,20 @@ namespace Csla.Test.GraphMerge
   [TestClass]
   public class GraphMergerTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void MergeInsert()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
       var cloned = obj.Clone();
       cloned.Name = "2";
@@ -53,7 +64,9 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeUpdate()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      
+      var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated();
       var cloned = obj.Clone();
@@ -76,7 +89,9 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeRuleUnbroken()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "2";
       obj.MockUpdated();
       var cloned = obj.Clone();
@@ -99,7 +114,9 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeDelete()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated(); // make it an old object
       obj.MarkForDelete(); // mark for deletion
@@ -125,9 +142,11 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildInsert()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
-      obj.AddChild();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "42";
       var cloned = obj.Clone();
       cloned.Name = "2";
@@ -152,9 +171,11 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildUpdate()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
-      obj.AddChild();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "42";
       obj.MockUpdated();
       var cloned = obj.Clone();
@@ -180,11 +201,13 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeNewChildUpdate()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated();
       var cloned = obj.Clone();
-      cloned.AddChild();
+      cloned.AddChild(dataPortal);
       cloned.Child.Name = "42";
       cloned.MockUpdated();
 
@@ -197,9 +220,11 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildDelete()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
-      obj.AddChild();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "42";
       obj.MockUpdated();
       obj.MarkForDelete();
@@ -227,7 +252,9 @@ namespace Csla.Test.GraphMerge
     
     public void MergeList()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       obj.AddNew().Name = "existing";
       obj[0].MockUpdated();
       obj.AddNew().Name = "to be deleted";
@@ -260,7 +287,9 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeListNewChild()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       var original = obj;
       var newChild = obj.AddNew();
       newChild.Name = "new";
@@ -294,7 +323,9 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildList()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.ChildList.AddNew();
       obj.ChildList[0].Name = "1";
       obj.ChildList.AddNew();

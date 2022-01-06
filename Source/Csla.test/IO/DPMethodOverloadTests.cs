@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla.Serialization;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,15 +26,25 @@ namespace Csla.Test.IO
   [TestClass]
   public class DPMethodOverloadTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+    
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateNoCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.NewNoCriteria();
+      obj = TestBizObj.NewNoCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with no criteria");
       Assert.AreEqual("No criteria", TestResults.GetResult("Create"), "No criteria expected");
     }
@@ -42,11 +53,13 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.NewCriteria();
+      obj = TestBizObj.NewCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with criteria");
       Assert.AreEqual("Criteria", TestResults.GetResult("Create"), "Criteria expected");
     }
@@ -55,11 +68,13 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithOtherCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.NewOtherCriteria();
+      obj = TestBizObj.NewOtherCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with other criteria");
       Assert.AreEqual("Other criteria", TestResults.GetResult("Create"), "Other criteria expected");
     }
@@ -68,11 +83,13 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNullCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetNullCriteria();
+      obj = TestBizObj.GetNullCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with null criteria");
       Assert.AreEqual("Null criteria", TestResults.GetResult("Fetch"), "Null criteria expected");
     }
@@ -81,11 +98,13 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNoCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetNoCriteria();
+      obj = TestBizObj.GetNoCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with no criteria");
       Assert.AreEqual("No criteria", TestResults.GetResult("Fetch"), "No criteria expected");
     }
@@ -94,11 +113,13 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetCriteria();
+      obj = TestBizObj.GetCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with criteria");
       Assert.AreEqual("Criteria", TestResults.GetResult("Fetch"), "Criteria expected");
     }
@@ -107,11 +128,13 @@ namespace Csla.Test.IO
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithOtherCriteria()
     {
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
       TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetOtherCriteria();
+      obj = TestBizObj.GetOtherCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with other criteria");
       Assert.AreEqual("Other criteria", TestResults.GetResult("Fetch"), "Other criteria expected");
     }
@@ -125,39 +148,39 @@ namespace Csla.Test.IO
       return 0;
     }
 
-    public static TestBizObj NewNoCriteria()
+    public static TestBizObj NewNoCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Create<TestBizObj>();
+      return dataPortal.Create();
     }
 
-    public static TestBizObj NewCriteria()
+    public static TestBizObj NewCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Create<TestBizObj>(new Criteria());
+      return dataPortal.Create(new Criteria());
     }
 
-    public static TestBizObj NewOtherCriteria()
+    public static TestBizObj NewOtherCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Create<TestBizObj>(new OtherCriteria());
+      return dataPortal.Create(new OtherCriteria());
     }
 
-    public static TestBizObj GetNoCriteria()
+    public static TestBizObj GetNoCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>();
+      return dataPortal.Fetch();
     }
 
-    public static TestBizObj GetNullCriteria()
+    public static TestBizObj GetNullCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>(null);
+      return dataPortal.Fetch(null);
     }
 
-    public static TestBizObj GetCriteria()
+    public static TestBizObj GetCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>(new Criteria());
+      return dataPortal.Fetch(new Criteria());
     }
 
-    public static TestBizObj GetOtherCriteria()
+    public static TestBizObj GetOtherCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>(new OtherCriteria());
+      return dataPortal.Fetch(new OtherCriteria());
     }
 
     [Serializable]

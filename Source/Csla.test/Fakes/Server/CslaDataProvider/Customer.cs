@@ -245,17 +245,17 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [Insert]
-    protected void DataPortal_Insert()
+    protected void DataPortal_Insert([Inject] IChildDataPortal<CustomerContactList> contactsListDataPortal)
     {
       Method = "Inserted Customer " + GetProperty<string>(NameProperty);
-      DataPortal.UpdateChild(ReadProperty(ContactsProperty));
+      contactsListDataPortal.UpdateChild(ReadProperty(ContactsProperty));
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update([Inject] IChildDataPortal<CustomerContactList> contactsListDataPortal)
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
-      DataPortal.UpdateChild(ReadProperty(ContactsProperty));
+      contactsListDataPortal.UpdateChild(ReadProperty(ContactsProperty));
     }
   }
 

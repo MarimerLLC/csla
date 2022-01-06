@@ -25,10 +25,18 @@ namespace Csla.Test.AppDomainTests
   [TestClass]
   public class AppDomainTestClass
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+    
     [TestMethod]
     public void AppDomainTestIsCalled()
     {
-      IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
       TestResults.Reinitialise();
       int local = AppDomain.CurrentDomain.Id;

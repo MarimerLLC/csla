@@ -49,19 +49,19 @@ namespace Csla.Test.DataPortal
       }
     }
 
-    public static StronglyTypedDP NewStronglyTypedDP()
+    public static StronglyTypedDP NewStronglyTypedDP(IDataPortal<StronglyTypedDP> dataPortal)
     {
-      return Csla.DataPortal.Create<StronglyTypedDP>(new StronglyTypedDP.Criteria());
+      return dataPortal.Create(new StronglyTypedDP.Criteria());
     }
 
-    public static StronglyTypedDP GetStronglyTypedDP(int id)
+    public static StronglyTypedDP GetStronglyTypedDP(int id, IDataPortal<StronglyTypedDP> dataPortal)
     {
-      return Csla.DataPortal.Fetch<StronglyTypedDP>(new StronglyTypedDP.Criteria(id));
+      return dataPortal.Fetch(new StronglyTypedDP.Criteria(id));
     }
 
-    public static void DeleteStronglyTypedDP(int id)
+    public static void DeleteStronglyTypedDP(int id, IDataPortal<StronglyTypedDP> dataPortal)
     {
-      Csla.DataPortal.Delete<StronglyTypedDP>(new Criteria(id));
+      dataPortal.Delete(new Criteria(id));
     }
 
     protected void DataPortal_Create(StronglyTypedDP.Criteria criteria)
@@ -104,9 +104,9 @@ namespace Csla.Test.DataPortal
     }
 
     [Delete]
-		protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
+	protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
     {
-      TestResults.Add("StronglyTypedDP_Criteria", criteria._ID);
+      TestResults.Add("StronglyTypedDP_Criteria", criteria._ID.ToString());
     }
   }
 }

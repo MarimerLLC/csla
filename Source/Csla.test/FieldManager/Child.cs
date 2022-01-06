@@ -13,14 +13,14 @@ namespace Csla.Test.FieldManager
   [Serializable]
   public class Child : BusinessBase<Child>
   {
-    public static Child NewChild()
+    public static Child NewChild(IChildDataPortal<Child> childDataPortal)
     {
-      return Csla.DataPortal.CreateChild<Child>();
+      return childDataPortal.CreateChild();
     }
 
-    public static Child GetChild()
+    public static Child GetChild(IChildDataPortal<Child> childDataPortal)
     {
-      return Csla.DataPortal.FetchChild<Child>();
+      return childDataPortal.FetchChild();
     }
 
     public Child()

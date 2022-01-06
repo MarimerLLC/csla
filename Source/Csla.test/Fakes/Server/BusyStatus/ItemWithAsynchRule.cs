@@ -94,24 +94,25 @@ namespace Csla.Testing.Business.BusyStatus
 
       protected override void Execute(IRuleContext context)
       {
-        if (Csla.ApplicationContext.LogicalExecutionLocation == Csla.ApplicationContext.LogicalExecutionLocations.Client)
-        {
-          BackgroundWorker worker = new BackgroundWorker();
+        // TODO: Fix test
+        //if (Csla.ApplicationContext.LogicalExecutionLocation == Csla.ApplicationContext.LogicalExecutionLocations.Client)
+        //{
+        //  BackgroundWorker worker = new BackgroundWorker();
 
-          worker.DoWork += (s, e) =>
-          {
-            System.Threading.Thread.Sleep(2000);
-            var value = context.InputPropertyValues[PrimaryProperty];
-            if (value == null || value.ToString().ToUpper() == "ERROR")
-              context.AddErrorResult("error detected");
-          };
+        //  worker.DoWork += (s, e) =>
+        //  {
+        //    System.Threading.Thread.Sleep(2000);
+        //    var value = context.InputPropertyValues[PrimaryProperty];
+        //    if (value == null || value.ToString().ToUpper() == "ERROR")
+        //      context.AddErrorResult("error detected");
+        //  };
 
-          worker.RunWorkerCompleted += (s, e) => context.Complete();
+        //  worker.RunWorkerCompleted += (s, e) => context.Complete();
 
-          // simulating an asynchronous process.
-          worker.RunWorkerAsync();
-        }
-        else
+        //  // simulating an asynchronous process.
+        //  worker.RunWorkerAsync();
+        //}
+        //else
         {
           var value = context.InputPropertyValues[PrimaryProperty];
           if (value == null || value.ToString().ToUpper() == "ERROR")

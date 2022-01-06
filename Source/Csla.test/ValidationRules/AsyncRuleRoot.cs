@@ -37,9 +37,9 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(AsyncAwaitProperty, value); }
     }
 
-    public static AsyncRuleRoot NewRoot()
+    public static AsyncRuleRoot NewRoot(IDataPortal<AsyncRuleRoot> dataPortal)
     {
-      return Csla.DataPortal.Create<AsyncRuleRoot>();
+      return dataPortal.Create();
     }
 
     public AsyncRuleRoot()

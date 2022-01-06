@@ -25,7 +25,7 @@ namespace Csla.Test.Serialization
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       base.OnDeserialized(context);
-      TestResults.Add("Deserialized", true);
+      TestResults.Add("Deserialized", "true");
       Console.WriteLine("OnDeserialized");
     }
   }

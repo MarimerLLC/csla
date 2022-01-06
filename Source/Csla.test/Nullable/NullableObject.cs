@@ -61,19 +61,19 @@ namespace Csla.Test.Nullable
             }
         }
 
-        public static NullableObject NewNullableObject()
+        public static NullableObject NewNullableObject(IDataPortal<NullableObject> dataPortal)
         {
-          return Csla.DataPortal.Create<NullableObject>(new Criteria()) as NullableObject;
+          return dataPortal.Create(new Criteria()) as NullableObject;
         }
 
-        public static NullableObject GetNullableObject(string name)
+        public static NullableObject GetNullableObject(string name, IDataPortal<NullableObject> dataPortal)
         {
-          return Csla.DataPortal.Fetch<NullableObject>(new Criteria(name)) as NullableObject;
+          return dataPortal.Fetch(new Criteria(name)) as NullableObject;
         }
 
-        public static void DeleteNullableObject(string name)
+        public static void DeleteNullableObject(string name, IDataPortal<NullableObject> dataPortal)
         {
-          Csla.DataPortal.Delete<NullableObject>(new Criteria(name));
+          dataPortal.Delete(new Criteria(name));
         }
 
         public NullableObject()

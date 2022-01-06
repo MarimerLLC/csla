@@ -11,6 +11,7 @@ using System.Text;
 using Csla.Test.Security;
 using System.Data;
 using System.Data.SqlClient;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,14 +29,23 @@ namespace Csla.Test.DPException
     [TestClass()]
     public class DataPortalExceptionTests
     {
+        private TestDIContext _testDIContext;
+
+        [TestInitialize]
+        public void TestInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
 #if DEBUG
         [TestMethod()]
         
         public void CheckInnerExceptionsOnSave()
         {
+            IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
             TestResults.Reinitialise();
 
-            Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+            Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
             root.FirstName = "Billy";
             root.LastName = "lastname";
             root.SmallColumn = "too long for the database"; //normally would be prevented through validation
@@ -79,6 +89,7 @@ namespace Csla.Test.DPException
         [TestMethod()]
         public void CheckInnerExceptionsOnDelete()
         {
+            IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
             TestResults.Reinitialise();
 
             string baseException = string.Empty;
@@ -88,7 +99,7 @@ namespace Csla.Test.DPException
             try
             {
               //this will throw an exception
-              Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13);
+              Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13, dataPortal);
             }
             catch (Csla.DataPortalException ex)
             {
@@ -110,6 +121,7 @@ namespace Csla.Test.DPException
         [TestMethod()]
         public void CheckInnerExceptionsOnFetch()
         {
+            IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
             TestResults.Reinitialise();
 
             string baseException = string.Empty;
@@ -120,7 +132,7 @@ namespace Csla.Test.DPException
             {
                 //this will throw an exception
                 Csla.Test.DataPortal.TransactionalRoot root = 
-                    Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13);
+                    Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
             }
             catch (Csla.DataPortalException ex)
             {

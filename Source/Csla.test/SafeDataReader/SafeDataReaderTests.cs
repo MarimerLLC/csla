@@ -53,7 +53,7 @@ namespace Csla.Test.SafeDataReader
                 cn.Open();
                 cm.ExecuteNonQuery();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //do nothing
             }

@@ -6,6 +6,7 @@ using System.Linq;
 
 using Csla.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {
@@ -23,6 +24,14 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class RuleURITests
   {
+
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestMethod]
     public void RuleURIWithGenericObjectRule()
@@ -57,7 +66,9 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void LambdaRuleExtensionsAddUniueURIs()
     {
-      var root = HasLambdaRules.New();
+      IDataPortal<HasLambdaRules> dataPortal = _testDIContext.CreateDataPortal<HasLambdaRules>();
+
+      var root = HasLambdaRules.New(dataPortal);
       var ruleUris = root.GetRuleDescriptions();
 
       var distinctUris = ruleUris.Distinct().ToArray();

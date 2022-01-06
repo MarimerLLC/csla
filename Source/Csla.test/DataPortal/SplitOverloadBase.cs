@@ -30,22 +30,22 @@ namespace Csla.Test.DataPortalTest
 
     #region Factory Methods
 
-    public static T NewObject()
+    public static T NewObject(IDataPortal<T> dataPortal)
     {
-      return Csla.DataPortal.Create<T>();
+      return dataPortal.Create();
     }
-    public static T NewObjectWithCriteria()
+    public static T NewObjectWithCriteria(IDataPortal<T> dataPortal)
     {
-      return Csla.DataPortal.Create<T>(new Criteria1(0));
+      return dataPortal.Create(new Criteria1(0));
     }
 
-    public static T GetObject(int id)
+    public static T GetObject(int id, IDataPortal<T> dataPortal)
     {
-      return Csla.DataPortal.Fetch<T>(new Criteria(id));
+      return dataPortal.Fetch(new Criteria(id));
     }
-    public static void DeleteObject(int id)
+    public static void DeleteObject(int id, IDataPortal<T> dataPortal)
     {
-      Csla.DataPortal.Delete<T>(new Criteria(id));
+      dataPortal.Delete(new Criteria(id));
     }
 
     #endregion

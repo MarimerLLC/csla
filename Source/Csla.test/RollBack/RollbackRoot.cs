@@ -64,19 +64,19 @@ namespace Csla.Test.RollBack
       }
     }
 
-    public static RollbackRoot NewRoot()
+    public static RollbackRoot NewRoot(IDataPortal<RollbackRoot> dataPortal)
     {
-      return ((RollbackRoot)(Csla.DataPortal.Create<RollbackRoot>(new Criteria())));
+      return dataPortal.Create(new Criteria());
     }
 
-    public static RollbackRoot GetRoot(string data)
+    public static RollbackRoot GetRoot(string data, IDataPortal<RollbackRoot> dataPortal)
     {
-      return ((RollbackRoot)(Csla.DataPortal.Fetch<RollbackRoot>(new Criteria(data))));
+      return dataPortal.Fetch(new Criteria(data));
     }
 
-    public static void DeleteRoot(string data)
+    public static void DeleteRoot(string data, IDataPortal<RollbackRoot> dataPortal)
     {
-      Csla.DataPortal.Delete<RollbackRoot>(new Criteria(data));
+      dataPortal.Delete(new Criteria(data));
     }
 
     private void DataPortal_Create(object criteria)

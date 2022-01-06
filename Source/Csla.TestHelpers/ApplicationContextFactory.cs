@@ -16,7 +16,7 @@ namespace Csla.TestHelpers
   {
 
     /// <summary>
-    /// Create an instance of ApplicationContext for use in testing, using the DI container
+    /// Create an instance of ApplicationContext for use in testing, using the root DI container
     /// </summary>
     /// <returns>An instance of ApplicationContext for use in testing of Csla</returns>
     public static ApplicationContext CreateTestApplicationContext()
@@ -25,6 +25,19 @@ namespace Csla.TestHelpers
 
       context = RootServiceProvider.GetRequiredService<ApplicationContext>();
       return context;
+    }
+
+    /// <summary>
+    /// Create an instance of ApplicationContext for use in testing, using a specific DI container
+    /// </summary>
+    /// <param name="context">The context from which configuration can be retrieved</param>
+    /// <returns>An instance of ApplicationContext for use in testing of Csla</returns>
+    public static ApplicationContext CreateTestApplicationContext(TestDIContext context)
+    {
+      ApplicationContext applicationContext;
+
+      applicationContext = context.ServiceProvider.GetRequiredService<ApplicationContext>();
+      return applicationContext;
     }
 
   }

@@ -82,19 +82,19 @@ namespace Csla.Test.DataBinding
 
     #region "Factory Methods"
 
-    public static ParentEntity NewParentEntity()
+    public static ParentEntity NewParentEntity(IDataPortal<ParentEntity> dataPortal)
     {
-      return Csla.DataPortal.Create<ParentEntity>();
+      return dataPortal.Create();
     }
 
-    public static ParentEntity GetParentEntity(int ID)
+    public static ParentEntity GetParentEntity(int ID, IDataPortal<ParentEntity> dataPortal)
     {
-      return Csla.DataPortal.Fetch<ParentEntity>(new Criteria(ID));
+      return dataPortal.Fetch(new Criteria(ID));
     }
 
-    public static void DeleteParentEntity(int ID)
+    public static void DeleteParentEntity(int ID, IDataPortal<ParentEntity> dataPortal)
     {
-      Csla.DataPortal.Delete<ParentEntity>(new Criteria(ID));
+      dataPortal.Delete(new Criteria(ID));
     }
 
     #endregion

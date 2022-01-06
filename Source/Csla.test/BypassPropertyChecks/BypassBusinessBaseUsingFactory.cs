@@ -22,10 +22,8 @@ namespace Csla.Test.BypassPropertyChecks
       MarkOld();
     }
 
-    public static BypassBusinessBaseUsingFactory GetObject()
+    public static BypassBusinessBaseUsingFactory GetObject(IDataPortal<BypassBusinessBaseUsingFactory> dataPortal)
     {
-      IDataPortal<BypassBusinessBaseUsingFactory> dataPortal = DataPortalFactory.CreateDataPortal<BypassBusinessBaseUsingFactory>();
-
       return dataPortal.Fetch();
     }
 

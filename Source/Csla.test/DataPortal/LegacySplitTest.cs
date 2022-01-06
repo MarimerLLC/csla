@@ -26,6 +26,14 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class LegacySplitTest
     {
+        private TestDIContext _testDIContext;
+
+        [TestInitialize]
+        public void TestInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
         [TestMethod]
         public void TestDpCreate()
         {
@@ -87,21 +95,21 @@ namespace Csla.Test.DataPortalTest
 
         private LegacySplit NewLegacySplit()
         {
-            IDataPortal<LegacySplit> dataPortal = DataPortalFactory.CreateDataPortal<LegacySplit>();
+            IDataPortal<LegacySplit> dataPortal = _testDIContext.CreateDataPortal<LegacySplit>();
 
             return dataPortal.Create();
         }
 
         private LegacySplit GetLegacySplit(int id)
         {
-            IDataPortal<LegacySplit> dataPortal = DataPortalFactory.CreateDataPortal<LegacySplit>();
+            IDataPortal<LegacySplit> dataPortal = _testDIContext.CreateDataPortal<LegacySplit>();
 
             return dataPortal.Fetch(new LegacySplitBase<LegacySplit>.Criteria(id));
         }
 
         private void DeleteLegacySplit(int id)
         {
-            IDataPortal<LegacySplit> dataPortal = DataPortalFactory.CreateDataPortal<LegacySplit>();
+            IDataPortal<LegacySplit> dataPortal = _testDIContext.CreateDataPortal<LegacySplit>();
 
             dataPortal.Delete(new LegacySplitBase<LegacySplit>.Criteria(id));
         }

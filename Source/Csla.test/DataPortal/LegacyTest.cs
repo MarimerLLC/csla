@@ -26,6 +26,14 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class LegacyTest
     {
+        private TestDIContext _testDIContext;
+
+        [TestInitialize]
+        public void TestInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
         [TestMethod]
         public void TestDpCreate()
         {
@@ -87,21 +95,21 @@ namespace Csla.Test.DataPortalTest
         
         private Legacy NewLegacy()
         {
-            IDataPortal<Legacy> dataPortal = DataPortalFactory.CreateDataPortal<Legacy>();
+            IDataPortal<Legacy> dataPortal = _testDIContext.CreateDataPortal<Legacy>();
 
             return dataPortal.Create();
         }
 
         private Legacy GetLegacy(int id)
         {
-            IDataPortal<Legacy> dataPortal = DataPortalFactory.CreateDataPortal<Legacy>();
+            IDataPortal<Legacy> dataPortal = _testDIContext.CreateDataPortal<Legacy>();
 
             return dataPortal.Fetch(new Legacy.Criteria(id));
         }
 
         private void DeleteLegacy(int id)
         {
-            IDataPortal<Legacy> dataPortal = DataPortalFactory.CreateDataPortal<Legacy>();
+            IDataPortal<Legacy> dataPortal = _testDIContext.CreateDataPortal<Legacy>();
 
             dataPortal.Delete(new Legacy.Criteria(id));
         }

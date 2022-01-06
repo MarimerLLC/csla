@@ -26,7 +26,15 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class SingleTest
     {
-        [TestMethod]
+      private TestDIContext _testDIContext;
+
+      [TestInitialize]
+      public void TestInitialize(TestContext context)
+      {
+          _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      }
+
+      [TestMethod]
         public void TestDpCreate()
         {
             Single test = NewSingle();
@@ -87,21 +95,21 @@ namespace Csla.Test.DataPortalTest
 
         private Single NewSingle()
         {
-            IDataPortal<Single> dataPortal = DataPortalFactory.CreateDataPortal<Single>();
+            IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
 
             return dataPortal.Create();
         }
 
         private Single GetSingle(int id)
         {
-            IDataPortal<Single> dataPortal = DataPortalFactory.CreateDataPortal<Single>();
+            IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
 
             return dataPortal.Fetch(id);
         }
 
         private void DeleteSingle(int id)
         {
-            IDataPortal<Single> dataPortal = DataPortalFactory.CreateDataPortal<Single>();
+            IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
 
             dataPortal.Delete(id);
         }

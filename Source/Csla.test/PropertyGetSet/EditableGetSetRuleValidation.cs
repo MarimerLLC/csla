@@ -71,9 +71,9 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-    public static EditableGetSetRuleValidation NewEditableGetSetValidation()
+    public static EditableGetSetRuleValidation NewEditableGetSetValidation(IDataPortal<EditableGetSetRuleValidation> dataPortal)
     {
-      return Csla.DataPortal.Create<EditableGetSetRuleValidation>();
+      return dataPortal.Create();
     }
 
     #endregion

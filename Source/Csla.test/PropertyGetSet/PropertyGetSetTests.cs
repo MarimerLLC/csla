@@ -11,6 +11,8 @@ using UnitDriven;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Serialization;
+using System.IO;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -31,12 +33,14 @@ namespace Csla.Test.PropertyGetSet
   public class PropertyGetSetTests
   {
     private ApplicationContext.PropertyChangedModes _mode;
+    private TestDIContext _testDIContext;
 
     [TestInitialize]
     public void Initialize()
     {
       _mode = Csla.ApplicationContext.PropertyChangedMode;
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
     [TestCleanup]
@@ -717,8 +721,12 @@ namespace Csla.Test.PropertyGetSet
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
 
-      byte[] buffer = MobileFormatter.Serialize(root);
-      root = (EditableGetSet)MobileFormatter.Deserialize(buffer);
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      MemoryStream stream = new MemoryStream();
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
+      formatter.Serialize(stream, root);
+      stream.Seek(0, SeekOrigin.Begin);
+      root = (EditableGetSet)formatter.Deserialize(stream);
 
       int changed = 0;
       root.ChildChanged += (o, e) => { changed++; };

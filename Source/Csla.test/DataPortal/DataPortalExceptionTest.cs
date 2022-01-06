@@ -8,11 +8,19 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class DataPortalExceptionTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void ChildInnerExceptionFlowsFromDataPortal()
     {
-      IDataPortal<EditableRoot1> dataPortal = DataPortalFactory.CreateDataPortal<EditableRoot1>();
+      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
 
       try
       {

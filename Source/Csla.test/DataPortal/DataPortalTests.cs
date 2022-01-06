@@ -12,6 +12,7 @@ using Csla.Test.DataBinding;
 using System.Data;
 using System.Data.SqlClient;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 
 #if NUNIT
 using NUnit.Framework;
@@ -29,6 +30,14 @@ namespace Csla.Test.DataPortal
     [TestClass()]
     public class DataPortalTests
     {   
+        private TestDIContext _testDIContext;
+
+        [TestInitialize]
+        public void TestInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+  
         private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
         public void ClearDataBase()
         {
@@ -55,7 +64,9 @@ namespace Csla.Test.DataPortal
         
         public void TestTransactionScopeUpdate()
         {
-            Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+            IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();
+
+            Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
             tr.FirstName = "Bill";
             tr.LastName = "Johnson";
             //setting smallColumn to a string less than or equal to 5 characters will
@@ -76,7 +87,7 @@ namespace Csla.Test.DataPortal
                 Assert.AreEqual(true, dr.HasRows);
                 dr.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //do nothing
             }
@@ -87,7 +98,7 @@ namespace Csla.Test.DataPortal
 
             ClearDataBase();
 
-            Csla.Test.DataPortal.TransactionalRoot tr2 = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+            Csla.Test.DataPortal.TransactionalRoot tr2 = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
             tr2.FirstName = "Jimmy";
             tr2.LastName = "Smith";
             //intentionally input a string longer than varchar(5) to 
@@ -115,7 +126,7 @@ namespace Csla.Test.DataPortal
                 Assert.AreEqual(false, dr.HasRows);
                 dr.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //do nothing
             }
@@ -129,12 +140,13 @@ namespace Csla.Test.DataPortal
 #endif
 
         [TestMethod()]
-        
         public void StronglyTypedDataPortalMethods()
         {
+            IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();
+
             //test strongly-typed DataPortal_Fetch method
             TestResults.Reinitialise();
-            Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456);
+            Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
 
             Assert.AreEqual("Fetched", TestResults.GetResult("StronglyTypedDP"));
             Assert.AreEqual("fetched existing data", root.Data);
@@ -142,90 +154,89 @@ namespace Csla.Test.DataPortal
        
             //test strongly-typed DataPortal_Create method
             TestResults.Reinitialise();
-            Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP();
+            Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP(dataPortal);
 
             Assert.AreEqual("Created", TestResults.GetResult("StronglyTypedDP"));
             Assert.AreEqual("new default data", root2.Data);
             Assert.AreEqual(56, root2.Id);
 
             //test strongly-typed DataPortal_Delete method
-            Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567);
-            Assert.AreEqual(567, TestResults.GetResult("StronglyTypedDP_Criteria"));
-        }
-
-        [TestMethod]
-        
-        public void EncapsulatedIsBusyFails()
-        {
-          IDataPortal<EncapsulatedBusy> dataPortal = DataPortalFactory.CreateDataPortal<EncapsulatedBusy>();
-
-          try
-          {
-            var obj = dataPortal.Fetch();
-          }
-          catch (DataPortalException ex)
-          {
-            Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
-            return;
-          }
-          Assert.Fail("Expected exception");
-        }
-
-        [TestMethod]
-        
-        public void FactoryIsBusyFails()
-        {
-          IDataPortal<FactoryBusy> dataPortal = DataPortalFactory.CreateDataPortal<FactoryBusy>();
-
-          try
-          {
-            var obj = dataPortal.Fetch();
-          }
-          catch (DataPortalException ex)
-          {
-            Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
-            return;
-          }
-          Assert.Fail("Expected exception");
-        }
-
-        [TestMethod()]
-        
-        public void DataPortalEvents()
-        {
-            IDataPortal<DpRoot> dataPortal = DataPortalFactory.CreateDataPortal<DpRoot>();
-
-            // TODO: Fix test
-            //Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-            //Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
-
-            //try
-            //{
-            //    TestResults.Reinitialise();
-            //    DpRoot root = dataPortal.Create(new DpRoot.Criteria());
-
-            //    root.Data = "saved";
-            //    TestResults.Reinitialise();
-            //    root = root.Save();
-
-            //    Assert.IsTrue((bool)TestResults.GetResult("dpinvoke"], "DataPortalInvoke not called");
-            //    Assert.IsTrue((bool)TestResults.GetResult("dpinvokecomplete"], "DataPortalInvokeComplete not called");
-            //    Assert.IsTrue((bool)TestResults.GetResult("serverinvoke"], "Server DataPortalInvoke not called");
-            //    Assert.IsTrue((bool)TestResults.GetResult("serverinvokecomplete"], "Server DataPortalInvokeComplete not called");
-            //}
-            //finally
-            //{
-            //    Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-            //    Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
-            //}
+            Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567, dataPortal);
+            Assert.AreEqual("567", TestResults.GetResult("StronglyTypedDP_Criteria"));
         }
 
     [TestMethod]
+    public void EncapsulatedIsBusyFails()
+    {
+      IDataPortal<EncapsulatedBusy> dataPortal = _testDIContext.CreateDataPortal<EncapsulatedBusy>();
 
+      try
+      {
+        var obj = dataPortal.Fetch();
+      }
+      catch (DataPortalException ex)
+      {
+        Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
+        return;
+      }
+      Assert.Fail("Expected exception");
+    }
+
+    [TestMethod]
+    public void FactoryIsBusyFails()
+    {
+      IDataPortal<FactoryBusy> dataPortal = _testDIContext.CreateDataPortal<FactoryBusy>();
+
+      try
+      {
+        var obj = dataPortal.Fetch();
+      }
+      catch (DataPortalException ex)
+      {
+        Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
+        return;
+      }
+      Assert.Fail("Expected exception");
+    }
+
+    [TestMethod()]
+    public void DataPortalEvents()
+    {
+      IDataPortal<DpRoot> dataPortal = _testDIContext.CreateDataPortal<DpRoot>();
+
+      // TODO: Fix test
+      //Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+      //Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
+
+      try
+      {
+        TestResults.Reinitialise();
+        DpRoot root = dataPortal.Create(new DpRoot.Criteria());
+
+        root.Data = "saved";
+        TestResults.Reinitialise();
+        root = root.Save();
+
+        Assert.AreEqual("true", TestResults.GetResult("dpinvoke"), "DataPortalInvoke not called");
+        Assert.AreEqual("true", TestResults.GetResult("dpinvokecomplete"), "DataPortalInvokeComplete not called");
+        Assert.AreEqual("true", TestResults.GetResult("serverinvoke"), "Server DataPortalInvoke not called");
+        Assert.AreEqual("true", TestResults.GetResult("serverinvokecomplete"), "Server DataPortalInvokeComplete not called");
+      }
+      finally
+      {
+        // TODO: Fix test
+        //Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+        //Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
+      }
+    }
+
+    [TestMethod]
     public void DataPortalBrokerTests()
     {
       TestResults.Reinitialise();
-      Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer();
+
+      var dps = _testDIContext.ServiceProvider.GetRequiredService<Server.DataPortalSelector>();
+      var oldServer = Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
 
       try
       {
@@ -265,7 +276,7 @@ namespace Csla.Test.DataPortal
       finally
       {
         TestResults.Reinitialise();
-        Csla.Server.DataPortalBroker.DataPortalServer = null;
+        Csla.Server.DataPortalBroker.DataPortalServer = oldServer;
       }
     }
 
@@ -273,8 +284,10 @@ namespace Csla.Test.DataPortal
 
     public void CallDataPortalOverrides()
     {
+      IDataPortal<ParentEntity> dataPortal = _testDIContext.CreateDataPortal<ParentEntity>();
+
       TestResults.Reinitialise();
-      ParentEntity parent = ParentEntity.NewParentEntity();
+      ParentEntity parent = ParentEntity.NewParentEntity(dataPortal);
       parent.Data = "something";
 
       Assert.AreEqual(false, parent.IsDeleted);
@@ -310,7 +323,7 @@ namespace Csla.Test.DataPortal
       parent = parent.Save();
       Assert.AreEqual("Deleted Self", TestResults.GetResult("ParentEntity"));
 
-      ParentEntity.DeleteParentEntity(33);
+      ParentEntity.DeleteParentEntity(33, dataPortal);
       Assert.AreEqual("Deleted", TestResults.GetResult("ParentEntity"));
       Assert.AreEqual(false, parent.IsDeleted);
       Assert.AreEqual(true, parent.IsValid);
@@ -318,7 +331,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(true, parent.IsDirty);
       Assert.AreEqual(true, parent.IsSavable);
 
-      ParentEntity.GetParentEntity(33);
+      ParentEntity.GetParentEntity(33, dataPortal);
       Assert.AreEqual("Fetched", TestResults.GetResult("ParentEntity"));
     }
 
@@ -334,21 +347,21 @@ namespace Csla.Test.DataPortal
 
     private DataPortalTest.Single NewSingle()
     {
-      IDataPortal<DataPortalTest.Single> dataPortal = DataPortalFactory.CreateDataPortal<DataPortalTest.Single>();
+      IDataPortal<DataPortalTest.Single> dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
 
       return dataPortal.Create();
     }
 
     private DataPortalTest.Single GetSingle(int id)
     {
-      IDataPortal<DataPortalTest.Single> dataPortal = DataPortalFactory.CreateDataPortal<DataPortalTest.Single>();
+      IDataPortal<DataPortalTest.Single> dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
 
       return dataPortal.Fetch(id);
     }
 
     private void DeleteSingle(int id)
     {
-      IDataPortal<DataPortalTest.Single> dataPortal = DataPortalFactory.CreateDataPortal<DataPortalTest.Single>();
+      IDataPortal<DataPortalTest.Single> dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
 
       dataPortal.Delete(id);
     }

@@ -38,9 +38,9 @@ namespace Csla.Test.GraphMerge
       private set { LoadProperty(ChildListProperty, value); }
     }
 
-    public void AddChild()
+    public void AddChild(IDataPortal<Foo> dataPortal)
     {
-      var child = Csla.DataPortal.Create<Foo>();
+      var child = dataPortal.Create();
       child.MarkAsChild();
       LoadProperty(ChildProperty, child);
     }

@@ -14,8 +14,7 @@ namespace Csla.Test.ChildChanged
   [TestClass]
   public class OptimizeChildChangedTests
   {
-
-
+    private TestDIContext _testDIContext;
 
     public enum enumBO { SimpleBO, SimpleBOList };
     public enum enumEvent { OnPropertyChanged, OnChildChanged, PropertyChanged, ChildChanged };
@@ -147,7 +146,7 @@ namespace Csla.Test.ChildChanged
 
     private SimpleBO Fetch()
     {
-      IDataPortal<SimpleBO> dataPortal = DataPortalFactory.CreateDataPortal<SimpleBO>();
+      IDataPortal<SimpleBO> dataPortal = _testDIContext.CreateDataPortal<SimpleBO>();
 
       var result = dataPortal.Fetch();
 
@@ -191,6 +190,12 @@ namespace Csla.Test.ChildChanged
     {
       var bo = sender as SimpleBO ?? throw new ArgumentNullException("Not a SimpleBO");
       EventDetails.Add(new EventDetail() { BO = enumBO.SimpleBO, Depth = bo.Depth, Event = enumEvent.PropertyChanged, UniqueID = bo.UniqueID, PropertyName = e.PropertyName });
+    }
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
     [TestMethod]

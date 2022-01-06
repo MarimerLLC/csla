@@ -20,6 +20,14 @@ namespace Csla.Test.BasicModern
   [TestClass]
   public class BasicModernTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void EditLevelsWorkWithMobileFormatter()
     {
@@ -210,7 +218,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsChild()
     {
-      IChildDataPortal<Child> childDataPortal = DataPortalFactory.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
@@ -259,7 +267,7 @@ namespace Csla.Test.BasicModern
 
     private Root NewRoot()
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
       return dataPortal.Create();
     }

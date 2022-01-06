@@ -32,8 +32,6 @@ namespace Csla.Test.ValidationRules
     {
       get 
       {
-        if (!FieldManager.FieldExists(ChildListProperty))
-          LoadProperty(ChildListProperty, ChildList.NewList());
         return GetProperty(ChildListProperty); 
       }
     }
@@ -79,8 +77,9 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private async Task Create()
+    private async Task Create([Inject] IChildDataPortal<ChildList> childDataPortal)
     {
+      LoadProperty(ChildListProperty, ChildList.NewList(childDataPortal));
       await BusinessRules.CheckRulesAsync();
     }
   }

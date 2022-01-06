@@ -25,6 +25,14 @@ namespace Csla.Test.IO
     [TestClass]
     public class IOTests
     {
+        private TestDIContext _testDIContext;
+
+        [TestInitialize]
+        public void TestInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
         [TestMethod]
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void SaveNewRoot()
@@ -48,6 +56,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsDeleted, "IsDeleted");
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
+
         [TestMethod]
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void SaveOldRoot()
@@ -70,6 +79,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsDeleted, "IsDeleted");
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
+
         [TestMethod]
         [TestCategory("SkipWhenLiveUnitTesting")]
         public void LoadRoot()
@@ -144,21 +154,21 @@ namespace Csla.Test.IO
 
         private Basic.Root NewRoot()
         {
-            IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+            IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
             return dataPortal.Create(new Basic.Root.Criteria());
         }
 
         private Basic.Root GetRoot(string data)
         {
-            IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+            IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
             return dataPortal.Fetch(new Basic.Root.Criteria(data));
         }
 
         private void DeleteRoot(string data)
         {
-          IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+          IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
           dataPortal.Delete(new Basic.Root.Criteria(data));
         }

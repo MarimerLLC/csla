@@ -26,6 +26,14 @@ namespace Csla.Test.DataPortalChild
   [TestClass()]
   public class DataPortalChildTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void CreateAndSaveChild()
     {
@@ -68,7 +76,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChild()
     {
-      IChildDataPortal<Child> childDataPortal = DataPortalFactory.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
       Root root = new Root();
       root.FetchChild(childDataPortal);
@@ -93,7 +101,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndDeleteChild()
     {
-      IChildDataPortal<Child> childDataPortal = DataPortalFactory.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
       Root root = new Root();
       root.FetchChild(childDataPortal);
@@ -176,7 +184,7 @@ namespace Csla.Test.DataPortalChild
 
     private Child NewChild()
     {
-      IChildDataPortal<Child> childDataPortal = DataPortalFactory.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
       return childDataPortal.CreateChild();
     }

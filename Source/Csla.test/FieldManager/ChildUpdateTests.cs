@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if !NUNIT
 
@@ -22,11 +23,21 @@ namespace Csla.Test.FieldManager
   [TestClass()]
   public class ChildUpdateTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void FetchAndSaveChild()
     {
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+
       Root root = new Root();
-      root.FetchChild();
+      root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsDirty, "Child should not be dirty");
       Assert.AreEqual("Fetched", root.Child.Status, "Child status incorrect after fetch");
@@ -39,8 +50,10 @@ namespace Csla.Test.FieldManager
     [TestMethod]
     public void FetchAndSaveAnyChild()
     {
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+
       var root = new RootUpdateAllChildren();
-      root.FetchChild();
+      root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsDirty, "Child should not be dirty");
       Assert.AreEqual("Fetched", root.Child.Status, "Child status incorrect after fetch");

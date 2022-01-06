@@ -27,21 +27,29 @@ namespace Csla.Test.AppContext
   [TestClass()]
   public class AppContextTests
   {
+    private TestDIContext _testDIContext;
+
+    [TestInitialize]
+    public void TestInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+    
     #region Simple Test
 
     [TestMethod()]
     public void SimpleTest()
     {
+      IDataPortal<SimpleRoot> dataPortal = _testDIContext.CreateDataPortal<SimpleRoot>();
+
       // TODO: Fix test
       TestResults.Reinitialise();
       //ApplicationContext.ClientContext["v1"] = "client";
-      //TestResults.Add("v2"] = "client";
 
-      //SimpleRoot root = SimpleRoot.GetSimpleRoot("data");
+      SimpleRoot root = dataPortal.Fetch("data");
 
       //Assert.AreEqual("client", ApplicationContext.ClientContext["v1"], "client context didn't roundtrip");
-      //Assert.AreEqual("client", TestResults.GetResult("v2"], "global context didn't roundtrip");
-      //Assert.AreEqual("Fetched", TestResults.GetResult("Root"], "global context missing server value");
+      Assert.AreEqual("Fetched", TestResults.GetResult("Root"), "global context missing server value");
     }
 
     #endregion
@@ -116,31 +124,33 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void ClientContext()
     {
+      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+
       // TODO: Fix test
       TestResults.Reinitialise();
 
       //Csla.ApplicationContext.ClientContext.Add("clientcontext", "client context data");
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
 
-      //Csla.Test.Basic.Root root = Csla.Test.Basic.Root.NewRoot();
-      //root.Data = "saved";
-      //Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
-      //Assert.AreEqual(true, root.IsDirty, "Object should be dirty");
-      //Assert.AreEqual(true, root.IsValid, "Object should be valid");
+      Csla.Test.Basic.Root root = dataPortal.Create();
+      root.Data = "saved";
+      Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
+      Assert.AreEqual(true, root.IsDirty, "Object should be dirty");
+      Assert.AreEqual(true, root.IsValid, "Object should be valid");
 
       TestResults.Reinitialise();
       //root = root.Save();
 
-      //Assert.IsNotNull(root, "Root object should not be null");
-      //Assert.AreEqual("Inserted", TestResults.GetResult("Root"], "Object not inserted");
-      //Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
-      //Assert.AreEqual(false, root.IsNew, "Object should not be new");
-      //Assert.AreEqual(false, root.IsDeleted, "Object should not be deleted");
-      //Assert.AreEqual(false, root.IsDirty, "Object should not be dirty");
+      Assert.IsNotNull(root, "Root object should not be null");
+      Assert.AreEqual("Inserted", TestResults.GetResult("Root"), "Object not inserted");
+      Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
+      Assert.AreEqual(false, root.IsNew, "Object should not be new");
+      Assert.AreEqual(false, root.IsDeleted, "Object should not be deleted");
+      Assert.AreEqual(false, root.IsDirty, "Object should not be dirty");
 
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Client context data lost");
-      //Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"], "Global context data lost");
-      //Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"], "New global value lost");
+      Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"), "Global context data lost");
+      Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"), "New global value lost");
     }
     #endregion
 
@@ -159,18 +169,20 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void DataPortalEvents()
     {
-      IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
       TestResults.Reinitialise();
       TestResults.Add("global", "global");
 
-      dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-      dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
+      // TODO: Fix test
+      //dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+      //dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
       Basic.Root root = dataPortal.Fetch(new Basic.Root.Criteria("testing"));
 
-      dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-      dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
+      // TODO: Fix test
+      //dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+      //dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
       //Populated in the handlers below
       Assert.AreEqual("global", TestResults.GetResult("ClientInvoke"), "Client invoke incorrect");
@@ -198,7 +210,7 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void FailCreateContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
       TestResults.Reinitialise();
 
@@ -223,7 +235,7 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void FailFetchContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
       //TestResults.Reinitialise();
       ExceptionRoot root = null;
@@ -251,7 +263,7 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void FailUpdateContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
       try
       {
@@ -300,7 +312,7 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void FailDeleteContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = DataPortalFactory.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       TestResults.Reinitialise();
 
       ExceptionRoot root = null;
@@ -336,7 +348,7 @@ namespace Csla.Test.AppContext
 
     private Basic.Root GetRoot(string data)
     {
-      IDataPortal<Basic.Root> dataPortal = DataPortalFactory.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
       return dataPortal.Fetch(new Basic.Root.Criteria(data));
     }

@@ -61,19 +61,19 @@ namespace Csla.Test.DataPortal
 
     #region "Factory Methods"
 
-    public static TransactionalRoot NewTransactionalRoot()
+    public static TransactionalRoot NewTransactionalRoot(IDataPortal<TransactionalRoot> dataPortal)
     {
-      return Csla.DataPortal.Create<TransactionalRoot>();
+      return dataPortal.Create();
     }
 
-    public static TransactionalRoot GetTransactionalRoot(int ID)
+    public static TransactionalRoot GetTransactionalRoot(int ID, IDataPortal<TransactionalRoot> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TransactionalRoot>(new Criteria(ID));
+      return dataPortal.Fetch(new Criteria(ID));
     }
 
-    public static void DeleteTransactionalRoot(int ID)
+    public static void DeleteTransactionalRoot(int ID, IDataPortal<TransactionalRoot> dataPortal)
     {
-      Csla.DataPortal.Delete<TransactionalRoot>(new Criteria(ID));
+      dataPortal.Delete(new Criteria(ID));
     }
 
     #endregion

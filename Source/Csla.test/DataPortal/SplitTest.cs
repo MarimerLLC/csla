@@ -26,10 +26,10 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class SplitTest
     {
-        private TestDIContext _testDIContext;
+        private static TestDIContext _testDIContext;
 
-        [TestInitialize]
-        public void TestInitialize(TestContext context)
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
         {
             _testDIContext = TestDIContextFactory.CreateDefaultContext();
         }
@@ -37,7 +37,7 @@ namespace Csla.Test.DataPortalTest
         [TestMethod]
         public void TestDpCreate()
         {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+            IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
 
             Split test = Split.NewObject(dataPortal);
             Assert.AreEqual("Created", TestResults.GetResult("Split"));

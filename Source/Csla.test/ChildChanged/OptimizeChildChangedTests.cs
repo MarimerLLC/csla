@@ -14,7 +14,7 @@ namespace Csla.Test.ChildChanged
   [TestClass]
   public class OptimizeChildChangedTests
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
     public enum enumBO { SimpleBO, SimpleBOList };
     public enum enumEvent { OnPropertyChanged, OnChildChanged, PropertyChanged, ChildChanged };
@@ -78,7 +78,7 @@ namespace Csla.Test.ChildChanged
 
       }
 
-      private void DataPortal_Fetch([Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBO> simpleBOListPortal)
+      private void DataPortal_Fetch([Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBOList> simpleBOListPortal)
       {
         Depth = 0;
         LoadProperty(NameProperty, "Jupiter");
@@ -89,7 +89,7 @@ namespace Csla.Test.ChildChanged
 
       }
 
-      private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBO> simpleBOListPortal)
+      private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBOList> simpleBOListPortal)
       {
         Depth = depth;
         LoadProperty(NameProperty, "Saturn");
@@ -192,8 +192,8 @@ namespace Csla.Test.ChildChanged
       EventDetails.Add(new EventDetail() { BO = enumBO.SimpleBO, Depth = bo.Depth, Event = enumEvent.PropertyChanged, UniqueID = bo.UniqueID, PropertyName = e.PropertyName });
     }
 
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }

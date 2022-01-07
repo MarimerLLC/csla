@@ -29,10 +29,14 @@ namespace Csla.Test.ChildChanged
     {
       get
       {
-        if (!FieldManager.FieldExists(ChildProperty))
-          LoadProperty(ChildProperty, new SingleChild(true));
         return GetProperty(ChildProperty);
       }
+    }
+
+    [Fetch]
+    private void Fetch([Inject] IChildDataPortal<SingleChild> childDataPortal)
+    {
+      LoadProperty(ChildProperty, childDataPortal.FetchChild(true));
     }
   }
 }

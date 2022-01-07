@@ -28,7 +28,7 @@ namespace Csla.Test.AppContext
     }
 
     [Serializable()]
-    private class Criteria
+    internal class Criteria
     {
       public const string DefaultData = "<new>";
 
@@ -76,24 +76,24 @@ namespace Csla.Test.AppContext
     protected void DataPortal_Insert()
     {
       //we would insert here
-      TestResults.Add("Root", "Inserted");
-      TestResults.Add("create", "create");
+      TestResults.Overwrite("Root", "Inserted");
+      TestResults.Overwrite("create", "create");
       throw new ApplicationException("Fail insert");
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
-      TestResults.Add("Root", "Updated");
-      TestResults.Add("create", "create");
+      TestResults.Overwrite("Root", "Updated");
+      TestResults.Overwrite("create", "create");
       throw new ApplicationException("Fail update");
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
-      TestResults.Add("Root", "Deleted");
-      TestResults.Add("create", "create");
+      TestResults.Overwrite("Root", "Deleted");
+      TestResults.Overwrite("create", "create");
       throw new ApplicationException("Fail delete");
     }
 

@@ -217,7 +217,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Execute]
-		protected void DataPortal_Execute()
+	protected void DataPortal_Execute()
     {
       if (Value == 555)
         throw new Exception("bad value");

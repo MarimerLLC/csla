@@ -25,10 +25,10 @@ namespace Csla.Test.RollBack
   [TestClass]
   public class RollBackTests
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }

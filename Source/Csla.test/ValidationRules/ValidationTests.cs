@@ -33,10 +33,10 @@ namespace Csla.Test.ValidationRules
   public class ValidationTests : TestBase
   {
 
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
@@ -857,10 +857,10 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class RuleContextTests
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }

@@ -33,14 +33,19 @@ namespace Csla.Test.PropertyGetSet
   public class PropertyGetSetTests
   {
     private ApplicationContext.PropertyChangedModes _mode;
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestInitialize]
     public void Initialize()
     {
       _mode = Csla.ApplicationContext.PropertyChangedMode;
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
     [TestCleanup]

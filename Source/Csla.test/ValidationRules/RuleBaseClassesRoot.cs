@@ -278,6 +278,7 @@ namespace Csla.Test.ValidationRules
       //                             context.Complete();
       //                           };
       //bw.RunWorkerAsync();
+      context.AddSuccessResult(false);
     }
   }
 }

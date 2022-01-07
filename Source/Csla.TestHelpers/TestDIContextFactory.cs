@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="TestDIContextFactory.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Factory for DI context instances for use in tests</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;

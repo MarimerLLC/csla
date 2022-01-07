@@ -25,14 +25,14 @@ namespace Csla.Test.AppDomainTests
   [TestClass]
   public class AppDomainTestClass
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
-    
+
     [TestMethod]
     public void AppDomainTestIsCalled()
     {

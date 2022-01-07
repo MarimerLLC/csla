@@ -25,10 +25,10 @@ namespace Csla.Test.LogicalExecutionLocation
   [TestClass]
   public class LogicalExecutionLocationTests
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }

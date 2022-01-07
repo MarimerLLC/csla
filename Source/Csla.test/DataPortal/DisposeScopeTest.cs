@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Configuration;
+using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,11 +13,13 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class DisposeScopeTest
   {
+
+#if !NET462
     [TestMethod]
     public void Test_Scope_DoesNotDispose()
     {
       // CSLA should not dispose of the default service provider.
-      var serviceCollection = new ServiceCollection();
+      IServiceCollection serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
       serviceCollection.AddCsla();
 
@@ -29,6 +32,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(classA.DisposableClass.Id, classB.DisposableClass.Id, "Ids must be the same");
       Assert.IsFalse(classA.DisposableClass.IsDisposed, "Object must not be disposed");
     }
+#endif
 
   }
 

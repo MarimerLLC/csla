@@ -30,14 +30,14 @@ namespace Csla.Test.DataPortal
     [TestClass()]
     public class DataPortalTests
     {   
-        private TestDIContext _testDIContext;
+        private static TestDIContext _testDIContext;
 
-        [TestInitialize]
-        public void TestInitialize(TestContext context)
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
         {
             _testDIContext = TestDIContextFactory.CreateDefaultContext();
         }
-  
+
         private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
         public void ClearDataBase()
         {

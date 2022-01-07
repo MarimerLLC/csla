@@ -42,7 +42,7 @@ namespace Csla.Test.AppContext
         /// Criteria for DataPortal overrides
         /// </summary>
         [Serializable()]
-        private class Criteria
+        internal class Criteria
         {
             public const string DefaultData = "<new>";
 
@@ -71,7 +71,7 @@ namespace Csla.Test.AppContext
             Criteria crit = criteria as Criteria;
             this._Data = crit.Data;
 
-            //TestResults.Add("Root", "Created");
+            TestResults.Add("Root", "Created");
         }
         /// <summary>
         /// Handles DataPortal fetch calls
@@ -83,7 +83,7 @@ namespace Csla.Test.AppContext
             this._Data = crit.Data;
 
             this.MarkOld();
-            //TestResults.Add("Root", "Fetched");
+            TestResults.Add("Root", "Fetched");
         }
         /// <summary>
         /// 
@@ -93,18 +93,18 @@ namespace Csla.Test.AppContext
         {
             if (this.IsDeleted)
             {
-                //TestResults.Add("Root", "Deleted");
+                TestResults.Add("Root", "Deleted");
                 this.MarkNew();
             }
             else
             {
-                //if (this.IsNew)
-                //{
-                //    TestResults.Add("Root", "Inserted");
-                //}
-                //else TestResults.Add("Root", "Updated");
-                
-                this.MarkOld();
+                if (this.IsNew)
+                {
+                  TestResults.Add("Root", "Inserted");
+                }
+                else TestResults.Add("Root", "Updated");
+
+        this.MarkOld();
             }
         }
         /// <summary>
@@ -114,7 +114,7 @@ namespace Csla.Test.AppContext
         [Delete]
 		protected void DataPortal_Delete(object criteria)
         {
-            //TestResults.Add("Root", "Deleted");
+            TestResults.Add("Root", "Deleted");
         }
     }
 }

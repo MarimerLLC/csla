@@ -26,15 +26,15 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class SingleTest
     {
-      private TestDIContext _testDIContext;
+      private static TestDIContext _testDIContext;
 
-      [TestInitialize]
-      public void TestInitialize(TestContext context)
-      {
-          _testDIContext = TestDIContextFactory.CreateDefaultContext();
-      }
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
 
-      [TestMethod]
+        [TestMethod]
         public void TestDpCreate()
         {
             Single test = NewSingle();

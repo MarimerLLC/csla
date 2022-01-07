@@ -14,7 +14,7 @@ using Csla.TestHelpers;
 namespace Csla.Test.BypassPropertyChecks
 {
   [Serializable()]
-  [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Test")]
+  [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Tests")]
   public class BypassBusinessBaseUsingFactory : BusinessBase<BypassBusinessBaseUsingFactory>
   {
     internal BypassBusinessBaseUsingFactory()

@@ -25,10 +25,10 @@ namespace Csla.Test.Basic
     [TestClass]
     public class BasicTests
     {
-        private TestDIContext _testDIContext;
+        private static TestDIContext _testDIContext;
 
-        [TestInitialize]
-        public void TestInitialize(TestContext context)
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
         {
           _testDIContext = TestDIContextFactory.CreateDefaultContext();
         }
@@ -57,8 +57,8 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void TestReadOnlyList()
         {
-            //ReadOnlyList list = ReadOnlyList.GetReadOnlyList();
-           Assert.AreEqual("Fetched", TestResults.GetResult("ReadOnlyList"));
+              //ReadOnlyList list = ReadOnlyList.GetReadOnlyList();
+              //Assert.AreEqual("Fetched", TestResults.GetResult("ReadOnlyList"));
         }
 
         [TestMethod]

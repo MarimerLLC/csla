@@ -35,7 +35,7 @@ namespace Csla.Test.Serialization
   [TestClass()]
   public class SerializationTests : TestBase
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
     [Serializable]
     private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>
@@ -64,13 +64,12 @@ namespace Csla.Test.Serialization
       return new ClaimsPrincipal(identity);
     }
 
-
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
-    
+
     [TestMethod]
     public void SerializeDataPortalException()
     {

@@ -83,7 +83,7 @@ namespace Csla.Test.Basic
     protected void DataPortal_Insert()
     {
       TestResults.Add("clientcontext",
-          ApplicationContext.ClientContext["clientcontext"].ToString());
+          ApplicationContext.ClientContext["clientcontext"]?.ToString());
 
       TestResults.Overwrite("globalcontext",
         TestResults.GetResult("globalcontext"));

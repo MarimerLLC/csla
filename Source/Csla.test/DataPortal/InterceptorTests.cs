@@ -20,10 +20,10 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class InterceptorTests
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
-    [TestInitialize]
-    public void Setup()
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateContext(
         options => options
@@ -34,11 +34,6 @@ namespace Csla.Test.DataPortal
           config.RegisterActivator<TestActivator>();
         }
         ));
-    }
-
-    [TestCleanup]
-    public void Cleanup()
-    {
     }
 
     [TestMethod]

@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Test.AppContext
 {
-  public class TestContext : IContextManager
+  public class TestContextManager : IContextManager
   {
     [ThreadStatic]
     private static HybridDictionary _myContext = new HybridDictionary();

@@ -31,10 +31,16 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class AuthorizeDataPortalTests
   {
-    private TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext;
 
     #region SetUp
 
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+    
     [TestInitialize]
     public void Setup()
     {
@@ -42,8 +48,6 @@ namespace Csla.Test.DataPortal
 
       Csla.Configuration.ConfigurationManager.AppSettings["CslaAuthorizationProvider"] =
         "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business";
-
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
 
     }
 

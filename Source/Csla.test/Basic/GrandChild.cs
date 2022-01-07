@@ -83,7 +83,7 @@ namespace Csla.Test.Basic
         protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
         {
             base.OnDeserialized(context);
-            //TestResults.Add("GCDeserialized", "GC Deserialized");
+            TestResults.Add("GCDeserialized", "GC Deserialized");
         }
     }
 }

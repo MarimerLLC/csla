@@ -86,17 +86,21 @@ namespace Csla.Test.GraphMerge
     }
 
     [Create]
-    private void Create()
+    private void Create([Inject] IChildDataPortal<FooList> childDataPortal)
     {
+      LoadProperty(ChildListProperty, childDataPortal.CreateChild());
       BusinessRules.CheckRules();
     }
 
+    [InsertChild]
     private void Child_Insert()
     { }
 
+    [UpdateChild]
     private void Child_Update()
     { }
 
+    [DeleteSelfChild]
     private void Child_DeleteSelf()
     { }
   }
@@ -123,7 +127,7 @@ namespace Csla.Test.GraphMerge
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       base.Child_Update();
     }

@@ -19,9 +19,9 @@ namespace Csla.Test.PropertyGetSet
     public ChildList()
     { }
 
-    public ChildList(bool isChild)
+    public static ChildList NewObject(IDataPortal<ChildList> dataPortal, bool isChild)
     {
-      MarkAsChild();
+      return dataPortal.Create(isChild);
     }
 
     public new int EditLevel
@@ -36,6 +36,14 @@ namespace Csla.Test.PropertyGetSet
           item.Insert();
         else
           item.Update();
+    }
+
+    [Create]
+    private void Create(bool isChild)
+    {
+      if (isChild)
+        MarkAsChild();
+
     }
 
   }

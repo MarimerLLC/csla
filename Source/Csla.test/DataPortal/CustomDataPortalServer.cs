@@ -18,7 +18,7 @@ namespace Csla.Test.DataPortal
     {
       var result = await _dataPortalSelector.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      TestResults.Add("CustomDataPortalServer", "Create Called");
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Create Called");
 
       return result;
     }
@@ -27,7 +27,7 @@ namespace Csla.Test.DataPortal
     {
       var result = await _dataPortalSelector.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      TestResults.Add("CustomDataPortalServer", "Fetch Called");
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Fetch Called");
 
       return result;
     }
@@ -36,7 +36,7 @@ namespace Csla.Test.DataPortal
     {
       var result = await _dataPortalSelector.Update(obj, context, isSync).ConfigureAwait(false);
 
-      TestResults.Add("CustomDataPortalServer", "Update Called");
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Update Called");
 
       return result;
     }
@@ -45,7 +45,7 @@ namespace Csla.Test.DataPortal
     {
       var result = await _dataPortalSelector.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      TestResults.Add("CustomDataPortalServer", "Delete Called");
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Delete Called");
 
       return result;
     }

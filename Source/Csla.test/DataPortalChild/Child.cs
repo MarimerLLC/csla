@@ -45,16 +45,19 @@ namespace Csla.Test.DataPortalChild
       base.MarkDeleted();
     }
 
+    [CreateChild]
     protected override void Child_Create()
     {
       _status = "Created";
     }
 
+    [FetchChild]
     protected void Child_Fetch()
     {
       _status = "Fetched";
     }
 
+    [InsertChild]
     protected void Child_Insert(Root parent)
     {
       _status = "Inserted";
@@ -68,6 +71,7 @@ namespace Csla.Test.DataPortalChild
       }
     }
 
+    [UpdateChild]
     protected void Child_Update(Root parent)
     {
       _status = "Updated";
@@ -81,6 +85,7 @@ namespace Csla.Test.DataPortalChild
       }
     }
 
+    [DeleteSelfChild]
     protected void Child_DeleteSelf()
     {
       _status = "Deleted";

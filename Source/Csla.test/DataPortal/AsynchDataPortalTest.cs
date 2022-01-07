@@ -227,7 +227,7 @@ namespace Csla.Test.DataPortal
     {
       IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
 
-      var result = await dataPortal.CreateAsync();
+      var result = await dataPortal.CreateAsync(0);
       Assert.IsNotNull(result);
       Assert.AreEqual(0, result.Id);
       Assert.IsTrue(result.IsNew);

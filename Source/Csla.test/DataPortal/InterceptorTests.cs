@@ -210,7 +210,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
     }
 
@@ -231,7 +231,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       base.Child_Update();
     }
@@ -241,7 +241,7 @@ namespace Csla.Test.DataPortal
   public class InterceptorCommand : CommandBase<InterceptorCommand>
   {
     [Execute]
-		protected void DataPortal_Execute()
+	protected void DataPortal_Execute()
     {
       TestResults.Add("InterceptorCommand", "Execute");
     }
@@ -259,7 +259,7 @@ namespace Csla.Test.DataPortal
     {
       TestResults.Add("Intercept2+" + e.ObjectType.Name, "Complete");
       if (e.Exception != null)
-        TestResults.Add("InterceptException+" + e.ObjectType.Name, e.Exception.Message);
+        TestResults.AddOrOverwrite("InterceptException+" + e.ObjectType.Name, e.Exception.Message);
       TestResults.Add("InterceptOp2+" + e.ObjectType.Name, e.Operation.ToString());
     }
   }

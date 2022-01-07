@@ -66,12 +66,12 @@ namespace Csla.Test.LogicalExecutionLocation
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       
     }
 
-    protected void DataPortal_Fetch(IDataPortal<LocationBusinessBase> dataPortal)
+    protected void DataPortal_Fetch([Inject]IDataPortal<LocationBusinessBase> dataPortal)
     {
       SetProperty(DataProperty, ApplicationContext.LogicalExecutionLocation.ToString());
 #pragma warning disable CS0436 // Type conflicts with imported type

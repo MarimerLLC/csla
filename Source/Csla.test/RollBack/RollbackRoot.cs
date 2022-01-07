@@ -14,53 +14,45 @@ namespace Csla.Test.RollBack
   [Serializable()]
   public class RollbackRoot : BusinessBase<RollbackRoot>
   {
-    private string _data = "";
-    private bool _fail = false;
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public static PropertyInfo<bool> FailProperty = RegisterProperty<bool>(nameof(Fail));
 
     protected override object GetIdValue()
     {
-      return _data;
+      return GetProperty(DataProperty);
     }
 
     public string Data
     {
-      get { return _data; }
-      set
-      {
-        if (_data != value)
-        {
-          _data = value;
-          MarkDirty();
-        }
-      }
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
 
     public bool Fail
     {
-      get { return _fail; }
-      set
-      {
-        if (_fail != value)
-        {
-          _fail = value;
-          MarkDirty();
-        }
-      }
+      get { return GetProperty(FailProperty); }
+      set { SetProperty(FailProperty, value); }
     }
 
     [Serializable()]
-    private class Criteria
+    protected class Criteria : CriteriaBase<Criteria>
     {
-      public string _data;
+      private static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
 
       public Criteria()
       {
-        _data = "<new>";
+        Data = "<new>";
       }
 
       public Criteria(string data)
       {
-        this._data = data;
+        this.Data = data;
+      }
+
+      public string Data
+      {
+        get { return ReadProperty(DataProperty); }
+        set { LoadProperty(DataProperty, value); }
       }
     }
 
@@ -79,54 +71,52 @@ namespace Csla.Test.RollBack
       dataPortal.Delete(new Criteria(data));
     }
 
-    private void DataPortal_Create(object criteria)
+    private void DataPortal_Create(Criteria criteria)
     {
-      Criteria crit = (Criteria)(criteria);
-      _data = crit._data;
-      TestResults.Add("Root", "Created");
+      Data = criteria.Data;
+      TestResults.AddOrOverwrite("Root", "Created");
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(Criteria criteria)
     {
-      Criteria crit = (Criteria)(criteria);
-      _data = crit._data;
+      Data = criteria.Data;
       MarkOld();
-      TestResults.Add("Root", "Fetched");
+      TestResults.AddOrOverwrite("Root", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      TestResults.Add("Root", "Inserted");
+      TestResults.AddOrOverwrite("Root", "Inserted");
     }
 
     [Update]
     protected void DataPortal_Update()
     {
       //we would update here
-      TestResults.Add("Root", "Updated");
+      TestResults.AddOrOverwrite("Root", "Updated");
 
-      if (_fail)
+      if (Fail)
         throw new Exception("fail Update");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      TestResults.Add("Root", "Deleted self");
+      TestResults.AddOrOverwrite("Root", "Deleted self");
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
-      TestResults.Add("Root", "Deleted");
+      TestResults.AddOrOverwrite("Root", "Deleted");
     }
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       base.OnDeserialized(context);
-      TestResults.Add("Deserialized", "root Deserialized");
+      TestResults.AddOrOverwrite("Deserialized", "root Deserialized");
     }
   }
 }

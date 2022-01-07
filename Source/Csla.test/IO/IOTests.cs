@@ -110,7 +110,7 @@ namespace Csla.Test.IO
 
             root = root.Save();
             Assert.IsNotNull(root);
-            Assert.AreEqual(null, TestResults.GetResult("Root"));
+            Assert.AreEqual("", TestResults.GetResult("Root"));
             Assert.AreEqual(true, root.IsNew);
             Assert.AreEqual(false, root.IsDeleted);
             Assert.AreEqual(true, root.IsDirty);

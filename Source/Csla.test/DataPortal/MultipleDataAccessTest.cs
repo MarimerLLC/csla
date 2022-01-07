@@ -24,6 +24,7 @@ namespace Csla.Test.DataPortal
     public void TestDpFetch()
     {
       IDataPortal<MultipleDataAccess> dataPortal = _testDIContext.CreateDataPortal<MultipleDataAccess>();
+      TestResults.Reinitialise();
 
       var result = dataPortal.Fetch(1);
       Assert.AreEqual(1, result.Id);

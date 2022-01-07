@@ -37,7 +37,9 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void CreateAndSaveChild()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Create();
       root.Data = "a";
       root.Child.Data = "b";
 
@@ -58,7 +60,9 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void CreateAndDeleteChild()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Create();
 
       root.Child.DeleteChild();
       Assert.IsTrue(root.Child.IsDeleted, "Child should be marked for deletion");
@@ -77,8 +81,9 @@ namespace Csla.Test.DataPortalChild
     public void FetchAndSaveChild()
     {
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
-      Root root = new Root();
+      Root root = dataPortal.Create();
       root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsNew, "Child should not be new");
@@ -102,8 +107,9 @@ namespace Csla.Test.DataPortalChild
     public void FetchAndDeleteChild()
     {
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
-      Root root = new Root();
+      Root root = dataPortal.Create();
       root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsNew, "Child should not be new");
@@ -126,7 +132,9 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChildList()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Fetch();
       var list = root.ChildList;
       Assert.IsFalse(root.ChildList.IsDirty, "Child list should not be dirty");
       Assert.AreEqual("Fetched", root.ChildList.Status, "Child list status incorrect after fetch");
@@ -151,7 +159,9 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChildListVerifyParent()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Fetch();
       root.Data = "root";
       var oneChild = root.Child;
       oneChild.Data = "random";

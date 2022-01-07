@@ -18,7 +18,7 @@ namespace Csla.Test.FieldManager
       return childDataPortal.FetchChild();
     }
 
-    private ChildList()
+    public ChildList()
     {
       MarkAsChild();
     }
@@ -34,6 +34,7 @@ namespace Csla.Test.FieldManager
       get { return _status; }
     }
 
+    [FetchChild]
     protected void Child_Fetch()
     {
       _status = "Fetched";

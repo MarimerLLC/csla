@@ -38,7 +38,12 @@ namespace Csla.Test.DataPortal
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testDIContext = TestDIContextFactory.CreateContext(options =>
+      {
+        options.Services.AddTransient<TestableDataPortal>();
+        options.DataPortal().AddServerSideDataPortal(config => config.RegisterAuthorizerProvider<AuthorizeDataPortalStub>());
+      }
+      );
     }
     
     [TestInitialize]
@@ -76,13 +81,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void IfAuthProviderTypeImplements_IAuthorizeDataPortal_Then_authorizerFieldShouldBeAnInstanceOfThatType()
     {
-      var testDIContext = TestDIContextFactory.CreateContext(config => 
-        config.DataPortal()
-        .AddServerSideDataPortal(
-          opts => opts.RegisterAuthorizerProvider<AuthorizeDataPortalStub>()
-          )
-        );
-      var dp = testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
 
       Assert.IsTrue(dp.AuthProviderType == typeof(AuthorizeDataPortalStub));//_authorizer field is set to correct value;
     }
@@ -161,7 +160,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, null,false), true);
+      await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
@@ -174,7 +173,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Fetch(typeof(TestBO), null, new DataPortalContext(applicationContext, null, false), true);
+      await dp.Fetch(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 

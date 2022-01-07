@@ -28,8 +28,7 @@ namespace Csla.Testing.Business.DataPortal
       IDataPortalActivator activator,
       IDataPortalExceptionInspector exceptionInspector,
       DataPortalExceptionHandler exceptionHandler
-      ) : base
-    (
+    ) : base(
       applicationContext,
       dashboard,
       options,

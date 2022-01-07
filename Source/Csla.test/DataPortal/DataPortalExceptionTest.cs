@@ -53,7 +53,7 @@ namespace Csla.Test.DataPortal
     {
       using (BypassPropertyChecks)
       {
-        Child = childDataPortal.CreateChild();
+        LoadProperty(ChildProperty, childDataPortal.CreateChild());
       }
       BusinessRules.CheckRules();
     }
@@ -74,6 +74,7 @@ namespace Csla.Test.DataPortal
   {
     #region Data Access
 
+    [CreateChild]
     protected override void Child_Create()
     {
       using (BypassPropertyChecks)
@@ -82,6 +83,7 @@ namespace Csla.Test.DataPortal
       base.Child_Create();
     }
 
+    [InsertChild]
     private void Child_Insert(object parent)
     {
       using (BypassPropertyChecks)

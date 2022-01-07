@@ -51,23 +51,23 @@ namespace Csla.TestHelpers
     /// <summary>
     /// Create a test DI context for testing with a specific authenticated user
     /// </summary>
-    /// <param name="options">The options action that is used by the consumer to configure Csla</param>
+    /// <param name="customCslaOptions">The options action that is used by the consumer to configure Csla</param>
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
-    public static TestDIContext CreateContext(Action<CslaOptions> options)
+    public static TestDIContext CreateContext(Action<CslaOptions> customCslaOptions)
     {
       ClaimsPrincipal principal;
 
       principal = CreateDefaultClaimsPrincipal();
-      return CreateContext(options, principal);
+      return CreateContext(customCslaOptions, principal);
     }
 
     /// <summary>
     /// Create a test DI context for testing with a specific authenticated user
     /// </summary>
-    /// <param name="options">The options action that is used by the consumer to configure Csla</param>
+    /// <param name="customCslaOptions">The options action that is used by the consumer to configure Csla</param>
     /// <param name="principal">The principal which is to be set as the security context for Csla operations</param>
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
-    public static TestDIContext CreateContext(Action<CslaOptions> options, ClaimsPrincipal principal)
+    public static TestDIContext CreateContext(Action<CslaOptions> customCslaOptions, ClaimsPrincipal principal)
     {
       ServiceProvider serviceProvider;
       ApplicationContext context;
@@ -76,8 +76,9 @@ namespace Csla.TestHelpers
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
-      services.AddCsla(options);
+      services.AddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
+      services.AddCsla(customCslaOptions);
+
       serviceProvider = services.BuildServiceProvider();
 
       // Initialise CSLA security

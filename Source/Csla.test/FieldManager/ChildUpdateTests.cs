@@ -35,8 +35,9 @@ namespace Csla.Test.FieldManager
     public void FetchAndSaveChild()
     {
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
-      Root root = new Root();
+      Root root = dataPortal.Create();
       root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsDirty, "Child should not be dirty");
@@ -51,8 +52,9 @@ namespace Csla.Test.FieldManager
     public void FetchAndSaveAnyChild()
     {
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IDataPortal<RootUpdateAllChildren> dataPortal = _testDIContext.CreateDataPortal<RootUpdateAllChildren>();
 
-      var root = new RootUpdateAllChildren();
+      var root = dataPortal.Create();
       root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsDirty, "Child should not be dirty");

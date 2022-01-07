@@ -45,7 +45,7 @@ namespace Csla.Test.DPException
             IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
             TestResults.Reinitialise();
 
-            Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
+            DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
             root.FirstName = "Billy";
             root.LastName = "lastname";
             root.SmallColumn = "too long for the database"; //normally would be prevented through validation
@@ -63,8 +63,8 @@ namespace Csla.Test.DPException
             {
                 baseException = ex.Message;
                 baseInnerException = ex.InnerException.Message;
-                baseInnerInnerException = ex.InnerException.InnerException.Message;
-                exceptionSource = ex.InnerException.InnerException.Source;
+                baseInnerInnerException = ex.InnerException.InnerException?.Message;
+                exceptionSource = ex.InnerException.InnerException?.Source;
                 Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
             }
 

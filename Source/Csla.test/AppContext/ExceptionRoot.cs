@@ -76,24 +76,24 @@ namespace Csla.Test.AppContext
     protected void DataPortal_Insert()
     {
       //we would insert here
-      TestResults.Overwrite("Root", "Inserted");
-      TestResults.Overwrite("create", "create");
+      TestResults.AddOrOverwrite("Root", "Inserted");
+      TestResults.AddOrOverwrite("create", "create");
       throw new ApplicationException("Fail insert");
     }
 
     [Update]
 	protected void DataPortal_Update()
     {
-      TestResults.Overwrite("Root", "Updated");
-      TestResults.Overwrite("create", "create");
+      TestResults.AddOrOverwrite("Root", "Updated");
+      TestResults.AddOrOverwrite("create", "create");
       throw new ApplicationException("Fail update");
     }
 
     [Delete]
 	protected void DataPortal_Delete(object criteria)
     {
-      TestResults.Overwrite("Root", "Deleted");
-      TestResults.Overwrite("create", "create");
+      TestResults.AddOrOverwrite("Root", "Deleted");
+      TestResults.AddOrOverwrite("create", "create");
       throw new ApplicationException("Fail delete");
     }
 

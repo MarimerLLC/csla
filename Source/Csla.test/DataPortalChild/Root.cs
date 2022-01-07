@@ -52,6 +52,13 @@ namespace Csla.Test.DataPortalChild
       LoadProperty(ChildListProperty, childListDataPortal.CreateChild());
     }
 
+    [Fetch]
+    protected void DataPortal_Fetch([Inject] IChildDataPortal<Child> childDataPortal, [Inject] IChildDataPortal<ChildList> childListDataPortal)
+    {
+      LoadProperty(ChildProperty, childDataPortal.FetchChild());
+      LoadProperty(ChildListProperty, childListDataPortal.FetchChild());
+    }
+
     [Insert]
     protected void DataPortal_Insert()
     {
@@ -59,7 +66,7 @@ namespace Csla.Test.DataPortalChild
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren(this);
     }

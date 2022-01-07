@@ -157,20 +157,16 @@ namespace Csla.Test.PropertyGetSet
     {
       get 
       { 
-        if (!FieldManager.FieldExists(ManagedChildProperty))
-          SetProperty(ManagedChildProperty, new EditableGetSet(true));
         return GetProperty(ManagedChildProperty); 
       }
     }
 
-    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty<ChildList>(typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList"));
+    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList"));
     public ChildList ManagedChildList
     {
       get
       {
-        if (!FieldManager.FieldExists(ManagedChildListProperty))
-          LoadProperty<ChildList>(ManagedChildListProperty, new ChildList(true));
-        return GetProperty<ChildList>(ManagedChildListProperty);
+        return GetProperty(ManagedChildListProperty);
       }
     }
 
@@ -209,6 +205,11 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
+    public static EditableGetSet NewObject(IDataPortal<EditableGetSet> dataPortal, bool isChild)
+    {
+      return dataPortal.Create(isChild);
+    }
+
     public static EditableGetSet GetObject(IDataPortal<EditableGetSet> dataPortal)
     {
       return dataPortal.Fetch();
@@ -218,9 +219,25 @@ namespace Csla.Test.PropertyGetSet
 
     #region Data Access
 
-    private void DataPortal_Fetch()
+    [Create]
+    private void Create(bool isChild, [Inject] IDataPortal<EditableGetSet> dataPortal, [Inject]IDataPortal<ChildList> listDataPortal)
     {
       LoadProperty(M06Property, null);
+      LoadProperty(ManagedChildProperty, EditableGetSet.NewObject(dataPortal, true));
+      LoadProperty(ManagedChildListProperty, ChildList.NewObject(listDataPortal, true));
+      if (isChild)
+      {
+        MarkAsChild();
+        MarkNew();
+      }
+    }
+
+    [Fetch]
+    private void DataPortal_Fetch([Inject] IDataPortal<EditableGetSet> dataPortal, [Inject] IDataPortal<ChildList> listDataPortal)
+    {
+      LoadProperty(M06Property, null);
+      LoadProperty(ManagedChildProperty, EditableGetSet.NewObject(dataPortal, true));
+      LoadProperty(ManagedChildListProperty, ChildList.NewObject(listDataPortal, true));
     }
 
     [Insert]
@@ -234,7 +251,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
     }
@@ -325,7 +342,7 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-    public static EditableGetSet GetObject(IDataPortal<EditableGetSet> dataPortal)
+    public static EditableGetSetNFI GetObject(IDataPortal<EditableGetSetNFI> dataPortal)
     {
       return dataPortal.Fetch();
     }

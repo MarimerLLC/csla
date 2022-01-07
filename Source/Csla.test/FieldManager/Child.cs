@@ -58,21 +58,25 @@ namespace Csla.Test.FieldManager
       _status = "Created";
     }
 
+    [FetchChild]
     protected void Child_Fetch()
     {
       _status = "Fetched";
     }
 
+    [InsertChild]
     protected void Child_Insert()
     {
       _status = "Inserted";
     }
 
+    [UpdateChild]
     protected void Child_Update()
     {
       _status = "Updated";
     }
 
+    [DeleteSelfChild]
     protected void Child_DeleteSelf()
     {
       _status = "Deleted";

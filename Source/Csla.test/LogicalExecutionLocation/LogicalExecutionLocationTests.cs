@@ -61,10 +61,10 @@ namespace Csla.Test.LogicalExecutionLocation
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase(dataPortal);
 #pragma warning restore CS0436 // Type conflicts with imported type
 
-      Assert.AreEqual(item.Rule, Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), "Should be server");
+      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.Rule, "Should be server");
 
       item.Data = "random";
-      Assert.AreEqual(item.Rule, Csla.ApplicationContext.LogicalExecutionLocations.Client.ToString(), "Should be client");
+      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Client.ToString(), item.Rule, "Should be client");
 
     }
   }

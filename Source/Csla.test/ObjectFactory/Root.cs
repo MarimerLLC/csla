@@ -13,7 +13,7 @@ using Csla;
 
 namespace Csla.Test.ObjectFactory
 {
-  [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.RootFactory, Csla.Test")]
+  [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.RootFactory, Csla.Tests")]
   [Serializable]
   public class Root : BusinessBase<Root>
   {

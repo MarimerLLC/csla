@@ -199,14 +199,16 @@ namespace Csla.Test.DataPortal
       Assert.Fail("Expected exception");
     }
 
+    // TODO: Is this a relevant concept any more? These events do not seem to be exposed
+    [Ignore]
     [TestMethod()]
     public void DataPortalEvents()
     {
       IDataPortal<DpRoot> dataPortal = _testDIContext.CreateDataPortal<DpRoot>();
 
       // TODO: Fix test
-      //Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-      //Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
+      //dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+      //dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
 
       try
       {
@@ -225,8 +227,8 @@ namespace Csla.Test.DataPortal
       finally
       {
         // TODO: Fix test
-        //Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-        //Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
+        //dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+        //dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
       }
     }
 

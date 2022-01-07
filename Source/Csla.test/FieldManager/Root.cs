@@ -40,7 +40,7 @@ namespace Csla.Test.FieldManager
 
     public void FetchChild(IChildDataPortal<Child> childDataPortal)
     {
-      SetProperty<Child>(ChildProperty, Child.GetChild(childDataPortal));
+      SetProperty(ChildProperty, Child.GetChild(childDataPortal));
     }
 
     [Create]
@@ -48,7 +48,6 @@ namespace Csla.Test.FieldManager
     {
       LoadProperty(ChildProperty, Child.NewChild(childDataPortal));
       LoadProperty(ChildListProperty, ChildList.GetList(childListDataPortal));
-
     }
 
     [Insert]

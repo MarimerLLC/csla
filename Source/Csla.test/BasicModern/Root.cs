@@ -58,7 +58,7 @@ namespace Csla.Test.BasicModern
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
     }
@@ -70,7 +70,7 @@ namespace Csla.Test.BasicModern
     }
 
     [Delete]
-		private void DataPortal_Delete(int id)
+	private void DataPortal_Delete(int id)
     {
       FieldManager.UpdateChildren();
     }

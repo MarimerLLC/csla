@@ -85,16 +85,16 @@ namespace Csla.Test.Basic
       TestResults.Add("clientcontext",
           ApplicationContext.ClientContext["clientcontext"]?.ToString());
 
-      TestResults.Overwrite("globalcontext",
+      TestResults.AddOrOverwrite("globalcontext",
         TestResults.GetResult("globalcontext"));
 
-      TestResults.Overwrite("globalcontext", "new global value");
+      TestResults.AddOrOverwrite("globalcontext", "new global value");
 
       TestResults.Add("Root", "Inserted");
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       //we would update here
       TestResults.Add("Root", "Updated");

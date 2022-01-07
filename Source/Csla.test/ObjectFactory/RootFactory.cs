@@ -17,6 +17,7 @@ namespace Csla.Test.ObjectFactory
     public object Create()
     {
       var obj = new Root();
+      // TODO: How do we set ApplicationContext here?
       obj.Data = "Create";
       obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
@@ -33,6 +34,7 @@ namespace Csla.Test.ObjectFactory
     public object Create(string criteria)
     {
       var obj = new Root();
+      // TODO: How do we set ApplicationContext here?
       obj.Data = "Create " + criteria;
       obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
@@ -50,6 +52,7 @@ namespace Csla.Test.ObjectFactory
     public object Fetch(string criteria)
     {
       var obj = new Root();
+      // TODO: How do we set ApplicationContext here?
       obj.Data = criteria;
       obj.MarkAsOld();
       return obj;
@@ -106,6 +109,7 @@ namespace Csla.Test.ObjectFactory
     public object Create(string criteria)
     {
       var obj = new Root();
+      // TODO: How do we set ApplicationContext here?
       obj.Data = "Create " + criteria;
       obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
@@ -166,6 +170,7 @@ namespace Csla.Test.ObjectFactory
     public object Fetch()
     {
       var obj = new Root();
+      // TODO: How do we set ApplicationContext here?
       LoadProperty(obj, Root.DataProperty, "Fetch");
       this.MarkOld(obj);
       return obj;

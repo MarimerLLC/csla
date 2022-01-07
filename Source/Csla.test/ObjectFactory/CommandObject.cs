@@ -12,7 +12,7 @@ using Csla;
 
 namespace Csla.Test.ObjectFactory
 {
-  [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.CommandObjectFactory, Csla.Test")]
+  [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.CommandObjectFactory, Csla.Tests")]
   [Serializable]
   public class CommandObject : CommandBase<CommandObject>
   {

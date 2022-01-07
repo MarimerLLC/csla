@@ -91,9 +91,11 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestWithoutSerializableHandler()
     {
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      SerializationRoot root = new SerializationRoot();
+      SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       nonSerializableEventHandler handler = new nonSerializableEventHandler();
       handler.Reg(root);
       root.Data = "something";
@@ -132,10 +134,12 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void SerializableEvents()
     {
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
 
-      SerializationRoot root = new SerializationRoot();
+      SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       TestEventSink handler = new TestEventSink();
 
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
@@ -189,10 +193,10 @@ namespace Csla.Test.Serialization
 
       context.Assert.AreEqual("xyz", root.Data, "Data value not set");
 
-      context.Assert.AreEqual(null, TestResults.GetResult("OnIsDirtyChanged"),
+      context.Assert.AreEqual("", TestResults.GetResult("OnIsDirtyChanged"),
           "Called local handler after clone");
 
-      context.Assert.AreEqual(null, TestResults.GetResult("StaticOnIsDirtyChanged"),
+      context.Assert.AreEqual("", TestResults.GetResult("StaticOnIsDirtyChanged"),
           "Called static handler after clone");
 
       context.Assert.AreEqual(
@@ -205,7 +209,7 @@ namespace Csla.Test.Serialization
         TestResults.GetResult("Test.OnIsDirtyChanged"),
         "Didn't call serializable handler after clone");
 
-      context.Assert.AreEqual(null, TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
+      context.Assert.AreEqual("", TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
           "Called serializable private handler after clone");
 
       context.Assert.Success();
@@ -214,7 +218,9 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestSerializableEventsActionFails()
     {
-      var root = new SerializationRoot();
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
+      var root = SerializationRoot.NewSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
       Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
       var method = typeof (Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
@@ -236,7 +242,9 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestSerializableEventsActionSucceeds()
     {
-      var root = new OverrideSerializationRoot();
+      IDataPortal<OverrideSerializationRoot> dataPortal = _testDIContext.CreateDataPortal<OverrideSerializationRoot>();
+
+      var root = OverrideSerializationRoot.NewOverrideSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
 
       Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
@@ -279,11 +287,13 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestSerializationCslaBinaryReaderWriterList()
     {
-      var test = new BinaryReaderWriterTestClassList();
+      IDataPortal<BinaryReaderWriterTestClassList> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClassList>();
+
+      var test = BinaryReaderWriterTestClassList.NewBinaryReaderWriterTestClassList(dataPortal);
       BinaryReaderWriterTestClassList result;
       test.Setup();
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
 
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
       MobileFormatter formatter = new MobileFormatter(applicationContext);
       var serialized = formatter.SerializeToDTO(test);
       CslaBinaryWriter writer = new CslaBinaryWriter(applicationContext);
@@ -340,7 +350,9 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestSerializationCslaBinaryReaderWriter()
     {
-      var test = new BinaryReaderWriterTestClass();
+      IDataPortal<BinaryReaderWriterTestClass> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
+
+      var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);
       BinaryReaderWriterTestClass result;
       test.Setup();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
@@ -409,6 +421,7 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void TestAuthorizationRulesAfterSerialization()
     {
+      TestDIContext adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<Security.PermissionsRoot> dataPortal = _testDIContext.CreateDataPortal<Security.PermissionsRoot>();
 
       Security.PermissionsRoot root = dataPortal.Create();
@@ -423,8 +436,8 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
-      // TODO: Fix test
-      //Csla.ApplicationContext.User = GetPrincipal("Admin");
+      dataPortal = adminDIContext.CreateDataPortal<Security.PermissionsRoot>();
+      root = dataPortal.Create();
 
       try
       {
@@ -462,35 +475,29 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
-      // TODO: Fix test
-      //Csla.ApplicationContext.User = new ClaimsPrincipal();
-
     }
 
     private void OnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
     {
-      // TODO: Fix test
-      //TestResults.GetResult("OnIsDirtyChanged"] = "OnIsDirtyChanged";
+      TestResults.AddOrOverwrite("OnIsDirtyChanged", "OnIsDirtyChanged");
     }
 
     private static void StaticOnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
     {
-      // TODO: Fix test
-      //TestResults.GetResult("StaticOnIsDirtyChanged"] =
-      //    "StaticOnIsDirtyChanged";
+      TestResults.AddOrOverwrite("StaticOnIsDirtyChanged", "StaticOnIsDirtyChanged");
     }
 
     public static void PublicStaticOnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
     {
-      // TODO: Fix test
-      //TestResults.GetResult("PublicStaticOnIsDirtyChanged"] =
-      //    "PublicStaticOnIsDirtyChanged";
+      TestResults.AddOrOverwrite("PublicStaticOnIsDirtyChanged", "PublicStaticOnIsDirtyChanged");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void DCClone()
     {
+      IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
         "NetDataContractSerializer";
       // TODO: Fix test
@@ -499,7 +506,7 @@ namespace Csla.Test.Serialization
       //  Csla.ApplicationContext.SerializationFormatter,
       //  "Formatter should be NetDataContractSerializer");
 
-      DCRoot root = new DCRoot();
+      DCRoot root = DCRoot.NewDCRoot(dataPortal);
       root.Data = 123;
       DCRoot clone = root.Clone();
 
@@ -513,7 +520,9 @@ namespace Csla.Test.Serialization
     
     public void DCEditLevels()
     {
-      DCRoot root = new DCRoot();
+      IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
+      
+      DCRoot root = DCRoot.NewDCRoot(dataPortal);
       root.BeginEdit();
       root.Data = 123;
       root.CancelEdit();
@@ -532,9 +541,12 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void AsyncLoadManagerSerializationTest()
     {
-      Csla.Test.Basic.Children list = Csla.Test.Basic.Children.NewChildren();
-      list.Add("1");
-      list.Add("2");
+      IDataPortal<Basic.Children> dataPortal = _testDIContext.CreateDataPortal<Basic.Children>();
+      IDataPortal<Basic.Child> childDataPortal = _testDIContext.CreateDataPortal<Basic.Child>();
+
+      Csla.Test.Basic.Children list = Csla.Test.Basic.Children.NewChildren(dataPortal);
+      list.Add(childDataPortal, "1");
+      list.Add(childDataPortal, "2");
       IEditableObject item = list[1] as IEditableObject;
       int editLevel = (int)item.GetType().GetProperty("EditLevel", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy).GetValue(item, null);
       object manager = item.GetType().GetProperty("LoadManager", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy).GetValue(item, null);

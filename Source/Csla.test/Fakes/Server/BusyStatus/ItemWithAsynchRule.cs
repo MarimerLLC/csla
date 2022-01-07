@@ -64,13 +64,9 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
-    internal static ItemWithAsynchRule GetOneItemForList(string id)
+    internal static ItemWithAsynchRule GetOneItemForList(IChildDataPortal<ItemWithAsynchRule> childDataPortal, string id)
     {
-      ItemWithAsynchRule returnValue = new ItemWithAsynchRule();
-      returnValue.Id = id;
-      returnValue.MarkAsChild();
-      returnValue.MarkOld();
-      return returnValue;
+      return childDataPortal.FetchChild(id);
     }
 
     public bool IsRunningRules
@@ -122,6 +118,17 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
+    [FetchChild]
+    private void FetchChild(string id)
+    {
+      using (BypassPropertyChecks)
+      {
+        LoadProperty(IdProperty, id);
+      }
+      BusinessRules.CheckRules();
+    }
+
+    [Fetch]
     internal void DataPortal_Fetch(string criteria)
     {
       this.Id = "fetch_" + criteria;
@@ -146,7 +153,7 @@ namespace Csla.Testing.Business.BusyStatus
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

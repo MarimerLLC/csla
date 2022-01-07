@@ -25,8 +25,18 @@ namespace Csla.Test.Serialization
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       base.OnDeserialized(context);
-      TestResults.Add("Deserialized", "true");
+      TestResults.AddOrOverwrite("Deserialized", "true");
       Console.WriteLine("OnDeserialized");
+    }
+
+    public static SerializationRoot NewSerializationRoot(IDataPortal<SerializationRoot> dataPortal)
+    {
+      return dataPortal.Create();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 }

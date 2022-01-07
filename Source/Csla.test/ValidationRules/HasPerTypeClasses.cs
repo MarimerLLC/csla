@@ -33,6 +33,11 @@ namespace Csla.Test.ValidationRules
     {
       BusinessRules.CheckRules();
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 
   public class HasPerTypeRules2 : Csla.BusinessBase<HasPerTypeRules2>
@@ -56,6 +61,11 @@ namespace Csla.Test.ValidationRules
     public void Validate()
     {
       BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 
@@ -81,6 +91,11 @@ namespace Csla.Test.ValidationRules
     public void Validate()
     {
       BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 
@@ -112,6 +127,11 @@ namespace Csla.Test.ValidationRules
     {
       BusinessRules.RuleSet = "test";
       return BusinessRules.GetRuleDescriptions();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 }

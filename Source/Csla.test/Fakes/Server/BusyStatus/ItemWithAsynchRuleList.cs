@@ -21,15 +21,20 @@ namespace Csla.Testing.Business.BusyStatus
   public class ItemWithAsynchRuleList : BusinessListBase<ItemWithAsynchRuleList, ItemWithAsynchRule>
   {
 
-    public static ItemWithAsynchRuleList GetListWithItems()
+    public static ItemWithAsynchRuleList GetListWithItems(IDataPortal<ItemWithAsynchRuleList> dataPortal)
     {
-      ItemWithAsynchRuleList returnValue = new ItemWithAsynchRuleList();
-      returnValue.Add(ItemWithAsynchRule.GetOneItemForList("1"));
-      returnValue.Add(ItemWithAsynchRule.GetOneItemForList("2"));
-      return returnValue;
+      return dataPortal.Fetch();
     }
+
+    [Fetch]
+    private void Fetch([Inject] IChildDataPortal<ItemWithAsynchRule> childDataPortal)
+    {
+      Add(ItemWithAsynchRule.GetOneItemForList(childDataPortal, "1"));
+      Add(ItemWithAsynchRule.GetOneItemForList(childDataPortal, "2"));
+    }
+
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       foreach (var oneItem in this)
       {

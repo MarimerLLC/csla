@@ -27,6 +27,7 @@ using Csla.Serialization.Mobile;
 #elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using Csla.TestHelpers;
 #endif
 
 namespace Csla.Test.SmartDate
@@ -34,8 +35,15 @@ namespace Csla.Test.SmartDate
   [TestClass()]
   public class SmartDateTests
   {
+    private static TestDIContext _testDIContext;
     System.Globalization.CultureInfo CurrentCulture { get; set; }
     System.Globalization.CultureInfo CurrentUICulture { get; set; }
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestInitialize]
     public void Setup()
@@ -413,7 +421,7 @@ namespace Csla.Test.SmartDate
       Csla.SmartDate clone;
       MemoryStream memoryStream;
       MobileFormatter mobileFormatter;
-      ApplicationContext applicationContext = TestHelpers.ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
       d2 = new Csla.SmartDate();
       memoryStream = new MemoryStream();
@@ -455,7 +463,9 @@ namespace Csla.Test.SmartDate
     [TestMethod]
     public void DefaultFormat()
     {
-      var obj = new SDtest();
+      IDataPortal<SDtest> dataPortal = _testDIContext.CreateDataPortal<SDtest>();
+
+      var obj = SDtest.NewSDTest(dataPortal);
       Assert.AreEqual("", obj.TextDate, "Should be empty");
 
       var now = DateTime.Now;
@@ -499,6 +509,16 @@ namespace Csla.Test.SmartDate
     {
       get { return GetProperty(MyDateProperty); }
       set { SetProperty(MyDateProperty, value); }
+    }
+
+    public static SDtest NewSDTest(IDataPortal<SDtest> dataPortal)
+    {
+      return dataPortal.Create();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 }

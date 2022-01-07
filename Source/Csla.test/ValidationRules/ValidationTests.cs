@@ -267,7 +267,7 @@ namespace Csla.Test.ValidationRules
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
 
-      HasRegEx root = new HasRegEx();
+      HasRegEx root = CreateWithoutCriteria<HasRegEx>();
 
       root.Ssn = "555-55-5555";
       root.Ssn2 = "555-55-5555";
@@ -342,7 +342,7 @@ namespace Csla.Test.ValidationRules
     public void RuleThrowsException()
     {
       UnitTestContext context = GetContext();
-      var root = new HasBadRule();
+      var root = CreateWithoutCriteria<HasBadRule>();
       root.Validate();
       context.Assert.IsFalse(root.IsValid);
       context.Assert.AreEqual(1, root.GetBrokenRules().Count);
@@ -359,7 +359,7 @@ namespace Csla.Test.ValidationRules
     public void PrivateField()
     {
       UnitTestContext context = GetContext();
-      var root = new HasPrivateFields();
+      var root = CreateWithoutCriteria<HasPrivateFields>();
       root.Validate();
       context.Assert.IsFalse(root.IsValid);
       root.Name = "abc";
@@ -502,9 +502,11 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void ObjectDirtyWhenOutputValueChangesPropertyValue()
     {
+      IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testDIContext.CreateDataPortal<DirtyAfterOutValueChangesProperty>();
+
       var context = GetContext();
 
-      var root = new DirtyAfterOutValueChangesProperty();
+      var root = dataPortal.Fetch();
       context.Assert.IsFalse(root.IsDirty);
       context.Assert.AreEqual("csla rocks", root.Value1);
       root.CheckRules();
@@ -517,9 +519,11 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void ObjectNotDirtyWhenOutputValueDoNotChangePropertyValue()
     {
+      IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testDIContext.CreateDataPortal<DirtyAfterOutValueChangesProperty>();
+
       var context = GetContext();
 
-      var root = new DirtyAfterOutValueChangesProperty("CSLA ROCKS");
+      var root = dataPortal.Fetch("CSLA ROCKS");
       context.Assert.IsFalse(root.IsDirty);
       context.Assert.AreEqual("CSLA ROCKS", root.Value1);
       root.CheckRules();
@@ -606,6 +610,11 @@ namespace Csla.Test.ValidationRules
         throw new InvalidOperationException();
       }
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 
   [Serializable]
@@ -636,6 +645,11 @@ namespace Csla.Test.ValidationRules
     {
       base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 
@@ -788,18 +802,8 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(Value1Property, value); }
     }
 
-    public DirtyAfterOutValueChangesProperty() : this("csla rocks")
+    public DirtyAfterOutValueChangesProperty() 
     { }
-
-    public DirtyAfterOutValueChangesProperty(string value)
-    {
-      using (BypassPropertyChecks)
-      {
-        Value1 = value;
-      }
-      MarkOld();
-      MarkClean();
-    }
 
     protected override void AddBusinessRules()
     {
@@ -825,6 +829,21 @@ namespace Csla.Test.ValidationRules
 
     public void CheckRules()
     {
+    }
+
+    [Fetch]
+    private void Fetch()
+    {
+      Fetch("csla rocks");
+    }
+
+    [Fetch]
+    private void Fetch(string value)
+    {
+      using (BypassPropertyChecks)
+      {
+        Value1 = value;
+      }
       BusinessRules.CheckRules();
     }
   }

@@ -56,9 +56,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestBusy()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].RuleField = "some value";
       context.Assert.IsTrue(items.IsBusy);
       context.Assert.IsFalse(items.IsSavable);
@@ -95,9 +97,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task ListTestSaveWhileBusy()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].RuleField = "some value";
       context.Assert.IsTrue(items.IsBusy);
       context.Assert.IsFalse(items.IsSavable);
@@ -139,9 +143,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestNotBusy()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].ValidationComplete += (o2, e2) =>
       {
         context.Assert.IsFalse(items.IsBusy);
@@ -157,10 +163,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileNotBusy()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].ValidationComplete += async (o2, e2) =>
       {
         context.Assert.IsFalse(items.IsBusy);
@@ -195,9 +202,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileBusyNetOnly()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
       items[0].RuleField = "some value";
       context.Assert.IsTrue(items.IsBusy);
@@ -244,9 +253,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileNotBusyNetOnly()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
      
 
@@ -288,9 +299,11 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void ListTestSaveWhileNotBusyNoActiveRuleNetOnly()
     {
+      IDataPortal<ItemWithAsynchRuleList> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
       System.Configuration.ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"] = "false";
       UnitTestContext context = GetContext();
-      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems();
+      ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
       items[0].OperationResult = "something";
       context.Assert.IsFalse(items.IsBusy);

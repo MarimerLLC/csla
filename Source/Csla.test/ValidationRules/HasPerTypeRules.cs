@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnitDriven;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -29,14 +30,24 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class PerTypeTests : TestBase
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialze(TestContext testContext)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void OnlySharedRules()
     {
+      IDataPortal<HasOnlyPerTypeRules> dataPortal = _testDIContext.CreateDataPortal<HasOnlyPerTypeRules>();
+
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
 
-      HasOnlyPerTypeRules root = new HasOnlyPerTypeRules();
+      HasOnlyPerTypeRules root = dataPortal.Create();
       root.Validate();
       context.Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
@@ -53,11 +64,13 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void StringRequired()
     {
+      IDataPortal<HasPerTypeRules> dataPortal = _testDIContext.CreateDataPortal<HasPerTypeRules>();
+      
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
 
-      HasPerTypeRules root = new HasPerTypeRules();
+      HasPerTypeRules root = dataPortal.Create();
       root.Validate();
       context.Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
@@ -81,12 +94,13 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NoDoubleInit()
     {
+      IDataPortal<HasPerTypeRules2> dataPortal = _testDIContext.CreateDataPortal<HasPerTypeRules2>();
+
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
 
-      HasPerTypeRules2 root = new HasPerTypeRules2();
-      root = new HasPerTypeRules2();
+      HasPerTypeRules2 root = dataPortal.Create();
 
       int expected = (_initialized ? 0 : 1);
       int actual = int.Parse(TestResults.GetResult("Shared"));
@@ -100,10 +114,12 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void LoadRuleSets()
     {
+      IDataPortal<HasRuleSetRules> dataPortal = _testDIContext.CreateDataPortal<HasRuleSetRules>();
+
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
 
-      var root = new HasRuleSetRules();
+      var root = dataPortal.Create();
 
       var d = root.GetDefaultRules();
       context.Assert.AreEqual(1, d.Length);

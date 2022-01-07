@@ -13,7 +13,6 @@ namespace Csla.Test.ValidationRules
   {
     public void CheckRules()
     {
-      BusinessRules.CheckRules();
     }
 
     public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
@@ -182,6 +181,12 @@ namespace Csla.Test.ValidationRules
     {
       get { return BusinessRules.CascadeOnDirtyProperties; }
       set { BusinessRules.CascadeOnDirtyProperties = value; }
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
     }
   }
 

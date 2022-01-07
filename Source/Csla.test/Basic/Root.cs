@@ -14,7 +14,7 @@ namespace Csla.Test.Basic
   [Serializable()]
   public class Root : BusinessBase<Root>
   {
-    private Children _children = Csla.Test.Basic.Children.NewChildren();
+    public static PropertyInfo<Children> ChildrenProperty = RegisterProperty<Children>(c => c.Children);
 
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
@@ -32,7 +32,7 @@ namespace Csla.Test.Basic
 
     public Children Children
     {
-      get { return _children; }
+      get { return GetProperty(ChildrenProperty); }
     }
 
     ///start editing
@@ -41,7 +41,7 @@ namespace Csla.Test.Basic
     {
       get
       {
-        return base.IsDirty || _children.IsDirty;
+        return base.IsDirty || ReadProperty(ChildrenProperty).IsDirty;
       }
     }
 
@@ -61,20 +61,27 @@ namespace Csla.Test.Basic
       }
     }
 
-    private void DataPortal_Create(object criteria)
+    private void DataPortal_Create(object criteria, [Inject] IDataPortal<Children> childrenDataPortal)
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
-        Data = crit._data;
+      {
+        LoadProperty(DataProperty, crit._data);
+        LoadProperty(ChildrenProperty, childrenDataPortal.Create());
+      }
+
       CreatedDomain = AppDomain.CurrentDomain.Id;
       TestResults.Add("Root", "Created");
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria, [Inject] IDataPortal<Children> childrenDataPortal)
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
-        Data = crit._data;
+      {
+        LoadProperty(DataProperty, crit._data);
+        LoadProperty(ChildrenProperty, childrenDataPortal.Create());
+      }
       MarkOld();
       TestResults.Add("Root", "Fetched");
     }

@@ -56,5 +56,10 @@ namespace Csla.Test.ValidationRules
         context.AddErrorResult("Always error");
       }
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 }

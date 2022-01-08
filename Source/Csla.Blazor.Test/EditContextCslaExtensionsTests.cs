@@ -12,11 +12,10 @@ namespace Csla.Blazor.Test
   [TestClass]
   public class EditContextCslaExtensionsTests
   {
+    private static TestDIContext _testDIContext;
 
-    private TestDIContext _testDIContext;
-
-    [TestInitialize]
-    public void TestInitialize(TestContext context)
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }

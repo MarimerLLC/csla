@@ -26,6 +26,14 @@ namespace Csla.Test.Basic
   [TestClass]
   public class BasicTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void TestNotUndoableField()
     {
@@ -79,7 +87,7 @@ namespace Csla.Test.Basic
     {
       TestResults.Reinitialise();
 
-      IDataPortal<CommandObject> dataPortal = DataPortalFactory.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
       CommandObject obj = dataPortal.Create();
       obj = dataPortal.Execute(obj);
       Assert.AreEqual("Executed", obj.AProperty);
@@ -448,43 +456,43 @@ namespace Csla.Test.Basic
 
     private Root CreateRootInstance()
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       return dataPortal.Create(new Root.Criteria());
     }
 
     private async Task<Root> CreateRootInstanceAsync()
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       return await dataPortal.CreateAsync(new Root.Criteria());
     }
 
     private async Task<Root> CreateRootInstanceAsync(Root.Criteria criteria)
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       return await dataPortal.CreateAsync(criteria);
     }
 
     private async Task<RootList> CreateRootListInstanceAsync()
     {
-      IDataPortal<RootList> dataPortal = DataPortalFactory.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
       return await dataPortal.CreateAsync();
     }
 
     private GenRoot CreateGenRootInstance()
     {
-      IDataPortal<GenRoot> dataPortal = DataPortalFactory.CreateDataPortal<GenRoot>();
+      IDataPortal<GenRoot> dataPortal = _testDIContext.CreateDataPortal<GenRoot>();
       return dataPortal.Create(new GenRootBase.Criteria());
     }
 
     private Csla.Test.DataBinding.ParentEntity CreateParentEntityInstance()
     {
-      IDataPortal<Csla.Test.DataBinding.ParentEntity> dataPortal = DataPortalFactory.CreateDataPortal<Csla.Test.DataBinding.ParentEntity>();
+      IDataPortal<Csla.Test.DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<Csla.Test.DataBinding.ParentEntity>();
       return dataPortal.Create();
     }
 
     private NameValueListObj GetNameValueListObjInstance()
     {
-      IDataPortal<NameValueListObj> dataPortal = DataPortalFactory.CreateDataPortal<NameValueListObj>();
+      IDataPortal<NameValueListObj> dataPortal = _testDIContext.CreateDataPortal<NameValueListObj>();
       return dataPortal.Fetch();
     }
 

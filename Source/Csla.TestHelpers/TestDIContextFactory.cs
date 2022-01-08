@@ -76,6 +76,7 @@ namespace Csla.TestHelpers
       var services = new ServiceCollection();
 
       // Add Csla
+      services.AddScoped<Core.IContextManager, Core.ApplicationContextManager>();
       services.AddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddCsla(customCslaOptions);
 

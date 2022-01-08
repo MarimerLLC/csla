@@ -22,6 +22,14 @@ namespace Csla.Test.BasicModern
   [TestClass]
   public class BasicModernTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void CreateGraph()
     {
@@ -205,7 +213,7 @@ namespace Csla.Test.BasicModern
 
     private Root CreateRoot()
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       return dataPortal.Create();
     }
   }

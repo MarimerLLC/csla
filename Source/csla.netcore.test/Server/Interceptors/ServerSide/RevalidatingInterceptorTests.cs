@@ -14,6 +14,13 @@ namespace Csla.Test.Server.Interceptors.ServerSide
   [TestClass]
   public class RevalidatingInterceptorTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestMethod]
     public void Initialize_PrimitiveCriteria_NoExceptionRaised()
@@ -21,7 +28,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       // Arrange
       bool executed = false;
       PrimitiveCriteria criteria = new PrimitiveCriteria(1);
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
       {
@@ -47,9 +54,9 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     {
       // Arrange
       bool executed = false;
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs() {
         ObjectType = typeof(Root),
@@ -74,11 +81,11 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     {
       // Arrange
       bool executed = false;
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
       {
@@ -104,13 +111,13 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     {
       // Arrange
       bool executed = false;
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
       GrandChild grandChildObject = childObject.GrandChildren.AddNew();
       grandChildObject.Data = "Test grandchild data";
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
       {
@@ -135,9 +142,9 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public void Initialize_InvalidRootObject_ExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria(""));
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
       {
@@ -158,10 +165,10 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public void Initialize_InvalidChildObject_ExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
       {
@@ -182,12 +189,12 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public void Initialize_InvalidGrandChildObject_ExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
       GrandChild grandChildObject = childObject.GrandChildren.AddNew();
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
       {

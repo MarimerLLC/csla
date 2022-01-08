@@ -96,7 +96,7 @@ namespace Csla.Test.ValidationRules
       // StartDate less than 
       string ruleSet = "Date";
       string err1, err2;
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
       actual.StartDate = "today";
@@ -124,7 +124,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Lookup";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       // rule did not run on serverside (DAL) and no value is explicitly set 
       Assert.AreEqual(string.Empty, actual.Name);
@@ -139,7 +139,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Lookup";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       var waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
       actual.ValidationComplete += (o, e) => waitHandle.Set();
@@ -163,7 +163,7 @@ namespace Csla.Test.ValidationRules
       // test that Name has broken rule on new object
       string ruleSet = "LookupAndNameRequired";
       string err1;
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
       err1 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.NameProperty.Name];
 
 
@@ -184,7 +184,7 @@ namespace Csla.Test.ValidationRules
       // that runs when CustomerId is set.
       string ruleSet = "LookupAndNameRequired";
       string err1;
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
       err1 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.NameProperty.Name];
 
       Assert.IsFalse(actual.IsSelfValid);   // is broken before we set customerid
@@ -204,7 +204,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
       Assert.IsTrue(actual.IsSelfValid);
     }
 
@@ -214,7 +214,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       actual.CustomerId = 4;
       Assert.IsFalse(actual.IsValid);
@@ -227,7 +227,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       actual.CustomerId = 5;
       Assert.IsTrue(actual.IsValid);
@@ -240,7 +240,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       actual.CustomerId = 6;
       Assert.IsTrue(actual.IsValid);
@@ -254,7 +254,7 @@ namespace Csla.Test.ValidationRules
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Required";
-      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet, dataPortal);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
       var culture = Thread.CurrentThread.CurrentCulture;
 
       Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");

@@ -51,8 +51,8 @@ namespace Csla.Test.DataPortal
     {
       TestableDataPortal.Setup();
 
-      Csla.Configuration.ConfigurationManager.AppSettings["CslaAuthorizationProvider"] =
-        "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business";
+      //Csla.Configuration.ConfigurationManager.AppSettings["CslaAuthorizationProvider"] =
+      //  "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business";
 
     }
 
@@ -60,7 +60,7 @@ namespace Csla.Test.DataPortal
 
     #region constructor(Type authProviderType) tests
 
-    // TODO: I don't think the new config supports setting this wrong?
+    // TODO: I don't think the new config mechanism supports setting this to an invalid value?
     //[TestMethod]
     //[ExpectedException(typeof(ArgumentNullException))]
     //public void IfAuthProviderTypeIsNull_ThenThrow_ArgumentNullException()
@@ -69,7 +69,7 @@ namespace Csla.Test.DataPortal
     //  new TestableDataPortal(authProviderType);
     //}
 
-    // TODO: I don't think the new config supports setting this wrong?
+    // TODO: I don't think the new config mechanism supports setting this to an invalid value?
     //[TestMethod]
     //[ExpectedException(typeof(ArgumentException))]
     //public void IfAuthProviderTypeDoesNotImplement_IAuthorizeDataPortal_ThenThrow_ArgumentException()
@@ -164,7 +164,8 @@ namespace Csla.Test.DataPortal
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
-      Assert.AreEqual(typeof(TestBO), result.ClientRequest.ObjectType);
+      Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
+      Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
       Assert.AreEqual(DataPortalOperations.Create, result.ClientRequest.Operation);
     }
 
@@ -177,7 +178,8 @@ namespace Csla.Test.DataPortal
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
-      Assert.AreEqual(typeof(TestBO), result.ClientRequest.ObjectType);
+      Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
+      Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
       Assert.AreEqual(DataPortalOperations.Fetch, result.ClientRequest.Operation);
     }
 
@@ -186,12 +188,13 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Update(new TestBO(), new DataPortalContext(applicationContext, null, false), true);
+      await dp.Update(new TestBO(), new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
-      Assert.AreEqual(typeof(TestBO), result.ClientRequest.ObjectType);
+      Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
+      Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
       Assert.AreEqual(DataPortalOperations.Update, result.ClientRequest.Operation);
     }
 
@@ -200,11 +203,12 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Delete(typeof(TestBO), null, new DataPortalContext(applicationContext, null, false), true);
+      await dp.Delete(typeof(TestBO), new object(), new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
-      Assert.AreEqual(typeof(TestBO), result.ClientRequest.ObjectType);
+      Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
+      Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
       Assert.AreEqual(DataPortalOperations.Delete, result.ClientRequest.Operation);
     }
 

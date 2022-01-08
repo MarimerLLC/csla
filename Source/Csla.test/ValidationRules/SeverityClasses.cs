@@ -55,6 +55,12 @@ namespace Csla.Test.ValidationRules
         context.AddErrorResult("Always error");
       }
     }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
   }
 
   public class NoErrorRoot : Csla.BusinessBase<NoErrorRoot>
@@ -91,6 +97,12 @@ namespace Csla.Test.ValidationRules
       {
         context.AddWarningResult("Always warns");
       }
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
     }
   }
 }

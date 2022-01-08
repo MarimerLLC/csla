@@ -42,10 +42,10 @@ namespace Csla.Test.FieldManager
       set { SetProperty<string>(RootDataProperty, value); }
     }
 
-    private string _status;
+    private static PropertyInfo<string> StatusProperty = RegisterProperty<string>(c => c.Status);
     public string Status
     {
-      get { return _status; }
+      get { return GetProperty(StatusProperty); }
     }
 
     public void DeleteChild()
@@ -55,31 +55,31 @@ namespace Csla.Test.FieldManager
 
     protected override void Child_Create()
     {
-      _status = "Created";
+      LoadProperty(StatusProperty, "Created");
     }
 
     [FetchChild]
     protected void Child_Fetch()
     {
-      _status = "Fetched";
+      LoadProperty(StatusProperty, "Fetched");
     }
 
     [InsertChild]
     protected void Child_Insert()
     {
-      _status = "Inserted";
+      LoadProperty(StatusProperty, "Inserted");
     }
 
     [UpdateChild]
     protected void Child_Update()
     {
-      _status = "Updated";
+      LoadProperty(StatusProperty, "Updated");
     }
 
     [DeleteSelfChild]
     protected void Child_DeleteSelf()
     {
-      _status = "Deleted";
+      LoadProperty(StatusProperty, "Deleted");
     }
   }
 }

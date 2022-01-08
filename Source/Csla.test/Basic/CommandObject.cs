@@ -18,13 +18,12 @@ namespace Csla.Test.Basic
 
     private static object locker = new object();
 
-    private string _property = "";
+    public static PropertyInfo<string> APropertyProperty = RegisterProperty<string>(o => o.AProperty);
+
     public string AProperty
     {
-      get
-      {
-        return _property;
-      }
+      get { return ReadProperty(APropertyProperty); }
+      set { LoadProperty(APropertyProperty, value); }
     }
 
     [Execute]
@@ -32,7 +31,7 @@ namespace Csla.Test.Basic
     {
       lock (locker)
       {
-        _property = "Executed";
+        AProperty = "Executed";
       }
     }
 

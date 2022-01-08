@@ -27,143 +27,144 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
 {
-    [TestClass()]
-    public class DataPortalTests
-    {   
-        private static TestDIContext _testDIContext;
+  [TestClass()]
+  public class DataPortalTests
+  {
+    private static TestDIContext _testDIContext;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
-        {
-            _testDIContext = TestDIContextFactory.CreateDefaultContext();
-        }
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
-        private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
-        public void ClearDataBase()
-        {
-            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-            SqlCommand cm = new SqlCommand("DELETE FROM Table2", cn);
+    private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
+    public void ClearDataBase()
+    {
+      SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+      SqlCommand cm = new SqlCommand("DELETE FROM Table2", cn);
 
-            try
-            {
-                cn.Open();
-                cm.ExecuteNonQuery();
-            }
-            catch (Exception)
-            {
-                //do nothing
-            }
-            finally
-            {
-                cn.Close();
-            }
-        }
+      try
+      {
+        cn.Open();
+        cm.ExecuteNonQuery();
+      }
+      catch (Exception)
+      {
+        //do nothing
+      }
+      finally
+      {
+        cn.Close();
+      }
+    }
 
 #if DEBUG
-        [TestMethod()]
-        
-        public void TestTransactionScopeUpdate()
-        {
-            IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();
+    [TestMethod()]
 
-            Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
-            tr.FirstName = "Bill";
-            tr.LastName = "Johnson";
-            //setting smallColumn to a string less than or equal to 5 characters will
-            //not cause the transaction to rollback
-            tr.SmallColumn = "abc";
+    public void TestTransactionScopeUpdate()
+    {
+      IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();
 
-            tr = tr.Save();
+      Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
+      tr.FirstName = "Bill";
+      tr.LastName = "Johnson";
+      //setting smallColumn to a string less than or equal to 5 characters will
+      //not cause the transaction to rollback
+      tr.SmallColumn = "abc";
 
-            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-            SqlCommand cm = new SqlCommand("SELECT * FROM Table2", cn);
+      tr = tr.Save();
 
-            try
-            {
-                cn.Open();
-                SqlDataReader dr = cm.ExecuteReader();
+      // TODO: These connection strings got lost, so I've tried to recreate them, but not sure how to do this
+      SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+      SqlCommand cm = new SqlCommand("SELECT * FROM Table2", cn);
 
-                //will have rows since no sqlexception was thrown on the insert
-                Assert.AreEqual(true, dr.HasRows);
-                dr.Close();
-            }
-            catch (Exception)
-            {
-                //do nothing
-            }
-            finally
-            {
-                cn.Close();
-            }
+      try
+      {
+        cn.Open();
+        SqlDataReader dr = cm.ExecuteReader();
 
-            ClearDataBase();
+        //will have rows since no sqlexception was thrown on the insert
+        Assert.AreEqual(true, dr.HasRows);
+        dr.Close();
+      }
+      catch (Exception)
+      {
+        //do nothing
+      }
+      finally
+      {
+        cn.Close();
+      }
 
-            Csla.Test.DataPortal.TransactionalRoot tr2 = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
-            tr2.FirstName = "Jimmy";
-            tr2.LastName = "Smith";
-            //intentionally input a string longer than varchar(5) to 
-            //cause a sql exception and rollback the transaction
-            tr2.SmallColumn = "this will cause a sql exception";
+      ClearDataBase();
 
-            try
-            {
-                //will throw a sql exception since the SmallColumn property is too long
-                tr2 = tr2.Save();
-            }
-            catch (Exception ex)
-            {
-              Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Invalid exception message");
-            }
+      Csla.Test.DataPortal.TransactionalRoot tr2 = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
+      tr2.FirstName = "Jimmy";
+      tr2.LastName = "Smith";
+      //intentionally input a string longer than varchar(5) to 
+      //cause a sql exception and rollback the transaction
+      tr2.SmallColumn = "this will cause a sql exception";
 
-            //within the DataPortal_Insert method, two commands are run to insert data into
-            //the database. Here we verify that both commands have been rolled back
-            try
-            {
-                cn.Open();
-                SqlDataReader dr = cm.ExecuteReader();
+      try
+      {
+        //will throw a sql exception since the SmallColumn property is too long
+        tr2 = tr2.Save();
+      }
+      catch (Exception ex)
+      {
+        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Invalid exception message");
+      }
 
-                //should not have rows since both commands were rolled back
-                Assert.AreEqual(false, dr.HasRows);
-                dr.Close();
-            }
-            catch (Exception)
-            {
-                //do nothing
-            }
-            finally
-            {
-                cn.Close();
-            }
+      //within the DataPortal_Insert method, two commands are run to insert data into
+      //the database. Here we verify that both commands have been rolled back
+      try
+      {
+        cn.Open();
+        SqlDataReader dr = cm.ExecuteReader();
 
-            ClearDataBase();
-        }
+        //should not have rows since both commands were rolled back
+        Assert.AreEqual(false, dr.HasRows);
+        dr.Close();
+      }
+      catch (Exception)
+      {
+        //do nothing
+      }
+      finally
+      {
+        cn.Close();
+      }
+
+      ClearDataBase();
+    }
 #endif
 
-        [TestMethod()]
-        public void StronglyTypedDataPortalMethods()
-        {
-            IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();
+    [TestMethod()]
+    public void StronglyTypedDataPortalMethods()
+    {
+      IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();
 
-            //test strongly-typed DataPortal_Fetch method
-            TestResults.Reinitialise();
-            Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
+      //test strongly-typed DataPortal_Fetch method
+      TestResults.Reinitialise();
+      Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
 
-            Assert.AreEqual("Fetched", TestResults.GetResult("StronglyTypedDP"));
-            Assert.AreEqual("fetched existing data", root.Data);
-            Assert.AreEqual(456, root.Id); 
-       
-            //test strongly-typed DataPortal_Create method
-            TestResults.Reinitialise();
-            Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP(dataPortal);
+      Assert.AreEqual("Fetched", TestResults.GetResult("StronglyTypedDP"));
+      Assert.AreEqual("fetched existing data", root.Data);
+      Assert.AreEqual(456, root.Id);
 
-            Assert.AreEqual("Created", TestResults.GetResult("StronglyTypedDP"));
-            Assert.AreEqual("new default data", root2.Data);
-            Assert.AreEqual(56, root2.Id);
+      //test strongly-typed DataPortal_Create method
+      TestResults.Reinitialise();
+      Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP(dataPortal);
 
-            //test strongly-typed DataPortal_Delete method
-            Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567, dataPortal);
-            Assert.AreEqual("567", TestResults.GetResult("StronglyTypedDP_Criteria"));
-        }
+      Assert.AreEqual("Created", TestResults.GetResult("StronglyTypedDP"));
+      Assert.AreEqual("new default data", root2.Data);
+      Assert.AreEqual(56, root2.Id);
+
+      //test strongly-typed DataPortal_Delete method
+      Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567, dataPortal);
+      Assert.AreEqual("567", TestResults.GetResult("StronglyTypedDP_Criteria"));
+    }
 
     [TestMethod]
     public void EncapsulatedIsBusyFails()
@@ -374,7 +375,7 @@ namespace Csla.Test.DataPortal
   public class EncapsulatedBusy : BusinessBase<EncapsulatedBusy>
   {
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       BusinessRules.CheckRules();
       MarkBusy();

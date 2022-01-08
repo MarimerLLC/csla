@@ -143,12 +143,12 @@ namespace Csla.Test.AppContext
     public void ClientContext()
     {
       IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
-      // TODO: Fix test
       TestResults.Reinitialise();
 
-      //Csla.ApplicationContext.ClientContext.Add("clientcontext", "client context data");
-      //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
+      applicationContext.ClientContext.Add("clientcontext", "client context data");
+      Assert.AreEqual("client context data", applicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
 
       Basic.Root root = dataPortal.Create(new Basic.Root.Criteria());
       root.Data = "saved";
@@ -166,6 +166,7 @@ namespace Csla.Test.AppContext
       Assert.AreEqual(false, root.IsDeleted, "Object should not be deleted");
       Assert.AreEqual(false, root.IsDirty, "Object should not be dirty");
 
+      //TODO: Is there a modern equivalent of this?
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Client context data lost");
       Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"), "Global context data lost");
       Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"), "New global value lost");

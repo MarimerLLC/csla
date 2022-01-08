@@ -288,7 +288,7 @@ namespace Csla.Test.ValidationRules
     public void MergeBrokenRules()
     {
       UnitTestContext context = GetContext();
-      var root = new BrokenRulesMergeRoot();
+      var root = CreateWithoutCriteria<BrokenRulesMergeRoot>();
       root.Validate();
       Csla.Rules.BrokenRulesCollection list = root.BrokenRulesCollection;
       context.Assert.AreEqual(2, list.Count, "Should have 2 broken rules");

@@ -14,7 +14,6 @@ namespace Csla.Test.DataPortal
   public class DisposeScopeTest
   {
 
-#if !NET462
     [TestMethod]
     public void Test_Scope_DoesNotDispose()
     {
@@ -32,7 +31,6 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(classA.DisposableClass.Id, classB.DisposableClass.Id, "Ids must be the same");
       Assert.IsFalse(classA.DisposableClass.IsDisposed, "Object must not be disposed");
     }
-#endif
 
   }
 

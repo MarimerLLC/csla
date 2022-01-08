@@ -34,7 +34,7 @@ namespace Csla.Test.ValidationRules
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
-   [TestMethod]
+    [TestMethod]
     public void ShortCircuitOnNew()
     {
       IDataPortal<ShortCircuit> dataPortal = _testDIContext.CreateDataPortal<ShortCircuit>();

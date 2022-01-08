@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnitDriven;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -25,10 +26,20 @@ namespace Csla.Test.ValidationRules
   [TestClass()]
   public class SeverityTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext testContext)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void AllThree()
     {
-      SeverityRoot root = new SeverityRoot();
+      IDataPortal<SeverityRoot> dataPortal = _testDIContext.CreateDataPortal<SeverityRoot>();
+
+      SeverityRoot root = dataPortal.Create();
       root.Validate();
 
       Assert.AreEqual(3, root.BrokenRulesCollection.Count, "3 rules should be broken (total)");
@@ -49,7 +60,9 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NoError()
     {
-      NoErrorRoot root = new NoErrorRoot();
+      IDataPortal<NoErrorRoot> dataPortal = _testDIContext.CreateDataPortal<NoErrorRoot>();
+
+      NoErrorRoot root = dataPortal.Create();
       root.Validate();
       Assert.AreEqual(2, root.BrokenRulesCollection.Count, "2 rules should be broken (total)");
 

@@ -448,7 +448,7 @@ namespace Csla.Test.Serialization
         Assert.Fail("exception occurred");
       }
 
-      // TODO: Fix test
+      // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = new ClaimsPrincipal();
 
       Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
@@ -463,7 +463,7 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
-      // TODO: Fix test
+      // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = GetPrincipal("Admin");
 
       try

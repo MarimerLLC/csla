@@ -34,10 +34,11 @@ namespace Csla.Test.DataPortalChild
       set { SetProperty<string>(RootDataProperty, value); }
     }
 
-    private string _status;
+    private static PropertyInfo<string> StatusProperty = RegisterProperty<string>(c => c.Status);
     public string Status
     {
-      get { return _status; }
+      get { return GetProperty(StatusProperty); }
+      private set { SetProperty(StatusProperty, value); }
     }
 
     public void DeleteChild()
@@ -48,19 +49,19 @@ namespace Csla.Test.DataPortalChild
     [CreateChild]
     protected override void Child_Create()
     {
-      _status = "Created";
+      LoadProperty(StatusProperty, "Created");
     }
 
     [FetchChild]
     protected void Child_Fetch()
     {
-      _status = "Fetched";
+      LoadProperty(StatusProperty, "Fetched");
     }
 
     [InsertChild]
     protected void Child_Insert(Root parent)
     {
-      _status = "Inserted";
+      LoadProperty(StatusProperty, "Inserted");
       if (this.Parent is ChildList)
       {
         LoadProperty(RootDataProperty, ((Root)((ChildList)this.Parent).MyParent).Data);
@@ -74,7 +75,7 @@ namespace Csla.Test.DataPortalChild
     [UpdateChild]
     protected void Child_Update(Root parent)
     {
-      _status = "Updated";
+      LoadProperty(StatusProperty, "Updated");
       if (this.Parent is ChildList)
       {
         LoadProperty(RootDataProperty, ((Root)((ChildList)this.Parent).MyParent).Data);
@@ -88,7 +89,7 @@ namespace Csla.Test.DataPortalChild
     [DeleteSelfChild]
     protected void Child_DeleteSelf()
     {
-      _status = "Deleted";
+      LoadProperty(StatusProperty, "Deleted");
     }
   }
 }

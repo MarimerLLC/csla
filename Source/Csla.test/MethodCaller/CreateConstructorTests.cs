@@ -48,7 +48,7 @@ namespace Csla.Test.MethodCaller
     [ExpectedException(typeof(InvalidOperationException))]
     public void CreateInstanceNotClassFail()
     {
-      // TODO: Fix test
+      // TODO: Not sure how to do this now
       //Csla.Reflection.MethodCaller.CreateInstance(typeof(TestStruct));
     }
 

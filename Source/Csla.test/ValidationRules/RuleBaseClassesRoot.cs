@@ -119,7 +119,7 @@ namespace Csla.Test.ValidationRules
 
     #region Factory Methods
 
-    public static RuleBaseClassesRoot NewEditableRoot(string ruleSet, IDataPortal<RuleBaseClassesRoot> dataPortal)
+    public static RuleBaseClassesRoot NewEditableRoot(IDataPortal<RuleBaseClassesRoot> dataPortal, string ruleSet)
     {
       return dataPortal.Create(ruleSet);
     }

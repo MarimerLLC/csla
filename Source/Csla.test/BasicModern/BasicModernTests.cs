@@ -115,13 +115,14 @@ namespace Csla.Test.BasicModern
 
       graph.MakeOld();
 
-      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty");
-      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty");
-      Assert.IsFalse(changed.Contains("IsValid"), "IsValid");
-      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable");
-      Assert.IsTrue(changed.Contains("IsNew"), "IsNew");
-      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted");
+      // TODO: Are these assumptions about what should happen actually correct?
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty did not change as expected");
+      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirtynot as expected");
+      Assert.IsFalse(changed.Contains("IsValid"), "IsValid changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as expected");
+      Assert.IsTrue(changed.Contains("IsNew"), "IsNew did not change as expected");
+      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted changed; that was not expected");
     }
 
     [TestMethod]
@@ -138,13 +139,13 @@ namespace Csla.Test.BasicModern
 
       graph.Delete();
 
-      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty");
-      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty");
-      Assert.IsFalse(changed.Contains("IsValid"), "IsValid");
-      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable");
-      Assert.IsFalse(changed.Contains("IsNew"), "IsNew");
-      Assert.IsTrue(changed.Contains("IsDeleted"), "IsDeleted");
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty did not change as was expected");
+      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsValid"), "IsValid changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsNew"), "IsNew changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsDeleted"), "IsDeleted did not change as we expected");
     }
 
     [TestMethod]
@@ -160,14 +161,14 @@ namespace Csla.Test.BasicModern
 
       graph.Id = 123;
 
-      Assert.IsTrue(changed.Contains("Id"), "Id");
-      Assert.IsFalse(changed.Contains("IsDirty"), "IsDirty");
-      Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty");
-      Assert.IsTrue(changed.Contains("IsValid"), "IsValid");
-      Assert.IsTrue(changed.Contains("IsSelfValid"), "IsSelfValid");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable");
-      Assert.IsFalse(changed.Contains("IsNew"), "IsNew");
-      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted");
+      Assert.IsTrue(changed.Contains("Id"), "Id did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsDirty"), "IsDirty changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsValid"), "IsValid did not change as we expected");
+      Assert.IsTrue(changed.Contains("IsSelfValid"), "IsSelfValid did not change as we expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsNew"), "IsNew changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted changed; that was not expected");
     }
 
     [TestMethod]

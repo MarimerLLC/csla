@@ -187,7 +187,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       root[0].Name = "abc";
-      Assert.AreEqual(1, lc, "ListChanged should have fired");
+      Assert.AreEqual(1, lc, "ListChanged should have fired once");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
       Assert.AreEqual(1, cc, "ChildChanged should have fired");
@@ -270,7 +270,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       root.List[0].Name = "abc";
-      Assert.AreEqual(1, lc, "ListChanged should have fired");
+      Assert.AreEqual(1, lc, "ListChanged should have fired once");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
       Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");

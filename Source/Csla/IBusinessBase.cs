@@ -24,12 +24,9 @@ namespace Csla
     ICheckRules,
     INotifyBusy,
     INotifyChildChanged,
-    ISerializationNotification
-#if NETFX_CORE && !ANDROID && !IOS
-    ,INotifyDataErrorInfo
-#else
-    , IDataErrorInfo
-#endif
+    ISerializationNotification,
+    INotifyDataErrorInfo,
+    IDataErrorInfo
   {
   }
 }

@@ -8,6 +8,8 @@
 using Csla.Core;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
 namespace Csla.Rules
@@ -232,5 +234,21 @@ namespace Csla.Rules
     /// </summary>
     /// <value>The execution context.</value>
     RuleContextModes ExecuteContext { get; }
+    /// <summary>
+    /// Gets the current user principal.
+    /// </summary>
+    IPrincipal User { get; }
+    /// <summary>
+    /// Gets the current user ClaimsPrincipal.
+    /// </summary>
+    ClaimsPrincipal Principal { get; }
+    /// <summary>
+    /// Gets the LocalContext.
+    /// </summary>
+    ContextDictionary LocalContext { get; }
+    /// <summary>
+    /// Gets the ClientContext.
+    /// </summary>
+    ContextDictionary ClientContext { get; }
   }
 }

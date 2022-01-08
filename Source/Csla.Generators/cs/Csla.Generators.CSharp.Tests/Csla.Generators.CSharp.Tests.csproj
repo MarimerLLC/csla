@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
-    <BaseOutputPath>..\..\..\..\Bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

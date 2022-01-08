@@ -316,7 +316,7 @@ namespace Csla.Rules
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, applicationContext.User, objectType, null, applicationContext.RuleSet);
+      return HasPermission(action, null, applicationContext, objectType, null, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -331,7 +331,7 @@ namespace Csla.Rules
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, applicationContext.User, objectType, criteria, applicationContext.RuleSet);
+      return HasPermission(action, null, applicationContext, objectType, criteria, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -348,7 +348,7 @@ namespace Csla.Rules
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
-      return HasPermission(action, null, applicationContext.User, objectType, null, ruleSet);
+      return HasPermission(action, null, applicationContext, objectType, null, ruleSet);
     }
 
     /// <summary>
@@ -361,10 +361,10 @@ namespace Csla.Rules
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
-      return HasPermission(action, obj, applicationContext.User, obj.GetType(), null, applicationContext.RuleSet);
+      return HasPermission(action, obj, applicationContext, obj.GetType(), null, applicationContext.RuleSet);
     }
 
-    private static bool HasPermission(AuthorizationActions action, object obj, IPrincipal user, Type objType, object[] criteria, string ruleSet)
+    private static bool HasPermission(AuthorizationActions action, object obj, ApplicationContext applicationContext, Type objType, object[] criteria, string ruleSet)
     {
 
       if (action == AuthorizationActions.ReadProperty ||
@@ -377,7 +377,7 @@ namespace Csla.Rules
         AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(rule, user, obj, objType) { Criteria = criteria };
+        var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
         rule.Execute(context);
         result = context.HasPermission;
       }
@@ -406,7 +406,7 @@ namespace Csla.Rules
         TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(rule, applicationContext.User, this.Target, this.Target.GetType());
+        var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
         rule.Execute(context);
         result = context.HasPermission;
       }

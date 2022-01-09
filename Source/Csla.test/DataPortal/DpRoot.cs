@@ -45,18 +45,23 @@ namespace Csla.Test.DataPortal
     #region "Criteria class"
 
     [Serializable()]
-    internal class Criteria
+    internal class Criteria : CriteriaBase<Criteria>
     {
-      public string _data;
+      public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
+      public string Data
+      {
+        get { return ReadProperty(DataProperty); }
+        set { LoadProperty(DataProperty, value); }
+      }
 
       public Criteria()
       {
-        _data = "<new>";
+        Data = "<new>";
       }
 
       public Criteria(string data)
       {
-        this._data = data;
+        Data = data;
       }
     }
 
@@ -74,14 +79,14 @@ namespace Csla.Test.DataPortal
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
-        Data = crit._data;
+        Data = crit.Data;
     }
 
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
-        Data = crit._data;
+        Data = crit.Data;
       MarkOld();
     }
 

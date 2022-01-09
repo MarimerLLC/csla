@@ -43,14 +43,14 @@ namespace Csla.Testing.Business.DataPortal
 
     public static void Setup()
     {
-      //TODO: Fix this
+      //TODO: Not sure how to recreate this test in Csla 6
       //Authorizer = null;
     }
 
     public Type AuthProviderType
     {
       get {
-        //TODO: Fix this
+        //TODO: Not sure how to recreate this test in Csla 6
         //return Authorizer.GetType();
         return null;
         }
@@ -59,7 +59,7 @@ namespace Csla.Testing.Business.DataPortal
     public IAuthorizeDataPortal AuthProvider
     {
       get {
-        //TODO: Fix this
+        //TODO: Not sure how to recreate this test in Csla 6
         //return Authorizer;
         return null;
         }

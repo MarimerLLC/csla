@@ -12,11 +12,13 @@ using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using Csla.Serialization;
+using Csla.Configuration;
 using Csla.Test.ValidationRules;
 using UnitDriven;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 
 #if NUNIT
 using NUnit.Framework;
@@ -114,7 +116,7 @@ namespace Csla.Test.Serialization
       context.Assert.AreEqual("2", TestResults.GetResult("PropertyChangedFiredCount"));
       context.Assert.Success();
     }
-    
+
     [TestMethod()]
     public void Clone()
     {
@@ -125,12 +127,12 @@ namespace Csla.Test.Serialization
       root = (SerializationRoot)root.Clone();
 
       context.Assert.AreEqual(
-        "true", 
+        "true",
         TestResults.GetResult("Deserialized"),
         "Deserialized not called");
       context.Assert.Success();
     }
-    
+
     [TestMethod()]
     public void SerializableEvents()
     {
@@ -223,10 +225,10 @@ namespace Csla.Test.Serialization
       var root = SerializationRoot.NewSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
       Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
-      var method = typeof (Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof (PropertyChangedEventHandler), h);
+      var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
+      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
-      // TODO: Fix test
+      // TODO: Should this test target another formatter, or just be deleted?
       //var b = new BinaryFormatterWrapper();
       //try
       //{
@@ -248,8 +250,8 @@ namespace Csla.Test.Serialization
       var nonSerClass = new NonSerializedClass();
 
       Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
-      var method = typeof (Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof (PropertyChangedEventHandler), h);
+      var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
+      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
 
       Action<object, PropertyChangingEventArgs> h1 = (sender, eventArgs) => { nonSerClass.Do(); };
@@ -257,7 +259,7 @@ namespace Csla.Test.Serialization
       var delgate1 = (PropertyChangingEventHandler)(object)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
       root.PropertyChanging += delgate1;
 
-      // TODO: Fix test
+      // TODO: Would this test make sense if upgraded to MobileFormatter?
       //var b = new BinaryFormatterWrapper();
       //b.Serialize(new MemoryStream(), root);
     }
@@ -267,7 +269,7 @@ namespace Csla.Test.Serialization
     public async Task TestValidationRulesAfterSerialization()
     {
       IDataPortal<HasRulesManager> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager>();
-      
+
       UnitTestContext context = GetContext();
       var root = await dataPortal.CreateAsync(new HasRulesManager.Criteria());
       root.Name = "";
@@ -337,7 +339,7 @@ namespace Csla.Test.Serialization
         Assert.AreEqual(test[i].EmptySmartDateTest.EmptyIsMin, result[i].EmptySmartDateTest.EmptyIsMin);
         Assert.AreEqual(test[i].EmptySmartDateTest.IsEmpty, result[i].EmptySmartDateTest.IsEmpty);
         Assert.AreEqual(test[i].EmptySmartDateTest.Date, result[i].EmptySmartDateTest.Date);
-                        
+
         Assert.AreEqual(test[i].FilledSmartDateTest, result[i].FilledSmartDateTest);
         Assert.AreEqual(test[i].FilledSmartDateTest.FormatString, result[i].FilledSmartDateTest.FormatString);
         Assert.AreEqual(test[i].FilledSmartDateTest.EmptyIsMin, result[i].FilledSmartDateTest.EmptyIsMin);
@@ -366,7 +368,7 @@ namespace Csla.Test.Serialization
         writer.Write(stream, serialized);
         data = stream.ToArray();
       }
-      
+
       CslaBinaryReader reader = new CslaBinaryReader(applicationContext);
       using (var stream = new MemoryStream(data))
       {
@@ -379,7 +381,7 @@ namespace Csla.Test.Serialization
       {
         Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
       }
-      
+
       Assert.AreEqual(test.ByteTest, result.ByteTest);
       Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
       for (int i = 0; i < test.CharArrayTest.Length; i++)
@@ -500,7 +502,7 @@ namespace Csla.Test.Serialization
 
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
         "NetDataContractSerializer";
-      // TODO: Fix test
+      // TODO: NDCS has been dropped I think; is there a way to replicate this test with another formatter?
       //Assert.AreEqual(
       //  Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
       //  Csla.ApplicationContext.SerializationFormatter,
@@ -517,11 +519,10 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    
     public void DCEditLevels()
     {
       IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
-      
+
       DCRoot root = DCRoot.NewDCRoot(dataPortal);
       root.BeginEdit();
       root.Data = 123;
@@ -535,8 +536,6 @@ namespace Csla.Test.Serialization
 
       Assert.AreEqual(123, root.Data, "Data should be 123");
     }
-
-
 
     [TestMethod]
     public void AsyncLoadManagerSerializationTest()
@@ -556,73 +555,69 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(editLevel + 1, newEditLevel, "Edit level incorrect after begin edit");
     }
 
-    // TODO: Fix test
-    //[TestMethod]
-    //public void SerializeCommand()
-    //{
-    //  var cmd = new TestCommand();
-    //  cmd.Name = "test data";
+    [TestMethod]
+    public void SerializeCommand()
+    {
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
-    //  var buffer = new System.IO.MemoryStream();
-    //  var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
-    //  Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
+      var cmd = new TestCommand();
+      cmd.Name = "test data";
 
-    //  var ndcs = new System.Runtime.Serialization.NetDataContractSerializer();
-    //  ndcs.Serialize(buffer, cmd);
-    //  buffer.Position = 0;
-    //  var n = (TestCommand)ndcs.Deserialize(buffer);
-    //  Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
+      // TODO: Not sure how to replicate the object cloner in Csla 6
+      var buffer = new MemoryStream();
+      //  var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
+      //  Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
 
-    //  buffer = new System.IO.MemoryStream();
-    //  var mf = new Csla.Serialization.Mobile.MobileFormatter();
-    //  mf.Serialize(buffer, cmd);
-    //  buffer.Position = 0;
-    //  var m = (TestCommand)mf.Deserialize(buffer);
-    //  Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
-    //}
+      //  var ndcs = new System.Runtime.Serialization.NetDataContractSerializer();
+      //  ndcs.Serialize(buffer, cmd);
+      //  buffer.Position = 0;
+      //  var n = (TestCommand)ndcs.Deserialize(buffer);
+      //  Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
 
-    // TODO: Fix test
-    //[TestMethod]
-    //[TestCategory("SkipWhenLiveUnitTesting")]
-    //public void CommandOverDataPortal()
-    //{
-    //  Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-    //  try
-    //  {
-    //    var cmd = new TestCommand();
-    //    cmd.Name = "test data";
+      buffer = new MemoryStream();
+      var mf = new MobileFormatter(applicationContext);
+      mf.Serialize(buffer, cmd);
+      buffer.Position = 0;
+      var m = (TestCommand)mf.Deserialize(buffer);
+      Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
+    }
 
-    //    var result = Csla.DataPortal.Execute<TestCommand>(cmd);
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public void CommandOverDataPortal()
+    {
+      TestDIContext customDIContext = TestDIContextFactory.CreateDefaultContext();
+      // TODO: Get this custom proxy code included and working
+      //TestDIContext customDIContext = TestDIContextFactory.CreateContext(
+      //options => options
+      //.Services.AddTransient<DataPortalClient.IDataPortalProxy, Csla.Testing.Business.TestProxies.AppDomainProxy>()
+      //);
+      IDataPortal<TestCommand> dataPortal = customDIContext.CreateDataPortal<TestCommand>();
 
-    //    Assert.IsFalse(ReferenceEquals(cmd, result), "References should not match");
-    //    Assert.AreEqual(cmd.Name + " server", result.Name);
-    //  }
-    //  finally
-    //  {
-    //    System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
-    //  }
-    //}
+      var cmd = new TestCommand();
+      cmd.Name = "test data";
 
-#if !NETFX_CORE
-    // TODO: Fix test
-    //[TestMethod]
-    //public void UseCustomSerializationFormatter()
-    //{
-    //  System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "Csla.Serialization.NetDataContractSerializerWrapper, Csla";
-    //  try
-    //  {
-    //    var formatter = SerializationFormatterFactory.GetFormatter();
+      var result = dataPortal.Execute(cmd);
 
-    //    Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.CustomFormatter);
-    //    Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
-    //  }
-    //  finally
-    //  {
-    //    System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
-    //  }
-    //}
+      Assert.IsFalse(ReferenceEquals(cmd, result), "References should not match");
+      Assert.AreEqual(cmd.Name + " server", result.Name);
+    }
 
-    // TODO: Fix test
+#if NETFRAMEWORK
+    [TestMethod]
+    public void UseCustomSerializationFormatter()
+    {
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(options => options
+      .Serialization(cfg => cfg
+      .SerializationFormatter(typeof(NetDataContractSerializerWrapper))));
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+
+      var formatter = SerializationFormatterFactory.GetFormatter(applicationContext);
+
+      Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+    }
+
+    // TODO: I don't think this test is relevant - NDCS has been dropped?
     //[TestMethod]
     //public void UseNetDataContractSerializer()
     //{
@@ -639,13 +634,13 @@ namespace Csla.Test.Serialization
     //    System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
     //  }
     //}
-  }
 #endif
+  }
 
   [Serializable]
   public class TestCommand : CommandBase<TestCommand>
   {
-    private static PropertyInfo<string> NameProperty = RegisterProperty(typeof(TestCommand), new PropertyInfo<string>("Name"));
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>("Name");
     public string Name
     {
       get { return ReadProperty(NameProperty); }
@@ -653,9 +648,9 @@ namespace Csla.Test.Serialization
     }
 
     [Execute]
-		protected void DataPortal_Execute()
+    protected void DataPortal_Execute()
     {
-      Name = Name + " server";     
+      Name = Name + " server";
     }
   }
 }

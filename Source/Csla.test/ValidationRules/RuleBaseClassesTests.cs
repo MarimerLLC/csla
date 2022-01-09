@@ -56,7 +56,6 @@ namespace Csla.Test.ValidationRules
       Assert.IsFalse(rule.CanRunAsAffectedProperty);
     }
 
-
     [TestMethod()]
     public void PropertyRuleDefaultCanXYZVaules()
     {
@@ -130,8 +129,6 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual(string.Empty, actual.Name);
     }
 
-    // TODO: Fix this; causes tests to run indefinitely!
-    [Ignore]
     [TestMethod()]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void AsyncLookupCustomerSetsCustomerName()
@@ -172,8 +169,6 @@ namespace Csla.Test.ValidationRules
       Assert.IsTrue(err1.Length > 0);             // name has broken rule with message
     }
 
-    // TODO: Fix this test; causes tests to run indefinitely!
-    [Ignore]
     [TestMethod()]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void NameRequiredIsNotBrokenAfterLookupCustomer()

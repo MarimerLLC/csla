@@ -26,7 +26,7 @@ namespace Csla.Test.AppContext
       {
         lock (this)
         {
-          // TODO: Fix test
+          // TODO: Is this test relevant on Csla 6?
           //if (Csla.ApplicationContext.ClientContext[this._Name] == null ||
           //    Csla.ApplicationContext.GlobalContext[this._Name] == null)
           //{

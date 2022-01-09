@@ -54,7 +54,7 @@ namespace Csla.Test.AppContext
     {
       IDataPortal<SimpleRoot> dataPortal = _testDIContext.CreateDataPortal<SimpleRoot>();
 
-      // TODO: Fix test
+      // TODO: How do we do this test in Csla 6?
       TestResults.Reinitialise();
       //ApplicationContext.ClientContext["v1"] = "client";
 
@@ -69,7 +69,7 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void ApplicationContextProperties()
     {
-      // TODO: Fix test
+      // TODO: Is there any equivalent for this test in Csla 6?
       //ApplicationContext.DataPortalProxy = null;
       //Assert.AreEqual("Local", ApplicationContext.DataPortalProxy);
       //Assert.AreEqual("Client", ApplicationContext.ExecutionLocation.ToString());
@@ -78,7 +78,6 @@ namespace Csla.Test.AppContext
     #region TestAppContext across different Threads
 
     // TODO: Is this test relevant anymore? I can't work out how to do this test
-    [Ignore]
     [TestMethod]
     public void TestAppContextAcrossDifferentThreads()
     {
@@ -188,7 +187,6 @@ namespace Csla.Test.AppContext
     /// VB library does not seem to contain the DataPortalInvokeEventHandler object so I put a conditional compile
     /// flag around this method and set a warning message.
     /// </remarks>
-    [Ignore]
     [TestMethod()]
     public void DataPortalEvents()
     {

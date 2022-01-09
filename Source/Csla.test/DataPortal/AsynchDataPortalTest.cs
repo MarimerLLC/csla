@@ -298,8 +298,6 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(124, result.Value);
     }
 
-    // TODO: Fix this test; causes tests to stop executing!
-    [Ignore]
     [TestMethod]
     public void ExecuteAsyncWithException()
     {
@@ -311,7 +309,7 @@ namespace Csla.Test.DataPortal
         try
         {
           var result = await dataPortal.ExecuteAsync(
-            new SingleCommand { Value = 555 });
+            new SingleCommand() { Value = 555 });
           Assert.Fail("Expected exception not thrown");
         }
         catch (Exception ex)

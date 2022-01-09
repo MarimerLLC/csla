@@ -29,7 +29,7 @@ namespace Csla.Test.Security
       return _ID;
     }
 
-    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
+    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName, RelationshipTypes.PrivateField);
     private string _firstName = FirstNameProperty.DefaultValue;
     public string FirstName
     {
@@ -77,9 +77,9 @@ namespace Csla.Test.Security
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new IsInRole(Rules.AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
     }
 
     #endregion
@@ -96,7 +96,7 @@ namespace Csla.Test.Security
 
     [RunLocal()]
     [Create]
-		protected void DataPortal_Create()
+	protected void DataPortal_Create()
     {
       _firstName = "default value"; //for now...
     }

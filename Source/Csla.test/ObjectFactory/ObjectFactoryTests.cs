@@ -45,9 +45,7 @@ namespace Csla.Test.ObjectFactory
     [TestCleanup]
     public void Cleanup()
     {
-      // TODO: Is this still required? Probably not
-      //Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
-      //    new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
+      // TODO: Is any of this cleanup still required? Probably not
       //Csla.ApplicationContext.DataPortalProxy = "Local";
       //Csla.DataPortal.ResetProxyType();
       TestResults.Reinitialise();
@@ -109,9 +107,8 @@ namespace Csla.Test.ObjectFactory
       Assert.IsTrue(root.IsDirty, "Should be dirty");
     }
 
-    // this test needs to be updated when the factory model is updated
+    // TODO: This test needs to be updated when the factory model is updated
     // to use DI and multi-property criteria
-    [Ignore]
     [TestMethod]
     [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
@@ -195,11 +192,14 @@ namespace Csla.Test.ObjectFactory
     public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal().AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory4>>()));
+        options => options
+        .Data(cfg => cfg
+        .DefaultTransactionIsolationLevel(TransactionIsolationLevel.RepeatableRead)
+        .DefaultTransactionTimeoutInSeconds(45)
+        )
+        .DataPortal()
+        .AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory4>>()));
       IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
-      // TODO: Fix this
-      //ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-      //ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
 
       var root = dataPortal.Create();
       root.Data = "abc";
@@ -220,11 +220,14 @@ namespace Csla.Test.ObjectFactory
     public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal().AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory5>>()));
+        options => options
+        .Data(cfg => cfg
+        .DefaultTransactionIsolationLevel(TransactionIsolationLevel.RepeatableRead)
+        .DefaultTransactionTimeoutInSeconds(45)
+        )
+        .DataPortal()
+        .AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory5>>()));
       IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
-      // TODO: Fix this
-      //ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-      //ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
 
       var root = dataPortal.Create();
       root.Data = "abc";

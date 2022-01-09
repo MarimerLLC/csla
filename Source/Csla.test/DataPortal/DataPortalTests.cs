@@ -201,13 +201,12 @@ namespace Csla.Test.DataPortal
     }
 
     // TODO: Is this a relevant concept any more? These events do not seem to be exposed
-    [Ignore]
     [TestMethod()]
     public void DataPortalEvents()
     {
       IDataPortal<DpRoot> dataPortal = _testDIContext.CreateDataPortal<DpRoot>();
 
-      // TODO: Fix test
+      // TODO: Not sure how to replicate this in Csla 6
       //dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
       //dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
 
@@ -227,7 +226,7 @@ namespace Csla.Test.DataPortal
       }
       finally
       {
-        // TODO: Fix test
+        // TODO: Not sure how to replicate this in Csla 6
         //dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
         //dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
       }

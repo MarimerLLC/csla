@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
@@ -240,7 +241,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class LookupCustomer : PropertyRule
+  public class LookupCustomer : PropertyRuleAsync
   {
     public IPropertyInfo NameProperty { get; set; }
     public LookupCustomer(IPropertyInfo primaryProperty, IPropertyInfo nameProperty)
@@ -256,28 +257,23 @@ namespace Csla.Test.ValidationRules
       IsAsync = true; 
     }
 
-    protected override void Execute(IRuleContext context)
+    protected override async Task ExecuteAsync(IRuleContext context)
     {
       var customerId = (int)context.InputPropertyValues[PrimaryProperty];
-      // TODO: Fix test
-      //var bw = new BackgroundWorker();
-      //bw.DoWork += (o, e) => Thread.Sleep(200);
-      //bw.RunWorkerCompleted += (o, e) =>
-      //                           {
-      //                             string name;
-      //                             switch (customerId)
-      //                             {
-      //                               case 1:
-      //                                 name = "Rocky Lhotka";
-      //                                 break;
-      //                               default:
-      //                                 name = string.Format("Customer_{0}", customerId);
-      //                                 break;
-      //                             }
-      //                             context.AddOutValue(NameProperty, name);
-      //                             context.Complete();
-      //                           };
-      //bw.RunWorkerAsync();
+
+      await Task.Delay(200);
+      string name;
+      switch (customerId)
+      {
+        case 1:
+          name = "Rocky Lhotka";
+          break;
+        default:
+          name = string.Format("Customer_{0}", customerId);
+          break;
+      }
+      context.AddOutValue(NameProperty, name);
+      context.Complete();
       context.AddSuccessResult(false);
     }
   }

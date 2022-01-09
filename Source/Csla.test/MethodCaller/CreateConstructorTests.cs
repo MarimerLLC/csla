@@ -27,7 +27,7 @@ namespace Csla.Test.MethodCaller
     [TestMethod]
     public void CreateInstanceSuccess()
     {
-      // TODO: Fix test
+      // TODO: Not sure what the equivalent of this is in Csla 6
       //var t1 = Csla.Reflection.MethodCaller.CreateInstance(typeof(TestClass));
 #if MSTEST
       //Assert.IsInstanceOfType(t1, typeof(TestClass));
@@ -39,7 +39,7 @@ namespace Csla.Test.MethodCaller
     [TestMethod]
     public void CreateInstanceNonPublicNestedTypeSuccess()
     {
-      // TODO: Fix test
+      // TODO: Not sure how to recreate this in Csla 6
       //var instance = (NonPublic2)Csla.Reflection.MethodCaller.CreateInstance(typeof(NonPublic2));
       //Assert.IsNotNull(instance);
     }

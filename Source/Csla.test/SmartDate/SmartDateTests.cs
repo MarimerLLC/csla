@@ -465,6 +465,8 @@ namespace Csla.Test.SmartDate
     {
       IDataPortal<SDtest> dataPortal = _testDIContext.CreateDataPortal<SDtest>();
 
+      TestResults.Reinitialise();
+
       var obj = SDtest.NewSDTest(dataPortal);
       Assert.AreEqual("", obj.TextDate, "Should be empty");
 

@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Threading;
 using Csla.Core;
 using Csla.Serialization;
+using System.Threading.Tasks;
 
 namespace Csla.Testing.Business.BusyStatus
 {
@@ -22,7 +23,7 @@ namespace Csla.Testing.Business.BusyStatus
   {
     public ItemWithAsynchRule() { }
 
-    private static PropertyInfo<string> IdProperty = RegisterProperty<string>(c=>c.Id);
+    private static PropertyInfo<string> IdProperty = RegisterProperty<string>(c => c.Id);
 
     public string Id
     {
@@ -36,7 +37,7 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
-    private static PropertyInfo<string> OperationResultProperty = RegisterProperty<string>(c=>c.OperationResult, "Operation Result", string.Empty);
+    private static PropertyInfo<string> OperationResultProperty = RegisterProperty<string>(c => c.OperationResult, "Operation Result", string.Empty);
 
     public string OperationResult
     {
@@ -50,7 +51,7 @@ namespace Csla.Testing.Business.BusyStatus
       }
     }
 
-    private static PropertyInfo<string> RuleFieldProperty = RegisterProperty<string>(c=>c.RuleField, "Rule Field", string.Empty);
+    private static PropertyInfo<string> RuleFieldProperty = RegisterProperty<string>(c => c.RuleField, "Rule Field", string.Empty);
 
     public string RuleField
     {
@@ -76,45 +77,40 @@ namespace Csla.Testing.Business.BusyStatus
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new FiveSecondsLongRule(RuleFieldProperty));
+      BusinessRules.AddRule(new TwoSecondsLongRule(RuleFieldProperty));
     }
 
-    public class FiveSecondsLongRule : Rules.BusinessRule
+    public class TwoSecondsLongRule : Rules.BusinessRuleAsync
     {
-      public FiveSecondsLongRule(Csla.Core.IPropertyInfo primaryProperty)
+      public TwoSecondsLongRule(Csla.Core.IPropertyInfo primaryProperty)
         : base(primaryProperty)
       {
         IsAsync = true;
         InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+        base.RunMode = RunModes.DenyOnServerSidePortal | RunModes.DenyCheckRules;
       }
 
-      protected override void Execute(IRuleContext context)
+      protected override async Task ExecuteAsync(IRuleContext context)
       {
-        // TODO: Fix test
+        // TODO: I'm not sure how I would replicate this exact check in Csla 6.
+        // For now, I've had to stop it running at all in the server-side portal - but this is not the same as before!
+        // What the rule used to do was run everywhere but finish immediately if on the server, now it doesn't
+        // run at all on the server :-(
         //if (Csla.ApplicationContext.LogicalExecutionLocation == Csla.ApplicationContext.LogicalExecutionLocations.Client)
         //{
-        //  BackgroundWorker worker = new BackgroundWorker();
+        await Task.Delay(2000);
 
-        //  worker.DoWork += (s, e) =>
-        //  {
-        //    System.Threading.Thread.Sleep(2000);
-        //    var value = context.InputPropertyValues[PrimaryProperty];
-        //    if (value == null || value.ToString().ToUpper() == "ERROR")
-        //      context.AddErrorResult("error detected");
-        //  };
-
-        //  worker.RunWorkerCompleted += (s, e) => context.Complete();
-
-        //  // simulating an asynchronous process.
-        //  worker.RunWorkerAsync();
+        var value = context.InputPropertyValues[PrimaryProperty];
+        if (value == null || value.ToString().ToUpper() == "ERROR")
+          context.AddErrorResult("error detected");
         //}
         //else
-        {
-          var value = context.InputPropertyValues[PrimaryProperty];
-          if (value == null || value.ToString().ToUpper() == "ERROR")
-            context.AddErrorResult("error detected");
-          context.Complete();
-        }
+        //{
+        //  var value = context.InputPropertyValues[PrimaryProperty];
+        //  if (value == null || value.ToString().ToUpper() == "ERROR")
+        //    context.AddErrorResult("error detected");
+        //  context.Complete();
+        //}
       }
     }
 
@@ -133,7 +129,6 @@ namespace Csla.Testing.Business.BusyStatus
     {
       this.Id = "fetch_" + criteria;
       this.OperationResult = "DataPortal_Fetch/with parameters";
-      this.MarkOld();
     }
 
     [Create]
@@ -141,7 +136,6 @@ namespace Csla.Testing.Business.BusyStatus
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
-      this.MarkNew();
     }
 
     [Insert]
@@ -153,7 +147,7 @@ namespace Csla.Testing.Business.BusyStatus
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

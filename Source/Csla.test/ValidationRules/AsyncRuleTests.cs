@@ -84,6 +84,8 @@ namespace Csla.Test.ValidationRules
     {
       IDataPortal<HasInvalidAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasInvalidAsyncRule>();
 
+      TestResults.Reinitialise();
+
       UnitTestContext context = GetContext();
       var root = dataPortal.Create();
       root.ValidationComplete += (o, e) =>

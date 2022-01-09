@@ -40,32 +40,30 @@ namespace Csla.Configuration
     /// Add services required to host the server-side
     /// data portal.
     /// </summary>
-    /// <param name="builder"></param>
-    public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions builder)
-    {
-      return AddServerSideDataPortal(builder, null);
-    }
-
-    /// <summary>
-    /// Add services required to host the server-side
-    /// data portal.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="options"></param>
+    /// <param name="builder">The configuration that is to be affected</param>
+    /// <param name="options">The action that is to be used to influence the configuration options</param>
     public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions builder, Action<DataPortalServerOptions> options)
     {
       var opt = builder.DataPortalServerOptions;
       options?.Invoke(opt);
-      var services = builder.Services;
-      services.TryAddScoped(typeof(IAuthorizeDataPortal), opt.AuthorizerProviderType);
-      foreach (Type interceptorType in opt.InterceptorProviders)
+      return builder;
+    }
+
+    /// <summary>
+    /// Set up the data portal by applying the configuration that has been built
+    /// </summary>
+    /// <param name="config">The configuration to use in setting up the data portal</param>
+    internal static void ApplyConfiguration(this DataPortalClientOptions config)
+    {
+      var services = config.Services;
+      services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalServerOptions.AuthorizerProviderType);
+      foreach (Type interceptorType in config.DataPortalServerOptions.InterceptorProviders)
       {
         services.AddScoped(typeof(IInterceptDataPortal), interceptorType);
       }
-      // services.TryAddScoped((p) => opt.InterceptorProviders);
-      services.TryAddScoped(typeof(IObjectFactoryLoader), opt.ObjectFactoryLoaderType);
-      services.TryAddScoped(typeof(IDataPortalActivator), opt.ActivatorType);
-      services.TryAddScoped(typeof(IDataPortalExceptionInspector), opt.ExceptionInspectorType);
+      services.TryAddScoped(typeof(IObjectFactoryLoader), config.DataPortalServerOptions.ObjectFactoryLoaderType);
+      services.TryAddScoped(typeof(IDataPortalActivator), config.DataPortalServerOptions.ActivatorType);
+      services.TryAddScoped(typeof(IDataPortalExceptionInspector), config.DataPortalServerOptions.ExceptionInspectorType);
 
       services.TryAddScoped<DataPortalExceptionHandler>();
       services.TryAddTransient(typeof(IDataPortalServer), typeof(DataPortal));
@@ -75,7 +73,6 @@ namespace Csla.Configuration
       services.TryAddTransient<FactoryDataPortal>();
       services.TryAddTransient<DataPortalBroker>();
       services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Server.Dashboard.NullDashboard));
-      return builder;
     }
   }
 }

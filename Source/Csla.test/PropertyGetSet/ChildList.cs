@@ -19,9 +19,19 @@ namespace Csla.Test.PropertyGetSet
     public ChildList()
     { }
 
-    public static ChildList NewObject(IDataPortal<ChildList> dataPortal, bool isChild)
+    public static ChildList NewObject(IDataPortal<ChildList> dataPortal)
     {
-      return dataPortal.Create(isChild);
+      return dataPortal.Create();
+    }
+
+    public static ChildList NewChildObject(IChildDataPortal<ChildList> dataPortal)
+    {
+      return dataPortal.CreateChild();
+    }
+
+    public static ChildList GetChildObject(IChildDataPortal<ChildList> dataPortal)
+    {
+      return dataPortal.FetchChild();
     }
 
     public new int EditLevel
@@ -29,22 +39,16 @@ namespace Csla.Test.PropertyGetSet
       get { return base.EditLevel; }
     }
 
-    internal void Update()
-    {
-      foreach (var item in this)
-        if (item.IsNew)
-          item.Insert();
-        else
-          item.Update();
-    }
-
     [Create]
-    private void Create(bool isChild)
+    [CreateChild]
+    private void Create()
     {
-      if (isChild)
-        MarkAsChild();
-
     }
 
+    [Fetch]
+    [FetchChild]
+    private void Fetch()
+    {
+    }
   }
 }

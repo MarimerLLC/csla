@@ -41,7 +41,6 @@ namespace Csla.Test.DataPortal
     {
       TestResults.Reinitialise();
 
-      // TODO: Why is each interceptor type being registered twice? Config error?
       var obj = CreateInitializeRoot("abc");
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
@@ -55,7 +54,6 @@ namespace Csla.Test.DataPortal
     {
       TestResults.Reinitialise();
 
-      // TODO: Why is each interceptor type being registered twice? Config error?
       var obj = GetInitializeRoot("abc");
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
@@ -68,7 +66,6 @@ namespace Csla.Test.DataPortal
     {
       TestResults.Reinitialise();
 
-      // TODO: Why is each interceptor type being registered twice? Config error?
       var obj = GetInitializeListRoot();
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeListRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeListRoot"), "Complete should have run");
@@ -100,7 +97,6 @@ namespace Csla.Test.DataPortal
     {
       TestResults.Reinitialise();
 
-      // TODO: Why are interceptors being registered twice? Config error?
       var obj = GetInitializeRoot("abc");
       TestResults.Reinitialise();
 
@@ -120,7 +116,6 @@ namespace Csla.Test.DataPortal
     {
       TestResults.Reinitialise();
 
-      // TODO: Why are interceptors being registered twice? Config error?
       var obj = GetInitializeListRoot();
       TestResults.Reinitialise();
 

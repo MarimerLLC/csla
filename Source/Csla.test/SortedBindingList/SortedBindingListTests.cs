@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,6 +26,14 @@ namespace Csla.Test.SortedBindingList
   [TestClass()]
   public class SortedBindingListTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod()]
     public void AscendingSort()
     {
@@ -200,7 +209,9 @@ namespace Csla.Test.SortedBindingList
     [TestMethod]
     public void SimulateDataBindingAdd()
     {
-      var source = Csla.DataPortal.Create<MyChildren>();
+      IDataPortal<MyChildren> dataPortal = _testDIContext.CreateDataPortal<MyChildren>();
+      
+      var source = dataPortal.Create();
       source.BeginEdit();
       var sorted = new SortedBindingList<MyChild>(source);
       sorted.ApplySort(MyChild.NameProperty.Name, ListSortDirection.Ascending);
@@ -215,13 +226,6 @@ namespace Csla.Test.SortedBindingList
   public class MyChildren
     : BusinessBindingListBase<MyChildren, MyChild>
   {
-    protected override object AddNewCore()
-    {
-      var item = Csla.DataPortal.CreateChild<MyChild>();
-      Add(item);
-      return item;
-    }
-
     [Create]
     private void Create()
     { }

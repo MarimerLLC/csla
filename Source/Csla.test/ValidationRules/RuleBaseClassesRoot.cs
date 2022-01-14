@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
+using Csla.TestHelpers;
 using Csla.Threading;
 
 namespace Csla.Test.ValidationRules
@@ -118,9 +120,9 @@ namespace Csla.Test.ValidationRules
 
     #region Factory Methods
 
-    public static RuleBaseClassesRoot NewEditableRoot(string ruleSet)
+    public static RuleBaseClassesRoot NewEditableRoot(IDataPortal<RuleBaseClassesRoot> dataPortal, string ruleSet)
     {
-      return Csla.DataPortal.Create<RuleBaseClassesRoot>(ruleSet);
+      return dataPortal.Create(ruleSet);
     }
 
     #endregion
@@ -161,7 +163,7 @@ namespace Csla.Test.ValidationRules
       var sum = context.InputPropertyValues.Sum(property => (dynamic)property.Value);
 
       // add calculated value to OutValues 
-      // When rule is completed the RuleEngig will update businessobject
+      // When rule is completed the RuleEngine will update businessobject
       context.AddOutValue(PrimaryProperty, sum);
     }
   }
@@ -239,7 +241,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class LookupCustomer : PropertyRule
+  public class LookupCustomer : PropertyRuleAsync
   {
     public IPropertyInfo NameProperty { get; set; }
     public LookupCustomer(IPropertyInfo primaryProperty, IPropertyInfo nameProperty)
@@ -255,27 +257,24 @@ namespace Csla.Test.ValidationRules
       IsAsync = true; 
     }
 
-    protected override void Execute(IRuleContext context)
+    protected override async Task ExecuteAsync(IRuleContext context)
     {
       var customerId = (int)context.InputPropertyValues[PrimaryProperty];
-      var bw = new BackgroundWorker();
-      bw.DoWork += (o, e) => Thread.Sleep(200);
-      bw.RunWorkerCompleted += (o, e) =>
-                                 {
-                                   string name;
-                                   switch (customerId)
-                                   {
-                                     case 1:
-                                       name = "Rocky Lhotka";
-                                       break;
-                                     default:
-                                       name = string.Format("Customer_{0}", customerId);
-                                       break;
-                                   }
-                                   context.AddOutValue(NameProperty, name);
-                                   context.Complete();
-                                 };
-      bw.RunWorkerAsync();
+
+      await Task.Delay(200);
+      string name;
+      switch (customerId)
+      {
+        case 1:
+          name = "Rocky Lhotka";
+          break;
+        default:
+          name = string.Format("Customer_{0}", customerId);
+          break;
+      }
+      context.AddOutValue(NameProperty, name);
+      context.Complete();
+      context.AddSuccessResult(false);
     }
   }
 }

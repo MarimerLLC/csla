@@ -58,25 +58,13 @@ namespace Csla.Test.Basic
       AllowNew = true;
     }
 
-    protected override object AddNewCore()
+    private void DataPortal_Fetch([Inject] IChildDataPortal<TestItem> childDataPortal)
     {
-      var item = Csla.DataPortal.CreateChild<TestItem>();
-      Add(item);
-      return item;
-    }
-
-    public static TestCollection GetList()
-    {
-      return Csla.DataPortal.Fetch<TestCollection>();
-    }
-
-    private void DataPortal_Fetch()
-    {
-      Add(Csla.DataPortal.FetchChild<TestItem>(123));
-      Add(Csla.DataPortal.FetchChild<TestItem>(2));
-      Add(Csla.DataPortal.FetchChild<TestItem>(13));
-      Add(Csla.DataPortal.FetchChild<TestItem>(23));
-      Add(Csla.DataPortal.FetchChild<TestItem>(3));
+      Add(childDataPortal.FetchChild(123));
+      Add(childDataPortal.FetchChild(2));
+      Add(childDataPortal.FetchChild(13));
+      Add(childDataPortal.FetchChild(23));
+      Add(childDataPortal.FetchChild(3));
     }
   }
 

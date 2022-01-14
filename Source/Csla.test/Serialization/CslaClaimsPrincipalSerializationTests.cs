@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Csla.Serialization;
 using Csla.Test.ValidationRules;
 using UnitDriven;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -32,12 +33,22 @@ namespace Csla.Test.Serialization
   [TestClass()]
   public class CslaClaimsPrincipalSerializationTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void SerializeCslaClaimsPrincipal()
     {
       var identity = new System.Security.Principal.GenericIdentity("rocky", "custom");
       var principal = new Csla.Security.CslaClaimsPrincipal(identity);
-      var clone = (Csla.Security.CslaClaimsPrincipal)Core.ObjectCloner.Clone(principal);
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var cloner = new Core.ObjectCloner(applicationContext);
+      var clone = (Csla.Security.CslaClaimsPrincipal)cloner.Clone(principal);
       Assert.AreEqual(principal.Identity.Name, clone.Identity.Name);
       Assert.AreEqual(principal.Identity.AuthenticationType, clone.Identity.AuthenticationType);
     }

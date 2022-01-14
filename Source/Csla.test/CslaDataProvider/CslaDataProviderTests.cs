@@ -124,7 +124,7 @@ namespace Csla.Test.CslaDataProvider
 
     [TestCleanup]
     public void ClearContextsAfterEachTest() {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      //Csla.ApplicationContext.GlobalContext.Clear();
     }
   }
 }

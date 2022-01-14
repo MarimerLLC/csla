@@ -11,6 +11,8 @@ using UnitDriven;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Serialization;
+using System.IO;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -31,12 +33,21 @@ namespace Csla.Test.PropertyGetSet
   public class PropertyGetSetTests
   {
     private ApplicationContext.PropertyChangedModes _mode;
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestInitialize]
     public void Initialize()
     {
       _mode = Csla.ApplicationContext.PropertyChangedMode;
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
+      _changedName = "";
+      _changedName = "";
     }
 
     [TestCleanup]
@@ -48,7 +59,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ForceStaticInit()
     {
-      EditableGetSetNFI root = new EditableGetSetNFI();
+      IDataPortal<EditableGetSetNFI> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetNFI>();
+
+      EditableGetSetNFI root = EditableGetSetNFI.GetObject(dataPortal);
       root.Data = "a";
       root.Base = "b";
       root.TopBase = "c";
@@ -60,7 +73,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void NullString()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.FieldBackedString = null;
       Assert.AreEqual(string.Empty, root.FieldBackedString, "FieldBackedString should be empty");
       root.F06 = null;
@@ -74,7 +89,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void NonGenericLoadProperty()
     {
-      var root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.LoadM02(123);
       Assert.AreEqual(123, root.M02);
 
@@ -93,7 +110,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ExplicitFieldProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging); 
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
@@ -123,7 +142,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedExplicitFieldProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root = root.Clone();
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
       Assert.AreEqual("", root.FieldBackedString, "String should default to string.Empty");
@@ -142,7 +163,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ManagedFieldProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       Assert.AreEqual("n/a", root.M03, "Default value should have been set");
@@ -177,7 +200,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ManagedFieldBaseProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
       root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
 
@@ -211,7 +236,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedManagedFieldProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root = root.Clone();
       Assert.AreEqual("n/a", root.M03, "Default value should have been set");
       Assert.AreEqual("", root.ManagedStringField, "String should default to string.Empty");
@@ -231,7 +258,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void MarkClean()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
       root.ManagedStringField = "hi there";
       root.FieldBackedString = "hi there";
@@ -245,7 +274,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SmartDateProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual("", root.F04, "Field should default to string.Empty");
       Assert.AreEqual("", root.M04, "Should default to string.Empty");
 
@@ -259,9 +290,11 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
-    public void SimpleChildProperties()
+    public void SimpleChildProperties_LazyLoadedChild()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
       root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
 
@@ -270,6 +303,10 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
 
+      // TODO: I changed the EditableGetSet object from lazy loading children to loading
+      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
+      // child, which is no longer supported in Csla 6
+      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.AreEqual("ManagedChild", _changingName, "ManagedChild should have been changing");
 
       Assert.AreEqual("ManagedChild", _changedName, "ManagedChild should have changed");
@@ -301,7 +338,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedSimpleChildProperties()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       EditableGetSet child = root.ManagedChild;
       child.FieldBackedString = "hi there";
 
@@ -341,7 +380,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootUndoCancel()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
       Assert.IsFalse(root.IsDirty, "Root should not start dirty");
 
@@ -369,7 +410,9 @@ namespace Csla.Test.PropertyGetSet
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootUndoApply()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
       Assert.IsFalse(root.IsDirty, "Root should not start dirty");
 
@@ -401,7 +444,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildUndoCancel()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
@@ -409,6 +454,10 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet initialChild = root.ManagedChild;
       Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after being created");
 
+      // TODO: I changed the EditableGetSet object from lazy loading children to loading
+      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
+      // child, which is no longer supported in Csla 6
+      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.CancelEdit();
@@ -423,13 +472,16 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedEditLevel()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
       Assert.AreEqual(1, root.ManagedChild.EditLevel, "Child edit level after BeginEdit");
       Assert.AreEqual(1, root.ManagedChildList.EditLevel, "List edit level after BeginEdit");
-      root.ManagedChildList.Add(new EditableGetSet(true));
+      root.ManagedChildList.Add(EditableGetSet.NewChildObject(childDataPortal));
       Assert.AreEqual(1, root.ManagedChildList[0].EditLevel, "List child edit level after BeginEdit");
 
       root = root.Clone();
@@ -444,11 +496,17 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildUndoCancelIsDirty()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.BeginEdit();
 
       EditableGetSet initialChild = root.ManagedChild;
 
+      // TODO: I changed the EditableGetSet object from lazy loading children to loading
+      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
+      // child, which is no longer supported in Csla 6
+      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
       Assert.IsTrue(initialChild.IsDirty, "Child should be dirty");
 
@@ -464,7 +522,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildUndoApply()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
@@ -472,6 +532,10 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet initialChild = root.ManagedChild;
       Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after being created");
 
+      // TODO: I changed the EditableGetSet object from lazy loading children to loading
+      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
+      // child, which is no longer supported in Csla 6
+      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.ApplyEdit();
@@ -490,7 +554,10 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildListUndoCancel()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
@@ -501,13 +568,17 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
       Assert.IsFalse(list.IsDirty, "List should not be dirty");
 
-      list.Add(new EditableGetSet(true));
+      list.Add(EditableGetSet.NewChildObject(childDataPortal));
       Assert.AreEqual(1, list.Count, "List count should be 1");
 
       root.CancelEdit();
       Assert.AreEqual(0, root.EditLevel, "Root edit level after CancelEdit");
       ChildList secondList = root.ManagedChildList;
       Assert.AreEqual(0, secondList.EditLevel, "Second list edit level after CancelEdit");
+      // TODO: I changed the EditableGetSet object from lazy loading children to loading
+      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
+      // child, which is no longer supported in Csla 6
+      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsFalse(ReferenceEquals(list, secondList), "List objects should not be the same");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after CancelEdit");
@@ -518,7 +589,10 @@ namespace Csla.Test.PropertyGetSet
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootChildListUndoApply()
     {
-      var root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
@@ -529,7 +603,7 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
       Assert.IsFalse(childList.IsDirty, "List should not be dirty");
 
-      childList.Add(new EditableGetSet(true));
+      childList.Add(EditableGetSet.NewChildObject(childDataPortal));
       Assert.AreEqual(1, childList.Count, "List count should be 1");
 
       root.ApplyEdit();
@@ -550,7 +624,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void LoadNullProperty()
     {
-      var root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(Guid.Empty, root.M06, "Guid should be null");
     }
 
@@ -562,10 +638,13 @@ namespace Csla.Test.PropertyGetSet
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
     {
-      var first = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<BadGetSet> badDataPortal = _testDIContext.CreateDataPortal<BadGetSet>();
+
+      var first = EditableGetSet.GetObject(dataPortal);
       try
       {
-        var root = new BadGetSet();
+        var root = BadGetSet.GetObject(badDataPortal);
         var tmp = root.Id;
       }
       catch (TypeInitializationException ex)
@@ -578,9 +657,11 @@ namespace Csla.Test.PropertyGetSet
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyRegisteredTwice()
     {
+      IDataPortal<BadGetSetTwo> dataPortal = _testDIContext.CreateDataPortal<BadGetSetTwo>();
+
       try
       {
-        var root = new BadGetSetTwo();
+        var root = BadGetSetTwo.GetObject(dataPortal);
         var tmp = root.Id;
       }
       catch (TypeInitializationException ex)
@@ -610,7 +691,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void FieldDirty()
     {
-      EditableGetSet root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.IsFalse(root.ManagedStringFieldDirty, "ManagedStringField should not be dirty");
       root.ManagedStringField = "hi there";
       Assert.IsTrue(root.ManagedStringFieldDirty, "ManagedStringField should be dirty");
@@ -619,7 +702,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_ManagedStringField_Property_Changes_ChildChanged_Event_Should_Not_Fire()
     {
-      var root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.ChildChanged += (o, e) => { throw new InvalidOperationException(); };
       root.ManagedStringField = "test";
     }
@@ -627,8 +712,10 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Changes_On_ManagedChild_Then_ChildChanged_Should_Fire_On_Root_ButNot_On_ManagedChild()
     {
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
       int changed = 0;
-      var root = new EditableGetSet();
+
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.ChildChanged += (o, e) => { changed++; };
       root.ManagedChild.ChildChanged += (o, e) => { throw new InvalidOperationException();};
       root.ManagedChild.FieldBackedString = "changed";
@@ -639,16 +726,19 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Changes_On_Item_In_ManagedChildList_Then_ChildChanged_Fires_On_Root_And_On_ManagedChildList()
     {
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      
       int rootChanged = 0;
       int listChanged = 0;
 
-      var root = new EditableGetSet();
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.ChildChanged += (o, e) => { rootChanged++; };
 
       var list = root.ManagedChildList;
       list.ChildChanged += (o, e) => { listChanged++; };
 
-      list.Add(new EditableGetSet(true));
+      list.Add(EditableGetSet.NewChildObject(childDataPortal));
       list[0].FieldBackedString = "child change";
 
       Assert.AreEqual(4, rootChanged);//this event fires 4 times: lazy load of the child list, Item[], Count and property change on item in the list
@@ -658,23 +748,26 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Changes_On_GrandChild_Then_ChildChanged_Fires_On_GrandChild_Child_and_Root()
     {
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+
       int rootChanged = 0;
       int childListChanged = 0;
       int grandChildListChanged = 0;
       int childChanged = 0;
       int grandChildPropertyChanged = 0;
 
-      var root = new EditableGetSet();
+      EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
       root.ChildChanged += (o, e) => { rootChanged++; };
       root.ManagedChildList.ChildChanged += (o, e) => { childListChanged++; };
 
-      var child = new EditableGetSet(true);
+      var child = EditableGetSet.NewChildObject(childDataPortal);
       child.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
       child.ChildChanged += (o, e) => { childChanged++; };
       child.ManagedChildList.ChildChanged += (o, e) => { grandChildListChanged++; };
 
-      var grandChild = new EditableGetSet(true);
+      var grandChild = EditableGetSet.NewChildObject(childDataPortal);
       grandChild.ChildChanged += (o, e) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
       grandChild.PropertyChanged += (o, e) => { grandChildPropertyChanged++; };
 
@@ -692,9 +785,12 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Is_Changed_On_Child_After_CancelEdit_Then_ChildChanged_Fires_On_Root()
     {
-      var root = new EditableGetSet();
-      var child = new EditableGetSet(true);
-      var grandChild = new EditableGetSet(true);
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+
+      var root = EditableGetSet.GetObject(dataPortal);
+      var child = EditableGetSet.NewChildObject(childDataPortal);
+      var grandChild = EditableGetSet.NewChildObject(childDataPortal);
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
 
@@ -711,14 +807,21 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Is_Changed_On_GrandChild_List_Item_After_Root_Is_Deserialized_Then_Root_ChildChanged_Event_Fires()
     {
-      var root = new EditableGetSet();
-      var child = new EditableGetSet(true);
-      var grandChild = new EditableGetSet(true);
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+
+      var root = EditableGetSet.GetObject(dataPortal);
+      var child = EditableGetSet.NewChildObject(childDataPortal);
+      var grandChild = EditableGetSet.NewChildObject(childDataPortal);
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
 
-      byte[] buffer = MobileFormatter.Serialize(root);
-      root = (EditableGetSet)MobileFormatter.Deserialize(buffer);
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      MemoryStream stream = new MemoryStream();
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
+      formatter.Serialize(stream, root);
+      stream.Seek(0, SeekOrigin.Begin);
+      root = (EditableGetSet)formatter.Deserialize(stream);
 
       int changed = 0;
       root.ChildChanged += (o, e) => { changed++; };
@@ -736,15 +839,20 @@ namespace Csla.Test.PropertyGetSet
     [ExpectedException(typeof(InvalidOperationException))]
     public void LazyLoadChild_GetBeforeSet()
     {
-      var root = new EditableGetSet();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+
+      var root = EditableGetSet.GetObject(dataPortal);
       var child = root.LazyChild;
     }
 
     [TestMethod]
     public void LazyLoadChild_GetAfterSet()
     {
-      var root = new EditableGetSet();
-      root.LazyChild = new ChildList();
+      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<ChildList> childDataPortal = _testDIContext.CreateDataPortal<ChildList>();
+
+      var root = EditableGetSet.GetObject(dataPortal);
+      root.LazyChild = ChildList.NewObject(childDataPortal);
       var child = root.LazyChild;
       Assert.IsNotNull(child);
     }

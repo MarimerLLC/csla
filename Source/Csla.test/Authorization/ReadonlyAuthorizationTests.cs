@@ -40,52 +40,52 @@ namespace Csla.Test.Authorization
       return new ClaimsPrincipal(identity);
     }
 
-    [TestMethod()]
-    public void TestAllowInstanceAndShared()
-    {
-      ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
-      ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.AreEqual("John", person.FirstName,"Should be able read first name");
-      Assert.AreEqual("Doe", person.LastName, "Should be able read first name");
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
-      ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
-      ReadOnlyPerson clone = person.Clone();
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.AreEqual("John", clone.FirstName, "Should be able read first name of clone");
-      Assert.AreEqual("Doe", clone.LastName, "Should be able read first name of clone");
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
-    }
+    //[TestMethod()]
+    //public void TestAllowInstanceAndShared()
+    //{
+    //  TestResults.Reinitialise();
+    //  Csla.ApplicationContext.User = GetPrincipal("Admin");
+    //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();
+    //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+    //  Assert.AreEqual("John", person.FirstName,"Should be able read first name");
+    //  Assert.AreEqual("Doe", person.LastName, "Should be able read first name");
+    //  Csla.ApplicationContext.User = new ClaimsPrincipal();
+    //  TestResults.Reinitialise();
+    //  Csla.ApplicationContext.User = GetPrincipal("Admin");
+    //  ReadOnlyPerson clone = person.Clone();
+    //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+    //  Assert.AreEqual("John", clone.FirstName, "Should be able read first name of clone");
+    //  Assert.AreEqual("Doe", clone.LastName, "Should be able read first name of clone");
+    //  Csla.ApplicationContext.User = new ClaimsPrincipal();
+    //}
 
-    [TestMethod()]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
-    public void TestDenyInstanceAndShared()
-    {
+    //[TestMethod()]
+    //[ExpectedException(typeof(Csla.Security.SecurityException))]
+    //public void TestDenyInstanceAndShared()
+    //{
       
-      ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
-      ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.AreEqual("!", person.MiddleName, "Should not be able read middle name");
-      Assert.AreEqual("!", person.PlaceOfBirth, "Should not be able read place of birth");
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
-    }
+    //  TestResults.Reinitialise();
+    //  Csla.ApplicationContext.User = GetPrincipal("Admin");
+    //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();
+    //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+    //  Assert.AreEqual("!", person.MiddleName, "Should not be able read middle name");
+    //  Assert.AreEqual("!", person.PlaceOfBirth, "Should not be able read place of birth");
+    //  Csla.ApplicationContext.User = new ClaimsPrincipal();
+    //}
 
-    [TestMethod()]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
-    public void TestDenyInstanceAndSharedForClone()
-    {
+    //[TestMethod()]
+    //[ExpectedException(typeof(Csla.Security.SecurityException))]
+    //public void TestDenyInstanceAndSharedForClone()
+    //{
 
-      ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
-      ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson().Clone();
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.AreEqual("!", person.MiddleName, "Should not be able read middle name");
-      Assert.AreEqual("!", person.PlaceOfBirth, "Should not be able read place of birth");
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
+    //  TestResults.Reinitialise();
+    //  Csla.ApplicationContext.User = GetPrincipal("Admin");
+    //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson().Clone();
+    //  Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+    //  Assert.AreEqual("!", person.MiddleName, "Should not be able read middle name");
+    //  Assert.AreEqual("!", person.PlaceOfBirth, "Should not be able read place of birth");
+    //  Csla.ApplicationContext.User = new ClaimsPrincipal();
 
-    }
+    //}
   }
 }

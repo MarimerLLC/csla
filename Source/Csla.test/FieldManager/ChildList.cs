@@ -13,12 +13,12 @@ namespace Csla.Test.FieldManager
   [Serializable]
   public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
-    public static ChildList GetList()
+    public static ChildList GetList(IChildDataPortal<ChildList> childDataPortal)
     {
-      return Csla.DataPortal.FetchChild<ChildList>();
+      return childDataPortal.FetchChild();
     }
 
-    private ChildList()
+    public ChildList()
     {
       MarkAsChild();
     }
@@ -34,6 +34,7 @@ namespace Csla.Test.FieldManager
       get { return _status; }
     }
 
+    [FetchChild]
     protected void Child_Fetch()
     {
       _status = "Fetched";

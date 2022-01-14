@@ -11,6 +11,7 @@ using UnitDriven;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Serialization;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -35,12 +36,22 @@ namespace Csla.Test.PropertyGetSet
 
     #endregion
 
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     #region Tests
 
     [TestMethod]
     public void InvalidGetValidationRulesOnProperties()
     {
-      EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation();
+      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetRuleValidation>();
+
+      EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
       try
       {
@@ -57,7 +68,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void InvalidSetValidationRulesOnProperties()
     {
-      EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation();
+      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetRuleValidation>();
+
+      EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
       try
       {
@@ -74,7 +87,9 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void CheckValidationRulesOnProperties()
     {
-      EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation();
+      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetRuleValidation>();
+
+      EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
       // Verify that the id properties are not set.
       Assert.IsTrue(egsv.Id.Equals(string.Empty));

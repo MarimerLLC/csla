@@ -24,10 +24,18 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class ClaimsPrincipalTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void CloneClaimsPrincipal()
     {
-      ApplicationContext applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
       var i = new ClaimsIdentity();
       i.AddClaim(new Claim("name", "Franklin"));

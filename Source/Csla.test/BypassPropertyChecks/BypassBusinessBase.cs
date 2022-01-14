@@ -180,5 +180,15 @@ namespace Csla.Test.BypassPropertyChecks
       return Id4;
     }
 
+    [Create]
+    private void Create()
+    {
+    }
+
+    [Fetch]
+    private void Fetch()
+    {
+    }
+
   }
 }

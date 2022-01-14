@@ -182,20 +182,20 @@ namespace csla.netcore.test.DataPortal
     [Fetch]
     private void DataPortal_Fetch(int id)
     {
-      // TODO: load values into object
+      // load values into object
       System.Threading.Thread.Sleep(10);
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      // TODO: insert object's data
+      // insert object's data
     }
 
     [Update]
     protected void DataPortal_Update()
     {
-      // TODO: update object's data
+      // update object's data
     }
 
     [DeleteSelf]
@@ -207,7 +207,7 @@ namespace csla.netcore.test.DataPortal
     [Delete]
     private void DataPortal_Delete(int id)
     {
-      // TODO: delete object's data
+      // delete object's data
     }
 
   }

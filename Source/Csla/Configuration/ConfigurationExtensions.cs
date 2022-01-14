@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0 || NET5_0_OR_GREATER
+﻿#if NET462_OR_GREATER || NETSTANDARD2_0 || NET5_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -53,8 +53,8 @@ namespace Csla.Configuration
       // LocalProxy is always necessary to support RunLocal
       services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
       services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
-      // Server-side data portal is always necessary to support RunLocal
-      cslaOptions.DataPortal().AddServerSideDataPortal();
+      // Add server-side data portal; this is always necessary to support RunLocal
+      cslaOptions.DataPortal().ApplyConfiguration();
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();

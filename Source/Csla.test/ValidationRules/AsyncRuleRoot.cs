@@ -37,14 +37,13 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(AsyncAwaitProperty, value); }
     }
 
-    public static AsyncRuleRoot NewRoot()
+    public static AsyncRuleRoot NewRoot(IDataPortal<AsyncRuleRoot> dataPortal)
     {
-      return Csla.DataPortal.Create<AsyncRuleRoot>();
+      return dataPortal.Create();
     }
 
     public AsyncRuleRoot()
     {
-      BusinessRules.CheckRules();
     }
 
     protected override void AddBusinessRules()
@@ -105,6 +104,12 @@ namespace Csla.Test.ValidationRules
         await Task.Delay(0);
         context.AddOutValue("abc");
       }
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
     }
   }
 }

@@ -26,5 +26,10 @@ namespace Csla.Test.EditableRootList
       this.Add(item);
       return item;
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 }

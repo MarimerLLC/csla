@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.Configuration;
+using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,16 +13,19 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class DisposeScopeTest
   {
+
     [TestMethod]
     public void Test_Scope_DoesNotDispose()
     {
       // CSLA should not dispose of the default service provider.
-      var serviceCollection = new ServiceCollection();
+      IServiceCollection serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
+      serviceCollection.AddCsla();
 
-      ApplicationContext.DefaultServiceProvider = serviceCollection.BuildServiceProvider();
+      var services = serviceCollection.BuildServiceProvider();
+      IDataPortal<ClassA> dataPortal = services.GetRequiredService<IDataPortal<ClassA>>();
 
-      var classA = ClassA.GetClassA();
+      var classA = dataPortal.Fetch();
       var classB = classA.ChildB;
 
       Assert.AreEqual(classA.DisposableClass.Id, classB.DisposableClass.Id, "Ids must be the same");
@@ -45,13 +50,8 @@ namespace Csla.Test.DataPortal
     public ClassB ChildB { get; set; }
     public DisposableClass DisposableClass { get; set; }
 
-    public static ClassA GetClassA()
-    {
-      return Csla.DataPortal.Fetch<ClassA>();
-    }
-
     [Fetch]
-    private void Fetch([Inject]DisposableClass disposable)
+    private void Fetch([Inject]DisposableClass disposable, [Inject] IDataPortal<ClassB> classBDataPortal)
     {
       DisposableClass = disposable;
 
@@ -60,7 +60,7 @@ namespace Csla.Test.DataPortal
         throw new ObjectDisposedException(nameof(disposable));
       }
 
-      ChildB = ClassB.GetClassB();
+      ChildB = classBDataPortal.Fetch();
 
       if (disposable.IsDisposed)
       {
@@ -73,11 +73,6 @@ namespace Csla.Test.DataPortal
   {
     public DisposableClass DisposableClass { get; set; }
     public Guid Id { get; set; }
-
-    public static ClassB GetClassB()
-    {
-      return Csla.DataPortal.Fetch<ClassB>();
-    }
 
     [Fetch]
     private void Fetch([Inject]DisposableClass disposable)

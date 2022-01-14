@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Core;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -27,18 +28,30 @@ namespace Csla.Test.GraphMerge
   [TestClass()]
   public class IdentityTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void IdentityInitializedBusinessBase()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
     }
 
     [TestMethod]
     public void IdentityNewBaseChild()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
-      obj.AddChild();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
+      obj.AddChild(dataPortal);
       Assert.IsTrue(((IBusinessObject)obj.Child).Identity >= 0);
       Assert.IsTrue(((IBusinessObject)obj).Identity != ((IBusinessObject)obj.Child).Identity);
     }
@@ -46,8 +59,10 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityBaseClone()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
-      obj.AddChild();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "child";
       var cloned = obj.Clone();
       Assert.AreEqual(((IBusinessObject)obj).Identity, ((IBusinessObject)cloned).Identity, "root");
@@ -58,14 +73,18 @@ namespace Csla.Test.GraphMerge
     
     public void IdentityInitializedBusinessListBase()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
     }
 
     [TestMethod]
     public void IdentityNewListChild()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       obj.AddNew();
       Assert.IsTrue(((IBusinessObject)obj[0]).Identity >= 0);
       Assert.IsTrue(((IBusinessObject)obj).Identity != ((IBusinessObject)obj[0]).Identity);
@@ -75,7 +94,9 @@ namespace Csla.Test.GraphMerge
     
     public void IdentityListClone()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       obj.AddNew();
       var cloned = obj.Clone();
       Assert.AreEqual(((IBusinessObject)obj).Identity, ((IBusinessObject)cloned).Identity, "root");
@@ -86,7 +107,9 @@ namespace Csla.Test.GraphMerge
     
     public void IdentityPostCloneIdentityManager()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       obj.AddNew();
       var cloned = obj.Clone();
       cloned.AddNew();
@@ -101,7 +124,9 @@ namespace Csla.Test.GraphMerge
     
     public void IdentityInitializedBusinessBindingListBase()
     {
-      var obj = Csla.DataPortal.Create<FooBindingList>();
+      IDataPortal<FooBindingList> dataPortal = _testDIContext.CreateDataPortal<FooBindingList>();
+
+      var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
     }
 
@@ -109,7 +134,9 @@ namespace Csla.Test.GraphMerge
     
     public void IdentityInitializedDynamicListBase()
     {
-      var obj = Csla.DataPortal.Create<FooDynamicList>();
+      IDataPortal<FooDynamicList> dataPortal = _testDIContext.CreateDataPortal<FooDynamicList>();
+
+      var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
     }
 
@@ -117,7 +144,9 @@ namespace Csla.Test.GraphMerge
     
     public void IdentityInitializedDynamicBindingListBase()
     {
-      var obj = Csla.DataPortal.Create<FooDynamicBindingList>();
+      IDataPortal<FooDynamicBindingList> dataPortal = _testDIContext.CreateDataPortal<FooDynamicBindingList>();
+
+      var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
     }
   }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.Configuration;
+using Csla.TestHelpers;
 #if !NUNIT && !ANDROID
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #elif !ANDROID
@@ -18,131 +20,157 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class InterceptorTests
   {
-    [TestInitialize]
-    public void Setup()
-    {
-      Csla.Server.DataPortal.InterceptorType = typeof(TestInterceptor);
-      Csla.ApplicationContext.DataPortalActivator = new TestActivator();
-    }
+    private static TestDIContext _testDIContext;
 
-    [TestCleanup]
-    public void Cleanup()
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
-      Csla.Server.DataPortal.InterceptorType = null;
-      Csla.ApplicationContext.DataPortalActivator = null;
+      _testDIContext = TestDIContextFactory.CreateContext(
+        options => options
+        .DataPortal()
+        .AddServerSideDataPortal(config => 
+        {
+          config.AddInterceptorProvider<TestInterceptor>();
+          config.RegisterActivator<TestActivator>();
+        }
+        ));
     }
 
     [TestMethod]
     public void CreateWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
-      var obj = Csla.DataPortal.Create<InitializeRoot>("abc");
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeRoot"].ToString(), "Complete should have run");
-      Assert.AreEqual("CreateInstance", Csla.ApplicationContext.GlobalContext["Activate1+InitializeRoot"].ToString(), "CreateInstance should have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
-      Assert.AreEqual("ResolveType", Csla.ApplicationContext.GlobalContext["Activate4+InitializeRoot"].ToString(), "ResolveType should have run");
+      var obj = CreateInitializeRoot("abc");
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
+      Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeRoot"), "CreateInstance should have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeRoot"), "InitializeInstance should have run");
+      Assert.AreEqual("ResolveType", TestResults.GetResult("Activate4+InitializeRoot"), "ResolveType should have run");
     }
 
     [TestMethod]
     public void FetchWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
-      var obj = Csla.DataPortal.Fetch<InitializeRoot>("abc");
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeRoot"].ToString(), "Complete should have run");
-      Assert.AreEqual("CreateInstance", Csla.ApplicationContext.GlobalContext["Activate1+InitializeRoot"].ToString(), "CreateInstance should have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
+      var obj = GetInitializeRoot("abc");
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
+      Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeRoot"), "CreateInstance should have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeRoot"), "InitializeInstance should have run");
     }
 
     [TestMethod]
     public void FetchListWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
-      var obj = Csla.DataPortal.Fetch<InitializeListRoot>();
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeListRoot"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeListRoot"].ToString(), "Complete should have run");
-      Assert.AreEqual("CreateInstance", Csla.ApplicationContext.GlobalContext["Activate1+InitializeListRoot"].ToString(), "CreateInstance (list) should have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeListRoot"].ToString(), "InitializeInstance (list) should have run");
+      var obj = GetInitializeListRoot();
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeListRoot"), "Initialize should have run");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeListRoot"), "Complete should have run");
+      Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeListRoot"), "CreateInstance (list) should have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeListRoot"), "InitializeInstance (list) should have run");
 
-      Assert.AreEqual("CreateInstance", Csla.ApplicationContext.GlobalContext["Activate1+InitializeRoot"].ToString(), "CreateInstance should have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
+      Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeRoot"), "CreateInstance should have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeRoot"), "InitializeInstance should have run");
     }
 
     [TestMethod]
     public void InterceptException()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
       try
       {
-        var obj = Csla.DataPortal.Fetch<InitializeRoot>("boom");
+        var obj = GetInitializeRoot("boom");
       }
       catch
       { }
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeRoot"].ToString(), "Complete should have run");
-      Assert.IsTrue(!string.IsNullOrEmpty(Csla.ApplicationContext.GlobalContext["InterceptException+InitializeRoot"].ToString()), "Complete should have exception");
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
+      Assert.IsTrue(!string.IsNullOrEmpty(TestResults.GetResult("InterceptException+InitializeRoot")), "Complete should have exception");
     }
 
     [TestMethod]
     public void UpdateWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
-      var obj = Csla.DataPortal.Fetch<InitializeRoot>("abc");
-      Csla.ApplicationContext.GlobalContext.Clear();
+      var obj = GetInitializeRoot("abc");
+      TestResults.Reinitialise();
 
       obj.Name = "xyz";
       obj = obj.Save();
 
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Update", Csla.ApplicationContext.GlobalContext["InterceptOp1+InitializeRoot"].ToString(), "Initialize op should be Update");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeRoot"].ToString(), "Complete should have run");
-      Assert.AreEqual("Update", Csla.ApplicationContext.GlobalContext["InterceptOp2+InitializeRoot"].ToString(), "Complete op should be Update");
-      Assert.IsFalse(Csla.ApplicationContext.GlobalContext.Contains("Activate1+InitializeRoot"), "CreateInstance should not have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
+      Assert.AreEqual("Update", TestResults.GetResult("InterceptOp1+InitializeRoot"), "Initialize op should be Update");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
+      Assert.AreEqual("Update", TestResults.GetResult("InterceptOp2+InitializeRoot"), "Complete op should be Update");
+      Assert.IsFalse(TestResults.ContainsResult("Activate1+InitializeRoot"), "CreateInstance should not have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeRoot"), "InitializeInstance should have run");
     }
 
     [TestMethod]
     public void UpdateListWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
-      var obj = Csla.DataPortal.Fetch<InitializeListRoot>();
-      Csla.ApplicationContext.GlobalContext.Clear();
+      var obj = GetInitializeListRoot();
+      TestResults.Reinitialise();
 
       obj[0].Name = "xyz";
       obj = obj.Save();
 
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeListRoot"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeListRoot"].ToString(), "Complete should have run");
-      Assert.IsFalse(Csla.ApplicationContext.GlobalContext.Contains("Activate1+InitializeListRoot"), "CreateInstance (list) should not have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeListRoot"].ToString(), "InitializeInstance (list) should have run");
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeListRoot"), "Initialize should have run");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeListRoot"), "Complete should have run");
+      Assert.IsFalse(TestResults.ContainsResult("Activate1+InitializeListRoot"), "CreateInstance (list) should not have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeListRoot"), "InitializeInstance (list) should have run");
 
-      Assert.IsFalse(Csla.ApplicationContext.GlobalContext.Contains("Activate1+InitializeRoot"), "CreateInstance should not have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
+      Assert.IsFalse(TestResults.ContainsResult("Activate1+InitializeRoot"), "CreateInstance should not have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeRoot"), "InitializeInstance should have run");
     }
 
     [TestMethod]
     public void ExecuteCommandWithIntercept()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<InterceptorCommand> dataPortal = _testDIContext.CreateDataPortal<InterceptorCommand>();
+
+      TestResults.Reinitialise();
 
       var obj = new InterceptorCommand();
-      obj = Csla.DataPortal.Execute(obj);
+      obj = dataPortal.Execute(obj);
 
-      Assert.AreEqual("Execute", Csla.ApplicationContext.GlobalContext["InterceptorCommand"].ToString(), "Execute should have run");
-      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InterceptorCommand"].ToString(), "Initialize should have run");
-      Assert.AreEqual("Execute", Csla.ApplicationContext.GlobalContext["InterceptOp1+InterceptorCommand"].ToString(), "Initialize op should be Execute");
-      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InterceptorCommand"].ToString(), "Complete should have run");
-      Assert.AreEqual("Execute", Csla.ApplicationContext.GlobalContext["InterceptOp2+InterceptorCommand"].ToString(), "Complete op should be Execute");
-      Assert.IsFalse(Csla.ApplicationContext.GlobalContext.Contains("Activate1+InterceptorCommand"), "CreateInstance should not have run");
-      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InterceptorCommand"].ToString(), "InitializeInstance should have run");
+      Assert.AreEqual("Execute", TestResults.GetResult("InterceptorCommand"), "Execute should have run");
+      Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InterceptorCommand"), "Initialize should have run");
+      Assert.AreEqual("Execute", TestResults.GetResult("InterceptOp1+InterceptorCommand"), "Initialize op should be Execute");
+      Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InterceptorCommand"), "Complete should have run");
+      Assert.AreEqual("Execute", TestResults.GetResult("InterceptOp2+InterceptorCommand"), "Complete op should be Execute");
+      Assert.IsFalse(TestResults.ContainsResult("Activate1+InterceptorCommand"), "CreateInstance should not have run");
+      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InterceptorCommand"), "InitializeInstance should have run");
     }
+
+    private InitializeRoot CreateInitializeRoot(string ident)
+    {
+      IDataPortal<InitializeRoot> dataPortal = _testDIContext.CreateDataPortal<InitializeRoot>();
+
+      return dataPortal.Create(ident);
+    }
+
+    private InitializeRoot GetInitializeRoot(string ident)
+    {
+      IDataPortal<InitializeRoot> dataPortal = _testDIContext.CreateDataPortal<InitializeRoot>();
+
+      return dataPortal.Fetch(ident);
+    }
+
+    private InitializeListRoot GetInitializeListRoot()
+    {
+      IDataPortal<InitializeListRoot> dataPortal = _testDIContext.CreateDataPortal<InitializeListRoot>();
+
+      return dataPortal.Fetch();
+    }
+
   }
 
   [Serializable]
@@ -182,7 +210,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
     }
 
@@ -194,16 +222,16 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class InitializeListRoot : BusinessListBase<InitializeListRoot, InitializeRoot>
   {
-    private void DataPortal_Fetch()
+    private void DataPortal_Fetch([Inject] IChildDataPortal<InitializeRoot> childDataPortal)
     {
       using (SuppressListChangedEvents)
       {
-        Add(Csla.DataPortal.FetchChild<InitializeRoot>("abc"));
+        Add(childDataPortal.FetchChild("abc"));
       }
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       base.Child_Update();
     }
@@ -213,9 +241,9 @@ namespace Csla.Test.DataPortal
   public class InterceptorCommand : CommandBase<InterceptorCommand>
   {
     [Execute]
-		protected void DataPortal_Execute()
+	protected void DataPortal_Execute()
     {
-      Csla.ApplicationContext.GlobalContext["InterceptorCommand"] = "Execute";
+      TestResults.Add("InterceptorCommand", "Execute");
     }
   }
 
@@ -223,16 +251,16 @@ namespace Csla.Test.DataPortal
   {
     public void Initialize(Server.InterceptArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["Intercept1+" + e.ObjectType.Name] = "Initialize";
-      Csla.ApplicationContext.GlobalContext["InterceptOp1+" + e.ObjectType.Name] = e.Operation.ToString();
+      TestResults.Add("Intercept1+" + e.ObjectType.Name, "Initialize");
+      TestResults.Add("InterceptOp1+" + e.ObjectType.Name, e.Operation.ToString());
     }
 
     public void Complete(Server.InterceptArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["Intercept2+" + e.ObjectType.Name] = "Complete";
+      TestResults.Add("Intercept2+" + e.ObjectType.Name, "Complete");
       if (e.Exception != null)
-        Csla.ApplicationContext.GlobalContext["InterceptException+" + e.ObjectType.Name] = e.Exception.Message;
-      Csla.ApplicationContext.GlobalContext["InterceptOp2+" + e.ObjectType.Name] = e.Operation.ToString();
+        TestResults.AddOrOverwrite("InterceptException+" + e.ObjectType.Name, e.Exception.Message);
+      TestResults.Add("InterceptOp2+" + e.ObjectType.Name, e.Operation.ToString());
     }
   }
 
@@ -240,23 +268,23 @@ namespace Csla.Test.DataPortal
   {
     public object CreateInstance(Type requestedType)
     {
-      Csla.ApplicationContext.GlobalContext["Activate1+" + requestedType.Name] = "CreateInstance";
+      TestResults.Add("Activate1+" + requestedType.Name, "CreateInstance");
       return Activator.CreateInstance(requestedType);
     }
 
     public void InitializeInstance(object obj)
     {
-      Csla.ApplicationContext.GlobalContext["Activate2+" + obj.GetType().Name] = "InitializeInstance";
+      TestResults.Add("Activate2+" + obj.GetType().Name, "InitializeInstance");
     }
 
     public void FinalizeInstance(object obj)
     {
-      Csla.ApplicationContext.GlobalContext["Activate3+" + obj.GetType().Name] = "FinalizeInstance";
+      TestResults.Add("Activate3+" + obj.GetType().Name, "FinalizeInstance");
     }
 
     public Type ResolveType(Type requestedType)
     {
-      Csla.ApplicationContext.GlobalContext["Activate4+" + requestedType.Name] = "ResolveType";
+      TestResults.Add("Activate4+" + requestedType.Name, "ResolveType");
       return requestedType;
     }
   }

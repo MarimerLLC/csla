@@ -114,5 +114,10 @@ namespace Csla.Test.ValidationRules
         ((IBusinessRule)_innerRule).Execute(context.GetChainedContext(_innerRule));
       }
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 }

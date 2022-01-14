@@ -17,7 +17,7 @@ namespace Csla.Test
   /// Static dictionary-like class that offers similar functionality to GlobalContext
   /// This is used in tests to record the completion of operations, for testing that the operation occurred
   /// </summary>
-  internal class TestResults
+  public class TestResults
   {
     private static AsyncLocal<Dictionary<string, string>> _testResults = new AsyncLocal<Dictionary<string, string>>();
 
@@ -32,6 +32,16 @@ namespace Csla.Test
     }
 
     /// <summary>
+    /// Overwrite an item in the test results, to indicate an outcome of a particular operation
+    /// </summary>
+    /// <param name="key">The key by which the operation is recognised</param>
+    /// <param name="value">The outcome recorded against the operation</param>
+    public static void AddOrOverwrite(string key, string value)
+    {
+      _testResults.Value[key] = value;
+    }
+
+    /// <summary>
     /// Get a result of an operation from the underlying results dictionary
     /// </summary>
     /// <param name="key">The key by which the operation is known</param>
@@ -41,6 +51,16 @@ namespace Csla.Test
       if (!_testResults.Value.ContainsKey(key)) return string.Empty;
 
       return _testResults.Value[key];
+    }
+
+    /// <summary>
+    /// Get the existence of a result of an operation from the underlying results dictionary
+    /// </summary>
+    /// <param name="key">The key by which the operation is known</param>
+    /// <returns>Whether the key is present in the dictionary of results</returns>
+    public static bool ContainsResult(string key)
+    {
+      return _testResults.Value.ContainsKey(key);
     }
 
     /// <summary>

@@ -66,24 +66,8 @@ namespace Csla.Test.Security
 
     #region Authorization
 
-
     public static void AddObjectAuthorizationRules()
     {
-      // add rules for default ruleset
-      var orgRuleSet = ApplicationContext.RuleSet;
-      try
-      {
-        ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User"));
-        ApplicationContext.RuleSet = "custom1";
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "Admin"));
-        ApplicationContext.RuleSet = "custom2";
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"));
-      }
-      finally
-      {
-        ApplicationContext.RuleSet = orgRuleSet;
-      }
     }
 
     protected override void AddBusinessRules()
@@ -91,16 +75,25 @@ namespace Csla.Test.Security
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
-    }
 
-    #endregion
+      // TODO: I moved this from AddObjectAuthorizationRules; is that right?
+      //// add rules for default ruleset
+      var orgRuleSet = BusinessRules.RuleSet;
+      try
+      {
+        BusinessRules.RuleSet = ApplicationContext.DefaultRuleSet;
+        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User"));
+        BusinessRules.RuleSet = "custom1";
+        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "Admin"));
+        BusinessRules.RuleSet = "custom2";
+        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"));
+      }
+      finally
+      {
+        BusinessRules.RuleSet = orgRuleSet;
+      }
+}
 
-    #region "factory methods"
-
-    public static PermissionsRoot NewPermissionsRoot()
-    {
-      return Csla.DataPortal.Create<PermissionsRoot>();
-    }
     #endregion
 
     #region "Criteria"
@@ -115,7 +108,7 @@ namespace Csla.Test.Security
 
     [RunLocal()]
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       _firstName = "default value"; //for now...
     }

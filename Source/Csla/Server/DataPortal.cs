@@ -155,7 +155,8 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
 
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            var broker = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
+            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 
             break;
@@ -249,7 +250,8 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            var broker = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
+            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -381,7 +383,8 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            var broker = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
+            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -483,7 +486,8 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal(method.TransactionalAttribute);
+            var broker = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
+            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:

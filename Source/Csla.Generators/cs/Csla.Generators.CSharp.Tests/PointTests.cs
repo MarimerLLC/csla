@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Generators.CSharp.TestObjects;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
+using Csla.TestHelpers;
 
 namespace Csla.Generators.CSharp.Tests
 {
@@ -23,6 +24,13 @@ namespace Csla.Generators.CSharp.Tests
   [TestClass]
   public class PointTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext testContext)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     #region Serialize then Deserialize
 
@@ -72,14 +80,11 @@ namespace Csla.Generators.CSharp.Tests
 
     private Point SerializeThenDeserialisePoint(Point valueToSerialize)
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla();
-      var provider = services.BuildServiceProvider();
-      var ApplicationContext = provider.GetService<ApplicationContext>();
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       System.IO.MemoryStream serializationStream;
       Nullable<Point> deserializedValue;
-      MobileFormatter formatter = new MobileFormatter(ApplicationContext);
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
 
       // Act
       using (serializationStream = new System.IO.MemoryStream())

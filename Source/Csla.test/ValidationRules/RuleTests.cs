@@ -7,22 +7,33 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.DataPortalClient;
 using UnitDriven;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {
   [TestClass]
   public class RuleTests : TestBase
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public async Task CleanupWhenAddBusinessRulesThrowsException()
     {
+      IDataPortal<RootThrowsException> dataPortal = _testDIContext.CreateDataPortal<RootThrowsException>();
+
       RootThrowsException.Counter = 0;
 
       // AddBusinessRules throw an ArgumentException
       // In .NET the exception will occur serverside and returned i DatPortalEventArgs
       try
       {
-        await Csla.DataPortal.CreateAsync<RootThrowsException>();
+        await dataPortal.CreateAsync();
       }
       catch (DataPortalException ex)
       {
@@ -33,7 +44,7 @@ namespace Csla.Test.ValidationRules
       // AddBusinessRules throw an ArgumentException
       try
       {
-        await Csla.DataPortal.CreateAsync<RootThrowsException>();
+        await dataPortal.CreateAsync();
       }
       catch (DataPortalException ex)
       {

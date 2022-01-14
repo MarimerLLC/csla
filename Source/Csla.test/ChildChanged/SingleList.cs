@@ -27,5 +27,13 @@ namespace Csla.Test.ChildChanged
       if (child)
         MarkAsChild();
     }
+
+    [Fetch]
+    [FetchChild]
+    private void Fetch(bool child)
+    {
+      if (child)
+        MarkAsChild();
+    }
   }
 }

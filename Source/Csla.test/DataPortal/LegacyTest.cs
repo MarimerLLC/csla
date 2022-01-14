@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,17 +26,25 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class LegacyTest
     {
+        private static TestDIContext _testDIContext;
+
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
         [TestMethod]
         public void TestDpCreate()
         {
-            Legacy test = Legacy.NewObject();
-            Assert.AreEqual("Created", ApplicationContext.GlobalContext["Legacy"]);
+            Legacy test = NewLegacy();
+            Assert.AreEqual("Created", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
-            Legacy test = Legacy.GetObject(5);
-            Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Legacy"]);
+            Legacy test = GetLegacy(5);
+            Assert.AreEqual("Fetched", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpInsert()
@@ -43,11 +52,11 @@ namespace Csla.Test.DataPortalTest
             Legacy test = null;
             try
             {
-                test = Legacy.NewObject();
+                test = NewLegacy();
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Inserted", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpUpdate()
@@ -55,19 +64,19 @@ namespace Csla.Test.DataPortalTest
             Legacy test = null;
             try
             {
-                test = Legacy.NewObject();
+                test = NewLegacy();
                 test = test.Save();
                 test.Id = 5;
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("Updated", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("Updated", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
-            Legacy.DeleteObject(5);
-            Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["Legacy"]);
+            DeleteLegacy(5);
+            Assert.AreEqual("Deleted", TestResults.GetResult("Legacy"));
         }
         [TestMethod]
         public void TestDpDeleteSelf()
@@ -75,14 +84,34 @@ namespace Csla.Test.DataPortalTest
             Legacy test = null;
             try
             {
-                test = Legacy.NewObject();
+                test = NewLegacy();
                 test = test.Save();
                 test.Delete();
             }
             catch { Assert.Inconclusive(); }
             test.Save();
-            Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["Legacy"]);
+            Assert.AreEqual("SelfDeleted", TestResults.GetResult("Legacy"));
+        }
+        
+        private Legacy NewLegacy()
+        {
+            IDataPortal<Legacy> dataPortal = _testDIContext.CreateDataPortal<Legacy>();
+
+            return dataPortal.Create();
         }
 
+        private Legacy GetLegacy(int id)
+        {
+            IDataPortal<Legacy> dataPortal = _testDIContext.CreateDataPortal<Legacy>();
+
+            return dataPortal.Fetch(new Legacy.Criteria(id));
+        }
+
+        private void DeleteLegacy(int id)
+        {
+            IDataPortal<Legacy> dataPortal = _testDIContext.CreateDataPortal<Legacy>();
+
+            dataPortal.Delete(new Legacy.Criteria(id));
+        }
     }
 }

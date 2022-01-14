@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
     <ProjectReference Include="..\Csla.Generators.CSharp.TestObjects\Csla.Generators.CSharp.TestObjects.csproj" />
   </ItemGroup>
 

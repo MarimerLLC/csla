@@ -16,9 +16,9 @@ namespace Csla.Test.PropertyInfo
   {
     #region Factory Methods
 
-    public static PropertyInfoRoot NewPropertyInfoRoot()
+    public static PropertyInfoRoot NewPropertyInfoRoot(IDataPortal<PropertyInfoRoot> dataPortal)
     {
-      return Csla.DataPortal.Create<PropertyInfoRoot>();
+      return dataPortal.Create();
     }
 
     #endregion

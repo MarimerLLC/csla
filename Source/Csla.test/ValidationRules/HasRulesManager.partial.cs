@@ -20,7 +20,7 @@ namespace Csla.Test.ValidationRules
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
         Name = crit._name;
-      Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Created");
+      TestResults.Add("HasRulesManager", "Created");
       BusinessRules.CheckRules();
     }
 
@@ -31,7 +31,7 @@ namespace Csla.Test.ValidationRules
       using (BypassPropertyChecks)
         Name = crit._name;
       MarkOld();
-      Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Fetched");
+      TestResults.Add("HasRulesManager", "Fetched");
     }
 
     [Update]
@@ -40,7 +40,7 @@ namespace Csla.Test.ValidationRules
       if (IsDeleted)
       {
         //we would delete here
-        Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Deleted");
+        TestResults.Add("HasRulesManager", "Deleted");
         MarkNew();
       }
       else
@@ -48,12 +48,12 @@ namespace Csla.Test.ValidationRules
         if (this.IsNew)
         {
           //we would insert here
-          Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Inserted");
+          TestResults.Add("HasRulesManager", "Inserted");
         }
         else
         {
           //we would update here
-          Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Updated");
+          TestResults.Add("HasRulesManager", "Updated");
         }
         MarkOld();
       }

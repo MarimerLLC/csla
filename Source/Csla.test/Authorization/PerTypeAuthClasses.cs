@@ -35,5 +35,11 @@ namespace Csla.Test.Authorization
     {
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, TestProperty, new List<string> { "Admin" }));
     }
+
+    [Create]
+    private void Create()
+    {
+    }
+
   }
 }

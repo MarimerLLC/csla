@@ -15,11 +15,6 @@ namespace Csla.Test.DataPortalChild
   [Serializable]
   public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
-    public static ChildList GetList()
-    {
-      return Csla.DataPortal.FetchChild<ChildList>();
-    }
-
     public ChildList()
     {
       MarkAsChild();
@@ -36,11 +31,13 @@ namespace Csla.Test.DataPortalChild
       get { return _status; }
     }
 
+    [FetchChild]
     protected void Child_Fetch()
     {
       _status = "Fetched";
     }
 
+    [UpdateChild]
     protected override void Child_Update(params object[] p)
     {
       base.Child_Update(p);

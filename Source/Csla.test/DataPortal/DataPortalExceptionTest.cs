@@ -1,5 +1,6 @@
 ﻿using System;
 using Csla;
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -7,13 +8,23 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class DataPortalExceptionTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void ChildInnerExceptionFlowsFromDataPortal()
     {
+      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
+
       try
       {
-        var bo = EditableRoot1.New();
+        var bo = dataPortal.Create();
 
         bo.Save();
       }
@@ -36,18 +47,13 @@ namespace Csla.Test.DataPortal
       private set { LoadProperty(ChildProperty, value); }
     }
 
-    public static EditableRoot1 New()
-    {
-      return Csla.DataPortal.Create<EditableRoot1>();
-    }
-
     [RunLocal]
     [Create]
-		protected void DataPortal_Create()
+	protected void DataPortal_Create([Inject] IChildDataPortal<EditableChild1> childDataPortal)
     {
       using (BypassPropertyChecks)
       {
-        Child = EditableChild1.New();
+        LoadProperty(ChildProperty, childDataPortal.CreateChild());
       }
       BusinessRules.CheckRules();
     }
@@ -66,17 +72,9 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class EditableChild1 : BusinessBase<EditableChild1>
   {
-    #region Factory Methods
-
-    internal static EditableChild1 New()
-    {
-      return Csla.DataPortal.CreateChild<EditableChild1>();
-    }
-
-    #endregion
-
     #region Data Access
 
+    [CreateChild]
     protected override void Child_Create()
     {
       using (BypassPropertyChecks)
@@ -85,6 +83,7 @@ namespace Csla.Test.DataPortal
       base.Child_Create();
     }
 
+    [InsertChild]
     private void Child_Insert(object parent)
     {
       using (BypassPropertyChecks)

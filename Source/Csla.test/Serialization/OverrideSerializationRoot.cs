@@ -22,5 +22,15 @@ namespace Csla.Test.Serialization
       }
       return base.ShouldHandlerSerialize(value);
     }
+
+    public static OverrideSerializationRoot NewOverrideSerializationRoot(IDataPortal<OverrideSerializationRoot> dataPortal)
+    {
+      return dataPortal.Create();
+    }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 }

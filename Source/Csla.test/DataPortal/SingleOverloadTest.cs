@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,29 +26,45 @@ namespace Csla.Test.DataPortalTest
     [TestClass]
     public class SingleOverloadTest
     {
+        private static TestDIContext _testDIContext;
+
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
+        {
+            _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
         [TestMethod]
         public void TestDpCreate()
         {
-            SingleOverload test = SingleOverload.NewObject();
-            Assert.AreEqual("Created0", ApplicationContext.GlobalContext["SingleOverload"]);
+            IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
+
+            SingleOverload test = SingleOverload.NewObject(dataPortal);
+            Assert.AreEqual("Created0", TestResults.GetResult("SingleOverload"));
         }
         [TestMethod]
         public void TestDpCreateWithCriteria()
         {
-            SingleOverload test = SingleOverload.NewObjectWithCriteria();
-            Assert.AreEqual("Created1", ApplicationContext.GlobalContext["SingleOverload"]);
+            IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
+
+            SingleOverload test = SingleOverload.NewObjectWithCriteria(dataPortal);
+            Assert.AreEqual("Created1", TestResults.GetResult("SingleOverload"));
         }
         [TestMethod]
         public void TestDpFetch()
         {
-            SingleOverload test = SingleOverload.GetObject(5);
-            Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["SingleOverload"]);
+            IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
+
+            SingleOverload test = SingleOverload.GetObject(5, dataPortal);
+            Assert.AreEqual("Fetched", TestResults.GetResult("SingleOverload"));
         }
         [TestMethod]
         public void TestDpDelete()
         {
-            SingleOverload.DeleteObject(5);
-            Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["SingleOverload"]);
+            IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
+
+            SingleOverload.DeleteObject(5, dataPortal);
+            Assert.AreEqual("Deleted", TestResults.GetResult("SingleOverload"));
         }
 
     }

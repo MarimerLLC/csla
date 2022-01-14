@@ -28,6 +28,14 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class InheritedOperationTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void BusinessBindingListFetch()
     {
@@ -44,13 +52,13 @@ namespace Csla.Test.DataPortal
 
     private PersonList FetchPersonList()
     {
-      IDataPortal<PersonList> dataPortal = DataPortalFactory.CreateDataPortal<PersonList>();
+      IDataPortal<PersonList> dataPortal = _testDIContext.CreateDataPortal<PersonList>();
       return dataPortal.Fetch(new PersonList.Criteria());
     }
 
     private PersonEdit CreatePersonEdit()
     {
-      IDataPortal<PersonEdit> dataPortal = DataPortalFactory.CreateDataPortal<PersonEdit>();
+      IDataPortal<PersonEdit> dataPortal = _testDIContext.CreateDataPortal<PersonEdit>();
       return dataPortal.Create();
     }
   }

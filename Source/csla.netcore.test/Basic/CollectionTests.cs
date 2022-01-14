@@ -27,6 +27,14 @@ namespace Csla.Test.Basic
   [TestClass]
   public class CollectionTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void SetLast()
     {
@@ -52,19 +60,19 @@ namespace Csla.Test.Basic
 
     private TestCollection CreateTestCollection()
     {
-      IDataPortal<TestCollection> dataPortal = DataPortalFactory.CreateDataPortal<TestCollection>();
+      IDataPortal<TestCollection> dataPortal = _testDIContext.CreateDataPortal<TestCollection>();
       return dataPortal.Create();
     }
 
     private TestItem CreateTestItem()
     {
-      IDataPortal<TestItem> dataPortal = DataPortalFactory.CreateDataPortal<TestItem>();
+      IDataPortal<TestItem> dataPortal = _testDIContext.CreateDataPortal<TestItem>();
       return dataPortal.Create();
     }
 
     private RootList CreateRootList()
     {
-      IDataPortal<RootList> dataPortal = DataPortalFactory.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
       return dataPortal.Create();
     }
 

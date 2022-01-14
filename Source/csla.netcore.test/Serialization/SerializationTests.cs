@@ -29,6 +29,14 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class SerializationTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void CorrectDefaultSerializer()
     {
@@ -40,7 +48,7 @@ namespace Csla.Test.Serialization
     public void UseMobileFormatter()
     {
       ApplicationContext applicationContext;
-      applicationContext = ApplicationContextFactory.CreateTestApplicationContext();
+      applicationContext = _testDIContext.CreateTestApplicationContext();
 
       var serializer = ApplicationContext.SerializationFormatter;
       Assert.AreEqual(typeof(Csla.Serialization.Mobile.MobileFormatter), serializer);

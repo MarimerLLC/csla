@@ -13,6 +13,7 @@ using System.Collections;
 using System.Linq;
 using Csla.Serialization;
 using UnitDriven;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -34,11 +35,22 @@ namespace Csla.Test.Linq
   [TestClass]
   public class LinqObservableCollectionTest
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
 #if !WINDOWS_PHONE
     [TestMethod]
     public void Blb2Loc_WhereOnly()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var synced = source.ToSyncList(c => c.Id > 100);
       Assert.AreEqual(3, synced.Count);
     }
@@ -47,7 +59,10 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
                   where r.Id > 100
                   select r);
@@ -57,7 +72,10 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_Ordered()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
                                      orderby r.Name
                                      select r);
@@ -68,7 +86,10 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_ResultToSync()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var synced = (from r in source
                      where r.Id > 100
                      select r).ToSyncList(source);
@@ -78,13 +99,17 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_Add()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IChildDataPortal<TestItem> childDataPortal = _testDIContext.CreateChildDataPortal<TestItem>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var query = from r in source
                   where r.Id > 100
                   select r;
       var synced = source.ToSyncList(query);
 
-      var newItem = Csla.DataPortal.FetchChild<TestItem>(432, "New item");
+      var newItem = childDataPortal.FetchChild(432, "New item");
       synced.Add(newItem);
 
       Assert.AreEqual(4, synced.Count, "synced should have item");
@@ -96,7 +121,10 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_Remove()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var query = from r in source
                   where r.Id > 100
                   select r;
@@ -114,7 +142,10 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_RemoveOriginal()
     {
-      var source = new TestList();
+      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+
+      // TODO: I don't understand why some types need a public constructor and others don't?
+      var source = dataPortal.Create();
       var query = from r in source
                   where r.Id > 100
                   select r;
@@ -434,12 +465,22 @@ namespace Csla.Test.Linq
   [Serializable]
   public class TestList : BusinessListBase<TestList, TestItem>
   {
-    public TestList()
+    private TestList()
     {
-      Add(Csla.DataPortal.FetchChild<TestItem>(123, "Zebra has stripes"));
-      Add(Csla.DataPortal.FetchChild<TestItem>(2233, "Software is neat"));
-      Add(Csla.DataPortal.FetchChild<TestItem>(453, "Run, the sky is falling"));
-      Add(Csla.DataPortal.FetchChild<TestItem>(12, "What is new?"));
+    }
+
+    public static TestList NewTestList(IDataPortal<TestList> dataPortal)
+    {
+      return dataPortal.Create();
+    }
+
+    [Create]
+    private void Create([Inject] IChildDataPortal<TestItem> childDataPortal)
+    {
+      Add(childDataPortal.FetchChild(123, "Zebra has stripes"));
+      Add(childDataPortal.FetchChild(2233, "Software is neat"));
+      Add(childDataPortal.FetchChild(453, "Run, the sky is falling"));
+      Add(childDataPortal.FetchChild(12, "What is new?"));
     }
   }
 

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Csla.Rules;
-using Csla.Testing.Business.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {
@@ -24,6 +24,14 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class RuleURITests
   {
+
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestMethod]
     public void RuleURIWithGenericObjectRule()
@@ -58,7 +66,9 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void LambdaRuleExtensionsAddUniueURIs()
     {
-      var root = HasLambdaRules.New();
+      IDataPortal<HasLambdaRules> dataPortal = _testDIContext.CreateDataPortal<HasLambdaRules>();
+
+      var root = HasLambdaRules.New(dataPortal);
       var ruleUris = root.GetRuleDescriptions();
 
       var distinctUris = ruleUris.Distinct().ToArray();

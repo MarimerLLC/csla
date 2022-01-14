@@ -11,6 +11,7 @@ using System.Text;
 using Csla.Test.Security;
 using System.Data;
 using System.Data.SqlClient;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,14 +29,23 @@ namespace Csla.Test.DPException
     [TestClass()]
     public class DataPortalExceptionTests
     {
+        private static TestDIContext _testDIContext;
+
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
+        {
+          _testDIContext = TestDIContextFactory.CreateDefaultContext();
+        }
+
 #if DEBUG
         [TestMethod()]
         
         public void CheckInnerExceptionsOnSave()
         {
-            Csla.ApplicationContext.Clear();
+            IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+            TestResults.Reinitialise();
 
-            Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+            DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
             root.FirstName = "Billy";
             root.LastName = "lastname";
             root.SmallColumn = "too long for the database"; //normally would be prevented through validation
@@ -53,8 +63,8 @@ namespace Csla.Test.DPException
             {
                 baseException = ex.Message;
                 baseInnerException = ex.InnerException.Message;
-                baseInnerInnerException = ex.InnerException.InnerException.Message;
-                exceptionSource = ex.InnerException.InnerException.Source;
+                baseInnerInnerException = ex.InnerException.InnerException?.Message;
+                exceptionSource = ex.InnerException.InnerException?.Source;
                 Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
             }
 
@@ -72,14 +82,15 @@ namespace Csla.Test.DPException
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
+            Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
         }
 #endif
 
         [TestMethod()]
         public void CheckInnerExceptionsOnDelete()
         {
-            Csla.ApplicationContext.Clear();
+            IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+            TestResults.Reinitialise();
 
             string baseException = string.Empty;
             string baseInnerException = string.Empty;
@@ -88,7 +99,7 @@ namespace Csla.Test.DPException
             try
             {
               //this will throw an exception
-              Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13);
+              Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13, dataPortal);
             }
             catch (Csla.DataPortalException ex)
             {
@@ -104,13 +115,14 @@ namespace Csla.Test.DPException
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
+            Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
         }
 
         [TestMethod()]
         public void CheckInnerExceptionsOnFetch()
         {
-            Csla.ApplicationContext.GlobalContext.Clear();
+            IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+            TestResults.Reinitialise();
 
             string baseException = string.Empty;
             string baseInnerException = string.Empty;
@@ -120,7 +132,7 @@ namespace Csla.Test.DPException
             {
                 //this will throw an exception
                 Csla.Test.DataPortal.TransactionalRoot root = 
-                    Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13);
+                    Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
             }
             catch (Csla.DataPortalException ex)
             {
@@ -137,7 +149,7 @@ namespace Csla.Test.DPException
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
+            Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
         }
     }
 }

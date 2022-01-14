@@ -31,10 +31,22 @@ namespace Csla.Test.ChildChanged
     {
       get 
       {
-        if (!FieldManager.FieldExists(ListProperty))
-          LoadProperty(ListProperty, new SingleList(true));
         return GetProperty(ListProperty); 
       }
+    }
+
+    [Fetch]
+    private void Fetch([Inject] IChildDataPortal<SingleList> childDataPortal)
+    {
+      LoadProperty(ListProperty, childDataPortal.FetchChild(true));
+    }
+
+    [Fetch]
+    private void Fetch(bool child, [Inject] IChildDataPortal<SingleList> childDataPortal)
+    {
+      LoadProperty(ListProperty, childDataPortal.FetchChild(true));
+      if (child)
+        MarkAsChild();
     }
   }
 }

@@ -50,6 +50,8 @@ namespace Csla.Blazor
       get { return true; }
     }
 
+    private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
+
     /// <summary>
     /// Gets the current principal.
     /// </summary>
@@ -58,8 +60,7 @@ namespace Csla.Blazor
       var result = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
       if (result == null)
       {
-        result = new Csla.Security.CslaClaimsPrincipal();
-        SetUser(result);
+        result = UnauthenticatedPrincipal;
       }
       return result;
     }

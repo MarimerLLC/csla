@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Csla.Blazor.Client.Authentication
+namespace Csla.Blazor.Authentication
 {
   /// <summary>
   /// ASP.NET AuthenticationStateProvider that relies on the
@@ -10,6 +10,7 @@ namespace Csla.Blazor.Client.Authentication
   public class CslaAuthenticationStateProvider : AuthenticationStateProvider
   {
     private readonly CslaUserService _currentUserService;
+    private AuthenticationState AuthenticationState { get; set; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -18,11 +19,23 @@ namespace Csla.Blazor.Client.Authentication
     public CslaAuthenticationStateProvider(CslaUserService currentUserService)
     {
       _currentUserService = currentUserService;
+      AuthenticationState = new AuthenticationState(_currentUserService.User);
       _currentUserService.CurrentUserChanged += (sender, e) =>
       {
-        var authState = Task.FromResult(new AuthenticationState(e.NewUser));
-        NotifyAuthenticationStateChanged(authState);
+        AuthenticationState = new AuthenticationState(e.NewUser);
+        OnAuthenticationStateChanged(AuthenticationState);
       };
+    }
+
+    /// <summary>
+    /// Method invoked when the user service
+    /// indicates that the current user has changed,
+    /// resulting in a call to NotifyAuthenticationStateChanged.
+    /// </summary>
+    /// <param name="state">New authentication state</param>
+    protected virtual void OnAuthenticationStateChanged(AuthenticationState state)
+    {
+      NotifyAuthenticationStateChanged(Task.FromResult(state));
     }
 
     /// <summary>
@@ -32,7 +45,7 @@ namespace Csla.Blazor.Client.Authentication
     /// <returns></returns>
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-      return Task.FromResult(new AuthenticationState(_currentUserService.CurrentUser));
+      return Task.FromResult(AuthenticationState);
     }
   }
 }

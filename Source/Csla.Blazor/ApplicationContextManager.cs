@@ -9,6 +9,7 @@ using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Csla.Blazor
 {
@@ -16,10 +17,19 @@ namespace Csla.Blazor
   /// Application context manager that uses HttpContextAccessor when 
   /// resolving HttpContext to store context values.
   /// </summary>
-  public class ApplicationContextManager : IContextManager
+  public class ApplicationContextManager : IContextManager, IDisposable
   {
     private ContextDictionary LocalContext { get; set; }
     private ContextDictionary ClientContext { get; set; }
+    private IPrincipal CurrentPrincipal { get; set; }
+    private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
+    private bool disposedValue;
+
+    /// <summary>
+    /// Gets the current HttpContext instance.
+    /// </summary>
+    protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
+
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
@@ -33,12 +43,21 @@ namespace Csla.Blazor
     public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
     {
       AuthenticationStateProvider = authenticationStateProvider;
+      AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
+      try
+      {
+        CurrentPrincipal = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
+      }
+      catch
+      {
+        CurrentPrincipal = UnauthenticatedPrincipal;
+      }
     }
 
-    /// <summary>
-    /// Gets the current HttpContext instance.
-    /// </summary>
-    protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
+    private void AuthenticationStateProvider_AuthenticationStateChanged(System.Threading.Tasks.Task<AuthenticationState> task)
+    {
+      CurrentPrincipal = task.Result.User;
+    }
 
     /// <summary>
     /// Gets a value indicating whether this
@@ -50,26 +69,20 @@ namespace Csla.Blazor
       get { return true; }
     }
 
-    private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
-
     /// <summary>
     /// Gets the current principal.
     /// </summary>
-    public System.Security.Principal.IPrincipal GetUser()
+    public IPrincipal GetUser()
     {
-      var result = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
-      if (result == null)
-      {
-        result = UnauthenticatedPrincipal;
-      }
-      return result;
+      return CurrentPrincipal;
     }
 
     /// <summary>
-    /// Sets the current principal.
+    /// Not supported. Use the aspnetcore framework to set 
+    /// the current principal.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public void SetUser(System.Security.Principal.IPrincipal principal)
+    public virtual void SetUser(IPrincipal principal)
     {
       throw new NotSupportedException(nameof(SetUser));
     }
@@ -112,6 +125,32 @@ namespace Csla.Blazor
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
+    }
+
+    /// <summary>
+    /// Dispose this object's resources.
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+      if (!disposedValue)
+      {
+        if (disposing)
+        {
+          AuthenticationStateProvider.AuthenticationStateChanged -= AuthenticationStateProvider_AuthenticationStateChanged;
+        }
+        disposedValue = true;
+      }
+    }
+
+    /// <summary>
+    /// Dispose this object's resources.
+    /// </summary>
+    public void Dispose()
+    {
+      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+      Dispose(disposing: true);
+      GC.SuppressFinalize(this);
     }
   }
 }

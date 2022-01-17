@@ -36,7 +36,7 @@ namespace Csla.Core.LoadManager
       }
     }
 
-    private bool IsAlreadyLoadingProperty(IPropertyInfo property)
+    public bool IsLoadingProperty(IPropertyInfo property)
     {
       lock (_syncRoot)
       {
@@ -46,7 +46,7 @@ namespace Csla.Core.LoadManager
 
     public void BeginLoad(IAsyncLoader loader)
     {
-      if (IsAlreadyLoadingProperty(loader.Property)) return;
+      if (IsLoadingProperty(loader.Property)) return;
 
       lock (_syncRoot)
       {

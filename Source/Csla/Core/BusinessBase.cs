@@ -1864,7 +1864,14 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
-      P result = default(P);
+      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
+      {
+        if (PropertyIsLoading(propertyInfo))
+          return default;
+        throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+      }
+
+      P result = default;
       if (_bypassPropertyChecks || CanReadProperty(propertyInfo, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
       else
@@ -1884,7 +1891,7 @@ namespace Csla.Core
     /// </remarks>
     protected object GetProperty(IPropertyInfo propertyInfo)
     {
-      object result = null;
+      object result;
       if (_bypassPropertyChecks || CanReadProperty(propertyInfo, false))
       {
         // call ReadProperty (may be overloaded in actual class)
@@ -1939,9 +1946,16 @@ namespace Csla.Core
       return GetProperty<P>(property);
     }
 
-    [NotUndoable]
-    [NonSerialized]
-    private List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
+    /// <summary>
+    /// Gets a value indicating whether a lazy loaded 
+    /// property is currently being retrieved.
+    /// </summary>
+    /// <param name="propertyInfo">Property to check.</param>
+    /// <returns></returns>
+    protected bool PropertyIsLoading(IPropertyInfo propertyInfo)
+    {
+      return LoadManager.IsLoadingProperty(propertyInfo);
+    }
 
     /// <summary>
     /// Lazily initializes a property and returns
@@ -1965,9 +1979,8 @@ namespace Csla.Core
     /// </remarks>
     protected P LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
     {
-      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      if (!(FieldManager.FieldExists(property)) && !PropertyIsLoading(property))
       {
-        _lazyLoadingProperties.Add(property);
         LoadPropertyAsync(property, factory);
       }
       return GetProperty<P>(property);
@@ -2016,9 +2029,13 @@ namespace Csla.Core
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
+      {
+        if (PropertyIsLoading(propertyInfo))
+          return default;
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+      }
 
-      P result = default(P);
+      P result = default;
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
@@ -2099,9 +2116,8 @@ namespace Csla.Core
     /// <param name="factory">Async method returning the new value.</param>
     protected P LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
     {
-      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      if (!(FieldManager.FieldExists(property)) && !PropertyIsLoading(property))
       {
-        _lazyLoadingProperties.Add(property);
         LoadPropertyAsync(property, factory);
       }
       return ReadProperty<P>(property);

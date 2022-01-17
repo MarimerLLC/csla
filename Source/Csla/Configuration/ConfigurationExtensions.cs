@@ -73,6 +73,7 @@ namespace Csla.Configuration
       var managerInit = services.Where(i => i.ServiceType.Equals(contextManagerType)).Any();
       if (managerInit) return;
 
+      if (LoadContextManager(services, "Csla.Blazor.ApplicationContextManager, Csla.Blazor")) return;
       if (LoadContextManager(services, "Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore")) return;
       if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
       if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;

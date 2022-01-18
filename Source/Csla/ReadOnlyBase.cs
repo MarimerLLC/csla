@@ -1093,7 +1093,7 @@ namespace Csla
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
       {
         if (PropertyIsLoading(propertyInfo))
-          return default;
+          return propertyInfo.DefaultValue;
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
       }
 

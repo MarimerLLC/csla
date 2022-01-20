@@ -30,7 +30,8 @@ namespace Csla.Channels.Local
       ApplicationContext = applicationContext;
       Options = options;
 
-      if (Options.CreateScopePerCall && ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
+      if (Options.CreateScopePerCall && 
+        ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
       {
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();

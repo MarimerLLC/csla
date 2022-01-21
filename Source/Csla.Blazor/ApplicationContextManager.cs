@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace Csla.Blazor
 {
@@ -43,15 +44,25 @@ namespace Csla.Blazor
     public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
     {
       AuthenticationStateProvider = authenticationStateProvider;
+      CurrentPrincipal = UnauthenticatedPrincipal;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
-      try
+      InitializeUser();
+    }
+
+    private async void InitializeUser()
+    {
+      await Task.Run(async () => 
       {
-        CurrentPrincipal = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
-      }
-      catch
-      {
-        CurrentPrincipal = UnauthenticatedPrincipal;
-      }
+        try
+        {
+          var result = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+          CurrentPrincipal = result.User;
+        }
+        catch
+        {
+          CurrentPrincipal = UnauthenticatedPrincipal;
+        }
+      });
     }
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(System.Threading.Tasks.Task<AuthenticationState> task)

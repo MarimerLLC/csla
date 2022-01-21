@@ -167,6 +167,7 @@ namespace Csla.Blazor
         {
           OnModelChanging(_model, value);
           _model = value;
+          OnModelChanged();
         }
       }
     }

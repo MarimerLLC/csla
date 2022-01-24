@@ -51,18 +51,18 @@ namespace Csla.Blazor
 
     private void InitializeUser()
     {
-      AuthenticationStateProvider.GetAuthenticationStateAsync().ContinueWith((task) =>
+      AuthenticationStateProvider_AuthenticationStateChanged(AuthenticationStateProvider.GetAuthenticationStateAsync());
+    }
+
+    private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+      task.ContinueWith((t) =>
       {
         if (task.IsCompletedSuccessfully && task.Result != null)
           CurrentPrincipal = task.Result.User;
         else
           CurrentPrincipal = UnauthenticatedPrincipal;
       });
-    }
-
-    private void AuthenticationStateProvider_AuthenticationStateChanged(System.Threading.Tasks.Task<AuthenticationState> task)
-    {
-      CurrentPrincipal = task.Result.User;
     }
 
     /// <summary>

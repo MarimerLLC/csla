@@ -20,7 +20,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaDataPortalConfiguration
     /// </summary>
-    public static DataPortalClientOptions DataPortal(this CslaOptions config)
+    public static CslaOptions DataPortal(this CslaOptions config)
     {
       return DataPortal(config, null);
     }
@@ -30,32 +30,37 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config"></param>
     /// <param name="options"></param>
-    public static DataPortalClientOptions DataPortal(this CslaOptions config, Action<DataPortalClientOptions> options)
+    public static CslaOptions DataPortal(this CslaOptions config, Action<DataPortalClientOptions> options)
     {
       options?.Invoke(config.DataPortalClientOptions);
-      return config.DataPortalClientOptions;
+      return config;
     }
 
     /// <summary>
     /// Add services required to host the server-side
     /// data portal.
     /// </summary>
-    /// <param name="builder">The configuration that is to be affected</param>
+    /// <param name="config">The configuration that is to be affected</param>
     /// <param name="options">The action that is to be used to influence the configuration options</param>
-    public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions builder, Action<DataPortalServerOptions> options)
+    public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions config, Action<DataPortalServerOptions> options)
     {
-      var opt = builder.DataPortalServerOptions;
+      var opt = config.DataPortalServerOptions;
       options?.Invoke(opt);
-      return builder;
+      return config;
     }
 
     /// <summary>
     /// Set up the data portal by applying the configuration that has been built
     /// </summary>
     /// <param name="config">The configuration to use in setting up the data portal</param>
-    internal static void ApplyConfiguration(this DataPortalClientOptions config)
+    internal static void AddRequiredDataPortalServices(this DataPortalClientOptions config)
     {
       var services = config.Services;
+
+      // LocalProxy must always be available to support RunLocal
+      services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
+      services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
+
       services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalServerOptions.AuthorizerProviderType);
       foreach (Type interceptorType in config.DataPortalServerOptions.InterceptorProviders)
       {

@@ -20,7 +20,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaDataPortalConfiguration
     /// </summary>
-    public static DataPortalClientOptions DataPortal(this CslaOptions config)
+    public static CslaOptions DataPortal(this CslaOptions config)
     {
       return DataPortal(config, null);
     }
@@ -30,10 +30,10 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config"></param>
     /// <param name="options"></param>
-    public static DataPortalClientOptions DataPortal(this CslaOptions config, Action<DataPortalClientOptions> options)
+    public static CslaOptions DataPortal(this CslaOptions config, Action<DataPortalClientOptions> options)
     {
       options?.Invoke(config.DataPortalClientOptions);
-      return config.DataPortalClientOptions;
+      return config;
     }
 
     /// <summary>

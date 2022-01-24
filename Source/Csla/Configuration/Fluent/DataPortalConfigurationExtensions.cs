@@ -53,9 +53,14 @@ namespace Csla.Configuration
     /// Set up the data portal by applying the configuration that has been built
     /// </summary>
     /// <param name="config">The configuration to use in setting up the data portal</param>
-    internal static void ApplyConfiguration(this DataPortalClientOptions config)
+    internal static void AddRequiredDataPortalServices(this DataPortalClientOptions config)
     {
       var services = config.Services;
+
+      // LocalProxy must always be available to support RunLocal
+      services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
+      services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
+
       services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalServerOptions.AuthorizerProviderType);
       foreach (Type interceptorType in config.DataPortalServerOptions.InterceptorProviders)
       {

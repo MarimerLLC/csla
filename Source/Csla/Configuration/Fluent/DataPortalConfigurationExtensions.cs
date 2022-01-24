@@ -40,13 +40,13 @@ namespace Csla.Configuration
     /// Add services required to host the server-side
     /// data portal.
     /// </summary>
-    /// <param name="builder">The configuration that is to be affected</param>
+    /// <param name="config">The configuration that is to be affected</param>
     /// <param name="options">The action that is to be used to influence the configuration options</param>
-    public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions builder, Action<DataPortalServerOptions> options)
+    public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions config, Action<DataPortalServerOptions> options)
     {
-      var opt = builder.DataPortalServerOptions;
+      var opt = config.DataPortalServerOptions;
       options?.Invoke(opt);
-      return builder;
+      return config;
     }
 
     /// <summary>

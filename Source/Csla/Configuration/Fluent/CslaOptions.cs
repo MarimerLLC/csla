@@ -32,6 +32,19 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Registers a specific ApplicationContext manager service,
+    /// overriding the default service registration.
+    /// </summary>
+    /// <typeparam name="T">IContextManager implementation type.</typeparam>
+    /// <returns></returns>
+    public CslaOptions RegisterContextManager<T>() 
+      where T : IContextManager
+    {
+      Services.AddScoped(typeof(IContextManager), typeof(T));
+      return this;
+    }
+
+    /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
     /// System.Linq.Expressions (true, default).

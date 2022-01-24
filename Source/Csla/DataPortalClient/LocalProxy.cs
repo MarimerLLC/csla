@@ -30,7 +30,8 @@ namespace Csla.Channels.Local
       ApplicationContext = applicationContext;
       Options = options;
 
-      if (Options.CreateScopePerCall)
+      if (Options.CreateScopePerCall && 
+        ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
       {
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
@@ -38,11 +39,10 @@ namespace Csla.Channels.Local
 
         // create and initialize new "server-side" ApplicationContext and manager
         var parentContext = applicationContext;
-        var ctx = new Csla.Core.ApplicationContextManager();
+        var ctx = provider.GetRequiredService<Core.IContextManager>();
         ctx.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
         ctx.SetUser(parentContext.User);
-        ApplicationContext = provider.GetRequiredService<ApplicationContext>();
-        ApplicationContext.ContextManager = ctx;
+        ApplicationContext = new ApplicationContext(ctx, provider);
       }
 
       _portal = ApplicationContext.CurrentServiceProvider.GetRequiredService<Server.IDataPortalServer>();

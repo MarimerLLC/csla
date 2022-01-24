@@ -44,6 +44,8 @@ namespace Csla.Rules
     /// </summary>
     public object[] Criteria { get; internal set; }
 
+    private ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// Creates a AuthorizationContext instance for unit testing.
     /// </summary>
@@ -53,12 +55,23 @@ namespace Csla.Rules
     /// <param name="targetType">Type of the target.</param>
     public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRule rule, object target, Type targetType)
     {
+      ApplicationContext = applicationContext;
       Rule = rule;
       User = applicationContext.User;
       LocalContext = applicationContext.LocalContext;
       ClientContext = applicationContext.ClientContext;
       Target = target;
       TargetType = targetType;
+    }
+
+    /// <summary>
+    /// Gets an instance of a client-side data portal.
+    /// </summary>
+    /// <typeparam name="T">Business object type</typeparam>
+    /// <returns></returns>
+    public IDataPortal<T> GetDataPortal<T>()
+    {
+      return (IDataPortal<T>)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortal<T>));
     }
 
     /// <summary>

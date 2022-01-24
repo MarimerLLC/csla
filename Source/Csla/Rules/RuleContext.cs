@@ -63,6 +63,16 @@ namespace Csla.Rules
     public object Target { get; internal set; }
 
     /// <summary>
+    /// Gets an instance of a client-side data portal.
+    /// </summary>
+    /// <typeparam name="T">Business object type</typeparam>
+    /// <returns></returns>
+    public IDataPortal<T> GetDataPortal<T>()
+    {
+      return (IDataPortal<T>)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortal<T>));
+    }
+
+    /// <summary>
     /// Gets a dictionary containing copies of property values from
     /// the target business object.
     /// </summary>

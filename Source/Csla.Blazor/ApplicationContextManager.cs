@@ -53,7 +53,7 @@ namespace Csla.Blazor
     {
       AuthenticationStateProvider.GetAuthenticationStateAsync().ContinueWith((task) =>
       {
-        if (task.IsCompletedSuccessfully)
+        if (task.IsCompletedSuccessfully && task.Result != null)
           CurrentPrincipal = task.Result.User;
         else
           CurrentPrincipal = UnauthenticatedPrincipal;

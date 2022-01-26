@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using Csla.Configuration;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -28,11 +29,11 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <returns>The instance of IServiceCollection being extended, to support method chaining</returns>
     public static IServiceCollection AddCslaTesting(this IServiceCollection services)
     {
-      services.AddTransient<IHostEnvironment, TestHostEnvironment>();
+      services.TryAddTransient<IHostEnvironment, TestHostEnvironment>();
       services.AddLogging();
       services.AddCsla();
-      services.AddSingleton<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerStatic>();
-      services.AddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
+      services.TryAddSingleton<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerStatic>();
+      services.TryAddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
 
       return services;
     }

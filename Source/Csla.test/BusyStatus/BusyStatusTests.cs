@@ -38,7 +38,7 @@ namespace cslalighttest.BusyStatus
     public static void ClassInitialize(TestContext context)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
-      _noCloneOnUpdateDIContext = TestDIContextFactory.CreateContext(opt => opt.DataPortal().AutoCloneOnUpdate(false));
+      _noCloneOnUpdateDIContext = TestDIContextFactory.CreateContext(opt => opt.DataPortal(cfg => cfg.AutoCloneOnUpdate(false)));
     }
 
     [TestMethod]

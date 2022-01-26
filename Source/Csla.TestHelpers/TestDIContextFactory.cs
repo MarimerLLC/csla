@@ -13,6 +13,7 @@ using System.Text;
 using Csla.Configuration;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.TestHelpers
 {
@@ -76,8 +77,8 @@ namespace Csla.TestHelpers
       var services = new ServiceCollection();
 
       // Add Csla
-      services.AddScoped<Core.IContextManager, Core.ApplicationContextManager>();
-      services.AddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
+      services.TryAddScoped<Core.IContextManager, Core.ApplicationContextManager>();
+      services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddCsla(customCslaOptions);
 
       serviceProvider = services.BuildServiceProvider();

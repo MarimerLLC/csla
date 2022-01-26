@@ -289,7 +289,7 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void FailUpdateContext()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(opts => opts.DataPortal().DataPortalReturnObjectOnException(true));
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(opts => opts.DataPortal(cfg => cfg.DataPortalReturnObjectOnException(true)));
       IDataPortal<ExceptionRoot> dataPortal = testDIContext.CreateDataPortal<ExceptionRoot>();
       
       try

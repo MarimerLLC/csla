@@ -29,11 +29,6 @@ namespace Csla.Configuration
     internal CslaOptions CslaOptions { get; set; }
 
     /// <summary>
-    /// Gets the current configuration object.
-    /// </summary>
-    internal DataPortalServerOptions DataPortalServerOptions { get => CslaOptions.DataPortalServerOptions; }
-
-    /// <summary>
     /// Gets the current service collection.
     /// </summary>
     public IServiceCollection Services { get => CslaOptions.Services; }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IDataPortalFactory.cs" company="Marimer LLC">
+// <copyright file="IChildDataPortalFactory.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -12,12 +12,12 @@ namespace Csla
   /// used to get an access to a client-side data portal
   /// instance.
   /// </summary>
-  public interface IDataPortalFactory
+  public interface IChildDataPortalFactory
   {
     /// <summary>
-    /// Get a client-side data portal instance.
+    /// Get a child data portal instance.
     /// </summary>
-    /// <typeparam name="T">Root business object type</typeparam>
-    IDataPortal<T> GetPortal<T>();
+    /// <typeparam name="T">Child business object type</typeparam>
+    IChildDataPortal<T> GetPortal<T>();
   }
 }

@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if NET5_0_OR_GREATER
+//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -12,13 +13,13 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace Csla.Blazor
+namespace Csla.AspNetCore.Blazor
 {
   /// <summary>
   /// Application context manager that uses HttpContextAccessor when 
   /// resolving HttpContext to store context values.
   /// </summary>
-  public class ApplicationContextManager : IContextManager, IDisposable
+  public class ApplicationContextManagerBlazor : IContextManager, IDisposable
   {
     private ContextDictionary LocalContext { get; set; }
     private ContextDictionary ClientContext { get; set; }
@@ -41,7 +42,7 @@ namespace Csla.Blazor
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
-    public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
+    public ApplicationContextManagerBlazor(AuthenticationStateProvider authenticationStateProvider)
     {
       AuthenticationStateProvider = authenticationStateProvider;
       CurrentPrincipal = UnauthenticatedPrincipal;
@@ -84,13 +85,15 @@ namespace Csla.Blazor
     }
 
     /// <summary>
-    /// Not supported. Use the aspnetcore framework to set 
-    /// the current principal.
+    /// Attempts to set the current principal on the registered
+    /// IHostEnvironmentAuthenticationStateProvider service.
     /// </summary>
     /// <param name="principal">Principal object.</param>
     public virtual void SetUser(IPrincipal principal)
     {
-      throw new NotSupportedException(nameof(SetUser));
+      CurrentPrincipal = principal;
+      if (AuthenticationStateProvider is IHostEnvironmentAuthenticationStateProvider hostProvider)
+        hostProvider.SetAuthenticationState(Task.FromResult(new AuthenticationState((ClaimsPrincipal)principal)));
     }
 
     /// <summary>
@@ -160,3 +163,4 @@ namespace Csla.Blazor
     }
   }
 }
+#endif

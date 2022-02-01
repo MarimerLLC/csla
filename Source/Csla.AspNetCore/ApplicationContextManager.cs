@@ -3,38 +3,53 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Application context manager that uses HttpContextAccessor</summary>
+// <summary>Application context manager that adapts for AspNetCore/SSB</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using System;
+#if NET5_0_OR_GREATER
+using Csla.AspNetCore.Blazor;
+using Microsoft.Extensions.DependencyInjection;
+#else
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+#endif
 
 namespace Csla.AspNetCore
 {
   /// <summary>
-  /// Application context manager that uses HttpContextAccessor when 
-  /// resolving HttpContext to store context values.
+  /// Application context manager that adapts for AspNetCore/SSB.
   /// </summary>
-  public class ApplicationContextManager : IContextManager
+  public class ApplicationContextManager : IContextManager, IDisposable
   {
+    private IContextManager ActiveContextManager { get; set; }
 
-    private const string _localContextName = "Csla.LocalContext";
-    private const string _clientContextName = "Csla.ClientContext";
-
+#if NET5_0_OR_GREATER
     /// <summary>
-    /// Creates an instance of the object, initializing it
-    /// with the required IServiceProvider.
+    /// Creates an instance of the object.
     /// </summary>
-    /// <param name="httpContextAccessor">HttpContext accessor</param>
+    /// <param name="provider"></param>
+    /// <param name="activeCircuitHandler"></param>
+    public ApplicationContextManager(IServiceProvider provider, ActiveCircuitHandler activeCircuitHandler)
+    {
+      if (activeCircuitHandler.IsServerSideBlazor)
+      {
+        ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerBlazor));
+      }
+      else
+      {
+        ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerHttpContext));
+      }
+    }
+#else
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="httpContextAccessor"></param>
     public ApplicationContextManager(IHttpContextAccessor httpContextAccessor)
     {
-      HttpContext = httpContextAccessor.HttpContext;
+      ActiveContextManager = new ApplicationContextManagerHttpContext(httpContextAccessor);
     }
-
-    /// <summary>
-    /// Gets the current HttpContext instance.
-    /// </summary>
-    protected virtual HttpContext HttpContext { get; private set; }
+#endif
 
     /// <summary>
     /// Gets a value indicating whether this
@@ -43,7 +58,7 @@ namespace Csla.AspNetCore
     /// </summary>
     public bool IsValid
     {
-      get { return HttpContext != null; }
+      get { return ActiveContextManager.IsValid; }
     }
 
     /// <summary>
@@ -51,13 +66,7 @@ namespace Csla.AspNetCore
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      var result = HttpContext?.User;
-      if (result == null)
-      {
-        result = new Csla.Security.CslaClaimsPrincipal();
-        SetUser(result);
-      }
-      return result;
+      return ActiveContextManager.GetUser();
     }
 
     /// <summary>
@@ -66,7 +75,7 @@ namespace Csla.AspNetCore
     /// <param name="principal">Principal object.</param>
     public void SetUser(System.Security.Principal.IPrincipal principal)
     {
-      HttpContext.User = (ClaimsPrincipal)principal;
+      ActiveContextManager.SetUser(principal);
     }
 
     /// <summary>
@@ -74,7 +83,7 @@ namespace Csla.AspNetCore
     /// </summary>
     public ContextDictionary GetLocalContext()
     {
-      return (ContextDictionary)HttpContext?.Items[_localContextName];
+      return ActiveContextManager.GetLocalContext();
     }
 
     /// <summary>
@@ -83,7 +92,7 @@ namespace Csla.AspNetCore
     /// <param name="localContext">Local context.</param>
     public void SetLocalContext(ContextDictionary localContext)
     {
-      HttpContext.Items[_localContextName] = localContext;
+      ActiveContextManager.SetLocalContext(localContext);
     }
 
     /// <summary>
@@ -92,7 +101,7 @@ namespace Csla.AspNetCore
     /// <param name="executionLocation"></param>
     public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return (ContextDictionary)HttpContext?.Items[_clientContextName];
+      return ActiveContextManager.GetClientContext(executionLocation);
     }
 
     /// <summary>
@@ -102,10 +111,10 @@ namespace Csla.AspNetCore
     /// <param name="executionLocation"></param>
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
-      HttpContext.Items[_clientContextName] = clientContext;
+      ActiveContextManager.SetClientContext(clientContext, executionLocation);
     }
 
-    private const string _applicationContextName = "Csla.ApplicationContext";
+    private bool disposedValue;
 
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
@@ -114,12 +123,40 @@ namespace Csla.AspNetCore
     {
       get
       {
-        return (ApplicationContext)HttpContext?.Items[_applicationContextName];
+        return ActiveContextManager.ApplicationContext;
       }
       set
       {
-        HttpContext.Items[_applicationContextName] = value;
+        ActiveContextManager.ApplicationContext = value;
       }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+      if (!disposedValue)
+      {
+        if (disposing)
+        {
+          if (ActiveContextManager is IDisposable disposable)
+            disposable.Dispose();
+        }
+
+        disposedValue = true;
+      }
+    }
+
+    /// <summary>
+    /// Dispose this instance.
+    /// </summary>
+    public void Dispose()
+    {
+      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+      Dispose(disposing: true);
+      GC.SuppressFinalize(this);
     }
   }
 }

@@ -6,6 +6,7 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.DataPortalClient;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -42,7 +43,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">The configuration that is to be affected</param>
     /// <param name="options">The action that is to be used to influence the configuration options</param>
-    public static DataPortalClientOptions AddServerSideDataPortal(this DataPortalClientOptions config, Action<DataPortalServerOptions> options)
+    public static CslaOptions AddServerSideDataPortal(this CslaOptions config, Action<DataPortalServerOptions> options)
     {
       var opt = config.DataPortalServerOptions;
       options?.Invoke(opt);
@@ -53,13 +54,16 @@ namespace Csla.Configuration
     /// Set up the data portal by applying the configuration that has been built
     /// </summary>
     /// <param name="config">The configuration to use in setting up the data portal</param>
-    internal static void AddRequiredDataPortalServices(this DataPortalClientOptions config)
+    internal static void AddRequiredDataPortalServices(this CslaOptions config)
     {
       var services = config.Services;
 
       // LocalProxy must always be available to support RunLocal
       services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
       services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
+
+      services.TryAddTransient<IDataPortalFactory, DataPortalFactory>();
+      services.TryAddTransient<IChildDataPortalFactory, ChildDataPortalFactory>();
 
       services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalServerOptions.AuthorizerProviderType);
       foreach (Type interceptorType in config.DataPortalServerOptions.InterceptorProviders)

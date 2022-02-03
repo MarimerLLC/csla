@@ -28,10 +28,10 @@ namespace Csla.AspNetCore
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="provider"></param>
-    /// <param name="activeCircuitHandler"></param>
-    public ApplicationContextManager(IServiceProvider provider, ActiveCircuitHandler activeCircuitHandler)
+    /// <param name="activeCircuitState"></param>
+    public ApplicationContextManager(IServiceProvider provider, ActiveCircuitState activeCircuitState)
     {
-      if (activeCircuitHandler.IsServerSideBlazor)
+      if (activeCircuitState.CircuitExists)
       {
         ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerBlazor));
       }

@@ -18,10 +18,15 @@ namespace Csla.AspNetCore.Blazor
   public class ActiveCircuitHandler : CircuitHandler
   {
     /// <summary>
-    /// Gets a value indicating whether the current scope
-    /// is running in server-side Blazor.
+    /// Creates an instance of the type.
     /// </summary>
-    public bool IsServerSideBlazor { get; private set; } = false;
+    /// <param name="activeCircuitState"></param>
+    public ActiveCircuitHandler(ActiveCircuitState activeCircuitState)
+    {
+      ActiveCircuitState = activeCircuitState;
+    }
+
+    private ActiveCircuitState ActiveCircuitState { get; set; }
 
     /// <summary>
     /// Handler for the OnCircuitOpenedAsync call
@@ -30,7 +35,7 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="cancellationToken">The cancellation token provided by the runtime</param>
     public override Task OnCircuitOpenedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
-      IsServerSideBlazor = true;
+      ActiveCircuitState.CircuitExists = true;
       return base.OnCircuitOpenedAsync(circuit, cancellationToken);
     }
   }

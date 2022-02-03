@@ -21,7 +21,7 @@ namespace Csla.AspNetCore.Blazor
     /// Gets a value indicating whether the current scope
     /// is running in server-side Blazor.
     /// </summary>
-    public bool IsServerSideBlazor { get; private set; }
+    public bool IsServerSideBlazor { get; private set; } = false;
 
     /// <summary>
     /// Handler for the OnCircuitOpenedAsync call

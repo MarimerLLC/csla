@@ -30,6 +30,8 @@ namespace Csla.AspNetCore
     public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor)
     {
       HttpContext = httpContextAccessor.HttpContext;
+      if (HttpContext == null)
+        throw new NullReferenceException(nameof(HttpContext));
     }
 
     /// <summary>

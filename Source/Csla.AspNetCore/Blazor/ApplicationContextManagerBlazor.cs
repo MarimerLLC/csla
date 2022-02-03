@@ -52,18 +52,44 @@ namespace Csla.AspNetCore.Blazor
 
     private void InitializeUser()
     {
-      AuthenticationStateProvider_AuthenticationStateChanged(AuthenticationStateProvider.GetAuthenticationStateAsync());
+      Task<AuthenticationState> task = default;
+      try
+      {
+        task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+      }
+      catch (InvalidOperationException ex)
+      {
+        task = Task.FromResult(new AuthenticationState((ClaimsPrincipal)UnauthenticatedPrincipal));
+        string message = ex.Message;
+        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
+            && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState)))
+        {
+          SetHostPrincipal(task);
+        }
+        else
+        {
+          throw;
+        }
+      }
+      AuthenticationStateProvider_AuthenticationStateChanged(task);
     }
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
     {
-      task.ContinueWith((t) =>
+      if (task is null)
       {
-        if (task.IsCompletedSuccessfully && task.Result != null)
-          CurrentPrincipal = task.Result.User;
-        else
-          CurrentPrincipal = UnauthenticatedPrincipal;
-      });
+        CurrentPrincipal = UnauthenticatedPrincipal;
+      }
+      else
+      {
+        task.ContinueWith((t) =>
+        {
+          if (task.IsCompletedSuccessfully && task.Result != null)
+            CurrentPrincipal = task.Result.User;
+          else
+            CurrentPrincipal = UnauthenticatedPrincipal;
+        });
+      }
     }
 
     /// <summary>
@@ -91,9 +117,24 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="principal">Principal object.</param>
     public virtual void SetUser(IPrincipal principal)
     {
-      CurrentPrincipal = principal;
+      if (!ReferenceEquals(CurrentPrincipal, principal))
+      {
+        if (principal is ClaimsPrincipal claimsPrincipal)
+        {
+          CurrentPrincipal = principal;
+          SetHostPrincipal(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+        }
+        else
+        {
+          throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
+        }
+      }
+    }
+
+    private void SetHostPrincipal(Task<AuthenticationState> task)
+    {
       if (AuthenticationStateProvider is IHostEnvironmentAuthenticationStateProvider hostProvider)
-        hostProvider.SetAuthenticationState(Task.FromResult(new AuthenticationState((ClaimsPrincipal)principal)));
+        hostProvider.SetAuthenticationState(task);
     }
 
     /// <summary>

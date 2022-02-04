@@ -11,6 +11,7 @@ namespace Csla.Blazor.Test
   [TestClass]
   public class ApplicationContextTests
   {
+#if NET5_0_OR_GREATER
     [TestMethod]
     public void CorrectManagerChosen()
     {
@@ -20,8 +21,9 @@ namespace Csla.Blazor.Test
         .AddServerSideBlazor());
       IServiceProvider provider = services.BuildServiceProvider();
       var manager = provider.GetRequiredService<IContextManager>();
-      Assert.IsInstanceOfType(manager, typeof(Csla.Blazor.ApplicationContextManager));
+      Assert.IsInstanceOfType(manager, typeof(AspNetCore.Blazor.ApplicationContextManagerBlazor));
     }
+#endif
   }
 
   public class TestAuthenticationStateProvider : AuthenticationStateProvider

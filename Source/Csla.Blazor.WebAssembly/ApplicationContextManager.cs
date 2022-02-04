@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace Csla.Blazor
+namespace Csla.Blazor.WebAssembly
 {
   /// <summary>
   /// Application context manager that uses HttpContextAccessor when 
@@ -84,13 +84,14 @@ namespace Csla.Blazor
     }
 
     /// <summary>
-    /// Not supported. Use the aspnetcore framework to set 
-    /// the current principal.
+    /// Sets the current principal ONLY IN APPLICATIONCONTEXT.
+    /// To set the value correctly, use your specific
+    /// ApplicatonContextStateProvider implementation.
     /// </summary>
     /// <param name="principal">Principal object.</param>
     public virtual void SetUser(IPrincipal principal)
     {
-      throw new NotSupportedException(nameof(SetUser));
+      CurrentPrincipal = principal;
     }
 
     /// <summary>

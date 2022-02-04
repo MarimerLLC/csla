@@ -5,8 +5,12 @@
 // </copyright>
 // <summary>Implement extension methods for AspNet configuration</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
 using System;
+#if NET5_0_OR_GREATER
+using Csla.AspNetCore.Blazor;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+#endif
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
@@ -36,6 +40,10 @@ namespace Csla.Configuration
     {
       var localOptions = new AspNetCoreConfigurationOptions();
       options?.Invoke(localOptions);
+#if NET5_0_OR_GREATER
+      config.Services.AddScoped<ActiveCircuitState>();
+      config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
+#endif
       config.Services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions { CreateScopePerCall = false });
       return config;
     }
@@ -54,4 +62,3 @@ namespace Csla.Configuration
     public bool UseCslaPermissionsPolicy { get; set; } = true;
   }
 }
-#endif

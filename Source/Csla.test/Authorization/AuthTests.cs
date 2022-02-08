@@ -473,10 +473,9 @@ namespace Csla.Test.Authorization
     public void PerTypeAuthEditObject()
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal(
-          dp => dp.AddServerSideDataPortal(
-            cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
-        ));
+        options => options.AddServerSideDataPortal(
+          cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
+        );
       ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
 
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
@@ -486,9 +485,8 @@ namespace Csla.Test.Authorization
     public void PerTypeAuthEditObjectViaInterface()
     {
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal(
-          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
-      ));
+        options => options.AddServerSideDataPortal(cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
+      );
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));

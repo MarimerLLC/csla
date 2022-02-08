@@ -41,10 +41,8 @@ namespace Csla.Test.DataPortal
       _testDIContext = TestDIContextFactory.CreateContext(options =>
       {
         options.Services.AddTransient<TestableDataPortal>();
-        options.DataPortal(
-          dp => dp.AddServerSideDataPortal(
-            config => config.RegisterAuthorizerProvider<AuthorizeDataPortalStub>())
-          );
+        options.AddServerSideDataPortal(
+            config => config.RegisterAuthorizerProvider<AuthorizeDataPortalStub>());
       });
     }
     

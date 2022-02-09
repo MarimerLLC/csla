@@ -1,4 +1,6 @@
+using BlazorExample.Client;
 using Csla.Configuration;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 string BlazorClientPolicy = "AllowAllOrigins";
@@ -22,11 +24,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CurrentUserAuthenticationStateProvider));
+builder.Services.AddScoped<CurrentUserService>();
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddCsla(options => options
-  .DataPortal()
+builder.Services.AddCsla(o => o
+  .DataPortal(dpo => dpo
     .AddServerSideDataPortal()
-    .UseLocalProxy());
+    .UseLocalProxy()));
 
 //for EF Db
 //builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.EF.PersonEFDal));

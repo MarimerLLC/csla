@@ -17,7 +17,7 @@ namespace Csla.Configuration
   public static class BlazorWasmConfigurationExtensions
   {
     /// <summary>
-    /// Registers services necessary for Windows Forms
+    /// Registers services necessary for Blazor WebAssembly.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <returns></returns>

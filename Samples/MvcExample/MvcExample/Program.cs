@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Csla.Configuration;
 
 namespace MvcExample
 {
@@ -18,6 +19,10 @@ namespace MvcExample
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
+          .ConfigureServices(config =>
+            {
+              config.AddCsla(options => options.AddAspNetCore());
+            })
             .ConfigureWebHostDefaults(webBuilder =>
             {
               webBuilder.UseStartup<Startup>();

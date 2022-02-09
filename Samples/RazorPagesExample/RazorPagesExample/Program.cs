@@ -12,6 +12,7 @@ builder.Services.AddRazorPages().AddMvcOptions(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddCsla(options => options.AddAspNetCore());
 builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
 

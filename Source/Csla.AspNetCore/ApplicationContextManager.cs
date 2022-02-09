@@ -33,11 +33,11 @@ namespace Csla.AspNetCore
     {
       if (activeCircuitState.CircuitExists)
       {
-        ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerBlazor));
+        ActiveContextManager = (IContextManager)ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerBlazor));
       }
       else
       {
-        ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerHttpContext));
+        ActiveContextManager = (IContextManager)ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerHttpContext));
       }
     }
 #else

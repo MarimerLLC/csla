@@ -17,7 +17,7 @@
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Xamarin.Forms" version="4.8.0.1560" />
+        <dependency id="Xamarin.Forms" version="5.0.0.2337" />
         <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="5.0.0" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="5.0.0" />

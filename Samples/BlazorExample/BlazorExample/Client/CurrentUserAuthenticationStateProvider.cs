@@ -15,9 +15,9 @@ namespace BlazorExample.Client
       _currentUserService.CurrentUserChanged += _currentUserService_CurrentUserChanged;
     }
 
-    private void _currentUserService_CurrentUserChanged(object sender, CurrentUserChangedEventArgs e)
+    private void _currentUserService_CurrentUserChanged(object? sender, CurrentUserChangedEventArgs e)
     {
-      var authState = Task<AuthenticationState>.FromResult(new AuthenticationState(e.NewUser));
+      var authState = Task.FromResult(new AuthenticationState(e.NewUser));
       NotifyAuthenticationStateChanged(authState);
     }
 

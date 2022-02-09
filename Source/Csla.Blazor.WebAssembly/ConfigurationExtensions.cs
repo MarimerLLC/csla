@@ -17,16 +17,16 @@ namespace Csla.Configuration
   public static class BlazorWasmConfigurationExtensions
   {
     /// <summary>
-    /// Registers services necessary for Windows Forms
+    /// Registers services necessary for Blazor WebAssembly.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <returns></returns>
-    public static CslaOptions WithBlazorWebAssembly(this CslaOptions config)
+    public static CslaOptions AddBlazorWebAssembly(this CslaOptions config)
     {
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
-      config.Services.TryAddSingleton<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
-      config.Services.TryAddSingleton<IAuthorizationHandler, CslaPermissionsHandler>();
-      config.Services.TryAddSingleton(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
+      config.Services.TryAddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+      config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
+      config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
       Csla.Channels.Http.HttpProxy.UseTextSerialization = true;
       return config;
     }

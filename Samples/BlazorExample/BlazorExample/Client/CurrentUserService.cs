@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Claims;
-using Csla;
+﻿using System.Security.Claims;
 
 namespace BlazorExample.Client
 {
@@ -10,28 +8,18 @@ namespace BlazorExample.Client
   /// </summary>
   public class CurrentUserService
   {
-    private ApplicationContext ApplicationContext;
-
     public event EventHandler<CurrentUserChangedEventArgs> CurrentUserChanged;
 
-    public CurrentUserService(ApplicationContext applicationContext)
-    {
-      ApplicationContext = applicationContext;
-      applicationContext.Principal = new ClaimsPrincipal(new ClaimsIdentity());
+    private ClaimsPrincipal _principal = new ClaimsPrincipal(new ClaimsIdentity());
+
+    public ClaimsPrincipal CurrentUser 
+    { get => _principal; 
+      set 
+      { 
+        _principal = value; 
+        CurrentUserChanged?.Invoke(this, new CurrentUserChangedEventArgs { NewUser = value }); } 
     }
 
-    public ClaimsPrincipal CurrentUser
-    {
-      get
-      {
-        return ApplicationContext.Principal;
-      }
-      set
-      {
-        ApplicationContext.Principal = value;
-        CurrentUserChanged?.Invoke(this, new CurrentUserChangedEventArgs() { NewUser = value });
-      }
-    }
     public class CurrentUserChangedEventArgs : EventArgs
     {
       public ClaimsPrincipal NewUser { get; set; }

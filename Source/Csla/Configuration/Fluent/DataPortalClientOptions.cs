@@ -33,6 +33,8 @@ namespace Csla.Configuration
     /// </summary>
     public IServiceCollection Services { get => CslaOptions.Services; }
 
+    internal DataPortalServerOptions ServerOptions { get => CslaOptions.DataPortalServerOptions; }
+
     /// <summary>
     /// Sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()

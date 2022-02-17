@@ -41,7 +41,6 @@ namespace Csla.Configuration
       var localOptions = new AspNetCoreConfigurationOptions();
       options?.Invoke(localOptions);
 #if NET5_0_OR_GREATER
-      config.Services.AddScoped<ActiveCircuitState>();
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
 #endif
       config.Services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions { CreateScopePerCall = false });

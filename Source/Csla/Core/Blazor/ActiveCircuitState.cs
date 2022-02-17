@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 #if NET5_0_OR_GREATER
 
-namespace Csla.AspNetCore.Blazor
+namespace Csla.Core.Blazor
 {
   /// <summary>
   /// Provides access to server-side Blazor

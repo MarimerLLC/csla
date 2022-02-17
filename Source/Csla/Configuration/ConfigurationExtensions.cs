@@ -42,6 +42,12 @@ namespace Csla.Configuration
       // capture options object
       services.AddScoped((p) => cslaOptions);
 
+#if NET5_0_OR_GREATER
+      
+      services.AddScoped<Core.Blazor.ActiveCircuitState>();
+      
+#endif
+
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
       RegisterContextManager(services);

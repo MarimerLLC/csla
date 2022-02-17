@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace Csla.Channels.Local
 {
   /// <summary>
@@ -36,9 +37,18 @@ namespace Csla.Channels.Local
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
         var provider = _scope.ServiceProvider;
+        var parentContext = applicationContext;
+
+#if NET5_0_OR_GREATER
+
+        //copy circuitexists from parent context into this new scope to ensure that we get the proper ContextManager if applicable
+        var parentContextCircuitState = parentContext.CurrentServiceProvider.GetRequiredService<Core.Blazor.ActiveCircuitState>();
+        var newScopeCircuitState = provider.GetRequiredService<Core.Blazor.ActiveCircuitState>();
+        newScopeCircuitState.CircuitExists = parentContextCircuitState.CircuitExists;
+
+#endif
 
         // create and initialize new "server-side" ApplicationContext and manager
-        var parentContext = applicationContext;
         var manager = provider.GetRequiredService<Core.IContextManager>();
         manager.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
         manager.SetUser(parentContext.User);

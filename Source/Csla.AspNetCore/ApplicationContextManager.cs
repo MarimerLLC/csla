@@ -7,11 +7,10 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using System;
+using Microsoft.AspNetCore.Http;
 #if NET5_0_OR_GREATER
 using Csla.AspNetCore.Blazor;
 using Microsoft.Extensions.DependencyInjection;
-#else
-using Microsoft.AspNetCore.Http;
 #endif
 
 namespace Csla.AspNetCore
@@ -29,9 +28,10 @@ namespace Csla.AspNetCore
     /// </summary>
     /// <param name="provider"></param>
     /// <param name="activeCircuitState"></param>
-    public ApplicationContextManager(IServiceProvider provider, ActiveCircuitState activeCircuitState)
+    /// <param name="httpContextAccessor"></param>
+    public ApplicationContextManager(IServiceProvider provider, Core.Blazor.ActiveCircuitState activeCircuitState, IHttpContextAccessor httpContextAccessor)
     {
-      if (activeCircuitState.CircuitExists)
+      if (activeCircuitState.CircuitExists || httpContextAccessor.HttpContext is null)
       {
         ActiveContextManager = (IContextManager)ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerBlazor));
       }

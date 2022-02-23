@@ -1,4 +1,11 @@
 ﻿#if NET5_0_OR_GREATER
+//-----------------------------------------------------------------------
+// <copyright file="AssemblyLoadContextManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Provides common access to "AssemblyLoadContext" logic</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

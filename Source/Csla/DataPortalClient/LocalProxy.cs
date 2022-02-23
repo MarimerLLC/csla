@@ -39,7 +39,7 @@ namespace Csla.Channels.Local
 
         // create and initialize new "server-side" ApplicationContext and manager
         var parentContext = applicationContext;
-        var manager = provider.GetRequiredService<Core.IContextManager>();
+        var manager = new Csla.Core.ApplicationContextManagerAsyncLocal();
         manager.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
         manager.SetUser(parentContext.User);
         ApplicationContext = new ApplicationContext(manager, provider);

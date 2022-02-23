@@ -13,12 +13,6 @@ namespace Csla.Channels.Local
   public class LocalProxyOptions
   {
     /// <summary>
-    /// Gets or sets a value indicating whether the LocalProxy
-    /// should create a DI scope for each data portal call.
-    /// (default is true)
-    /// </summary>
-    public bool CreateScopePerCall { get; set; } = true;
-    /// <summary>
     /// Gets or sets a value indicating whether any
     /// synchronization context should be flowed to
     /// child tasks by LocalProxy. Setting this 

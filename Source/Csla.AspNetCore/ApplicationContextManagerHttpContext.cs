@@ -50,6 +50,12 @@ namespace Csla.AspNetCore
     }
 
     /// <summary>
+    /// Gets a value indicating whether the current runtime
+    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// </summary>
+    public bool IsStatefulRuntime => false;
+
+    /// <summary>
     /// Gets the current principal.
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()

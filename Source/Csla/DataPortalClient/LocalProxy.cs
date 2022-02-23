@@ -30,8 +30,8 @@ namespace Csla.Channels.Local
       ApplicationContext = applicationContext;
       Options = options;
 
-      if (Options.CreateScopePerCall && 
-        ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
+        && ApplicationContext.IsStatefulRuntime)
       {
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
@@ -187,8 +187,11 @@ namespace Csla.Channels.Local
       {
         if (disposing)
         {
-          if (Options.CreateScopePerCall)
+          if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
+            && ApplicationContext.IsStatefulRuntime)
+          {
             _scope?.Dispose();
+          }
         }
         disposedValue = true;
       }

@@ -55,5 +55,10 @@ namespace Csla.Core
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
     ApplicationContext ApplicationContext { get; set; }
+    /// <summary>
+    /// Gets a value indicating whether the current runtime
+    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// </summary>
+    bool IsStatefulRuntime { get; }
   }
 }

@@ -76,6 +76,12 @@ namespace Csla.Blazor.WebAssembly
     }
 
     /// <summary>
+    /// Gets a value indicating whether the current runtime
+    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// </summary>
+    public bool IsStatefulRuntime => true;
+
+    /// <summary>
     /// Gets the current principal.
     /// </summary>
     public IPrincipal GetUser()

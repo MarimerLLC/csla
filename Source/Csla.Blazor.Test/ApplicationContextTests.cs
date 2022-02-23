@@ -16,12 +16,14 @@ namespace Csla.Blazor.Test
     public void CorrectManagerChosen()
     {
       IServiceCollection services = new ServiceCollection();
+      services.AddHttpContextAccessor();
+      services.AddScoped<Csla.AspNetCore.Blazor.ActiveCircuitState>();
       services.AddScoped(typeof(AuthenticationStateProvider), typeof(TestAuthenticationStateProvider));
       services.AddCsla(c => c
         .AddServerSideBlazor());
       IServiceProvider provider = services.BuildServiceProvider();
       var manager = provider.GetRequiredService<IContextManager>();
-      Assert.IsInstanceOfType(manager, typeof(AspNetCore.Blazor.ApplicationContextManagerBlazor));
+      Assert.IsInstanceOfType(manager, typeof(Csla.AspNetCore.ApplicationContextManager));
     }
 #endif
   }

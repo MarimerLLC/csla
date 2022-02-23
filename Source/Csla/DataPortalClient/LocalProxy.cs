@@ -30,8 +30,8 @@ namespace Csla.Channels.Local
       ApplicationContext = applicationContext;
       Options = options;
 
-      if (Options.CreateScopePerCall && 
-        ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
+        && ApplicationContext.IsStatefulRuntime)
       {
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
@@ -39,7 +39,7 @@ namespace Csla.Channels.Local
 
         // create and initialize new "server-side" ApplicationContext and manager
         var parentContext = applicationContext;
-        var manager = provider.GetRequiredService<Core.IContextManager>();
+        var manager = new Csla.Core.ApplicationContextManagerAsyncLocal();
         manager.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
         manager.SetUser(parentContext.User);
         ApplicationContext = new ApplicationContext(manager, provider);
@@ -187,8 +187,11 @@ namespace Csla.Channels.Local
       {
         if (disposing)
         {
-          if (Options.CreateScopePerCall)
+          if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
+            && ApplicationContext.IsStatefulRuntime)
+          {
             _scope?.Dispose();
+          }
         }
         disposedValue = true;
       }

@@ -61,5 +61,11 @@ namespace Csla.Rules
     /// Gets the ClientContext.
     /// </summary>
     ContextDictionary ClientContext { get; }
+    /// <summary>
+    /// Gets an instance of a client-side data portal.
+    /// </summary>
+    /// <typeparam name="T">Business object type</typeparam>
+    /// <returns></returns>
+    IDataPortal<T> GetDataPortal<T>();
   }
 }

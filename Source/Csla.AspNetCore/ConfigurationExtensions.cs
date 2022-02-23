@@ -44,7 +44,6 @@ namespace Csla.Configuration
       config.Services.AddScoped<ActiveCircuitState>();
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
 #endif
-      config.Services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions { CreateScopePerCall = false });
       return config;
     }
   }

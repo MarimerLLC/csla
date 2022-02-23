@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
+using System;
+
 namespace Csla.DataPortalClient
 {
   /// <summary>
@@ -16,13 +18,13 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext">ApplicationContext instance</param>
-    public DataPortalFactory(ApplicationContext applicationContext)
+    /// <param name="serviceProvider">Current ServiceProvider</param>
+    public DataPortalFactory(IServiceProvider serviceProvider)
     {
-      ApplicationContext = applicationContext;
+      ServiceProvider = serviceProvider;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private IServiceProvider ServiceProvider { get; set; }
 
     /// <summary>
     /// Get a client-side data portal instance.
@@ -30,7 +32,7 @@ namespace Csla.DataPortalClient
     /// <typeparam name="T">Root business object type</typeparam>
     public IDataPortal<T> GetPortal<T>()
     {
-      return ApplicationContext.CreateInstanceDI<IDataPortal<T>>();
+      return (IDataPortal<T>)ServiceProvider.GetService(typeof(IDataPortal<T>));
     }
   }
 }

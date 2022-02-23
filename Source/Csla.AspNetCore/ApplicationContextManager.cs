@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using System;
+using Microsoft.AspNetCore.Http;
 #if NET5_0_OR_GREATER
 using Csla.AspNetCore.Blazor;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,15 +30,20 @@ namespace Csla.AspNetCore
     /// </summary>
     /// <param name="provider"></param>
     /// <param name="activeCircuitState"></param>
-    public ApplicationContextManager(IServiceProvider provider, ActiveCircuitState activeCircuitState)
+    /// <param name="httpContextAccessor"></param>
+    public ApplicationContextManager(IServiceProvider provider, ActiveCircuitState activeCircuitState, IHttpContextAccessor httpContextAccessor)
     {
       if (activeCircuitState.CircuitExists)
       {
         ActiveContextManager = (IContextManager)ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerBlazor));
       }
-      else
+      else if (httpContextAccessor.HttpContext is not null)
       {
         ActiveContextManager = (IContextManager)ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerHttpContext));
+      }
+      else
+      {
+        ActiveContextManager = (IContextManager)ActivatorUtilities.CreateInstance(provider, typeof(ApplicationContextManagerAsyncLocal));
       }
     }
 #else
@@ -60,6 +66,12 @@ namespace Csla.AspNetCore
     {
       get { return ActiveContextManager.IsValid; }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether the current runtime
+    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// </summary>
+    public bool IsStatefulRuntime => ActiveContextManager.IsStatefulRuntime;
 
     /// <summary>
     /// Gets the current principal.

@@ -3,22 +3,22 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Default context manager for the user property</summary>
+// <summary>Application context manager using AsyncLocal</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Security.Principal;
 using System.Threading;
 
 namespace Csla.Core
 {
   /// <summary>
-  /// Default context manager for the user property
-  /// and local/client/global context dictionaries.
+  /// Application context manager using AsyncLocal
+  /// for user and context dictionaries.
   /// </summary>
-  public class ApplicationContextManager : IContextManager
+  public class ApplicationContextManagerAsyncLocal : IContextManager
   {
     private readonly AsyncLocal<ContextDictionary> _localContext = new();
     private readonly AsyncLocal<ContextDictionary> _clientContext = new();
+    private readonly AsyncLocal<IPrincipal> _principal = new();
 
     /// <summary>
     /// Returns a value indicating whether the context is valid.
@@ -40,7 +40,7 @@ namespace Csla.Core
     /// <returns>The current user principal</returns>
     public virtual IPrincipal GetUser()
     {
-      IPrincipal result = Thread.CurrentPrincipal;
+      IPrincipal result = _principal.Value;
       if (result == null)
       {
         result = new System.Security.Claims.ClaimsPrincipal();
@@ -55,7 +55,7 @@ namespace Csla.Core
     /// <param name="principal">User principal value</param>
     public virtual void SetUser(IPrincipal principal)
     {
-      Thread.CurrentPrincipal = principal;
+      _principal.Value = principal;
     }
 
     /// <summary>

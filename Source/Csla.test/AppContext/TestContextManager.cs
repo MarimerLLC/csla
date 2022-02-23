@@ -24,6 +24,8 @@ namespace Csla.Test.AppContext
       get { return true; }
     }
 
+    public bool IsStatefulRuntime => true;
+
     public ApplicationContext ApplicationContext { get; set; }
 
     public IPrincipal GetUser()

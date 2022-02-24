@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Circuit handler indicating if code in server-side Blazor</summary>
+// <summary>Service which interacts with ActiveCircuitHandler and indicates if code is in server-side Blazor</summary>
 //-----------------------------------------------------------------------
 #if NET5_0_OR_GREATER
 

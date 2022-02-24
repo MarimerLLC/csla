@@ -37,9 +37,16 @@ namespace Csla.Channels.Local
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
         var provider = _scope.ServiceProvider;
 
+        //initialize a service in this scope which indicates to stateful ApplicationContextManagers that we are in a new scope which allows them to create
+        //  an instance of ApplicationContextManagerAsyncLocal
+        var localScopeState = provider.GetRequiredService<Channels.Local.LocalProxyState>();
+        localScopeState.NewScopeExists = true;
+
         // create and initialize new "server-side" ApplicationContext and manager
         var parentContext = applicationContext;
-        var manager = new Csla.Core.ApplicationContextManagerAsyncLocal();
+
+        //now get manager from DI for new scope
+        var manager = provider.GetRequiredService<Core.IContextManager>();
         manager.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
         manager.SetUser(parentContext.User);
         ApplicationContext = new ApplicationContext(manager, provider);

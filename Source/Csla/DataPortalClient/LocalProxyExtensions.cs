@@ -40,6 +40,11 @@ namespace Csla.Configuration
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy, LocalProxy>();
       config.Services.AddTransient((p) => proxyOptions);
+
+#if NET5_0_OR_GREATER
+      config.Services.AddScoped<LocalProxyState>();
+#endif      
+
       return config;
     }
   }

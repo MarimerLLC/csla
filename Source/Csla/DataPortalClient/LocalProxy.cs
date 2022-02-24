@@ -47,6 +47,15 @@ namespace Csla.Channels.Local
 
         //now get manager from DI for new scope
         var manager = provider.GetRequiredService<Core.IContextManager>();
+
+        //since we are in a new scope - ensure that the type returned correctly implements the facade which should be built to respect us wanting one type here vs normal
+        if (!typeof(Core.ApplicationContextManagerFacade).IsAssignableFrom(manager.GetType()))
+        {
+          throw new Exception(nameof(Core.IContextManager) + " must inherit from " + nameof(Core.ApplicationContextManagerFacade) + " if using the Local DataPortal");
+        }
+
+        //?do we want to go further to ensure here that the type of manager is the concrete type or implements some interface?
+
         manager.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
         manager.SetUser(parentContext.User);
         ApplicationContext = new ApplicationContext(manager, provider);

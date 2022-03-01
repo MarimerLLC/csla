@@ -32,11 +32,7 @@ namespace Csla.AspNetCore
     public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor, IRuntimeInfo runtimeInfo)
     {
       if (runtimeInfo.IsHttpContextValid)
-      {
         HttpContext = httpContextAccessor.HttpContext;
-        if (HttpContext == null)
-          throw new NullReferenceException(nameof(HttpContext));
-      }
     }
 
     /// <summary>

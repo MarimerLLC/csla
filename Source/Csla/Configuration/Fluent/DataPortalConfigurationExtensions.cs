@@ -71,6 +71,9 @@ namespace Csla.Configuration
       services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
       services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
 
+      // Data portal API defaults
+      services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
+      services.TryAddTransient(typeof(IChildDataPortal<>), typeof(DataPortal<>));
       services.TryAddTransient<IDataPortalFactory, DataPortalFactory>();
       services.TryAddTransient<IChildDataPortalFactory, ChildDataPortalFactory>();
 

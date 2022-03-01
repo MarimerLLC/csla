@@ -38,13 +38,20 @@ namespace Csla.AspNetCore.Blazor
     public ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
+    /// Gets the active circuit state.
+    /// </summary>
+    protected ActiveCircuitState ActiveCircuitState { get; private set; }
+
+    /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
-    public ApplicationContextManagerBlazor(AuthenticationStateProvider authenticationStateProvider)
+    /// <param name="activeCircuitState"></param>
+    public ApplicationContextManagerBlazor(AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
       AuthenticationStateProvider = authenticationStateProvider;
+      ActiveCircuitState = activeCircuitState;
       CurrentPrincipal = UnauthenticatedPrincipal;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
       InitializeUser();
@@ -99,7 +106,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     public bool IsValid
     {
-      get { return true; }
+      get { return ActiveCircuitState.CircuitExists; }
     }
 
     /// <summary>

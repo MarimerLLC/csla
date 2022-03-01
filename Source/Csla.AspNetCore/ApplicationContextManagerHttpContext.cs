@@ -6,6 +6,7 @@
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using Csla.Runtime;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -27,11 +28,15 @@ namespace Csla.AspNetCore
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="httpContextAccessor">HttpContext accessor</param>
-    public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor)
+    /// <param name="runtimeInfo"></param>
+    public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor, IRuntimeInfo runtimeInfo)
     {
-      HttpContext = httpContextAccessor.HttpContext;
-      if (HttpContext == null)
-        throw new NullReferenceException(nameof(HttpContext));
+      if (runtimeInfo.IsHttpContextValid)
+      {
+        HttpContext = httpContextAccessor.HttpContext;
+        if (HttpContext == null)
+          throw new NullReferenceException(nameof(HttpContext));
+      }
     }
 
     /// <summary>

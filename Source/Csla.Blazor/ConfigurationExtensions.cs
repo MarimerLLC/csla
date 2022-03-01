@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Blazor;
+using Csla.Core;
+using Csla.Runtime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -38,6 +40,10 @@ namespace Csla.Configuration
     {
       var blazorOptions = new BlazorServerConfigurationOptions();
       options?.Invoke(blazorOptions);
+
+      config.Services.AddScoped(
+        typeof(IRuntimeInfo),
+        (p) => new RuntimeInfo { IsHttpContextValid = false, IsStatefulRuntime = true });
 
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));

@@ -79,7 +79,7 @@ namespace Csla.Blazor.WebAssembly
     /// Gets a value indicating whether the current runtime
     /// is stateful (e.g. WPF, Blazor, etc.)
     /// </summary>
-    public bool IsStatefulRuntime => true;
+    public bool IsStatefulContext => true;
 
     /// <summary>
     /// Gets the current principal.

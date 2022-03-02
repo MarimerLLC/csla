@@ -34,7 +34,7 @@ namespace Csla.Web.Mvc
     /// Gets a value indicating whether the current runtime
     /// is stateful (e.g. WPF, Blazor, etc.)
     /// </summary>
-    public bool IsStatefulRuntime => false;
+    public bool IsStatefulContext => false;
 
     /// <summary>
     /// Gets the current principal.

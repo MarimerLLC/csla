@@ -23,6 +23,29 @@ namespace Csla.AspNetCore
     private const string _localContextName = "Csla.LocalContext";
     private const string _clientContextName = "Csla.ClientContext";
 
+    private readonly IRuntimeInfo runtimeInfo;
+
+
+#if NET5_0_OR_GREATER
+    /// <summary>
+    /// Gets the active circuit state.
+    /// </summary>
+    protected Blazor.ActiveCircuitState ActiveCircuitState { get; private set; }
+
+    /// <summary>
+    /// Creates an instance of the object, initializing it
+    /// with the required IServiceProvider.
+    /// </summary>
+    /// <param name="httpContextAccessor">HttpContext accessor</param>
+    /// <param name="runtimeInfo"></param>
+    /// <param name="activeCircuitState"></param>
+    public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor, IRuntimeInfo runtimeInfo, Blazor.ActiveCircuitState activeCircuitState)
+    {
+      HttpContext = httpContextAccessor.HttpContext;
+      this.runtimeInfo = runtimeInfo;
+      ActiveCircuitState = activeCircuitState;
+    }
+#else
     /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
@@ -31,9 +54,12 @@ namespace Csla.AspNetCore
     /// <param name="runtimeInfo"></param>
     public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor, IRuntimeInfo runtimeInfo)
     {
-      if (runtimeInfo.IsHttpContextValid)
-        HttpContext = httpContextAccessor.HttpContext;
+      HttpContext = httpContextAccessor.HttpContext;
+      this.runtimeInfo = runtimeInfo;
     }
+
+#endif
+
 
     /// <summary>
     /// Gets the current HttpContext instance.
@@ -47,14 +73,26 @@ namespace Csla.AspNetCore
     /// </summary>
     public bool IsValid
     {
-      get { return HttpContext != null; }
+      get
+      {
+        var returnVal = false;
+
+        if (HttpContext is null)
+          return false;
+
+        if (runtimeInfo.LocalProxyNewScopeExists)
+          return false;
+
+#if NET5_0_OR_GREATER
+        if (ActiveCircuitState.CircuitExists)
+          return false;
+#endif
+
+        return true;
+      }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (e.g. WPF, Blazor, etc.)
-    /// </summary>
-    public bool IsStatefulRuntime => false;
+    public bool IsStatefulContext => false;
 
     /// <summary>
     /// Gets the current principal.

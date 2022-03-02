@@ -31,6 +31,8 @@ namespace Csla.Core
       _provider = provider;
     }
 
+    public bool IsStatefulContext => true;
+
     /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>

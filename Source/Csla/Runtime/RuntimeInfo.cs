@@ -12,17 +12,6 @@ namespace Csla.Runtime
   /// </summary>
   public class RuntimeInfo : IRuntimeInfo
   {
-    /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (like WPF, Blazor, etc.).
-    /// </summary>
-    public bool IsStatefulRuntime { get; set; }
-
-    /// <summary>
-    /// Gets a valud indicating whether any HttpContext instance
-    /// can be considered valid (false for all server-side Blazor
-    /// scenarios).
-    /// </summary>
-    public bool IsHttpContextValid { get; set; }
+    public bool LocalProxyNewScopeExists { get; set; }
   }
 }

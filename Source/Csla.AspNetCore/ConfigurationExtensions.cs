@@ -49,9 +49,6 @@ namespace Csla.Configuration
       config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerBlazor));
 #endif
       config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerHttpContext));
-      config.Services.AddScoped(
-        typeof(IRuntimeInfo),
-        (p) => new RuntimeInfo { IsHttpContextValid = true, IsStatefulRuntime = false });
       return config;
     }
   }

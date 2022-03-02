@@ -372,10 +372,11 @@ namespace Csla
     #endregion
 
     /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// Gets a value indicating whether the current 
+    /// context manager is used in a stateful
+    /// context (e.g. WPF, Blazor, etc.)
     /// </summary>
-    public bool IsStatefulRuntime => RuntimeInfo.IsStatefulRuntime;
+    public bool IsAStatefulContextManager => ContextManager.IsStatefulContext;
 
     private IServiceProvider _serviceProvider;
 

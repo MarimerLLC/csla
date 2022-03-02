@@ -33,7 +33,7 @@ namespace Csla.Channels.Local
       Options = options;
 
       if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
-        && ApplicationContext.IsStatefulRuntime)
+        && ApplicationContext.IsAStatefulContextManager)
       {
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
@@ -43,8 +43,7 @@ namespace Csla.Channels.Local
         // data portal operation, so this "runtime" is stateless and
         // we can't count on HttpContext
         var runtimeInfo = provider.GetRequiredService<IRuntimeInfo>();
-        runtimeInfo.IsStatefulRuntime = false;
-        runtimeInfo.IsHttpContextValid = false;
+        runtimeInfo.LocalProxyNewScopeExists = true;
       }
 
       _portal = provider.GetRequiredService<Server.IDataPortalServer>();
@@ -190,7 +189,7 @@ namespace Csla.Channels.Local
         if (disposing)
         {
           if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
-            && ApplicationContext.IsStatefulRuntime)
+            && ApplicationContext.IsAStatefulContextManager)
           {
             _scope?.Dispose();
           }

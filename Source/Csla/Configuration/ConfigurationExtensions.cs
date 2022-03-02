@@ -48,9 +48,7 @@ namespace Csla.Configuration
       RegisterContextManager(services);
 
       // Runtime Info defaults
-      services.TryAddScoped(
-        typeof(IRuntimeInfo), 
-        (p) => new RuntimeInfo { IsHttpContextValid = false, IsStatefulRuntime = true });
+      services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));
 
       cslaOptions.AddRequiredDataPortalServices();
 

@@ -10,6 +10,7 @@ using System.Security.Principal;
 using Csla.Core;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace Csla
 {
@@ -22,14 +23,31 @@ namespace Csla
     /// <summary>
     /// Creates a new instance of the type
     /// </summary>
-    /// <param name="contextManager">IContextManager used to manage per-user context</param>
+    /// <param name="contextManagerList">List of registered IContextManager</param>
     /// <param name="serviceProvider">Current service provider</param>
-    public ApplicationContext(IContextManager contextManager, IServiceProvider serviceProvider)
+    /// <param name="runtimeInfo"></param>
+    public ApplicationContext(IEnumerable<IContextManager> contextManagerList, IServiceProvider serviceProvider, Runtime.IRuntimeInfo runtimeInfo)
     {
       _serviceProvider = serviceProvider;
-      ContextManager = contextManager;
+      RuntimeInfo = runtimeInfo;
+
+      foreach (var context in contextManagerList)
+      {
+        if (context.IsValid)
+        {
+          ContextManager = context;
+          break;
+        }
+      }
+      if (ContextManager is null)
+      {
+        ContextManager = new Core.ApplicationContextManagerAsyncLocal();
+      }
+
       ContextManager.ApplicationContext = this;
     }
+
+    private Runtime.IRuntimeInfo RuntimeInfo { get; set; }
 
     /// <summary>
     /// Gets the context manager responsible
@@ -354,10 +372,11 @@ namespace Csla
     #endregion
 
     /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// Gets a value indicating whether the current 
+    /// context manager is used in a stateful
+    /// context (e.g. WPF, Blazor, etc.)
     /// </summary>
-    public bool IsStatefulRuntime => ContextManager.IsStatefulRuntime;
+    public bool IsAStatefulContextManager => ContextManager.IsStatefulContext;
 
     private IServiceProvider _serviceProvider;
 

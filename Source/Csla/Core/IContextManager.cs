@@ -17,6 +17,13 @@ namespace Csla.Core
   public interface IContextManager
   {
     /// <summary>
+    /// Gets a value indicating whether this  
+    /// context manager is used in a stateful
+    /// context (e.g. WPF, Blazor, etc.)
+    /// </summary>
+    bool IsStatefulContext { get; }
+
+    /// <summary>
     /// Gets a value indicating whether this
     /// context manager is valid for use in
     /// the current environment.
@@ -55,10 +62,5 @@ namespace Csla.Core
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
     ApplicationContext ApplicationContext { get; set; }
-    /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (e.g. WPF, Blazor, etc.)
-    /// </summary>
-    bool IsStatefulRuntime { get; }
   }
 }

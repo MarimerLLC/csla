@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Blazor;
+using Csla.Core;
+using Csla.Runtime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

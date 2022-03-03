@@ -6,12 +6,15 @@
 // <summary>Implement extension methods for AspNet configuration</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.Runtime;
 #if NET5_0_OR_GREATER
 using Csla.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 #endif
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Csla.Core;
+using Csla.AspNetCore;
 
 namespace Csla.Configuration
 {
@@ -43,7 +46,9 @@ namespace Csla.Configuration
 #if NET5_0_OR_GREATER
       config.Services.AddScoped<ActiveCircuitState>();
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
+      config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerBlazor));
 #endif
+      config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerHttpContext));
       return config;
     }
   }

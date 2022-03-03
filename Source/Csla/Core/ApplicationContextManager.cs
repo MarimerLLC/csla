@@ -20,6 +20,8 @@ namespace Csla.Core
     private readonly AsyncLocal<ContextDictionary> _localContext = new();
     private readonly AsyncLocal<ContextDictionary> _clientContext = new();
 
+    public bool IsStatefulContext => true;
+
     /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
@@ -27,12 +29,6 @@ namespace Csla.Core
     {
       get { return true; }
     }
-
-    /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (e.g. WPF, Blazor, etc.)
-    /// </summary>
-    public bool IsStatefulRuntime => true;
 
     /// <summary>
     /// Gets the current user principal.

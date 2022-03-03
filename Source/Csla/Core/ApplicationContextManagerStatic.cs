@@ -19,16 +19,12 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextManagerStatic : Csla.Core.IContextManager
   {
+    public bool IsStatefulContext => true;
+
     /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
     public bool IsValid => true;
-
-    /// <summary>
-    /// Gets a value indicating whether the current runtime
-    /// is stateful (e.g. WPF, Blazor, etc.)
-    /// </summary>
-    public bool IsStatefulRuntime => true;
 
     private static ContextDictionary currentLocalContext = new();
     private static ContextDictionary currentClientContext = new();

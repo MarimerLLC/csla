@@ -8,6 +8,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Csla.Runtime;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,24 +29,24 @@ namespace Csla.Channels.Local
     public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
     {
       ApplicationContext = applicationContext;
+      var provider = ApplicationContext.CurrentServiceProvider;
       Options = options;
 
       if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
-        && ApplicationContext.IsStatefulRuntime)
+        && ApplicationContext.IsAStatefulContextManager)
       {
         // create new DI scope and provider
         _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
-        var provider = _scope.ServiceProvider;
+        provider = _scope.ServiceProvider;
 
-        // create and initialize new "server-side" ApplicationContext and manager
-        var parentContext = applicationContext;
-        var manager = new Csla.Core.ApplicationContextManagerAsyncLocal();
-        manager.SetClientContext(parentContext.ClientContext, parentContext.ExecutionLocation);
-        manager.SetUser(parentContext.User);
-        ApplicationContext = new ApplicationContext(manager, provider);
+        // set runtime info to reflect that we're in a logical server-side
+        // data portal operation, so this "runtime" is stateless and
+        // we can't count on HttpContext
+        var runtimeInfo = provider.GetRequiredService<IRuntimeInfo>();
+        runtimeInfo.LocalProxyNewScopeExists = true;
       }
 
-      _portal = ApplicationContext.CurrentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
+      _portal = provider.GetRequiredService<Server.IDataPortalServer>();
     }
 
     private ApplicationContext ApplicationContext { get; set; }
@@ -188,7 +189,7 @@ namespace Csla.Channels.Local
         if (disposing)
         {
           if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
-            && ApplicationContext.IsStatefulRuntime)
+            && ApplicationContext.IsAStatefulContextManager)
           {
             _scope?.Dispose();
           }

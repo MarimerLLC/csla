@@ -9,6 +9,7 @@
 using System;
 using System.Linq;
 using Csla.DataPortalClient;
+using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -46,9 +47,8 @@ namespace Csla.Configuration
       services.AddScoped<ApplicationContext>();
       RegisterContextManager(services);
 
-      // Data portal API defaults
-      services.TryAddTransient(typeof(IDataPortal<>), typeof(DataPortal<>));
-      services.TryAddTransient(typeof(IChildDataPortal<>), typeof(DataPortal<>));
+      // Runtime Info defaults
+      services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));
 
       cslaOptions.AddRequiredDataPortalServices();
 
@@ -70,7 +70,6 @@ namespace Csla.Configuration
       if (managerInit) return;
 
       if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
-      if (LoadContextManager(services, "Csla.AspNetCore.ApplicationContextManager, Csla.AspNetCore")) return;
       if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
       if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
       if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;

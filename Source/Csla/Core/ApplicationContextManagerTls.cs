@@ -31,6 +31,10 @@ namespace Csla.Core
       _provider = provider;
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
+    /// </summary>
     public bool IsStatefulContext => true;
 
     /// <summary>

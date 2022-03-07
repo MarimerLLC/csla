@@ -12,6 +12,11 @@ namespace Csla.Runtime
   /// </summary>
   public class RuntimeInfo : IRuntimeInfo
   {
+    /// <summary>
+    /// Gets or sets a value indicating whether
+    /// the current runtime is in a DI scope
+    /// created by LocalProxy.
+    /// </summary>
     public bool LocalProxyNewScopeExists { get; set; }
   }
 }

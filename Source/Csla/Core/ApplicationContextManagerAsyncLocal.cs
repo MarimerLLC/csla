@@ -20,6 +20,10 @@ namespace Csla.Core
     private readonly AsyncLocal<ContextDictionary> _clientContext = new();
     private readonly AsyncLocal<IPrincipal> _principal = new();
 
+    /// <summary>
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
+    /// </summary>
     public bool IsStatefulContext => true;
 
     /// <summary>

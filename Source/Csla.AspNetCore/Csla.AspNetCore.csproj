@@ -28,12 +28,12 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.3" />
   </ItemGroup>
 
   <ItemGroup>

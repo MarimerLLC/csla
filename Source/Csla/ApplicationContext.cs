@@ -10,7 +10,6 @@ using System.Security.Principal;
 using Csla.Core;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 
 namespace Csla
 {
@@ -23,38 +22,20 @@ namespace Csla
     /// <summary>
     /// Creates a new instance of the type
     /// </summary>
-    /// <param name="contextManagerList">List of registered IContextManager</param>
-    /// <param name="serviceProvider">Current service provider</param>
-    /// <param name="runtimeInfo"></param>
-    public ApplicationContext(IEnumerable<IContextManager> contextManagerList, IServiceProvider serviceProvider, Runtime.IRuntimeInfo runtimeInfo)
+    /// <param name="applicationContextAccessor"></param>
+    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
     {
-      _serviceProvider = serviceProvider;
-      RuntimeInfo = runtimeInfo;
-
-      foreach (var context in contextManagerList)
-      {
-        if (context.IsValid)
-        {
-          ContextManager = context;
-          break;
-        }
-      }
-      if (ContextManager is null)
-      {
-        ContextManager = new Core.ApplicationContextManagerAsyncLocal();
-      }
-
-      ContextManager.ApplicationContext = this;
+      ApplicationContextAccessor = applicationContextAccessor;
     }
 
-    private Runtime.IRuntimeInfo RuntimeInfo { get; set; }
+    internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 
     /// <summary>
     /// Gets the context manager responsible
     /// for storing user and context information for
     /// the application.
     /// </summary>
-    public IContextManager ContextManager { get; internal set; }
+    public IContextManager ContextManager => ApplicationContextAccessor.GetContextManager();
 
     /// <summary>
     /// Get or set the current ClaimsPrincipal
@@ -378,16 +359,10 @@ namespace Csla
     /// </summary>
     public bool IsAStatefulContextManager => ContextManager.IsStatefulContext;
 
-    private IServiceProvider _serviceProvider;
-
     /// <summary>
-    /// Sets the service provider scope for this application context.
+    /// Gets the service provider scope for this application context.
     /// </summary>
-    internal IServiceProvider CurrentServiceProvider
-    {
-      get => _serviceProvider;
-      set => _serviceProvider = value;
-    }
+    internal IServiceProvider CurrentServiceProvider => ApplicationContextAccessor.ServiceProvider;
 
     /// <summary>
     /// Creates an object using dependency injection, falling back

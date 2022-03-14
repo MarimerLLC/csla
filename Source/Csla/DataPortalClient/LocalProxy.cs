@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
@@ -59,22 +60,25 @@ namespace Csla.Channels.Local
     private readonly Server.IDataPortalServer _portal;
     private bool disposedValue;
 
-    private void SetServiceProvider(object criteria)
+    private void SetApplicationContext(object obj, ApplicationContext applicationContext)
     {
-      if (criteria is IUseApplicationContext useApplicationContext && 
-          !ReferenceEquals(OriginalApplicationContext.CurrentServiceProvider, CurrentApplicationContext.CurrentServiceProvider))
-        {
-          var accessor = CurrentApplicationContext.CurrentServiceProvider.GetRequiredService<ApplicationContextAccessor>();
-          useApplicationContext.ApplicationContext.ApplicationContextAccessor = accessor;
-        }
-    }
-
-    private void ResetServiceProvider()
-    {
-      if (!ReferenceEquals(OriginalApplicationContext.CurrentServiceProvider, CurrentApplicationContext.CurrentServiceProvider))
+      if (obj is IUseApplicationContext useApplicationContext &&
+          !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
       {
-        var accessor = OriginalApplicationContext.CurrentServiceProvider.GetRequiredService<ApplicationContextAccessor>();
-        CurrentApplicationContext.ApplicationContextAccessor = accessor;
+        useApplicationContext.ApplicationContext = applicationContext;
+        if (obj is IManageProperties target)
+        {
+          var property = obj.GetType().GetProperty("FieldManager", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+          SetApplicationContext(property.GetValue(obj), applicationContext);
+          property = obj.GetType().GetProperty("BusinessRules", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+          SetApplicationContext(property.GetValue(obj), applicationContext);
+
+          foreach (var item in target.GetChildren())
+            SetApplicationContext(item, applicationContext);
+        }
+        if (obj is IEnumerable list)
+          foreach (var item in list)
+            SetApplicationContext(item, applicationContext);
       }
     }
 
@@ -92,7 +96,7 @@ namespace Csla.Channels.Local
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetServiceProvider(criteria);
+      SetApplicationContext(criteria, CurrentApplicationContext);
       if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         result = await _portal.Create(objectType, criteria, context, isSync);
@@ -107,7 +111,8 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      ResetServiceProvider();
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
       return result;
     }
 
@@ -124,7 +129,7 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetServiceProvider(criteria);
+      SetApplicationContext(criteria, CurrentApplicationContext);
       if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         result = await _portal.Fetch(objectType, criteria, context, isSync);
@@ -139,7 +144,8 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      ResetServiceProvider();
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
       return result;
     }
 
@@ -155,7 +161,7 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetServiceProvider(obj);
+      SetApplicationContext(obj, CurrentApplicationContext);
       if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         result = await _portal.Update(obj, context, isSync);
@@ -170,7 +176,8 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      ResetServiceProvider();
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
       return result;
     }
 
@@ -187,7 +194,7 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetServiceProvider(criteria);
+      SetApplicationContext(criteria, CurrentApplicationContext);
       if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         result = await _portal.Delete(objectType, criteria, context, isSync);
@@ -202,7 +209,8 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      ResetServiceProvider();
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
       return result;
     }
 
@@ -226,11 +234,7 @@ namespace Csla.Channels.Local
       {
         if (disposing)
         {
-          if (OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
-            && OriginalApplicationContext.IsAStatefulContextManager)
-          {
-            _scope?.Dispose();
-          }
+          _scope?.Dispose();
         }
         disposedValue = true;
       }

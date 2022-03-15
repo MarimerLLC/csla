@@ -217,7 +217,20 @@ namespace Csla.Rules
     /// <param name="ruleSet">Rule set name.</param>
     public static void AddRule(Type objectType, IAuthorizationRule rule, string ruleSet)
     {
-      var typeRules = AuthorizationRuleManager.GetRulesForType(null, objectType, ruleSet);
+      AddRule(null, objectType, rule, ruleSet);
+    }
+
+    /// <summary>
+    /// Associates a per-type authorization rule with 
+    /// the business type.
+    /// </summary>
+    /// <param name="applicationContext">ApplicationContext instance</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="rule">Rule object.</param>
+    /// <param name="ruleSet">Rule set name.</param>
+    public static void AddRule(ApplicationContext applicationContext, Type objectType, IAuthorizationRule rule, string ruleSet)
+    {
+      var typeRules = AuthorizationRuleManager.GetRulesForType(applicationContext, objectType, ruleSet);
       EnsureUniqueRule(typeRules, rule);
       typeRules.Rules.Add(rule);
     }

@@ -81,7 +81,7 @@ namespace Csla.Rules
                 if (method.GetParameters().Length == 0)
                   method.Invoke(null, null);
                 else if (applicationContext != null)
-                  method.Invoke(null, new object[] { applicationContext });
+                  method.Invoke(null, new object[] { new AddObjectAuthorizationRulesContext(applicationContext) });
                 else
                   throw new InvalidOperationException(
                     $"{nameof(InitializePerTypeRules)} {nameof(applicationContext)} == null");

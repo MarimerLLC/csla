@@ -66,15 +66,18 @@ namespace Csla.Channels.Local
           !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
       {
         useApplicationContext.ApplicationContext = applicationContext;
+
+        if (obj is IUseFieldManager useFieldManager)
+          SetApplicationContext(useFieldManager.FieldManager, applicationContext);
+        
+        if (obj is IUseBusinessRules useBusinessRules)
+          SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
+
         if (obj is IManageProperties target)
         {
-          var property = obj.GetType().GetProperty("FieldManager", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-          SetApplicationContext(property.GetValue(obj), applicationContext);
-          property = obj.GetType().GetProperty("BusinessRules", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-          SetApplicationContext(property.GetValue(obj), applicationContext);
-
-          foreach (var item in target.GetChildren())
-            SetApplicationContext(item, applicationContext);
+          foreach (var item in target.GetManagedProperties())
+            if (!item.Type.IsPrimitive && !item.Type.Equals(typeof(string)))
+              SetApplicationContext(target.ReadProperty(item), applicationContext);
         }
         if (obj is IEnumerable list)
           foreach (var item in list)

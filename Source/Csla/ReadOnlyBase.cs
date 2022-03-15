@@ -48,7 +48,9 @@ namespace Csla
     INotifyBusy,
     IHostRules,
     IReadOnlyBase,
-    IUseApplicationContext
+    IUseApplicationContext,
+    IUseFieldManager,
+    IUseBusinessRules
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -178,6 +180,8 @@ namespace Csla
         return _businessRules;
       }
     }
+
+    BusinessRules IUseBusinessRules.BusinessRules => BusinessRules;
 
     void IHostRules.RuleStart(IPropertyInfo property)
     { }
@@ -1481,6 +1485,8 @@ namespace Csla
         return _fieldManager;
       }
     }
+
+    FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 
 #endregion
 

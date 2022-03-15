@@ -22,7 +22,7 @@ namespace Csla.Core
   /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
-    INotifyPropertyChanged, IUseApplicationContext
+    INotifyPropertyChanged, IUseApplicationContext, IUseFieldManager
   {
     /// <summary>
     /// Gets the current ApplicationContext.
@@ -45,7 +45,9 @@ namespace Csla.Core
           _fieldManager = new FieldDataManager(ApplicationContext, GetType());
         return _fieldManager;
       }
-    } 
+    }
+
+    FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 
     #endregion
 

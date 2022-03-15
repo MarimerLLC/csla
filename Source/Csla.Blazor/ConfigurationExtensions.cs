@@ -41,6 +41,9 @@ namespace Csla.Configuration
       var blazorOptions = new BlazorServerConfigurationOptions();
       options?.Invoke(blazorOptions);
 
+      // minimize PropertyChanged events
+      config.PropertyChangedMode(ApplicationContext.PropertyChangedModes.Windows);
+
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       if (blazorOptions.UseCslaPermissionsPolicy)

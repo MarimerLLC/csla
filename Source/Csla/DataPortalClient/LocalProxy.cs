@@ -62,24 +62,29 @@ namespace Csla.Channels.Local
 
     private void SetApplicationContext(object obj, ApplicationContext applicationContext)
     {
-      if (obj is IUseApplicationContext useApplicationContext &&
-          !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
+      if (obj is IUseApplicationContext useApplicationContext)
+        SetApplicationContext(useApplicationContext, applicationContext);
+    }
+
+    private void SetApplicationContext(IUseApplicationContext useApplicationContext, ApplicationContext applicationContext)
+    {
+      if (useApplicationContext != null && !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
       {
         useApplicationContext.ApplicationContext = applicationContext;
 
-        if (obj is IUseFieldManager useFieldManager)
+        if (useApplicationContext is IUseFieldManager useFieldManager)
           SetApplicationContext(useFieldManager.FieldManager, applicationContext);
         
-        if (obj is IUseBusinessRules useBusinessRules)
+        if (useApplicationContext is IUseBusinessRules useBusinessRules)
           SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
 
-        if (obj is IManageProperties target)
+        if (useApplicationContext is IManageProperties target)
         {
           foreach (var item in target.GetManagedProperties())
-            if (!item.Type.IsPrimitive && !item.Type.Equals(typeof(string)))
-              SetApplicationContext(target.ReadProperty(item), applicationContext);
+            if (typeof(IUseApplicationContext).IsAssignableFrom(item.Type))
+              SetApplicationContext((IUseApplicationContext)target.ReadProperty(item), applicationContext);
         }
-        if (obj is IEnumerable list)
+        if (useApplicationContext is IEnumerable list)
           foreach (var item in list)
             SetApplicationContext(item, applicationContext);
       }

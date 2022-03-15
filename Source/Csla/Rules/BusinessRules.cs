@@ -135,7 +135,7 @@ namespace Csla.Rules
       get
       {
         if (_typeAuthRules == null && _target != null)
-          _typeAuthRules = AuthorizationRuleManager.GetRulesForType(_target.GetType(), _ruleSet);
+          _typeAuthRules = AuthorizationRuleManager.GetRulesForType(ApplicationContext, _target.GetType(), _ruleSet);
         return _typeAuthRules;
       }
     }
@@ -217,7 +217,7 @@ namespace Csla.Rules
     /// <param name="ruleSet">Rule set name.</param>
     public static void AddRule(Type objectType, IAuthorizationRule rule, string ruleSet)
     {
-      var typeRules = AuthorizationRuleManager.GetRulesForType(objectType, ruleSet);
+      var typeRules = AuthorizationRuleManager.GetRulesForType(null, objectType, ruleSet);
       EnsureUniqueRule(typeRules, rule);
       typeRules.Rules.Add(rule);
     }
@@ -374,7 +374,7 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
+        AuthorizationRuleManager.GetRulesForType(applicationContext, objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
         var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };

@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="6.0.0-R22020902" />
-    <PackageReference Include="Csla.Blazor" Version="6.0.0-R22020902" />
+    <PackageReference Include="Csla.AspNetCore" Version="6.0.0-R22031601" />
+    <PackageReference Include="Csla.Blazor" Version="6.0.0-R22031601" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
   </ItemGroup>
 
   <ItemGroup>

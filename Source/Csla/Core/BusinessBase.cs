@@ -52,7 +52,9 @@ namespace Csla.Core
     INotifyChildChanged,
     ISerializationNotification,
     IDataErrorInfo,
-    INotifyDataErrorInfo
+    INotifyDataErrorInfo,
+    IUseFieldManager,
+    IUseBusinessRules
   {
 
     /// <summary>
@@ -1120,6 +1122,8 @@ namespace Csla.Core
         return _businessRules;
       }
     }
+
+    BusinessRules IUseBusinessRules.BusinessRules => BusinessRules;
 
     /// <summary>
     /// Gets the registered rules. Only for unit testing and not visible to code. 
@@ -3379,6 +3383,8 @@ namespace Csla.Core
         return _fieldManager;
       }
     }
+
+    FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 
     private void FieldDataDeserialized()
     {

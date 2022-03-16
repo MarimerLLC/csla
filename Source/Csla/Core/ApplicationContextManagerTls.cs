@@ -23,14 +23,9 @@ namespace Csla.Core
     private const string _clientContextName = "Csla.ClientContext";
 
     /// <summary>
-    /// Creates an instance of the type
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
     /// </summary>
-    /// <param name="provider">IServiceProvider object</param>
-    public ApplicationContextManagerTls(IServiceProvider provider)
-    {
-      _provider = provider;
-    }
-
     public bool IsStatefulContext => true;
 
     /// <summary>
@@ -117,26 +112,6 @@ namespace Csla.Core
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
         Thread.SetData(slot, clientContext);
       }
-    }
-
-    private IServiceProvider _provider;
-
-    /// <summary>
-    /// Gets the service provider for current scope
-    /// </summary>
-    /// <returns></returns>
-    public IServiceProvider GetServiceProvider()
-    {
-      return _provider;
-    }
-
-    /// <summary>
-    /// Sets the service provider for current scope
-    /// </summary>
-    /// <param name="provider">IServiceProvider instance</param>
-    public void SetServiceProvider(IServiceProvider provider)
-    {
-      _provider = provider;
     }
 
     private const string _applicationContextName = "Csla.ApplicationContext";

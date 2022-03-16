@@ -14,12 +14,16 @@ namespace Csla.Core
   /// Application context manager using AsyncLocal
   /// for user and context dictionaries.
   /// </summary>
-  public class ApplicationContextManagerAsyncLocal : IContextManager
+  public class ApplicationContextManagerAsyncLocal : IContextManagerLocal
   {
     private readonly AsyncLocal<ContextDictionary> _localContext = new();
     private readonly AsyncLocal<ContextDictionary> _clientContext = new();
     private readonly AsyncLocal<IPrincipal> _principal = new();
 
+    /// <summary>
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
+    /// </summary>
     public bool IsStatefulContext => true;
 
     /// <summary>

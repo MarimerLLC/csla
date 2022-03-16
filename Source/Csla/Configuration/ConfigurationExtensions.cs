@@ -64,6 +64,9 @@ namespace Csla.Configuration
 
     private static void RegisterContextManager(IServiceCollection services)
     {
+      services.AddScoped<Core.ApplicationContextAccessor>();
+      services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
+
       var contextManagerType = typeof(Core.IContextManager);
 
       var managerInit = services.Where(i => i.ServiceType.Equals(contextManagerType)).Any();

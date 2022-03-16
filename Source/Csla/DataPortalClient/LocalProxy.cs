@@ -6,8 +6,10 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+using Csla.Core;
 using Csla.Runtime;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,33 +30,70 @@ namespace Csla.Channels.Local
     /// <param name="options">Options instance</param>
     public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
     {
-      ApplicationContext = applicationContext;
-      var provider = ApplicationContext.CurrentServiceProvider;
+      OriginalApplicationContext = applicationContext;
+      var currentServiceProvider = OriginalApplicationContext.CurrentServiceProvider;
       Options = options;
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
-        && ApplicationContext.IsAStatefulContextManager)
+      if (OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
+        && OriginalApplicationContext.IsAStatefulContextManager)
       {
         // create new DI scope and provider
-        _scope = ApplicationContext.CurrentServiceProvider.CreateScope();
-        provider = _scope.ServiceProvider;
+        _scope = OriginalApplicationContext.CurrentServiceProvider.CreateScope();
+        currentServiceProvider = _scope.ServiceProvider;
 
         // set runtime info to reflect that we're in a logical server-side
         // data portal operation, so this "runtime" is stateless and
         // we can't count on HttpContext
-        var runtimeInfo = provider.GetRequiredService<IRuntimeInfo>();
+        var runtimeInfo = currentServiceProvider.GetRequiredService<IRuntimeInfo>();
         runtimeInfo.LocalProxyNewScopeExists = true;
       }
 
-      _portal = provider.GetRequiredService<Server.IDataPortalServer>();
+      CurrentApplicationContext = currentServiceProvider.GetRequiredService<ApplicationContext>();
+      _portal = currentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext OriginalApplicationContext { get; set; }
+    private ApplicationContext CurrentApplicationContext { get; set; }
     private readonly LocalProxyOptions Options;
 
     private readonly IServiceScope _scope;
     private readonly Server.IDataPortalServer _portal;
     private bool disposedValue;
+
+    private void SetApplicationContext(object obj, ApplicationContext applicationContext)
+    {
+      if (obj is IUseApplicationContext useApplicationContext)
+        SetApplicationContext(useApplicationContext, applicationContext);
+    }
+
+    private void SetApplicationContext(IUseApplicationContext useApplicationContext, ApplicationContext applicationContext)
+    {
+      if (useApplicationContext != null && !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
+      {
+        useApplicationContext.ApplicationContext = applicationContext;
+
+        if (useApplicationContext is IUseFieldManager useFieldManager)
+          SetApplicationContext(useFieldManager.FieldManager, applicationContext);
+        
+        if (useApplicationContext is IUseBusinessRules useBusinessRules)
+          SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
+
+        if (useApplicationContext is IManageProperties target)
+        {
+          foreach (var item in target.GetManagedProperties())
+          {
+            if (typeof(IUseApplicationContext).IsAssignableFrom(item.Type) &&
+              !((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad && !target.FieldExists(item)))
+            {
+              SetApplicationContext((IUseApplicationContext)target.ReadProperty(item), applicationContext);
+            }
+          }
+        }
+        if (useApplicationContext is IEnumerable list)
+          foreach (var item in list)
+            SetApplicationContext(item, applicationContext);
+      }
+    }
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -69,20 +108,25 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (isSync || ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      DataPortalResult result;
+      SetApplicationContext(criteria, CurrentApplicationContext);
+      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
-        return await _portal.Create(objectType, criteria, context, isSync);
+        result = await _portal.Create(objectType, criteria, context, isSync);
       }
       else
       {
         if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
+          result = await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
         else
-          return await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
+          result = await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
+      return result;
     }
 
     /// <summary>
@@ -97,20 +141,25 @@ namespace Csla.Channels.Local
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (isSync || ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      DataPortalResult result;
+      SetApplicationContext(criteria, CurrentApplicationContext);
+      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
-        return await _portal.Fetch(objectType, criteria, context, isSync);
+        result = await _portal.Fetch(objectType, criteria, context, isSync);
       }
       else
       {
         if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
+          result = await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
         else
-          return await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
+          result = await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
+      return result;
     }
 
     /// <summary>
@@ -124,20 +173,25 @@ namespace Csla.Channels.Local
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (isSync || ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      DataPortalResult result;
+      SetApplicationContext(obj, CurrentApplicationContext);
+      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
-        return await _portal.Update(obj, context, isSync);
+        result = await _portal.Update(obj, context, isSync);
       }
       else
       {
         if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await Task.Run(() => this._portal.Update(obj, context, isSync));
+          result = await Task.Run(() => this._portal.Update(obj, context, isSync));
         else
-          return await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
+          result = await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
+      return result;
     }
 
     /// <summary>
@@ -152,20 +206,25 @@ namespace Csla.Channels.Local
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (isSync || ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      DataPortalResult result;
+      SetApplicationContext(criteria, CurrentApplicationContext);
+      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
-        return await _portal.Delete(objectType, criteria, context, isSync);
+        result = await _portal.Delete(objectType, criteria, context, isSync);
       }
       else
       {
         if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          return await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
+          result = await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
         else
-          return await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
+          result = await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
+      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
+      SetApplicationContext(result.Error, OriginalApplicationContext);
+      return result;
     }
 
     /// <summary>
@@ -188,11 +247,7 @@ namespace Csla.Channels.Local
       {
         if (disposing)
         {
-          if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
-            && ApplicationContext.IsAStatefulContextManager)
-          {
-            _scope?.Dispose();
-          }
+          _scope?.Dispose();
         }
         disposedValue = true;
       }

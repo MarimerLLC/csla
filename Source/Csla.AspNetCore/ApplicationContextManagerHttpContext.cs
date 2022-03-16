@@ -75,8 +75,6 @@ namespace Csla.AspNetCore
     {
       get
       {
-        var returnVal = false;
-
         if (HttpContext is null)
           return false;
 
@@ -92,6 +90,10 @@ namespace Csla.AspNetCore
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
+    /// </summary>
     public bool IsStatefulContext => false;
 
     /// <summary>

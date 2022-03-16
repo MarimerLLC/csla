@@ -83,7 +83,7 @@ namespace Csla.Channels.Local
           foreach (var item in target.GetManagedProperties())
           {
             if (typeof(IUseApplicationContext).IsAssignableFrom(item.Type) &&
-              !((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !target.FieldExists(item))
+              !((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad && !target.FieldExists(item)))
             {
               SetApplicationContext((IUseApplicationContext)target.ReadProperty(item), applicationContext);
             }

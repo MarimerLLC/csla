@@ -1,7 +1,9 @@
 using Csla.Configuration;
 using Csla.Web.Mvc;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using RazorPagesExample;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ builder.Services.AddRazorPages().AddMvcOptions(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
 
 builder.Services.AddCsla(options => options.AddAspNetCore());
 builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));

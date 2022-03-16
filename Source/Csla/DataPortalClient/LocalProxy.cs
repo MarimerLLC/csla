@@ -81,8 +81,13 @@ namespace Csla.Channels.Local
         if (useApplicationContext is IManageProperties target)
         {
           foreach (var item in target.GetManagedProperties())
-            if (typeof(IUseApplicationContext).IsAssignableFrom(item.Type))
+          {
+            if (typeof(IUseApplicationContext).IsAssignableFrom(item.Type) &&
+              !((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !target.FieldExists(item))
+            {
               SetApplicationContext((IUseApplicationContext)target.ReadProperty(item), applicationContext);
+            }
+          }
         }
         if (useApplicationContext is IEnumerable list)
           foreach (var item in list)

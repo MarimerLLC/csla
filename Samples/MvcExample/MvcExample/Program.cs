@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace MvcExample
 {
@@ -19,9 +21,11 @@ namespace MvcExample
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-          .ConfigureServices(config =>
+          .ConfigureServices(services =>
             {
-              config.AddCsla(options => options.AddAspNetCore());
+              services.AddHttpContextAccessor();
+              services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
+              services.AddCsla(options => options.AddAspNetCore());
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {

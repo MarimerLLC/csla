@@ -26,6 +26,7 @@ namespace Csla
     public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
     {
       ApplicationContextAccessor = applicationContextAccessor;
+      ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
     }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }

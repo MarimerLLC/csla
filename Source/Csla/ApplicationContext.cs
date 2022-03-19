@@ -365,8 +365,9 @@ namespace Csla
     internal IServiceProvider CurrentServiceProvider => ApplicationContextAccessor.ServiceProvider;
 
     /// <summary>
-    /// Creates an object using dependency injection, falling back
-    /// to Activator if no service provider is available.
+    /// Creates an object using 'Activator.CreateInstance' using
+    /// service provider (if one is available) to populate any parameters 
+    /// in CTOR that are not manually passed in.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
@@ -376,16 +377,32 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an object using dependency injection, falling back
-    /// to Activator if no service provider is available.
+    /// Creates object via true DI using ServiceProvider.GetRequiredService. 
+    /// Requires service to be properly registered. Throws null exception 
+    /// if no service provider available.
+    /// </summary>
+    /// <typeparam name="T">Type of service/object to create.</typeparam>
+    public T CreateInstanceViaServiceProvider<T>()
+    {
+      if (CurrentServiceProvider == null) 
+        throw new NullReferenceException(nameof(CurrentServiceProvider));
+
+      var result = CurrentServiceProvider.GetRequiredService<T>();
+      return result;
+    }
+
+    /// <summary>
+    /// Creates an object using 'Activator.CreateInstance' using
+    /// service provider (if one is available) to populate any parameters 
+    /// in CTOR that are not manually passed in.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
-    /// <param name="parameters">Parameters for constructor</param>
+    /// <param name="parameters">Manually passed in parameters for constructor</param>
     public object CreateInstanceDI(Type objectType, params object[] parameters)
     {
       object result;
       if (CurrentServiceProvider != null)
-        result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
+          result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
       else
         result = Activator.CreateInstance(objectType, parameters);
       if (result is IUseApplicationContext tmp)

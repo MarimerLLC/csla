@@ -31,7 +31,7 @@ namespace Csla
 #endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-      ObservableBindingList<C>,
+      ObservableBindingList<C>, IContainsDeletedList,
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
       INotifyBusy,
@@ -156,6 +156,11 @@ namespace Csla
         return _deletedList;
       }
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
 
     private void DeleteChild(C child)
     {

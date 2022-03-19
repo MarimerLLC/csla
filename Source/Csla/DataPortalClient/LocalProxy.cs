@@ -89,6 +89,11 @@ namespace Csla.Channels.Local
             }
           }
         }
+
+        if (useApplicationContext is IContainsDeletedList containsDeletedList)
+          foreach (var item in containsDeletedList.DeletedList)
+            SetApplicationContext(item, applicationContext);
+
         if (useApplicationContext is IEnumerable list)
           foreach (var item in list)
             SetApplicationContext(item, applicationContext);

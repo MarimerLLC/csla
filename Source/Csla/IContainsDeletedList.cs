@@ -1,4 +1,12 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IContainsDeletedList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Interface implemented by a list which tracks its deleted items</summary>
+//-----------------------------------------------------------------------
+
+using System;
 using Csla.Core;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;

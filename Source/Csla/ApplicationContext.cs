@@ -10,6 +10,7 @@ using System.Security.Principal;
 using Csla.Core;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
 
 namespace Csla
 {
@@ -365,27 +366,46 @@ namespace Csla
     internal IServiceProvider CurrentServiceProvider => ApplicationContextAccessor.ServiceProvider;
 
     /// <summary>
-    /// Creates an object using dependency injection, falling back
-    /// to Activator if no service provider is available.
+    /// Creates an object using 'Activator.CreateInstance' using
+    /// service provider (if one is available) to populate any parameters 
+    /// in CTOR that are not manually passed in.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T CreateInstanceDI<T>(params object[] parameters)
     {
       return (T)CreateInstanceDI(typeof(T), parameters);
     }
 
     /// <summary>
-    /// Creates an object using dependency injection, falling back
-    /// to Activator if no service provider is available.
+    /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
+    /// Throws exception if service not properly registered with DI.
+    /// </summary>
+    /// <typeparam name="T">Type of service/object to create.</typeparam>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public T GetRequiredService<T>()
+    {
+      if (CurrentServiceProvider == null) 
+        throw new NullReferenceException(nameof(CurrentServiceProvider));
+
+      var result = CurrentServiceProvider.GetRequiredService<T>();
+      return result;
+    }
+
+    /// <summary>
+    /// Creates an object using 'Activator.CreateInstance' using
+    /// service provider (if one is available) to populate any parameters 
+    /// in CTOR that are not manually passed in.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
-    /// <param name="parameters">Parameters for constructor</param>
+    /// <param name="parameters">Manually passed in parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstanceDI(Type objectType, params object[] parameters)
     {
       object result;
       if (CurrentServiceProvider != null)
-        result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
+          result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
       else
         result = Activator.CreateInstance(objectType, parameters);
       if (result is IUseApplicationContext tmp)
@@ -414,6 +434,7 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T CreateInstance<T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
@@ -424,6 +445,7 @@ namespace Csla
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstance(Type objectType, params object[] parameters)
     {
       object result;

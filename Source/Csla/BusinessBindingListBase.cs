@@ -24,7 +24,7 @@ namespace Csla
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
   public abstract class BusinessBindingListBase<T, C> :
-      Core.ExtendedBindingList<C>,
+      Core.ExtendedBindingList<C>, IContainsDeletedList,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
       Core.ISavable, Core.ISavable<T>, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy,
@@ -436,6 +436,11 @@ namespace Csla
         return _deletedList; 
       }
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
 
     private void DeleteChild(C child)
     {

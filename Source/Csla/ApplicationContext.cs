@@ -10,6 +10,7 @@ using System.Security.Principal;
 using Csla.Core;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
 
 namespace Csla
 {
@@ -371,18 +372,19 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T CreateInstanceDI<T>(params object[] parameters)
     {
       return (T)CreateInstanceDI(typeof(T), parameters);
     }
 
     /// <summary>
-    /// Creates object via true DI using ServiceProvider.GetRequiredService. 
-    /// Requires service to be properly registered. Throws null exception 
-    /// if no service provider available.
+    /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
+    /// Throws exception if service not properly registered with DI.
     /// </summary>
     /// <typeparam name="T">Type of service/object to create.</typeparam>
-    public T CreateInstanceViaServiceProvider<T>()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public T GetRequiredService<T>()
     {
       if (CurrentServiceProvider == null) 
         throw new NullReferenceException(nameof(CurrentServiceProvider));
@@ -398,6 +400,7 @@ namespace Csla
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Manually passed in parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstanceDI(Type objectType, params object[] parameters)
     {
       object result;
@@ -431,6 +434,7 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T CreateInstance<T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
@@ -441,6 +445,7 @@ namespace Csla
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstance(Type objectType, params object[] parameters)
     {
       object result;

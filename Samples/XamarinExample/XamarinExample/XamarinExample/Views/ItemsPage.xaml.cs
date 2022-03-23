@@ -24,7 +24,8 @@ namespace XamarinExample.Views
     {
       InitializeComponent();
 
-      BindingContext = viewModel = new ItemsViewModel();
+      var vm = App.ApplicationContext.CreateInstanceDI<ItemsViewModel>();
+      BindingContext = viewModel = vm;
     }
 
     async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)

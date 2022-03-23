@@ -13,8 +13,11 @@ namespace XamarinExample.ViewModels
   {
     public Command LoadItemsCommand { get; set; }
 
-    public ItemsViewModel()
+    public ItemsViewModel(IDataPortal<PersonList> personListPortal, IDataPortal<PersonEdit> personEditPortal)
     {
+      PersonListPortal = personListPortal;
+      PersonEditPortal = personEditPortal;
+
       Title = "Browse";
 
       LoadItemsCommand = 
@@ -25,6 +28,9 @@ namespace XamarinExample.ViewModels
         await ExecuteLoadItemsCommand();
       });
     }
+
+    private IDataPortal<PersonEdit> PersonEditPortal { get; set; }
+    private IDataPortal<PersonList> PersonListPortal { get; set; }
 
     public async Task EditItemAsync(PersonInfo item)
     {
@@ -37,7 +43,7 @@ namespace XamarinExample.ViewModels
     public async Task AddItemAsync()
     {
       await Navigation.PushModalAsync(
-        new NavigationPage(new EditItemPage(new ItemEditViewModel())));
+        new NavigationPage(new EditItemPage(new ItemEditViewModel(PersonEditPortal))));
     }
 
     async Task ExecuteLoadItemsCommand()
@@ -47,7 +53,7 @@ namespace XamarinExample.ViewModels
       try
       {
         await RefreshAsync<PersonList>(
-          () => DataPortal.FetchAsync<PersonList>());
+          () => PersonListPortal.FetchAsync());
       }
       catch (Exception ex)
       {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Csla;
 using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xamarin.Forms;
@@ -9,16 +10,20 @@ namespace XamarinExample
 {
   public partial class App : Application
   {
+    private IServiceProvider serviceProvider;
+
+    public static ApplicationContext ApplicationContext { get; private set; }
 
     public App()
     {
       InitializeComponent();
 
-      CslaConfiguration.Configure().
-        ContextManager(new Csla.Xaml.ApplicationContextManager());
       var services = new ServiceCollection();
       services.AddCsla();
+      //services.AddCsla(o => o.RegisterContextManager<Csla.Xaml.ApplicationContextManager>());
       services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
+      serviceProvider = services.BuildServiceProvider();
+      ApplicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
 
       MainPage = new AppShell();
     }

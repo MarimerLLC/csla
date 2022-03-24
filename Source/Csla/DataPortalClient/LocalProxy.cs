@@ -80,12 +80,32 @@ namespace Csla.Channels.Local
 
         if (useApplicationContext is IManageProperties target)
         {
-          foreach (var item in target.GetManagedProperties())
+          foreach (var managedProperty in target.GetManagedProperties())
           {
-            if (typeof(IUseApplicationContext).IsAssignableFrom(item.Type) &&
-              !((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad && !target.FieldExists(item)))
+            var isLazyLoadedProperty = (managedProperty.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad;
+           
+            //only dig into property if its not a lazy loaded property 
+            //  or if it is, then only if its loaded
+            if (!isLazyLoadedProperty 
+              || (isLazyLoadedProperty && target.FieldExists(managedProperty)))
             {
-              SetApplicationContext((IUseApplicationContext)target.ReadProperty(item), applicationContext);
+              if (typeof(IUseApplicationContext).IsAssignableFrom(managedProperty.Type))
+              {
+                //property is directly assignable to the IUseApplicationContext so set it
+                SetApplicationContext((IUseApplicationContext)target.ReadProperty(managedProperty), applicationContext);
+              }
+              else if (typeof(IEnumerable).IsAssignableFrom(managedProperty.Type))
+              {
+                //property is a list and needs to be processed (could be a Csla.Core.MobileList or something like that)
+                var enumerable = (IEnumerable)target.ReadProperty(managedProperty);
+                if (enumerable != null)
+                {
+                  foreach (var item in enumerable)
+                  {
+                    SetApplicationContext(item, applicationContext);
+                  }
+                }
+              }
             }
           }
         }

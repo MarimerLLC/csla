@@ -10,6 +10,7 @@ using Csla.Blazor;
 using Csla.Core;
 using Csla.Runtime;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -43,6 +44,17 @@ namespace Csla.Configuration
 
       // minimize PropertyChanged events
       config.PropertyChangedMode(ApplicationContext.PropertyChangedModes.Windows);
+
+#if NET5_0_OR_GREATER
+      var managerType = Type.GetType("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
+      if (managerType is null)
+        throw new TypeLoadException("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
+      config.Services.AddScoped(typeof(IContextManager), managerType);
+      var authenticationStateProviderType = Type.GetType("Csla.AspNetCore.Authentication.CslaAuthenticationStateProvider,Csla.AspNetCore");
+      if (authenticationStateProviderType is null)
+        throw new TypeLoadException("Csla.AspNetCore.Authentication.CslaAuthenticationStateProvider,Csla.AspNetCore");
+      config.Services.TryAddScoped(typeof(AuthenticationStateProvider), authenticationStateProviderType);
+#endif
 
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));

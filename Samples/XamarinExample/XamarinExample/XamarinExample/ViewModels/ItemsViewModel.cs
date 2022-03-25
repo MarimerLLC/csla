@@ -37,7 +37,7 @@ namespace XamarinExample.ViewModels
       if (item == null)
         return;
       await Navigation.PushModalAsync(
-        new NavigationPage(new EditItemPage(new ItemEditViewModel(item.Id))));
+        new NavigationPage(new EditItemPage(new ItemEditViewModel(PersonEditPortal, item.Id))));
     }
 
     public async Task AddItemAsync()

@@ -11,21 +11,20 @@ namespace XamarinExample.ViewModels
   public class ItemEditViewModel : ViewModel<PersonEdit>
   {
     public ItemEditViewModel(IDataPortal<PersonEdit> portal)
-      : this(-1)
-    { 
-      PersonPortal = portal;
-    }
+      : this(portal, -1)
+    { }
 
-    private IDataPortal<PersonEdit> PersonPortal { get; set; }
-
-    public ItemEditViewModel(int id)
+    public ItemEditViewModel(IDataPortal<PersonEdit> portal, int id)
     {
+      PersonPortal = portal;
       Initialize();
       if (id == -1)
         RefreshAsync<PersonEdit>(() => PersonPortal.CreateAsync());
       else
         RefreshAsync<PersonEdit>(() => PersonPortal.FetchAsync(id));
     }
+
+    private IDataPortal<PersonEdit> PersonPortal { get; set; }
 
     protected override void Initialize()
     {

@@ -1,27 +1,26 @@
 ## Primary Versions
 
-CSLA 5 supports
+# CSLA 6 supports
 
 * Runtimes
   * .NET Standard 2.0 and 2.1
-  * .NET Core 2.0 through 3.1
-  * .NET 5
-  * .NET Framework 4.0 through 4.8
+  * .NET 6
+  * .NET Framework 4.6.2 through 4.8
   * mono
   * UWP
 * Platform support
   * ASP.NET Core
   * Blazor (and other .NET WebAssembly targets)
-  * ASP.NET
+  * ASP.NET (Blazor, MVC, Razor Pages, and other app models)
   * Xamarin (iOS, Android, UWP, Mac, Linux)
   * Windows Forms, WPF
   * UWP
 * Operating systems
    * Windows
-   * Linux
+   * Linux (including containers)
    * Mac
    * WebAssembly
-   * Others (via .NET Core and/or mono)
+   * Others (via .NET 6)
 
 Older versions of CSLA .NET provide support for older versions of Microsoft .NET, Silverlight, and other platforms.
 
@@ -31,26 +30,12 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
 ## Upgrading
 
 1.	The upgrade difficulty depends on your current version
-   1.	From 1.x – it is a rewrite (but to be fair, that code was obsoleted 14 years ago 😊 )
+   1.	From 1.x – it is a rewrite (but to be fair, that code was obsoleted 17 years ago 😊 )
    1.	From 2.x-3.6 – it requires quite a lot of changes (removing now-obsolete code), but the process is typically mechanical/repetitive, not hard
       1.	EXCEPT if your UI is WinForms, in which case we enhanced CSLA to reveal some nasty UI bugs with data binding, so those bugs are often revealed as people move to or past v3.0.5
    1.	From 3.8 – requires wrapping of old-style business rules into the new rules engine model
    1.	From 4.0 – there’ve been some minor breaking changes that don’t affect everyone, but reviewing the release notes to see if a given codebase is affected is required
-
-Fwiw, CSLA 4 came out 7 years ago, and there’ve been no _major_ breaking changes since then. Really there’ve been 3 major breaking change points in CSLA .NET’s 18 year history:
-
-1.	Add support for .NET generics and a rules engine in v2
-1.	Major changes to support Silverlight, Windows Phone, .NET Core, mono, Xamarin, etc. in v3.8
-1.	New rules engine in v4
-
-Even the upcoming v5 release has no truly major breaking changes. I did switch to semantic versioning starting with v4.9.0, which helps keep track of when to expect trouble. So current is 4.11.2, meaning 6 releases without breaking changes – only bug fixes and enhancements since Oct 2018. We’ve saved up all the breaking changes for the v5 release.
-
-•	The rename of all NuGet packages will break everyone: https://github.com/MarimerLLC/csla/issues/1151
-a.	Fix is just to update all NuGet references, so very mechanical
-•	Moving use of SqlClient to its own NuGet package will break a lot of people (but was forced due to .NET Core): https://github.com/MarimerLLC/csla/issues/981 
-a.	Fix is to add another NuGet package reference (either for the old System.Data or the new Microsoft.Data implementation)
-
-All the other items in the list will affect only narrow subsets of the overall CSLA user base.
+   1.	From 5.0 – CSLA 6 is a major update that embraces dependency injection, so nearly all apps will be affected in their startup code, and in any interaction with the `ApplicationContext` or data portal types (all of which are now available as DI services)
 
 Some older posts with information about upgrading:
 
@@ -82,3 +67,4 @@ The roadmap is [available here](https://github.com/MarimerLLC/csla/issues?q=is%3
 * CSLA 4 version 4.7 introduces early support for WebAssembly and Blazor, ASP.NET Core, and Xamarin updates.
 * CSLA 4 version 4.9.0 is the beginning of our use of semantic versioning. It supports .NET Core configuration via a fluent API, plus major data portal enhancements for container-based server environments such as Kubernetes.
 * CSLA version 5.0.0 has a number of [breaking changes](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F5+label%3A%22flag%2Fbreaking+change%22). The primary focus in this version is _major_ enhancements to the data portal, including support for dependency injection, flexible method names, and multiple criteria parameters. And of course, support for .NET Core 3.
+* CSLA 6 is a major update that requires the use of dependency injection, so _all_ apps must configure an `IServiceCollection` and `IServiceProvider` on startup. This is normal for ASP.NET and Blazor apps, but is not necessarily familiar to Windows Forms or WPF developers. Some important static types are now DI services, most notably `ApplicationContext` and the data portal types. The data portal types are now injected as `IDataPortal<T>`, `IChildDataPortal<T>`, `IDataPortalFactory`, and `IChildDataPortalFactory`.

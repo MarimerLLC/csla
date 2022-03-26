@@ -24,11 +24,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CurrentUserAuthenticationStateProvider));
-builder.Services.AddScoped<CurrentUserService>();
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCsla(o => o
+  .AddAspNetCore()
   .DataPortal(dpo => dpo
     .AddServerSideDataPortal()
     .UseLocalProxy()));

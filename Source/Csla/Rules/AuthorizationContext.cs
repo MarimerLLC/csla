@@ -44,8 +44,6 @@ namespace Csla.Rules
     /// </summary>
     public object[] Criteria { get; internal set; }
 
-    private ApplicationContext ApplicationContext { get; set; }
-
     /// <summary>
     /// Creates a AuthorizationContext instance for unit testing.
     /// </summary>
@@ -57,38 +55,19 @@ namespace Csla.Rules
     {
       ApplicationContext = applicationContext;
       Rule = rule;
-      User = applicationContext.User;
-      LocalContext = applicationContext.LocalContext;
-      ClientContext = applicationContext.ClientContext;
       Target = target;
       TargetType = targetType;
     }
 
     /// <summary>
-    /// Gets an instance of a client-side data portal.
+    /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    /// <typeparam name="T">Business object type</typeparam>
-    /// <returns></returns>
-    public IDataPortal<T> GetDataPortal<T>()
-    {
-      return (IDataPortal<T>)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortal<T>));
-    }
+    public ApplicationContext ApplicationContext { get; private set; }
 
     /// <summary>
-    /// Gets the current user principal.
+    /// Gets a data portal factory instance
     /// </summary>
-    public IPrincipal User { get; }
-    /// <summary>
-    /// Gets the current user ClaimsPrincipal.
-    /// </summary>
-    public ClaimsPrincipal Principal { get => User as ClaimsPrincipal; }
-    /// <summary>
-    /// Gets the LocalContext.
-    /// </summary>
-    public ContextDictionary LocalContext { get; }
-    /// <summary>
-    /// Gets the ClientContext.
-    /// </summary>
-    public ContextDictionary ClientContext { get; }
+    public IDataPortalFactory DataPortalFactory =>
+      (IDataPortalFactory)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortalFactory));
   }
 }

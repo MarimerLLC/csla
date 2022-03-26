@@ -49,8 +49,6 @@ namespace Csla.Rules
   /// </summary>
   public class RuleContext : IRuleContext
   {
-    private ApplicationContext ApplicationContext { get; set; }
-
     /// <summary>
     /// Gets the rule object.
     /// </summary>
@@ -61,16 +59,6 @@ namespace Csla.Rules
     /// Gets a reference to the target business object.
     /// </summary>
     public object Target { get; internal set; }
-
-    /// <summary>
-    /// Gets an instance of a client-side data portal.
-    /// </summary>
-    /// <typeparam name="T">Business object type</typeparam>
-    /// <returns></returns>
-    public IDataPortal<T> GetDataPortal<T>()
-    {
-      return (IDataPortal<T>)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortal<T>));
-    }
 
     /// <summary>
     /// Gets a dictionary containing copies of property values from
@@ -222,9 +210,6 @@ namespace Csla.Rules
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      User = ApplicationContext.User;
-      LocalContext = ApplicationContext.LocalContext;
-      ClientContext = ApplicationContext.ClientContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = 
         (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
@@ -242,9 +227,6 @@ namespace Csla.Rules
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       ExecuteContext = executeContext;
-      User = ApplicationContext.User;
-      LocalContext = ApplicationContext.LocalContext;
-      ClientContext = ApplicationContext.ClientContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
       _dirtyProperties = dirtyProperties;
@@ -519,20 +501,14 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Gets the current user principal.
+    /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    public IPrincipal User { get; }
+    public ApplicationContext ApplicationContext { get; private set; }
+
     /// <summary>
-    /// Gets the current user ClaimsPrincipal.
+    /// Gets a data portal factory instance
     /// </summary>
-    public ClaimsPrincipal Principal { get => User as ClaimsPrincipal; }
-    /// <summary>
-    /// Gets the LocalContext.
-    /// </summary>
-    public ContextDictionary LocalContext { get; }
-    /// <summary>
-    /// Gets the ClientContext.
-    /// </summary>
-    public ContextDictionary ClientContext { get; }
+    public IDataPortalFactory DataPortalFactory => 
+      (IDataPortalFactory)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortalFactory));
   }
 }

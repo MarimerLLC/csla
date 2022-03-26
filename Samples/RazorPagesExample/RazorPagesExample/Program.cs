@@ -14,9 +14,10 @@ builder.Services.AddRazorPages().AddMvcOptions(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
 
-builder.Services.AddCsla(options => options.AddAspNetCore());
+builder.Services.AddCsla(o => o
+  .AddAspNetCore());
+
 builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
 
 var app = builder.Build();

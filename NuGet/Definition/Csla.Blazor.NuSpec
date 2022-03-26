@@ -21,12 +21,6 @@
         <dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.9" />
         <dependency id="Microsoft.AspNetCore.Components.Authorization" version="3.1.9" />
       </group>
-      <group targetFramework="net5.0">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components" version="5.0.11" />
-        <dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.11" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="5.0.11" />
-      </group>
       <group targetFramework="net6.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.AspNetCore.Components" version="6.0.2" />
@@ -40,10 +34,6 @@
     <file src="..\..\bin\Release\netstandard2.1\**\Csla.Blazor.dll" target="lib\netstandard2.1" />
     <file src="..\..\bin\Release\netstandard2.1\**\Csla.Blazor.pdb" target="lib\netstandard2.1" />
     <file src="..\..\bin\Release\netstandard2.1\**\Csla.Blazor.xml" target="lib\netstandard2.1" />
-    <!-- Net5.0 Assembly -->
-    <file src="..\..\bin\Release\net5.0\**\Csla.Blazor.dll" target="lib\net5.0" />
-    <file src="..\..\bin\Release\net5.0\**\Csla.Blazor.pdb" target="lib\net5.0" />
-    <file src="..\..\bin\Release\net5.0\**\Csla.Blazor.xml" target="lib\net5.0" />
     <!-- Net6.0 Assembly -->
     <file src="..\..\bin\Release\net6.0\**\Csla.Blazor.dll" target="lib\net6.0" />
     <file src="..\..\bin\Release\net6.0\**\Csla.Blazor.pdb" target="lib\net6.0" />

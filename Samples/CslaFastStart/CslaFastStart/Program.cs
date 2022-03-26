@@ -1,14 +1,25 @@
 ﻿using BusinessLayer;
+using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace CslaFastStart
 {
   class Program
   {
+    private static IServiceProvider ServiceProvider { get; set; }
+
     static void Main(string[] args)
     {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      ServiceProvider = services.BuildServiceProvider();
+
+      var dpFactory = ServiceProvider.GetRequiredService<IDataPortalFactory>();
+
       Console.WriteLine("Creating a new person");
-      var person = Csla.DataPortal.Create<PersonEdit>();
+      var person = dpFactory.GetPortal<PersonEdit>().Create();
       Console.Write("Enter first name: ");
       person.FirstName = Console.ReadLine();
       Console.Write("Enter last name: ");
@@ -29,7 +40,7 @@ namespace CslaFastStart
 
       Console.WriteLine();
       Console.WriteLine("Updating existing person");
-      person = Csla.DataPortal.Fetch<PersonEdit>(person.Id);
+      person = dpFactory.GetPortal<PersonEdit>().Fetch(person.Id);
       Console.Write("Update first name [{0}]: ", person.FirstName);
       var temp = Console.ReadLine();
       if (!string.IsNullOrWhiteSpace(temp))
@@ -65,10 +76,10 @@ namespace CslaFastStart
 
       Console.WriteLine();
       Console.WriteLine("Deleting existing person");
-      Csla.DataPortal.Delete<PersonEdit>(person.Id);
+      dpFactory.GetPortal<PersonEdit>().Delete(person.Id);
       try
       {
-        person = Csla.DataPortal.Fetch<PersonEdit>(person.Id);
+        person = dpFactory.GetPortal<PersonEdit>().Fetch(person.Id);
         Console.WriteLine("Person NOT deleted");
       }
       catch

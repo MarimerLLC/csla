@@ -46,26 +46,13 @@ namespace Csla.Rules
     object[] Criteria { get; }
 
     /// <summary>
-    /// Gets the current user principal.
+    /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    IPrincipal User { get; }
+    ApplicationContext ApplicationContext { get; }
+
     /// <summary>
-    /// Gets the current user ClaimsPrincipal.
+    /// Gets a data portal factory instance
     /// </summary>
-    ClaimsPrincipal Principal { get; }
-    /// <summary>
-    /// Gets the LocalContext.
-    /// </summary>
-    ContextDictionary LocalContext { get; }
-    /// <summary>
-    /// Gets the ClientContext.
-    /// </summary>
-    ContextDictionary ClientContext { get; }
-    /// <summary>
-    /// Gets an instance of a client-side data portal.
-    /// </summary>
-    /// <typeparam name="T">Business object type</typeparam>
-    /// <returns></returns>
-    IDataPortal<T> GetDataPortal<T>();
+    IDataPortalFactory DataPortalFactory { get; }
   }
 }

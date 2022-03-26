@@ -17,13 +17,9 @@ namespace Csla.Rules
   public interface IAddObjectAuthorizationRulesContext
   {
     /// <summary>
-    /// Gets the local context
+    /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    HybridDictionary LocalContext { get; }
-    /// <summary>
-    /// Gets the client context
-    /// </summary>
-    HybridDictionary ClientContext { get; }
+    ApplicationContext ApplicationContext { get; }
     /// <summary>
     /// Gets a data portal factory instance
     /// </summary>
@@ -32,13 +28,5 @@ namespace Csla.Rules
     /// Gets the current rule set
     /// </summary>
     string RuleSet { get; }
-    /// <summary>
-    /// Gets the current user
-    /// </summary>
-    IPrincipal User { get; }
-    /// <summary>
-    /// Gets the current user as a ClaimsPrincipal
-    /// </summary>
-    ClaimsPrincipal Principal { get; }
   }
 }

@@ -31,7 +31,8 @@ namespace BusinessLayer
       set { SetProperty(LastNameProperty, value); }
     }
 
-    protected override void DataPortal_Create()
+    [Create]
+    private void Create()
     {
       var dal = new PersonDal();
       var dto = dal.Create();
@@ -44,7 +45,8 @@ namespace BusinessLayer
       BusinessRules.CheckRules();
     }
 
-    private void DataPortal_Fetch(int id)
+    [Fetch]
+    private void Fetch(int id)
     {
       var dal = new PersonDal();
       var dto = dal.GetPerson(id);
@@ -56,7 +58,8 @@ namespace BusinessLayer
       }
     }
 
-    protected override void DataPortal_Insert()
+    [Insert]
+    private void Insert()
     {
       var dal = new PersonDal();
       using (BypassPropertyChecks)
@@ -70,7 +73,8 @@ namespace BusinessLayer
       }
     }
 
-    protected override void DataPortal_Update()
+    [Update]
+    private void Update()
     {
       var dal = new PersonDal();
       using (BypassPropertyChecks)
@@ -85,7 +89,8 @@ namespace BusinessLayer
       }
     }
 
-    private void DataPortal_Delete(int id)
+    [Delete]
+    private void Delete(int id)
     {
       var dal = new PersonDal();
       using (BypassPropertyChecks)
@@ -94,9 +99,10 @@ namespace BusinessLayer
       }
     }
 
-    protected override void DataPortal_DeleteSelf()
+    [DeleteSelf]
+    private void DeleteSelf()
     {
-      DataPortal_Delete(Id);
+      Delete(Id);
     }
   }
 }

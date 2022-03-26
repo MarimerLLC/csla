@@ -12,10 +12,8 @@ using System.Reflection;
 using System.Globalization;
 using System.Threading.Tasks;
 using Csla.Properties;
-#if !NET40 && !NET45 && !NET46
-using System.Runtime.Loader;
-#endif
 #if NET5_0_OR_GREATER
+using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
 
@@ -226,9 +224,7 @@ namespace Csla.Reflection
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
     public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
-#if NET40 || NET45 || NET46
-      return Type.GetType(typeName, throwOnError, ignoreCase);
-#else
+#if NET5_0_OR_GREATER
       try
       {
         return Type.GetType(typeName, throwOnError, ignoreCase);
@@ -246,6 +242,8 @@ namespace Csla.Reflection
           throw;
         }
       }
+#else
+      return Type.GetType(typeName, throwOnError, ignoreCase);
 #endif
     }
 

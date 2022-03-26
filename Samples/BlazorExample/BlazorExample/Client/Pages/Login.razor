@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 
-@inject CurrentUserService CurrentUserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h1>Login</h1>
 
@@ -40,16 +40,15 @@
       };
 
       var identity = new ClaimsIdentity(claims, "Test", ClaimTypes.Name, ClaimTypes.Role);
-
-      CurrentUserService.CurrentUser = new System.Security.Claims.ClaimsPrincipal(identity);
+      ((Csla.Blazor.Authentication.CslaAuthenticationStateProvider)AuthenticationStateProvider).SetPrincipal(new System.Security.Claims.ClaimsPrincipal(identity));
       StateHasChanged();
+
       Console.WriteLine("logged in");
     }
 
     public void HandleLogout()
     {
-      var identity = new ClaimsIdentity();
-      CurrentUserService.CurrentUser = new System.Security.Claims.ClaimsPrincipal(identity);
+      ((Csla.Blazor.Authentication.CslaAuthenticationStateProvider)AuthenticationStateProvider).SetPrincipal(new System.Security.Claims.ClaimsPrincipal());
       StateHasChanged();
     }
 }

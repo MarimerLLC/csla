@@ -5,12 +5,11 @@
 // </copyright>
 // <summary>Basic implementation of AuthenticationStateProvider</summary>
 //-----------------------------------------------------------------------
-#if NET5_0_OR_GREATER
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Csla.AspNetCore.Authentication
+namespace Csla.Blazor.Authentication
 {
   /// <summary>
   /// Basic implementation of AuthenticationStateProvider
@@ -47,4 +46,3 @@ namespace Csla.AspNetCore.Authentication
     }
   }
 }
-#endif

@@ -50,10 +50,6 @@ namespace Csla.Configuration
       if (managerType is null)
         throw new TypeLoadException("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
       config.Services.AddScoped(typeof(IContextManager), managerType);
-      var authenticationStateProviderType = Type.GetType("Csla.AspNetCore.Authentication.CslaAuthenticationStateProvider,Csla.AspNetCore");
-      if (authenticationStateProviderType is null)
-        throw new TypeLoadException("Csla.AspNetCore.Authentication.CslaAuthenticationStateProvider,Csla.AspNetCore");
-      config.Services.TryAddScoped(typeof(AuthenticationStateProvider), authenticationStateProviderType);
 #endif
 
       // use Blazor viewmodel

@@ -24,7 +24,6 @@ namespace MvcExample
           .ConfigureServices(services =>
             {
               services.AddHttpContextAccessor();
-              services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
               services.AddCsla(options => options.AddAspNetCore());
             })
             .ConfigureWebHostDefaults(webBuilder =>

@@ -20,11 +20,6 @@
         <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="3.2.0" />
       </group>
-      <group targetFramework="net5.0">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="5.0.11" />
-      </group>
       <group targetFramework="net6.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
@@ -35,8 +30,6 @@
   <files>
     <!-- NetStandard Assembly -->
     <file src="..\..\bin\Release\netstandard2.1\**\Csla.Blazor.WebAssembly.*" target="lib\netstandard2.1" />
-    <!-- Net5.0 Assembly -->
-    <file src="..\..\bin\Release\net5.0\**\Csla.Blazor.WebAssembly.*" target="lib\net5.0" />
     <!-- Net6.0 Assembly -->
     <file src="..\..\bin\Release\net6.0\**\Csla.Blazor.WebAssembly.*" target="lib\net6.0" />
     <!-- resources -->

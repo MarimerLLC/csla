@@ -26,7 +26,6 @@
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />
@@ -43,7 +42,6 @@
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />
@@ -60,7 +58,6 @@
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />
@@ -74,7 +71,6 @@
         <dependency id="Microsoft.Extensions.DependencyInjection" version="5.0.2" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Microsoft.Extensions.Configuration" version="6.0.0" />
@@ -82,6 +78,7 @@
         <dependency id="Microsoft.Extensions.DependencyInjection" version="6.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
+        <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>

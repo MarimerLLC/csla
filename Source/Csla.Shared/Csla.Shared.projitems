@@ -175,6 +175,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\ExpressionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\ServiceProviderMethodInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\IMobileList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\ActiveAuthorizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\SanitizingExceptionInspector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\ServerException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\AsyncManualResetEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\CallMethodException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\DynamicMemberHandle.cs" />

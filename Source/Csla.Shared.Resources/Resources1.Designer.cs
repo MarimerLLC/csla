@@ -923,7 +923,27 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("RuleMessageRequired", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to An exception has occured during a server-side dataportal operation. Request Id: {identifier}.
+        /// </summary>
+        public static string ServerSideDataPortalException
+        {
+            get {
+                return ResourceManager.GetString("ServerSideDataPortalException", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An exception has occured during a server-side dataportal operation. Request Id: {0}.
+        /// </summary>
+        public static string SanitizedServerSideDataPortalDetailedException
+        {
+            get {
+                return ResourceManager.GetString("SanitizedServerSideDataPortalDetailedException", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>

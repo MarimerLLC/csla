@@ -475,4 +475,10 @@
   <data name="OneOfTwoParametersRequiredException" xml:space="preserve">
     <value>{0} requires a value for either the {1} or the {2} parameter.</value>
   </data>
+  <data name="ServerSideDataPortalException" xml:space="preserve">
+    <value>An exception has occured during a server-side dataportal operation. Request Id: {identifier}.</value>
+  </data>
+  <data name="SanitizedServerSideDataPortalDetailedException" xml:space="preserve">
+    <value>An exception has occured during a server-side dataportal operation. Request Id: {0}.</value>
+  </data>
 </root>

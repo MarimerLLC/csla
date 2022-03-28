@@ -32,7 +32,9 @@ namespace BusinessRuleDemo
         InputProperties.AddRange(inputProps);
     }
 
+#pragma warning disable CSLA0017 // Find Business Rules That Do Not Use Add() Methods on the Context
     protected override void Execute(IRuleContext context)
+#pragma warning restore CSLA0017 // Find Business Rules That Do Not Use Add() Methods on the Context
     {
       // TODO: Add actual rule code here. 
       var country = (string)context.InputPropertyValues[_countryProperty];

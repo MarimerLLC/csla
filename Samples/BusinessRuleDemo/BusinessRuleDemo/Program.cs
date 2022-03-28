@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BusinessRuleDemo
 {
@@ -14,8 +15,10 @@ namespace BusinessRuleDemo
     [STAThread]
     static void Main()
     {
-      CslaConfiguration.Configure()
-        .PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Windows);
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      App.ApplicationContext = provider.GetRequiredService<Csla.ApplicationContext>();
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

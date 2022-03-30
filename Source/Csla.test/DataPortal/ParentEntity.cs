@@ -18,7 +18,6 @@ namespace Csla.Test.DataBinding
   {
     #region "Business methods"
 
-    private ChildEntityList _children = ChildEntityList.NewChildEntityList();
     [NotUndoable()]
     private string _notUndoable;
 
@@ -42,16 +41,17 @@ namespace Csla.Test.DataBinding
       set { SetProperty(DataProperty, value); }
     }
 
+    public static PropertyInfo<ChildEntityList> ChildrenProperty = RegisterProperty<ChildEntityList>(p => p.Children);
     public ChildEntityList Children
     {
-      get { return _children; }
+      get { return GetProperty(ChildrenProperty); }
     }
 
     public override bool IsDirty
     {
       get
       {
-        return base.IsDirty || _children.IsDirty;
+        return base.IsDirty || Children.IsDirty;
       }
     }
 
@@ -118,16 +118,19 @@ namespace Csla.Test.DataBinding
 
     [RunLocal()]
     [Create]
-		protected void DataPortal_Create()
+	protected void DataPortal_Create([Inject] IChildDataPortal<ChildEntityList> childDataPortal)
     {
+      SetProperty(ChildrenProperty, childDataPortal.CreateChild());
       TestResults.Reinitialise();
       TestResults.Add("ParentEntity", "Created");
       BusinessRules.CheckRules();
       Console.WriteLine("DataPortal_Create");
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    [Fetch]
+    protected void DataPortal_Fetch(object criteria, [Inject] IChildDataPortal<ChildEntityList> childDataPortal)
     {
+      SetProperty(ChildrenProperty, childDataPortal.CreateChild());
       Console.WriteLine("DataPortal_Fetch");
       TestResults.Reinitialise();
       TestResults.Add("ParentEntity", "Fetched");
@@ -143,7 +146,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
       TestResults.Reinitialise();
@@ -159,7 +162,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");
       TestResults.Reinitialise();

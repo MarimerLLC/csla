@@ -30,14 +30,6 @@ namespace Csla.Test.Basic
       return null;
     }
 
-    internal void Update(IDbTransaction tr)
-    {
-      foreach (Child child in this)
-      {
-        child.Update(tr);
-      }
-    }
-
     public Children()
     {
       this.MarkAsChild();

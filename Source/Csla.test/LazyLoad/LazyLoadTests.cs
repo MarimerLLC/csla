@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,10 +26,18 @@ namespace Csla.Test.LazyLoad
   [TestClass]
   public class LazyLoadTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void NullApplyEdit()
     {
-      AParent parent = new AParent();
+      AParent parent = CreateAParent();
       Assert.IsNull(parent.GetChildList(), "GetChildList should be null");
 
       parent.BeginEdit();
@@ -43,7 +52,7 @@ namespace Csla.Test.LazyLoad
     [TestMethod]
     public void NullCancelEdit()
     {
-      AParent parent = new AParent();
+      AParent parent = CreateAParent();
       Assert.IsNull(parent.GetChildList(), "GetChildList should be null");
 
       parent.BeginEdit();
@@ -66,7 +75,7 @@ namespace Csla.Test.LazyLoad
     [TestMethod]
     public void NewChildEditLevel()
     {
-      AParent parent = new AParent();
+      AParent parent = CreateAParent();
       Assert.IsNull(parent.GetChildList(), "GetChildList should be null");
 
       parent.BeginEdit();
@@ -87,7 +96,7 @@ namespace Csla.Test.LazyLoad
     [TestMethod]
     public void NewChildEditLevelCancel()
     {
-      AParent parent = new AParent();
+      AParent parent = CreateAParent();
       Assert.IsNull(parent.GetChildList(), "GetChildList should be null");
 
       parent.BeginEdit();
@@ -107,7 +116,7 @@ namespace Csla.Test.LazyLoad
     [TestMethod]
     public void NewChildEditLevelApply()
     {
-      AParent parent = new AParent();
+      AParent parent = CreateAParent();
       Assert.IsNull(parent.GetChildList(), "GetChildList should be null");
 
       parent.BeginEdit();
@@ -124,6 +133,13 @@ namespace Csla.Test.LazyLoad
       list = parent.GetChildList();
       Assert.AreEqual(0, list.EditLevel, "Child list edit level should be 0");
       Assert.AreEqual(0, list[0].EditLevel, "Child edit level should be 0");
+    }
+
+    private AParent CreateAParent()
+    {
+      IDataPortal<AParent> dataPortal = _testDIContext.CreateDataPortal<AParent>();
+
+      return dataPortal.Create();
     }
   }
 }

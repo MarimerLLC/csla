@@ -27,12 +27,12 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList, "Child list");
+    private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList, "Child list", null, RelationshipTypes.LazyLoad);
     public ChildList ChildList
     {
       get 
       {
-        return GetProperty(ChildListProperty); 
+        return LazyGetProperty(ChildListProperty, () => GetDataPortal<ChildList>().Create()); 
       }
     }
 
@@ -77,9 +77,8 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private async Task Create([Inject] IChildDataPortal<ChildList> childDataPortal)
+    private async Task Create()
     {
-      LoadProperty(ChildListProperty, ChildList.NewList(childDataPortal));
       await BusinessRules.CheckRulesAsync();
     }
   }

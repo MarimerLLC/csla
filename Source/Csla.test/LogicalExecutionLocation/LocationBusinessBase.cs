@@ -65,13 +65,8 @@ namespace Csla.Test.LogicalExecutionLocation
       }
     }
 
-    [Update]
-	protected void DataPortal_Update()
-    {
-      
-    }
-
-    protected void DataPortal_Fetch([Inject]IDataPortal<LocationBusinessBase> dataPortal)
+    [Fetch]
+    protected void Fetch([Inject]IDataPortal<LocationBusinessBase> dataPortal)
     {
       SetProperty(DataProperty, ApplicationContext.LogicalExecutionLocation.ToString());
 #pragma warning disable CS0436 // Type conflicts with imported type
@@ -80,9 +75,17 @@ namespace Csla.Test.LogicalExecutionLocation
       NestedData = nested.Data;
     }
 
-    protected void DataPortal_Fetch(int criteria)
+    [Fetch]
+    protected void Fetch(int criteria)
     {
       SetProperty(DataProperty, ApplicationContext.LogicalExecutionLocation.ToString());
     }
+
+    [Update]
+	protected void DataPortal_Update()
+    {
+      
+    }
+
   }
 }

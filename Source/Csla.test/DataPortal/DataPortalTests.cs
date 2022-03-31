@@ -66,7 +66,7 @@ namespace Csla.Test.DataPortal
     {
       IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();
 
-      Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
+      TransactionalRoot tr = TransactionalRoot.NewTransactionalRoot(dataPortal);
       tr.FirstName = "Bill";
       tr.LastName = "Johnson";
       //setting smallColumn to a string less than or equal to 5 characters will

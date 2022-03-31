@@ -67,13 +67,14 @@ namespace Csla.Test.EditableRootList
     public void RemoveOldItem()
     {
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
 
       TestResults.Reinitialise();
       _isListSaved = false;
 
       ERlist list = dataPortal.Create();
       
-      list.Add(ERitem.GetItem("test"));
+      list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
       item.Saved += new EventHandler<Csla.Core.SavedEventArgs>(item_Saved);
       list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
@@ -104,6 +105,7 @@ namespace Csla.Test.EditableRootList
     public void InsertItem()
     {
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      TestResults.Reinitialise();
 
       _isListSaved = false;
 
@@ -126,12 +128,14 @@ namespace Csla.Test.EditableRootList
     public void UpdateItem()
     {
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
+      TestResults.Reinitialise();
 
       _isListSaved = false;
 
       ERlist list = dataPortal.Create();
       list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
-      list.Add(ERitem.GetItem("test"));
+      list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");

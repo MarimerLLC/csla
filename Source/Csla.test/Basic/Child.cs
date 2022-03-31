@@ -18,7 +18,7 @@ namespace Csla.Test.Basic
     private string _data = "";
     private Guid _guid = System.Guid.NewGuid();
 
-    private GrandChildren _children = Csla.Test.Basic.GrandChildren.NewGrandChildren();
+    public static PropertyInfo<GrandChildren> GrandChildrenProperty = RegisterProperty<GrandChildren>(c => c.GrandChildren);
 
     protected override object GetIdValue()
     {
@@ -60,7 +60,7 @@ namespace Csla.Test.Basic
 
     public GrandChildren GrandChildren
     {
-      get { return _children; }
+      get { return GetProperty(GrandChildrenProperty); }
     }
 
     internal static Child NewChild(IDataPortal<Child> dataPortal, string data)
@@ -68,10 +68,10 @@ namespace Csla.Test.Basic
       return dataPortal.Create(data);
     }
 
-    internal static Child GetChild(IDataReader dr)
+    internal static Child GetChild(IDataPortal<Child> dataPortal, IDataReader dr)
     {
-      Child obj = new Child();
-      obj.Fetch(dr);
+      Child obj;
+      obj = dataPortal.Fetch(dr);
       return obj;
     }
 
@@ -81,16 +81,21 @@ namespace Csla.Test.Basic
     }
 
     [Create]
-    private void Create(string data)
+    [CreateChild]
+    private void Create(string data, [Inject] IChildDataPortal<GrandChildren> childDataPortal)
     {
       _data = data;
+      LoadProperty(GrandChildrenProperty, childDataPortal.CreateChild());
     }
 
-    private void Fetch(IDataReader dr)
+    [Fetch]
+    [FetchChild]
+    private void Fetch(IDataReader dr, [Inject] IChildDataPortal<GrandChildren> childDataPortal)
     {
-      MarkOld();
+      LoadProperty(GrandChildrenProperty, childDataPortal.CreateChild());
     }
 
+    [UpdateChild]
     internal void Update(IDbTransaction tr)
     {
       if (IsDeleted)

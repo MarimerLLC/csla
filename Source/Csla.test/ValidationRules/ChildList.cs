@@ -18,9 +18,10 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
-    public static ChildList NewList(IChildDataPortal<ChildList> childDataPortal)
+    [Create]
+    private void Create()
     {
-      return childDataPortal.CreateChild();
+
     }
   }
 }

@@ -432,6 +432,7 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual(d2, clone, "Dates should have ben the same");
 
       d2 = new Csla.SmartDate(DateTime.Now, false);
+      memoryStream = new MemoryStream();
       mobileFormatter = new MobileFormatter(applicationContext);
       mobileFormatter.Serialize(memoryStream, d2);
       memoryStream.Seek(0, SeekOrigin.Begin);
@@ -440,6 +441,7 @@ namespace Csla.Test.SmartDate
 
       d2 = new Csla.SmartDate(DateTime.Now.AddDays(10), false);
       d2.FormatString = "YYYY/DD/MM";
+      memoryStream = new MemoryStream();
       mobileFormatter = new MobileFormatter(applicationContext);
       mobileFormatter.Serialize(memoryStream, d2);
       memoryStream.Seek(0, SeekOrigin.Begin);

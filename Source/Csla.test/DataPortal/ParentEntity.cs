@@ -116,7 +116,6 @@ namespace Csla.Test.DataBinding
 
     #region "Data Access"
 
-    [RunLocal()]
     [Create]
 	protected void DataPortal_Create([Inject] IChildDataPortal<ChildEntityList> childDataPortal)
     {

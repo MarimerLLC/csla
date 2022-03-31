@@ -152,21 +152,23 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild"));
+    private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(
+      typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild", RelationshipTypes.LazyLoad));
     public EditableGetSet ManagedChild
     {
       get 
       { 
-        return GetProperty(ManagedChildProperty); 
+        return LazyGetProperty(ManagedChildProperty, () => GetDataPortal<EditableGetSet>().Create()); 
       }
     }
 
-    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList"));
+    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty(
+      typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList", RelationshipTypes.LazyLoad));
     public ChildList ManagedChildList
     {
       get
       {
-        return GetProperty(ManagedChildListProperty);
+        return LazyGetProperty(ManagedChildListProperty, () => GetDataPortal<ChildList>().Create());
       }
     }
 
@@ -174,7 +176,7 @@ namespace Csla.Test.PropertyGetSet
       RegisterProperty(new PropertyInfo<ChildList>("LazyChild", "Child list", null, RelationshipTypes.LazyLoad));
     public ChildList LazyChild
     {
-      get { return GetProperty(LazyChildProperty); }
+      get { return LazyGetProperty(LazyChildProperty, () => GetDataPortal<ChildList>().Create()); }
       set { SetProperty(LazyChildProperty, value); }
     }
 
@@ -219,33 +221,27 @@ namespace Csla.Test.PropertyGetSet
     #region Data Access
 
     [Create]
-    private void Create([Inject] IChildDataPortal<EditableGetSet> dataPortal, [Inject]IChildDataPortal<ChildList> listDataPortal)
+    private void Create([Inject] IChildDataPortal<EditableGetSet> dataPortal)
     {
       LoadProperty(M06Property, null);
-      LoadProperty(ManagedChildProperty, EditableGetSet.NewChildObject(dataPortal));
-      LoadProperty(ManagedChildListProperty, ChildList.NewChildObject(listDataPortal));
     }
 
     [CreateChild]
-    private void CreateChild([Inject] IChildDataPortal<ChildList> listDataPortal)
+    private void CreateChild()
     {
       LoadProperty(M06Property, null);
-      LoadProperty(ManagedChildListProperty, ChildList.NewChildObject(listDataPortal));
     }
 
     [Fetch]
-    private void DataPortal_Fetch([Inject] IChildDataPortal<EditableGetSet> dataPortal, [Inject] IChildDataPortal<ChildList> listDataPortal)
+    private void DataPortal_Fetch()
     {
       LoadProperty(M06Property, null);
-      LoadProperty(ManagedChildProperty, EditableGetSet.GetChildObject(dataPortal));
-      LoadProperty(ManagedChildListProperty, ChildList.GetChildObject(listDataPortal));
     }
 
     [FetchChild]
-    private void DataPortal_FetchChild([Inject] IChildDataPortal<EditableGetSet> dataPortal, [Inject] IChildDataPortal<ChildList> listDataPortal)
+    private void DataPortal_FetchChild()
     {
       LoadProperty(M06Property, null);
-      LoadProperty(ManagedChildListProperty, ChildList.GetChildObject(listDataPortal));
     }
 
     [Insert]

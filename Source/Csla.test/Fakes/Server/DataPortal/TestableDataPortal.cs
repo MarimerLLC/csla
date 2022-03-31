@@ -18,6 +18,8 @@ namespace Csla.Testing.Business.DataPortal
   /// </summary>
   public class TestableDataPortal : Csla.Server.DataPortal
   {
+    private IAuthorizeDataPortal _authorizer;
+
     public TestableDataPortal(
       ApplicationContext applicationContext,
       IDashboard dashboard,
@@ -39,31 +41,29 @@ namespace Csla.Testing.Business.DataPortal
       exceptionInspector,
       exceptionHandler
     )
-    { }
+    {
+      _authorizer = authorizer;
+    }
 
     public static void Setup()
     {
-      //TODO: Not sure how to recreate this test in Csla 6
-      //Authorizer = null;
     }
 
     public Type AuthProviderType
     {
-      get {
-        //TODO: Not sure how to recreate this test in Csla 6
-        //return Authorizer.GetType();
-        return null;
-        }
+      get
+      {
+        return _authorizer.GetType();
+      }
     }
 
     public IAuthorizeDataPortal AuthProvider
     {
-      get {
-        //TODO: Not sure how to recreate this test in Csla 6
-        //return Authorizer;
-        return null;
-        }
+      get
+      {
+        return _authorizer;
       }
+    }
 
     public bool NullAuthorizerUsed
     {

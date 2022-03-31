@@ -12,6 +12,7 @@ using Csla.Test.Security;
 using System.Data;
 using System.Data.SqlClient;
 using Csla.TestHelpers;
+using Csla.Configuration;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -24,21 +24,23 @@ namespace Csla.Test.EditableRootList
     public ERitem()
     { }
 
-    private ERitem(string data)
+    [Create]
+    private void Create()
+    {
+    }
+
+    [Create]
+    private void Create(string data)
     {
       using (BypassPropertyChecks)
         Data = data;
-      MarkOld();
     }
 
-    public static ERitem NewItem()
+    [Fetch]
+    private void Fetch(string data)
     {
-      return new ERitem();
-    }
-
-    public static ERitem GetItem(string data)
-    {
-      return new ERitem(data);
+      using (BypassPropertyChecks)
+        Data = data;
     }
 
     [Insert]
@@ -48,7 +50,7 @@ namespace Csla.Test.EditableRootList
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       TestResults.Add("DP", "Update");
     }
@@ -60,7 +62,7 @@ namespace Csla.Test.EditableRootList
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
       TestResults.Add("DP", "Delete");
     }

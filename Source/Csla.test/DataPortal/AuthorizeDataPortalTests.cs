@@ -164,7 +164,7 @@ namespace Csla.Test.DataPortal
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
       await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
-      var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
+      var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
       Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
       Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
@@ -178,7 +178,7 @@ namespace Csla.Test.DataPortal
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
       await dp.Fetch(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
-      var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
+      var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
       Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
       Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
@@ -193,7 +193,7 @@ namespace Csla.Test.DataPortal
       await dp.Update(new TestBO(), new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
 
-      var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
+      var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
       Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
       Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
@@ -207,13 +207,12 @@ namespace Csla.Test.DataPortal
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
       await dp.Delete(typeof(TestBO), new object(), new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
 
-      var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
+      var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
       Assert.IsNotNull(result, "AuthorizeDataPortalStub not accessible");
       Assert.AreEqual(typeof(TestBO), result.ClientRequest?.ObjectType);
       Assert.AreEqual(DataPortalOperations.Delete, result.ClientRequest.Operation);
     }
-
 
     #endregion
   }

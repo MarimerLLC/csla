@@ -303,10 +303,6 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
 
-      // TODO: I changed the EditableGetSet object from lazy loading children to loading
-      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
-      // child, which is no longer supported in Csla 6
-      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.AreEqual("ManagedChild", _changingName, "ManagedChild should have been changing");
 
       Assert.AreEqual("ManagedChild", _changedName, "ManagedChild should have changed");
@@ -454,10 +450,6 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet initialChild = root.ManagedChild;
       Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after being created");
 
-      // TODO: I changed the EditableGetSet object from lazy loading children to loading
-      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
-      // child, which is no longer supported in Csla 6
-      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.CancelEdit();
@@ -503,10 +495,6 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSet initialChild = root.ManagedChild;
 
-      // TODO: I changed the EditableGetSet object from lazy loading children to loading
-      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
-      // child, which is no longer supported in Csla 6
-      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
       Assert.IsTrue(initialChild.IsDirty, "Child should be dirty");
 
@@ -532,10 +520,6 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet initialChild = root.ManagedChild;
       Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after being created");
 
-      // TODO: I changed the EditableGetSet object from lazy loading children to loading
-      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
-      // child, which is no longer supported in Csla 6
-      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.ApplyEdit();
@@ -575,10 +559,6 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(0, root.EditLevel, "Root edit level after CancelEdit");
       ChildList secondList = root.ManagedChildList;
       Assert.AreEqual(0, secondList.EditLevel, "Second list edit level after CancelEdit");
-      // TODO: I changed the EditableGetSet object from lazy loading children to loading
-      // them in the DP_Fetch method. I had to do this because the old code simply newed up the
-      // child, which is no longer supported in Csla 6
-      // This test will fail until we change it back - but not sure how to do lazy loading in Csla 6
       Assert.IsFalse(ReferenceEquals(list, secondList), "List objects should not be the same");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after CancelEdit");

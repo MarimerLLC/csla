@@ -17,17 +17,7 @@ namespace Csla.Test.DataBinding
     {
         public ChildEntityList()
         {
-            this.MarkAsChild();
         }
-
-        #region "factory methods"
-
-        public static ChildEntityList NewChildEntityList()
-        {
-            return new ChildEntityList();
-        }
-
-        #endregion
 
         #region "Criteria"
 
@@ -39,19 +29,11 @@ namespace Csla.Test.DataBinding
 
         #endregion
 
-        internal void update(IDbTransaction tr)
-        {
-            foreach (ChildEntity child in this)
-            {
-                //child.Update(tr);
-            }
-        }
-
         [Fetch]
-        private void DataPortal_Fetch(object criteria)
+        private void DataPortal_Fetch(object criteria, IChildDataPortal<ChildEntity> childDataPortal)
         {
             for (int i = 0; i < 10; i++)
-                Add(new ChildEntity(i, "first" + i, "last" + i));
+                Add(childDataPortal.CreateChild(i, "first" + i, "last" + i));
         }
     }
 }

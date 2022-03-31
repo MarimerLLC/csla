@@ -325,9 +325,6 @@ namespace Csla.Test.ValidationRules
     {
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      // TODO: I changed the HasChildren class from lazy-loading of the child list to 
-      // creating it during the Create data access method. This test will fail until it 
-      // is changed back, but I don't know how to do lazy loading in Csla 6
       var root = await CreateWithoutCriteriaAsync<HasChildren>();
       context.Assert.AreEqual(false, root.IsValid);
       root.BeginEdit();

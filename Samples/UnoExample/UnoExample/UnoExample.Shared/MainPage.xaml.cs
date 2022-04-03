@@ -46,7 +46,8 @@ namespace UnoExample
       this.InfoText.Text = "Loading ...";
       try
       {
-        var obj = await DataPortal.FetchAsync<PersonList>();
+        var dp = App.ApplicationContext.GetRequiredService<IDataPortal<PersonList>>();
+        var obj = await dp.FetchAsync();
         DataContext = obj;
         this.InfoText.Text = "Loaded";
       }

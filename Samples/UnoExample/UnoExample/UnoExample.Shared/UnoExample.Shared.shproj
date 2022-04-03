@@ -10,4 +10,8 @@
   <PropertyGroup />
   <Import Project="UnoExample.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.CSharp.targets" />
+  <ItemGroup>
+    <_Globbed_Compile Remove="Csla\ApplicationContextManager.cs" />
+    <_Globbed_Compile Remove="Csla\Xaml\PropertyInfo.cs" />
+  </ItemGroup>
 </Project>

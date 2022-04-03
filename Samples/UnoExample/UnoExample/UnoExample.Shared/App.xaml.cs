@@ -1,4 +1,5 @@
-﻿using Csla.Configuration;
+﻿using Csla;
+using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,60 +18,89 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace UnoExample
 {
   /// <summary>
   /// Provides application-specific behavior to supplement the default Application class.
   /// </summary>
-  sealed partial class App : Application
+  public sealed partial class App : Application
   {
+    private Window _window;
+
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
     /// </summary>
     public App()
     {
-      ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+      ConfigureServices();
+      InitializeLogging();
 
       this.InitializeComponent();
-      this.Suspending += OnSuspending;
 
-#if __WASM__
-      Csla.DataPortalClient.HttpProxy.UseTextSerialization = true;
+#if HAS_UNO || NETFX_CORE
+            this.Suspending += OnSuspending;
 #endif
+    }
 
-      // INVOKE APPSERVER
-      //string appserverUrl = "http://localhost:60223/api/dataportal";
-      //if (Csla.DataPortalClient.HttpProxy.UseTextSerialization)
-      //  appserverUrl += "Text";
-      //CslaConfiguration.Configure().
-      //  ContextManager(new Csla.Xaml.ApplicationContextManager()).
-      //  DataPortal().
-      //    DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), appserverUrl);
+    public static Csla.ApplicationContext ApplicationContext { get; private set; }
 
-      // USE LOCAL IN-PROC "APPSERVER"
-      CslaConfiguration.Configure().
-        ContextManager(new Csla.Xaml.ApplicationContextManager());
+    private void ConfigureServices()
+    {
       var services = new ServiceCollection();
-      services.AddCsla();
+
+      // The CSLA configuration here uses an ApplicationContextManager
+      // copied from the Csla.Xaml.Shared project, so the same manager
+      // used for WPF, UWP, etc.
+
+      // use local data portal
+      services.AddCsla(o => o
+        .RegisterContextManager<Csla.Xaml.ApplicationContextManager>());
       services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.PersonDal));
+
+      // use remote data portal (requires an app server
+      // that can be reached from your Android emulator)
+      //
+      //services.AddTransient<System.Net.Http.HttpClient>();
+      //services.AddCsla(o => o
+      //  .RegisterContextManager<Csla.Xaml.ApplicationContextManager>()
+      //  .DataPortal(dpo => dpo
+      //    .UseHttpProxy(hpo => hpo
+      //      .DataPortalUrl = "http://myserver/api/dataportal")));
+
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetService<ApplicationContext>();
+
+      //var proxy = provider.GetService<Csla.DataPortalClient.IDataPortalProxy>();
+      //var dp = provider.GetService<IDataPortal<BusinessLibrary.PersonList>>();
+      //var dp = Csla.Xaml.ApplicationContextManager.GetApplicationContext()
+      //  .GetRequiredService<IDataPortal<BusinessLibrary.PersonList>>();
     }
 
     /// <summary>
     /// Invoked when the application is launched normally by the end user.  Other entry points
     /// will be used such as when the application is launched to open a specific file.
     /// </summary>
-    /// <param name="e">Details about the launch request and process.</param>
-    protected override void OnLaunched(LaunchActivatedEventArgs e)
+    /// <param name="args">Details about the launch request and process.</param>
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
 #if DEBUG
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				// this.DebugSettings.EnableFrameRateCounter = true;
-			}
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                // this.DebugSettings.EnableFrameRateCounter = true;
+            }
 #endif
-      Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+
+#if NET5_0 && WINDOWS
+            _window = new Window();
+            _window.Activate();
+#else
+      _window = Windows.UI.Xaml.Window.Current;
+#endif
+
+      var rootFrame = _window.Content as Frame;
 
       // Do not repeat app initialization when the Window already has content,
       // just ensure that the window is active
@@ -81,33 +111,29 @@ namespace UnoExample
 
         rootFrame.NavigationFailed += OnNavigationFailed;
 
-#if !__WASM__ && !__MOBILE__
-        if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+        if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
         {
-          //TODO: Load state from previously suspended application
+          // TODO: Load state from previously suspended application
         }
-#endif
 
         // Place the frame in the current Window
-        Windows.UI.Xaml.Window.Current.Content = rootFrame;
+        _window.Content = rootFrame;
       }
 
-#if !__WASM__ && !__MOBILE__
-      if (e.PrelaunchActivated == false)
-      {
+#if !(NET5_0 && WINDOWS)
+      if (args.PrelaunchActivated == false)
 #endif
+      {
         if (rootFrame.Content == null)
         {
           // When the navigation stack isn't restored navigate to the first page,
           // configuring the new page by passing required information as a navigation
           // parameter
-          rootFrame.Navigate(typeof(MainPage), e.Arguments);
+          rootFrame.Navigate(typeof(MainPage), args.Arguments);
         }
         // Ensure the current window is active
-        Windows.UI.Xaml.Window.Current.Activate();
-#if !__WASM__ && !__MOBILE__
+        _window.Activate();
       }
-#endif
     }
 
     /// <summary>
@@ -117,7 +143,7 @@ namespace UnoExample
     /// <param name="e">Details about the navigation failure</param>
     void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
     {
-      throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+      throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
     }
 
     /// <summary>
@@ -129,52 +155,68 @@ namespace UnoExample
     /// <param name="e">Details about the suspend request.</param>
     private void OnSuspending(object sender, SuspendingEventArgs e)
     {
-#if !__WASM__ && !__MOBILE__
       var deferral = e.SuspendingOperation.GetDeferral();
-      //TODO: Save application state and stop any background activity
+      // TODO: Save application state and stop any background activity
       deferral.Complete();
-#endif
     }
 
-
     /// <summary>
-    /// Configures global logging
+    /// Configures global Uno Platform logging
     /// </summary>
-    /// <param name="factory"></param>
-    static void ConfigureFilters(ILoggerFactory factory)
+    private static void InitializeLogging()
     {
-      factory
-        .WithFilter(new FilterLoggerSettings
-          {
-            { "Uno", LogLevel.Warning },
-            { "Windows", LogLevel.Warning },
-
-						// Debug JS interop
-						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
-
-						// Generic Xaml events
-						// { "Windows.UI.Xaml", LogLevel.Debug },
-						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
-						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
-
-						// Layouter specific messages
-						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
-						// { "Windows.Storage", LogLevel.Debug },
-
-						// Binding related messages
-						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
-
-						// DependencyObject memory references tracking
-						// { "ReferenceHolder", LogLevel.Debug },
-					}
-        )
-#if DEBUG
-				.AddConsole(LogLevel.Debug);
+      var factory = LoggerFactory.Create(builder =>
+      {
+#if __WASM__
+                builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+#elif __IOS__
+                builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
+#elif NETFX_CORE
+                builder.AddDebug();
 #else
-        .AddConsole(LogLevel.Information);
+        builder.AddConsole();
+#endif
+
+        // Exclude logs below this level
+        builder.SetMinimumLevel(LogLevel.Information);
+
+        // Default filters for Uno Platform namespaces
+        builder.AddFilter("Uno", LogLevel.Warning);
+        builder.AddFilter("Windows", LogLevel.Warning);
+        builder.AddFilter("Microsoft", LogLevel.Warning);
+
+        // Generic Xaml events
+        // builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+
+        // Layouter specific messages
+        // builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
+
+        // builder.AddFilter("Windows.Storage", LogLevel.Debug );
+
+        // Binding related messages
+        // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+        // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+
+        // Binder memory references tracking
+        // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
+
+        // RemoteControl and HotReload related
+        // builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+
+        // Debug JS interop
+        // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
+      });
+
+      global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+
+#if HAS_UNO
+			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
     }
   }

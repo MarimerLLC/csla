@@ -18,13 +18,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ApplicationContextManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ErrorEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\IErrorDialog.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\IViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\PropertyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Csla.Uno\ViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EditPerson.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla\Xaml\ApplicationContextManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Csla\Xaml\PropertyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -40,11 +35,30 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
+  </ItemGroup>
+  <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="E:\src\rdl\csla\Samples\UnoExample\UnoExample\UnoExample.Shared\EditPerson.xaml.cs">
-      <DependentUpon>EditPerson.xaml</DependentUpon>
-    </Compile>
+    <!--
+		 Add files present in the shared project folder, excluding the ones
+		 explicitly included in the projitem, so files can be added from vscode
+		 without manipulating the projitem file.
+	-->
+    <_Globbled_Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="@(Page);@(ApplicationDefinition)">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </_Globbled_Page>
+    <Page Include="@(_Globbled_Page)" />
+    <_Globbed_Compile Include="$(MSBuildThisFileDirectory)**/*.xaml.cs" Exclude="@(Compile)">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </_Globbed_Compile>
+    <_Globbed_Compile Include="$(MSBuildThisFileDirectory)**/*.cs" Exclude="@(Compile);@(_Globbed_Compile)" />
+    <Compile Include="@(_Globbed_Compile)" />
+    <_Globbed_PRIResource Include="$(MSBuildThisFileDirectory)**/*.resw" Exclude="@(PRIResource)" />
+    <PRIResource Include="@(_Globbed_PRIResource)" />
+    <_Globbed_Content Include="$(MSBuildThisFileDirectory)Assets/**/*.*" Exclude="@(Content)" />
+    <Content Include="@(_Globbed_Content)" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Csla;
 
 namespace AppServer.Controllers
 {
@@ -11,16 +8,14 @@ namespace AppServer.Controllers
   [ApiController]
   public class DataPortalTextController : Csla.Server.Hosts.HttpPortalController
   {
-    public DataPortalTextController()
+    public DataPortalTextController(ApplicationContext applicationContext)
+      : base(applicationContext)
     {
       UseTextSerialization = true;
     }
 
     [HttpGet]
-    public string Get()
-    {
-      return "Running";
-    }
+    public string Get() => "DataPortal running (text)";
 
     [HttpPost]
     public override Task PostAsync([FromQuery] string operation)

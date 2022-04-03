@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/dataportal",
+      "launchUrl": "api/dataportaltext",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "AppServer": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/dataportal",
+      "launchUrl": "api/dataportaltext",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

@@ -241,6 +241,172 @@ As in previous versions of CSLA, this only works if the child type's `ChildCreat
 
 ## Implementing Data Portal Operations
 
+The data portal supports four models for data portal operation implementation:
+
+1. Encapsulated invocation
+1. Factory implementation
+1. Encapsulated implementation
+1. Factory invocation
+
+> ℹ️ These are discussed in the _Using CSLA 4_ book.
+
+I recommend options 1 or 2, and will discuss them here. If you use one of the other models you should be able to extrapolate how to make them work based on the information in this document.
+
 ### Encapsulated Data Portal Models
 
+Starting with CSLA 5 you had the ability to inject services into data portal operation methods, and also use data portal operation attributes instead of hard-coded method names. For example:
+
+```c#
+  [Fetch]
+  private void Fetch(int id, [Inject] IPersonDal dal)
+  {
+      var data = dal.GetPerson(id);
+      using (BypassPropertyChecks)
+      {
+        // map data into the business object properties
+      }
+      BusinessRules.CheckRules(); // optionally check rules
+  }
+```
+
+CSLA 6 removes the vitual "DataPortal_XYZ" methods in all base classes, and you should use the data portal operation attributes as shown here.
+
+Because the data portal is now an _instance_ instead of a static helper, if your data portal operation needs to interact with another root object or a child object, you will need to inject the appropriate service. The services you can inject are:
+
+* `IDataPortal<T>` - interact with root type `T`
+* `IChildDataPortal<T>` - interact with child type `T`
+* `IDataPortalFactory` - use to create instances of `IDataPortal<T>`
+
+For example:
+
+```c#
+  [Fetch]
+  private async Task Fetch(
+    int id, 
+    [Inject] IOrderDal dal),
+    [Inject] IChildDataPortal<LineItems> childPortal)
+  {
+      var data = dal.GetOrder(id);
+      using (BypassPropertyChecks)
+      {
+        // map data into the business object properties
+        LineItems = await childPortal.FetchChild(id);
+      }
+      BusinessRules.CheckRules(); // optionally check rules
+  }
+```
+
+Notice how an instance of `IChildDataPortal<T>` is injected and then used to fetch a child object as part of the overall data portal operation.
+
 ### Factory Data Portal Models
+
+The _factory implementation_ model separates the code for the data access layer out of the business class entirely, and into its own factory class.
+
+For example, a business class just specifies the type of the factory to be invoked by the data portal:
+
+```c#
+  [Serializable]
+  [Csla.Server.ObjectFactory(typeof(PersonFactory))]
+  public class PersonEdit : BusinessBase<PersonEdit>
+```
+
+In CSLA 5 the `PersonFactory` class implements methods to create, fetch, insert, update, and delete instances of the business class. 
+
+In CSLA 6, two changes are required.
+
+1. The `ObjectFactory` subclass must implement a constructor so the `ApplicationContext` can be injected.
+1. You must use the `CreateInstanceDI` method of the `ApplicationContext` object to create instances of business domain types.
+
+So in CSLA 6 a factory looks like this:
+
+```c#
+  public class PersonFactory : Csla.Server.ObjectFactory
+  {
+    public PersonFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    public PersonEdit Create()
+    {
+      var result = ApplicationContext.CreateInstanceDI<PersonEdit>();
+      LoadProperty(result, PersonEdit.NameProperty, "Xiaoping");
+      CheckRules(result);
+      MarkNew(result);
+      return result;
+    }
+  }
+```
+
+This is nearly identical to CSLA 5 code, but with a constructor:
+
+```c#
+    public PersonFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+```
+
+And the use of `CreateInstanceDI` to create an instance of the business domain type:
+
+```c#
+      var result = ApplicationContext.CreateInstanceDI<PersonEdit>();
+```
+
+This is necessary, because in CSLA 6 business domain types must be initialized by the `ApplicationContext` to operate properly within the context of the CSLA framework.
+
+If you use `Activator.CreateInstance` or the `new` keyword, the domain object will not be properly initialized and you will get runtime exceptions.
+
+## Implementing a Remote Data Portal Host
+
+Every remote data portal host must configure DI, including registering CSLA types and configuring them _for the server environment_. The idea of the server having different configuration from the client is not new, and has been consistent in all versions of CSLA. What is new and different is that the configuration flows from DI and the `AddCsla` method.
+
+### ASP.NET Core Endpoint
+
+The most common host for a remote data portal is ASP.NET Core, using a controller as an endpoint for the data portal.
+
+In CSLA 5 the controller would look something like this:
+
+```c#
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BlazorExample.Server.Controllers
+{
+  [Route("api/[controller]")]
+  [ApiController]
+  public class DataPortalController : Csla.Server.Hosts.HttpPortalController
+  {
+    [HttpGet]
+    public string Get()
+    {
+      return "DataPortal is running";
+    }
+  }
+}
+```
+
+In CSLA 6 the controller needs access to the `ApplicationContext` service, and so it looks like this:
+
+```c#
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BlazorExample.Server.Controllers
+{
+  [Route("api/[controller]")]
+  [ApiController]
+  public class DataPortalController : Csla.Server.Hosts.HttpPortalController
+  {
+    public DataPortalController(Csla.ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    [HttpGet]
+    public string Get() => "DataPortal is running";
+  }
+}
+```
+
+Notice the constructor that requires the `ApplicationContext` service and provides it to the base implementation.
+
+### WCF Endpoint
+
+Microsoft has chosen to not carry WCF forward into the modern .NET world, so it doesn't exist in .NET Core or .NET 6.
+
+As a result, you should replace all use of the WCF data portal channel (i.e. `WcfProxy`) with another data portal channel such as the HTTP channel (i.e. `HttpProxy`).

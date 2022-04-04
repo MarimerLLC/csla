@@ -19,6 +19,13 @@ namespace Csla.Core
   public class GraphMerger : Csla.Server.ObjectFactory
   {
     /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public GraphMerger(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    /// <summary>
     /// Merges state from source graph into target graph.
     /// </summary>
     /// <param name="target">Target of merge.</param>

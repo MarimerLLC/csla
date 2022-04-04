@@ -6,9 +6,6 @@
 // <summary>Base class to be used when creating a data portal</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -21,6 +18,20 @@ namespace Csla.Server
   /// </summary>
   public abstract class ObjectFactory
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public ObjectFactory(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
+    /// <summary>
+    /// Gets a reference to the current ApplicationContext.
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
+
     /// <summary>
     /// Sets the IsReadOnly property on the specified
     /// object, if possible.

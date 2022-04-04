@@ -21,6 +21,13 @@ namespace Csla.Web.Mvc
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public CslaModelBinder(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    /// <summary>
     /// Bind the form data to a new instance of an IBusinessBase object.
     /// </summary>
     /// <param name="bindingContext">Binding context</param>

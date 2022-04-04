@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Csla.Reflection;
@@ -22,9 +21,9 @@ namespace Csla.Blazor
   public class ViewModel<T>
   {
     /// <summary>
-    /// Gets or sets the applicationcontext instance
+    /// Gets the current ApplicationContext instance.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; private set; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -147,7 +146,7 @@ namespace Csla.Blazor
       {
         var result = (T)await savable.SaveAsync();
         if (Model is Core.IEditableBusinessObject editable)
-          new Core.GraphMerger().MergeGraph(editable, (Core.IEditableBusinessObject)result);
+          new Core.GraphMerger(ApplicationContext).MergeGraph(editable, (Core.IEditableBusinessObject)result);
         else
           Model = result;
       }

@@ -1,6 +1,4 @@
-using BlazorExample.Client;
 using Csla.Configuration;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 string BlazorClientPolicy = "AllowAllOrigins";
@@ -76,7 +74,5 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
-
-app.UseCsla();
 
 app.Run();

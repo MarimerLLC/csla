@@ -1,17 +1,19 @@
-﻿using System;
-using BusinessLibrary;
-using Csla;
+﻿using Csla;
 using Csla.Server;
+using BusinessLibrary;
 
 namespace DataAccess
 {
   public class OrderFactory : ObjectFactory
   {
+    public OrderFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     private static int _lastId;
 
     public Order Create()
     {
-      var obj = (Order)Activator.CreateInstance(typeof(Order), true);
+      var obj = ApplicationContext.CreateInstanceDI<Order>();
       var id = System.Threading.Interlocked.Decrement(ref _lastId);
       LoadProperty(obj, Order.IdProperty, id);
       MarkNew(obj);

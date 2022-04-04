@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
 
 namespace BusinessLibrary
@@ -27,15 +24,10 @@ namespace BusinessLibrary
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(IdProperty, 1));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty)); 
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
     }
 
-    public LineItem()
-    { /* require use of factory methods */ }
-
-    internal static LineItem NewItem()
-    {
-      return DataPortal.Create<LineItem>();
-    }
+    [CreateChild]
+    private void CreateChild() { }
   }
 }

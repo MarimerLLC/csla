@@ -45,5 +45,8 @@ namespace Csla.Testing.Business.DataPortal
     {
 
     }
+
+    [Delete]
+    private void DeleteItem() { }
   }
 }

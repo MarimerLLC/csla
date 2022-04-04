@@ -10,6 +10,7 @@ using System.Configuration;
 using Csla.DataPortalClient;
 using Csla.Testing.Business.DataPortal;
 using Csla.Server;
+using System.Threading.Tasks;
 
 #if !NUNIT && !ANDROID
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -133,10 +134,14 @@ namespace Csla.Test.DataPortal
     #region Authorize() tests
 
     [TestMethod]
-    public void DataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
+    public async Task DataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Create(typeof(TestBO), null, new DataPortalContext(null,false), true);
+      await dp.Create(
+        typeof(TestBO), 
+        null, 
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
@@ -145,11 +150,14 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public void DataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
+    public async Task DataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Fetch(typeof(TestBO), null, new DataPortalContext(null, false), true);
-
+      await dp.Fetch(
+        typeof(TestBO), 
+        null,
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false),
+        true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
@@ -158,10 +166,13 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public void DataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
+    public async Task DataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Update(new TestBO(), new DataPortalContext(null, false), true);
+      await dp.Update(
+        new TestBO(), 
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true);
 
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
@@ -171,10 +182,14 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public void DataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
+    public async Task DataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Delete(typeof(TestBO), null, new DataPortalContext(null, false), true);
+      await dp.Delete(
+        typeof(TestBO), 
+        null, 
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 

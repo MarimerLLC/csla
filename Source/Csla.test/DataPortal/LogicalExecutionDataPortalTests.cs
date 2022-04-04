@@ -20,22 +20,36 @@ namespace Csla.Test.DataPortal
 
       var dataPortal = new Server.DataPortal();
 
-      dataPortal.Create(typeof(LogicalExecutionTestBusiness), null, new DataPortalContext(null, false), true).Wait();
+      dataPortal.Create(
+        typeof(LogicalExecutionTestBusiness), 
+        null, new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true).Wait();
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Create"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Create'");
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Create'");
       ApplicationContext.Clear();
 
-      dataPortal.Fetch(typeof(LogicalExecutionTestBusiness), null, new DataPortalContext(null, false), true).Wait();
+      dataPortal.Fetch(
+        typeof(LogicalExecutionTestBusiness), 
+        null, 
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true).Wait();
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Fetch"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Fetch'");
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Fetch'");
       ApplicationContext.Clear();
 
-      dataPortal.Delete(typeof(LogicalExecutionTestBusiness), null, new DataPortalContext(null, false), true).Wait();
+      dataPortal.Delete(
+        typeof(LogicalExecutionTestBusiness), 
+        null, 
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true).Wait();
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Delete"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Delete'");
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Delete'");
       ApplicationContext.Clear();
 
-      dataPortal.Update(new LogicalExecutionTestBusiness(), new DataPortalContext(null, false), true).Wait();
+      dataPortal.Update(
+        new LogicalExecutionTestBusiness(), 
+        new DataPortalContext(new Csla.Security.UnauthenticatedPrincipal(), false), 
+        true).Wait();
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server, (ApplicationContext.LogicalExecutionLocations)ApplicationContext.GlobalContext["LogicalExecutionDataPortalTests_Update"], "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Server' DURING 'Update'");
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, ApplicationContext.LogicalExecutionLocation, "'ApplicationContext.LogicalExecutionLocation' must be 'LogicalExecutionLocations.Client' AFTER 'Update'");
     }

@@ -26,7 +26,8 @@ namespace BusinessLibrary
     public static readonly PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(nameof(LineItems));
     public LineItems LineItems
     {
-      get => LazyGetProperty(LineItemsProperty, () => DataPortal.CreateChild<LineItems>());
+      get => LazyGetProperty(LineItemsProperty, 
+        () => ApplicationContext.GetRequiredService<IChildDataPortal<LineItems>>().CreateChild());
     }
   }
 }

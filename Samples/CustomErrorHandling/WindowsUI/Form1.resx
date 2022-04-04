@@ -132,11 +132,7 @@
 A non serializable Exception will cause the DataPortal to fail when trying to serialize the DataPortalResult. 
 An Exception that belongs to an assembly not present on the client will cause an Exception when trying to deserialize the DataPortalResult on the client. 
 
-The button will call Delete mthod on order that throws a non serializable Exception. Try with and without the config in WcfHost project:
-  &lt;appSettings&gt;
-    &lt;add key="CslaDataPortalExceptionInspector" value="WcfHost.MyDataPortalExceptionInspector, WcfHost"/&gt;
-  &lt;/appSettings&gt;
-</value>
+The button will call Delete mthod on order that throws a non serializable Exception. Try with and without the config in the AppServer project's Program.cs file. There are comments explaining the different configuration options.</value>
   </data>
   <metadata name="lineItemsBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>353, 17</value>

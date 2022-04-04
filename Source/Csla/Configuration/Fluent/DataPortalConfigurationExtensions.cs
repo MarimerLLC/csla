@@ -93,7 +93,7 @@ namespace Csla.Configuration
       services.TryAddTransient<SimpleDataPortal>();
       services.TryAddTransient<FactoryDataPortal>();
       services.TryAddTransient<DataPortalBroker>();
-      services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), typeof(Server.Dashboard.NullDashboard));
+      services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), config.DataPortalServerOptions.DashboardType);
     }
   }
 }

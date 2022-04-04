@@ -18,6 +18,23 @@ namespace Csla.Configuration
   {
     /// <summary>
     /// Gets or sets a value containing the type of the
+    /// IDashboard to be used by the data portal.
+    /// </summary>
+    internal Type DashboardType { get; set; } = typeof(Server.Dashboard.NullDashboard);
+
+    /// <summary>
+    /// Sets the type of the IDashboard to be 
+    /// used by the data portal. 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public DataPortalServerOptions RegisterDashboard<T>() where T : Server.Dashboard.IDashboard
+    {
+      DashboardType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Gets or sets a value containing the type of the
     /// IDataPortalAuthorizer to be used by the data portal.
     /// An instance of this type is created using dependency
     /// injection.

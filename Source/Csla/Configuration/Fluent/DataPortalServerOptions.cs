@@ -67,7 +67,7 @@ namespace Csla.Configuration
     /// Removes a type of an IInterceptDataPortal.
     /// </summary>
     /// <param name="index">Index from which item will be removed.</param>
-    public DataPortalServerOptions RemoveInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    public DataPortalServerOptions RemoveInterceptorProvider(int index)
     {
       InterceptorProviders.RemoveAt(index);
       return this;

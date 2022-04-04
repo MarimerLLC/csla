@@ -20,6 +20,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="requestedType">Requested business type (class or interface).</param>
     /// <returns>Business object instance.</returns>
+    [Obsolete]
     object CreateInstance(Type requestedType);
     /// <summary>
     /// Initializes an existing business object instance.
@@ -37,6 +38,7 @@ namespace Csla.Server
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
+    [Obsolete]
     Type ResolveType(Type requestedType);
   }
 }

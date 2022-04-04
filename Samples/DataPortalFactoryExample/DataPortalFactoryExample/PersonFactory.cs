@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Csla;
 
 namespace DataPortalFactoryExample
 {
   public class PersonFactory : Csla.Server.ObjectFactory
   {
+    public PersonFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     public PersonEdit Create()
     {
-      var result = new PersonEdit();
+      var result = ApplicationContext.CreateInstanceDI<PersonEdit>();
       LoadProperty(result, PersonEdit.NameProperty, "Xiaoping");
       CheckRules(result);
       MarkNew(result);
@@ -17,7 +18,7 @@ namespace DataPortalFactoryExample
 
     public PersonEdit Fetch()
     {
-      var result = new PersonEdit();
+      var result = ApplicationContext.CreateInstanceDI<PersonEdit>();
       LoadProperty(result, PersonEdit.NameProperty, "Xiaoping");
       CheckRules(result);
       MarkOld(result);

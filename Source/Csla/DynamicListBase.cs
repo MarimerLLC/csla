@@ -61,7 +61,10 @@ namespace Csla
       AllowNew = true;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    /// <summary>
+    /// Gets the current ApplicationContext
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
     ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     #region Initialize

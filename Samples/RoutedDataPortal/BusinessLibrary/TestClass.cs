@@ -13,9 +13,10 @@ namespace BusinessLibrary
       private set { LoadProperty(CreatedFromProperty, value); }
     }
 
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     {
-      CreatedFrom = $"{Environment.MachineName} - {Csla.ApplicationContext.LocalContext["dpv"].ToString()}";
+      CreatedFrom = $"{Environment.MachineName} - {ApplicationContext.LocalContext["dpv"].ToString()}";
     }
   }
 }

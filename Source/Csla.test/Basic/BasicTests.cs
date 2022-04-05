@@ -86,7 +86,7 @@ namespace Csla.Test.Basic
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
 
       TestResults.Reinitialise();
-      CommandObject obj = new CommandObject();
+      CommandObject obj = dataPortal.Create();
       obj = dataPortal.Execute(obj);
       Assert.AreEqual("Executed", obj.AProperty);
     }

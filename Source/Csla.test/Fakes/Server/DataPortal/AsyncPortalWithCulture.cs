@@ -48,6 +48,11 @@ namespace Csla.Testing.Business.DataPortal
 
     public AsyncPortalWithCulture() { }
 
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
     [Execute]
 	protected void DataPortal_Execute()
     {    

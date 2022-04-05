@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Csla.Core;
 using Csla;
-using System.Threading;
 
 namespace PropertyStatus
 {
@@ -34,9 +28,10 @@ namespace PropertyStatus
   {
     public BlahCollection()
     {
-      Add(DataPortal.Create<Blah>("one"));
-      Add(DataPortal.Create<Blah>("two"));
-      Add(DataPortal.Create<Blah>("three"));
+      var portal = App.ApplicationContext.GetRequiredService<IDataPortal<Blah>>();
+      Add(portal.Create("one"));
+      Add(portal.Create("two"));
+      Add(portal.Create("three"));
     }
   }
 }

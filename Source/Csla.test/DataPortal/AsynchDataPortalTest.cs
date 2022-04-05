@@ -282,7 +282,7 @@ namespace Csla.Test.DataPortal
     {
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
 
-      var command = new CommandObject();
+      var command = dataPortal.Create();
       var result = await dataPortal.ExecuteAsync(command);
       Assert.AreEqual("Executed", result.AProperty);
     }
@@ -292,8 +292,8 @@ namespace Csla.Test.DataPortal
     {
       IDataPortal<SingleCommand> dataPortal = _testDIContext.CreateDataPortal<SingleCommand>();
 
-      var result = await dataPortal.ExecuteAsync(
-        new SingleCommand { Value = 123 });
+      SingleCommand cmd = dataPortal.Create(123);
+      var result = await dataPortal.ExecuteAsync(cmd);
       Assert.IsNotNull(result);
       Assert.AreEqual(124, result.Value);
     }
@@ -308,8 +308,8 @@ namespace Csla.Test.DataPortal
 
         try
         {
-          var result = await dataPortal.ExecuteAsync(
-            new SingleCommand() { Value = 555 });
+          var cmd = dataPortal.Create(555);
+          var result = await dataPortal.ExecuteAsync(cmd);
           Assert.Fail("Expected exception not thrown");
         }
         catch (Exception ex)
@@ -345,7 +345,7 @@ namespace Csla.Test.DataPortal
       string expectedCulture = Thread.CurrentThread.CurrentCulture.Name;
       string expectedUICulture = Thread.CurrentThread.CurrentUICulture.Name;
 
-      var command = new AsyncPortalWithCulture();
+      var command = dataPortal.Create();
       var result = await dataPortal.ExecuteAsync(command);
       Assert.AreEqual(expectedCulture, result.CurrentCulture);
       Assert.AreEqual(expectedUICulture, result.CurrentUICulture);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.TestHelpers;
 
 namespace Csla.Test.CommandBase
 {
@@ -17,7 +18,8 @@ namespace Csla.Test.CommandBase
     {
     }
 
-    private TestContext testContextInstance;
+    private TestContext _testContextInstance;
+    private TestDIContext _testDIContext = TestDIContextFactory.CreateDefaultContext();
 
     /// <summary>
     ///Gets or sets the test context which provides
@@ -27,12 +29,18 @@ namespace Csla.Test.CommandBase
     {
       get
       {
-        return testContextInstance;
+        return _testContextInstance;
       }
       set
       {
-        testContextInstance = value;
+        _testContextInstance = value;
       }
+    }
+
+    [ClassInitialize()]
+    public static void ClassInitialize(TestContext testContext) 
+    { 
+
     }
 
     #region Additional test attributes
@@ -57,12 +65,11 @@ namespace Csla.Test.CommandBase
     //
     #endregion
 
-
-    
     [TestMethod]
     public void CommandBase_AssertDefaultValues()
     {
-      var cmd = new CommandObject();
+      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      var cmd = dataPortal.Create();
 
       Assert.AreEqual(string.Empty, cmd.Name);
       Assert.AreEqual(0, cmd.Num);
@@ -71,7 +78,8 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanLoadProperties_WithObjectFactory()
     {
-      var cmd = new CommandObject();
+      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      var cmd = dataPortal.Create();
 
       LoadProperty(cmd, CommandObject.NameProperty, "Rocky");
       LoadProperty(cmd, CommandObject.NumProperty, 8);
@@ -84,7 +92,8 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanLoadPropertiesUsingNonGenericPropertyInfo_WithObjectFactory()
     {
-      var cmd = new CommandObject();
+      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      var cmd = dataPortal.Create();
 
       IPropertyInfo nameProperty = (IPropertyInfo) CommandObject.NameProperty;
       IPropertyInfo numProperty = (IPropertyInfo)CommandObject.NumProperty;
@@ -100,7 +109,8 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanReadProperties_WithObjectFactory()
     {
-      var cmd = new CommandObject();
+      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      var cmd = dataPortal.Create();
 
       LoadProperty(cmd, CommandObject.NameProperty, "Rocky");
       LoadProperty(cmd, CommandObject.NumProperty, 8);
@@ -116,7 +126,8 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanReadPropertiesUsingNonGenericPropertyInfo_WithObjectFactory()
     {
-      var cmd = new CommandObject();
+      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      var cmd = dataPortal.Create();
 
       IPropertyInfo nameProperty = (IPropertyInfo)CommandObject.NameProperty;
       IPropertyInfo numProperty = (IPropertyInfo)CommandObject.NumProperty;

@@ -137,7 +137,8 @@ namespace Csla.Test.DataPortal
 
       TestResults.Reinitialise();
 
-      var obj = new InterceptorCommand();
+      var obj = dataPortal.Create();
+      TestResults.Reinitialise();
       obj = dataPortal.Execute(obj);
 
       Assert.AreEqual("Execute", TestResults.GetResult("InterceptorCommand"), "Execute should have run");
@@ -239,6 +240,11 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class InterceptorCommand : CommandBase<InterceptorCommand>
   {
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
     [Execute]
 	protected void DataPortal_Execute()
     {

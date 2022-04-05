@@ -216,6 +216,18 @@ namespace Csla.Test.DataPortalTest
       set { LoadProperty(ValueProperty, value); }
     }
 
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
+    [RunLocal]
+    [Create]
+    private void Create(int value)
+    {
+      Value = value;
+    }
+
     [Execute]
 	protected void DataPortal_Execute()
     {

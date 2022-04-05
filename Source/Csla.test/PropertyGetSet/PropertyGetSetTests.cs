@@ -98,11 +98,13 @@ namespace Csla.Test.PropertyGetSet
       root.LoadInternalAndPrivate("Test");
       Assert.AreEqual("Test", root.M08);
 
-      var cmd = new Command();
+      IDataPortal<Command> commandDataPortal = _testDIContext.CreateDataPortal<Command>();
+      var cmd = commandDataPortal.Create();
       cmd.Load("abc");
       Assert.AreEqual("abc", cmd.Name);
 
-      var ro = new ReadOnly();
+      IDataPortal<ReadOnly> roDataPortal = _testDIContext.CreateDataPortal<ReadOnly>();
+      var ro = roDataPortal.Fetch();
       ro.Load("abc");
       Assert.AreEqual("abc", ro.Name);
     }
@@ -853,6 +855,12 @@ namespace Csla.Test.PropertyGetSet
     {
       LoadProperty((Csla.Core.IPropertyInfo)NameProperty, name);
     }
+
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
   }
 
   [Serializable]
@@ -882,5 +890,9 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty((Csla.Core.IPropertyInfo)_originalNameProperty, name);
       LoadProperty((Csla.Core.IPropertyInfo)_originalNamePrivateProperty, name);
     }
+
+    [Fetch]
+    private void Fetch()
+    { }
   }
 }

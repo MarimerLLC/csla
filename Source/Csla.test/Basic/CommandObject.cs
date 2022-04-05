@@ -26,6 +26,11 @@ namespace Csla.Test.Basic
       set { LoadProperty(APropertyProperty, value); }
     }
 
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
     [Execute]
 	protected void DataPortal_Execute()
     {

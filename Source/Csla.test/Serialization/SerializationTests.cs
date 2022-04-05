@@ -120,9 +120,11 @@ namespace Csla.Test.Serialization
     [TestMethod()]
     public void Clone()
     {
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
       TestResults.Reinitialise();
       UnitTestContext context = GetContext();
-      SerializationRoot root = new SerializationRoot();
+      SerializationRoot root = dataPortal.Create();
 
       root = (SerializationRoot)root.Clone();
 
@@ -558,9 +560,10 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void SerializeCommand()
     {
+      IDataPortal<TestCommand> dataPortal = _testDIContext.CreateDataPortal<TestCommand>();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
-      var cmd = new TestCommand();
+      var cmd = dataPortal.Create();
       cmd.Name = "test data";
 
       // TODO: Not sure how to replicate the object cloner in Csla 6
@@ -594,7 +597,7 @@ namespace Csla.Test.Serialization
       //);
       IDataPortal<TestCommand> dataPortal = customDIContext.CreateDataPortal<TestCommand>();
 
-      var cmd = new TestCommand();
+      var cmd = dataPortal.Create();
       cmd.Name = "test data";
 
       var result = dataPortal.Execute(cmd);
@@ -646,6 +649,11 @@ namespace Csla.Test.Serialization
       get { return ReadProperty(NameProperty); }
       set { LoadProperty(NameProperty, value); }
     }
+
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
 
     [Execute]
     protected void DataPortal_Execute()

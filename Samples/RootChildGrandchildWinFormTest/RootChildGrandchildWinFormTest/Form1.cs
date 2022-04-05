@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using Csla;
 
@@ -23,7 +18,8 @@ namespace WindowsApplication2
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      Root root = DataPortal.Create<Root>();
+      var rootPortal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      Root root = rootPortal.Create();
       Child child;
       child = root.RealChildren.AddNew();
       child.Grandchildren.AddNew();

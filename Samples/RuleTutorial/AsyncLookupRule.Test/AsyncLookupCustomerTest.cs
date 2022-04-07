@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Core;
 using Csla.Rules;
 using RuleTutorial.Testing.Common;
+using Csla;
 
 namespace AsyncLookupRule.Test
 {
@@ -26,7 +27,7 @@ namespace AsyncLookupRule.Test
     [TestClass()]
     public class TheCtor
     {
-      private IBusinessRule Rule;
+      private IBusinessRuleAsync Rule;
       [TestInitialize]
       public void InitTests()
       {
@@ -63,6 +64,9 @@ namespace AsyncLookupRule.Test
     [TestClass()]
     public class TheExecuteMethod : BusinessRuleTest
     {
+      public TheExecuteMethod(ApplicationContext applicationContext)
+        : base(applicationContext) { }
+
       [TestInitialize]
       public void InitTests()
       {
@@ -83,6 +87,9 @@ namespace AsyncLookupRule.Test
     [TestClass()]
     public class TheExecuteMethodAlt : BusinessRuleTest
     {
+      public TheExecuteMethodAlt(ApplicationContext applicationContext)
+        : base(applicationContext) { }
+
       private RootFake _myBO;
 
       [TestInitialize]

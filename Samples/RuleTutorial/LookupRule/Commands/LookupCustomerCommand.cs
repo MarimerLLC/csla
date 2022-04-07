@@ -62,16 +62,18 @@ namespace LookupRule.Commands
     /// </returns>
     public static LookupCustomerCommand Execute(int customerId)
     {
-      var cmd = DataPortal.Create<LookupCustomerCommand>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<LookupCustomerCommand>>();
+      var cmd = portal.Create();
       cmd.CustomerId = customerId;
-      cmd = DataPortal.Execute<LookupCustomerCommand>(cmd);
+      cmd = portal.Execute(cmd);
       return cmd;
     }
 
     /// <summary>
     /// The data portal_ execute.
     /// </summary>
-    protected override void DataPortal_Execute()
+    [Execute]
+    private void DataPortal_Execute()
     {
       // wait for 500 ms
       System.Threading.Thread.Sleep(50);

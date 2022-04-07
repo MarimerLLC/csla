@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AsyncLookupRule;
+using Csla;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntegrationRules.Test
@@ -8,6 +9,9 @@ namespace IntegrationRules.Test
   [TestClass()]
   public class RootTest : IntegrationRuleTest<Root>
   {
+    public RootTest(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     [TestMethod()]
     public void TestSyncRule()
     {

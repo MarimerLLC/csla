@@ -8,7 +8,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using Csla;
+using Csla.Configuration;
 using Csla.Rules;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RuleTutorial.Testing.Common
 {
@@ -18,7 +21,7 @@ namespace RuleTutorial.Testing.Common
   public class AuthorizationRuleTest
   {
     public AuthorizationContext  AuthorizationContext { get; private set; }
-    protected static ObjectAccessor Accessor = new ObjectAccessor();
+    protected ObjectAccessor Accessor;
 
     /// <summary>
     /// Initializes the test.
@@ -28,7 +31,13 @@ namespace RuleTutorial.Testing.Common
     /// <param name="type">The type.</param>
     public void InitializeTest(IAuthorizationRule rule, object target, Type type)
     {
-      AuthorizationContext = new AuthorizationContext(rule, target, type);
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetRequiredService<ApplicationContext>();
+      Accessor = new ObjectAccessor(applicationContext);
+
+      AuthorizationContext = new AuthorizationContext(applicationContext, rule, target, type);
     }
 
     /// <summary>

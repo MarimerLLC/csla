@@ -4,6 +4,8 @@ using System;
 using Csla.Rules;
 using RuleTutorial.Testing.Common;
 using Csla;
+using Microsoft.Extensions.DependencyInjection;
+using Csla.Configuration;
 
 namespace CustomAuthzRules.Test
 {
@@ -23,7 +25,13 @@ namespace CustomAuthzRules.Test
       [TestInitialize]
       public void Setup()
       {
-        Root = DataPortal.Create<TestRoot>();
+        var services = new ServiceCollection();
+        services.AddCsla();
+        var provider = services.BuildServiceProvider();
+        var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
+        var portal = applicationContext.GetRequiredService<IDataPortal<TestRoot>>();
+        Root = portal.Create();
         var rule = new OnlyForUS(AuthorizationActions.WriteProperty, TestRoot.NameProperty, TestRoot.CountryProperty);
         InitializeTest(rule, Root, typeof(TestRoot));
       }

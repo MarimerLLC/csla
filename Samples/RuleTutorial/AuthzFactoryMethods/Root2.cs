@@ -43,7 +43,8 @@ namespace AuthzFactoryMethods
     /// </returns>
     public static Root2 NewEditableRoot()
     {
-      return DataPortal.Create<Root2>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root2>>();
+      return portal.Create();
     }
 
     /// <summary>

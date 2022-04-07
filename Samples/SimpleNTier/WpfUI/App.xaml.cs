@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+using System.Net.Http;
 using System.Windows;
+using Csla;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WpfUI
 {
@@ -13,12 +12,20 @@ namespace WpfUI
   /// </summary>
   public partial class App : Application
   {
+    public static ApplicationContext ApplicationContext { get; private set; }
+
     protected override void OnStartup(StartupEventArgs e)
     {
-      base.OnStartup(e);
+      var services = new ServiceCollection();
+      services.AddTransient<HttpClient>();
+      services.AddCsla(o => o
+        .DataPortal(dp => dp
+          .UseHttpProxy(hp => hp
+            .DataPortalUrl = "https://localhost:44332/api/dataportal")));
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetService<ApplicationContext>();
 
-      CslaConfiguration.Configure()
-        .DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "https://localhost:44332/api/dataportal");
+      base.OnStartup(e);
     }
   }
 }

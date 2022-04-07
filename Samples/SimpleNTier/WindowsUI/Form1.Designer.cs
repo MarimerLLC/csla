@@ -55,18 +55,20 @@
       // customerNameLabel
       // 
       customerNameLabel.AutoSize = true;
-      customerNameLabel.Location = new System.Drawing.Point(17, 57);
+      customerNameLabel.Location = new System.Drawing.Point(26, 88);
+      customerNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       customerNameLabel.Name = "customerNameLabel";
-      customerNameLabel.Size = new System.Drawing.Size(85, 13);
+      customerNameLabel.Size = new System.Drawing.Size(128, 20);
       customerNameLabel.TabIndex = 1;
       customerNameLabel.Text = "Customer Name:";
       // 
       // idLabel
       // 
       idLabel.AutoSize = true;
-      idLabel.Location = new System.Drawing.Point(17, 31);
+      idLabel.Location = new System.Drawing.Point(26, 48);
+      idLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       idLabel.Name = "idLabel";
-      idLabel.Size = new System.Drawing.Size(19, 13);
+      idLabel.Size = new System.Drawing.Size(27, 20);
       idLabel.TabIndex = 3;
       idLabel.Text = "Id:";
       // 
@@ -78,18 +80,20 @@
       // customerNameTextBox
       // 
       this.customerNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.orderBindingSource, "CustomerName", true));
-      this.customerNameTextBox.Location = new System.Drawing.Point(108, 54);
+      this.customerNameTextBox.Location = new System.Drawing.Point(162, 83);
+      this.customerNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.customerNameTextBox.Name = "customerNameTextBox";
-      this.customerNameTextBox.Size = new System.Drawing.Size(100, 20);
+      this.customerNameTextBox.Size = new System.Drawing.Size(148, 26);
       this.customerNameTextBox.TabIndex = 2;
       // 
       // idTextBox
       // 
       this.idTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.orderBindingSource, "Id", true));
-      this.idTextBox.Location = new System.Drawing.Point(108, 28);
+      this.idTextBox.Location = new System.Drawing.Point(162, 43);
+      this.idTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.idTextBox.Name = "idTextBox";
       this.idTextBox.ReadOnly = true;
-      this.idTextBox.Size = new System.Drawing.Size(100, 20);
+      this.idTextBox.Size = new System.Drawing.Size(148, 26);
       this.idTextBox.TabIndex = 4;
       // 
       // lineItemsBindingSource
@@ -106,43 +110,53 @@
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2});
       this.lineItemsDataGridView.DataSource = this.lineItemsBindingSource;
-      this.lineItemsDataGridView.Location = new System.Drawing.Point(20, 89);
+      this.lineItemsDataGridView.Location = new System.Drawing.Point(30, 137);
+      this.lineItemsDataGridView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.lineItemsDataGridView.Name = "lineItemsDataGridView";
-      this.lineItemsDataGridView.Size = new System.Drawing.Size(300, 220);
+      this.lineItemsDataGridView.RowHeadersWidth = 62;
+      this.lineItemsDataGridView.Size = new System.Drawing.Size(450, 338);
       this.lineItemsDataGridView.TabIndex = 5;
       // 
       // dataGridViewTextBoxColumn1
       // 
       this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
       this.dataGridViewTextBoxColumn1.HeaderText = "Id";
+      this.dataGridViewTextBoxColumn1.MinimumWidth = 8;
       this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+      this.dataGridViewTextBoxColumn1.Width = 150;
       // 
       // dataGridViewTextBoxColumn2
       // 
       this.dataGridViewTextBoxColumn2.DataPropertyName = "Name";
       this.dataGridViewTextBoxColumn2.HeaderText = "Name";
+      this.dataGridViewTextBoxColumn2.MinimumWidth = 8;
       this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+      this.dataGridViewTextBoxColumn2.Width = 150;
       // 
       // cslaActionExtender1
       // 
       this.cslaActionExtender1.DataSource = this.orderBindingSource;
+      this.cslaActionExtender1.ObjectIsValidMessage = "Object is valid";
       // 
       // SaveButton
       // 
       this.cslaActionExtender1.SetActionType(this.SaveButton, Csla.Windows.CslaFormAction.Save);
-      this.SaveButton.Location = new System.Drawing.Point(360, 28);
+      this.SaveButton.Location = new System.Drawing.Point(540, 43);
+      this.SaveButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.SaveButton.Name = "SaveButton";
-      this.SaveButton.Size = new System.Drawing.Size(75, 23);
+      this.SaveButton.Size = new System.Drawing.Size(112, 35);
       this.SaveButton.TabIndex = 6;
       this.SaveButton.Text = "Save";
       this.SaveButton.UseVisualStyleBackColor = true;
+      this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
       // 
       // CancelButton1
       // 
       this.cslaActionExtender1.SetActionType(this.CancelButton1, Csla.Windows.CslaFormAction.Cancel);
-      this.CancelButton1.Location = new System.Drawing.Point(360, 57);
+      this.CancelButton1.Location = new System.Drawing.Point(540, 88);
+      this.CancelButton1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.CancelButton1.Name = "CancelButton1";
-      this.CancelButton1.Size = new System.Drawing.Size(75, 23);
+      this.CancelButton1.Size = new System.Drawing.Size(112, 35);
       this.CancelButton1.TabIndex = 7;
       this.CancelButton1.Text = "Cancel";
       this.CancelButton1.UseVisualStyleBackColor = true;
@@ -158,9 +172,9 @@
       // 
       // Form1
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(697, 464);
+      this.ClientSize = new System.Drawing.Size(1046, 714);
       this.Controls.Add(this.CancelButton1);
       this.Controls.Add(this.SaveButton);
       this.Controls.Add(this.lineItemsDataGridView);
@@ -168,6 +182,7 @@
       this.Controls.Add(this.customerNameTextBox);
       this.Controls.Add(idLabel);
       this.Controls.Add(this.idTextBox);
+      this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.Name = "Form1";
       this.Text = "Order entry";
       this.Load += new System.EventHandler(this.Form1_Load);

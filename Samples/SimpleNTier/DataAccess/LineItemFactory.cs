@@ -11,9 +11,12 @@ namespace DataAccess
 {
   public class LineItemFactory : ObjectFactory
   {
+    public LineItemFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     public LineItem Create()
     {
-      var obj = (LineItem)MethodCaller.CreateInstance(typeof(LineItem));
+      var obj = ApplicationContext.CreateInstanceDI<LineItem>();
       MarkAsChild(obj);
       MarkNew(obj);
       CheckRules(obj);
@@ -22,7 +25,7 @@ namespace DataAccess
 
     internal LineItems FetchItems(int orderId)
     {
-      var obj = (LineItems)MethodCaller.CreateInstance(typeof(LineItems));
+      var obj = ApplicationContext.CreateInstanceDI<LineItems>();
       var rlce = obj.RaiseListChangedEvents;
       obj.RaiseListChangedEvents = false;
 
@@ -36,7 +39,7 @@ namespace DataAccess
 
     private LineItem GetLineItem(int id, string name)
     {
-      var obj = (LineItem)MethodCaller.CreateInstance(typeof(LineItem));
+      var obj = ApplicationContext.CreateInstanceDI<LineItem>();
       MarkAsChild(obj);
       using (BypassPropertyChecks(obj))
       {

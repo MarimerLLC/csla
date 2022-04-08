@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Csla">
-      <Version>6.0.0-R22040101</Version>
+      <Version>6.0.0-R22040701</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions">
       <Version>6.0.0</Version>

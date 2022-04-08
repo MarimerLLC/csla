@@ -167,6 +167,10 @@ namespace Csla.Test.ObjectFactory
 
   public class RootFactory3 : Csla.Server.ObjectFactory
   {
+    public RootFactory3(ApplicationContext applicationContext) : base(applicationContext)
+    {
+    }
+
     public object Fetch()
     {
       var obj = new Root();

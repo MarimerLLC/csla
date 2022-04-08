@@ -14,7 +14,7 @@ namespace Csla.Test.BypassPropertyChecks
 {
   public class TestObjectFactory : Csla.Server.ObjectFactory
   {
-    public TestObjectFactory() { }
+    public TestObjectFactory(ApplicationContext applicationContext) : base(applicationContext) {}
 
     public BypassBusinessBaseUsingFactory Fetch()
     {

@@ -15,9 +15,12 @@ namespace Csla.Test.ObjectFactory
   public class ObjectFactoryLoader : Csla.Server.IObjectFactoryLoader
   {
     private int _mode;
+    private readonly ApplicationContext _applicationContext;
 
-    public ObjectFactoryLoader()
-    {    }
+    public ObjectFactoryLoader(ApplicationContext applicationContext)
+    {
+      _applicationContext = applicationContext;
+    }
 
     public ObjectFactoryLoader(int mode)
     {
@@ -65,7 +68,7 @@ namespace Csla.Test.ObjectFactory
           case 2:
             throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 3:
-            return new RootFactory3();
+            return new RootFactory3(_applicationContext);
           case 4:
             return new RootFactory4();
           case 5:

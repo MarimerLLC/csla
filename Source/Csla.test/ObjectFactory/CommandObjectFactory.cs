@@ -14,6 +14,10 @@ namespace Csla.Test.ObjectFactory
 {
   public class CommandObjectFactory : Csla.Server.ObjectFactory
   {
+    public CommandObjectFactory(ApplicationContext applicationContext) : base(applicationContext)
+    {
+    }
+
     public object Execute(CommandObject command)
     {
       command.Result = true;

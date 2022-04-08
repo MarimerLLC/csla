@@ -14,7 +14,7 @@ namespace Csla.Test.CommandBase
   [TestClass]
   public class CommandBaseTest : Csla.Server.ObjectFactory
   {
-    public CommandBaseTest()
+    public CommandBaseTest(ApplicationContext applicationContext) : base(applicationContext)
     {
     }
 

@@ -398,6 +398,10 @@ namespace Csla.Test.DataPortal
 
   public class FactoryBusyFactory : Csla.Server.ObjectFactory
   {
+    public FactoryBusyFactory(ApplicationContext applicationContext) : base(applicationContext)
+    {
+    }
+
     public FactoryBusy Fetch()
     {
       var obj = new FactoryBusy();

@@ -64,7 +64,8 @@ namespace AuthzMethod
     /// </returns>
     public static Root NewEditableRoot()
     {
-      return DataPortal.Create<Root>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      return portal.Create();
     }
 
     /// <summary>

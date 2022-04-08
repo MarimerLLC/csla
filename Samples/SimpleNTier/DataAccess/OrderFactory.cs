@@ -11,9 +11,12 @@ namespace DataAccess
 {
   public class OrderFactory : ObjectFactory
   {
+    public OrderFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     public Order Create()
     {
-      var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
+      var obj = ApplicationContext.CreateInstanceDI<Order>();
       LoadProperty(obj, Order.IdProperty, -1);
       MarkNew(obj);
       CheckRules(obj);
@@ -22,7 +25,7 @@ namespace DataAccess
 
     public Order Fetch(int id)
     {
-      var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
+      var obj = ApplicationContext.CreateInstanceDI<Order>();
       var item = (from r in MockDb.Orders
                   where r.Id == id
                   select r).First();
@@ -30,7 +33,7 @@ namespace DataAccess
       {
         LoadProperty(obj, Order.IdProperty, item.Id);
         LoadProperty(obj, Order.CustomerNameProperty, item.CustomerName);
-        var lif = new LineItemFactory();
+        var lif = new LineItemFactory(ApplicationContext);
         LoadProperty(obj, Order.LineItemsProperty, lif.FetchItems(id));
       }
       MarkOld(obj);
@@ -39,7 +42,7 @@ namespace DataAccess
 
     public OrderList FetchList()
     {
-      var obj = (OrderList)MethodCaller.CreateInstance(typeof(OrderList));
+      var obj = ApplicationContext.CreateInstanceDI<OrderList>();
       obj.RaiseListChangedEvents = false;
       SetIsReadOnly(obj, false);
       obj.AddRange(from r in MockDb.Orders
@@ -51,7 +54,7 @@ namespace DataAccess
 
     private OrderInfo GetOrderInfo(int id, string customerName)
     {
-      var obj = (OrderInfo)MethodCaller.CreateInstance(typeof(OrderInfo));
+      var obj = ApplicationContext.CreateInstanceDI<OrderInfo>();
       LoadProperty(obj, OrderInfo.IdProperty, id);
       LoadProperty(obj, OrderInfo.CustomerNameProperty, customerName);
       return obj;
@@ -59,7 +62,7 @@ namespace DataAccess
 
     public OrderInfo FetchInfo(int id)
     {
-      var obj = (OrderInfo)MethodCaller.CreateInstance(typeof(OrderInfo));
+      var obj = ApplicationContext.CreateInstanceDI<OrderInfo>();
       var item = (from r in MockDb.Orders
                   where r.Id == id
                   select r).First();
@@ -97,7 +100,7 @@ namespace DataAccess
           var item = MockDb.Orders.Where(r => r.Id == obj.Id).First();
           item.CustomerName = obj.CustomerName;
         }
-        var lif = new LineItemFactory();
+        var lif = new LineItemFactory(ApplicationContext);
         lif.UpdateItems(obj, obj.LineItems);
         MarkOld(obj);
       }

@@ -9,6 +9,9 @@
 
 
 using System;
+using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AsyncLookupRule
 {
@@ -17,6 +20,8 @@ namespace AsyncLookupRule
   /// </summary>
   class Program
   {
+    public static ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// The main.
     /// </summary>
@@ -25,6 +30,11 @@ namespace AsyncLookupRule
     /// </param>
     static void Main(string[] args)
     {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+
       var root = Root.NewEditableRoot();
       root.ValidationComplete += (o, e) =>
                                    {

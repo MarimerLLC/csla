@@ -108,7 +108,8 @@ namespace AsyncLookupRule
     /// </returns>
     public static Root NewEditableRoot()
     {
-      return DataPortal.Create<Root>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      return portal.Create();
     }
 
 
@@ -117,10 +118,10 @@ namespace AsyncLookupRule
     /// <summary>
     /// The data portal_ create.
     /// </summary>
-    protected override void DataPortal_Create()
+    [Create]
+    private void DataPortal_Create()
     {
-      // this calls BusinessRules.CheckRules
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
   }
 }

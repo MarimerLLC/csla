@@ -8,10 +8,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GatewayRules
 {
@@ -20,6 +19,8 @@ namespace GatewayRules
   /// </summary>
   class Program
   {
+    public static ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// The main.
     /// </summary>
@@ -28,6 +29,10 @@ namespace GatewayRules
     /// </param>
     static void Main(string[] args)
     {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetRequiredService<ApplicationContext>();
     }
   }
 }

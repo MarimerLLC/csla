@@ -9,6 +9,9 @@
 
 
 using System;
+using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AuthzFactoryMethods
 {
@@ -17,6 +20,8 @@ namespace AuthzFactoryMethods
   /// </summary>
   class Program
   {
+    public static ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// The main.
     /// </summary>
@@ -25,6 +30,11 @@ namespace AuthzFactoryMethods
     /// </param>
     static void Main(string[] args)
     {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+
       Console.WriteLine("AuthzFactoryMethods");
       Console.WriteLine("Root DataPortal will automatically check for authorization.");
       Console.WriteLine("Child dataportal does not check authorization.");

@@ -98,7 +98,8 @@ namespace CustomMessageLocalizable
     /// </returns>
     public static Root NewEditableRoot()
     {
-      return DataPortal.Create<Root>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      return portal.Create();
     }
 
 
@@ -109,9 +110,10 @@ namespace CustomMessageLocalizable
     /// <summary>
     /// The data portal_ create.
     /// </summary>
-    protected override void DataPortal_Create()
+    [Create]
+    private void DataPortal_Create()
     {
-      base.DataPortal_Create();
+      BusinessRules.CheckRules();
     }
 
     #endregion

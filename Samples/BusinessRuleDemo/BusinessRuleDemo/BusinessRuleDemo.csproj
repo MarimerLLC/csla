@@ -41,10 +41,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=6.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.6.0.0-R22040308\lib\net48\Csla.dll</HintPath>
+      <HintPath>..\packages\Csla.6.0.0-R22040701\lib\net48\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Windows, Version=6.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.Windows.Forms.6.0.0-R22040308\lib\net462\Csla.Windows.dll</HintPath>
+      <HintPath>..\packages\Csla.Windows.Forms.6.0.0-R22040701\lib\net462\Csla.Windows.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -294,7 +294,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Csla.6.0.0-R22040308\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\Csla.6.0.0-R22040701\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.1\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.1\build\Microsoft.Extensions.Logging.Abstractions.targets')" />

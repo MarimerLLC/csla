@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Threading;
+using Csla;
 using Csla.Core;
 using Csla.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 public class IntegrationRuleTest<T> : ObjectFactory where T : Csla.BusinessBase<T>
 {
+  public IntegrationRuleTest(ApplicationContext applicationContext)
+    : base(applicationContext) { }
+
   private T _businessObject;
   public EventWaitHandle RulesCompletedWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
 

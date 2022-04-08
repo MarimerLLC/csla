@@ -298,6 +298,27 @@ For example:
 
 Notice how an instance of `IChildDataPortal<T>` is injected and then used to fetch a child object as part of the overall data portal operation.
 
+Also, the CSLA base classes no longer generally implement virtual `DataPortal_XYZ` methods for you to override. As a result, if you have a method like this:
+
+```c#
+    protected override void DataPortal_Create()
+    {
+      base.DataPortal_Create();
+    }
+```
+
+It will need to be reimplemented like this:
+
+```c#
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+```
+
+You don't need to retain the `DataPortal_XYZ` method naming convention, and I typically name a method like this `Create` so it fits into a more normal method naming model.
+
 ### Factory Data Portal Models
 
 The _factory implementation_ model separates the code for the data access layer out of the business class entirely, and into its own factory class.

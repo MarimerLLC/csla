@@ -38,10 +38,11 @@ namespace UnoExample
 
       PersonEdit person;
       this.InfoText.Text = "Loading ...";
+      var dp = App.ApplicationContext.GetRequiredService<IDataPortal<PersonEdit>>();
       if (PersonId > -1)
-        person = await DataPortal.FetchAsync<PersonEdit>(PersonId);
+        person = await dp.FetchAsync(PersonId);
       else
-        person = await DataPortal.CreateAsync<PersonEdit>();
+        person = await dp.CreateAsync();
       DataContext = person;
       this.InfoText.Text = "Loaded";
     }

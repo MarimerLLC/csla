@@ -16,14 +16,13 @@ namespace BusinessLibrary
 
     protected override object AddNewCore()
     {
-      var item = LineItem.NewItem();
+      var dp = ApplicationContext.GetRequiredService<IChildDataPortal<LineItem>>();
+      var item = dp.CreateChild();
       Add(item);
       return item;
     }
 
-    internal static LineItems NewList()
-    {
-      return DataPortal.CreateChild<LineItems>();
-    }
+    [CreateChild]
+    private void CreateChild() { }
   }
 }

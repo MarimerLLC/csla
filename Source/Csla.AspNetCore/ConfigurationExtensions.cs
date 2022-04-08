@@ -46,7 +46,6 @@ namespace Csla.Configuration
 #if NET5_0_OR_GREATER
       config.Services.AddScoped<ActiveCircuitState>();
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
-      config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerBlazor));
 #endif
       config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerHttpContext));
       return config;

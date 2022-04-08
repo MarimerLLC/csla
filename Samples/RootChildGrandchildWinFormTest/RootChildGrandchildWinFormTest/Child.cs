@@ -24,7 +24,8 @@ namespace WindowsApplication2
     public static readonly PropertyInfo<GrandchildList> GrandchildrenProperty = RegisterProperty<GrandchildList>(p => p.Grandchildren, RelationshipTypes.LazyLoad);
     public GrandchildList Grandchildren
     {
-      get => LazyGetProperty(GrandchildrenProperty, () => DataPortal.CreateChild<GrandchildList>());
+      get => LazyGetProperty(GrandchildrenProperty, 
+        () => ApplicationContext.GetRequiredService<IChildDataPortal<GrandchildList>>().CreateChild());
     }
 
     private static int _lastId;

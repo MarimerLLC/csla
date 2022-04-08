@@ -144,17 +144,27 @@ namespace Csla.Channels.Http
       }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";
-      if (UseTextSerialization)
+      try
       {
-        var result = client.UploadString(url, System.Convert.ToBase64String(serialized));
-        serialized = System.Convert.FromBase64String(result);
+        if (UseTextSerialization)
+        {
+          var result = client.UploadString(url, System.Convert.ToBase64String(serialized));
+          serialized = System.Convert.FromBase64String(result);
+        }
+        else
+        {
+          var result = client.UploadData(url, serialized);
+          serialized = result;
+        }
+        return serialized;
       }
-      else
+      catch (WebException ex)
       {
-        var result = client.UploadData(url, serialized);
-        serialized = result;
+        string message;
+        using (var reader = new System.IO.StreamReader(ex.Response.GetResponseStream()))
+          message = reader.ReadToEnd();
+        throw new DataPortalException(message, ex);
       }
-      return serialized;
     }
 
     private static async Task VerifyResponseSuccess(HttpResponseMessage httpResponse)

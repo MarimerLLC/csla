@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Csla;
 
 namespace AppServer.Controllers
 {
@@ -11,10 +7,10 @@ namespace AppServer.Controllers
   [ApiController]
   public class DataPortalController : Csla.Server.Hosts.HttpPortalController
   {
+    public DataPortalController(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     [HttpGet]
-    public string Get()
-    {
-      return "Running";
-    }
+    public string Get() => "DataPortal running (binary)";
   }
 }

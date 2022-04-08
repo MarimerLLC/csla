@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WindowsApplication2
 {
@@ -12,9 +13,16 @@ namespace WindowsApplication2
     [STAThread]
     static void Main()
     {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetRequiredService<Csla.ApplicationContext>();
+
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new Form1());
     }
+
+    public static Csla.ApplicationContext ApplicationContext { get; private set; }
   }
 }

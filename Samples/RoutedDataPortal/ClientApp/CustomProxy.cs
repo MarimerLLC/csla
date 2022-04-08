@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
+using Csla;
 
 namespace ClientApp
 {
-  public class CustomProxy : Csla.DataPortalClient.HttpProxy
+  public class CustomProxy : Csla.Channels.Http.HttpProxy
   {
     public static string ServerUrl { get; set; }
 
-    public CustomProxy()
+    public CustomProxy(ApplicationContext applicationContext, HttpClient httpClient, Csla.Channels.Http.HttpProxyOptions options)
+      : base(applicationContext, httpClient, options)
     {
       base.DataPortalUrl = ServerUrl;
     }

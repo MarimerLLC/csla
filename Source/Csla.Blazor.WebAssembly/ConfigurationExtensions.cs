@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla.Blazor;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
@@ -27,6 +28,7 @@ namespace Csla.Configuration
       config.Services.TryAddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
       config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
+      config.Services.TryAddScoped(typeof(AuthenticationStateProvider), typeof(Csla.Blazor.Authentication.CslaAuthenticationStateProvider));
       Csla.Channels.Http.HttpProxy.UseTextSerialization = true;
       return config;
     }

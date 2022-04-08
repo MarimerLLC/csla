@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Context for the AddObjectAuthorizationRulesContext method.</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Specialized;
-using System.Security.Claims;
-using System.Security.Principal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Rules
@@ -26,30 +23,19 @@ namespace Csla.Rules
       ApplicationContext = applicationContext;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
     /// <summary>
-    /// Gets the local context
+    /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    public HybridDictionary LocalContext => ApplicationContext.LocalContext;
-    /// <summary>
-    /// Gets the client context
-    /// </summary>
-    public HybridDictionary ClientContext => ApplicationContext.ClientContext;
+    public ApplicationContext ApplicationContext { get; private set; }
+
     /// <summary>
     /// Gets a data portal factory instance
     /// </summary>
     public IDataPortalFactory DataPortalFactory => ApplicationContext.CurrentServiceProvider.GetRequiredService<IDataPortalFactory>();
+
     /// <summary>
     /// Gets the current rule set
     /// </summary>
     public string RuleSet => ApplicationContext.RuleSet;
-    /// <summary>
-    /// Gets the current user
-    /// </summary>
-    public IPrincipal User => ApplicationContext.User;
-    /// <summary>
-    /// Gets the current user as a ClaimsPrincipal
-    /// </summary>
-    public ClaimsPrincipal Principal => ApplicationContext.Principal;
   }
 }

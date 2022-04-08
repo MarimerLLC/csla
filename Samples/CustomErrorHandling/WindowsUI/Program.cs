@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
+using Csla;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WindowsUI
 {
@@ -14,9 +14,15 @@ namespace WindowsUI
     [STAThread]
     static void Main()
     {
-      CslaConfiguration.Configure()
-        .PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Windows)
-        .DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy), "http://localhost:50768/api/dataportal");
+      var services = new ServiceCollection();
+      services.AddTransient<System.Net.Http.HttpClient>();
+      services.AddCsla(o => o
+        .AddWindowsForms()
+        .DataPortal(dpo => dpo
+          .UseHttpProxy(hpo => hpo
+            .DataPortalUrl = "https://localhost:44364/api/dataportal")));
+      var provider = services.BuildServiceProvider();
+      App.ApplicationContext = provider.GetRequiredService<Csla.ApplicationContext>();
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

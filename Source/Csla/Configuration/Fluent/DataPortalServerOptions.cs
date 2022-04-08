@@ -18,6 +18,23 @@ namespace Csla.Configuration
   {
     /// <summary>
     /// Gets or sets a value containing the type of the
+    /// IDashboard to be used by the data portal.
+    /// </summary>
+    internal Type DashboardType { get; set; } = typeof(Server.Dashboard.NullDashboard);
+
+    /// <summary>
+    /// Sets the type of the IDashboard to be 
+    /// used by the data portal. 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public DataPortalServerOptions RegisterDashboard<T>() where T : Server.Dashboard.IDashboard
+    {
+      DashboardType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Gets or sets a value containing the type of the
     /// IDataPortalAuthorizer to be used by the data portal.
     /// An instance of this type is created using dependency
     /// injection.
@@ -29,9 +46,10 @@ namespace Csla.Configuration
     /// used by the data portal. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void RegisterAuthorizerProvider<T>() where T : IAuthorizeDataPortal
+    public DataPortalServerOptions RegisterAuthorizerProvider<T>() where T : IAuthorizeDataPortal
     {
       AuthorizerProviderType = typeof(T);
+      return this;
     } 
 
     /// <summary>
@@ -45,9 +63,10 @@ namespace Csla.Configuration
     /// Adds the type of an IInterceptDataPortal that will
     /// be executed by the server-side data portal.
     /// </summary>
-    public void AddInterceptorProvider<T>() where T: IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<T>() where T: IInterceptDataPortal
     {
       InterceptorProviders.Add(typeof(T));
+      return this;
     }
 
     /// <summary>
@@ -55,18 +74,20 @@ namespace Csla.Configuration
     /// be executed by the server-side data portal.
     /// </summary>
     /// <param name="index">Index at which new item should be added.</param>
-    public void AddInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<T>(int index) where T : IInterceptDataPortal
     {
       InterceptorProviders.Insert(index, typeof(T));
+      return this;
     }
 
     /// <summary>
     /// Removes a type of an IInterceptDataPortal.
     /// </summary>
     /// <param name="index">Index from which item will be removed.</param>
-    public void RemoveInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    public DataPortalServerOptions RemoveInterceptorProvider(int index)
     {
       InterceptorProviders.RemoveAt(index);
+      return this;
     }
 
     /// <summary>
@@ -78,9 +99,10 @@ namespace Csla.Configuration
     /// Sets the type of the ExceptionInspector.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void RegisterExceptionInspector<T>() where T: IDataPortalExceptionInspector
+    public DataPortalServerOptions RegisterExceptionInspector<T>() where T: IDataPortalExceptionInspector
     {
       ExceptionInspectorType = typeof(T);
+      return this;
     }
 
     /// <summary>
@@ -92,9 +114,10 @@ namespace Csla.Configuration
     /// Sets the type of the Activator.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void RegisterActivator<T>() where T: IDataPortalActivator
+    public DataPortalServerOptions RegisterActivator<T>() where T: IDataPortalActivator
     {
       ActivatorType = typeof(T);
+      return this;
     }
 
     /// <summary>
@@ -112,9 +135,10 @@ namespace Csla.Configuration
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public void RegisterObjectFactoryLoader<T>() where T: IObjectFactoryLoader
+    public DataPortalServerOptions RegisterObjectFactoryLoader<T>() where T: IObjectFactoryLoader
     {
       ObjectFactoryLoaderType = typeof(T);
+      return this;
     }
   }
 }

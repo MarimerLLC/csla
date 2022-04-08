@@ -1,10 +1,7 @@
-﻿using Csla.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using System.Windows;
 
 namespace ClientApp
@@ -16,10 +13,19 @@ namespace ClientApp
   {
     public App()
     {
-      CslaConfiguration.Configure()
-        .DataPortal().DefaultProxy(typeof(CustomProxy), "");
+      var services = new ServiceCollection();
+      services.AddTransient<HttpClient>();
 
-      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
+      // configure to use the custom proxy
+      services.AddScoped<Csla.Channels.Http.HttpProxyOptions>();
+      CustomProxy.ServerUrl = "";
+      services.AddScoped(typeof(Csla.DataPortalClient.IDataPortalProxy), typeof(CustomProxy));
+
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetRequiredService<ApplicationContext>();
     }
+
+    public static ApplicationContext ApplicationContext { get; private set; }
   }
 }

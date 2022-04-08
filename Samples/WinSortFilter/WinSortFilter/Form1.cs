@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Csla;
 
@@ -19,12 +13,14 @@ namespace WinSortFilter
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      var list = DataPortal.Create<DataList>();
-      list.Add(DataPortal.CreateChild<Data>(213, "abc"));
-      list.Add(DataPortal.CreateChild<Data>(113, "qwe"));
-      list.Add(DataPortal.CreateChild<Data>(413, "zcx"));
-      list.Add(DataPortal.CreateChild<Data>(233, "abc"));
-      list.Add(DataPortal.CreateChild<Data>(215, "ler"));
+      var listPortal = Program.ApplicationContext.GetRequiredService<IDataPortal<DataList>>();
+      var itemPortal = Program.ApplicationContext.GetRequiredService<IChildDataPortal<Data>>();
+      var list = listPortal.Create();
+      list.Add(itemPortal.CreateChild(213, "abc"));
+      list.Add(itemPortal.CreateChild(113, "qwe"));
+      list.Add(itemPortal.CreateChild(413, "zcx"));
+      list.Add(itemPortal.CreateChild(233, "abc"));
+      list.Add(itemPortal.CreateChild(215, "ler"));
 
       this.dataListBindingSource.DataSource = list;
 

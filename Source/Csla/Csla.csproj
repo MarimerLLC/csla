@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;net6.0;net462;net472;net48</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net462;net472;net48</TargetFrameworks>
     <PackageId>Csla</PackageId>
     <Product>CSLA .NET Core</Product>
     <Description>CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.</Description>

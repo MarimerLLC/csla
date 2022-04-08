@@ -25,7 +25,8 @@ namespace WindowsApplication2
     public static readonly PropertyInfo<ChildList> RealChildrenProperty = RegisterProperty<ChildList>(nameof(RealChildren), RelationshipTypes.LazyLoad);
     public ChildList RealChildren
     {
-      get => LazyGetProperty(RealChildrenProperty, () => DataPortal.CreateChild<ChildList>());
+      get => LazyGetProperty(RealChildrenProperty, 
+        () => ApplicationContext.GetRequiredService<IChildDataPortal<ChildList>>().CreateChild());
     }
 
     public SortedBindingList<Child> Children

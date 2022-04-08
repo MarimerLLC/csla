@@ -8,7 +8,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Properties;
 
@@ -39,7 +41,7 @@ namespace Csla.Server.Interceptors.ServerSide
     {
       ITrackStatus checkableObject;
 
-      if (_applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server 
+      if (_applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
         || _applicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server)
       {
         return;
@@ -69,46 +71,42 @@ namespace Csla.Server.Interceptors.ServerSide
     /// <param name="parameter">The parameter that was passed to the DataPortal as part of the operation</param>
     private void RevalidateObject(object parameter)
     {
-      ICheckRules checkableObject;
-      IManageProperties parent;
-
-      // Initiate re-execution of rules on any supporting business object
-      checkableObject = parameter as ICheckRules;
-      if (checkableObject is not null)
+      if (parameter is IEnumerable list)
       {
-        checkableObject.CheckRules();
-      }
-
-      // Cascade revalidation to any children
-      parent = parameter as IManageProperties;
-      if (parent is not null)
-      {
-        foreach (object child in parent.GetChildren())
+        // Handle the object being a collection
+        foreach (object item in list)
         {
-          RevalidateChild(child);
+          RevalidateObject(item);
+        }
+      }
+      else
+      {
+        if (parameter is ICheckRules checkableObject)
+        {
+          // object not a collection, see if it has rules
+          var task = checkableObject.CheckRulesAsync();
+          // wait for all async rules to complete before proceeding
+          while (!task.IsCompleted)
+            Task.Delay(1);
+        }
+
+        // Cascade to any child objects
+        if (parameter is IUseFieldManager fieldHolder)
+        {
+          var properties = fieldHolder.FieldManager.GetRegisteredProperties();
+          foreach (var property in properties.Where(r=>r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
+          {
+            RevalidateObject(fieldHolder.FieldManager.GetFieldData(property).Value);
+          }
+        }
+        else if (parameter is IManageProperties propertyHolder)
+        {
+          foreach (object child in propertyHolder.GetChildren())
+          {
+            RevalidateObject(child);
+          }
         }
       }
     }
-
-    /// <summary>
-    /// Initiate revalidation on a child, handling collections appropriately
-    /// </summary>
-    /// <param name="child">The child object on which to attempt to trigger revalidation</param>
-    private void RevalidateChild(object child)
-    {
-      // Handle the child being a collection
-      if (child is IEnumerable childCollection)
-      {
-        foreach (object childItem in childCollection)
-        {
-          RevalidateObject(childItem);
-        }
-        return;
-      }
-
-      // Handle the child being an individual object
-      RevalidateObject(child);
-    }
-
   }
 }

@@ -36,9 +36,12 @@ namespace BusinessLibrary
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (LineItem)context.Target;
-        if (!target.IsNew)
-          context.AddErrorResult("Value may only be changed if item is new");
+        if (context.IsPropertyChangedContext)
+        {
+          var target = (LineItem)context.Target;
+          if (!target.IsNew)
+            context.AddErrorResult("Value may only be changed if item is new");
+        }
       }
     }
   }

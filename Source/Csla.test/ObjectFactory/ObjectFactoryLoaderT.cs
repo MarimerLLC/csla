@@ -29,7 +29,7 @@ namespace Csla.Test.ObjectFactory
       if (factoryName == "Csla.Test.ObjectFactory.RootFactory, Csla.Tests")
       {
         return new T();
-          }
+      }
       else
         return null;
     }

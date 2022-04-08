@@ -110,13 +110,238 @@ The `AddCsla` method registers CSLA types, and the `AddAspNetCore` method regist
 
 ### Windows Forms App
 
+The first code executed in a Windows Forms app may vary depending on the age of your codebase. Sometimes it might be in a `Program.cs` file, other times it might be in the code-behind for the first window that's displayed. Most likely it is in `Program.cs` though.
+
+Assuming you don't update your app to fully rely on dependency injection, the minimum you must do is initialize a DI provider, configure CSLA, and make the CSLA `ApplicationContext` instance available globally to your code. All this is done in `Program.cs`:
+
+```c#
+using System;
+using System.Net.Http;
+using System.Windows.Forms;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace WindowsUI
+{
+  static class Program
+  {
+    public static Csla.ApplicationContext ApplicationContext { get; private set; }
+
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    static void Main()
+    {
+      var services = new ServiceCollection();
+      services.AddTransient<HttpClient>();
+      services.AddCsla(o => o
+        .DataPortal(dp => dp
+          .UseHttpProxy(hp => hp
+            .DataPortalUrl = "https://localhost:44332/api/dataportal")));
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetService<Csla.ApplicationContext>();
+
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
+      Application.Run(new Form1());
+    }
+  }
+}
+```
+
+Notice that there's a public static `ApplicationContext` property to make the instance globally available to your code:
+
+```c#
+    public static Csla.ApplicationContext ApplicationContext { get; private set; }
+```
+
+Now, anywhere in your code you can access `ApplicationContext` like:
+
+```c#
+  var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<PersonEdit>>();
+```
+
+Also notice the creation of a `ServiceCollection`, and how it is used to initialize CSLA (and maybe other services), and to create the DI provider:
+
+```c#
+      var services = new ServiceCollection();
+      services.AddTransient<HttpClient>();
+      services.AddCsla(o => o
+        .DataPortal(dp => dp
+          .UseHttpProxy(hp => hp
+            .DataPortalUrl = "https://localhost:44332/api/dataportal")));
+      var provider = services.BuildServiceProvider();
+```
+
+In this case CSLA is configured to use a remote data portal.
+
+Finally, the `ApplicationContext` property is set by creating the required service instance using the DI provider:
+
+```c#
+      ApplicationContext = provider.GetService<Csla.ApplicationContext>();
+```
+
+At this point, without changing the existing codebase substantially, the app has access to CSLA and the `ApplicationContext` instance.
+
+You _will_ need to go through your codebase and update any code that uses the static `ApplicationContext` type so it uses the new instance property. 
+
+And you will need to update any code that uses the data portal as discussed in the section of this document covering the use of the client-side data portal.
+
 ### WPF App
+
+In this section I am discussing how to update an existing WPF app without converting the app to fully rely on dependency injection.
+
+The first code executed in a WPF app is usually in the `App.xaml.cs` file. The minimum requirement for using CSLA 6 in WPF is the same as for Windows Forms, so I won't repeat the full explanation of the code. Here's a typical `App.xaml.cs` startup:
+
+```c#
+using System;
+using System.Net.Http;
+using System.Windows;
+using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace WpfUI
+{
+  /// <summary>
+  /// Interaction logic for App.xaml
+  /// </summary>
+  public partial class App : Application
+  {
+    public static ApplicationContext ApplicationContext { get; private set; }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+      var services = new ServiceCollection();
+      services.AddTransient<HttpClient>();
+      services.AddCsla(o => o
+        .DataPortal(dp => dp
+          .UseHttpProxy(hp => hp
+            .DataPortalUrl = "https://localhost:44332/api/dataportal")));
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetService<ApplicationContext>();
+
+      base.OnStartup(e);
+    }
+  }
+}
+```
+
+As with Windows Forms, this code creates a `ServiceCollection` instance, uses that instance to register CSLA and other service types, creates a DI provider, and uses that provider to create an instance of the `ApplicationContext` service. A public static `ApplicationService` property makes this instance available globally to your code.
+
+You can use the `ApplicationContext` property to access the service, and must update any code that used to rely on the static `ApplicationContext` type. For example:
+
+```c#
+      ApplicationContext = provider.GetService<Csla.ApplicationContext>();
+```
+
+You will also need to update all code that uses the client-side data portal, as described in the section of this document covering the use of the client-side data portal.
 
 ### Xamarin.Forms App
 
+In this section I am discussing how to update an existing Xamarin.Forms app without converting the app to fully rely on dependency injection.
+
+The process for a Xamarin.Forms app is identical to the process I described for updating a WPF app, and you should follow those instructions.
+
 ### Server-Side Blazor App
 
+Blazor apps already directly rely on dependency injection to function, and so CSLA 6 fits naturally into the existing coding model. All you need to do is configure CSLA during app startup, usually in `Program.cs`.
+
+Here is a typical configuration:
+
+```c#
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCsla(options => options
+  .AddAspNetCore()
+  .AddServerSideBlazor());
+```
+
+Notice that the `AddCsla` method is called such that CSLA is configured with all services required by ASP.NET Core and also server-side Blazor. Remember that server-side Blazor apps are _hosted within aspnetcore_, and so both sets of services are required.
+
+Also notice that the `HttpContextAccessor` is registered. This is required by CSLA, and if you skip this step you'll get a runtime exception as the app starts up.
+
+Once this configuration is complete, you can inject CSLA service types such as `ApplicationContext` or `IDataPortal<T>` into your code as you would any other type of service.
+
 ### Blazor WebAssembly App
+
+A Blazor WebAssembly (wasm) app runs entirely on the client device, and so is very similar in many ways to a Windows Forms, WPF, or Xamarin app. However, Blazor already directly relies on dependency injection, and so CSLA 6 fits naturally into the existing app model.
+
+During app startup, in the `Program.cs` file, you must register the CSLA service types:
+
+```c#
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+// ...
+
+builder.Services.AddCsla(options => options
+  .AddBlazorWebAssembly()
+  .DataPortal(dpo => dpo
+    .UseHttpProxy(hpo => hpo
+      .DataPortalUrl = "/api/DataPortal")));
+```
+
+In this example, the client-side data portal is configured to use the `HttpProxy` to communicate with a remote data portal server. I suspect this is the most common scenario when building client-side Blazor apps.
+
+By default, the Blazor wasm project template includes the line of code that registers the `HttpClient` type. I am including that in this document, because if you use the `HttpProxy` data portal configuration, you _must_ also register the `HttpClient` service.
+
+Once this configuration is complete, you can inject CSLA service types such as `ApplicationContext` or `IDataPortal<T>` into your code as you would any other type of service.
+
+#### Configuring an ASP.NET Core Host for Blazor WebAssembly
+
+Blazor WebAssembly apps are downloaded from some sort of web server. Sometimes you might build that web server using aspnetcore.
+
+If all the web site does is download the static files for the Blazor wasm app, then you don't need to do anything special to configure the server. 
+
+However, if your aspnetcore web site is used to download the Blazor wasm app _and also_ to host a data portal endpoint, then you'll need to configure the web site to support the server-side data portal.
+
+To do this, in `Program.cs` you must register the CSLA service types so they are available to the web site code:
+
+```c#
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCsla(o => o
+  .AddAspNetCore());
+```
+
+CSLA 6 requires access to `HttpContext` and so you _must_ register the `HttpContextAccessor` service. Also, when calling the `AddCsla` method, you must ensure that the aspnetcore services are registered by calling the `AddAspNetCore` method.
+
+It is also the case that an aspnetcore web site that provides a data portal endpoint for a Blazor wasm app must be configuring to support CORS. For example, you need code similar to this in your `Program.cs` file:
+
+```c#
+string BlazorClientPolicy = "AllowAllOrigins";
+
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(BlazorClientPolicy,
+    builder =>
+    {
+      builder
+      .AllowAnyOrigin()
+      .AllowAnyHeader()
+      .AllowAnyMethod();
+    });
+});
+```
+
+This is not specific to CSLA, but is required for a Blazor client app to have access to any controller provided by your web site.
+
+Finally, because the CSLA `MobileFormatter` uses a synchronous API when deserializing data, you must configure aspnetcore to allow the use of synchronous behaviors:
+
+```c#
+// If using Kestrel:
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+  options.AllowSynchronousIO = true;
+});
+
+// If using IIS:
+builder.Services.Configure<IISServerOptions>(options =>
+{
+  options.AllowSynchronousIO = true;
+});
+```
+
+At this point you can create a server-side data portal endpoint as discussed later in this document.
 
 ## Using the Client-Side DataPortal
 
@@ -382,6 +607,8 @@ Every remote data portal host must configure DI, including registering CSLA type
 
 The most common host for a remote data portal is ASP.NET Core, using a controller as an endpoint for the data portal.
 
+> ℹ️ A Blazor WebAssembly client app needs a special endpoint configuration as discussed in the next section of this document.
+
 In CSLA 5 the controller would look something like this:
 
 ```c#
@@ -426,8 +653,50 @@ namespace BlazorExample.Server.Controllers
 
 Notice the constructor that requires the `ApplicationContext` service and provides it to the base implementation.
 
+### ASP.NET Core Endpoint for Blazor WebAssembly
+
+Blazor WebAssembly (wasm) has a limitation where it can't transfer a binary data stream to or from the server. 
+
+When you register the CSLA 6 services in a Blazor wasm app, it defaults to configuring `HttpProxy` to use a text-based protocol. Your data portal server endpoint must match that protocol.
+
+This means that you need a text-based endpoint to support Blazor wasm client apps, even if you already have a "normal" binary-based endpoint for other client app types.
+
+To create such an endpoint, add a controller to the `Controllers` folder in the aspnetcore project:
+
+```c#
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BlazorExample.Server.Controllers
+{
+  [Route("api/[controller]")]
+  [ApiController]
+  public class DataPortalTextController : Csla.Server.Hosts.HttpPortalController
+  {
+    public DataPortalTextController(Csla.ApplicationContext applicationContext)
+      : base(applicationContext) 
+    { 
+      UseTextSerialization = true;
+    }
+
+    [HttpGet]
+    public string Get() => "DataPortal is running";
+  }
+}
+```
+
+The controller is named to make it clear that it is a text-based endpoint, and in the constructor the `UseTextSerialization` property is set to `true` so the data portal requires text-based data streams.
+
+The behavior of the data portal is unaffected by this change, only the byte steam being transferred over the network is affected.
+
+> ℹ️ The byte stream is actually still a binary stream, it is just base64 encoded so it flows through the Blazor wasm http API as text.
+
 ### WCF Endpoint
 
 Microsoft has chosen to not carry WCF forward into the modern .NET world, so it doesn't exist in .NET Core or .NET 6.
 
 As a result, you should replace all use of the WCF data portal channel (i.e. `WcfProxy`) with another data portal channel such as the HTTP channel (i.e. `HttpProxy`).
+
+> ℹ There is an open source WCF project to provide WCF support in modern .NET: https://github.com/CoreWCF/CoreWCF. If you really need to use WCF, you could build a data portal channel (proxy/host) based on this open source project.
+> 
+> There is an open backlog item in CSLA to support this scenario: https://github.com/MarimerLLC/csla/issues/1183

@@ -129,6 +129,11 @@ namespace Csla.Blazor
         Model = await DoSaveAsync();
         Saved?.Invoke();
       }
+      catch (DataPortalException ex)
+      {
+        Exception = ex;
+        ViewModelErrorText = ex.BusinessExceptionMessage;
+      }
       catch (Exception ex)
       {
         Exception = ex;

@@ -121,6 +121,17 @@ namespace Csla.Channels.Local
     }
 
     /// <summary>
+    /// Reset the temporary scoped ApplicationContext object's
+    /// context manager back to the original calling scope's
+    /// context manager, thus resetting the entire resulting
+    /// object graph to use the original context manager.
+    /// </summary>
+    private void ResetApplicationContext()
+    {
+      CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
+    }
+
+    /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
     /// new business object.
     /// </summary>
@@ -149,8 +160,7 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
-      SetApplicationContext(result.Error, OriginalApplicationContext);
+      ResetApplicationContext();
       return result;
     }
 
@@ -182,8 +192,7 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
-      SetApplicationContext(result.Error, OriginalApplicationContext);
+      ResetApplicationContext();
       return result;
     }
 
@@ -214,8 +223,7 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
-      SetApplicationContext(result.Error, OriginalApplicationContext);
+      ResetApplicationContext();
       return result;
     }
 
@@ -247,8 +255,7 @@ namespace Csla.Channels.Local
             TaskCreationOptions.None,
             TaskScheduler.FromCurrentSynchronizationContext());
       }
-      SetApplicationContext(result.ReturnObject, OriginalApplicationContext);
-      SetApplicationContext(result.Error, OriginalApplicationContext);
+      ResetApplicationContext();
       return result;
     }
 

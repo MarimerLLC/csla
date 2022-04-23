@@ -34,7 +34,8 @@ namespace Csla.Channels.Local
       var currentServiceProvider = OriginalApplicationContext.CurrentServiceProvider;
       Options = options;
 
-      if (OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
+      if (Options.UseLocalScope 
+        && OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
         && OriginalApplicationContext.IsAStatefulContextManager)
       {
         // create new DI scope and provider
@@ -62,12 +63,22 @@ namespace Csla.Channels.Local
 
     private void SetApplicationContext(object obj, ApplicationContext applicationContext)
     {
+      // if there's no isolated scope, there's no reason to 
+      // change the object graph's ApplicationContext
+      if (!Options.UseLocalScope)
+        return;
+
       if (obj is IUseApplicationContext useApplicationContext)
         SetApplicationContext(useApplicationContext, applicationContext);
     }
 
     private void SetApplicationContext(IUseApplicationContext useApplicationContext, ApplicationContext applicationContext)
     {
+      // if there's no isolated scope, there's no reason to 
+      // change the object graph's ApplicationContext
+      if (!Options.UseLocalScope)
+        return;
+  
       if (useApplicationContext != null && !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
       {
         useApplicationContext.ApplicationContext = applicationContext;
@@ -128,7 +139,8 @@ namespace Csla.Channels.Local
     /// </summary>
     private void ResetApplicationContext()
     {
-      CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
+      if (Options.UseLocalScope)
+        CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
     }
 
     /// <summary>

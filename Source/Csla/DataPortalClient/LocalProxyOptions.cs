@@ -21,5 +21,11 @@ namespace Csla.Channels.Local
     /// (default is false)
     /// </summary>
     public bool FlowSynchronizationContext { get; set; } = false;
+    /// <summary>
+    /// Gets or sets a value indicating whether a new
+    /// dependency injection scope should be created for
+    /// each data portal call. (default is true)
+    /// </summary>
+    public bool UseLocalScope { get; set; } = true;
   }
 }

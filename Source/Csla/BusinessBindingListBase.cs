@@ -873,9 +873,9 @@ namespace Csla
     /// any resulting updates into the existing
     /// object graph.
     /// </summary>
-    public Task SaveAndMergeAsync()
+    public async Task SaveAndMergeAsync()
     {
-      throw new NotSupportedException(nameof(SaveAndMergeAsync));
+      new GraphMerger(ApplicationContext).MergeBusinessBindingListGraph<T, C>((T)this, await SaveAsync());
     }
 
     /// <summary>

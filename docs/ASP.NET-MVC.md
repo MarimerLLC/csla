@@ -1,6 +1,17 @@
+# ASP.NET MVC
+
+## ASP.NET Core
+
+CSLA 5 and 6 provide support for ASP.NET Core - MVC and Razor Pages - with various helper types in the `Csla.AspNetCore` namespace.
+
+> ℹ️ If you host code in ASP.NET Core you _must_ add the `Csla.AspNetCore` NuGet package to your project. This is true if you are using MVC, Razor Pages, server-side Blazor, or creating an app server using aspnetcore.
+
+## ASP.NET in .NET Framework
+
 _Please remember that ASP.NET MVC does run in ASP.NET. So nearly all the FAQ items under the [Web Forms](Web-forms.md) topic apply to ASP.NET MVC as well._
 
 ## Does CSLA .NET work with ASP.NET MVC?
+
 Yes, in your web project add the NuGet package specific to the version of MVC that you are targeting. That will automatically bring in the CSLA assemblies bound to that version of MVC.
 
 CSLA .NET works great with any of the "M" patterns (MVVM, MVC, MVP, etc), since it is all about helping you create a great Model.

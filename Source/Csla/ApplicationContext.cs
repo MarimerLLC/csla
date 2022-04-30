@@ -395,6 +395,20 @@ namespace Csla
     }
 
     /// <summary>
+    /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
+    /// Throws exception if service not properly registered with DI.
+    /// </summary>
+    /// <param name="serviceType">Type of service/object to create.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public object GetRequiredService(Type serviceType)
+    {
+      if (CurrentServiceProvider == null)
+        throw new NullReferenceException(nameof(CurrentServiceProvider));
+
+      return CurrentServiceProvider.GetRequiredService(serviceType);
+    }
+
+    /// <summary>
     /// Creates an object using 'Activator.CreateInstance' using
     /// service provider (if one is available) to populate any parameters 
     /// in CTOR that are not manually passed in.

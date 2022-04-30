@@ -20,7 +20,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>
+  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal
   {
     /// <summary>
     /// Creates an instance of the type
@@ -797,6 +797,22 @@ namespace Csla
       var portal = new Server.ChildDataPortal(ApplicationContext);
       await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
+
+    async Task<object> IDataPortal.CreateAsync(params object[] criteria) => Task.FromResult(await CreateAsync(criteria));
+    async Task<object> IDataPortal.FetchAsync(params object[] criteria) => Task.FromResult(await FetchAsync(criteria));
+    async Task<object> IDataPortal.UpdateAsync(object obj) => Task.FromResult(await UpdateAsync((T)obj));
+    async Task<object> IDataPortal.ExecuteAsync(object command) => Task.FromResult(await ExecuteAsync((T)command));
+    object IDataPortal.Create(params object[] criteria) => Create(criteria);
+    object IDataPortal.Fetch(params object[] criteria) => Fetch(criteria);
+    object IDataPortal.Execute(object obj) => Execute((T)obj);
+    object IDataPortal.Update(object obj) => Update((T)obj);
+
+    async Task<object> IChildDataPortal.CreateChildAsync(params object[] criteria) => Task.FromResult(await CreateChildAsync(criteria));
+    async Task<object> IChildDataPortal.FetchChildAsync(params object[] criteria) => Task.FromResult(await FetchChildAsync(criteria));
+    async Task IChildDataPortal.UpdateChildAsync(object obj, params object[] parameters) => await UpdateChildAsync((T)obj);
+    object IChildDataPortal.CreateChild(params object[] criteria) => CreateChild(criteria);
+    object IChildDataPortal.FetchChild(params object[] criteria) => FetchChild(criteria);
+    void IChildDataPortal.UpdateChild(object obj, params object[] parameters) => UpdateChild(obj, parameters);
   }
 
   internal static class Extensions

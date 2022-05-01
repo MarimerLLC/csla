@@ -23,8 +23,8 @@ namespace MvcExample
         Host.CreateDefaultBuilder(args)
           .ConfigureServices(services =>
             {
-              services.AddHttpContextAccessor();
-              services.AddCsla(options => options.AddAspNetCore());
+              //services.AddHttpContextAccessor();
+              //services.AddCsla(options => options.AddAspNetCore());
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {

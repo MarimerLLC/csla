@@ -4,4 +4,4 @@
 
 [CSLA .NET repo](https://github.com/MarimerLLC/csla)
 
-[CSLA .NET forum](https://github.com/MarimerLLC/cslaforum)
+[CSLA .NET forum](https://github.com/MarimerLLC/csla/discussions)

@@ -255,6 +255,12 @@ namespace Csla
     /// </summary>
     public bool IsChild { get => typeof(Core.IBusinessObject).IsAssignableFrom(Type); }
 
+    /// <summary>
+    /// Gets the System.Reflection.PropertyInfo object
+    /// representing the property.
+    /// </summary>
+    /// <returns></returns>
+    public System.Reflection.PropertyInfo GetPropertyInfo() => _propertyInfo;
 
     #region IComparable Members
 

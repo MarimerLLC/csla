@@ -1,5 +1,6 @@
 CSLA .NET Serialization
 -----------------------
+
 Serialization is the process of taking the state of an object graph and converting into a byte stream that can be transferred over a network or used for n-level undo. That byte stream can later be _deserialized_ to create a copy or clone of the orignal object graph.
 
 CSLA .NET relies on deep serialization to do this work. Most serializers do shallow serialization: operating only on public properties. Deep serialization serializes at the field level, including non-public field values. Deep serialization also preserves the shape of the object graph upon deserialization, where shallow serialization usually changes the shape of the object graph on deserialization, often creating new instances of objects that didn't exist in the original graph.
@@ -13,9 +14,11 @@ CSLA .NET provides its own highly optimized serializer:
 
 * `MobileFormatter`
 
+> ⚠️ Microsoft has deprecated the use of the `BinaryFormatter` and `NetDataContractSerializer`, so starting with CSLA 6 only `MobileFormatter` is supported.
+
 Where possible, CSLA .NET supports all three serializers, but not all .NET implementations include `BinaryFormatter` or NDCS. The only serilizer available on all .NET implementations is `MobileFormatter`.
 
-**⚠ IMPORTANT:** The default serializer used by CSLA .NET is different for .NET Framework and .NET Core!
+In CSLA 6 the default serializer is `MobileFormatter`. In previous versions, the default serializer used by CSLA .NET is different for .NET Framework and .NET Core.
 
 * .NET Framework defaults to `BinaryFormatter`
 * .NET Core defaults to `MobileFormatter`

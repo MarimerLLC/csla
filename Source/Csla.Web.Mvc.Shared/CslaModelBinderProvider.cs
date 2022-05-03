@@ -20,15 +20,8 @@ namespace Csla.Web.Mvc
     /// Creates a model binder provider that use custom
     /// instance and child creators.
     /// </summary>
-    public CslaModelBinderProvider(ApplicationContext applicationContext)
-    { 
-      ApplicationContext = applicationContext;
-    }
-
-    /// <summary>
-    /// Gets a reference to the current ApplicationContext.
-    /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    public CslaModelBinderProvider()
+    { }
 
     /// <summary>
     /// Gets the CslaModelBinder provider.
@@ -38,7 +31,7 @@ namespace Csla.Web.Mvc
     {
       if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType) ||
           typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
-        return new CslaModelBinder(ApplicationContext);
+        return new CslaModelBinder();
       else
         return null;
     }

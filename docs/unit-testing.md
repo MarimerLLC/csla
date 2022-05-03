@@ -2,9 +2,10 @@
 
 ## Unit Testing Business Domain Classes
 
-1.	Unit testing with CSLA was difficult until CSLA 4
-1.	Integration testing (with mock data) was easy and recommended prior to CSLA 4 (and really isn’t a bad solution even today, though unit testing is very practical now)
-1.	A number of the enhancements in v5 will simplify unit testing scenarios even further
+1. Unit testing with CSLA was difficult until CSLA 4
+1. Integration testing (with mock data) was easy and recommended prior to CSLA 4 (and really isn’t a bad solution even today, though unit testing is very practical now)
+1. A number of the enhancements in CSLA 5 will simplify unit testing scenarios even further
+1. CSLA 6 requires and fully embraces the use of dependency injection. As a result, unit testing is now a lot easier.
 
 @jasonbock has written a nice blog post on how to use some of the features of CSLA 4 that support unit testing and mocking:
 

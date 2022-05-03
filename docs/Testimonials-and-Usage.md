@@ -36,7 +36,7 @@
 
 "I really appreciate your work, you've made my job easier and taught me a lot."
 
-## CSLA .NET is used:
+## CSLA .NET is used
 
 * UNIT4 (ERP and financials package) 
 * Sybiz Software (accounting, payroll, contact mgmt) 
@@ -80,6 +80,6 @@
 * a geo-location tracking package 
 * a Department of the State of California
 
-I can't provide the names of the specific organizations without their permission, and it can take a lot of time to work with every organization's legal department to get access to the use of their names. I can't justify spending that time, as it simply doesn't drive enough book sales to be worth the effort. 
+I can't provide the names of the specific organizations without their permission, and it can take a lot of time to work with every organization's legal department to get access to the use of their names. I can't justify spending that time, as it simply doesn't drive enough book sales to be worth the effort.
 
 As you can see, some organizations have allowed the use of their names and/or URLs, and I appreciate that very much! If you use CSLA .NET and want to share that fact with me and/or the world that is awesome! Drop me an email and I'll add you (as above, or as a named organization based on your preference) to the list. Thank you! 

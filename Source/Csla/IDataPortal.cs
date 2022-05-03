@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Interface defining the members of the data portal type</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Csla
@@ -16,8 +12,7 @@ namespace Csla
     /// <summary>
     /// Interface defining the members of the data portal type.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IDataPortal<T>
+    public interface IDataPortal
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to
@@ -26,7 +21,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> CreateAsync(params object[] criteria);
+    Task<object> CreateAsync(params object[] criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -34,19 +29,19 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> FetchAsync(params object[] criteria);
+    Task<object> FetchAsync(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
-    Task<T> UpdateAsync(T obj);
+    Task<object> UpdateAsync(object obj);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
-    Task<T> ExecuteAsync(T command);
+    Task<object> ExecuteAsync(object command);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
@@ -60,14 +55,14 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    T Create(params object[] criteria);
+    object Create(params object[] criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    T Fetch(params object[] criteria);
+    object Fetch(params object[] criteria);
     /// <summary>
     /// Called to execute a Command object on the server.
     /// </summary>
@@ -88,10 +83,9 @@ namespace Csla
     /// </remarks>
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
-    T Execute(T obj);
+    object Execute(object obj);
     /// <summary>
-    /// Called by the business object's Save() method to
-    /// insert, update or delete an object in the database.
+    /// Insert, update or delete an object in the database.
     /// </summary>
     /// <remarks>
     /// Note that this method returns a reference to the updated business object.
@@ -101,7 +95,7 @@ namespace Csla
     /// </remarks>
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
-    T Update(T obj);
+    object Update(object obj);
     /// <summary>
     /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.

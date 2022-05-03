@@ -53,5 +53,11 @@ namespace Csla.Core
     /// references a child in the object graph.
     /// </summary>
     bool IsChild { get; }
+    /// <summary>
+    /// Gets the System.Reflection.PropertyInfo object
+    /// representing the property.
+    /// </summary>
+    /// <returns></returns>
+    System.Reflection.PropertyInfo GetPropertyInfo();
   }
 }

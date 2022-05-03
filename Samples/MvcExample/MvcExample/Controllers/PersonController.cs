@@ -8,9 +8,11 @@ namespace CslaMvcExample.Controllers
   public class PersonController : Csla.Web.Mvc.Controller
   {
     public PersonController(
+      ApplicationContext applicationContext,
       IDataPortal<PersonList> personListPortal,
       IDataPortal<PersonEdit> personEditPortal,
       IDataPortal<PersonInfo> personInfoPortal)
+      : base(applicationContext)
     {
       PersonListPortal = personListPortal;
       PersonEditPortal = personEditPortal;

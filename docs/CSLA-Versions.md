@@ -1,10 +1,12 @@
-## Primary Versions
+# Primary Versions
 
-# CSLA 6 supports
+This document lists the versions of CSLA .NET that are considered "primary" versions.
+
+## CSLA 6
 
 * Runtimes
-  * .NET Standard 2.0 and 2.1
   * .NET 6
+  * .NET Standard 2.0 and 2.1
   * .NET Framework 4.6.2 through 4.8
   * mono
   * UWP
@@ -16,11 +18,33 @@
   * Windows Forms, WPF
   * UWP
 * Operating systems
-   * Windows
-   * Linux (including containers)
-   * Mac
-   * WebAssembly
-   * Others (via .NET 6)
+  * Windows
+  * Linux (including containers)
+  * Mac
+  * WebAssembly
+  * Others (via .NET 6)
+
+## CSLA 5
+
+* Runtimes
+  * .NET 5
+  * .NET Standard 2.0 and 2.1
+  * .NET Framework 4.6.2 through 4.8
+  * mono
+  * UWP
+* Platform support
+  * ASP.NET Core
+  * Blazor (and other .NET WebAssembly targets)
+  * ASP.NET (Blazor, MVC, Razor Pages, and other app models)
+  * Xamarin (iOS, Android, UWP, Mac, Linux)
+  * Windows Forms, WPF
+  * UWP
+* Operating systems
+  * Windows
+  * Linux (including containers)
+  * Mac
+  * WebAssembly
+  * Others (via .NET 5)
 
 Older versions of CSLA .NET provide support for older versions of Microsoft .NET, Silverlight, and other platforms.
 
@@ -29,13 +53,13 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
 
 ## Upgrading
 
-1.	The upgrade difficulty depends on your current version
-   1.	From 1.x – it is a rewrite (but to be fair, that code was obsoleted 17 years ago 😊 )
-   1.	From 2.x-3.6 – it requires quite a lot of changes (removing now-obsolete code), but the process is typically mechanical/repetitive, not hard
-      1.	EXCEPT if your UI is WinForms, in which case we enhanced CSLA to reveal some nasty UI bugs with data binding, so those bugs are often revealed as people move to or past v3.0.5
-   1.	From 3.8 – requires wrapping of old-style business rules into the new rules engine model
-   1.	From 4.0 – there’ve been some minor breaking changes that don’t affect everyone, but reviewing the release notes to see if a given codebase is affected is required
-   1.	From 5.0 – CSLA 6 is a major update that embraces dependency injection, so nearly all apps will be affected in their startup code, and in any interaction with the `ApplicationContext` or data portal types (all of which are now available as DI services)
+1. The upgrade difficulty depends on your current version
+   1. From 1.x – it is a rewrite (but to be fair, that code was obsoleted 17 years ago 😊 )
+   1. From 2.x-3.6 – it requires quite a lot of changes (removing now-obsolete code), but the process is typically mechanical/repetitive, not hard
+      1. EXCEPT if your UI is WinForms, in which case we enhanced CSLA to reveal some nasty UI bugs with data binding, so those bugs are often revealed as people move to or past v3.0.5
+   1. From 3.8 – requires wrapping of old-style business rules into the new rules engine model
+   1. From 4.0 – there’ve been some minor breaking changes that don’t affect everyone, but reviewing the release notes to see if a given codebase is affected is required
+   1. From 5.0 – CSLA 6 is a major update that embraces dependency injection, so nearly all apps will be affected in their startup code, and in any interaction with the `ApplicationContext` or data portal types (all of which are now available as DI services)
 
 Some older posts with information about upgrading:
 
@@ -55,7 +79,7 @@ The roadmap is [available here](https://github.com/MarimerLLC/csla/issues?q=is%3
 ## Version Background
 
 * CSLA .NET 3.0.5 is the recommended version for .NET 2.0 and 3.0. It introduced support for .NET 3.0 features: WPF, WCF, WF. It includes a wide array of bug fixes and features around Windows Forms, and other .NET 2.0 scenarios.
-   * Anyone using CSLA .NET 2.x should upgrade to 3.0.5.
+  * Anyone using CSLA .NET 2.x should upgrade to 3.0.5.
 * CSLA .NET 3.6-3.8 added support for Silverlight, ADO.NET Entity Framework and other .NET 3.5 and 3.5 SP1 features. This also includes support for ASP.NET MVC.
 * Starting in 3.6, code reduction was a major focus. So writing classes against 3.8 (current) means writing probably less than 50% of the code from early versions.
 * If you are using .NET 3.5 or Silverlight 3, you should use CSLA .NET 3.8.

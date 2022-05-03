@@ -126,6 +126,7 @@ namespace WindowsUI
   static class Program
   {
     public static Csla.ApplicationContext ApplicationContext { get; private set; }
+    public static Csla.IDataPortalFactory DataPortalFactory { get; private set; }
 
     /// <summary>
     /// The main entry point for the application.
@@ -141,6 +142,7 @@ namespace WindowsUI
             .DataPortalUrl = "https://localhost:44332/api/dataportal")));
       var provider = services.BuildServiceProvider();
       ApplicationContext = provider.GetService<Csla.ApplicationContext>();
+      DataPortalFactory = provider.GetService<Csla.IDataPortalFactory>();
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
@@ -159,7 +161,13 @@ Notice that there's a public static `ApplicationContext` property to make the in
 Now, anywhere in your code you can access `ApplicationContext` like:
 
 ```c#
-  var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<PersonEdit>>();
+  var currentUser = Program.ApplicationContext.User;
+```
+
+There is also a public static `DataPortalFactory` property you can use anywhere in your code where you need an instance of the client-side data portal:
+
+```c#
+  var portal = Program.DataPortalFactory.GetPortal<PersonEdit>();
 ```
 
 Also notice the creation of a `ServiceCollection`, and how it is used to initialize CSLA (and maybe other services), and to create the DI provider:
@@ -210,6 +218,7 @@ namespace WpfUI
   public partial class App : Application
   {
     public static ApplicationContext ApplicationContext { get; private set; }
+    public static Csla.IDataPortalFactory DataPortalFactory { get; private set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -228,13 +237,9 @@ namespace WpfUI
 }
 ```
 
-As with Windows Forms, this code creates a `ServiceCollection` instance, uses that instance to register CSLA and other service types, creates a DI provider, and uses that provider to create an instance of the `ApplicationContext` service. A public static `ApplicationService` property makes this instance available globally to your code.
+As with Windows Forms, this code creates a `ServiceCollection` instance, uses that instance to register CSLA and other service types, creates a DI provider, and uses that provider to create an instance of the `ApplicationContext` and `IDataPortalFactory` services. Public static `ApplicationService` and `DataPortalFactory` properties make these instances available globally to your code.
 
-You can use the `ApplicationContext` property to access the service, and must update any code that used to rely on the static `ApplicationContext` type. For example:
-
-```c#
-      ApplicationContext = provider.GetService<Csla.ApplicationContext>();
-```
+You can use the `ApplicationContext` property to access the service, and must update any code that used to rely on the static `ApplicationContext` type.
 
 You will also need to update all code that uses the client-side data portal, as described in the section of this document covering the use of the client-side data portal.
 
@@ -325,6 +330,8 @@ builder.Services.AddCors(options =>
 
 This is not specific to CSLA, but is required for a Blazor client app to have access to any controller provided by your web site.
 
+> ⚠️ This example of configuring CORS totally disables the feature. In production, you should configure CORS to allow only the origins you want to allow.
+
 Finally, because the CSLA `MobileFormatter` uses a synchronous API when deserializing data, you must configure aspnetcore to allow the use of synchronous behaviors:
 
 ```c#
@@ -363,47 +370,47 @@ Reworking your code to use DI throughout has some advantages, but can be a lot o
 
 In most Windows Forms, WPF, Xamarin, UWP, and Console apps your existing code probably does not rely on DI. As a result, you can't easily inject services into your pages, viewmodels, or other classes like you can in aspnetcore or Blazor.
 
-The simplest way to upgrade such a codebase for CSLA 6 is to expose a global static `ApplicationContext` property for use throughout the app.
+The simplest way to upgrade such a codebase for CSLA 6 is to expose a global static `DataPortalFactory` property for use throughout the app.
 
 > ℹ️ This is only works for code that runs in a single process or AppDomain, and _will not work_ in multi-user server scenarios such as aspnetcore!
 
-Earlier in this document I showed now to configure dependency injection and to call the `AddCsla` method to register and configure CSLA types for DI. 
+Earlier in this document I showed now to configure dependency injection and to call the `AddCsla` method to register and configure CSLA types for DI.
 
-It turns out that you can use methods on the `ApplicationContext` object to access all required CSLA services, including the client-side data portal. To do this, you must provide a global reference to the `ApplicationContext` instance for the app.
+The `IDataPortalFactory` service is designed to help you create instances of the client-side data portal. To do this, you must provide a global reference to the `IDataPortalFactory` instance for the app, usually as a static property named `DataPortalFactory`.
 
 In WPF, UWP, and Xamarin you typically have an `App` class, represented by `App.xaml.cs`. In Windows Forms there is no `App` class, so you will need to add one to your project.
 
-Whether the `App` class exists or you add it, this class will define a static `ApplicationContext` property:
+Whether the `App` class exists or you add it, this class will define a static `DataPortalFactory` property:
 
 ```c#
   public class App
   {
-    public static Csla.ApplicationContext ApplicationContext { get; internal set; }
+    public static Csla.IDataPortalFactory DataPortalFactory { get; private set; }
   }
 ```
 
 Again, your `App` class may have other code, especially in XAML-based apps. What you are adding is this new static property.
 
-Then, in your startup code where you call `AddCsla`, it is necessary to set this new `ApplicationContext` property. For example:
+Then, in your startup code where you call `AddCsla`, it is necessary to set this new `DataPortalFactory` property. For example:
 
 ```c#
       var services = new ServiceCollection();
       services.AddCsla();
       var provider = services.BuildServiceProvider();
-      App.ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+      App.DataPortalFactory = provider.GetRequiredService<IDataPortalFactory>();
 ```
 
-At this point you have used the DI provider to create an instance of the `ApplicationContext` service, and that instance is now available globally to your app code via the `App` type.
+At this point you have used the DI provider to create an instance of the `IDataPortalFactory` service, and that instance is now available globally to your app code via the `App` type.
 
-Now, anywhere that you need a client-side data portal instance, you can use the `App.ApplicationContext` to create the required data portal service:
+Now, anywhere that you need a client-side data portal instance, you can use the `App.DataPortalFactory` to create the required data portal service:
 
 ```c#
-  var portal = App.ApplicationContext.GetRequiredService<IDataPortal<PersonEdit>>();
+  var portal = App.DataPortalFactory.GetPortal<PersonEdit>();
 ```
 
 Again, in an aspnetcore or Blazor app (or any other app where DI is used throughout), you can simply inject the data portal service normally. What I'm showing here is a workaround to make it easier to upgrade existing codebases to CSLA 6 without major rework.
 
-Now that you understand how to access the client-side data portal services, I'll discuss the `IDataPortal<T>` and `IDataPortalFactory` service types.
+Now that you understand how to access the client-side data portal services, I'll discuss the `IDataPortal<T>` type.
 
 ### IDataPortal<T> Service
 
@@ -447,6 +454,91 @@ For example, here's code where an `IDataPortalFactory` service was injected in t
 ```
 
 There is no requirement to use the `IDataPortalFactory` service. It is a convenience to simplify some coding scenarios, and possibly to allow you to optimize when or if client-side data portal instances are created.
+
+### Updating Static Factory Methods
+
+In early versions of CSLA it was recommended that you abstract the use of the data portal within static factory methods in your business classes. Something like this:
+
+```c#
+  public static async Task<PersonEdit> GetAsync(int personId)
+  {
+    return await DataPortal.FetchAsync<PersonEdit>(personId);
+  }
+```
+
+Because there is no longer a static `DataPortal` type, this code will no longer compile. There are a couple primary ways to fix this:
+
+1. Pass the `IDataPortalFactory` service into the static factory method
+1. Create a factory type
+1. Use the data portal directly
+
+#### Passing an `IDataPortalFactory` Service into the Static Factory Method
+
+Perhaps the simplest way to update existing static factory methods is to pass the `IDataPortalFactory` service into the static factory method. For example:
+
+```c#
+  public static async Task<PersonEdit> GetAsync(int personId, IDataPortalFactory factory)
+  {
+    return await factory.GetPortal<PersonEdit>().FetchAsync(personId);
+  }
+```
+
+Assuming you are in a Windows Forms, WPF, or other older style app, the `IDataPortalFactory` service is available as a static property on the `App` class. You can call your static factory methods like this:
+
+```c#
+  var person = await PersonEdit.GetAsync(42, App.DataPortalFactory);
+```
+
+Another alternative is to move the static factory methods to a factory type.
+
+#### Create a Factory Type
+
+You can move the static factory methods into a factory type as instance methods. For example:
+
+```c#
+  public class PersonEditFactory
+  {
+    public PersonEditFactory(IDataPortalFactory factory)
+    {
+      Portal = factory.GetPortal<PersonEdit>();
+    }
+
+    private IDataPortal<PersonEdit> Portal { get; set; }
+
+    public async Task<PersonEdit> GetAsync(int personId)
+    {
+      return await Portal.FetchAsync(personId);
+    }
+  }
+```
+
+The result is that the `PersonEditFactory` type contains the factory methods, and you can use this type in place of the static factory methods. For example:
+
+```c#
+  var factory = new PersonEditFactory(App.DataPortalFactory);
+  var person = await factory.GetAsync(42);
+```
+
+#### Use the Data Portal Directly
+
+For several years the recommendation has been to stop using static factory methods in favor of directly invoking the data portal. 
+
+In aspnetcore or Blazor apps you can just inject the required `IDataPortal<T>` service, or if you need more control you can inject an `IDataPortalFactory` service. In Windows Forms, WPF, or Xamarin code you can use the `IDataPortalFactory` service.
+
+Either way, your code will look something like this, using `IDataPortalFactory`:
+
+```c#
+  var portal = App.DataPortalFactory.GetPortal<PersonEdit>();
+  var person = await portal.FetchAsync(42);
+```
+
+Or this, if you've injected an `IDataPortal<T>` service directly:
+
+```c#
+  var person = await portal.FetchAsync(42);
+```
+
+In most of the sample apps you'll see direct injection of the `IDataPortal<T>` service or the `IDataPortalFactory` service. Use of a factory type is also a good solution. Generally, you should try to move away from the use of static factory methods.
 
 ### Using the Child Data Portal on the Client
 

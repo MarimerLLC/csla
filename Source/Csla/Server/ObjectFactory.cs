@@ -30,7 +30,7 @@ namespace Csla.Server
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    protected ApplicationContext ApplicationContext { get; set; }
 
     /// <summary>
     /// Sets the IsReadOnly property on the specified

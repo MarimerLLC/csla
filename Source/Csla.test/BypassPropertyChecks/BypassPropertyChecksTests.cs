@@ -129,8 +129,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteWithRights()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<BypassBusinessBase> dataPortal = customDIContext.CreateDataPortal<BypassBusinessBase>();
 
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;

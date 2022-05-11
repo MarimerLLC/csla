@@ -15,27 +15,19 @@ namespace Csla.Test.Basic
   [Serializable()]
   public class Child : BusinessBase<Child>
   {
-    private string _data = "";
-    private Guid _guid = System.Guid.NewGuid();
-
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public static PropertyInfo<Guid> GuidProperty = RegisterProperty<Guid>(nameof(Guid));
     public static PropertyInfo<GrandChildren> GrandChildrenProperty = RegisterProperty<GrandChildren>(c => c.GrandChildren);
 
     protected override object GetIdValue()
     {
-      return _data;
+      return ReadProperty(DataProperty);
     }
 
     public string Data
     {
-      get { return _data; }
-      set
-      {
-        if (_data != value)
-        {
-          _data = value;
-          MarkDirty();
-        }
-      }
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
 
     public override bool Equals(object obj)
@@ -45,7 +37,7 @@ namespace Csla.Test.Basic
         return false;
       }
 
-      return _data == ((Child)(obj))._data;
+      return ReadProperty(DataProperty) == ((Child)(obj)).ReadProperty(DataProperty);
     }
 
     public override int GetHashCode()
@@ -55,7 +47,7 @@ namespace Csla.Test.Basic
 
     public Guid Guid
     {
-      get { return _guid; }
+      get { return ReadProperty(GuidProperty); }
     }
 
     public GrandChildren GrandChildren
@@ -84,7 +76,8 @@ namespace Csla.Test.Basic
     [CreateChild]
     private void Create(string data, [Inject] IChildDataPortal<GrandChildren> childDataPortal)
     {
-      _data = data;
+      LoadProperty(GuidProperty, Guid.NewGuid());
+      LoadProperty(DataProperty, data);
       LoadProperty(GrandChildrenProperty, childDataPortal.CreateChild());
     }
 

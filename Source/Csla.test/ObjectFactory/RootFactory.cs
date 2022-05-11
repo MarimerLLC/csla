@@ -12,12 +12,14 @@ using System.Text;
 
 namespace Csla.Test.ObjectFactory
 {
-  public class RootFactory
+  public class RootFactory : Csla.Server.ObjectFactory
   {
+    public RootFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     public object Create()
     {
-      var obj = new Root();
-      // TODO: How do we set ApplicationContext here? Create object using something injected?
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Create";
       obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
@@ -33,8 +35,7 @@ namespace Csla.Test.ObjectFactory
     [RunLocal]
     public object Create(string criteria)
     {
-      var obj = new Root();
-      // TODO: How do we set ApplicationContext here? Create object using something injected?
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Create " + criteria;
       obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
@@ -43,7 +44,7 @@ namespace Csla.Test.ObjectFactory
 
     public object Fetch()
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Fetch";
       obj.MarkAsOld();
       return obj;
@@ -51,8 +52,7 @@ namespace Csla.Test.ObjectFactory
 
     public object Fetch(string criteria)
     {
-      var obj = new Root();
-      // TODO: How do we set ApplicationContext here? Create object using something injected?
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = criteria;
       obj.MarkAsOld();
       return obj;
@@ -97,8 +97,11 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactoryC
+  public class RootFactoryC : Csla.Server.ObjectFactory
   {
+    public RootFactoryC(ApplicationContext applicationContext) 
+      : base(applicationContext) { }
+
     public object Create(int test)
     {
       // add overload to test reflection
@@ -108,8 +111,7 @@ namespace Csla.Test.ObjectFactory
     [RunLocal]
     public object Create(string criteria)
     {
-      var obj = new Root();
-      // TODO: How do we set ApplicationContext here? Create object using something injected?
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Create " + criteria;
       obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
@@ -124,8 +126,19 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactory1
+  public class RootFactory1 : Csla.Server.ObjectFactory
   {
+    public RootFactory1(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    public object Fetch()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
+      LoadProperty(obj, Root.DataProperty, "Fetch");
+      this.MarkOld(obj);
+      return obj;
+    }
+    
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
@@ -167,22 +180,32 @@ namespace Csla.Test.ObjectFactory
 
   public class RootFactory3 : Csla.Server.ObjectFactory
   {
-    public RootFactory3(ApplicationContext applicationContext) : base(applicationContext)
-    {
-    }
+    public RootFactory3(ApplicationContext applicationContext) 
+      : base(applicationContext) { }
 
     public object Fetch()
     {
-      var obj = new Root();
-      // TODO: How do we set ApplicationContext here? Create object using something injected?
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       LoadProperty(obj, Root.DataProperty, "Fetch");
       this.MarkOld(obj);
       return obj;
     }
   }
 
-  public class RootFactory4
+  public class RootFactory4 : Csla.Server.ObjectFactory
   {
+    public RootFactory4(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    [RunLocal]
+    public object Create()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
+      obj.Location = obj.ExecutionLocation;
+      obj.MarkAsNew();
+      return obj;
+    }
+    
     [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, 100)]
     public object Update(Root obj)
     {
@@ -203,8 +226,20 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactory5
+  public class RootFactory5 : Csla.Server.ObjectFactory
   {
+    public RootFactory5(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    [RunLocal]
+    public object Create()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
+      obj.Location = obj.ExecutionLocation;
+      obj.MarkAsNew();
+      return obj;
+    }
+
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {

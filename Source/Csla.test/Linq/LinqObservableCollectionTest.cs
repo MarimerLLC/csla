@@ -49,7 +49,6 @@ namespace Csla.Test.Linq
     {
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var synced = source.ToSyncList(c => c.Id > 100);
       Assert.AreEqual(3, synced.Count);
@@ -61,7 +60,6 @@ namespace Csla.Test.Linq
     {
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
                   where r.Id > 100
@@ -74,7 +72,6 @@ namespace Csla.Test.Linq
     {
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
                                      orderby r.Name
@@ -88,7 +85,6 @@ namespace Csla.Test.Linq
     {
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var synced = (from r in source
                      where r.Id > 100
@@ -102,7 +98,6 @@ namespace Csla.Test.Linq
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
       IChildDataPortal<TestItem> childDataPortal = _testDIContext.CreateChildDataPortal<TestItem>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var query = from r in source
                   where r.Id > 100
@@ -123,7 +118,6 @@ namespace Csla.Test.Linq
     {
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var query = from r in source
                   where r.Id > 100
@@ -144,7 +138,6 @@ namespace Csla.Test.Linq
     {
       IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
 
-      // TODO: I don't understand why some types need a public constructor and others don't?
       var source = dataPortal.Create();
       var query = from r in source
                   where r.Id > 100
@@ -465,7 +458,7 @@ namespace Csla.Test.Linq
   [Serializable]
   public class TestList : BusinessListBase<TestList, TestItem>
   {
-    private TestList()
+    public TestList()
     {
     }
 

@@ -81,5 +81,20 @@ namespace Csla.Test.ValidationRules
     {
       await BusinessRules.CheckRulesAsync();
     }
+
+    #region Private Helper Methods
+
+    /// <summary>
+    /// Construct an instance of IDataPortal<typeparamref name="T"/>
+    /// </summary>
+    /// <typeparam name="T">The type which is to be accessed</typeparam>
+    /// <returns>An instance of IDataPortal for use in data access</returns>
+    private IDataPortal<T> GetDataPortal<T>() where T : class
+    {
+      return ApplicationContext.GetRequiredService<IDataPortal<T>>();
+    }
+
+    #endregion
+
   }
 }

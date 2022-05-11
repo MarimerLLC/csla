@@ -142,13 +142,16 @@ namespace Csla.Test.Authorization
     [TestMethod()]
     public void TestAuthBeginEditRules()
     {
-      IDataPortal<DataPortal.DpRoot> dataPortal = _adminDIContext.CreateDataPortal<DataPortal.DpRoot>();
+      Guid managerInstanceId;
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<DataPortal.DpRoot> dataPortal = customDIContext.CreateDataPortal<DataPortal.DpRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
       TestResults.Reinitialise();
 
       DataPortal.DpRoot root = dataPortal.Create(new DataPortal.DpRoot.Criteria());
 
-      Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.AreEqual(true, applicationContext.Principal.IsInRole("Admin"));
 
       root.Data = "Something new";
 
@@ -159,6 +162,10 @@ namespace Csla.Test.Authorization
       root.Data = "Something new 1";
 
       //Is it denying read properly?
+      managerInstanceId = ((ApplicationContextManagerUnitTests)applicationContext.ContextManager).InstanceId;
+      Debug.WriteLine(managerInstanceId);
+      string result = root.DenyReadOnProperty;
+      //Assert.AreEqual(managerInstanceId.ToString(), result);
       Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
           "Read should have been denied");
 
@@ -259,7 +266,9 @@ namespace Csla.Test.Authorization
     [TestMethod()]
     public void TestAuthorizationAfterEditCycle()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
       TestResults.Reinitialise();
 
@@ -271,11 +280,10 @@ namespace Csla.Test.Authorization
       pr.FirstName = "ba";
       pr.CancelEdit();
 
-      // TODO: This test no longer makes any sense; can't do this can we?
-      // Csla.ApplicationContext.User = new ClaimsPrincipal();
+      applicationContext.User = new ClaimsPrincipal();
 
       PermissionsRoot prClone = pr.Clone();
-      // Csla.ApplicationContext.User = GetPrincipal("Admin");
+      applicationContext.User = GetPrincipal("Admin");
       prClone.FirstName = "somethiansdfasdf";
     }
 
@@ -308,7 +316,9 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestAuthorizedAccess()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
       TestResults.Reinitialise();
 
@@ -318,19 +328,20 @@ namespace Csla.Test.Authorization
       pr.FirstName = "something";
       string something = pr.FirstName;
 
-      Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.AreEqual(true, applicationContext.Principal.IsInRole("Admin"));
 
-      // TODO: This no longer makes sense; can't do this anymore?
       //set to null so the other testmethods continue to throw exceptions
-      //Csla.ApplicationContext.User = new ClaimsPrincipal();
+      applicationContext.User = new ClaimsPrincipal();
 
-      Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.AreEqual(false, applicationContext.Principal.IsInRole("Admin"));
     }
 
     [TestMethod]
     public void TestAuthExecute()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
       TestResults.Reinitialise();
 
@@ -338,13 +349,12 @@ namespace Csla.Test.Authorization
       //should work, because we are now logged in as an admin
       pr.DoWork();
 
-      Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.AreEqual(true, applicationContext.Principal.IsInRole("Admin"));
 
-      // TODO: This no longer makes sense; can't do this anymore?
       //set to null so the other testmethods continue to throw exceptions
-      //Csla.ApplicationContext.User = new ClaimsPrincipal();
+      applicationContext.User = new ClaimsPrincipal();
 
-      Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.AreEqual(false, applicationContext.Principal.IsInRole("Admin"));
     }
 
     [TestMethod]
@@ -374,8 +384,8 @@ namespace Csla.Test.Authorization
 
       var root = dataPortal.Create();
 
-      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
+      Assert.IsTrue(applicationContext.Principal.IsInRole("Admin"));
+      Assert.IsFalse(applicationContext.Principal.IsInRole("User"));
 
       // implicit usage of ApplicationContext.RuleSet
       applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
@@ -403,8 +413,8 @@ namespace Csla.Test.Authorization
 
       var root = dataPortal.Create();
 
-      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
+      Assert.IsTrue(applicationContext.Principal.IsInRole("Admin"));
+      Assert.IsFalse(applicationContext.Principal.IsInRole("User"));
 
       //BusinessRules.AddRule(typeof(PermissionsRoot), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
       //BusinessRules.AddRule(typeof(PermissionsRoot), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");

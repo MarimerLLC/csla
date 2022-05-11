@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -14,6 +15,7 @@ namespace Csla.Test.AppContext
   {
     [ThreadStatic]
     private static HybridDictionary _myContext = new HybridDictionary();
+    private readonly AsyncLocal<IPrincipal> _principal = new();
 
     private const string _localContextName = "Csla.ClientContext";
     private const string _clientContextName = "Csla.ClientContext";
@@ -30,7 +32,7 @@ namespace Csla.Test.AppContext
 
     public IPrincipal GetUser()
     {
-      IPrincipal result = Thread.CurrentPrincipal;
+      IPrincipal result = _principal.Value;
       if (result == null)
       {
         result = new System.Security.Claims.ClaimsPrincipal();
@@ -41,7 +43,7 @@ namespace Csla.Test.AppContext
 
     public void SetUser(IPrincipal principal)
     {
-      Thread.CurrentPrincipal = principal;
+      _principal.Value = principal;
     }
 
     public ContextDictionary GetLocalContext()

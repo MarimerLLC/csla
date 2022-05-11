@@ -68,6 +68,10 @@ namespace Csla.Test.Security
 
     public static void AddObjectAuthorizationRules()
     {
+      // add rules for multiple rulesets
+      BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User"));
+      BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
+      BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
     }
 
     protected override void AddBusinessRules()
@@ -75,24 +79,7 @@ namespace Csla.Test.Security
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
-
-      // TODO: I moved this from AddObjectAuthorizationRules; is that right?
-      //// add rules for default ruleset
-      var orgRuleSet = BusinessRules.RuleSet;
-      try
-      {
-        BusinessRules.RuleSet = ApplicationContext.DefaultRuleSet;
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User"));
-        BusinessRules.RuleSet = "custom1";
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "Admin"));
-        BusinessRules.RuleSet = "custom2";
-        BusinessRules.AddRule(typeof(PermissionsRoot2), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"));
-      }
-      finally
-      {
-        BusinessRules.RuleSet = orgRuleSet;
-      }
-}
+    }
 
     #endregion
 

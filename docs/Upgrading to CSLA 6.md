@@ -792,3 +792,26 @@ As a result, you should replace all use of the WCF data portal channel (i.e. `Wc
 > ℹ There is an open source WCF project to provide WCF support in modern .NET: https://github.com/CoreWCF/CoreWCF. If you really need to use WCF, you could build a data portal channel (proxy/host) based on this open source project.
 > 
 > There is an open backlog item in CSLA to support this scenario: https://github.com/MarimerLLC/csla/issues/1183
+
+## Business Classes
+
+There are changes that may affect your business classes.
+
+### Lazy Loaded Properties
+
+When implementing a lazy loaded property it is necessary to invoke the data portal (or a factory or factory method) to fetch the property value. The CSLA base classes expose a `protected` property so you have access to `ApplicationContext` and you can use that as necessary to interact with the data portal.
+
+For example:
+
+```c#
+      get => LazyGetProperty<PersonEdit>(ChildProperty, () 
+        => ApplicationContext.GetRequiredService<IDataPortal<<PersonEdit>>().Fetch(123));
+```
+
+or
+
+```c#
+      get => LazyGetPropertyAsync<PersonEdit>(ChildProperty, 
+        ApplicationContext.GetRequiredService<IDataPortal<<PersonEdit>>().FetchAsync(123));
+```
+

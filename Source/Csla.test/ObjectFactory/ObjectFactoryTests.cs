@@ -268,12 +268,10 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void FetchLoadProperty()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateDefaultContext();
-      // TODO: Not sure how to have a generic factory loader now an ApplicationContext is required on the class :-(
-      //TestDIContext testDIContext = TestDIContextFactory.CreateContext(
-      //  options => options.DataPortal(
-      //    dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory3>>()))
-      //  );
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(
+          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory3>>()))
+        );
       IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
 
       var root = dataPortal.Fetch();

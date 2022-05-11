@@ -32,7 +32,7 @@ namespace Csla.Test.ObjectFactory
       if (!CanExecuteCommand())
         throw new Csla.Security.SecurityException("Not authorized to execute command");
 
-      CommandObjectMissingFactoryMethod cmd = new CommandObjectMissingFactoryMethod();
+      CommandObjectMissingFactoryMethod cmd = dataPortal.Create();
       cmd.BeforeServer();
       cmd = dataPortal.Execute(cmd);
       cmd.AfterServer();
@@ -59,6 +59,11 @@ namespace Csla.Test.ObjectFactory
     }
 
     #endregion
+
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
 
   }
 }

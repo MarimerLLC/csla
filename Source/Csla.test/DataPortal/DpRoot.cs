@@ -148,7 +148,8 @@ namespace Csla.Test.DataPortal
       get
       {
         if (CanReadProperty("DenyReadOnProperty"))
-          throw new Csla.Security.SecurityException("Not allowed 1");
+          //return "Not allowed 1";
+          return ((TestHelpers.ApplicationContextManagerUnitTests)ApplicationContext.ContextManager).InstanceId.ToString();
 
         else
           return "[DenyReadOnProperty] Can't read property";
@@ -185,7 +186,7 @@ namespace Csla.Test.DataPortal
       get
       {
         if (CanReadProperty("DenyReadWriteOnProperty"))
-          throw new Csla.Security.SecurityException("Not allowed 3");
+          return "Not allowed 3";
 
         else
           return "[DenyReadWriteOnProperty] Can't read property";
@@ -209,7 +210,7 @@ namespace Csla.Test.DataPortal
           return _auth;
 
         else
-          throw new Csla.Security.SecurityException("Should be allowed 5");
+          return "Should be allowed 5";
       }
       set
       {

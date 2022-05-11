@@ -123,7 +123,7 @@ namespace Csla.Test.DataPortal
     [Transactional(TransactionalTypes.TransactionScope)]
     [Insert]
     protected void DataPortal_Insert()
-    {
+    { 
       SqlConnection cn = new SqlConnection(WellKnownValues.DataPortalTestDatabase);
       string firstName = this.FirstName;
       string lastName = this.LastName;

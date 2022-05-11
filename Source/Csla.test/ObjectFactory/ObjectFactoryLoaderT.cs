@@ -12,8 +12,14 @@ using System.Text;
 
 namespace Csla.Test.ObjectFactory
 {
-  public class ObjectFactoryLoader<T> : Csla.Server.IObjectFactoryLoader where T: class, new()
+  public class ObjectFactoryLoader<T> : Csla.Server.IObjectFactoryLoader where T: class
   {
+    private readonly ApplicationContext _applicationContext;
+    public ObjectFactoryLoader(ApplicationContext applicationContext)
+    {
+      _applicationContext = applicationContext;
+    }
+
     public Type GetFactoryType(string factoryName)
     {
       if (factoryName == "Csla.Test.ObjectFactory.RootFactory, Csla.Tests")
@@ -28,7 +34,7 @@ namespace Csla.Test.ObjectFactory
     {
       if (factoryName == "Csla.Test.ObjectFactory.RootFactory, Csla.Tests")
       {
-        return new T();
+        return _applicationContext.CreateInstanceDI<T>();
       }
       else
         return null;

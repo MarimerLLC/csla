@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnitDriven;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -23,6 +24,14 @@ namespace Csla.Test.LazySingelton
   [TestClass]
   public class LazySingeltonTest
   {
+
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestMethod]
     public void LazySingeltonDefaultConstructorCreatesObject()
@@ -73,5 +82,13 @@ namespace Csla.Test.LazySingelton
       Assert.AreEqual(typeof(Dictionary<string, object>), lazy.Value.GetType());
     }
 
+    #region Private Helper Methods
+
+    private LazySingleton<T> CreateLazySingleton<T>() where T:class
+    {
+      return new LazySingleton<T>();
+    }
+
+    #endregion
   }
 }

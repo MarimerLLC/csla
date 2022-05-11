@@ -70,14 +70,14 @@ namespace Csla.TestHelpers
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
     public static TestDIContext CreateContext(Action<CslaOptions> customCslaOptions, ClaimsPrincipal principal)
     {
-      ServiceProvider serviceProvider;
+      IServiceProvider serviceProvider;
       ApplicationContext context;
 
       // Initialise DI
       var services = new ServiceCollection();
 
       // Add Csla
-      services.TryAddScoped<Core.IContextManager, Core.ApplicationContextManager>();
+      services.TryAddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
       services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddCsla(customCslaOptions);
 

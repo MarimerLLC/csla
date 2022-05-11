@@ -13,6 +13,7 @@ using UnitDriven;
 using Csla.Testing.Business.BusyStatus;
 using System.Threading.Tasks;
 using Csla.TestHelpers;
+using Csla.Test;
 
 #if NUNIT
 using NUnit.Framework;
@@ -46,6 +47,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
@@ -60,6 +63,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].RuleField = "some value";
@@ -73,6 +78,8 @@ namespace cslalighttest.BusyStatus
     public async Task TestSaveWhileBusy()
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRule>();
+
+      TestResults.Reinitialise();
       
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
@@ -100,6 +107,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].RuleField = "some value";
@@ -126,6 +135,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.ValidationComplete += (o2, e2) =>
@@ -145,6 +156,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].ValidationComplete += (o2, e2) =>
@@ -163,6 +176,8 @@ namespace cslalighttest.BusyStatus
     public void ListTestSaveWhileNotBusy()
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
+
+      TestResults.Reinitialise();
 
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
@@ -187,6 +202,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
@@ -202,6 +219,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
@@ -230,6 +249,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.ValidationComplete += (o2, e2) =>
@@ -251,6 +272,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
@@ -278,6 +301,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.OperationResult = "something";
@@ -295,6 +320,8 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
+      TestResults.Reinitialise();
+      
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 

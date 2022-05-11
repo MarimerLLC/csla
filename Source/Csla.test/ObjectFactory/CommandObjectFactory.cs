@@ -18,6 +18,12 @@ namespace Csla.Test.ObjectFactory
     {
     }
 
+    [RunLocal]
+    public object Create()
+    {
+      return ApplicationContext.CreateInstanceDI<CommandObject>();
+    }
+
     public object Execute(CommandObject command)
     {
       command.Result = true;

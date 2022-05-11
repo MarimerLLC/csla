@@ -32,7 +32,7 @@ namespace Csla.Test.ObjectFactory
       if (!CanExecuteCommand())
         throw new Csla.Security.SecurityException("Not authorized to execute command");
 
-      CommandObject cmd = new CommandObject();
+      CommandObject cmd = dataPortal.Create();
       cmd.BeforeServer();
       cmd = dataPortal.Execute(cmd);
       cmd.AfterServer();

@@ -64,23 +64,23 @@ namespace Csla.Test.ObjectFactory
         switch (_mode)
         {
           case 1:
-            return new RootFactory1();
+            return new RootFactory1(_applicationContext);
           case 2:
             throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 3:
             return new RootFactory3(_applicationContext);
           case 4:
-            return new RootFactory4();
+            return new RootFactory4(_applicationContext);
           case 5:
-            return new RootFactory5();
+            return new RootFactory5(_applicationContext);
           case 6:
             throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 7:
             throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 8:
-            return new RootFactoryC();
+            return new RootFactoryC(_applicationContext);
           default:
-            return new RootFactory();
+            return new RootFactory(_applicationContext);
         }
       }
       else

@@ -17,35 +17,35 @@ namespace Csla.Test.ObjectFactory
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    internal static PropertyInfo<string> DataProperty = RegisterProperty(new PropertyInfo<string>("Data"));
+    internal static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
     public string Data
     {
       get { return GetProperty(DataProperty); }
       set { SetProperty(DataProperty, value); }
     }
 
-    private static PropertyInfo<Csla.ApplicationContext.ExecutionLocations> LocationProperty = RegisterProperty(new PropertyInfo<Csla.ApplicationContext.ExecutionLocations>("Location"));
+    private static PropertyInfo<Csla.ApplicationContext.ExecutionLocations> LocationProperty = RegisterProperty<Csla.ApplicationContext.ExecutionLocations>(nameof(Location));
     public Csla.ApplicationContext.ExecutionLocations Location
     {
       get { return GetProperty(LocationProperty); }
       set { SetProperty(LocationProperty, value); }
     }
 
-    private static PropertyInfo<TransactionalTypes> TransactionalTypeProperty = RegisterProperty(new PropertyInfo<TransactionalTypes>("TransactionalType"));
+    private static PropertyInfo<TransactionalTypes> TransactionalTypeProperty = RegisterProperty<TransactionalTypes>(nameof(TransactionalType));
     public TransactionalTypes TransactionalType
     {
       get { return GetProperty(TransactionalTypeProperty); }
       set { SetProperty(TransactionalTypeProperty, value); }
     }
 
-    private static PropertyInfo<string> IsolationLevelProperty = RegisterProperty(new PropertyInfo<string>("IsolationLevel"));
+    private static PropertyInfo<string> IsolationLevelProperty = RegisterProperty<string>(nameof(IsolationLevel));
     public string IsolationLevel
     {
       get { return GetProperty(IsolationLevelProperty); }
       set { SetProperty(IsolationLevelProperty, value); }
     }
 
-    private static PropertyInfo<int> TransactionTimeoutProperty = RegisterProperty(new PropertyInfo<int>("TransactionTimeout"));
+    private static PropertyInfo<int> TransactionTimeoutProperty = RegisterProperty<int>(nameof(TransactionTimeout));
     public int TransactionTimeout
     {
       get { return GetProperty(TransactionTimeoutProperty); }

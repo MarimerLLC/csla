@@ -53,7 +53,8 @@ namespace Csla.Test.LazyLoad
 
     private AChildList FetchChildList()
     {
-      return GetDataPortal<AChildList>().Fetch();
+      IDataPortal<AChildList> dataPortal = ApplicationContext.GetRequiredService<IDataPortal<AChildList>>();
+      return dataPortal.Fetch();
     }
   }
 }

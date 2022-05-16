@@ -3,6 +3,7 @@ There are many code generation options available for CSLA .NET. This is a partia
 Only CslaGenFork is affiliated directly with the CSLA .NET project, the others come from various other sources. Some are commercial, some are free, you can decide which is best for you.
 
 * [CslaGenFork](https://github.com/CslaGenFork/CslaGenFork) - Generates CSLA .NET classes suitable for Windows Forms, ASP.NET, WPF, and Silverlight
+* [DesiGen](https://desigen-docs.dotnotstandard.com/docs) - Design and code generation tool
 * [CodeSmith](https://www.codesmithtools.com/) - General code generation tool 
   * Templates: http://www.codesmithtools.com/csla 
   * Forums: http://community.codesmithtools.com/Template_Frameworks/f/68.aspx

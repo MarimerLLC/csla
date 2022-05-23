@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Data;
 #elif XAMARIN
 using Xamarin.Forms;
 using System.Collections.Generic;
+#elif MAUI
 #else
 using System.Windows.Controls;
 using System.Windows;
@@ -30,7 +31,7 @@ namespace Csla.Xaml
   /// <summary>
   /// Expose metastate information about a property.
   /// </summary>
-#if XAMARIN
+#if XAMARIN || MAUI
   public class PropertyInfo : View, INotifyPropertyChanged
   {
 
@@ -47,7 +48,7 @@ namespace Csla.Xaml
     public PropertyInfo()
     {
       BrokenRules = new ObservableCollection<BrokenRule>();
-#if XAMARIN
+#if XAMARIN || MAUI
       _loading = false;
       BindingContextChanged += (o, e) => SetSource();
       UpdateState();
@@ -76,7 +77,7 @@ namespace Csla.Xaml
 
     #region BrokenRules property
 
-#if XAMARIN
+#if XAMARIN || MAUI
     /// <summary>
     /// Gets the broken rules collection from the
     /// business object.
@@ -119,7 +120,7 @@ namespace Csla.Xaml
 
     #region MyDataContext Property
 
-#if XAMARIN
+#if XAMARIN || MAUI
 #else
     /// <summary>
     /// Used to monitor for changes in the binding path.
@@ -144,7 +145,7 @@ namespace Csla.Xaml
 
     #region RelativeBinding Property
 
-#if XAMARIN
+#if XAMARIN || MAUI
 #else
 
     /// <summary>
@@ -182,7 +183,7 @@ namespace Csla.Xaml
     /// <value>The binding path.</value>
     protected string BindingPath { get; set; }
 
-#if XAMARIN
+#if XAMARIN || MAUI
     private string _bindingPath;
     /// <summary>
     /// Gets or sets the binding path used to bind this
@@ -865,7 +866,7 @@ namespace Csla.Xaml
 
     #region INotifyPropertyChanged Members
 
-#if !XAMARIN
+#if !XAMARIN && !MAUI
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>

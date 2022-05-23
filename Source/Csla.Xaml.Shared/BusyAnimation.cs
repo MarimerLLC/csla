@@ -1,4 +1,4 @@
-﻿#if !XAMARIN && !WINDOWS_UWP
+﻿#if !XAMARIN && !WINDOWS_UWP && !MAUI
 //-----------------------------------------------------------------------
 // <copyright file="BusyAnimation.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -38,13 +38,13 @@ namespace Csla.Xaml
   [TemplateVisualState(Name = "state8", GroupName = "CommonStates")]
   public class BusyAnimation : Control
   {
-    #region Constants
+#region Constants
 
     private const int NUM_STATES = 8;
 
-    #endregion
+#endregion
 
-    #region Member fields and properties
+#region Member fields and properties
 
     private DispatcherTimer _timer;
     private int _state = -1;
@@ -117,9 +117,9 @@ namespace Csla.Xaml
       GoToState(true);
     }
 
-    #endregion
+#endregion
 
-    #region Constructor
+#region Constructor
 
     /// <summary>
     /// Creates an instance of the control.
@@ -136,9 +136,9 @@ namespace Csla.Xaml
       LayoutUpdated += BusyAnimation_LayoutUpdated;
     }
 
-    #endregion
+#endregion
 
-    #region Timer
+#region Timer
 
     private void StartTimer()
     {
@@ -170,9 +170,9 @@ namespace Csla.Xaml
       GoToState(true);
     }
 
-    #endregion
+#endregion
 
-    #region State
+#region State
 
     private void GoToState(bool useTransitions)
     {
@@ -186,9 +186,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Parts
+#region Parts
 
     void BusyAnimation_LayoutUpdated(object sender, EventArgs e)
     {
@@ -228,9 +228,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Helpers
+#region Helpers
 
     private DependencyObject FindChild(DependencyObject parent, string name)
     {
@@ -251,7 +251,7 @@ namespace Csla.Xaml
       return found;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

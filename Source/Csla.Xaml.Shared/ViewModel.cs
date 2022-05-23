@@ -1,4 +1,4 @@
-﻿#if !XAMARIN && !NETFX_CORE
+﻿#if !XAMARIN && !NETFX_CORE && !MAUI
 //-----------------------------------------------------------------------
 // <copyright file="ViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

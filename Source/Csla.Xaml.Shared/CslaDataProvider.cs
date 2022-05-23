@@ -1,4 +1,4 @@
-#if !XAMARIN && !WINDOWS_UWP
+#if !XAMARIN && !WINDOWS_UWP && !MAUI
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataProvider.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -487,7 +487,7 @@ namespace Csla.Xaml
     }
 
 
-    #region QueryRequest Class
+#region QueryRequest Class
 
     private class QueryRequest
     {

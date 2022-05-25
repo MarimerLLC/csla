@@ -73,7 +73,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(IRuleContext context)
     {
-      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, null, null);
+      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, context.ApplicationContext.CurrentServiceProvider, null);
       if (PrimaryProperty != null)
         ctx.MemberName = PrimaryProperty.FriendlyName;
 

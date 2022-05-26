@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Csla;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +31,24 @@ namespace Csla.Test.DataPortal
       }
       catch (DataPortalException e)
       {
-        Assert.IsInstanceOfType(e.BusinessException, typeof(InvalidOperationException));
+        Assert.IsInstanceOfType(e.BusinessException, typeof(CustomException));
+      }
+    }
+
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task ChildCreationExceptionFlowsFromDataPortalAsync()
+    {
+      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
+      string expected = "A suitable constructor for type 'Csla.Test.DataPortal.EditableChild2' could not be located.";
+
+      try
+      {
+        var bo = await dataPortal.FetchAsync();
+      }
+      catch (DataPortalException e)
+      {
+        Assert.AreEqual(e.BusinessException.Message.Substring(0, expected.Length), expected);
       }
     }
   }
@@ -54,6 +72,16 @@ namespace Csla.Test.DataPortal
       using (BypassPropertyChecks)
       {
         LoadProperty(ChildProperty, childDataPortal.CreateChild());
+      }
+      BusinessRules.CheckRules();
+    }
+
+    [Fetch]
+    protected async Task DataPortal_FetchAsync([Inject] IChildDataPortal<EditableChild2> childDataPortal)
+    {
+      using (BypassPropertyChecks)
+      {
+        LoadProperty(ChildProperty, await childDataPortal.FetchChildAsync(1));
       }
       BusinessRules.CheckRules();
     }
@@ -83,15 +111,46 @@ namespace Csla.Test.DataPortal
       base.Child_Create();
     }
 
+    [FetchChild]
+    private Task Child_FetchAsync(int id)
+    {
+      using (BypassPropertyChecks)
+      {
+        throw new CustomException("Fetch not allowed");
+      }
+    }
+
     [InsertChild]
     private void Child_Insert(object parent)
     {
       using (BypassPropertyChecks)
       {
-        throw new InvalidOperationException("Insert not allowed");
+        throw new CustomException("Insert not allowed");
       }
     }
 
     #endregion
+
+  }
+
+  [Serializable]
+  public class EditableChild2: EditableChild1
+  {
+    private EditableChild2()
+    {
+      // Disallow creation of the object, to test what happens in this scenario
+    }
+
+    [Fetch]
+    private Task Child_FetchAsync(int id)
+    {
+      return Task.CompletedTask;
+    }
+  }
+
+  [Serializable]
+  public class CustomException : Exception
+  {
+    public CustomException(string message) : base(message) { }
   }
 }

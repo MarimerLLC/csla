@@ -1,0 +1,5 @@
+var class_csla_1_1_generators_1_1_c_sharp_1_1_tests_1_1_nesting_p_o_c_o2_tests =
+[
+    [ "SerializeThenDeserialize_NestingPOCO2WithNullValue_HasNullValue", "class_csla_1_1_generators_1_1_c_sharp_1_1_tests_1_1_nesting_p_o_c_o2_tests.html#aea763f67187f99f89d0e84413c14b234", null ],
+    [ "SerializeThenDeserialize_NestingPOCO2WithValueOfTesty2_HasValueOfTesty2", "class_csla_1_1_generators_1_1_c_sharp_1_1_tests_1_1_nesting_p_o_c_o2_tests.html#a29bacceb953babca819832af71cde666", null ]
+];

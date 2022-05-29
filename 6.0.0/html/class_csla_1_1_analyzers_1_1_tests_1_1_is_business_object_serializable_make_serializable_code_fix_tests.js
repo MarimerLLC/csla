@@ -1,0 +1,6 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_is_business_object_serializable_make_serializable_code_fix_tests =
+[
+    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_is_business_object_serializable_make_serializable_code_fix_tests.html#a5a16e6f95b1c727ecc890ce754468128", null ],
+    [ "VerifyGetFixesWhenUsingSystemDoesNotExists", "class_csla_1_1_analyzers_1_1_tests_1_1_is_business_object_serializable_make_serializable_code_fix_tests.html#ad77f3b859f29b3497343dd2cb5e96d15", null ],
+    [ "VerifyGetFixesWhenUsingSystemExists", "class_csla_1_1_analyzers_1_1_tests_1_1_is_business_object_serializable_make_serializable_code_fix_tests.html#a7c48650bc5f17261ddd3b266b2380b95", null ]
+];

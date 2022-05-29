@@ -1,0 +1,4 @@
+var class_csla_1_1_analyzers_1_1_integration_tests_1_1_public_constructor_with_arguments_test =
+[
+    [ "PublicConstructorWithArgumentsTest", "class_csla_1_1_analyzers_1_1_integration_tests_1_1_public_constructor_with_arguments_test.html#ab84c60b2bb114c0ea3a4e3d4abd592f9", null ]
+];

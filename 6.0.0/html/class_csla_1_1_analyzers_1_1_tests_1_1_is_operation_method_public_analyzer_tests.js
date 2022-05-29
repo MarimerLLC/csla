@@ -1,0 +1,10 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests =
+[
+    [ "AnalyzeWhenTypeIsNotStereotype", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#a604f8299ae5b47cd00b7fbdb8eaf1efa", null ],
+    [ "AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#a87bed6b7a1f3a183a00b7be1b5a37a76", null ],
+    [ "AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#a4e4276cf70acb30bb51c7e65dda9224e", null ],
+    [ "AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#a068af6791b172fb688ba24d9e4d72196", null ],
+    [ "AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#aff182de27e28050fb54765c17b117f5d", null ],
+    [ "AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#a937132668c96d507645341537cb03dcd", null ],
+    [ "VerifySupportedDiagnostics", "class_csla_1_1_analyzers_1_1_tests_1_1_is_operation_method_public_analyzer_tests.html#a3fa1110df3a5b1becfe0401d57e7e736", null ]
+];

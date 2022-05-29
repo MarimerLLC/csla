@@ -1,0 +1,4 @@
+var class_csla_1_1_test_1_1_validation_rules_1_1_xD0_x98_xD0_xB7_xD0_xB8_xD0_xBB_xD0_xB4_xD1_x80_rule =
+[
+    [ "ИзилдрRule", "class_csla_1_1_test_1_1_validation_rules_1_1_xD0_x98_xD0_xB7_xD0_xB8_xD0_xBB_xD0_xB4_xD1_x80_rule.html#a400f93d169158f4f0dac6ef61db7752a", null ]
+];

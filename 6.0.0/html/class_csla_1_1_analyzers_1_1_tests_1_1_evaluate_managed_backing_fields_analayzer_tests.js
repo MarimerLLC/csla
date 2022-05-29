@@ -1,0 +1,11 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests =
+[
+    [ "AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a6bb76832ce8ce3ba659140c6471623ac", null ],
+    [ "AnalyzeWhenClassHasManagedBackingFieldUsedProperty", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a1eafd96b7264928e015de633080f511d", null ],
+    [ "AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#ae4a6b92431c31bd1d2be5587e0ddf5fc", null ],
+    [ "AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a25c2d9ec5957a9486f8f23ffd4eed956", null ],
+    [ "AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a1ed5e75d04f48f947f53e659223995a2", null ],
+    [ "AnalyzeWhenClassIsNotStereotype", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a40c9db475134dacf694e570fbc7ae47e", null ],
+    [ "AnalyzeWhenCommandHasManagedBackingFieldUsedPropertyAndIsNotReadonly", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a1d8152ddca6fa5318397aab367e07adc", null ],
+    [ "VerifySupportedDiagnostics", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_analayzer_tests.html#a13109abdb3910f86773edd4d11e2adee", null ]
+];

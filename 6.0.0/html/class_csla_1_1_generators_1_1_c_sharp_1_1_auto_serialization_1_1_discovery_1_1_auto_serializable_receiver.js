@@ -1,0 +1,5 @@
+var class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_discovery_1_1_auto_serializable_receiver =
+[
+    [ "OnVisitSyntaxNode", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_discovery_1_1_auto_serializable_receiver.html#a0fc42a05b4ea0f1151aeaa5ddefd24dd", null ],
+    [ "Targets", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_discovery_1_1_auto_serializable_receiver.html#a03373111938138e990eb6da2b7e7a774", null ]
+];

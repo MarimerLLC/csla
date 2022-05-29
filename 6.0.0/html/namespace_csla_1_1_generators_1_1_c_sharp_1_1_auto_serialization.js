@@ -1,0 +1,12 @@
+var namespace_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization =
+[
+    [ "Discovery", "namespace_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_discovery.html", "namespace_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_discovery" ],
+    [ "ExtractedContainerDefinition", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition" ],
+    [ "ExtractedFieldDefinition", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition" ],
+    [ "ExtractedMemberTypeDefinition", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition" ],
+    [ "ExtractedPropertyDefinition", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_property_definition.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_property_definition" ],
+    [ "ExtractedTypeDefinition", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_type_definition.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_type_definition" ],
+    [ "GenerationResults", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_generation_results.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_generation_results" ],
+    [ "IMemberDefinition", "interface_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_i_member_definition.html", "interface_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_i_member_definition" ],
+    [ "SerializationPartialsGenerator", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_serialization_partials_generator.html", "class_csla_1_1_generators_1_1_c_sharp_1_1_auto_serialization_1_1_serialization_partials_generator" ]
+];

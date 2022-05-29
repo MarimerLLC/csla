@@ -1,0 +1,6 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_asynchronous_business_rule_inheriting_from_business_rule_abf68c77d7f0019df10069c1114c9b85 =
+[
+    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_asynchronous_business_rule_inheriting_from_business_rule_abf68c77d7f0019df10069c1114c9b85.html#a7e998a4367a50d698a445f752c4472d3", null ],
+    [ "VerifyGetFixesWithNamespace", "class_csla_1_1_analyzers_1_1_tests_1_1_asynchronous_business_rule_inheriting_from_business_rule_abf68c77d7f0019df10069c1114c9b85.html#a489d4fd7742eb9130665d11988e38fd0", null ],
+    [ "VerifyGetFixesWithoutNamespace", "class_csla_1_1_analyzers_1_1_tests_1_1_asynchronous_business_rule_inheriting_from_business_rule_abf68c77d7f0019df10069c1114c9b85.html#a70fe8f0bdd585aef70084627956843d9", null ]
+];

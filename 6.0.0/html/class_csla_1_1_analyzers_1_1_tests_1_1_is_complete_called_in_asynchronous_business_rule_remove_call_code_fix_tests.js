@@ -1,0 +1,6 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_is_complete_called_in_asynchronous_business_rule_remove_call_code_fix_tests =
+[
+    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_is_complete_called_in_asynchronous_business_rule_remove_call_code_fix_tests.html#a3c063f3f497a9d1bcb220db549e80832", null ],
+    [ "VerifyGetFixes", "class_csla_1_1_analyzers_1_1_tests_1_1_is_complete_called_in_asynchronous_business_rule_remove_call_code_fix_tests.html#a7b94d0a7d4099e8ddff61657c3020920", null ],
+    [ "VerifyGetFixesWithNameofCall", "class_csla_1_1_analyzers_1_1_tests_1_1_is_complete_called_in_asynchronous_business_rule_remove_call_code_fix_tests.html#ad6c17359a8b08b6ff8d0dbbc944bd5bd", null ]
+];

@@ -1,0 +1,10 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests =
+[
+    [ "AnalyzeWhenClassIsABusinessRuleAndCallsAddMethod", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#ae1d257008cf3238a9452947ea7c4858d", null ],
+    [ "AnalyzeWhenClassIsABusinessRuleAndCallsAddMethodAndUsesNameof", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#a7c992a4e2ce69be417a61d96adef895a", null ],
+    [ "AnalyzeWhenClassIsABusinessRuleAndDoesNotCallAnAddMethod", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#a03bae4bb09e96122a5a986c356df6295", null ],
+    [ "AnalyzeWhenClassIsABusinessRuleAsyncAndCallsAddMethod", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#aaffc087ef94e3e09451d70c6d8a4d935", null ],
+    [ "AnalyzeWhenClassIsABusinessRuleAsyncAndDoesNotCallAnAddMethod", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#a7976cf750df4215622b3688b2323906b", null ],
+    [ "AnalyzeWhenClassIsNotABusinessRule", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#acdb8b43b5c76dbd4c68c11210ee6305c", null ],
+    [ "VerifySupportedDiagnostics", "class_csla_1_1_analyzers_1_1_tests_1_1_business_rule_does_not_use_add_methods_on_context_analyzer_tests.html#a94fec86add9271d7f3bed8806f1c9893", null ]
+];

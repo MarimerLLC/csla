@@ -1,0 +1,5 @@
+var namespace_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests =
+[
+    [ "RootSingleItemsList", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_root_single_items_list.html", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_root_single_items_list" ],
+    [ "SingleItem", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_single_item.html", "class_csla_1_1_testing_1_1_business_1_1_editable_root_list_tests_1_1_single_item" ]
+];

@@ -1,0 +1,5 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_find_save_assignment_issue_analyzer_add_async_assignment_code_fix_tests =
+[
+    [ "VerifyGetFixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_tests_1_1_find_save_assignment_issue_analyzer_add_async_assignment_code_fix_tests.html#a82baba5b6f03b5107be3debc14bc8a1e", null ],
+    [ "VerifyGetFixes", "class_csla_1_1_analyzers_1_1_tests_1_1_find_save_assignment_issue_analyzer_add_async_assignment_code_fix_tests.html#a68623ac6669855d03b507b0583bd2455", null ]
+];

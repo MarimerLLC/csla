@@ -1,0 +1,4 @@
+var class_csla_1_1_analyzers_1_1_integration_tests_1_1_public_constructor_explicit_no_argument_test =
+[
+    [ "PublicConstructorExplicitNoArgumentTest", "class_csla_1_1_analyzers_1_1_integration_tests_1_1_public_constructor_explicit_no_argument_test.html#a0237e4063125100ccc2707c532d1bb97", null ]
+];

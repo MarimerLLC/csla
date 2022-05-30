@@ -1,0 +1,26 @@
+var classcslalighttest_1_1_serialization_1_1_serialization_tests =
+[
+    [ "StringCriteria", "classcslalighttest_1_1_serialization_1_1_serialization_tests_1_1_string_criteria.html", "classcslalighttest_1_1_serialization_1_1_serialization_tests_1_1_string_criteria" ],
+    [ "BusinessObjectWithChildList", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#ae5fb6fcbce789b69782586438e5b1536", null ],
+    [ "BusinessObjectWithEnum", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#ad1262864e0762f072a0a31fa388b8d12", null ],
+    [ "BusinessObjectWithoutChildList", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#aae49703a9b5dcd7cc3802c3b6e52ac97", null ],
+    [ "LogicallyIdenticalChildObjects", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#adcf1573e4ebfe2759a6e3d766ef37acf", null ],
+    [ "MobileDictionary_MobileKey_MobileValue", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a82a128e5b3f8920d92a66bee0155725e", null ],
+    [ "MobileDictionary_MobileKey_PrimitiveValue", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#abd421ba78b9012a5d53522f74bedd4e0", null ],
+    [ "MobileDictionary_PrimitiveKey_MobileValue", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a1ae391e066e21a28803772e6069f2623", null ],
+    [ "MobileDictionary_PrimitiveKey_PrimitiveValue", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a4c7d61e70436660b63127050cf89a53e", null ],
+    [ "MobileDictionary_PrimitiveKey_PrimitiveValue_BF", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#add6deaad0f0a08d041afb76dbfd1cfb0", null ],
+    [ "MobileListEmptySerializationSuccess", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#ace68a1f6f39e875fdad37dbf65f9aa4c", null ],
+    [ "MobileListOfMobileObjectsSerializationSuccess", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a8ebce2916bcc15a8d299ba98e9a2d267", null ],
+    [ "MobileListSerializationSuccess", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a30ca287872488404f68cc6b62fae6b4e", null ],
+    [ "MobileListWithNonBusinessObjectReferenceType", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a3b76b3def580be493b04c03b483d8fc4", null ],
+    [ "NullChildObject", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a1b1f262005a042296a461a0b41981f44", null ],
+    [ "ReadOnlyBaseTest", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#af30ce3202ccc843ffc93d5cc7df12e4e", null ],
+    [ "ReadOnlyListBaseTest", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#ae2193e09ec8e5529cdced853b8fd74fd", null ],
+    [ "SerializeAndDeserializeReadOnly", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#aab399be15ed04596e01ba3ba6974e89a", null ],
+    [ "SerializeCriteriaSuccess", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#af4b67eeb0a6d386144a17072dbd8c22e", null ],
+    [ "SerializeMobileListWithPrimitiveTypes", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#aee0fe7cff5cea6a4ab1a4b24f8834362", null ],
+    [ "SerializeWithNullArgumentShouldNotThrowException", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a0cd0f8130c0ed5540cd4e742f7547de5", null ],
+    [ "TestSerializationCslaBinaryReaderWriter", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#a075e41d43e2655bc82f675550b92da03", null ],
+    [ "TestSerializationCslaBinaryReaderWriterList", "classcslalighttest_1_1_serialization_1_1_serialization_tests.html#ae881e59696be5fef48e4fb43698bd3d1", null ]
+];

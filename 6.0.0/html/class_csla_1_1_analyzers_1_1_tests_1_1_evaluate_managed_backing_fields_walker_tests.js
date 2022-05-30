@@ -1,0 +1,5 @@
+var class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_walker_tests =
+[
+    [ "WalkWhenFieldIsNotUsedByPropertyInfoManagement", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_walker_tests.html#a9839346d81e14af05349d4415c66e7ca", null ],
+    [ "WalkWhenFieldIsUsedByPropertyInfoManagement", "class_csla_1_1_analyzers_1_1_tests_1_1_evaluate_managed_backing_fields_walker_tests.html#a3d46b165a17cdd798d962cdddaa8ac7e", null ]
+];

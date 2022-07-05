@@ -109,8 +109,8 @@
     <file src="..\..\Bin\Release\NET48\**\Csla.resources.dll*" target="lib\net48" />
     <file src="..\..\Bin\Release\NET48\**\Csla.xml*" target="lib\net48" />
     <!-- CSLA Analyzers -->
-    <file src="..\..\bin\Release\netstandard1.3\Csla.Analyzers.*" target="analyzers\c#" />
-    <file src="..\..\bin\Release\netstandard1.3\tools\*.ps1" target="tools\" />
+    <file src="..\..\bin\Release\netstandard2.0\Csla.Analyzers.*" target="analyzers\c#" />
+    <file src="..\..\bin\Release\netstandard2.0\tools\*.ps1" target="tools\" />
     <!-- CSLA Source Generators -->
     <!-- <file src="..\..\bin\Release\netstandard2.0\Csla.Generators.*" target="analyzers\c#" /> -->
     <!-- resources -->

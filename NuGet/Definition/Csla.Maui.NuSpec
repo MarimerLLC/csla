@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Csla.Maui</id>
+    <title>CSLA .NET Maui</title>
+    <tags>CSLA;Maui</tags>
+    <version>4.6.3-Beta2</version>
+    <license type="expression">MIT</license>
+    <projectUrl>https://cslanet.com/</projectUrl>
+    <repository type="git" url="https://github.com/MarimerLLC/csla" />
+    <authors>Marimer LLC</authors>
+    <icon>images\csla.png</icon>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <copyright>Copyright © Marimer LLC.</copyright>
+    <description>UI helpers for using CSLA .NET business types with Maui.</description>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net6.0-android21.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net6.0-ios14.2">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net6.0-maccatalyst14.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+      <group targetFramework="net6.0-windows10.0.19041.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- Maui Csla.Xaml -->
+    <file src="..\..\Bin\Maui\Release\net6.0\**\Csla.Xaml.*" target="lib\net6.0"/>
+    <file src="..\..\Bin\Maui\Release\net6.0-android\**\Csla.Xaml.*" target="lib\net6.0-android21.0"/>
+    <file src="..\..\Bin\Maui\Release\net6.0-ios\**\Csla.Xaml.*" target="lib\net6.0-ios14.2"/>
+    <file src="..\..\Bin\Maui\Release\net6.0-maccatalyst\**\Csla.Xaml.*" target="lib\net6.0-maccatalyst14.0"/>
+    <file src="..\..\Bin\Maui\Release\net6.0-windows10.0.19041.0\**\Csla.Xaml.*" target="lib\net6.0-windows10.0.19041.0"/>
+    <!-- resources -->
+    <file src="..\..\Support\Logos\csla.png" target="images\" />
+  </files>
+</package>

@@ -757,16 +757,19 @@ namespace Csla.Xaml
     private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       OnSetProperties();
+      ModelPropertyChanged?.Invoke(this, e);
     }
 
     private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
     {
       OnSetProperties();
+      ModelChildChanged?.Invoke(this, e);
     }
 
     private void Model_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       OnSetProperties();
+      ModelCollectionChanged?.Invoke(this, e);
     }
 
     object IViewModel.Model
@@ -774,6 +777,21 @@ namespace Csla.Xaml
       get { return Model; }
       set { Model = (T)value; }
     }
+
+    /// <summary>
+    /// Event raised when a property on the Model changes.
+    /// </summary>
+    public event PropertyChangedEventHandler ModelPropertyChanged;
+
+    /// <summary>
+    /// Event raised when a child of the Model changes.
+    /// </summary>
+    public event Action<object, ChildChangedEventArgs> ModelChildChanged;
+
+    /// <summary>
+    /// Event raised the Model changes and is a collection.
+    /// </summary>
+    public event Action<object, NotifyCollectionChangedEventArgs> ModelCollectionChanged;
 
     /// <summary>
     /// Event raised when a property changes.

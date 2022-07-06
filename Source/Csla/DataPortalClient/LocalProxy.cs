@@ -143,6 +143,18 @@ namespace Csla.Channels.Local
         CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
     }
 
+    private async Task DisposeScope()
+    {
+      if (_scope is IAsyncDisposable asyncDisposable)
+      {
+        await asyncDisposable.DisposeAsync();
+      }
+      else
+      {
+        _scope?.Dispose();
+      }
+    }
+
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
     /// new business object.
@@ -157,22 +169,29 @@ namespace Csla.Channels.Local
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetApplicationContext(criteria, CurrentApplicationContext);
-      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      try
       {
-        result = await _portal.Create(objectType, criteria, context, isSync);
-      }
-      else
-      {
-        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          result = await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
+        SetApplicationContext(criteria, CurrentApplicationContext);
+        if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+        {
+          result = await _portal.Create(objectType, criteria, context, isSync);
+        }
         else
-          result = await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.FromCurrentSynchronizationContext());
+        {
+          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+            result = await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
+          else
+            result = await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
+              CancellationToken.None,
+              TaskCreationOptions.None,
+              TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        ResetApplicationContext();
       }
-      ResetApplicationContext();
+      finally
+      {
+        await DisposeScope();
+      }
       return result;
     }
 
@@ -189,22 +208,29 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetApplicationContext(criteria, CurrentApplicationContext);
-      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      try
       {
-        result = await _portal.Fetch(objectType, criteria, context, isSync);
-      }
-      else
-      {
-        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          result = await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
+        SetApplicationContext(criteria, CurrentApplicationContext);
+        if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+        {
+          result = await _portal.Fetch(objectType, criteria, context, isSync);
+        }
         else
-          result = await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.FromCurrentSynchronizationContext());
+        {
+          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+            result = await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
+          else
+            result = await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
+              CancellationToken.None,
+              TaskCreationOptions.None,
+              TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        ResetApplicationContext();
       }
-      ResetApplicationContext();
+      finally
+      {
+        await DisposeScope();
+      }
       return result;
     }
 
@@ -220,22 +246,29 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetApplicationContext(obj, CurrentApplicationContext);
-      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      try
       {
-        result = await _portal.Update(obj, context, isSync);
-      }
-      else
-      {
-        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          result = await Task.Run(() => this._portal.Update(obj, context, isSync));
+        SetApplicationContext(obj, CurrentApplicationContext);
+        if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+        {
+          result = await _portal.Update(obj, context, isSync);
+        }
         else
-          result = await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.FromCurrentSynchronizationContext());
+        {
+          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+            result = await Task.Run(() => this._portal.Update(obj, context, isSync));
+          else
+            result = await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
+              CancellationToken.None,
+              TaskCreationOptions.None,
+              TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        ResetApplicationContext();
       }
-      ResetApplicationContext();
+      finally
+      {
+        await DisposeScope();
+      }
       return result;
     }
 
@@ -252,22 +285,29 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      SetApplicationContext(criteria, CurrentApplicationContext);
-      if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      try
       {
-        result = await _portal.Delete(objectType, criteria, context, isSync);
-      }
-      else
-      {
-        if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-          result = await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
+        SetApplicationContext(criteria, CurrentApplicationContext);
+        if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+        {
+          result = await _portal.Delete(objectType, criteria, context, isSync);
+        }
         else
-          result = await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.FromCurrentSynchronizationContext());
+        {
+          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+            result = await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
+          else
+            result = await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
+              CancellationToken.None,
+              TaskCreationOptions.None,
+              TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        ResetApplicationContext();
       }
-      ResetApplicationContext();
+      finally
+      {
+        await DisposeScope();
+      }
       return result;
     }
 

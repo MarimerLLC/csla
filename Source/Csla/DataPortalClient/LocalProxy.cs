@@ -146,13 +146,8 @@ namespace Csla.Channels.Local
     private async Task DisposeScope()
     {
       if (_scope is IAsyncDisposable asyncDisposable)
-      {
         await asyncDisposable.DisposeAsync();
-      }
-      else
-      {
-        _scope?.Dispose();
-      }
+      _scope?.Dispose();
     }
 
     /// <summary>

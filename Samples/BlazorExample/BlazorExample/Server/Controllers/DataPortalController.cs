@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorExample.Server.Controllers
 {
@@ -8,10 +7,7 @@ namespace BlazorExample.Server.Controllers
   public class DataPortalController : Csla.Server.Hosts.HttpPortalController
   {
     public DataPortalController(Csla.ApplicationContext applicationContext)
-      : base(applicationContext)
-    {
-      UseTextSerialization = true;
-    }
+      : base(applicationContext) { }
 
     [HttpGet]
     public string Get()

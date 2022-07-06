@@ -32,9 +32,14 @@ namespace Csla.Channels.Http
       : base(applicationContext)
     {
       _httpClient = httpClient;
+      Options = options;
       DataPortalUrl = options.DataPortalUrl;
     }
 
+    /// <summary>
+    /// Current options for the proxy.
+    /// </summary>
+    protected HttpProxyOptions Options { get; set; }
     private static HttpClient _httpClient;
 
     /// <summary>
@@ -55,7 +60,7 @@ namespace Csla.Channels.Http
       if (_httpClient == null)
       {
         var handler = GetHttpClientHandler();
-        if (UseTextSerialization)
+        if (Options.UseTextSerialization)
         {
           handler = new HttpClientHandler();
         }
@@ -84,13 +89,6 @@ namespace Csla.Channels.Http
     {
       return new DefaultWebClient(this.Timeout);
     }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to use
-    /// text/string serialization instead of the default
-    /// binary serialization.
-    /// </summary>
-    public static bool UseTextSerialization { get; set; } = false;
 
     /// <summary>
     /// Select client to make request based on isSync parameter and return response from server
@@ -123,13 +121,13 @@ namespace Csla.Channels.Http
         HttpMethod.Post,
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
       SetHttpRequestHeaders(httpRequest);
-      if (UseTextSerialization)
+      if (Options.UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else
         httpRequest.Content = new ByteArrayContent(serialized);
       var httpResponse = await client.SendAsync(httpRequest);
       await VerifyResponseSuccess(httpResponse);
-      if (UseTextSerialization)
+      if (Options.UseTextSerialization)
         serialized = Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync());
       else
         serialized = await httpResponse.Content.ReadAsByteArrayAsync();
@@ -146,7 +144,7 @@ namespace Csla.Channels.Http
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";
       try
       {
-        if (UseTextSerialization)
+        if (Options.UseTextSerialization)
         {
           var result = client.UploadString(url, System.Convert.ToBase64String(serialized));
           serialized = System.Convert.FromBase64String(result);

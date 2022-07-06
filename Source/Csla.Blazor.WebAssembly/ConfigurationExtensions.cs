@@ -29,7 +29,6 @@ namespace Csla.Configuration
       config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
       config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
       config.Services.TryAddScoped(typeof(AuthenticationStateProvider), typeof(Csla.Blazor.Authentication.CslaAuthenticationStateProvider));
-      Csla.Channels.Http.HttpProxy.UseTextSerialization = true;
       return config;
     }
   }

@@ -2,6 +2,48 @@
 
 CSLA 6 is a major new version of CSLA .NET, fully supporting (and requiring) dependency injection and other features of modern .NET.
 
+## CSLA .NET version 6.1.0 release
+
+CSLA .NET version 6.1.0 adds support for Maui and includes bug fixes and one breaking change.
+
+* [#2549](https://github.com/MarimerLLC/csla/issues/2549) Add UI helpers for Maui
+* [#2672](https://github.com/MarimerLLC/csla/issues/2672) Enhance PropertyChanged behavior in `Csla.Xaml.ViewModelBase`
+* [#2764](https://github.com/MarimerLLC/csla/issues/2764) Update snippets NuGet installer for VS2022
+* [#2922](https://github.com/MarimerLLC/csla/issues/2922) Blazor no longer requires text-based serialization
+* [#2946](https://github.com/MarimerLLC/csla/issues/2946) LocalProxy now properly disposes DI scope and dependencies
+* [#2953](https://github.com/MarimerLLC/csla/issues/2953) DataAnnotations rules now support DI
+* [#2957](https://github.com/MarimerLLC/csla/issues/2957) Child data portal expections now flow up with details
+* [#2981](https://github.com/MarimerLLC/csla/issues/2981) You can now get a `System.Reflection.PropertyInfo` from `Csla.Blazor.PropertyInfo`
+* [#3007](https://github.com/MarimerLLC/csla/issues/3007) Add new BlazorServerExample project to the `Samples` folder
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3Amarimerllc%2F3+)
+* [Breaking changes](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+is%3Aclosed+project%3Amarimerllc%2F3+label%3A%22flag%2Fbreaking+change%22)
+
+### Dependency Updates
+
+* Grpc.Net.Client
+* Grpc.Tools
+* Newtonsoft.Json
+* RabbitMQ.Client
+* Microsoft.NETCore.UniversalWindowsPlatform
+* Xamarin.Forms
+* Microsoft.AspNet.WebApi.Client
+* Microsoft.AspNet.WebPages
+* Microsoft.Web.Infrastructure
+* Microsoft.AspNet.WebApi.Core
+* Microsoft.AspNet.Mvc
+* Microsoft.AspNet.Razor
+* Google.Protobuf
+* Microsoft.CodeAnalysis.CSharp
+
+### Contributors
+
+@joshhanson314
+@rockfordlhotka
+@TheCakeMonster
+
 ## CSLA .NET version 6.0.0 release
 
 CSLA .NET version 6.0.0 is a major release with numerous breaking changes, including:

@@ -1,0 +1,56 @@
+﻿@page
+@model BlazorServerExample.Areas.Identity.Pages.Account.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Blazor Custom Authentication</title>
+  <base href="~/" />
+  <link rel="stylesheet" href="~/css/bootstrap/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/bootstrap4-toggle.min.css" />
+  <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+  <app>
+    <div class="sidebar">
+    </div>
+    <div class="main">
+      <div class="top-row px-4">
+        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+      </div>
+      <div class="content px-4">
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorText))
+        {
+          <div class="alert alert-danger">@Model.ErrorText</div>
+        }
+        <div>
+          <form method="post">
+            <div class="form-group">
+              <label asp-for="Username"></label>
+              <input asp-for="Username" class="form-control">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+              <label asp-for="Password"></label>
+              <input asp-for="Password" class="form-control" type="password">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+        <div>
+          <p>Credentials to try:</p>
+          <ul>
+            <li>rocky, mypassword</li>
+            <li>andrew, otherpassword</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </app>
+</body>
+</html>

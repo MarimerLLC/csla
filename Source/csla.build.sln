@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		..\license.txt = ..\license.txt
 		..\README.md = ..\README.md
+		..\releasenotes.md = ..\releasenotes.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{85799E16-9B3B-4BD5-98D6-238E31291134}"
@@ -63,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore", "Csla.Asp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Web.Mvc5-Net4.6", "Csla.Web.Mvc5.Net4.6\Csla.Web.Mvc5-Net4.6.csproj", "{55127B94-9D7B-4AB6-A2CD-2E66B91602E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.Maui", "Csla.Xaml.Maui\Csla.Xaml.Maui.csproj", "{396810B8-3881-4AB7-8F72-663D0690E9D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Xaml.Maui", "Csla.Xaml.Maui\Csla.Xaml.Maui.csproj", "{396810B8-3881-4AB7-8F72-663D0690E9D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -100,12 +100,11 @@ namespace Csla.Server
     /// Creates a new DataPortalContext object.
     /// </summary>
     /// <param name="applicationContext">ApplicationContext instance.</param>
-    /// <param name="principal">The current Principal object.</param>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
-    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal)
+    public DataPortalContext(ApplicationContext applicationContext, bool isRemotePortal)
     {
       ApplicationContext = applicationContext;
-      _principal = principal;
+      _principal = GetPrincipal(applicationContext, isRemotePortal);
       _remotePortal = isRemotePortal;
       _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
@@ -136,6 +135,20 @@ namespace Csla.Server
     /// </summary>
     public DataPortalContext()
     { }
+
+    private IPrincipal GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
+    {
+      if (isRemotePortal && ApplicationContext.AuthenticationType == "Windows")
+      {
+        // Windows integrated security
+        return null;
+      }
+      else
+      {
+        // we assume using the CSLA framework security
+        return applicationContext.User;
+      }
+    }
 
     void Serialization.Mobile.IMobileObject.GetState(Serialization.Mobile.SerializationInfo info)
     {

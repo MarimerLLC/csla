@@ -581,7 +581,7 @@ namespace Csla.Server
 
     private void SetPrincipal(DataPortalContext context)
     {
-      if (ApplicationContext.AuthenticationType == "Windows")
+      if (context.IsRemotePortal && ApplicationContext.AuthenticationType == "Windows")
       {
         // When using integrated security, Principal must be null
         if (context.Principal != null)

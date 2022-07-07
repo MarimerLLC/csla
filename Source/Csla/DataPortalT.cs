@@ -107,7 +107,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
+          new Csla.Server.DataPortalContext(ApplicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -202,7 +202,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
+          new Csla.Server.DataPortalContext(ApplicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -407,7 +407,7 @@ namespace Csla
         }
 
         dpContext =
-          new Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
+          new Server.DataPortalContext(ApplicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -503,7 +503,7 @@ namespace Csla
         var method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(method);
 
-        dpContext = new Server.DataPortalContext(ApplicationContext, GetPrincipal(), proxy.IsServerRemote);
+        dpContext = new Server.DataPortalContext(ApplicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -616,20 +616,6 @@ namespace Csla
         return ApplicationContext.CreateInstanceDI<Csla.Channels.Local.LocalProxy>();
       else
         return DataPortalProxy;
-    }
-
-    private System.Security.Principal.IPrincipal GetPrincipal()
-    {
-      if (ApplicationContext.AuthenticationType == "Windows")
-      {
-        // Windows integrated security
-        return null;
-      }
-      else
-      {
-        // we assume using the CSLA framework security
-        return ApplicationContext.User;
-      }
     }
 
     /// <summary>

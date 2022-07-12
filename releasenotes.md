@@ -15,6 +15,7 @@ CSLA .NET version 6.1.0 adds support for Maui and includes bug fixes and one bre
 * [#2957](https://github.com/MarimerLLC/csla/issues/2957) Child data portal expections now flow up with details
 * [#2981](https://github.com/MarimerLLC/csla/issues/2981) You can now get a `System.Reflection.PropertyInfo` from `Csla.Blazor.PropertyInfo`
 * [#3007](https://github.com/MarimerLLC/csla/issues/3007) Add new BlazorServerExample project to the `Samples` folder
+* [#3014](https://github.com/MarimerLLC/csla/issues/3014) Fix bug in child data portal
 
 ### Change List
 

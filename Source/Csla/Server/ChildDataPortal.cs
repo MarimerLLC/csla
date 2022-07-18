@@ -96,7 +96,7 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkNew();
         await obj.CreateChildAsync(parameters).ConfigureAwait(false);
-        obj.OnDataPortalInvokeComplete(eventArgs);
+        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
       }

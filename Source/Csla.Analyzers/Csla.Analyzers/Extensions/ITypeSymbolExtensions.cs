@@ -85,10 +85,12 @@ namespace Csla.Analyzers.Extensions
         {
           var type = compilation.GetTypeByMetadataName(serializableType.FullName);
 
-          if(@this.Equals(type))
+#pragma warning disable RS1024 // Symbols should be compared for equality
+          if (@this.Equals(type))
           {
             return true;
           }
+#pragma warning restore RS1024 // Symbols should be compared for equality
         }
       }
 

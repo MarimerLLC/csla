@@ -23,7 +23,7 @@ namespace Csla.Analyzers
         foreach (var argument in node.ArgumentList.Arguments)
         {
           var argumentSymbol = Model.GetSymbolInfo(argument.Expression).Symbol;
-          UsesField = argumentSymbol != null && Equals(argumentSymbol, FieldSymbol);
+          UsesField = argumentSymbol != null && SymbolEqualityComparer.Default.Equals(argumentSymbol, FieldSymbol);
         }
       }
     }

@@ -45,6 +45,7 @@ CSLA .NET version 6.1.0 adds support for Maui and includes bug fixes and one bre
 @joshhanson314
 @rockfordlhotka
 @TheCakeMonster
+@jasonbock
 
 ## CSLA .NET version 6.0.0 release
 

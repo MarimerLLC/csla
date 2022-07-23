@@ -50,7 +50,7 @@ namespace Csla.Analyzers
             .Any(invocation =>
             {
               return context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
-                invocationSymbol.Name.StartsWith("Add") && Equals(invocationSymbol.ContainingType, contextParameter.Type);
+                invocationSymbol.Name.StartsWith("Add") && SymbolEqualityComparer.Default.Equals(invocationSymbol.ContainingType, contextParameter.Type);
             });
 
           if (!wasAddMethodCalled)

@@ -49,7 +49,7 @@ namespace Csla.Analyzers
         .Where(invocation =>
         {
           return model.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
-            invocationSymbol.Name == "Complete" && Equals(invocationSymbol.ContainingType, contextParameter.Type);
+            invocationSymbol.Name == "Complete" && SymbolEqualityComparer.Default.Equals(invocationSymbol.ContainingType, contextParameter.Type);
         })
         .Select(invocation => invocation.FindParent<ExpressionStatementSyntax>());
 

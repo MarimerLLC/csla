@@ -17,3 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v3
+        with:
+          issue-inactive-days: '180'
+          issue-comment: >
+            This issue has been automatically locked since there
+            has not been any recent activity after it was closed.
+            Please open a new issue for related bugs.
+          pr-comment: >
+            This pull request has been automatically locked since there
+            has not been any recent activity after it was closed.
+            Please open a new issue for related bugs.

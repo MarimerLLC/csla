@@ -18,9 +18,9 @@ using Csla.Rules;
 using Windows.UI.Xaml;
 #endif
 
-#if ANDROID
+#if ANDROID && !MAUI
 namespace Csla.Axml
-#elif IOS
+#elif IOS && !MAUI
 namespace Csla.Iosui
 #else
 namespace Csla.Xaml

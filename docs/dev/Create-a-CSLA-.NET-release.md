@@ -5,8 +5,9 @@ You must have:
 1. PC
  1. Windows 10
  1. .NET Core 3.1 SDK
- 2. .NET 5 SDK
- 3. Visual Studio 2019 with the latest updates
+ 2. .NET 6 SDK
+ 3. Visual Studio 2022 with the latest updates
+  1. Maui
   1. Xamarin
   1. UWP SDK
   1. Blazor templates
@@ -21,7 +22,8 @@ NuGet release
 1. Open the csla.build.sln
    1. Update version numbers
       1. `cd /Source`
-      1. `grep -rl --include=*.cs --include=*.csproj '4.8.1' | tee | xargs sed -i 's/4.8.1/4.9.0/g'`
+      1. Edit `Directory.Build.props` and update the version number
+      1. `grep -rl --include=*.cs --include=*.csproj '4\.8\.1' | xargs sed -i 's/4\.8\.1/4.9.0/g'`
          1. Adjust the version numbers to match current versions
    1. Build the solution in Release mode; Any CPU
 1. Do NuGet release
@@ -39,4 +41,5 @@ Finalize Release
    1. Accept PR
 1. In the GitHub releases web page create the release
    1. Create a new release at HEAD using the version number (such as v4.9.0)
+   1. Name the release like "Version 6.2.0 Release"
    1. Mark the release as pre-release or release

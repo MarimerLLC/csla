@@ -27,7 +27,7 @@
       <group targetFramework="net6.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="6.0.2" />
+        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="6.0.8" />
       </group>
     </dependencies>
   </metadata>

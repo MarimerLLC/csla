@@ -23,9 +23,9 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
     private readonly GeneratorSyntaxContext _context;
     private const string _serializationNamespace = "Csla.Serialization";
-    private const string _autoSerializableAttributeName = "AutoSerializable";
-    private const string _autoSerializedAttributeName = "AutoSerialized";
-    private const string _autoNonSerializedAttributeName = "AutoNonSerialized";
+    private const string _autoSerializableAttributeName = "AutoSerializableAttribute";
+    private const string _autoSerializedAttributeName = "AutoSerializedAttribute";
+    private const string _autoNonSerializedAttributeName = "AutoNonSerializedAttribute";
     private const string _iMobileObjectInterfaceNamespace = "Csla.Serialization.Mobile";
     private const string _iMobileObjectInterfaceName = "IMobileObject";
 
@@ -227,15 +227,41 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
       // Match on the type name
       if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
-      return true;
 
       // Match on the namespace of the type
       namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
       if (namespaceSymbol is null) return false;
-      if (!namespaceSymbol.Name.Equals(desiredTypeNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+      return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
+    }
 
-      // All matches have succeeded, so we consider it the desired type
-      return true;
+    /// <summary>
+    /// Perform a recursive match on a namespace symbol by name
+    /// </summary>
+    /// <param name="namespaceSymbol">The symbol for which a match is being tested</param>
+    /// <param name="desiredTypeNamespace">The desired namespace, including period separators if necessary</param>
+    /// <returns>Boolean true if the namespace symbol matches that desired by name</returns>
+    private bool IsMatchingNamespaceSymbol(INamespaceSymbol namespaceSymbol, string desiredTypeNamespace)
+    {
+      string endNamespace;
+      string remainingNamespace = string.Empty;
+
+      // Split off the end namespace section (the string after the last period) to test
+      endNamespace = desiredTypeNamespace;
+      int separatorPosition = desiredTypeNamespace.LastIndexOf('.');
+      if (separatorPosition > -1)
+      {
+        endNamespace = desiredTypeNamespace.Substring(separatorPosition + 1);
+        remainingNamespace = desiredTypeNamespace.Substring(0, separatorPosition);
+      }
+      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+
+      if (string.IsNullOrWhiteSpace(remainingNamespace))
+      {
+        return true;
+      }
+
+      // Recurse down remaining namespace sections until it is complete
+      return IsMatchingNamespaceSymbol(namespaceSymbol.ContainingNamespace, remainingNamespace);
     }
 
     #endregion

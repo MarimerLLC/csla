@@ -62,9 +62,10 @@ namespace AsyncLookupRule.Commands
     /// </returns>
     public static LookupCustomerCommand Execute(int customerId)
     {
-      var cmd = DataPortal.Create<LookupCustomerCommand>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<LookupCustomerCommand>>();
+      var cmd = portal.Create();
       cmd.CustomerId = customerId;
-      return DataPortal.Execute(cmd);
+      return portal.Execute(cmd);
     }
 
     /// <summary>
@@ -77,9 +78,10 @@ namespace AsyncLookupRule.Commands
     /// </returns>
     public static async Task<LookupCustomerCommand> ExecuteAsync(int customerId)
     {
-      var cmd = DataPortal.Create<LookupCustomerCommand>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<LookupCustomerCommand>>();
+      var cmd = portal.Create();
       cmd.CustomerId = customerId;
-      return await DataPortal.ExecuteAsync(cmd);
+      return await portal.ExecuteAsync(cmd);
     }
 
     /// <summary>

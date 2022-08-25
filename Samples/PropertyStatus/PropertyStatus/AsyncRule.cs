@@ -26,7 +26,6 @@ namespace PropertyStatus
         context.AddWarningResult("This might not be a great idea!");
       else if (val == "Information")
         context.AddInformationResult("Just an FYI!");
-      context.Complete();
     }
   }
 }

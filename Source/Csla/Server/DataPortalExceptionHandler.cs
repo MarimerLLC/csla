@@ -6,7 +6,6 @@
 // <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -14,58 +13,23 @@ namespace Csla.Server
 {
 
   /// <summary>
-  /// This class provides a hoook for developers to add custom error handling in the DataPortal. 
+  /// This class provides a hook for developers to add custom error handling in the DataPortal. 
   /// 
   /// Typical scenario is to handle non-serializable exception and exceptions from assemblies that 
   /// does not exist on the client side, such as 3rd party database drivers, MQ drivers etc.
   /// </summary>
   public class DataPortalExceptionHandler
   {
-    #region Custom Exception Inspector Loader
-
-    private static string _datePortalInspecorName;
-
     /// <summary>
-    /// Gets or sets the fully qualified name of the ExceptionInspector class.
+    /// Creates an instance of the type.
     /// </summary>
-    public static string ExceptionInspector
+    /// <param name="exceptionInspector"></param>
+    public DataPortalExceptionHandler(IDataPortalExceptionInspector exceptionInspector)
     {
-      get
-      {
-        if (_datePortalInspecorName == null)
-        {
-          string setting = ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"];
-          if (!string.IsNullOrEmpty(setting))
-            _datePortalInspecorName = setting;
-        }
-        return _datePortalInspecorName;
-      }
-      set
-      {
-        _datePortalInspecorName = value;
-      }
+      ExceptionInspector = exceptionInspector;
     }
 
-
-    /// <summary>
-    /// Gets a new exception inspector instance.
-    /// </summary>
-    /// <returns></returns>
-    private static IDataPortalExceptionInspector GetExceptionInspector()
-    {
-      if (string.IsNullOrEmpty(ExceptionInspector)) return null;
-
-#if NETFX_CORE
-      var t = Type.GetType(ExceptionInspector);
-#else
-      var t = Type.GetType(ExceptionInspector, true, true);
-#endif
-      return (IDataPortalExceptionInspector)Activator.CreateInstance(t);
-
-    }
-    #endregion
-
-    #region DataPortal Exception
+    private IDataPortalExceptionInspector ExceptionInspector { get; set; }
 
     /// <summary>
     /// Transforms the exception in a Fetch, Create or Execute method.
@@ -142,14 +106,10 @@ namespace Csla.Server
     private bool CallExceptionInspector(Type objectType, object businessObject, object criteria, string methodName, Exception exception, out Exception handledException)
     {
       handledException = null;
-      var inspector = GetExceptionInspector();
-      // if no inspector is defined then just return false 
-      if (inspector == null) return false;
-
       try
       {
         // This method should rethrow a new exception to be handled 
-        inspector.InspectException(objectType, businessObject, criteria, methodName, exception);
+        ExceptionInspector?.InspectException(objectType, businessObject, criteria, methodName, exception);
       }
       catch (Exception ex)
       {
@@ -158,7 +118,5 @@ namespace Csla.Server
       }
       return false;  // exception was not handled 
     }
-
-    #endregion
   }
 }

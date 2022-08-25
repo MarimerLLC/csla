@@ -1,7 +1,8 @@
-# A home for your business logic 
 ![CSLA .NET logo](https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla%20win8_compact_s.png)
 
-If you stop and think about it, we have all these great frameworks to create a UI and presentation layer: Windows Forms up through Xamarin Forms, and patterns like MVC, MVP, and MVVM. And we have myriad ways to interact with databases: ADO.NET, Entity Framework, Dapper, nHibernate, and many more. **But what about business logic?** 
+# A home for your business logic
+
+If you stop and think about it, we have all these great frameworks to create a UI and presentation layer: Windows Forms up through Xamarin Forms, and patterns like MVC, MVP, and MVVM. And we have myriad ways to interact with databases: ADO.NET, Entity Framework, Dapper, nHibernate, and many more. **But what about business logic?**
 
 Yes, the user experience is critical. And your data is invaluable. But neither are useful without business logic, and yet there's no official home for business logic.
 

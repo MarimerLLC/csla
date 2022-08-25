@@ -7,6 +7,10 @@ namespace DataPortalPerf
   public class RetrieveEntities
   {
     [Benchmark()]
-    public PersonEdit GetAll() => DataPortal.Fetch<PersonEdit>();
+    public PersonEdit GetAll()
+    {
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<PersonEdit>>();
+      return portal.Fetch();
+    }
   }
 }

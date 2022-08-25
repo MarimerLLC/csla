@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Core;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -27,10 +28,21 @@ namespace Csla.Test.GraphMerge
   [TestClass]
   public class GraphMergerTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void MergeInsert()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
       var cloned = obj.Clone();
       cloned.Name = "2";
@@ -39,7 +51,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.AreEqual(cloned.Name, obj.Name);
       Assert.AreEqual(cloned.IsDirty, obj.IsDirty);
@@ -53,7 +65,10 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeUpdate()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      
+      var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated();
       var cloned = obj.Clone();
@@ -63,7 +78,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.AreEqual(cloned.Name, obj.Name);
       Assert.AreEqual(cloned.IsDirty, obj.IsDirty);
@@ -76,7 +91,10 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeRuleUnbroken()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "2";
       obj.MockUpdated();
       var cloned = obj.Clone();
@@ -86,7 +104,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.AreEqual(cloned.Name, obj.Name);
       Assert.AreEqual(cloned.IsDirty, obj.IsDirty);
@@ -99,7 +117,10 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeDelete()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated(); // make it an old object
       obj.MarkForDelete(); // mark for deletion
@@ -110,7 +131,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.AreEqual(cloned.Name, obj.Name);
       Assert.IsTrue(obj.IsNew, "obj.IsTrue");
@@ -125,9 +146,12 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildInsert()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
-      obj.AddChild();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "42";
       var cloned = obj.Clone();
       cloned.Name = "2";
@@ -137,7 +161,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.IsFalse(ReferenceEquals(obj.Child, cloned.Child), "ref");
       Assert.AreEqual(cloned.Child.Name, obj.Child.Name, "name");
@@ -152,9 +176,12 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildUpdate()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
-      obj.AddChild();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "42";
       obj.MockUpdated();
       var cloned = obj.Clone();
@@ -165,7 +192,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.IsFalse(ReferenceEquals(obj.Child, cloned.Child), "ref");
       Assert.AreEqual(cloned.Child.Name, obj.Child.Name, "name");
@@ -180,15 +207,18 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeNewChildUpdate()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated();
       var cloned = obj.Clone();
-      cloned.AddChild();
+      cloned.AddChild(dataPortal);
       cloned.Child.Name = "42";
       cloned.MockUpdated();
 
-      new GraphMerger().MergeGraph(obj, cloned);
+      new GraphMerger(applicationContext).MergeGraph(obj, cloned);
 
       Assert.IsTrue(ReferenceEquals(obj.Child, cloned.Child), "ref");
       Assert.IsTrue(ReferenceEquals(obj, obj.Child.Parent));
@@ -197,9 +227,12 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildDelete()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.Name = "1";
-      obj.AddChild();
+      obj.AddChild(dataPortal);
       obj.Child.Name = "42";
       obj.MockUpdated();
       obj.MarkForDelete();
@@ -211,7 +244,7 @@ namespace Csla.Test.GraphMerge
       var changed = false;
       obj.PropertyChanged += (o, e) => { changed = true; };
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.IsFalse(ReferenceEquals(obj.Child, cloned.Child), "ref");
       Assert.AreEqual(cloned.Child.Name, obj.Child.Name, "name");
@@ -227,7 +260,10 @@ namespace Csla.Test.GraphMerge
     
     public void MergeList()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       obj.AddNew().Name = "existing";
       obj[0].MockUpdated();
       obj.AddNew().Name = "to be deleted";
@@ -246,7 +282,7 @@ namespace Csla.Test.GraphMerge
       cloned.AddNew().Name = "new in clone";
       cloned.MockUpdated();
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeBusinessListGraph<FooList, Foo>(obj, cloned);
       Assert.AreEqual(cloned.Count, obj.Count, "count");
       Assert.AreEqual(3, obj.Count, "count 3");
@@ -260,7 +296,10 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeListNewChild()
     {
-      var obj = Csla.DataPortal.Create<FooList>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+
+      var obj = dataPortal.Create();
       var original = obj;
       var newChild = obj.AddNew();
       newChild.Name = "new";
@@ -273,7 +312,7 @@ namespace Csla.Test.GraphMerge
 
       Assert.IsTrue(!ReferenceEquals(obj[0], saved[0]), "saved object is not original");
 
-      new GraphMerger().MergeBusinessListGraph<FooList, Foo>(obj, saved);
+      new GraphMerger(applicationContext).MergeBusinessListGraph<FooList, Foo>(obj, saved);
 
       Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)obj[0]).Identity);
       Assert.AreEqual(((IBusinessObject)newChild).Identity, ((IBusinessObject)saved[0]).Identity);
@@ -294,7 +333,10 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildList()
     {
-      var obj = Csla.DataPortal.Create<Foo>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+
+      var obj = dataPortal.Create();
       obj.ChildList.AddNew();
       obj.ChildList[0].Name = "1";
       obj.ChildList.AddNew();
@@ -307,7 +349,7 @@ namespace Csla.Test.GraphMerge
       cloned.ChildList[1].Name = "42";
       cloned.MockUpdated();
 
-      var merger = new GraphMerger();
+      var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
       Assert.IsFalse(ReferenceEquals(obj.ChildList, cloned.ChildList), "ref");
       Assert.AreEqual(2, obj.ChildList.Count, "count");

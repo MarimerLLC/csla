@@ -18,9 +18,9 @@ using Csla.Rules;
 using Windows.UI.Xaml;
 #endif
 
-#if ANDROID
+#if ANDROID && !MAUI
 namespace Csla.Axml
-#elif IOS
+#elif IOS && !MAUI
 namespace Csla.Iosui
 #else
 namespace Csla.Xaml
@@ -31,7 +31,7 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if ANDROID || IOS || XAMARIN
+#if ANDROID || IOS || XAMARIN || MAUI
   public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
@@ -40,7 +40,7 @@ namespace Csla.Xaml
   {
     private ApplicationContext ApplicationContext { get => Csla.Xaml.ApplicationContextManager.GetApplicationContext(); }
 
-#if ANDROID || IOS || XAMARIN || WINDOWS_UWP
+#if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI
     private T _model;
     /// <summary>
     /// Gets or sets the Model object.
@@ -86,7 +86,7 @@ namespace Csla.Xaml
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
-#if ANDROID || IOS || XAMARIN
+#if ANDROID || IOS || XAMARIN || MAUI
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
@@ -103,7 +103,7 @@ namespace Csla.Xaml
     [ScaffoldColumn(false)]
     public bool ManageObjectLifetime
     {
-#if ANDROID || IOS || XAMARIN
+#if ANDROID || IOS || XAMARIN || MAUI
       get { return (bool)ManageObjectLifetimeProperty; }
       set { ManageObjectLifetimeProperty = value; }
 #else
@@ -601,7 +601,7 @@ namespace Csla.Xaml
       }
     }
 
-#if (ANDROID || IOS) || XAMARIN
+#if (ANDROID || IOS) || XAMARIN || MAUI
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).
@@ -757,16 +757,19 @@ namespace Csla.Xaml
     private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       OnSetProperties();
+      ModelPropertyChanged?.Invoke(this, e);
     }
 
     private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
     {
       OnSetProperties();
+      ModelChildChanged?.Invoke(this, e);
     }
 
     private void Model_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       OnSetProperties();
+      ModelCollectionChanged?.Invoke(this, e);
     }
 
     object IViewModel.Model
@@ -774,6 +777,21 @@ namespace Csla.Xaml
       get { return Model; }
       set { Model = (T)value; }
     }
+
+    /// <summary>
+    /// Event raised when a property on the Model changes.
+    /// </summary>
+    public event PropertyChangedEventHandler ModelPropertyChanged;
+
+    /// <summary>
+    /// Event raised when a child of the Model changes.
+    /// </summary>
+    public event Action<object, ChildChangedEventArgs> ModelChildChanged;
+
+    /// <summary>
+    /// Event raised the Model changes and is a collection.
+    /// </summary>
+    public event Action<object, NotifyCollectionChangedEventArgs> ModelCollectionChanged;
 
     /// <summary>
     /// Event raised when a property changes.

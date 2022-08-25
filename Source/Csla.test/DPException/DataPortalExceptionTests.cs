@@ -11,6 +11,8 @@ using System.Text;
 using Csla.Test.Security;
 using System.Data;
 using System.Data.SqlClient;
+using Csla.TestHelpers;
+using Csla.Configuration;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,119 +27,134 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace Csla.Test.DPException
 {
-    [TestClass()]
-    public class DataPortalExceptionTests
+  [TestClass()]
+  public class DataPortalExceptionTests
+  {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
 #if DEBUG
-        [TestMethod()]
-        
-        public void CheckInnerExceptionsOnSave()
-        {
-            Csla.ApplicationContext.Clear();
+    [TestMethod()]
 
-            Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
-            root.FirstName = "Billy";
-            root.LastName = "lastname";
-            root.SmallColumn = "too long for the database"; //normally would be prevented through validation
-            
-            string baseException = string.Empty;
-            string baseInnerException = string.Empty;
-            string baseInnerInnerException = string.Empty;
-            string exceptionSource = string.Empty;
+    public void CheckInnerExceptionsOnSave()
+    {
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      TestResults.Reinitialise();
 
-            try
-            {
-                root = root.Save();
-            }
-            catch (Csla.DataPortalException ex)
-            {
-                baseException = ex.Message;
-                baseInnerException = ex.InnerException.Message;
-                baseInnerInnerException = ex.InnerException.InnerException.Message;
-                exceptionSource = ex.InnerException.InnerException.Source;
-                Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
-            }
+      DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
+      root.FirstName = "Billy";
+      root.LastName = "lastname";
+      root.SmallColumn = "too long for the database"; //normally would be prevented through validation
 
-            //check base exception
-            Assert.IsTrue(baseException.StartsWith("DataPortal.Update failed"), "Exception should start with 'DataPortal.Update failed'");
-            Assert.IsTrue(baseException.Contains("String or binary data would be truncated."), 
-              "Exception should contain 'String or binary data would be truncated.'");
-            //check inner exception
-            Assert.AreEqual("TransactionalRoot.DataPortal_Insert method call failed", baseInnerException);
-            //check inner exception of inner exception
-            Assert.AreEqual("String or binary data would be truncated.\r\nThe statement has been terminated.", baseInnerInnerException);
+      string baseException = string.Empty;
+      string baseInnerException = string.Empty;
+      string baseInnerInnerException = string.Empty;
+      string exceptionSource = string.Empty;
 
-            //check what caused inner exception's inner exception (i.e. the root exception)
-            Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
+      try
+      {
+        root = root.Save();
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        baseException = ex.Message;
+        baseInnerException = ex.InnerException.Message;
+        baseInnerInnerException = ex.InnerException.InnerException?.Message;
+        exceptionSource = ex.InnerException.InnerException?.Source;
+        Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
+      }
 
-            //verify that the implemented method, DataPortal_OnDataPortal 
-            //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
-        }
+      //check base exception
+      Assert.IsTrue(baseException.StartsWith("DataPortal.Update failed"), "Exception should start with 'DataPortal.Update failed'");
+      Assert.IsTrue(baseException.Contains("String or binary data would be truncated."),
+        "Exception should contain 'String or binary data would be truncated.'");
+      //check inner exception
+      Assert.AreEqual("TransactionalRoot.DataPortal_Insert method call failed", baseInnerException);
+      //check inner exception of inner exception
+      Assert.AreEqual("String or binary data would be truncated.\r\nThe statement has been terminated.", baseInnerInnerException);
+
+      //check what caused inner exception's inner exception (i.e. the root exception)
+#if (NETFRAMEWORK)
+      Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
+#else
+      Assert.AreEqual("Core .Net SqlClient Data Provider", exceptionSource);
 #endif
 
-        [TestMethod()]
-        public void CheckInnerExceptionsOnDelete()
-        {
-            Csla.ApplicationContext.Clear();
-
-            string baseException = string.Empty;
-            string baseInnerException = string.Empty;
-            string baseInnerInnerException = string.Empty;
-
-            try
-            {
-              //this will throw an exception
-              Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13);
-            }
-            catch (Csla.DataPortalException ex)
-            {
-              baseException = ex.Message;
-              baseInnerException = ex.InnerException.Message;
-              baseInnerInnerException = ex.InnerException.InnerException.Message;
-            }
-
-            Assert.IsTrue(baseException.StartsWith("DataPortal.Delete failed"), "Should start with 'DataPortal.Delete failed'");
-            Assert.IsTrue(baseException.Contains("DataPortal_Delete: you chose an unlucky number"));
-            Assert.AreEqual("TransactionalRoot.DataPortal_Delete method call failed", baseInnerException);
-            Assert.AreEqual("DataPortal_Delete: you chose an unlucky number", baseInnerInnerException);
-
-            //verify that the implemented method, DataPortal_OnDataPortal 
-            //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
-        }
-
-        [TestMethod()]
-        public void CheckInnerExceptionsOnFetch()
-        {
-            Csla.ApplicationContext.GlobalContext.Clear();
-
-            string baseException = string.Empty;
-            string baseInnerException = string.Empty;
-            string baseInnerInnerException = string.Empty;
-
-            try
-            {
-                //this will throw an exception
-                Csla.Test.DataPortal.TransactionalRoot root = 
-                    Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13);
-            }
-            catch (Csla.DataPortalException ex)
-            {
-                baseException = ex.Message;
-                baseInnerException = ex.InnerException.Message;
-                baseInnerInnerException = ex.InnerException.InnerException.Message;
-            }
-
-            Assert.IsTrue(baseException.StartsWith("DataPortal.Fetch failed"), "Should start with 'DataPortal.Fetch failed'");
-            Assert.IsTrue(baseException.Contains("DataPortal_Fetch: you chose an unlucky number"), 
-              "Should contain with 'DataPortal_Fetch: you chose an unlucky number'");
-            Assert.AreEqual("TransactionalRoot.DataPortal_Fetch method call failed", baseInnerException);
-            Assert.AreEqual("DataPortal_Fetch: you chose an unlucky number", baseInnerInnerException);
-
-            //verify that the implemented method, DataPortal_OnDataPortal 
-            //was called for the business object that threw the exception
-            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
-        }
+      //verify that the implemented method, DataPortal_OnDataPortal 
+      //was called for the business object that threw the exception
+      Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
     }
+#endif
+
+    [TestMethod()]
+    public void CheckInnerExceptionsOnDelete()
+    {
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      TestResults.Reinitialise();
+
+      string baseException = string.Empty;
+      string baseInnerException = string.Empty;
+      string baseInnerInnerException = string.Empty;
+
+      try
+      {
+        //this will throw an exception
+        Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13, dataPortal);
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        baseException = ex.Message;
+        baseInnerException = ex.InnerException.Message;
+        baseInnerInnerException = ex.InnerException.InnerException.Message;
+      }
+
+      Assert.IsTrue(baseException.StartsWith("DataPortal.Delete failed"), "Should start with 'DataPortal.Delete failed'");
+      Assert.IsTrue(baseException.Contains("DataPortal_Delete: you chose an unlucky number"));
+      Assert.AreEqual("TransactionalRoot.DataPortal_Delete method call failed", baseInnerException);
+      Assert.AreEqual("DataPortal_Delete: you chose an unlucky number", baseInnerInnerException);
+
+      //verify that the implemented method, DataPortal_OnDataPortal 
+      //was called for the business object that threw the exception
+      Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
+    }
+
+    [TestMethod()]
+    public void CheckInnerExceptionsOnFetch()
+    {
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      TestResults.Reinitialise();
+
+      string baseException = string.Empty;
+      string baseInnerException = string.Empty;
+      string baseInnerInnerException = string.Empty;
+
+      try
+      {
+        //this will throw an exception
+        Csla.Test.DataPortal.TransactionalRoot root =
+            Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        baseException = ex.Message;
+        baseInnerException = ex.InnerException.Message;
+        baseInnerInnerException = ex.InnerException.InnerException.Message;
+      }
+
+      Assert.IsTrue(baseException.StartsWith("DataPortal.Fetch failed"), "Should start with 'DataPortal.Fetch failed'");
+      Assert.IsTrue(baseException.Contains("DataPortal_Fetch: you chose an unlucky number"),
+        "Should contain with 'DataPortal_Fetch: you chose an unlucky number'");
+      Assert.AreEqual("TransactionalRoot.DataPortal_Fetch method call failed", baseInnerException);
+      Assert.AreEqual("DataPortal_Fetch: you chose an unlucky number", baseInnerInnerException);
+
+      //verify that the implemented method, DataPortal_OnDataPortal 
+      //was called for the business object that threw the exception
+      Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
+    }
+  }
 }

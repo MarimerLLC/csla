@@ -68,5 +68,10 @@ namespace Csla.Test.ValidationRules
         bw.RunWorkerAsync();
       }
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 }

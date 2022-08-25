@@ -23,10 +23,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddCsla(options => options
-  .DataPortal()
+builder.Services.AddCsla(o => o
+  .AddAspNetCore()
+  .DataPortal(dpo => dpo
     .AddServerSideDataPortal()
-    .UseLocalProxy());
+    .UseLocalProxy()));
 
 //for EF Db
 //builder.Services.AddTransient(typeof(DataAccess.IPersonDal), typeof(DataAccess.EF.PersonEFDal));
@@ -73,7 +74,5 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
-
-app.UseCsla();
 
 app.Run();

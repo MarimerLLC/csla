@@ -96,7 +96,7 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkNew();
         await obj.CreateChildAsync(parameters).ConfigureAwait(false);
-        obj.OnDataPortalInvokeComplete(eventArgs);
+        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
       }
@@ -113,7 +113,7 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw ApplicationContext.CreateInstanceDI<Csla.DataPortalException>(
+        throw new Csla.DataPortalException(
           "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, outval);
       }
       finally
@@ -209,7 +209,7 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw ApplicationContext.CreateInstanceDI<Csla.DataPortalException>(
+        throw new Csla.DataPortalException(
           "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
       }
       //finally
@@ -352,7 +352,7 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        throw ApplicationContext.CreateInstanceDI<Csla.DataPortalException>(
+        throw new Csla.DataPortalException(
           "ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
       }
       //finally

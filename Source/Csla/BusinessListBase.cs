@@ -31,7 +31,7 @@ namespace Csla
 #endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-      ObservableBindingList<C>,
+      ObservableBindingList<C>, IContainsDeletedList,
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
       INotifyBusy,
@@ -156,6 +156,11 @@ namespace Csla
         return _deletedList;
       }
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
 
     private void DeleteChild(C child)
     {
@@ -894,6 +899,30 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Asynchronously saves all items in the list, automatically
+    /// performing insert, update or delete operations as necessary.
+    /// </summary>
+    /// <param name="parameters">
+    /// Optional parameters passed to child update
+    /// methods.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [UpdateChild]
+    protected virtual async Task Child_UpdateAsync(params object[] parameters)
+    {
+      using (LoadListMode)
+      {
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
+        foreach (var child in DeletedList)
+          await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
+        DeletedList.Clear();
+
+        foreach (var child in this)
+          if (child.IsDirty) await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
+      }
+    }
+
     #endregion
 
     #region Data Access
@@ -995,7 +1024,7 @@ namespace Csla
     /// </summary>
     public async Task SaveAndMergeAsync()
     {
-      new GraphMerger().MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
+      new GraphMerger(ApplicationContext).MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
     }
 
     /// <summary>

@@ -28,6 +28,7 @@ namespace Csla.Data
   /// dispose the connection when the last consumer
   /// has called Dispose."
   /// </remarks>
+  [Obsolete("Use dependency injection", false)]
   public class ConnectionManager : IDisposable, Core.IUseApplicationContext
   {
     private static object _lock = new object();
@@ -135,6 +136,10 @@ namespace Csla.Data
       return mgr;
     }
 
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+    internal static string DbProvider { get; set; } = "System.Data.SqlClient";
+#endif
+
     private ConnectionManager(string connectionString, string label)
     {
       _label = label;
@@ -144,11 +149,8 @@ namespace Csla.Data
       _connection = new System.Data.SqlClient.SqlConnection(connectionString);
       _connection.Open();
 #else
-      string provider = ConfigurationManager.AppSettings["CslaDbProvider"];
-      if (string.IsNullOrEmpty(provider))
-        provider = "System.Data.SqlClient";
 
-      DbProviderFactory factory = DbProviderFactories.GetFactory(provider);
+      DbProviderFactory factory = DbProviderFactories.GetFactory(DbProvider);
 
       // open connection
       _connection = factory.CreateConnection();

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,10 +26,20 @@ namespace Csla.Test.DataMapper
   [TestClass]
   public class DataMapperTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void DictionaryMap()
     {
-      var target = new ManagedTarget();
+      IDataPortal<ManagedTarget> dataPortal = _testDIContext.CreateDataPortal<ManagedTarget>();
+
+      var target = dataPortal.Create();
       var source = new Dictionary<string, object>();
       source.Add("MyInt", 42);
 
@@ -243,6 +254,11 @@ namespace Csla.Test.DataMapper
     {
       get { return GetProperty(MyIntProperty); }
       set { SetProperty(MyIntProperty, value); }
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 

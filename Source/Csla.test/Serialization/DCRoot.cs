@@ -30,6 +30,16 @@ namespace Csla.Test.Serialization
     {
       get { return _child; }
     }
+
+    public static DCRoot NewDCRoot(IDataPortal<DCRoot> dataPortal)
+    {
+      return dataPortal.Create();
+    }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 
   [DataContract]

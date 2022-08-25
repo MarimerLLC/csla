@@ -8,9 +8,9 @@
 using System;
 using System.Security.Principal;
 using Csla.Core;
-using Csla.Configuration;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
 
 namespace Csla
 {
@@ -23,33 +23,21 @@ namespace Csla
     /// <summary>
     /// Creates a new instance of the type
     /// </summary>
-    /// <param name="contextManager">IContextManager used to manage per-user context</param>
-    /// <param name="serviceProvider">Current service provider</param>
-    public ApplicationContext(IContextManager contextManager, IServiceProvider serviceProvider)
+    /// <param name="applicationContextAccessor"></param>
+    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
     {
-      _serviceProvider = serviceProvider;
-      ContextManager = contextManager;
-      ContextManager.ApplicationContext = this;
+      ApplicationContextAccessor = applicationContextAccessor;
+      ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
     }
+
+    internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 
     /// <summary>
     /// Gets the context manager responsible
     /// for storing user and context information for
     /// the application.
     /// </summary>
-    public IContextManager ContextManager { get; internal set; }
-
-    internal static void SettingsChanged()
-    {
-      _dataPortalReturnObjectOnExceptionSet = false;
-      _propertyChangedModeSet = false;
-      _transactionIsolationLevelSet = false;
-      _defaultTransactionTimeoutInSecondsSet = false;
-      _authenticationTypeName = null;
-      _dataPortalActivator = null;
-      _dataPortalUrl = null;
-      _VersionRoutingTag = null;
-    }
+    public IContextManager ContextManager => ApplicationContextAccessor.GetContextManager();
 
     /// <summary>
     /// Get or set the current ClaimsPrincipal
@@ -178,184 +166,34 @@ namespace Csla
     /// </summary>
     public static bool UseReflectionFallback { get; set; } = false;
 
-    private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
-    private static readonly object _dataPortalActivatorSync = new();
-
     /// <summary>
-    /// Gets the DataPortalActivator type from configuration.
-    /// </summary>
-    public static Type DataPortalActivatorType
-    {
-      get
-      {
-        var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
-        if (!string.IsNullOrWhiteSpace(typeName))
-        {
-          return Type.GetType(typeName);
-        }
-        else
-        {
-          return typeof(Csla.Server.DefaultDataPortalActivator);
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets an instance of the IDataPortalActivator provider.
-    /// </summary>
-    public static Csla.Server.IDataPortalActivator DataPortalActivator
-    {
-      get
-      {
-        if (_dataPortalActivator == null)
-        {
-          lock (_dataPortalActivatorSync)
-          {
-            if (_dataPortalActivator == null)
-              _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(DataPortalActivatorType);
-          }
-        }
-        return _dataPortalActivator;
-      }
-      set
-      {
-        _dataPortalActivator = value;
-      }
-    }
-
-    private static string _dataPortalUrl = null;
-
-    /// <summary>
-    /// Gets or sets the data portal URL string.
-    /// If not set on Get will read CslaDataPortalUrl from config file. 
-    /// </summary>
-    /// <value>The data portal URL string.</value>
-    public static string DataPortalUrlString
-    {
-      get
-      {
-        if (_dataPortalUrl == null)
-        {
-          _dataPortalUrl = ConfigurationManager.AppSettings["CslaDataPortalUrl"];
-        }
-        return _dataPortalUrl;
-      }
-      set
-      {
-        _dataPortalUrl = value;
-      }
-    }
-
-    private static string _VersionRoutingTag = null;
-
-    /// <summary>
-    /// Gets or sets a value representing the application version
+    /// Gets a value representing the application version
     /// for use in server-side data portal routing.
     /// </summary>
-    public static string VersionRoutingTag
-    {
-      get
-      {
-        if (string.IsNullOrWhiteSpace(_VersionRoutingTag))
-          _VersionRoutingTag = ConfigurationManager.AppSettings["CslaVersionRoutingTag"];
-        return _VersionRoutingTag;
-      }
-      internal set
-      {
-        if (!string.IsNullOrWhiteSpace(value))
-          if (value.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
-        _VersionRoutingTag = value;
-      }
-    }
+    public static string VersionRoutingTag { get; internal set; }
 
     /// <summary>
-    /// Returns the URL for the DataPortal server.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks>
-    /// This value is read from the application configuration
-    /// file with the key value "CslaDataPortalUrl". 
-    /// </remarks>
-    public Uri DataPortalUrl
-    {
-      get { return new Uri(DataPortalUrlString); }
-    }
-
-    private static string _authenticationTypeName;
-
-    /// <summary>
-    /// Returns the authentication type being used by the
+    /// Gets the authentication type being used by the
     /// CSLA .NET framework.
     /// </summary>
     /// <value></value>
     /// <returns></returns>
-    /// <remarks>
-    /// This value is read from the application configuration
-    /// file with the key value "CslaAuthentication". The value
-    /// "Windows" indicates CSLA .NET should use Windows integrated
-    /// (or AD) security. Any other value indicates the use of
-    /// custom security derived from CslaPrincipal.
-    /// </remarks>
-    public static string AuthenticationType
-    {
-      get
-      {
-        if (string.IsNullOrWhiteSpace(_authenticationTypeName))
-          _authenticationTypeName = ConfigurationManager.AppSettings["CslaAuthentication"];
-        if (string.IsNullOrWhiteSpace(_authenticationTypeName))
-          _authenticationTypeName = "Csla";
-        return _authenticationTypeName;
-      }
-      set { _authenticationTypeName = value; }
-    }
+    public static string AuthenticationType { get; internal set; } = "Csla";
 
     /// <summary>
     /// Gets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.
     /// </summary>
-    public static bool AutoCloneOnUpdate
-    {
-      get
-      {
-        bool result = true;
-        string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
-        if (!string.IsNullOrEmpty(setting))
-          result = bool.Parse(setting);
-        return result;
-      }
-    }
-
-    private static bool _dataPortalReturnObjectOnException = false;
-    private static bool _dataPortalReturnObjectOnExceptionSet = false;
+    public static bool AutoCloneOnUpdate { get; internal set; } = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the
+    /// Gets a value indicating whether the
     /// server-side business object should be returned to
     /// the client as part of the DataPortalException
     /// (default is false).
     /// </summary>
-    public static bool DataPortalReturnObjectOnException
-    {
-      get
-      {
-        if (!_dataPortalReturnObjectOnExceptionSet)
-        {
-          string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
-          if (!string.IsNullOrEmpty(setting))
-            DataPortalReturnObjectOnException = bool.Parse(setting);
-          _dataPortalReturnObjectOnExceptionSet = true;
-        }
-        return _dataPortalReturnObjectOnException;
-      }
-      set
-      {
-        _dataPortalReturnObjectOnException = value;
-        _dataPortalReturnObjectOnExceptionSet = true;
-      }
-    }
+    public static bool DataPortalReturnObjectOnException { get; internal set; }
 
     /// <summary>
     /// Enum representing the locations code can execute.
@@ -377,83 +215,13 @@ namespace Csla
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).
     /// </summary>
-    public static SerializationFormatters SerializationFormatter
-    {
-      get
-      {
-        var result = SerializationFormatters.CustomFormatter;
+    public static Type SerializationFormatter { get; internal set; } = typeof(Serialization.Mobile.MobileFormatter);
 
-        string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-        if (string.IsNullOrWhiteSpace(tmp))
-#if NETSTANDARD2_0 || NET5_0 || NET6_0
-          tmp = "MobileFormatter";
-#else
-          tmp = "BinaryFormatter";
-#endif
-        if (Enum.TryParse(tmp, true, out SerializationFormatters serializationFormatter))
-          result = serializationFormatter;
-
-        return result;
-      }
-    }
-
-    /// <summary>
-    /// Enum representing the serialization formatters
-    /// supported by CSLA .NET.
-    /// </summary>
-    public enum SerializationFormatters
-    {
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
-      /// <summary>
-      /// Use the Microsoft .NET 3.0
-      /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
-      /// NetDataContractSerializer</see> provided as part of WCF.
-      /// </summary>
-      NetDataContractSerializer,
-#endif
-      /// <summary>
-      /// Use the standard Microsoft .NET
-      /// <see cref="BinaryFormatter"/>.
-      /// </summary>
-      BinaryFormatter,
-      /// <summary>
-      /// Use a custom formatter provided by type found
-      /// at <appSetting key="CslaSerializationFormatter"></appSetting>
-      /// </summary>
-      CustomFormatter,
-      /// <summary>
-      /// Use the CSLA .NET MobileFormatter
-      /// </summary>
-      MobileFormatter
-    }
-
-    private static PropertyChangedModes _propertyChangedMode = PropertyChangedModes.Xaml;
-    private static bool _propertyChangedModeSet;
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public static PropertyChangedModes PropertyChangedMode
-    {
-      get
-      {
-        if (!_propertyChangedModeSet)
-        {
-          string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
-          if (string.IsNullOrEmpty(tmp))
-            tmp = "Xaml";
-          _propertyChangedMode = (PropertyChangedModes)
-            Enum.Parse(typeof(PropertyChangedModes), tmp);
-          _propertyChangedModeSet = true;
-        }
-        return _propertyChangedMode;
-      }
-      set
-      {
-        _propertyChangedMode = value;
-        _propertyChangedModeSet = true;
-      }
-    }
+    public static PropertyChangedModes PropertyChangedMode { get; set; }
 
     /// <summary>
     /// Enum representing the way in which CSLA .NET
@@ -516,39 +284,13 @@ namespace Csla
       }
     }
 
-    private static TransactionIsolationLevel _transactionIsolationLevel = TransactionIsolationLevel.Unspecified;
-    private static bool _transactionIsolationLevelSet = false;
-
     /// <summary>
     /// Gets or sets the default transaction isolation level.
     /// </summary>
     /// <value>
     /// The default transaction isolation level.
     /// </value>
-    public static TransactionIsolationLevel DefaultTransactionIsolationLevel
-    {
-      get
-      {
-        if (!_transactionIsolationLevelSet)
-        {
-          string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
-          if (!string.IsNullOrEmpty(tmp))
-          {
-            _transactionIsolationLevel = (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
-          }
-          _transactionIsolationLevelSet = true;
-        }
-        return _transactionIsolationLevel;
-      }
-      set
-      {
-        _transactionIsolationLevel = value;
-        _transactionIsolationLevelSet = true;
-      }
-    }
-
-    private static int _defaultTransactionTimeoutInSeconds = 600;
-    private static bool _defaultTransactionTimeoutInSecondsSet = false;
+    public static TransactionIsolationLevel DefaultTransactionIsolationLevel { get; internal set; } = TransactionIsolationLevel.Unspecified;
 
     /// <summary>
     /// Gets or sets the default transaction timeout in seconds.
@@ -556,51 +298,14 @@ namespace Csla
     /// <value>
     /// The default transaction timeout in seconds.
     /// </value>
-    public static int DefaultTransactionTimeoutInSeconds
-    {
-      get
-      {
-        if (!_defaultTransactionTimeoutInSecondsSet)
-        {
-          var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
-          _defaultTransactionTimeoutInSeconds = string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
-          _defaultTransactionTimeoutInSecondsSet = true;
-        }
-        return _defaultTransactionTimeoutInSeconds;
-      }
-      set
-      {
-        _defaultTransactionTimeoutInSeconds = value;
-        _defaultTransactionTimeoutInSecondsSet = true;
-      }
-    }
-
-    private System.Transactions.TransactionScopeAsyncFlowOption _defaultTransactionAsyncFlowOption;
-    private bool _defaultTransactionAsyncFlowOptionSet;
+    public static int DefaultTransactionTimeoutInSeconds { get; internal set; } = 30;
 
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>
-    public System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
-    {
-      get
-      {
-        if (!_defaultTransactionAsyncFlowOptionSet)
-        {
-          _defaultTransactionAsyncFlowOptionSet = true;
-          var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionAsyncFlowOption"];
-          if (!Enum.TryParse<System.Transactions.TransactionScopeAsyncFlowOption>(tmp, out _defaultTransactionAsyncFlowOption))
-            _defaultTransactionAsyncFlowOption = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
-        }
-        return _defaultTransactionAsyncFlowOption;
-      }
-      set
-      {
-        _defaultTransactionAsyncFlowOption = value;
-        _defaultTransactionAsyncFlowOptionSet = true;
-      }
-    }
+    public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
+      { get; internal set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
 
     #endregion
 
@@ -649,39 +354,73 @@ namespace Csla
     }
     #endregion
 
-    private IServiceProvider _serviceProvider;
-
     /// <summary>
-    /// Sets the service provider scope for this application context.
+    /// Gets a value indicating whether the current 
+    /// context manager is used in a stateful
+    /// context (e.g. WPF, Blazor, etc.)
     /// </summary>
-    internal IServiceProvider CurrentServiceProvider
-    {
-      get => _serviceProvider;
-      set => _serviceProvider = value;
-    }
+    public bool IsAStatefulContextManager => ContextManager.IsStatefulContext;
 
     /// <summary>
-    /// Creates an object using dependency injection, falling back
-    /// to Activator if no service provider is available.
+    /// Gets the service provider scope for this application context.
+    /// </summary>
+    internal IServiceProvider CurrentServiceProvider => ApplicationContextAccessor.ServiceProvider;
+
+    /// <summary>
+    /// Creates an object using 'Activator.CreateInstance' using
+    /// service provider (if one is available) to populate any parameters 
+    /// in CTOR that are not manually passed in.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T CreateInstanceDI<T>(params object[] parameters)
     {
       return (T)CreateInstanceDI(typeof(T), parameters);
     }
 
     /// <summary>
-    /// Creates an object using dependency injection, falling back
-    /// to Activator if no service provider is available.
+    /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
+    /// Throws exception if service not properly registered with DI.
+    /// </summary>
+    /// <typeparam name="T">Type of service/object to create.</typeparam>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public T GetRequiredService<T>()
+    {
+      if (CurrentServiceProvider == null) 
+        throw new NullReferenceException(nameof(CurrentServiceProvider));
+
+      var result = CurrentServiceProvider.GetRequiredService<T>();
+      return result;
+    }
+
+    /// <summary>
+    /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
+    /// Throws exception if service not properly registered with DI.
+    /// </summary>
+    /// <param name="serviceType">Type of service/object to create.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public object GetRequiredService(Type serviceType)
+    {
+      if (CurrentServiceProvider == null)
+        throw new NullReferenceException(nameof(CurrentServiceProvider));
+
+      return CurrentServiceProvider.GetRequiredService(serviceType);
+    }
+
+    /// <summary>
+    /// Creates an object using 'Activator.CreateInstance' using
+    /// service provider (if one is available) to populate any parameters 
+    /// in CTOR that are not manually passed in.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
-    /// <param name="parameters">Parameters for constructor</param>
+    /// <param name="parameters">Manually passed in parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstanceDI(Type objectType, params object[] parameters)
     {
       object result;
       if (CurrentServiceProvider != null)
-        result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
+          result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
       else
         result = Activator.CreateInstance(objectType, parameters);
       if (result is IUseApplicationContext tmp)
@@ -710,6 +449,7 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T CreateInstance<T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
@@ -720,6 +460,7 @@ namespace Csla
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstance(Type objectType, params object[] parameters)
     {
       object result;

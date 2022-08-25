@@ -39,7 +39,7 @@ namespace Csla.Analyzers
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())
       {
         var taskType = context.Compilation.GetTypeByMetadataName(typeof(Task).FullName);
-        if(!(methodSymbol.ReturnsVoid || Equals(methodSymbol.ReturnType, taskType)))
+        if(!(methodSymbol.ReturnsVoid || SymbolEqualityComparer.Default.Equals(methodSymbol.ReturnType, taskType)))
         {
           context.ReportDiagnostic(Diagnostic.Create(
             shouldOnlyReturnVoidOrTaskRule, methodSymbol.Locations[0]));

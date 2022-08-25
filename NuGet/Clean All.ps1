@@ -17,7 +17,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Csla", "Csla.Blazor", "Csla.Blazor.WebAssembly", "Csla.Channels.Grpc", "Csla.Channels.RabbitMq", "Csla.Data.SqlClient", "Csla.Data.SqlClientFx", "Csla.Ios", "Csla.Uwp", "Csla.AspNetCore", "Csla.Web.Mvc", "Csla.Web", "Csla.Windows.Forms", "Csla.Wpf", "Csla.Xamarin", "Csla.Templates")  
+    $packages = @("Csla", "Csla.Maui", "Csla.Blazor", "Csla.Blazor.WebAssembly", "Csla.Channels.Grpc", "Csla.Channels.RabbitMq", "Csla.Data.SqlClient", "Csla.Data.SqlClientFx", "Csla.Uwp", "Csla.AspNetCore", "Csla.Web.Mvc", "Csla.Web", "Csla.Windows.Forms", "Csla.Wpf", "Csla.Xamarin", "Csla.Templates")  
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

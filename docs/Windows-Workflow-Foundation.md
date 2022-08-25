@@ -1,5 +1,6 @@
 ## Does CSLA .NET work with WF?
-Yes.
+
+Yes, prior to CSLA 4. Microsoft has moved on from Windows Workflow Foundation, and so CSLA 4 and later do not support WF.
 
 You can create workflow activities using CSLA .NET objects. This is a very powerful way to create activities, because the business behaviors encapsulated within the activity are implemented as an object-oriented use case and can leverage the power of CSLA .NET (most notably the data portal).
 

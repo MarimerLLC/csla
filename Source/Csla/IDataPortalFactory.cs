@@ -1,14 +1,10 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IDataPortalService.cs" company="Marimer LLC">
+// <copyright file="IDataPortalFactory.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Csla
 {
   /// <summary>

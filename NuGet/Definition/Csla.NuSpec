@@ -26,7 +26,6 @@
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />
@@ -43,7 +42,6 @@
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />
@@ -60,7 +58,6 @@
         <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
         <dependency id="System.Security.Principal" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.3.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
         <dependency id="System.Threading.ThreadPool" version="4.3.0" />
         <dependency id="System.ComponentModel" version="4.3.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.3.0" />
@@ -74,21 +71,14 @@
         <dependency id="Microsoft.Extensions.DependencyInjection" version="5.0.2" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
-      </group>
-      <group targetFramework="net5.0">
-        <dependency id="Microsoft.Extensions.Configuration" version="5.0.0" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="5.0.0" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="5.0.0" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0" />
-        <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
       </group>
       <group targetFramework="net6.0">
-        <dependency id="Microsoft.Extensions.Configuration" version="6.0.0-preview.4.21253.7" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="6.0.0-preview.4.21253.7" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="6.0.0-preview.4.21253.7" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0-preview.4.21253.7" />
-        <dependency id="System.ComponentModel.Annotations" version="6.0.0-preview.4.21253.7" />
+        <dependency id="Microsoft.Extensions.Configuration" version="6.0.1" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="6.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="6.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
+        <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
+        <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>
@@ -103,11 +93,6 @@
     <file src="..\..\bin\Release\net6.0\**\Csla.pdb*" target="lib\net6.0" />
     <file src="..\..\bin\Release\net6.0\**\Csla.xml*" target="lib\net6.0" />
     <file src="..\..\bin\Release\net6.0\**\Csla.resources.dll*" target="lib\net6.0" />
-    <!-- Net 5.0 Assembly -->
-    <file src="..\..\bin\Release\net5.0\**\Csla.dll*" target="lib\net5.0" />
-    <file src="..\..\bin\Release\net5.0\**\Csla.pdb*" target="lib\net5.0" />
-    <file src="..\..\bin\Release\net5.0\**\Csla.xml*" target="lib\net5.0" />
-    <file src="..\..\bin\Release\net5.0\**\Csla.resources.dll*" target="lib\net5.0" />
     <!-- .NET 4.6.2 -->
     <file src="..\..\Bin\Release\NET462\**\Csla.dll*" target="lib\net462" />
     <file src="..\..\Bin\Release\NET462\**\Csla.pdb*" target="lib\net462" />
@@ -124,8 +109,8 @@
     <file src="..\..\Bin\Release\NET48\**\Csla.resources.dll*" target="lib\net48" />
     <file src="..\..\Bin\Release\NET48\**\Csla.xml*" target="lib\net48" />
     <!-- CSLA Analyzers -->
-    <file src="..\..\bin\Release\netstandard1.3\Csla.Analyzers.*" target="analyzers\c#" />
-    <file src="..\..\bin\Release\netstandard1.3\tools\*.ps1" target="tools\" />
+    <file src="..\..\bin\Release\netstandard2.0\Csla.Analyzers.*" target="analyzers\c#" />
+    <file src="..\..\bin\Release\netstandard2.0\tools\*.ps1" target="tools\" />
     <!-- CSLA Source Generators -->
     <!-- <file src="..\..\bin\Release\netstandard2.0\Csla.Generators.*" target="analyzers\c#" /> -->
     <!-- resources -->

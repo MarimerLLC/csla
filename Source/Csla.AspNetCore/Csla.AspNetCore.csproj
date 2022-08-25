@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
     <AssemblyName>Csla.AspNetCore</AssemblyName>
     <RootNamespace>Csla.AspNetCore</RootNamespace>
     <PackageId>Csla.AspNetCore</PackageId>
@@ -28,10 +28,12 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.11" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.8" />
   </ItemGroup>
 
   <ItemGroup>

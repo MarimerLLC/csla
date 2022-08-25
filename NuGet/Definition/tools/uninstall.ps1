@@ -1,6 +1,6 @@
 param($installPath, $toolsPath, $package, $project)
 
-	$vsVersions = @("2010", "2012", "2013", "2015", "2017", "2019")
+	$vsVersions = @("2010", "2012", "2013", "2015", "2017", "2019", "2022")
 	$cslaFolder = "Csla"
 	$destinationDocumentsRoot = [System.Environment]::GetFolderPath( "MyDocuments" );
 

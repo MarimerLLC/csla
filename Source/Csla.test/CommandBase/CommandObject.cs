@@ -19,5 +19,11 @@ namespace Csla.Test.CommandBase
       get { return ReadProperty(NumProperty); }
       private set { LoadProperty(NumProperty, value); }
     }
+
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
   }
 }

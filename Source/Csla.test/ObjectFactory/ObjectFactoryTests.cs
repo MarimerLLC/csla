@@ -10,6 +10,9 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Configuration;
+using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,31 +29,43 @@ namespace Csla.Test.ObjectFactory
   [TestClass]
   public class ObjectFactoryTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(dp => dp.AddServerSideDataPortal(
+          cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory>>())
+        ));
+    }
+
     /// <summary>
     /// Always make sure to cleanup after each test 
     /// </summary>
     [TestCleanup]
     public void Cleanup()
     {
-      Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
-          new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
-      Csla.ApplicationContext.DataPortalProxy = "Local";
-      Csla.DataPortal.ResetProxyType();
-      Csla.Server.FactoryDataPortal.FactoryLoader = null;
-      Csla.ApplicationContext.GlobalContext.Clear();
+      // TODO: Is any of this cleanup still required? Probably not
+      //Csla.ApplicationContext.DataPortalProxy = "Local";
+      //Csla.DataPortal.ResetProxyType();
+      TestResults.Reinitialise();
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void Create()
     {
-      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
-      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+      // TODO: What proxy can we use for this test? Old one was Remoting, now retired
+      //  options => options.Services.AddTransient<DataPortalClient.IDataPortalProxy, Testing.Business.TestProxies.AppDomainProxy>(), 
+        opts => opts.DataPortal(
+          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory>>())),
+        new System.Security.Claims.ClaimsPrincipal());
 
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-          new ObjectFactoryLoader();
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
 
-      var root = Csla.DataPortal.Create<Root>();
+      var root = dataPortal.Create();
       Assert.AreEqual("Create", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -60,10 +75,17 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void CreateLocal()
     {
-      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(8);
-      var root = Csla.DataPortal.Create<Root>("abc");
+      // TODO: What proxy can we use for this test? Old one was Remoting, now retired
+      //TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+      //  options => options.Services.AddTransient<DataPortalClient.IDataPortalProxy, Testing.Business.TestProxies.AppDomainProxy>(), 
+      //);
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        opts => opts.DataPortal(dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactoryC>>()))
+        );
+
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Create("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
@@ -73,31 +95,39 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void CreateWithParam()
     {
-      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
-      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-          new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Create<Root>("abc");
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+      // TODO: What proxy can we use for this test? Old one was Remoting, now retired
+      //  options => options.Services.AddTransient<DataPortalClient.IDataPortalProxy, Testing.Business.TestProxies.AppDomainProxy>(), 
+        opts => opts.DataPortal(dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory>>())),
+        new System.Security.Claims.ClaimsPrincipal());
+
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Create("abc");
       Assert.AreEqual("Create abc", root.Data, "Data should match");
       Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
       Assert.IsTrue(root.IsNew, "Should be new");
       Assert.IsTrue(root.IsDirty, "Should be dirty");
     }
 
-    // this test needs to be updated when the factory model is updated
+    // TODO: This test needs to be updated when the factory model is updated
     // to use DI and multi-property criteria
-    [Ignore]
     [TestMethod]
     [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
     {
-      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
-      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-          new ObjectFactoryLoader(1);
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+      // TODO: What proxy can we use for this test? Old one was Remoting, now retired
+      //  options => options.Services.AddTransient<DataPortalClient.IDataPortalProxy, Testing.Business.TestProxies.AppDomainProxy>(), 
+        opts => opts.DataPortal(dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory1>>())),
+        new System.Security.Claims.ClaimsPrincipal()
+        );
+
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
+
       try
       {
-        var root = Csla.DataPortal.Create<Root>("abc", 123);
+        var root = dataPortal.Create("abc", 123);
       }
       catch (DataPortalException ex)
       {
@@ -108,9 +138,9 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void FetchNoCriteria()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader = 
-        new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Fetch<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch();
       Assert.AreEqual("Fetch", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
@@ -119,9 +149,9 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void FetchCriteria()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Fetch<Root>("abc");
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch("abc");
       Assert.AreEqual("abc", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
@@ -130,11 +160,12 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void Update()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader();
-      var root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch();
       root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
+
+      root = dataPortal.Update(root);
       Assert.AreEqual(TransactionalTypes.Manual, root.TransactionalType, "Transactional type should match");
       Assert.AreEqual("Update", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
@@ -144,11 +175,15 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScope()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(1);
-      var root = new Root();
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        opts => opts.DataPortal(dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory1>>()))
+        );
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch();
       root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
+
+      root = dataPortal.Update(root);
       Assert.AreEqual(TransactionalTypes.TransactionScope, root.TransactionalType, "Transactional type should match");
       Assert.AreEqual("Serializable", root.IsolationLevel, "Transactional isolation should match");
       Assert.AreEqual(30, root.TransactionTimeout, "Transactional timeout should match");
@@ -161,14 +196,24 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
     {
-      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        options => options
+        .Data(
+          cfg => cfg
+          .DefaultTransactionIsolationLevel(TransactionIsolationLevel.RepeatableRead)
+          .DefaultTransactionTimeoutInSeconds(45)
+        )
+        .DataPortal(
+          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory4>>())
+          )
+        );
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
 
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(4);
-      var root = new Root();
+      var root = dataPortal.Create();
       root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
+
+
+      root = dataPortal.Update(root);
       Assert.AreEqual(TransactionalTypes.TransactionScope, root.TransactionalType, "Transactional type should match");
       Assert.AreEqual("ReadCommitted", root.IsolationLevel, "Transactional isolation should match");
       Assert.AreEqual(100, root.TransactionTimeout, "Transactional timeout should match");
@@ -182,13 +227,23 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
     {
-      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-      ApplicationContext.DefaultTransactionTimeoutInSeconds = 45;
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(5);
-      var root = new Root();
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        options => options
+        .Data(
+          cfg => cfg
+          .DefaultTransactionIsolationLevel(TransactionIsolationLevel.RepeatableRead)
+          .DefaultTransactionTimeoutInSeconds(45)
+        )
+        .DataPortal(
+          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory5>>()))
+        );
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Create();
       root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
+
+
+      root = dataPortal.Update(root);
       Assert.AreEqual(TransactionalTypes.TransactionScope, root.TransactionalType, "Transactional type should match");
       Assert.AreEqual("RepeatableRead", root.IsolationLevel, "Transactional isolation should match");
       Assert.AreEqual(45, root.TransactionTimeout, "Transactional timeout should match");
@@ -198,65 +253,28 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
 
-#if DEBUG
-    [TestMethod]
-    [Ignore]
-    public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
-    {
-      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(6);
-      var root = new Root();
-      root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
-      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-      Assert.AreEqual("ReadCommitted", root.IsolationLevel, "Transactional isolation should match");
-
-      Assert.AreEqual("Update", root.Data, "Data should match");
-      Assert.IsFalse(root.IsNew, "Should not be new");
-      Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    }
-
-    [TestMethod]
-    [Ignore]
-    public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
-    {
-      ApplicationContext.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
-
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(7);
-      var root = new Root();
-      root.Data = "abc";
-      
-      root = Csla.DataPortal.Update<Root>(root);
-      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-      Assert.AreEqual("RepeatableRead", root.IsolationLevel, "Transactional isolation should match");
-
-      Assert.AreEqual("Update", root.Data, "Data should match");
-      Assert.IsFalse(root.IsNew, "Should not be new");
-      Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    }
-#endif
-
     [TestMethod]
     public void Delete()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader();
+      TestResults.Reinitialise();
 
-      Csla.DataPortal.Delete<Root>("abc");
+      dataPortal.Delete("abc");
 
-      Assert.AreEqual("Delete", Csla.ApplicationContext.GlobalContext["ObjectFactory"].ToString(), "Data should match");
+      Assert.AreEqual("Delete", TestResults.GetResult("ObjectFactory"), "Data should match");
     }
 
     [TestMethod]
     public void FetchLoadProperty()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(3);
-      var root = Csla.DataPortal.Fetch<Root>();
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(
+          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory3>>()))
+        );
+      IDataPortal<Root> dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch();
       Assert.AreEqual("Fetch", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
@@ -265,9 +283,12 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void DataPortalExecute_OnCommandObjectWithLocalProxy_CallsFactoryExecute()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.Server.FactoryDataPortal.FactoryLoader = null;
-      var test = CommandObject.Execute();
+      TestDIContext testDIContext = TestDIContextFactory.CreateDefaultContext();
+      IDataPortal<CommandObject> dataPortal = testDIContext.CreateDataPortal<CommandObject>();
+
+      TestResults.Reinitialise();
+
+      var test = CommandObject.Execute(dataPortal);
       // return value is set in Execute method in CommandObjectFactory
       Assert.IsTrue(test);
     }
@@ -276,11 +297,14 @@ namespace Csla.Test.ObjectFactory
     [ExpectedException(typeof(DataPortalException))]
     public void DataPortalExecute_OnCommandObjectWithFalseExecuteMethod_ThrowsExeptionMehodNotFound()
     {
+      TestDIContext testDIContext = TestDIContextFactory.CreateDefaultContext();
+      IDataPortal<CommandObjectMissingFactoryMethod> dataPortal = testDIContext.CreateDataPortal<CommandObjectMissingFactoryMethod>();
+
       try
       {
-        Csla.ApplicationContext.GlobalContext.Clear();
-        Csla.Server.FactoryDataPortal.FactoryLoader = null;
-        var test = CommandObjectMissingFactoryMethod.Execute();
+        TestResults.Reinitialise();
+
+        var test = CommandObjectMissingFactoryMethod.Execute(dataPortal);
       }
       catch (DataPortalException ex)
       {

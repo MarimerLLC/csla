@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.Configuration;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +22,14 @@ namespace Csla.Test.BasicModern
   [TestClass]
   public class BasicModernTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void CreateGraph()
     {
@@ -32,6 +42,11 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MakeOldMetastateEvents()
     {
+      IServiceCollection services = new ServiceCollection();
+      services.AddCsla(o=>o.PropertyChangedMode(ApplicationContext.PropertyChangedModes.Xaml));
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetService<ApplicationContext>();
+
       var graph = CreateRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -53,6 +68,11 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MarkDeletedMetastateEvents()
     {
+      IServiceCollection services = new ServiceCollection();
+      services.AddCsla(o => o.PropertyChangedMode(ApplicationContext.PropertyChangedModes.Xaml));
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetService<ApplicationContext>();
+
       var graph = CreateRoot();
       graph.Name = "abc";
       graph = graph.Save();
@@ -193,7 +213,7 @@ namespace Csla.Test.BasicModern
 
     private Root CreateRoot()
     {
-      IDataPortal<Root> dataPortal = DataPortalFactory.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       return dataPortal.Create();
     }
   }

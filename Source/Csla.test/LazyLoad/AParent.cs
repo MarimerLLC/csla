@@ -22,14 +22,12 @@ namespace Csla.Test.LazyLoad
     }
 
     private static PropertyInfo<AChildList> ChildListProperty = 
-      RegisterProperty<AChildList>(c => c.ChildList, "Child list");
+      RegisterProperty<AChildList>(c => c.ChildList, "Child list", null, RelationshipTypes.LazyLoad);
     public AChildList ChildList
     {
       get 
       {
-        if (!FieldManager.FieldExists(ChildListProperty))
-          LoadProperty<AChildList>(ChildListProperty, new AChildList());
-        return GetProperty<AChildList>(ChildListProperty); 
+        return LazyGetProperty(ChildListProperty, FetchChildList);
       }
     }
 
@@ -39,7 +37,6 @@ namespace Csla.Test.LazyLoad
         return ReadProperty<AChildList>(ChildListProperty);
       else
         return null;
-      //return _children;
     }
 
     public new int EditLevel
@@ -47,10 +44,17 @@ namespace Csla.Test.LazyLoad
       get { return base.EditLevel; }
     }
 
-    public AParent()
+    [Create]
+    private void Create()
     {
       using (BypassPropertyChecks)
         Id = Guid.NewGuid();
+    }
+
+    private AChildList FetchChildList()
+    {
+      IDataPortal<AChildList> dataPortal = ApplicationContext.GetRequiredService<IDataPortal<AChildList>>();
+      return dataPortal.Fetch();
     }
   }
 }

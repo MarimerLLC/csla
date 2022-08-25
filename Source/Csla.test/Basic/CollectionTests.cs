@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Diagnostics;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,15 +27,25 @@ namespace Csla.Test.Basic
   [TestClass]
   public class CollectionTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void SetLast()
     {
-      TestCollection list = new TestCollection();
-      list.Add(new TestItem());
-      list.Add(new TestItem());
-      TestItem oldItem = new TestItem();
+      IDataPortal<TestCollection> dataPortal = _testDIContext.CreateDataPortal<TestCollection>();
+      IDataPortal<TestItem> childDataPortal = _testDIContext.CreateDataPortal<TestItem>();
+      TestCollection list = dataPortal.Create();
+      list.Add(childDataPortal.Create());
+      list.Add(childDataPortal.Create());
+      TestItem oldItem = childDataPortal.Create();
       list.Add(oldItem);
-      TestItem newItem = new TestItem();
+      TestItem newItem = childDataPortal.Create();
       list[2] = newItem;
       Assert.AreEqual(3, list.Count, "List should have 3 items");
       Assert.AreEqual(newItem, list[2], "Last item should be newItem");
@@ -55,28 +66,20 @@ namespace Csla.Test.Basic
   {
     public TestCollection()
     {
-      AllowNew = true;
     }
 
-    protected override object AddNewCore()
+    [Create]
+    private void Create()
     {
-      var item = Csla.DataPortal.CreateChild<TestItem>();
-      Add(item);
-      return item;
     }
 
-    public static TestCollection GetList()
+    private void DataPortal_Fetch([Inject] IChildDataPortal<TestItem> childDataPortal)
     {
-      return Csla.DataPortal.Fetch<TestCollection>();
-    }
-
-    private void DataPortal_Fetch()
-    {
-      Add(Csla.DataPortal.FetchChild<TestItem>(123));
-      Add(Csla.DataPortal.FetchChild<TestItem>(2));
-      Add(Csla.DataPortal.FetchChild<TestItem>(13));
-      Add(Csla.DataPortal.FetchChild<TestItem>(23));
-      Add(Csla.DataPortal.FetchChild<TestItem>(3));
+      Add(childDataPortal.FetchChild(123));
+      Add(childDataPortal.FetchChild(2));
+      Add(childDataPortal.FetchChild(13));
+      Add(childDataPortal.FetchChild(23));
+      Add(childDataPortal.FetchChild(3));
     }
   }
 
@@ -100,9 +103,13 @@ namespace Csla.Test.Basic
       MarkAsChild();
     }
 
+    [Create]
+    [CreateChild]
     protected override void Child_Create()
     { }
 
+    [Fetch]
+    [FetchChild]
     private void Child_Fetch(int id)
     {
       LoadProperty(IdProperty, id);

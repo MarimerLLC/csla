@@ -55,14 +55,6 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public RabbitMqPortal()
-    {
-      DataPortalUrl = ApplicationContext.DataPortalUrlString;
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
     /// <param name="dataPortalUrl">URI for the data portal</param>
     public RabbitMqPortal(string dataPortalUrl)
     {

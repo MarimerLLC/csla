@@ -18,26 +18,25 @@ namespace Csla.Test.Basic
 
     private static object locker = new object();
 
-    public CommandObject ExecuteServerCode()
-    {
-      return Csla.DataPortal.Execute(this);
-    }
+    public static PropertyInfo<string> APropertyProperty = RegisterProperty<string>(o => o.AProperty);
 
-    private string _property = "";
     public string AProperty
     {
-      get
-      {
-        return _property;
-      }
+      get { return ReadProperty(APropertyProperty); }
+      set { LoadProperty(APropertyProperty, value); }
     }
 
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
     [Execute]
-		protected void DataPortal_Execute()
+	protected void DataPortal_Execute()
     {
       lock (locker)
       {
-        _property = "Executed";
+        AProperty = "Executed";
       }
     }
 

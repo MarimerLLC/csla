@@ -46,7 +46,6 @@ namespace Csla.Configuration
       set
       {
         _settings = value;
-        ApplicationContext.SettingsChanged();
       }
     }
 

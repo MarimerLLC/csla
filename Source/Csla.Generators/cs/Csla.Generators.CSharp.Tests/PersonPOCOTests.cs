@@ -13,6 +13,7 @@ using Csla.Generators.CSharp.TestObjects;
 using Csla.Generators.CSharp.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
+using Csla.TestHelpers;
 
 namespace Csla.Generators.CSharp.Tests
 {
@@ -23,6 +24,13 @@ namespace Csla.Generators.CSharp.Tests
 	[TestClass]
   public class PersonPOCOTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext testContext)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     #region GetState
 
@@ -345,10 +353,7 @@ namespace Csla.Generators.CSharp.Tests
     [TestMethod]
     public void GetChildren_WithAddress1HighStreet_IncludesAddressKey()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla();
-      var provider = services.BuildServiceProvider();
-      var ApplicationContext = provider.GetService<ApplicationContext>();
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       // Arrange
       SerializationInfo serializationInfo = new SerializationInfo();
@@ -357,7 +362,7 @@ namespace Csla.Generators.CSharp.Tests
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
       person.Address = new AddressPOCO() { AddressLine1 = "1 High Street" };
-      MobileFormatter formatter = new MobileFormatter(ApplicationContext);
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
 
       // Act
       mobileObject = (IMobileObject)person;
@@ -372,10 +377,7 @@ namespace Csla.Generators.CSharp.Tests
     [TestMethod]
     public void GetChildren_WithEmailAddress_IncludesEmailAddressKey()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla();
-      var provider = services.BuildServiceProvider();
-      var ApplicationContext = provider.GetService<ApplicationContext>();
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       // Arrange
       SerializationInfo serializationInfo = new SerializationInfo();
@@ -384,7 +386,7 @@ namespace Csla.Generators.CSharp.Tests
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
       person.EmailAddress = new EmailAddress() { Email = "a@b.com" };
-      MobileFormatter formatter = new MobileFormatter(ApplicationContext);
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
 
       // Act
       mobileObject = (IMobileObject)person;
@@ -672,14 +674,11 @@ namespace Csla.Generators.CSharp.Tests
     /// <returns>The PersonPOCO that results from serialization then deserialization</returns>
     private PersonPOCO SerializeThenDeserialisePersonPOCO(PersonPOCO valueToSerialize)
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla();
-      var provider = services.BuildServiceProvider();
-      var ApplicationContext = provider.GetService<ApplicationContext>();
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       System.IO.MemoryStream serializationStream;
       PersonPOCO deserializedValue;
-      MobileFormatter formatter = new MobileFormatter(ApplicationContext);
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
 
       // Act
       using (serializationStream = new System.IO.MemoryStream())

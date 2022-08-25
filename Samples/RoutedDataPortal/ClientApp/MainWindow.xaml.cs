@@ -1,4 +1,5 @@
 ﻿using BusinessLibrary;
+using Csla;
 using Csla.Configuration;
 using System;
 using System.Collections.Generic;
@@ -40,14 +41,22 @@ namespace ClientApp
       try
       {
         CustomProxy.ServerUrl = url;
-        CslaConfiguration.Configure().VersionRoutingTag(version);
 
-        var obj = await Csla.DataPortal.FetchAsync<TestClass>();
+        // the following code is for testing only!
+        // this code sets the version tag dynamically, which
+        // is normally not allowed - it should be set at app
+        // startup using the fluent API only.
+        // This code may not work in future versions of CSLA.
+        var options = new CslaOptions(new Microsoft.Extensions.DependencyInjection.ServiceCollection());
+        options.VersionRoutingTag(version);
+
+        var portal = App.ApplicationContext.GetRequiredService<IDataPortal<TestClass>>();
+        var obj = await portal.FetchAsync();
         WriteLine($"Created from {obj.CreatedFrom}");
       }
       catch (Exception ex)
       {
-        WriteLine($"EXCEPTION: {ex.ToString()}");
+        WriteLine($"EXCEPTION: {ex}");
       }
       WriteLine();
     }

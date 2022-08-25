@@ -12,7 +12,7 @@ using Csla;
 
 namespace Csla.Test.ObjectFactory
 {
-  [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.CommandObjectFactory, Csla.Test")]
+  [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.CommandObjectFactory, Csla.Tests")]
   [Serializable]
   public class CommandObject : CommandBase<CommandObject>
   {
@@ -27,14 +27,14 @@ namespace Csla.Test.ObjectFactory
 
     #region Factory Methods
 
-    public static bool Execute()
+    public static bool Execute(IDataPortal<CommandObject> dataPortal)
     {
       if (!CanExecuteCommand())
         throw new Csla.Security.SecurityException("Not authorized to execute command");
 
-      CommandObject cmd = new CommandObject();
+      CommandObject cmd = dataPortal.Create();
       cmd.BeforeServer();
-      cmd = Csla.DataPortal.Execute<CommandObject>(cmd);
+      cmd = dataPortal.Execute(cmd);
       cmd.AfterServer();
       return cmd.Result;
     }

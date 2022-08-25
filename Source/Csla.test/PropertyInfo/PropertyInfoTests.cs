@@ -8,6 +8,7 @@
 using System;
 #if !NUNIT
 using System.Diagnostics;
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
 using NUnit.Framework;
@@ -22,6 +23,14 @@ namespace Csla.Test.PropertyInfo
   [TestClass]
   public class PropertyInfoTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void TestName()
     {
@@ -49,15 +58,19 @@ namespace Csla.Test.PropertyInfo
     [TestMethod]
     public void TestDefaultValue()
     {
+      IDataPortal<PropertyInfoRoot> dataPortal = _testDIContext.CreateDataPortal<PropertyInfoRoot>();
+
       Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
-      Assert.AreEqual("x", PropertyInfoRoot.NewPropertyInfoRoot().NameDefaultValue);
+      Assert.AreEqual("x", PropertyInfoRoot.NewPropertyInfoRoot(dataPortal).NameDefaultValue);
     }
     
     [TestMethod]
     public void TestStringNullDefaultValue()
     {
+      IDataPortal<PropertyInfoRoot> dataPortal = _testDIContext.CreateDataPortal<PropertyInfoRoot>();
+
       Assert.AreEqual(null, PropertyInfoRoot.StringNullDefaultValueProperty.DefaultValue);
-      Assert.AreEqual(null, PropertyInfoRoot.NewPropertyInfoRoot().StringNullDefaultValue);
+      Assert.AreEqual(null, PropertyInfoRoot.NewPropertyInfoRoot(dataPortal).StringNullDefaultValue);
     }
   }
 }

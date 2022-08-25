@@ -62,5 +62,11 @@ namespace Csla.Test.ValidationRules
         return result;
       }
     }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
   }
 }

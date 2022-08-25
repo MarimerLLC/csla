@@ -25,13 +25,18 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
 
-      int value = (int)ApplicationContext.GlobalContext["Shared"];
-      ApplicationContext.GlobalContext["Shared"] = ++value;
+      int value = int.Parse(TestResults.GetResult("Shared"));
+      TestResults.AddOrOverwrite("Shared", (++value).ToString());
     }
 
     public void Validate()
     {
       BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 
@@ -49,13 +54,18 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
 
-      int value = (int)ApplicationContext.GlobalContext["Shared"];
-      ApplicationContext.GlobalContext["Shared"] = ++value;
+      int value = int.Parse(TestResults.GetResult("Shared"));
+      TestResults.AddOrOverwrite("Shared", (++value).ToString());
     }
 
     public void Validate()
     {
       BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 
@@ -74,13 +84,18 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
 
-      int value = (int)ApplicationContext.GlobalContext["Shared"];
-      ApplicationContext.GlobalContext["Shared"] = ++value;
+      int value = int.Parse(TestResults.GetResult("Shared"));
+      TestResults.AddOrOverwrite("Shared", (++value).ToString());
     }
 
     public void Validate()
     {
       BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 
@@ -112,6 +127,11 @@ namespace Csla.Test.ValidationRules
     {
       BusinessRules.RuleSet = "test";
       return BusinessRules.GetRuleDescriptions();
+    }
+
+    [Create]
+    private void Create()
+    {
     }
   }
 }

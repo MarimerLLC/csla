@@ -1,4 +1,5 @@
 ﻿using Csla.Core;
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,7 @@ namespace Csla.Test.ChildChanged
   [TestClass]
   public class OptimizeChildChangedTests
   {
-
-
+    private static TestDIContext _testDIContext;
 
     public enum enumBO { SimpleBO, SimpleBOList };
     public enum enumEvent { OnPropertyChanged, OnChildChanged, PropertyChanged, ChildChanged };
@@ -78,26 +78,26 @@ namespace Csla.Test.ChildChanged
 
       }
 
-      private void DataPortal_Fetch()
+      private void DataPortal_Fetch([Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBOList> simpleBOListPortal)
       {
         Depth = 0;
         LoadProperty(NameProperty, "Jupiter");
-        LoadProperty(ChildProperty, Csla.DataPortal.FetchChild<SimpleBO>(Depth + 1));
-        LoadProperty(ChildListProperty, Csla.DataPortal.FetchChild<SimpleBOList>(Depth + 1));
+        LoadProperty(ChildProperty, simpleBOPortal.FetchChild(Depth + 1));
+        LoadProperty(ChildListProperty, simpleBOListPortal.FetchChild(Depth + 1));
 
         BusinessRules.CheckRules();
 
       }
 
-      private void Child_Fetch(int depth)
+      private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBOList> simpleBOListPortal)
       {
         Depth = depth;
         LoadProperty(NameProperty, "Saturn");
 
         if (depth < 4)
         {
-          LoadProperty(ChildProperty, Csla.DataPortal.FetchChild<SimpleBO>(Depth + 1));
-          LoadProperty(ChildListProperty, Csla.DataPortal.FetchChild<SimpleBOList>(Depth + 1));
+          LoadProperty(ChildProperty, simpleBOPortal.FetchChild(Depth + 1));
+          LoadProperty(ChildListProperty, simpleBOListPortal.FetchChild(Depth + 1));
         }
 
         BusinessRules.CheckRules();
@@ -124,10 +124,10 @@ namespace Csla.Test.ChildChanged
       public int Depth { get; private set; }
       public int UniqueID = NextUniqueID();
 
-      private void Child_Fetch(int depth)
+      private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> childDataPortal)
       {
         Depth = depth;
-        Add(Csla.DataPortal.FetchChild<SimpleBO>(depth));
+        Add(childDataPortal.FetchChild(depth));
       }
 
       protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -146,7 +146,9 @@ namespace Csla.Test.ChildChanged
 
     private SimpleBO Fetch()
     {
-      var result = Csla.DataPortal.Fetch<SimpleBO>();
+      IDataPortal<SimpleBO> dataPortal = _testDIContext.CreateDataPortal<SimpleBO>();
+
+      var result = dataPortal.Fetch();
 
       void HookEvents(SimpleBO bo)
       {
@@ -190,9 +192,13 @@ namespace Csla.Test.ChildChanged
       EventDetails.Add(new EventDetail() { BO = enumBO.SimpleBO, Depth = bo.Depth, Event = enumEvent.PropertyChanged, UniqueID = bo.UniqueID, PropertyName = e.PropertyName });
     }
 
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_Fetch()
     {
       var result = Fetch();
@@ -213,7 +219,6 @@ namespace Csla.Test.ChildChanged
     }
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_Name_Depth0()
     {
       var result = Fetch();
@@ -244,7 +249,6 @@ namespace Csla.Test.ChildChanged
 
     }
 
-
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth2()
     {
@@ -261,7 +265,6 @@ namespace Csla.Test.ChildChanged
       Assert.AreEqual(0, EventDetails.Count);
 
     }
-
 
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth3()
@@ -285,7 +288,6 @@ namespace Csla.Test.ChildChanged
     }
 
     [TestMethod]
-    
     public void OptimizeChildChangedTests_List_Name_Depth1()
     {
       var result = Fetch();
@@ -301,9 +303,7 @@ namespace Csla.Test.ChildChanged
 
     }
 
-
     [TestMethod]
-    
     public void OptimizeChildChangedTests_List_Name_Depth2()
     {
       var result = Fetch();

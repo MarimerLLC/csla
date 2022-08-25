@@ -1,4 +1,11 @@
 ﻿#if NET5_0_OR_GREATER
+//-----------------------------------------------------------------------
+// <copyright file="AssemblyLoadContextManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Provides common access to "AssemblyLoadContext" logic</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -35,12 +42,12 @@ namespace Csla.Runtime
         {
             if (objectType == null)
             {
-                throw new ArgumentNullException("objectType");
+                throw new ArgumentNullException(nameof(objectType));
             }
 
             if (cachingItem == null)
             {
-              throw new ArgumentNullException("cachingItem");
+              throw new ArgumentNullException(nameof(cachingItem));
             }
 
             if (unloadAction == null)

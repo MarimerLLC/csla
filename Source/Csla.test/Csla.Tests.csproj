@@ -1,0 +1,121 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net462;net6.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <IsPackable>false</IsPackable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <RootNamespace>Csla.Test</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\test.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net462|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net462|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CslaDataProvider\**" />
+    <Compile Remove="DataBinding\**" />
+    <Compile Remove="Data\**" />
+    <Compile Remove="IdentityConverter\**" />
+    <Compile Remove="Silverlight\**" />
+    <Compile Remove="ViewModelTests\**" />
+    <Compile Remove="Windows\**" />
+    <EmbeddedResource Remove="CslaDataProvider\**" />
+    <EmbeddedResource Remove="DataBinding\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="IdentityConverter\**" />
+    <EmbeddedResource Remove="Silverlight\**" />
+    <EmbeddedResource Remove="ViewModelTests\**" />
+    <EmbeddedResource Remove="Windows\**" />
+    <None Remove="CslaDataProvider\**" />
+    <None Remove="DataBinding\**" />
+    <None Remove="Data\**" />
+    <None Remove="IdentityConverter\**" />
+    <None Remove="Silverlight\**" />
+    <None Remove="ViewModelTests\**" />
+    <None Remove="Windows\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataPortal\ESTransactionalRoot.cs" />
+    <Compile Remove="PropertyInfo\XamlPropertyInfoTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="packages.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$(TargetFramework.StartsWith(&quot;net4&quot;))">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="6.0.0-preview.4.21253.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Fakes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DataPortalTestDatabase.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DataPortalTestDatabase_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="testConnectionStrings.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

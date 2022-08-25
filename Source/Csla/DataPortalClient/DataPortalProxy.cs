@@ -51,7 +51,7 @@ namespace Csla.DataPortalClient
     /// Gets the URL address for the data portal server
     /// used by this proxy instance.
     /// </summary>
-    public string DataPortalUrl { get; protected set; } = ApplicationContext.DataPortalUrlString;
+    public string DataPortalUrl { get; protected set; }
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a

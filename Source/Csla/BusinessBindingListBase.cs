@@ -24,7 +24,7 @@ namespace Csla
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
   public abstract class BusinessBindingListBase<T, C> :
-      Core.ExtendedBindingList<C>,
+      Core.ExtendedBindingList<C>, IContainsDeletedList,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
       Core.ISavable, Core.ISavable<T>, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy,
@@ -40,7 +40,10 @@ namespace Csla
     {
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    /// <summary>
+    /// Gets the current ApplicationContext
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
     ApplicationContext IUseApplicationContext.ApplicationContext 
     { 
       get => ApplicationContext;
@@ -436,6 +439,11 @@ namespace Csla
         return _deletedList; 
       }
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
 
     private void DeleteChild(C child)
     {
@@ -865,9 +873,9 @@ namespace Csla
     /// any resulting updates into the existing
     /// object graph.
     /// </summary>
-    public Task SaveAndMergeAsync()
+    public async Task SaveAndMergeAsync()
     {
-      throw new NotSupportedException(nameof(SaveAndMergeAsync));
+      new GraphMerger(ApplicationContext).MergeBusinessBindingListGraph<T, C>((T)this, await SaveAsync());
     }
 
     /// <summary>

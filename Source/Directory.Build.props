@@ -5,7 +5,7 @@
  
  <!-- Common Package Settings -->
  <PropertyGroup>
-   <Version>6.0.0.0-R$([System.DateTime]::Now.ToString('yyMMddhhmm'))</Version>
+   <Version>6.2.0.0</Version>
    <PackageLicenseExpression>MIT</PackageLicenseExpression>
    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>

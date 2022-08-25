@@ -191,5 +191,13 @@ namespace Csla.Blazor
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    /// <summary>
+    /// Gets the System.Reflection.PropertyInfo object
+    /// representing the property.
+    /// </summary>
+    /// <returns></returns>
+    public System.Reflection.PropertyInfo GetPropertyInfo() 
+      => Model.GetType().GetProperty(PropertyName);
   }
 }

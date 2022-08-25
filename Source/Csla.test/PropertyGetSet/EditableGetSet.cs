@@ -152,25 +152,23 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild"));
+    private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(
+      typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild", RelationshipTypes.LazyLoad));
     public EditableGetSet ManagedChild
     {
       get 
       { 
-        if (!FieldManager.FieldExists(ManagedChildProperty))
-          SetProperty(ManagedChildProperty, new EditableGetSet(true));
-        return GetProperty(ManagedChildProperty); 
+        return LazyGetProperty(ManagedChildProperty, () => GetDataPortal<EditableGetSet>().Create()); 
       }
     }
 
-    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty<ChildList>(typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList"));
+    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty(
+      typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList", RelationshipTypes.LazyLoad));
     public ChildList ManagedChildList
     {
       get
       {
-        if (!FieldManager.FieldExists(ManagedChildListProperty))
-          LoadProperty<ChildList>(ManagedChildListProperty, new ChildList(true));
-        return GetProperty<ChildList>(ManagedChildListProperty);
+        return LazyGetProperty(ManagedChildListProperty, () => GetDataPortal<ChildList>().Create());
       }
     }
 
@@ -178,7 +176,7 @@ namespace Csla.Test.PropertyGetSet
       RegisterProperty(new PropertyInfo<ChildList>("LazyChild", "Child list", null, RelationshipTypes.LazyLoad));
     public ChildList LazyChild
     {
-      get { return GetProperty(LazyChildProperty); }
+      get { return LazyGetProperty(LazyChildProperty, () => GetDataPortal<ChildList>().Create()); }
       set { SetProperty(LazyChildProperty, value); }
     }
 
@@ -194,58 +192,70 @@ namespace Csla.Test.PropertyGetSet
 
     public EditableGetSet()
     {
-      MarkNew();
-      MarkClean();
-    }
-
-    public EditableGetSet(bool isChild)
-    {
-      if (isChild)
-      {
-        MarkAsChild();
-        MarkNew();
-      }
     }
 
     #region Factory Methods
 
-    public static EditableGetSet GetObject()
+    public static EditableGetSet NewObject(IDataPortal<EditableGetSet> dataPortal)
     {
-      return Csla.DataPortal.Fetch<EditableGetSet>();
+      return dataPortal.Create();
     }
+
+    public static EditableGetSet NewChildObject(IChildDataPortal<EditableGetSet> childDataPortal)
+    {
+      return childDataPortal.CreateChild();
+    }
+
+    public static EditableGetSet GetObject(IDataPortal<EditableGetSet> dataPortal)
+    {
+      return dataPortal.Fetch();
+    }
+
+    public static EditableGetSet GetChildObject(IChildDataPortal<EditableGetSet> dataPortal)
+    {
+      return dataPortal.FetchChild();
+    }
+
     #endregion
 
     #region Data Access
 
+    [Create]
+    private void Create([Inject] IChildDataPortal<EditableGetSet> dataPortal)
+    {
+      LoadProperty(M06Property, null);
+    }
+
+    [CreateChild]
+    private void CreateChild()
+    {
+      LoadProperty(M06Property, null);
+    }
+
+    [Fetch]
     private void DataPortal_Fetch()
     {
       LoadProperty(M06Property, null);
     }
 
+    [FetchChild]
+    private void DataPortal_FetchChild()
+    {
+      LoadProperty(M06Property, null);
+    }
+
     [Insert]
+    [InsertChild]
     protected void DataPortal_Insert()
     {
-      //FieldManager.UpdateChildren();
-      if (FieldManager.FieldExists(ManagedChildProperty))
-        ManagedChild.Insert();
-      if (FieldManager.FieldExists(ManagedChildListProperty))
-        ManagedChildList.Update();
+      FieldManager.UpdateChildren();
     }
 
     [Update]
-		protected void DataPortal_Update()
+    [UpdateChild]
+	protected void DataPortal_Update()
     {
-      //FieldManager.UpdateChildren();
-    }
-
-    internal void Insert()
-    {
-      MarkOld();
-    }
-
-    internal void Update()
-    {
-      MarkOld();
+      FieldManager.UpdateChildren();
     }
 
     #endregion
@@ -282,6 +292,20 @@ namespace Csla.Test.PropertyGetSet
         _f05 = info.GetValue<bool>("_f05");
 
       base.OnSetState(info, mode);
+    }
+
+    #endregion
+
+    #region Private Helper Methods
+
+    /// <summary>
+    /// Construct an instance of IDataPortal<typeparamref name="T"/>
+    /// </summary>
+    /// <typeparam name="T">The type which is to be accessed</typeparam>
+    /// <returns>An instance of IDataPortal for use in data access</returns>
+    private IDataPortal<T> GetDataPortal<T>() where T:class
+    {
+      return ApplicationContext.GetRequiredService<IDataPortal<T>>();
     }
 
     #endregion
@@ -324,10 +348,11 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
-    public static EditableGetSet GetObject()
+    public static EditableGetSetNFI GetObject(IDataPortal<EditableGetSetNFI> dataPortal)
     {
-      return Csla.DataPortal.Fetch<EditableGetSet>();
+      return dataPortal.Fetch();
     }
+
     #endregion
 
     #region Data Access

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace XamarinExample.ViewModels
@@ -14,7 +14,7 @@ namespace XamarinExample.ViewModels
       Title = "About";
 
       OpenWebCommand = 
-        new Command(() => Device.OpenUri(new Uri("https://xamarin.com/platform")));
+        new Command(() => Launcher.OpenAsync(new Uri("https://xamarin.com/platform")));
     }
 
     public ICommand OpenWebCommand { get; }

@@ -34,7 +34,7 @@ namespace Csla.Channels.Http
     protected override HttpClientHandler GetHttpClientHandler()
     {
       var result = new HttpClientHandler();
-      if (!UseTextSerialization)
+      if (!Options.UseTextSerialization)
         result.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
       return result;
     }

@@ -9,10 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Threading;
 using System.Threading;
 using UnitDriven;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -32,12 +32,22 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class AsyncRuleTests : TestBase
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void TestAsyncRulesValid()
     {
+      IDataPortal<HasAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasAsyncRule>();
+
       UnitTestContext context = GetContext();
 
-      HasAsyncRule har = new HasAsyncRule();
+      HasAsyncRule har = dataPortal.Create();
       context.Assert.IsTrue(har.IsValid, "IsValid 1");
 
       har.ValidationComplete += (o, e) =>
@@ -52,9 +62,11 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void TestAsyncRuleError()
     {
+      IDataPortal<HasAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasAsyncRule>();
+
       UnitTestContext context = GetContext();
 
-      HasAsyncRule har = new HasAsyncRule();
+      HasAsyncRule har = dataPortal.Create();
       context.Assert.IsTrue(har.IsValid, "IsValid 1");
 
       har.ValidationComplete += (o, e) =>
@@ -70,8 +82,12 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void InvalidAsyncRule()
     {
+      IDataPortal<HasInvalidAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasInvalidAsyncRule>();
+
+      TestResults.Reinitialise();
+
       UnitTestContext context = GetContext();
-      var root = new HasInvalidAsyncRule();
+      var root = dataPortal.Create();
       root.ValidationComplete += (o, e) =>
         {
           context.Assert.IsFalse(root.IsValid);
@@ -120,9 +136,11 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void TestAsyncRulesAndSyncRulesValid()
     {
+      IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
+
       UnitTestContext context = GetContext();
 
-      var har = new AsyncRuleRoot();
+      var har = dataPortal.Create();
       context.Assert.IsTrue(string.IsNullOrEmpty(har.CustomerNumber));
       context.Assert.IsTrue(string.IsNullOrEmpty(har.CustomerName));
       context.Assert.IsFalse(har.IsValid, "IsValid 1");
@@ -144,7 +162,9 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public async Task TestAsyncAwaitRule()
     {
-      var har = new AsyncRuleRoot();
+      IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
+
+      var har = dataPortal.Create();
       var tcs = new TaskCompletionSource<bool>();
       har.ValidationComplete += (o, e) =>
       {

@@ -25,9 +25,9 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(Ssn2Property, value); }
     }
 
-    public static HasLambdaRules New()
+    public static HasLambdaRules New(IDataPortal<HasLambdaRules> dataPortal)
     {
-      return Csla.DataPortal.Create<HasLambdaRules>();
+      return dataPortal.Create();
     }
 
     [RunLocal]

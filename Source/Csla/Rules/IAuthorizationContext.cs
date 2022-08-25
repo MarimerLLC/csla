@@ -6,7 +6,9 @@
 // <summary>Interface defining an authorization context</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Security.Claims;
 using System.Security.Principal;
+using Csla.Core;
 
 namespace Csla.Rules 
 {
@@ -44,8 +46,13 @@ namespace Csla.Rules
     object[] Criteria { get; }
 
     /// <summary>
-    /// Gets the current user principal.
+    /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    IPrincipal User { get; }
+    ApplicationContext ApplicationContext { get; }
+
+    /// <summary>
+    /// Gets a data portal factory instance
+    /// </summary>
+    IDataPortalFactory DataPortalFactory { get; }
   }
 }

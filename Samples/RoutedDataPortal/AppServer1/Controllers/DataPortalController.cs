@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Csla;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,10 @@ namespace AppServer1.Controllers
   [ApiController]
   public class DataPortalController : Csla.Server.Hosts.HttpPortalController
   {
-    public DataPortalController()
+    public DataPortalController(ApplicationContext applicationContext)
+      : base(applicationContext)
     {
-      Csla.ApplicationContext.LocalContext.Add("dpv", "v1");
+      applicationContext.LocalContext.Add("dpv", "v1");
     }
 
     [HttpGet]

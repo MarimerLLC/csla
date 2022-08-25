@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Csla;
 
 namespace RoutedDataPortal.Controllers
 {
@@ -12,11 +13,12 @@ namespace RoutedDataPortal.Controllers
   [ApiController]
   public class DataPortalController : Csla.Server.Hosts.HttpPortalController
   {
-    public DataPortalController()
+    public DataPortalController(ApplicationContext applicationContext)
+      : base(applicationContext)
     {
       RoutingTagUrls["v1"] = "http://appserver1/api/DataPortal";
       RoutingTagUrls["v2"] = "http://appserver2/api/DataPortal";
-      Csla.ApplicationContext.LocalContext.Add("dpv", "v0");
+      applicationContext.LocalContext.Add("dpv", "v0");
     }
 
     [HttpPost]

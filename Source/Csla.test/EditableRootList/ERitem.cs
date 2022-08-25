@@ -24,45 +24,47 @@ namespace Csla.Test.EditableRootList
     public ERitem()
     { }
 
-    private ERitem(string data)
+    [Create]
+    private void Create()
+    {
+    }
+
+    [Create]
+    private void Create(string data)
     {
       using (BypassPropertyChecks)
         Data = data;
-      MarkOld();
     }
 
-    public static ERitem NewItem()
+    [Fetch]
+    private void Fetch(string data)
     {
-      return new ERitem();
-    }
-
-    public static ERitem GetItem(string data)
-    {
-      return new ERitem(data);
+      using (BypassPropertyChecks)
+        Data = data;
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      ApplicationContext.GlobalContext["DP"] = "Insert";
+      TestResults.Add("DP", "Insert");
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
-      ApplicationContext.GlobalContext["DP"] = "Update";
+      TestResults.Add("DP", "Update");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      ApplicationContext.GlobalContext["DP"] = "DeleteSelf";
+      TestResults.Add("DP", "DeleteSelf");
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
-      ApplicationContext.GlobalContext["DP"] = "Delete";
+      TestResults.Add("DP", "Delete");
     }
   }
 }

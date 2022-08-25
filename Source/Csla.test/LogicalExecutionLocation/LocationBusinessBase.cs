@@ -41,11 +41,11 @@ namespace Csla.Test.LogicalExecutionLocation
     }
 
 #pragma warning disable CS0436 // Type conflicts with imported type
-    public static LocationBusinessBase GetLocationBusinessBase()
+    public static LocationBusinessBase GetLocationBusinessBase(IDataPortal<LocationBusinessBase> dataPortal)
 #pragma warning restore CS0436 // Type conflicts with imported type
     {
 #pragma warning disable CS0436 // Type conflicts with imported type
-      return Csla.DataPortal.Fetch<LocationBusinessBase>();
+      return dataPortal.Fetch();
 #pragma warning restore CS0436 // Type conflicts with imported type
     }
 
@@ -59,29 +59,33 @@ namespace Csla.Test.LogicalExecutionLocation
       protected override void Execute(Rules.IRuleContext context)
       {
 #pragma warning disable CS0436 // Type conflicts with imported type
-        ((LocationBusinessBase)context.Target).Rule = Csla.ApplicationContext.LogicalExecutionLocation.ToString();
+        // TODO: Not sure how to replicate this functionality in Csla 6
+        // ((LocationBusinessBase)context.Target).Rule = ApplicationContext.LogicalExecutionLocation.ToString();
 #pragma warning restore CS0436 // Type conflicts with imported type
       }
     }
 
-    [Update]
-		protected void DataPortal_Update()
+    [Fetch]
+    protected void Fetch([Inject]IDataPortal<LocationBusinessBase> dataPortal)
     {
-      
-    }
-
-    protected void DataPortal_Fetch()
-    {
-      SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
+      SetProperty(DataProperty, ApplicationContext.LogicalExecutionLocation.ToString());
 #pragma warning disable CS0436 // Type conflicts with imported type
-      var nested = Csla.DataPortal.Fetch<LocationBusinessBase>(123);
+      var nested = dataPortal.Fetch(123);
 #pragma warning restore CS0436 // Type conflicts with imported type
       NestedData = nested.Data;
     }
 
-    protected void DataPortal_Fetch(int criteria)
+    [Fetch]
+    protected void Fetch(int criteria)
     {
-      SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
+      SetProperty(DataProperty, ApplicationContext.LogicalExecutionLocation.ToString());
     }
+
+    [Update]
+	protected void DataPortal_Update()
+    {
+      
+    }
+
   }
 }

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla.Serialization;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,95 +26,117 @@ namespace Csla.Test.IO
   [TestClass]
   public class DPMethodOverloadTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateNoCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.NewNoCriteria();
+      obj = TestBizObj.NewNoCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with no criteria");
-      Assert.AreEqual("No criteria", Csla.ApplicationContext.GlobalContext["Create"], "No criteria expected");
+      Assert.AreEqual("No criteria", TestResults.GetResult("Create"), "No criteria expected");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.NewCriteria();
+      obj = TestBizObj.NewCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with criteria");
-      Assert.AreEqual("Criteria", Csla.ApplicationContext.GlobalContext["Create"], "Criteria expected");
+      Assert.AreEqual("Criteria", TestResults.GetResult("Create"), "Criteria expected");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateWithOtherCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.NewOtherCriteria();
+      obj = TestBizObj.NewOtherCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with other criteria");
-      Assert.AreEqual("Other criteria", Csla.ApplicationContext.GlobalContext["Create"], "Other criteria expected");
+      Assert.AreEqual("Other criteria", TestResults.GetResult("Create"), "Other criteria expected");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNullCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetNullCriteria();
+      obj = TestBizObj.GetNullCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with null criteria");
-      Assert.AreEqual("Null criteria", Csla.ApplicationContext.GlobalContext["Fetch"], "Null criteria expected");
+      Assert.AreEqual("Null criteria", TestResults.GetResult("Fetch"), "Null criteria expected");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchNoCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetNoCriteria();
+      obj = TestBizObj.GetNoCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with no criteria");
-      Assert.AreEqual("No criteria", Csla.ApplicationContext.GlobalContext["Fetch"], "No criteria expected");
+      Assert.AreEqual("No criteria", TestResults.GetResult("Fetch"), "No criteria expected");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetCriteria();
+      obj = TestBizObj.GetCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with criteria");
-      Assert.AreEqual("Criteria", Csla.ApplicationContext.GlobalContext["Fetch"], "Criteria expected");
+      Assert.AreEqual("Criteria", TestResults.GetResult("Fetch"), "Criteria expected");
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void FetchWithOtherCriteria()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
+
+      TestResults.Reinitialise();
 
       TestBizObj obj;
 
-      obj = TestBizObj.GetOtherCriteria();
+      obj = TestBizObj.GetOtherCriteria(dataPortal);
       Assert.IsNotNull(obj, "Failed to get object with other criteria");
-      Assert.AreEqual("Other criteria", Csla.ApplicationContext.GlobalContext["Fetch"], "Other criteria expected");
+      Assert.AreEqual("Other criteria", TestResults.GetResult("Fetch"), "Other criteria expected");
     }
   }
 
@@ -125,39 +148,39 @@ namespace Csla.Test.IO
       return 0;
     }
 
-    public static TestBizObj NewNoCriteria()
+    public static TestBizObj NewNoCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Create<TestBizObj>();
+      return dataPortal.Create();
     }
 
-    public static TestBizObj NewCriteria()
+    public static TestBizObj NewCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Create<TestBizObj>(new Criteria());
+      return dataPortal.Create(new Criteria());
     }
 
-    public static TestBizObj NewOtherCriteria()
+    public static TestBizObj NewOtherCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Create<TestBizObj>(new OtherCriteria());
+      return dataPortal.Create(new OtherCriteria());
     }
 
-    public static TestBizObj GetNoCriteria()
+    public static TestBizObj GetNoCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>();
+      return dataPortal.Fetch();
     }
 
-    public static TestBizObj GetNullCriteria()
+    public static TestBizObj GetNullCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>(null);
+      return dataPortal.Fetch(null);
     }
 
-    public static TestBizObj GetCriteria()
+    public static TestBizObj GetCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>(new Criteria());
+      return dataPortal.Fetch(new Criteria());
     }
 
-    public static TestBizObj GetOtherCriteria()
+    public static TestBizObj GetOtherCriteria(IDataPortal<TestBizObj> dataPortal)
     {
-      return Csla.DataPortal.Fetch<TestBizObj>(new OtherCriteria());
+      return dataPortal.Fetch(new OtherCriteria());
     }
 
     [Serializable]
@@ -173,7 +196,7 @@ namespace Csla.Test.IO
     [Create]
 		protected void DataPortal_Create()
     {
-      Csla.ApplicationContext.GlobalContext["Create"] = "No criteria";
+      TestResults.Add("Create", "No criteria");
       BusinessRules.CheckRules();
     }
 
@@ -181,9 +204,9 @@ namespace Csla.Test.IO
     private void DataPortal_Create(object criteria)
     {
       if (criteria == null)
-        Csla.ApplicationContext.GlobalContext["Create"] = "null criteria";
+        TestResults.Add("Create", "null criteria");
       else
-        Csla.ApplicationContext.GlobalContext["Create"] = "Other criteria";
+        TestResults.Add("Create", "Other criteria");
 
       BusinessRules.CheckRules();
     }
@@ -191,26 +214,26 @@ namespace Csla.Test.IO
     [Create]
     private void DataPortal_Create(Criteria criteria)
     {
-      Csla.ApplicationContext.GlobalContext["Create"] = "Criteria";
+      TestResults.Add("Create", "Criteria");
       BusinessRules.CheckRules();
     }
 
     private void DataPortal_Fetch()
     {
-      Csla.ApplicationContext.GlobalContext["Fetch"] = "No criteria";
+      TestResults.Add("Fetch", "No criteria");
     }
 
     protected void DataPortal_Fetch(object criteria)
     {
       if (criteria == null)
-        Csla.ApplicationContext.GlobalContext["Fetch"] = "Null criteria";
+        TestResults.Add("Fetch", "Null criteria");
       else
-        Csla.ApplicationContext.GlobalContext["Fetch"] = "Other criteria";
+        TestResults.Add("Fetch", "Other criteria");
     }
 
     private void DataPortal_Fetch(Criteria criteria)
     {
-      Csla.ApplicationContext.GlobalContext["Fetch"] = "Criteria";
+      TestResults.Add("Fetch", "Criteria");
     }
   }
 }

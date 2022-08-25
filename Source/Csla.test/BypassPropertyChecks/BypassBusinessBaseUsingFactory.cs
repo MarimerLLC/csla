@@ -9,11 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla.Serialization;
+using Csla.TestHelpers;
 
 namespace Csla.Test.BypassPropertyChecks
 {
   [Serializable()]
-  [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Test")]
+  [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Tests")]
   public class BypassBusinessBaseUsingFactory : BusinessBase<BypassBusinessBaseUsingFactory>
   {
     internal BypassBusinessBaseUsingFactory()
@@ -21,9 +22,9 @@ namespace Csla.Test.BypassPropertyChecks
       MarkOld();
     }
 
-    public static BypassBusinessBaseUsingFactory GetObject()
+    public static BypassBusinessBaseUsingFactory GetObject(IDataPortal<BypassBusinessBaseUsingFactory> dataPortal)
     {
-      return Csla.DataPortal.Fetch<BypassBusinessBaseUsingFactory>();
+      return dataPortal.Fetch();
     }
 
     protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");

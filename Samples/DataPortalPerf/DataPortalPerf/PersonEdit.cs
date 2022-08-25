@@ -6,7 +6,8 @@ namespace DataPortalPerf
   [Serializable]
   public class PersonEdit : BusinessBase<PersonEdit>
   {
-    private void DataPortal_Fetch()
+    [Fetch]
+    private void Fetch()
     { }
   }
 }

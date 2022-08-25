@@ -19,6 +19,13 @@ namespace Csla.Core
   public class GraphMerger : Csla.Server.ObjectFactory
   {
     /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public GraphMerger(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    /// <summary>
     /// Merges state from source graph into target graph.
     /// </summary>
     /// <param name="target">Target of merge.</param>
@@ -27,13 +34,28 @@ namespace Csla.Core
     {
       if (target is IManageProperties imp)
       {
+        FieldManager.FieldDataManager targetFieldManager = null;
+        if (target is IUseFieldManager iufm)
+          targetFieldManager = iufm.FieldManager;
+        FieldManager.FieldDataManager sourceFieldManager = null;
+        if (source is IUseFieldManager iufms)
+          sourceFieldManager = iufms.FieldManager;
+
         var targetProperties = imp.GetManagedProperties();
         foreach (var item in targetProperties)
         {
-          var sourceValue = ReadProperty(source, item);
+          var sourceFieldExists = true;
+          if (sourceFieldManager != null && (item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+            sourceFieldExists = sourceFieldManager.FieldExists(item);
+          object sourceValue = null;
+          if (sourceFieldExists)
+            sourceValue = ReadProperty(source, item);
           if (sourceValue is IEditableBusinessObject sourceChild)
           {
-            if (ReadProperty(target, item) is IEditableBusinessObject targetChild)
+            var targetFieldExists = true;
+            if (targetFieldManager != null && (item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+              targetFieldExists = targetFieldManager.FieldExists(item);
+            if (targetFieldExists && ReadProperty(target, item) is IEditableBusinessObject targetChild)
             {
               MergeGraph(targetChild, sourceChild);
             }
@@ -49,8 +71,20 @@ namespace Csla.Core
           {
             if (sourceValue is IEditableCollection sourceList)
             {
-              var targetList = ReadProperty(target, item) as IEditableCollection;
-              MergeGraph(targetList, sourceList);
+              var targetFieldExists = true;
+              if (targetFieldManager != null && (item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+                targetFieldExists = targetFieldManager.FieldExists(item);
+              if (targetFieldExists && ReadProperty(target, item) is IEditableCollection targetList)
+              {
+                MergeGraph(targetList, sourceList);
+              }
+              else
+              {
+                if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+                  Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
+                else
+                  LoadProperty(target, item, sourceList);
+              }
             }
             else
             {
@@ -87,7 +121,7 @@ namespace Csla.Core
       if (sourceField != null)
       {
         var targetField = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-        if (targetField!= null)
+        if (targetField != null)
         {
           targetField.SetValue(target, sourceField.GetValue(source));
         }
@@ -106,7 +140,11 @@ namespace Csla.Core
       var childType = Utilities.GetChildItemType(listType);
       var genericTypeParams = new Type[] { listType, childType };
       var parameterTypes = new Type[] { listType, listType };
-      var methodReference = this.GetType().GetMethod("MergeBusinessListGraph");
+      System.Reflection.MethodInfo methodReference;
+      if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
+        methodReference = this.GetType().GetMethod("MergeBusinessBindingListGraph");
+      else
+        methodReference = this.GetType().GetMethod("MergeBusinessListGraph");
       var gr = methodReference.MakeGenericMethod(genericTypeParams);
       gr.Invoke(this, new object[] { target, source });
 #endif
@@ -117,8 +155,38 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public void MergeBusinessListGraph<T,C>(T target, T source)
-      where T : BusinessListBase<T,C>
+    public void MergeBusinessListGraph<T, C>(T target, T source)
+      where T : BusinessListBase<T, C>
+      where C : Core.IEditableBusinessObject
+    {
+      var deleted = new List<C>();
+      foreach (var item in target)
+      {
+        var sourceItem = source.Where(_ => _.Identity == item.Identity).FirstOrDefault();
+        if (sourceItem != null)
+          MergeGraph(item, sourceItem);
+        else
+          deleted.Add(item);
+      }
+
+      // add items not in target
+      foreach (var item in source)
+        if (target.Count(_ => _.Identity == item.Identity) == 0)
+          target.Add(item);
+
+      // remove items not in source
+      foreach (var item in deleted)
+        target.Remove(item);
+      GetDeletedList<C>(target).Clear();
+    }
+
+    /// <summary>
+    /// Merges state from source graph into target graph.
+    /// </summary>
+    /// <param name="target">Target of merge.</param>
+    /// <param name="source">Source for merge.</param>
+    public void MergeBusinessBindingListGraph<T, C>(T target, T source)
+      where T : BusinessBindingListBase<T, C>
       where C : Core.IEditableBusinessObject
     {
       var deleted = new List<C>();

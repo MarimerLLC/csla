@@ -46,7 +46,8 @@ namespace AuthzFactoryMethods
     /// </returns>
     public static Root NewEditableRoot()
     {
-      return DataPortal.Create<Root>();
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      return portal.Create();
     }
 
     /// <summary>
@@ -59,7 +60,8 @@ namespace AuthzFactoryMethods
     /// </returns>
     public static Root GetEditableRoot(int id)
     {
-      return DataPortal.Fetch<Root>(id);
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      return portal.Fetch(id);
     }
 
     /// <summary>
@@ -70,7 +72,8 @@ namespace AuthzFactoryMethods
     /// </param>
     public static void DeleteEditableRoot(int id)
     {
-      DataPortal.Delete<Root>(id);
+      var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
+      portal.Delete(id);
     }
 
     /// <summary>

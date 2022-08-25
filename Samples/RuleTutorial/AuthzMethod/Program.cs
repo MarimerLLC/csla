@@ -9,9 +9,9 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Csla;
+using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AuthzMethod
 {
@@ -20,6 +20,8 @@ namespace AuthzMethod
   /// </summary>
   class Program
   {
+    public static ApplicationContext ApplicationContext { get; set; }
+
     /// <summary>
     /// The main.
     /// </summary>
@@ -28,6 +30,11 @@ namespace AuthzMethod
     /// </param>
     static void Main(string[] args)
     {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+
       Console.WriteLine("This sample shows how to create Authz for your own methods on a business object.");
       try
       {

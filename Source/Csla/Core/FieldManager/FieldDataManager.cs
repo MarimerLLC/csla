@@ -18,7 +18,7 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-
+using System.Threading.Tasks;
 
 namespace Csla.Core.FieldManager
 {
@@ -664,9 +664,48 @@ namespace Csla.Core.FieldManager
       }
     }
 
-#endregion
+    /// <summary>
+    /// Asynchronously invokes the data portal to update
+    /// all child objects contained in the list of fields.
+    /// </summary>
+    /// <param name="parameters">Parameters for method</param>
+    public async Task UpdateChildrenAsync(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal(ApplicationContext);
+      foreach (var item in _fieldData)
+      {
+        if (item != null)
+        {
+          object obj = item.Value;
+          if (obj is IEditableBusinessObject || obj is IEditableCollection)
+            await portal.UpdateAsync(obj, parameters).ConfigureAwait(false);
+        }
+      }
+    }
 
-#region IMobileObject Members
+    /// <summary>
+    /// Asynchronously invokes the data portal to update
+    /// all child objects, including those which are not dirty,
+    /// contained in the list of fields.
+    /// </summary>
+    /// <param name="parameters">Parameters for method</param>
+    public async Task UpdateAllChildrenAsync(params object[] parameters)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal(ApplicationContext);
+      foreach (var item in _fieldData)
+      {
+        if (item != null)
+        {
+          object obj = item.Value;
+          if (obj is IEditableBusinessObject || obj is IEditableCollection)
+            await portal.UpdateAllAsync(obj, parameters).ConfigureAwait(false);
+        }
+      }
+    }
+
+    #endregion
+
+    #region IMobileObject Members
 
     /// <summary>
     /// Override this method to insert your field values

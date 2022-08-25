@@ -1,4 +1,5 @@
 ﻿using System;
+using BusinessLibrary;
 using Csla;
 using Csla.Xaml;
 
@@ -12,7 +13,8 @@ namespace WpfUI
       {
         try
         {
-          return await DataPortal.FetchAsync<BusinessLibrary.Order>(441);
+          var portal = App.ApplicationContext.GetRequiredService<IDataPortal<BusinessLibrary.Order>>();
+          return await portal.FetchAsync(441);
         }
         catch (Exception ex)
         {
@@ -20,6 +22,31 @@ namespace WpfUI
           return null;
         }
       });
+    }
+
+    public override System.Threading.Tasks.Task<Order> SaveAsync()
+    {
+      try
+      {
+        return base.SaveAsync();
+      }
+      catch (Exception ex)
+      {
+        var x = ex;
+        throw;
+      }
+    }
+
+    public override void SaveAsync(object sender, ExecuteEventArgs e)
+    {
+      try
+      {
+        base.SaveAsync(sender, e);
+      }
+      catch (Exception ex)
+      {
+        var x = ex;
+      }
     }
   }
 }

@@ -49,7 +49,7 @@ namespace Csla.Analyzers
             .Any(invocation =>
             {
               return context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
-                invocationSymbol.Name == "Complete" && Equals(invocationSymbol.ContainingType, contextParameter.Type);
+                invocationSymbol.Name == "Complete" && SymbolEqualityComparer.Default.Equals(invocationSymbol.ContainingType, contextParameter.Type);
             });
 
           if (wasCompleteMethodCalled)

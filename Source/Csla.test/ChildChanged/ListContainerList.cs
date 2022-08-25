@@ -17,5 +17,9 @@ namespace Csla.Test.ChildChanged
   [Serializable]
   public class ListContainerList : BusinessBindingListBase<ListContainerList, ContainsList>
   {
+    [Fetch]
+    private void Create()
+    {
+    }
   }
 }

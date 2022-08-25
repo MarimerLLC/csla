@@ -38,10 +38,17 @@ namespace Csla.Test.ChildChanged
     {
       get 
       {
-        if (!FieldManager.FieldExists(ChildProperty))
-          LoadProperty(ChildProperty, new SingleRoot(true));
         return GetProperty(ChildProperty); 
       }
+    }
+
+    [Fetch]
+    [FetchChild]
+    private void Fetch(bool child, [Inject] IChildDataPortal<SingleRoot> childDataPortal)
+    {
+      LoadProperty(ChildProperty, childDataPortal.FetchChild(true));
+      if (child)
+        MarkAsChild();
     }
   }
 }

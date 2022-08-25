@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Csla;
 using Csla.Core;
 using Csla.Rules;
 using RuleTutorial.Testing.Common;
@@ -52,7 +53,8 @@ namespace TransformationRules.Test
 
     public class TheExecuteMethod : BusinessRuleTest
     {
-      public TheExecuteMethod()
+      public TheExecuteMethod(ApplicationContext applicationContext)
+        : base(applicationContext)
       {
         var rule = new ToUpper(RootFake.NameProperty);
         InitializeTest(rule, null);
@@ -69,7 +71,8 @@ namespace TransformationRules.Test
 
     public class TheExecuteMethodAlt : BusinessRuleTest
     {
-      public TheExecuteMethodAlt()
+      public TheExecuteMethodAlt(ApplicationContext applicationContext)
+        : base(applicationContext)
       {
         var rule = new ToUpper(RootFake.NameProperty);
         var root = new RootFake();

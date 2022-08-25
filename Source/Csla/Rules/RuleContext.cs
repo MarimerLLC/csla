@@ -8,11 +8,10 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Core;
 using Csla.Properties;
-using Csla.Threading;
+using System.Security.Principal;
+using System.Security.Claims;
 
 namespace Csla.Rules
 {
@@ -50,8 +49,6 @@ namespace Csla.Rules
   /// </summary>
   public class RuleContext : IRuleContext
   {
-    private ApplicationContext ApplicationContext { get; set; }
-
     /// <summary>
     /// Gets the rule object.
     /// </summary>
@@ -223,22 +220,20 @@ namespace Csla.Rules
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, RuleContextModes executeContext) 
       : this(applicationContext, completeHandler)
     {
-      ApplicationContext = applicationContext;
       ExecuteContext = executeContext;
     }
 
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      ApplicationContext = applicationContext;
+      ExecuteContext = executeContext;
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
       _dirtyProperties = dirtyProperties;
-      ExecuteContext = executeContext;
     }
 
     /// <summary>
-    /// Creates a RuleContext instance for testing.
+    /// Creates a RuleContext instance for unit tests.
     /// </summary>
     /// <param name="applicationContext">Current ApplicationContext</param>
     /// <param name="completeHandler">Callback for async rule.</param>
@@ -504,5 +499,16 @@ namespace Csla.Rules
       value = (T)InputPropertyValues[propertyInfo];
       return true;
     }
+
+    /// <summary>
+    /// Gets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; private set; }
+
+    /// <summary>
+    /// Gets a data portal factory instance
+    /// </summary>
+    public IDataPortalFactory DataPortalFactory => 
+      (IDataPortalFactory)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortalFactory));
   }
 }

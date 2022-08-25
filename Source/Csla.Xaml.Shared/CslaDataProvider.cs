@@ -1,4 +1,4 @@
-#if !XAMARIN && !WINDOWS_UWP
+#if !XAMARIN && !WINDOWS_UWP && !MAUI
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataProvider.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -15,6 +15,7 @@ using System.Windows.Data;
 using System.Reflection;
 using Csla.Reflection;
 using Csla.Properties;
+using System.Threading.Tasks;
 
 namespace Csla.Xaml
 {
@@ -299,6 +300,109 @@ namespace Csla.Xaml
         DoQuery(request);
     }
 
+    /// <summary>
+    /// Refresh the ObjectInstance by calling the
+    /// supplied factory.
+    /// </summary>
+    /// <typeparam name="T">Type of ObjectInstance</typeparam>
+    /// <param name="factory">Sync data portal or factory method</param>
+    public void Refresh<T>(Func<T> factory)
+    {
+      T result = default(T);
+      Exception exceptionResult = null;
+
+      // invoke factory method
+      try
+      {
+        result = factory();
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        exceptionResult = ex.BusinessException;
+      }
+      catch (System.Reflection.TargetInvocationException ex)
+      {
+        if (ex.InnerException != null)
+        {
+          exceptionResult = ex.InnerException;
+          var dpe = exceptionResult as Csla.DataPortalException;
+          if (dpe != null && dpe.BusinessException != null)
+            exceptionResult = dpe.BusinessException;
+        }
+        else
+          exceptionResult = ex;
+      }
+      catch (Exception ex)
+      {
+        exceptionResult = ex;
+      }
+
+      if (ManageObjectLifetime && result != null)
+      {
+        Csla.Core.ISupportUndo undo = result as Csla.Core.ISupportUndo;
+        if (undo != null)
+          undo.BeginEdit();
+      }
+
+      if (!_endInitCompete && exceptionResult != null)
+        _endInitError = true;
+
+      // return result to base class
+      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+    }
+
+    /// <summary>
+    /// Refresh the ObjectInstance by calling the
+    /// supplied factory.
+    /// </summary>
+    /// <typeparam name="T">Type of ObjectInstance</typeparam>
+    /// <param name="factory">Async data portal or factory method</param>
+    /// <returns></returns>
+    public async void Refresh<T>(Func<Task<T>> factory)
+    {
+      T result = default(T);
+      Exception exceptionResult = null;
+
+      // invoke factory method
+      try
+      {
+        result = await factory();
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        exceptionResult = ex.BusinessException;
+      }
+      catch (System.Reflection.TargetInvocationException ex)
+      {
+        if (ex.InnerException != null)
+        {
+          exceptionResult = ex.InnerException;
+          var dpe = exceptionResult as Csla.DataPortalException;
+          if (dpe != null && dpe.BusinessException != null)
+            exceptionResult = dpe.BusinessException;
+        }
+        else
+          exceptionResult = ex;
+      }
+      catch (Exception ex)
+      {
+        exceptionResult = ex;
+      }
+
+      if (ManageObjectLifetime && result != null)
+      {
+        Csla.Core.ISupportUndo undo = result as Csla.Core.ISupportUndo;
+        if (undo != null)
+          undo.BeginEdit();
+      }
+
+      if (!_endInitCompete && exceptionResult != null)
+        _endInitError = true;
+
+      // return result to base class
+      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+    }
+
     private void DoQuery(object state)
     {
       QueryRequest request = (QueryRequest)state;
@@ -375,17 +479,13 @@ namespace Csla.Xaml
           undo.BeginEdit();
       }
 
-      //if (!System.Windows.Application.Current.Dispatcher.CheckAccess())
-      //  System.Windows.Application.Current.Dispatcher.Invoke(
-      //    new Action(() => { IsBusy = false; }), 
-      //    new object[] { });
-
       if (!_endInitCompete && exceptionResult != null)
         _endInitError = true;
 
       // return result to base class
       OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
     }
+
 
 #region QueryRequest Class
 
@@ -398,6 +498,8 @@ namespace Csla.Xaml
         get { return _objectType; }
         set { _objectType = value; }
       }
+
+      public Func<object[], Task<object>> Factory {  get; set; }
 
       private string _factoryMethod;
 

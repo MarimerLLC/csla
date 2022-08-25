@@ -61,5 +61,11 @@ namespace Csla.Blazor
     /// Event raised when a property changes.
     /// </summary>
     event PropertyChangedEventHandler PropertyChanged;
+    /// <summary>
+    /// Gets the System.Reflection.PropertyInfo object
+    /// representing the property.
+    /// </summary>
+    /// <returns></returns>
+    System.Reflection.PropertyInfo GetPropertyInfo();
   }
 }

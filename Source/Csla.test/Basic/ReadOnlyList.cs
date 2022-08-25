@@ -41,8 +41,8 @@ namespace Csla.Test.Basic
 
         protected override void DataPortal_Fetch(object criteria)
         {
-            Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("ReadOnlyList", "Fetched");
+            TestResults.Reinitialise();
+            TestResults.Add("ReadOnlyList", "Fetched");
         }
 
         #endregion

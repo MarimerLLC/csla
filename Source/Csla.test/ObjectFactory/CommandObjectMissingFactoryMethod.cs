@@ -27,14 +27,14 @@ namespace Csla.Test.ObjectFactory
 
     #region Factory Methods
 
-    public static bool Execute()
+    public static bool Execute(IDataPortal<CommandObjectMissingFactoryMethod> dataPortal)
     {
       if (!CanExecuteCommand())
         throw new Csla.Security.SecurityException("Not authorized to execute command");
 
-      CommandObjectMissingFactoryMethod cmd = new CommandObjectMissingFactoryMethod();
+      CommandObjectMissingFactoryMethod cmd = dataPortal.Create();
       cmd.BeforeServer();
-      cmd = Csla.DataPortal.Execute<CommandObjectMissingFactoryMethod>(cmd);
+      cmd = dataPortal.Execute(cmd);
       cmd.AfterServer();
       return cmd.Result;
     }
@@ -59,6 +59,11 @@ namespace Csla.Test.ObjectFactory
     }
 
     #endregion
+
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
 
   }
 }

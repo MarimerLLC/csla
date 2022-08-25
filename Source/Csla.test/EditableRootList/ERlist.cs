@@ -20,11 +20,9 @@ namespace Csla.Test.EditableRootList
       AllowRemove = true;
     }
 
-    protected override object AddNewCore()
+    [Create]
+    private void Create()
     {
-      ERitem item = ERitem.NewItem();
-      this.Add(item);
-      return item;
     }
   }
 }

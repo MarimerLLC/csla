@@ -30,6 +30,20 @@ namespace Csla.Web.Mvc
   public class Controller : System.Web.Mvc.Controller
 #endif
   {
+    /// <summary>
+    /// Creates a new instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    public Controller(ApplicationContext applicationContext)
+    {
+      ApplicationContext = applicationContext;
+    }
+
+    /// <summary>
+    /// Gets a reference to the current ApplicationContext.
+    /// </summary>
+    protected ApplicationContext ApplicationContext { get; private set; }
+
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
     /// <summary>
     /// Performs a Save() operation on an
@@ -191,11 +205,14 @@ namespace Csla.Web.Mvc
     /// </remarks>
     protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
     {
-      new ObjectManager().LoadProperty(obj, propertyInfo, newValue);
+      new ObjectManager(ApplicationContext).LoadProperty(obj, propertyInfo, newValue);
     }
 
     private class ObjectManager : Server.ObjectFactory
     {
+      public ObjectManager(ApplicationContext applicationContext)
+          : base(applicationContext) { }
+
       public new void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
       {
         base.LoadProperty(obj, propertyInfo, newValue);

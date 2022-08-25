@@ -13,6 +13,8 @@ using Csla.Core.FieldManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Csla.Core
 {
@@ -22,7 +24,10 @@ namespace Csla.Core
   /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
-    INotifyPropertyChanged, IUseApplicationContext
+    INotifyPropertyChanged, 
+    IManageProperties,
+    IUseApplicationContext, 
+    IUseFieldManager
   {
     /// <summary>
     /// Gets the current ApplicationContext.
@@ -45,7 +50,9 @@ namespace Csla.Core
           _fieldManager = new FieldDataManager(ApplicationContext, GetType());
         return _fieldManager;
       }
-    } 
+    }
+
+    FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 
     #endregion
 
@@ -501,5 +508,21 @@ namespace Csla.Core
     }
 
     #endregion
+
+    bool IManageProperties.FieldExists(IPropertyInfo property) => FieldManager.FieldExists(property);
+    List<IPropertyInfo> IManageProperties.GetManagedProperties() => FieldManager.GetRegisteredProperties();
+    object IManageProperties.GetProperty(IPropertyInfo propertyInfo) => throw new NotImplementedException();
+    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
+    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
+    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo) => ReadProperty(propertyInfo);
+    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) => ReadProperty(propertyInfo);
+    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
+    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue) => throw new NotImplementedException();
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue) => LoadProperty(propertyInfo, newValue);
+    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue) => throw new NotImplementedException();
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue) => LoadProperty(propertyInfo, newValue);
+    List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();
+    bool IManageProperties.HasManagedProperties => true;
   }
 }

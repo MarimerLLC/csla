@@ -28,7 +28,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void EmptyToEmptyArray()
     {
-      Assert.IsTrue(GetCriteriaObject() is Server.EmptyCriteria);
+      Assert.IsTrue(GetCriteriaObject() is Csla.Server.EmptyCriteria);
       var array = GetCriteriaArray(GetCriteriaObject());
       Assert.AreEqual(0, array.Length);
     }
@@ -37,7 +37,7 @@ namespace Csla.Test.DataPortal
     public void EmptyCriteriaToEmptyArray()
     {
       //Assert.IsTrue(GetCriteriaObject(Server.EmptyCriteria.Instance)[0] is Server.EmptyCriteria);
-      var array = GetCriteriaArray(Server.EmptyCriteria.Instance);
+      var array = GetCriteriaArray(Csla.Server.EmptyCriteria.Instance);
       Assert.AreEqual(0, array.Length);
     }
 
@@ -45,7 +45,7 @@ namespace Csla.Test.DataPortal
     public void EmptyArrayToEmptyArray()
     {
       var start = Array.Empty<object>();
-      Assert.IsTrue(GetCriteriaObject(start) is Server.EmptyCriteria);
+      Assert.IsTrue(GetCriteriaObject(start) is Csla.Server.EmptyCriteria);
       var array = GetCriteriaArray(GetCriteriaObject(start));
       Assert.AreEqual(0, array.Length);
     }
@@ -54,7 +54,7 @@ namespace Csla.Test.DataPortal
     public void NullToNullInArray()
     {
       object start = null;
-      Assert.IsTrue(GetCriteriaObject(start) is Server.NullCriteria);
+      Assert.IsTrue(GetCriteriaObject(start) is Csla.Server.NullCriteria);
       var array = GetCriteriaArray(GetCriteriaObject(start));
       Assert.AreEqual(1, array.Length);
       Assert.IsNull(array[0]);
@@ -75,7 +75,7 @@ namespace Csla.Test.DataPortal
 
     private object[] GetCriteriaArray()
     {
-      return Csla.Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
+      return Csla.Server.DataPortal.GetCriteriaArray(Csla.Server.EmptyCriteria.Instance);
     }
 
     private object[] GetCriteriaArray(object criteria)

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnitDriven;
 using System.Diagnostics;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -35,8 +36,10 @@ namespace Csla.Test.Authorization
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void DenyWritePerType()
     {
-      Csla.ApplicationContext.User = new System.Security.Claims.ClaimsPrincipal();
-      PerTypeAuthorization root = new PerTypeAuthorization();
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(new System.Security.Claims.ClaimsPrincipal());
+      IDataPortal<PerTypeAuthorization> dataPortal = testDIContext.CreateDataPortal<PerTypeAuthorization>();
+
+      PerTypeAuthorization root = dataPortal.Create();
       root.Test = "test";
     }
   }

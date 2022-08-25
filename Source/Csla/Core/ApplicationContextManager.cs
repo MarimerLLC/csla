@@ -21,6 +21,12 @@ namespace Csla.Core
     private readonly AsyncLocal<ContextDictionary> _clientContext = new();
 
     /// <summary>
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
+    /// </summary>
+    public bool IsStatefulContext => true;
+
+    /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
     public bool IsValid

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,10 +26,20 @@ namespace Csla.Test.DataPortalChild
   [TestClass()]
   public class DataPortalChildTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void CreateAndSaveChild()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Create();
       root.Data = "a";
       root.Child.Data = "b";
 
@@ -49,7 +60,9 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void CreateAndDeleteChild()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Create();
 
       root.Child.DeleteChild();
       Assert.IsTrue(root.Child.IsDeleted, "Child should be marked for deletion");
@@ -67,8 +80,11 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChild()
     {
-      Root root = new Root();
-      root.FetchChild();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Create();
+      root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsNew, "Child should not be new");
       Assert.IsFalse(root.Child.IsDirty, "Child should not be dirty");
@@ -90,8 +106,11 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndDeleteChild()
     {
-      Root root = new Root();
-      root.FetchChild();
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Create();
+      root.FetchChild(childDataPortal);
 
       Assert.IsFalse(root.Child.IsNew, "Child should not be new");
       Assert.IsFalse(root.Child.IsDirty, "Child should not be dirty");
@@ -113,12 +132,14 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChildList()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Fetch();
       var list = root.ChildList;
       Assert.IsFalse(root.ChildList.IsDirty, "Child list should not be dirty");
       Assert.AreEqual("Fetched", root.ChildList.Status, "Child list status incorrect after fetch");
 
-      list.Add(Child.NewChild());
+      list.Add(NewChild());
 
       Assert.IsTrue(root.ChildList.IsDirty, "Child list should be dirty after add");
       Assert.IsTrue(root.ChildList[0].IsDirty, "Child should be dirty after add");
@@ -138,7 +159,9 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChildListVerifyParent()
     {
-      Root root = new Root();
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      Root root = dataPortal.Fetch();
       root.Data = "root";
       var oneChild = root.Child;
       oneChild.Data = "random";
@@ -149,7 +172,7 @@ namespace Csla.Test.DataPortalChild
 
       
 
-      list.Add(Child.NewChild());
+      list.Add(NewChild());
 
       Assert.IsTrue(root.ChildList.IsDirty, "Child list should be dirty after add");
       Assert.IsTrue(root.ChildList[0].IsDirty, "Child should be dirty after add");
@@ -167,6 +190,13 @@ namespace Csla.Test.DataPortalChild
 
       Assert.AreEqual("root", root.ChildList[0].RootData, "Parent data is not correct after Save in the list");
       Assert.AreEqual("root", root.Child.RootData, "Parent data is not correct after Save in one child");
+    }
+
+    private Child NewChild()
+    {
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+
+      return childDataPortal.CreateChild();
     }
   }
 }

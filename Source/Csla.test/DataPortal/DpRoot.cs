@@ -45,36 +45,25 @@ namespace Csla.Test.DataPortal
     #region "Criteria class"
 
     [Serializable()]
-    private class Criteria
+    internal class Criteria : CriteriaBase<Criteria>
     {
-      public string _data;
+      public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
+      public string Data
+      {
+        get { return ReadProperty(DataProperty); }
+        set { LoadProperty(DataProperty, value); }
+      }
 
       public Criteria()
       {
-        _data = "<new>";
+        Data = "<new>";
       }
 
       public Criteria(string data)
       {
-        this._data = data;
+        Data = data;
       }
     }
-
-    #endregion
-
-    #region "New root + constructor"
-
-    public static DpRoot NewRoot()
-    {
-      Criteria crit = new Criteria();
-      return (Csla.DataPortal.Create<DpRoot>(crit));
-    }
-
-    public static DpRoot GetRoot(string data)
-    {
-      return (Csla.DataPortal.Fetch<DpRoot>(new Criteria(data)));
-    }
-
 
     #endregion
 
@@ -90,14 +79,14 @@ namespace Csla.Test.DataPortal
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
-        Data = crit._data;
+        Data = crit.Data;
     }
 
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
-        Data = crit._data;
+        Data = crit.Data;
       MarkOld();
     }
 
@@ -108,7 +97,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       //we would update here
     }
@@ -120,19 +109,19 @@ namespace Csla.Test.DataPortal
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
     }
 
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["serverinvoke"] = true;
+      TestResults.Add("serverinvoke", "true");
     }
 
     protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      Csla.ApplicationContext.GlobalContext["serverinvokecomplete"] = true;
+      TestResults.Add("serverinvokecomplete", "true");
     }
 
     #endregion
@@ -159,7 +148,8 @@ namespace Csla.Test.DataPortal
       get
       {
         if (CanReadProperty("DenyReadOnProperty"))
-          throw new Csla.Security.SecurityException("Not allowed 1");
+          //return "Not allowed 1";
+          return ((TestHelpers.ApplicationContextManagerUnitTests)ApplicationContext.ContextManager).InstanceId.ToString();
 
         else
           return "[DenyReadOnProperty] Can't read property";
@@ -196,7 +186,7 @@ namespace Csla.Test.DataPortal
       get
       {
         if (CanReadProperty("DenyReadWriteOnProperty"))
-          throw new Csla.Security.SecurityException("Not allowed 3");
+          return "Not allowed 3";
 
         else
           return "[DenyReadWriteOnProperty] Can't read property";
@@ -220,7 +210,7 @@ namespace Csla.Test.DataPortal
           return _auth;
 
         else
-          throw new Csla.Security.SecurityException("Should be allowed 5");
+          return "Should be allowed 5";
       }
       set
       {

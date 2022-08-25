@@ -28,6 +28,12 @@ namespace Csla.Test.LazyLoad
 
     public AChild()
     {
+    }
+
+    [Create]
+    [CreateChild]
+    private void Create()
+    {
       MarkAsChild();
       using (BypassPropertyChecks)
         Id = Guid.NewGuid();

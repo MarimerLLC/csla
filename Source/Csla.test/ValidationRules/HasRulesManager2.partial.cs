@@ -26,7 +26,7 @@ namespace Csla.Test.ValidationRules
       Criteria crit = (Criteria)(criteria);
       using (BypassPropertyChecks)
         Name = crit._name;
-      Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Created");
+      TestResults.Add("HasRulesManager2", "Created");
       BusinessRules.CheckRules();
     }
 
@@ -36,7 +36,7 @@ namespace Csla.Test.ValidationRules
       using (BypassPropertyChecks)
         Name = crit._name;
       MarkOld();
-      Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Fetched");
+      TestResults.Add("HasRulesManager2", "Fetched");
     }
 
     [Update]
@@ -45,7 +45,7 @@ namespace Csla.Test.ValidationRules
       if (IsDeleted)
       {
         //we would delete here
-        Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
+        TestResults.Add("HasRulesManager2", "Deleted");
         MarkNew();
       }
       else
@@ -53,12 +53,12 @@ namespace Csla.Test.ValidationRules
         if (this.IsNew)
         {
           //we would insert here
-          Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Inserted");
+          TestResults.Add("HasRulesManager2", "Inserted");
         }
         else
         {
           //we would update here
-          Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Updated");
+          TestResults.Add("HasRulesManager2", "Updated");
         }
         MarkOld();
       }
@@ -68,7 +68,7 @@ namespace Csla.Test.ValidationRules
 		protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
-      Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
+      TestResults.Add("HasRulesManager2", "Deleted");
     }
 
 

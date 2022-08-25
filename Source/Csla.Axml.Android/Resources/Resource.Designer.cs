@@ -14,7 +14,7 @@ namespace Csla.Axml
 {
 	
 	
-	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "12.1.0.11")]
+	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "13.0.99.109")]
 	public partial class Resource
 	{
 		

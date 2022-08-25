@@ -12,41 +12,38 @@ using System.Data;
 
 namespace Csla.Test.Basic
 {
-    [Serializable()]
-    public class Children : BusinessBindingListBase<Children, Child>
+  [Serializable()]
+  public class Children : BusinessBindingListBase<Children, Child>
+  {
+    public void Add(IDataPortal<Child> dataPortal, string data)
     {
-        public void Add(string data)
-        {
-            this.Add(Child.NewChild(data));
-        }
-
-
-        internal static Children NewChildren()
-        {
-            return new Children();
-        }
-
-        internal static Children GetChildren(IDataReader dr)
-        {
-            return null;
-        }
-
-        internal void Update(IDbTransaction tr)
-        {
-            foreach (Child child in this)
-            {
-                child.Update(tr);
-            }
-        }
-
-        public Children()
-        {
-            this.MarkAsChild();
-        }
-
-        public int DeletedCount
-        {
-          get { return this.DeletedList.Count; }
-        }
+      this.Add(Child.NewChild(dataPortal, data));
     }
+
+    internal static Children NewChildren(IDataPortal<Children> dataPortal)
+    {
+      return dataPortal.Create();
+    }
+
+    internal static Children GetChildren(IDataReader dr)
+    {
+      return null;
+    }
+
+    public Children()
+    {
+      this.MarkAsChild();
+    }
+
+    public int DeletedCount
+    {
+      get { return this.DeletedList.Count; }
+    }
+
+    [Create]
+    private void Create()
+    {
+    }
+
+  }
 }

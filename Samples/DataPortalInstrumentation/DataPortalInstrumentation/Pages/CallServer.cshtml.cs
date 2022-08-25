@@ -1,17 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Csla;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DataPortalInstrumentation.Pages
 {
   public class CallServerModel : PageModel
   {
+    public CallServerModel(IDataPortal<Worker> portal)
+    {
+      Portal = portal;
+    }
+
+    private IDataPortal<Worker> Portal;
+
     public async Task OnGetAsync()
     {
-      await Csla.DataPortal.FetchAsync<Worker>(123);
+      await Portal.FetchAsync(123);
     }
   }
 }

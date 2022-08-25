@@ -7,42 +7,45 @@ namespace Csla.Test.DataPortal
 {
   public class CustomDataPortalServer : IDataPortalServer
   {
+    private readonly DataPortalSelector _dataPortalSelector;
+
+    public CustomDataPortalServer(DataPortalSelector dataPortalSelector)
+    {
+      _dataPortalSelector = dataPortalSelector;
+    }
+
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var dp = new DataPortalSelector();
-      var result = await dp.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+      var result = await _dataPortalSelector.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Create Called";
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Create Called");
 
       return result;
     }
 
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var dp = new DataPortalSelector();
-      var result = await dp.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+      var result = await _dataPortalSelector.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Fetch Called";
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Fetch Called");
 
       return result;
     }
 
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      var dp = new DataPortalSelector();
-      var result = await dp.Update(obj, context, isSync).ConfigureAwait(false);
+      var result = await _dataPortalSelector.Update(obj, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Update Called";
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Update Called");
 
       return result;
     }
 
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var dp = new DataPortalSelector();
-      var result = await dp.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+      var result = await _dataPortalSelector.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
 
-      ApplicationContext.GlobalContext["CustomDataPortalServer"] = "Delete Called";
+      TestResults.AddOrOverwrite("CustomDataPortalServer", "Delete Called");
 
       return result;
     }

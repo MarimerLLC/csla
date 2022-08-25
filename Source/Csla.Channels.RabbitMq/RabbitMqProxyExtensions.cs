@@ -21,8 +21,8 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
-    public static CslaDataPortalConfiguration UseHttpProxy(
-      this CslaDataPortalConfiguration config, Action<Csla.Channels.RabbitMq.RabbitMqProxyOptions> options)
+    public static DataPortalClientOptions UseHttpProxy(
+      this DataPortalClientOptions config, Action<Csla.Channels.RabbitMq.RabbitMqProxyOptions> options)
     {
       var proxyOptions = new Csla.Channels.RabbitMq.RabbitMqProxyOptions();
       options?.Invoke(proxyOptions);

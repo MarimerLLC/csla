@@ -8,6 +8,8 @@
 using Csla.Core;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
 namespace Csla.Rules
@@ -232,5 +234,13 @@ namespace Csla.Rules
     /// </summary>
     /// <value>The execution context.</value>
     RuleContextModes ExecuteContext { get; }
+    /// <summary>
+    /// Gets a reference to the current ApplicationContext.
+    /// </summary>
+    ApplicationContext ApplicationContext { get; }
+    /// <summary>
+    /// Gets a data portal factory instance
+    /// </summary>
+    IDataPortalFactory DataPortalFactory { get; }
   }
 }

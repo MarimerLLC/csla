@@ -18,7 +18,6 @@ namespace Csla.Test.DataBinding
   {
     #region "Business methods"
 
-    private ChildEntityList _children = ChildEntityList.NewChildEntityList();
     [NotUndoable()]
     private string _notUndoable;
 
@@ -42,16 +41,17 @@ namespace Csla.Test.DataBinding
       set { SetProperty(DataProperty, value); }
     }
 
+    public static PropertyInfo<ChildEntityList> ChildrenProperty = RegisterProperty<ChildEntityList>(p => p.Children);
     public ChildEntityList Children
     {
-      get { return _children; }
+      get { return GetProperty(ChildrenProperty); }
     }
 
     public override bool IsDirty
     {
       get
       {
-        return base.IsDirty || _children.IsDirty;
+        return base.IsDirty || Children.IsDirty;
       }
     }
 
@@ -82,19 +82,19 @@ namespace Csla.Test.DataBinding
 
     #region "Factory Methods"
 
-    public static ParentEntity NewParentEntity()
+    public static ParentEntity NewParentEntity(IDataPortal<ParentEntity> dataPortal)
     {
-      return Csla.DataPortal.Create<ParentEntity>();
+      return dataPortal.Create();
     }
 
-    public static ParentEntity GetParentEntity(int ID)
+    public static ParentEntity GetParentEntity(int ID, IDataPortal<ParentEntity> dataPortal)
     {
-      return Csla.DataPortal.Fetch<ParentEntity>(new Criteria(ID));
+      return dataPortal.Fetch(new Criteria(ID));
     }
 
-    public static void DeleteParentEntity(int ID)
+    public static void DeleteParentEntity(int ID, IDataPortal<ParentEntity> dataPortal)
     {
-      Csla.DataPortal.Delete<ParentEntity>(new Criteria(ID));
+      dataPortal.Delete(new Criteria(ID));
     }
 
     #endregion
@@ -116,54 +116,56 @@ namespace Csla.Test.DataBinding
 
     #region "Data Access"
 
-    [RunLocal()]
     [Create]
-		protected void DataPortal_Create()
+	protected void DataPortal_Create([Inject] IChildDataPortal<ChildEntityList> childDataPortal)
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Created");
+      SetProperty(ChildrenProperty, childDataPortal.CreateChild());
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Created");
       BusinessRules.CheckRules();
       Console.WriteLine("DataPortal_Create");
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    [Fetch]
+    protected void DataPortal_Fetch(object criteria, [Inject] IChildDataPortal<ChildEntityList> childDataPortal)
     {
+      SetProperty(ChildrenProperty, childDataPortal.CreateChild());
       Console.WriteLine("DataPortal_Fetch");
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Fetched");
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Fetched");
       BusinessRules.CheckRules();
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Inserted");
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Inserted");
       Console.WriteLine("DataPortal_Insert");
     }
 
     [Update]
-		protected void DataPortal_Update()
+	protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Updated");
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Updated");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
       Console.WriteLine("DataPortal_DeleteSelf");
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted Self");
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Deleted Self");
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+	protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.GlobalContext.Add("ParentEntity", "Deleted");
+      TestResults.Reinitialise();
+      TestResults.Add("ParentEntity", "Deleted");
     }
 
     #endregion

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,10 +25,20 @@ namespace Csla.Test.EditableRootList
   [TestClass]
   public class EditableRootListTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void AddItem()
     {
-      ERlist list = new ERlist();
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+
+      ERlist list = dataPortal.Create();
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Count should be 1");
       Assert.IsTrue(list[0].IsNew, "Object should be new");
@@ -36,9 +47,11 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void RemoveNewItem()
     {
-      ApplicationContext.GlobalContext.Clear();
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+
+      TestResults.Reinitialise();
       _isListSaved = false;
-      ERlist list = new ERlist();
+      ERlist list = dataPortal.Create();
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsTrue(list[0].IsNew, "Object should be new");
@@ -46,19 +59,22 @@ namespace Csla.Test.EditableRootList
       list.RemoveAt(0);
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
-      Assert.IsNull(ApplicationContext.GlobalContext["DP"], "Object should not have done a delete");
+      Assert.AreEqual("", TestResults.GetResult("DP"), "Object should not have done a delete");
       Assert.IsTrue(item.IsNew, "Object should be new after delete");
     }
 
     [TestMethod]
     public void RemoveOldItem()
     {
-      ApplicationContext.GlobalContext.Clear();
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
+
+      TestResults.Reinitialise();
       _isListSaved = false;
 
-      ERlist list = new ERlist();
+      ERlist list = dataPortal.Create();
       
-      list.Add(ERitem.GetItem("test"));
+      list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
       item.Saved += new EventHandler<Csla.Core.SavedEventArgs>(item_Saved);
       list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
@@ -68,7 +84,7 @@ namespace Csla.Test.EditableRootList
       list.RemoveAt(0);
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
-      Assert.AreEqual("DeleteSelf", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have deleted itself");
+      Assert.AreEqual("DeleteSelf", TestResults.GetResult("DP"), "Object should have deleted itself");
       Assert.IsTrue(_itemIsNew, "Object should be new after delete");
     }
 
@@ -88,9 +104,12 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void InsertItem()
     {
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      TestResults.Reinitialise();
+
       _isListSaved = false;
 
-      ERlist list = new ERlist();
+      ERlist list = dataPortal.Create();
       list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
@@ -101,18 +120,22 @@ namespace Csla.Test.EditableRootList
       list[0].Data = "test";
       obj.EndEdit();
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
-      Assert.AreEqual("Insert", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been inserted");
+      Assert.AreEqual("Insert", TestResults.GetResult("DP"), "Object should have been inserted");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
 
     [TestMethod]
     public void UpdateItem()
     {
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
+      TestResults.Reinitialise();
+
       _isListSaved = false;
 
-      ERlist list = new ERlist();
+      ERlist list = dataPortal.Create();
       list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
-      list.Add(ERitem.GetItem("test"));
+      list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
@@ -126,21 +149,25 @@ namespace Csla.Test.EditableRootList
       Assert.IsTrue(list[0].IsDirty, "Object should be dirty");
       obj.EndEdit();
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
-      Assert.AreEqual("Update", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been updated");
+      Assert.AreEqual("Update", TestResults.GetResult("DP"), "Object should have been updated");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
 
     [TestMethod]
     public void BusyImplemented()
     {
-      ERlist list = new ERlist();
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+
+      ERlist list = dataPortal.Create();
       Assert.IsFalse(list.IsBusy);
     }
 
     [TestMethod]
     public void ErrorRecoveryTest()
     {
-      ERlist list = new ERlist();
+      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+
+      ERlist list = dataPortal.Create();
       bool errorOccurred = false;
       try
       {

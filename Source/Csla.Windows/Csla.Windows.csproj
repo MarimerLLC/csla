@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp3.1;net5.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1;net6.0-windows10.0.19041.0</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>Csla.Windows</AssemblyName>
     <RootNamespace>Csla.Windows</RootNamespace>
@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-  </ItemGroup>
 </Project>

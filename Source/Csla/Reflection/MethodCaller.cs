@@ -11,10 +11,10 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using System.Threading.Tasks;
-using System.Runtime.Loader;
 
 using Csla.Properties;
 #if NET5_0_OR_GREATER
+using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
 
@@ -247,6 +247,7 @@ namespace Csla.Reflection
       }
       catch
       {
+#if NET5_0_OR_GREATER
         string[] splitName = typeName.Split(',');
 
         if (splitName.Length > 2)
@@ -259,6 +260,9 @@ namespace Csla.Reflection
         {
           throw;
         }
+#else
+        throw;
+#endif
       }
     }
 
@@ -281,7 +285,7 @@ namespace Csla.Reflection
       return GetType(typeName, true, false);
     }
 
-    #endregion
+#endregion
 
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;

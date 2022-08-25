@@ -32,5 +32,13 @@ namespace Csla.Test.ChildChanged
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
+
+    [Fetch]
+    [FetchChild]
+    private void Fetch(bool child)
+    {
+      if (child)
+        MarkAsChild();
+    }
   }
 }

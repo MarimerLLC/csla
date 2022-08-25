@@ -21,19 +21,25 @@ namespace Csla.Web.Mvc
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    public CslaModelBinder()
+      : base(null) { }
+
+    /// <summary>
     /// Bind the form data to a new instance of an IBusinessBase object.
     /// </summary>
     /// <param name="bindingContext">Binding context</param>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-      var applicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
+      ApplicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));
       }
 
       bindingContext.Result = ModelBindingResult.Failed();
-      var result = applicationContext.CreateInstanceDI(bindingContext.ModelType);
+      var result = ApplicationContext.CreateInstanceDI(bindingContext.ModelType);
       if (result != null)
       {
         if (typeof(Core.IEditableCollection).IsAssignableFrom(bindingContext.ModelType))

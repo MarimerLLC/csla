@@ -27,6 +27,16 @@ namespace Csla.Test.PropertyGetSet
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value); }
     }
+
+    public static BadGetSet GetObject(IDataPortal<BadGetSet> dataPortal)
+    {
+      return dataPortal.Fetch();
+    }
+
+    [Fetch]
+    private void Fetch()
+    {
+    }
   }
 
 #if TESTING
@@ -48,6 +58,16 @@ namespace Csla.Test.PropertyGetSet
     {
       get { return GetProperty<int>(IdTwoProperty); }
       set { SetProperty<int>(IdTwoProperty, value); }
+    }
+
+    public static BadGetSetTwo GetObject(IDataPortal<BadGetSetTwo> dataPortal)
+    {
+      return dataPortal.Fetch();
+    }
+
+    [Fetch]
+    private void Fetch()
+    {
     }
   }
 }

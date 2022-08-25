@@ -18,6 +18,8 @@ using Csla.Test.Security;
 using UnitDriven;
 using System.Diagnostics;
 using System.Security.Claims;
+using Csla.TestHelpers;
+using Csla.Configuration;
 
 #if NUNIT
 using NUnit.Framework;
@@ -38,6 +40,9 @@ namespace Csla.Test.Authorization
   [TestClass()]
   public class AuthTests
   {
+    private static TestDIContext _anonymousDIContext;
+    private static TestDIContext _adminDIContext;
+
     private static ClaimsPrincipal GetPrincipal(params string[] roles)
     {
       var identity = new ClaimsIdentity();
@@ -46,22 +51,24 @@ namespace Csla.Test.Authorization
       return new ClaimsPrincipal(identity);
     }
 
-    private DataPortal.DpRoot root = DataPortal.DpRoot.NewRoot();
-
-    [TestCleanup]
-    public void Cleanup()
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
-      ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      _anonymousDIContext = TestDIContextFactory.CreateContext(new ClaimsPrincipal());
+      _adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
     }
 
     [TestMethod()]
     public void TestAuthCloneRules()
     {
-      ApplicationContext.GlobalContext.Clear();
+      IDataPortal<DataPortal.DpRoot> dataPortal = _adminDIContext.CreateDataPortal<DataPortal.DpRoot>();
+      ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
 
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      TestResults.Reinitialise();
 
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+      DataPortal.DpRoot root = dataPortal.Fetch(new DataPortal.DpRoot.Criteria());
+
+      Assert.AreEqual(true, applicationContext.User.IsInRole("Admin"));
 
       #region "Pre Cloning Tests"
 
@@ -97,50 +104,54 @@ namespace Csla.Test.Authorization
       #region "After Cloning Tests"
 
       //Do they work under cloning as well?
-      DataPortal.DpRoot NewRoot = root.Clone();
+      DataPortal.DpRoot newRoot = root.Clone();
 
-      ApplicationContext.GlobalContext.Clear();
+      TestResults.Reinitialise();
 
       //Is it denying read properly?
-      Assert.AreEqual("[DenyReadOnProperty] Can't read property", NewRoot.DenyReadOnProperty,
+      Assert.AreEqual("[DenyReadOnProperty] Can't read property", newRoot.DenyReadOnProperty,
           "Read should have been denied 7");
 
       //Is it denying write properly?
-      NewRoot.DenyWriteOnProperty = "DenyWriteOnProperty";
+      newRoot.DenyWriteOnProperty = "DenyWriteOnProperty";
 
-      Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", NewRoot.Auth,
+      Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", newRoot.Auth,
           "Write should have been denied 8");
 
       //Is it denying both read and write properly?
-      Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", NewRoot.DenyReadWriteOnProperty,
+      Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", newRoot.DenyReadWriteOnProperty,
           "Read should have been denied 9");
 
-      NewRoot.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
+      newRoot.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
 
-      Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", NewRoot.Auth,
+      Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", newRoot.Auth,
           "Write should have been denied 10");
 
       //Is it allowing both read and write properly?
-      Assert.AreEqual(NewRoot.AllowReadWriteOnProperty, NewRoot.Auth,
+      Assert.AreEqual(newRoot.AllowReadWriteOnProperty, newRoot.Auth,
           "Read should have been allowed 11");
 
-      NewRoot.AllowReadWriteOnProperty = "AllowReadWriteOnProperty";
-      Assert.AreEqual("AllowReadWriteOnProperty", NewRoot.Auth,
+      newRoot.AllowReadWriteOnProperty = "AllowReadWriteOnProperty";
+      Assert.AreEqual("AllowReadWriteOnProperty", newRoot.Auth,
           "Write should have been allowed 12");
 
       #endregion
 
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
     }
 
     [TestMethod()]
     public void TestAuthBeginEditRules()
     {
-      ApplicationContext.GlobalContext.Clear();
+      Guid managerInstanceId;
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<DataPortal.DpRoot> dataPortal = customDIContext.CreateDataPortal<DataPortal.DpRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      TestResults.Reinitialise();
 
-      Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      DataPortal.DpRoot root = dataPortal.Create(new DataPortal.DpRoot.Criteria());
+
+      Assert.AreEqual(true, applicationContext.Principal.IsInRole("Admin"));
 
       root.Data = "Something new";
 
@@ -151,6 +162,10 @@ namespace Csla.Test.Authorization
       root.Data = "Something new 1";
 
       //Is it denying read properly?
+      managerInstanceId = ((ApplicationContextManagerUnitTests)applicationContext.ContextManager).InstanceId;
+      Debug.WriteLine(managerInstanceId);
+      string result = root.DenyReadOnProperty;
+      //Assert.AreEqual(managerInstanceId.ToString(), result);
       Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
           "Read should have been denied");
 
@@ -246,36 +261,41 @@ namespace Csla.Test.Authorization
 
       #endregion
 
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
     }
 
     [TestMethod()]
     public void TestAuthorizationAfterEditCycle()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.Test.Security.PermissionsRoot pr = Csla.Test.Security.PermissionsRoot.NewPermissionsRoot();
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      TestResults.Reinitialise();
+
+      PermissionsRoot pr = dataPortal.Create();
+
       pr.FirstName = "something";
 
       pr.BeginEdit();
       pr.FirstName = "ba";
       pr.CancelEdit();
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
 
-      Csla.Test.Security.PermissionsRoot prClone = pr.Clone();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      applicationContext.User = new ClaimsPrincipal();
+
+      PermissionsRoot prClone = pr.Clone();
+      applicationContext.User = GetPrincipal("Admin");
       prClone.FirstName = "somethiansdfasdf";
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
     }
 
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     [TestMethod]
     public void TestUnauthorizedAccessToGet()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
 
-      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+      TestResults.Reinitialise();
+
+      PermissionsRoot pr = dataPortal.Create();
 
       //this should throw an exception, since only admins have access to this property
       string something = pr.FirstName;
@@ -285,7 +305,9 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestUnauthorizedAccessToSet()
     {
-      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+      IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
+
+      PermissionsRoot pr = dataPortal.Create();
 
       //will cause an exception, because only admins can write to property
       pr.FirstName = "test";
@@ -294,47 +316,59 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestAuthorizedAccess()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+      TestResults.Reinitialise();
+
+      PermissionsRoot pr = dataPortal.Create();
+
       //should work, because we are now logged in as an admin
       pr.FirstName = "something";
       string something = pr.FirstName;
 
-            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-      //set to null so the other testmethods continue to throw exceptions
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
+      Assert.AreEqual(true, applicationContext.Principal.IsInRole("Admin"));
 
-      Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      //set to null so the other testmethods continue to throw exceptions
+      applicationContext.User = new ClaimsPrincipal();
+
+      Assert.AreEqual(false, applicationContext.Principal.IsInRole("Admin"));
     }
 
     [TestMethod]
     public void TestAuthExecute()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+      TestResults.Reinitialise();
+
+      PermissionsRoot pr = dataPortal.Create();
       //should work, because we are now logged in as an admin
       pr.DoWork();
 
-          Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-      //set to null so the other testmethods continue to throw exceptions
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
+      Assert.AreEqual(true, applicationContext.Principal.IsInRole("Admin"));
 
-      Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      //set to null so the other testmethods continue to throw exceptions
+      applicationContext.User = new ClaimsPrincipal();
+
+      Assert.AreEqual(false, applicationContext.Principal.IsInRole("Admin"));
     }
 
     [TestMethod]
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestUnAuthExecute()
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
 
-      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
+      TestResults.Reinitialise();
 
-      PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+      Assert.AreEqual(false, applicationContext.User.IsInRole("Admin"));
+
+      PermissionsRoot pr = dataPortal.Create();
       //should fail, because we're not an admin
       pr.DoWork();
 
@@ -343,59 +377,63 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
-      var root = PermissionsRoot.NewPermissionsRoot();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
 
-      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
+      TestResults.Reinitialise();
+
+      var root = dataPortal.Create();
+
+      Assert.IsTrue(applicationContext.Principal.IsInRole("Admin"));
+      Assert.IsFalse(applicationContext.Principal.IsInRole("User"));
 
       // implicit usage of ApplicationContext.RuleSet
-      ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
-      Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
-      ApplicationContext.RuleSet = "custom1";
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
-      ApplicationContext.RuleSet = "custom2";
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+      applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+      applicationContext.RuleSet = "custom1";
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+      applicationContext.RuleSet = "custom2";
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
 
-      ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
 
       // directly specifying which ruleset to use
-      Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), ApplicationContext.DefaultRuleSet));
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom1"));
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
-
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), ApplicationContext.DefaultRuleSet));
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom1"));
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
     }
 
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
     {
-      var root = PermissionsRoot2.NewPermissionsRoot();
-      Csla.ApplicationContext.User = GetPrincipal("Admin");
+      IDataPortal<PermissionsRoot2> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot2>();
+      ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
 
-      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
+      TestResults.Reinitialise();
 
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
+      var root = dataPortal.Create();
+
+      Assert.IsTrue(applicationContext.Principal.IsInRole("Admin"));
+      Assert.IsFalse(applicationContext.Principal.IsInRole("User"));
+
+      //BusinessRules.AddRule(typeof(PermissionsRoot), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
+      //BusinessRules.AddRule(typeof(PermissionsRoot), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
+      //BusinessRules.AddRule(typeof(PermissionsRoot), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
 
       // implicit usage of ApplicationContext.RuleSet
-      ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
-      Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
-      ApplicationContext.RuleSet = "custom1";
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
-      ApplicationContext.RuleSet = "custom2";
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+      applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+      applicationContext.RuleSet = "custom1";
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+      applicationContext.RuleSet = "custom2";
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
 
-      ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
 
       // directly specifying which ruleset to use
-      Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), ApplicationContext.DefaultRuleSet));
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom1"));
-      Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom2"));
-
-      Csla.ApplicationContext.User = new ClaimsPrincipal();
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), ApplicationContext.DefaultRuleSet));
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom1"));
+      Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom2"));
     }
 
     [TestMethod]
@@ -403,12 +441,13 @@ namespace Csla.Test.Authorization
     public void TestAuthRulesCleanupAndAddAgainWhenExceptionIsThrownInAddObjectBusinessRules()
     {
       RootException.Counter = 0;
+      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
 
-      ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+      applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
       // AddObjectAuthorizations should throw exception
       try
       {
-        BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(RootException));
+        BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(RootException));
       }
       catch (Exception ex)
       {
@@ -420,7 +459,7 @@ namespace Csla.Test.Authorization
       // should throw exception again
       try
       {
-        BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(RootException));
+        BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(RootException));
       }
       catch (Exception ex)
       {
@@ -434,101 +473,116 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void AuthorizeRemoveFromList()
     {
-      var root = new RootList();
+      IDataPortal<RootList> dataPortal = _anonymousDIContext.CreateDataPortal<RootList>();
+
+      var root = dataPortal.Create();
       root.RemoveAt(0);
     }
 
     [TestMethod]
     public void PerTypeAuthEditObject()
     {
-      ApplicationContext.DataPortalActivator = new PerTypeAuthDPActivator();
-      try
-      {
-        Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
-      }
-      finally
-      {
-        Csla.ApplicationContext.DataPortalActivator = null;
-      }
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(
+          dp => dp.AddServerSideDataPortal(
+            cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
+        ));
+      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
     }
 
     [TestMethod]
     public void PerTypeAuthEditObjectViaInterface()
     {
-      ApplicationContext.DataPortalActivator = new PerTypeAuthDPActivator();
-      try
-      {
-        Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));
-      }
-      finally
-      {
-        Csla.ApplicationContext.DataPortalActivator = null;
-      }
+      TestDIContext customDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(
+          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
+      ));
+      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));
     }
 
     [TestMethod]
-    public void PerTypeAuthCreateWithCriteria() {
+    public void PerTypeAuthCreateWithCriteria()
+    {
+      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+
       Assert.IsTrue(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
           new object[] { new PermissionRootWithCriteria.Criteria() }));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
           new[] { new object() }));
 
-    
+
       Assert.IsFalse(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
           (object[])null));
     }
 
     [TestMethod]
-    public void PerTypeAuthFetchWithCriteria() 
+    public void PerTypeAuthFetchWithCriteria()
     {
+      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+
       Assert.IsTrue(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
           new object[] { new PermissionRootWithCriteria.Criteria() }));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
           new[] { new object() }));
 
-    
+
       Assert.IsFalse(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
           (object[])null));
     }
-  
+
     [TestMethod]
-    public void PerTypeAuthDeleteWithCriteria() 
+    public void PerTypeAuthDeleteWithCriteria()
     {
+      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+
       Assert.IsTrue(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
           new object[] { new PermissionRootWithCriteria.Criteria() }));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
           new[] { new object() }));
 
-    
+
       Assert.IsFalse(
         BusinessRules.HasPermission(
+          applicationContext,
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
           (object[])null));
@@ -569,7 +623,7 @@ namespace Csla.Test.Authorization
     public static void AddObjectAuthorizationRules()
     {
       Csla.Rules.BusinessRules.AddRule(
-        typeof(PerTypeAuthRoot), 
+        typeof(PerTypeAuthRoot),
         new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "Test"));
     }
   }
@@ -579,9 +633,14 @@ namespace Csla.Test.Authorization
   {
     public RootList()
     {
+    }
+
+    [Create]
+    private void Create([Inject] IChildDataPortal<ChildItem> childDataPortal)
+    {
       using (SuppressListChangedEvents)
       {
-        Add(Csla.DataPortal.CreateChild<ChildItem>());
+        Add(childDataPortal.CreateChild());
       }
     }
   }
@@ -599,7 +658,7 @@ namespace Csla.Test.Authorization
     {
       public NoAuth(AuthorizationActions action)
         : base(action)
-      {}
+      { }
 
       protected override void Execute(IAuthorizationContext context)
       {

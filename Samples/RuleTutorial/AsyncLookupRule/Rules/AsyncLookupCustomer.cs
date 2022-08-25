@@ -11,7 +11,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using AsyncLookupRule.Commands;
 
 using Csla.Core;
@@ -23,7 +23,7 @@ namespace AsyncLookupRule.Rules
   /// An async lookup rule, typically used in rich clients to do (sync) data access 
   /// on a background thread and so keep the UI responsive. 
   /// </summary>
-  public class AsyncLookupCustomer : PropertyRule
+  public class AsyncLookupCustomer : PropertyRuleAsync
   {
     /// <summary>
     /// Gets or sets NameProperty.
@@ -65,7 +65,7 @@ namespace AsyncLookupRule.Rules
     /// <param name="context">
     /// The context.
     /// </param>
-    protected override async void Execute(IRuleContext context)
+    protected override async Task ExecuteAsync(IRuleContext context)
     {
       var id = (int)context.InputPropertyValues[PrimaryProperty];
 
@@ -78,7 +78,6 @@ namespace AsyncLookupRule.Rules
       {
         context.AddErrorResult(ex.Message);
       }
-      context.Complete();
     }
   }
 }

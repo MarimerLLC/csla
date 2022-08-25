@@ -92,7 +92,8 @@ namespace Csla.Reflection
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
-        var factoryType = Csla.Server.FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
+        var factoryLoader = ApplicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+        var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
         var ftList = new List<System.Reflection.MethodInfo>();
         var level = 0;
         while (factoryType != null)
@@ -311,14 +312,15 @@ namespace Csla.Reflection
         }
       }
 
+      if (resultingMethod != null)
+      {
 #if NET5_0_OR_GREATER
-      var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
-
-      _ = _methodCache.TryAdd(cacheKey, cacheInstance);
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
+        _ = _methodCache.TryAdd(cacheKey, cacheInstance);
 #else
-      _methodCache.TryAdd(cacheKey, resultingMethod);
+        _methodCache.TryAdd(cacheKey, resultingMethod);
 #endif
-
+      }
       return resultingMethod;
     }
 

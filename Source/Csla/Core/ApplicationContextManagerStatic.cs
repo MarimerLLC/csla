@@ -20,6 +20,12 @@ namespace Csla.Core
   public class ApplicationContextManagerStatic : Csla.Core.IContextManager
   {
     /// <summary>
+    /// Gets a value indicating whether the context manager
+    /// is stateful.
+    /// </summary>
+    public bool IsStatefulContext => true;
+
+    /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
     public bool IsValid => true;

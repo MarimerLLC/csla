@@ -5,12 +5,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{207BA2D1-EB2E-45A0-9F82-4B7975EDD8C6}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\ci.yaml = ..\.github\workflows\ci.yaml
-		csla.test.vsmdi = csla.test.vsmdi
 		Directory.Build.props = Directory.Build.props
-		Local.testsettings = Local.testsettings
 		readme.md = readme.md
 		..\releasenotes.md = ..\releasenotes.md
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Csla", "Csla", "{01AA1A57-727E-4665-93FF-6E8BDD316ADE}"
@@ -61,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor.Test", "Csla.Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csla.netcore.test", "csla.netcore.test\csla.netcore.test.csproj", "{E3C1B811-FF58-4147-8D75-AE078293F56A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.TestHelpers", "Csla.TestHelpers\Csla.TestHelpers.csproj", "{8C08B21F-BD31-4E5C-B5C7-B3E8CE755339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.TestHelpers", "Csla.TestHelpers\Csla.TestHelpers.csproj", "{8C08B21F-BD31-4E5C-B5C7-B3E8CE755339}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

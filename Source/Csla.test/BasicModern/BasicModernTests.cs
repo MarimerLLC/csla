@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.TestHelpers;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,6 +20,14 @@ namespace Csla.Test.BasicModern
   [TestClass]
   public class BasicModernTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     [TestMethod]
     public void EditLevelsWorkWithMobileFormatter()
     {
@@ -27,7 +36,7 @@ namespace Csla.Test.BasicModern
       {
         Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
 
-        var root = Root.NewRoot();
+        var root = NewRoot();
 
         var originalRootId = root.Id;
 
@@ -57,7 +66,7 @@ namespace Csla.Test.BasicModern
       {
         Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
 
-        var original = Root.NewRoot();
+        var original = NewRoot();
 
         original.Name = "Test Root";
 
@@ -88,7 +97,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void CreateGraph()
     {
-      var graph = Root.NewRoot();
+      var graph = NewRoot();
       Assert.IsTrue(graph.IsNew, "IsNew");
       Assert.IsFalse(graph.IsValid, "IsValid");
       Assert.AreEqual(0, graph.Children.Count, "Children count");
@@ -97,7 +106,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MakeOldMetastateEvents()
     {
-      var graph = Root.NewRoot();
+      var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
       {
@@ -106,19 +115,20 @@ namespace Csla.Test.BasicModern
 
       graph.MakeOld();
 
-      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty");
-      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty");
-      Assert.IsFalse(changed.Contains("IsValid"), "IsValid");
-      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable");
-      Assert.IsTrue(changed.Contains("IsNew"), "IsNew");
-      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted");
+      // TODO: Are these assumptions about what should happen actually correct?
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty did not change as expected");
+      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirtynot as expected");
+      Assert.IsFalse(changed.Contains("IsValid"), "IsValid changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as expected");
+      Assert.IsTrue(changed.Contains("IsNew"), "IsNew did not change as expected");
+      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted changed; that was not expected");
     }
 
     [TestMethod]
     public void MarkDeletedMetastateEvents()
     {
-      var graph = Root.NewRoot();
+      var graph = NewRoot();
       graph.Name = "abc";
       graph = graph.Save();
       var changed = new List<string>();
@@ -129,20 +139,20 @@ namespace Csla.Test.BasicModern
 
       graph.Delete();
 
-      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty");
-      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty");
-      Assert.IsFalse(changed.Contains("IsValid"), "IsValid");
-      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable");
-      Assert.IsFalse(changed.Contains("IsNew"), "IsNew");
-      Assert.IsTrue(changed.Contains("IsDeleted"), "IsDeleted");
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty did not change as was expected");
+      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsValid"), "IsValid changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsNew"), "IsNew changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsDeleted"), "IsDeleted did not change as we expected");
     }
 
     [TestMethod]
     public void RootChangedMetastateEventsId()
     {
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      var graph = Root.NewRoot();
+      var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
         {
@@ -151,21 +161,21 @@ namespace Csla.Test.BasicModern
 
       graph.Id = 123;
 
-      Assert.IsTrue(changed.Contains("Id"), "Id");
-      Assert.IsFalse(changed.Contains("IsDirty"), "IsDirty");
-      Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty");
-      Assert.IsTrue(changed.Contains("IsValid"), "IsValid");
-      Assert.IsTrue(changed.Contains("IsSelfValid"), "IsSelfValid");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable");
-      Assert.IsFalse(changed.Contains("IsNew"), "IsNew");
-      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted");
+      Assert.IsTrue(changed.Contains("Id"), "Id did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsDirty"), "IsDirty changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty changed; that was not expected");
+      Assert.IsTrue(changed.Contains("IsValid"), "IsValid did not change as we expected");
+      Assert.IsTrue(changed.Contains("IsSelfValid"), "IsSelfValid did not change as we expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as we expected");
+      Assert.IsFalse(changed.Contains("IsNew"), "IsNew changed; that was not expected");
+      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted changed; that was not expected");
     }
 
     [TestMethod]
     public void RootChangedMetastateEventsName()
     {
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      var graph = Root.NewRoot();
+      var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
       {
@@ -209,8 +219,10 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsChild()
     {
+      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
-      var graph = Root.NewRoot();
+      var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
       {
@@ -218,7 +230,7 @@ namespace Csla.Test.BasicModern
       };
       graph.Name = "abc";
       changed.Clear();
-      graph.Children.Add(Csla.DataPortal.FetchChild<Child>(123, "xyz"));
+      graph.Children.Add(childDataPortal.FetchChild(123, "xyz"));
 
       Assert.IsTrue(graph.IsDirty, "IsDirty should be true");
 
@@ -252,6 +264,13 @@ namespace Csla.Test.BasicModern
       Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable after add");
       Assert.IsFalse(changed.Contains("IsNew"), "IsNew after add");
       Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted after add");
+    }
+
+    private Root NewRoot()
+    {
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+
+      return dataPortal.Create();
     }
   }
 }

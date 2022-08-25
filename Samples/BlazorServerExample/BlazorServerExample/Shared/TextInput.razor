@@ -1,0 +1,18 @@
+﻿<div>
+  <input @bind-value="TextValue" @bind-value:event="oninput"
+         disabled="@(!Property.CanWrite)" /><br />
+  <span class="text-danger">@Property.ErrorText</span>
+  <span class="text-warning">@Property.WarningText</span>
+  <span class="text-info">@Property.InformationText</span>
+</div>
+
+@code {
+  [Parameter]
+  public Csla.Blazor.IPropertyInfo Property { get; set; }
+
+  private string TextValue
+  {
+    get => (string)Property.Value;
+    set => Property.Value = value;
+  }
+}

@@ -15,9 +15,12 @@ namespace Csla.Test.ObjectFactory
   public class ObjectFactoryLoader : Csla.Server.IObjectFactoryLoader
   {
     private int _mode;
+    private readonly ApplicationContext _applicationContext;
 
-    public ObjectFactoryLoader()
-    {    }
+    public ObjectFactoryLoader(ApplicationContext applicationContext)
+    {
+      _applicationContext = applicationContext;
+    }
 
     public ObjectFactoryLoader(int mode)
     {
@@ -33,7 +36,7 @@ namespace Csla.Test.ObjectFactory
           case 1:
             return typeof(RootFactory1);
           case 2:
-            return typeof(RootFactory2);
+            throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 3:
             return typeof(RootFactory3);
           case 4:
@@ -41,9 +44,9 @@ namespace Csla.Test.ObjectFactory
           case 5:
             return typeof(RootFactory5);
           case 6:
-            return typeof(RootFactory6);
+            throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 7:
-            return typeof(RootFactory7);
+            throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 8:
             return typeof(RootFactoryC);
           default:
@@ -61,23 +64,23 @@ namespace Csla.Test.ObjectFactory
         switch (_mode)
         {
           case 1:
-            return new RootFactory1();
+            return new RootFactory1(_applicationContext);
           case 2:
-            return new RootFactory2();
+            throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 3:
-            return new RootFactory3();
+            return new RootFactory3(_applicationContext);
           case 4:
-            return new RootFactory4();
+            return new RootFactory4(_applicationContext);
           case 5:
-            return new RootFactory5();
+            return new RootFactory5(_applicationContext);
           case 6:
-            return new RootFactory6();
+            throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 7:
-            return new RootFactory7();
+            throw new NotImplementedException("Enterprise Services is no longer supported!");
           case 8:
-            return new RootFactoryC();
+            return new RootFactoryC(_applicationContext);
           default:
-            return new RootFactory();
+            return new RootFactory(_applicationContext);
         }
       }
       else

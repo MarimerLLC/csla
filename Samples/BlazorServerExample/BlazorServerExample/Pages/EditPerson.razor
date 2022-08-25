@@ -1,0 +1,80 @@
+﻿@page "/EditPerson"
+@page "/EditPerson/{id}"
+@using BlazorExample.Shared
+@using Microsoft.AspNetCore.Authorization
+@inject Csla.IDataPortal<PersonEdit> personEditPortal
+@inject Csla.Blazor.ViewModel<PersonEdit> vm
+@inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "Admin")]
+
+<h1>Edit Person</h1>
+
+<p>This component demonstrates editing a BusinessBase-derived object.</p>
+
+<p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+  <p>Loading Person...</p>
+}
+else
+{
+  <p>
+    <a href="listpersons">List of people</a>
+  </p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Id</td>
+        <td>@vm.Model.Id</td>
+      </tr>
+      @if (vm.GetPropertyInfo(() => vm.Model.Name).CanRead)
+      {
+        <tr>
+          <td>@(vm.GetPropertyInfo(() => vm.Model.Name).FriendlyName)</td>
+          <td>
+            <TextInput Property="@(vm.GetPropertyInfo(() => vm.Model.Name))" />
+          </td>
+        </tr>
+      }
+      <tr>
+        <td>Name length</td>
+        <td>@vm.Model.NameLength</td>
+      </tr>
+      <tr>
+        <td>IsNew</td>
+        <td>@vm.Model.IsNew</td>
+      </tr>
+      <tr>
+        <td>IsSavable</td>
+        <td>@vm.Model.IsSavable</td>
+      </tr>
+    </tbody>
+  </table>
+  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+}
+
+@code {
+  [Parameter]
+  public string id { get; set; }
+
+  protected override void OnInitialized()
+  {
+    vm.Saved += () => NavigationManager.NavigateTo("listpersons");
+    vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+  }
+
+  protected override async Task OnParametersSetAsync()
+  {
+    if (string.IsNullOrWhiteSpace(id))
+      await vm.RefreshAsync(() => personEditPortal.CreateAsync());
+    else
+      await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
+  }
+}

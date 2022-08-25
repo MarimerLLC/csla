@@ -12,7 +12,14 @@ namespace Csla.Blazor.Test
   [TestClass]
   public class EditContextCslaExtensionsTests
   {
+    private static TestDIContext _testDIContext;
 
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+    
     [TestMethod]
     public void ValidateModel_EmptyLastName_OneValidationMessage()
     {
@@ -267,7 +274,7 @@ namespace Csla.Blazor.Test
       FakePerson person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = DataPortalFactory.CreateDataPortal<FakePerson>();
+      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
       person = dataPortal.Create();
 
       person.FirstName = "John";

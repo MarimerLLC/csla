@@ -14,12 +14,14 @@ namespace Csla.Test
 
     static WellKnownValues()
     {
-      ConnectionStringSettingsCollection conStrings = AppConfig.ConnectionStrings.ConnectionStrings;
-      DataPortalTestDatabase = conStrings["DataPortalTestDatabase"].ConnectionString;
-      DataPortalTestDatabaseWithInvalidDBValue = conStrings["DataPortalTestDatabaseWithInvalidDBValue"].ConnectionString;
-      DataPortalTestDatabaseEntities = conStrings["DataPortalTestDatabaseEntities"].ConnectionString;
-      EntityConnectionWithMissingDB = conStrings["DataPortalTestDatabaseEntitiesWithInvalidDBValue"].ConnectionString;
+      DataDirectory = BuildDataDirectory();
+      DataPortalTestDatabase = GetConnectionString("DataPortalTestDatabase");
+      DataPortalTestDatabaseWithInvalidDBValue = GetConnectionString("DataPortalTestDatabaseWithInvalidDBValue");
+      DataPortalTestDatabaseEntities = GetConnectionString("DataPortalTestDatabaseEntities");
+      EntityConnectionWithMissingDB = GetConnectionString("DataPortalTestDatabaseEntitiesWithInvalidDBValue");
     }
+
+    public static string DataDirectory { get; }
 
     public static string EntityConnectionWithMissingDBConnectionStringName = "DataPortalTestDatabaseEntitiesWithInvalidDBValue";
     public static string EntityConnectionWithMissingDB {get;} 
@@ -28,5 +30,29 @@ namespace Csla.Test
 
     public static string DataPortalTestDatabase { get; }
     public static string TestLinqToSqlContextDataContext { get; }
+
+    #region Private Helper Methods
+
+    private static string BuildDataDirectory()
+    {
+      string dataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString() ?? AppDomain.CurrentDomain.BaseDirectory;
+      if (dataDirectory.EndsWith(@"\"))
+      {
+        dataDirectory = dataDirectory.Substring(0, dataDirectory.Length - 1);
+      }
+      return dataDirectory;
+    }
+
+    private static string GetConnectionString(string connectionName)
+    {
+      string connectionString;
+      ConnectionStringSettingsCollection conStrings = AppConfig.ConnectionStrings.ConnectionStrings;
+
+      connectionString = conStrings[connectionName].ConnectionString;
+      connectionString = connectionString.Replace("|DataDirectory|", DataDirectory);
+      return connectionString;
+    }
+
+    #endregion
   }
 }

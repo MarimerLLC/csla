@@ -10,8 +10,8 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public static class CslaReaderWriterFactory
   {
-    private static Type _readerType;
-    private static Type _writerType;
+    internal static Type ReaderType { get; set; } = typeof(CslaBinaryReader);
+    internal static Type WriterType { get; set; } = typeof(CslaBinaryWriter);
 
     /// <summary>
     /// Get an instance of <see cref="DataContractSerializer"/>
@@ -26,43 +26,13 @@ namespace Csla.Serialization.Mobile
     }
 
     /// <summary>
-    /// Setup the type for Writer class
-    /// </summary>
-    /// <param name="writerType">Type of writer</param>
-    public static void SetCslaWriterType(Type writerType)
-    {
-      _writerType = writerType;
-    }
-
-    /// <summary>
-    /// Setup the type for reader class
-    /// </summary>
-    /// <param name="readerType">Reader class type</param>
-    public static void SetCslaReaderType(Type readerType)
-    {
-      _readerType = readerType;
-    }
-
-    /// <summary>
     /// Get an instance of the writer that is used to write data to serialization stream
     /// </summary>
     /// <returns>Instance of the writer that is used to write data to serialization stream</returns>
     /// <param name="applicationContext"></param>
     public static ICslaWriter GetCslaWriter(ApplicationContext applicationContext)
     {
-      if (_writerType == null)
-      {
-        string writerType = Csla.Configuration.ConfigurationManager.AppSettings["CslaWriter"];
-        if (string.IsNullOrEmpty(writerType))
-        {
-          _writerType = typeof(CslaBinaryWriter);
-        }
-        else
-        {
-          _writerType = Type.GetType(writerType);
-        }
-      }
-      return (ICslaWriter)applicationContext.CreateInstanceDI(_writerType);
+      return (ICslaWriter)applicationContext.CreateInstanceDI(WriterType);
     }
 
     /// <summary>
@@ -72,19 +42,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="applicationContext"></param>
     public static ICslaReader GetCslaReader(ApplicationContext applicationContext)
     {
-      if (_readerType == null)
-      {
-        string readerType = Csla.Configuration.ConfigurationManager.AppSettings["CslaReader"];
-        if (string.IsNullOrEmpty(readerType))
-        {
-          _readerType = typeof(CslaBinaryReader);
-        }
-        else
-        {
-          _readerType = Type.GetType(readerType);
-        }
-      }
-      return (ICslaReader)applicationContext.CreateInstanceDI(_readerType);
+      return (ICslaReader)applicationContext.CreateInstanceDI(ReaderType);
     }
   }
 }

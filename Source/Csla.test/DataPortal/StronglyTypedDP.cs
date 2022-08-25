@@ -49,19 +49,19 @@ namespace Csla.Test.DataPortal
       }
     }
 
-    public static StronglyTypedDP NewStronglyTypedDP()
+    public static StronglyTypedDP NewStronglyTypedDP(IDataPortal<StronglyTypedDP> dataPortal)
     {
-      return Csla.DataPortal.Create<StronglyTypedDP>(new StronglyTypedDP.Criteria());
+      return dataPortal.Create(new StronglyTypedDP.Criteria());
     }
 
-    public static StronglyTypedDP GetStronglyTypedDP(int id)
+    public static StronglyTypedDP GetStronglyTypedDP(int id, IDataPortal<StronglyTypedDP> dataPortal)
     {
-      return Csla.DataPortal.Fetch<StronglyTypedDP>(new StronglyTypedDP.Criteria(id));
+      return dataPortal.Fetch(new StronglyTypedDP.Criteria(id));
     }
 
-    public static void DeleteStronglyTypedDP(int id)
+    public static void DeleteStronglyTypedDP(int id, IDataPortal<StronglyTypedDP> dataPortal)
     {
-      Csla.DataPortal.Delete<StronglyTypedDP>(new Criteria(id));
+      dataPortal.Delete(new Criteria(id));
     }
 
     protected void DataPortal_Create(StronglyTypedDP.Criteria criteria)
@@ -71,7 +71,7 @@ namespace Csla.Test.DataPortal
         Data = criteria._data;
         Id = criteria._ID;
       }
-      Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Created");
+      TestResults.Add("StronglyTypedDP", "Created");
     }
 
     protected void DataPortal_Fetch(StronglyTypedDP.Criteria criteria)
@@ -82,31 +82,31 @@ namespace Csla.Test.DataPortal
         Id = criteria._ID;
       }
       MarkOld();
-      Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Fetched");
+      TestResults.Add("StronglyTypedDP", "Fetched");
     }
 
     [Insert]
     protected void DataPortal_Insert()
     {
-      Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Inserted");
+      TestResults.Add("StronglyTypedDP", "Inserted");
     }
 
     [Update]
 		protected void DataPortal_Update()
     {
-      Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Updated");
+      TestResults.Add("StronglyTypedDP", "Updated");
     }
 
     [DeleteSelf]
     protected void DataPortal_DeleteSelf()
     {
-      Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Deleted self");
+      TestResults.Add("StronglyTypedDP", "Deleted self");
     }
 
     [Delete]
-		protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
+	protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
     {
-      Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP_Criteria", criteria._ID);
+      TestResults.Add("StronglyTypedDP_Criteria", criteria._ID.ToString());
     }
   }
 }

@@ -12,13 +12,16 @@ using System.Text;
 
 namespace Csla.Test.ObjectFactory
 {
-  public class RootFactory
+  public class RootFactory : Csla.Server.ObjectFactory
   {
+    public RootFactory(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
     public object Create()
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Create";
-      obj.Location = ApplicationContext.ExecutionLocation;
+      obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
       return obj;
     }
@@ -32,16 +35,16 @@ namespace Csla.Test.ObjectFactory
     [RunLocal]
     public object Create(string criteria)
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Create " + criteria;
-      obj.Location = ApplicationContext.ExecutionLocation;
+      obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
       return obj;
     }
 
     public object Fetch()
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Fetch";
       obj.MarkAsOld();
       return obj;
@@ -49,7 +52,7 @@ namespace Csla.Test.ObjectFactory
 
     public object Fetch(string criteria)
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = criteria;
       obj.MarkAsOld();
       return obj;
@@ -72,7 +75,7 @@ namespace Csla.Test.ObjectFactory
       return obj;
     }
 
-    [Transactional(TransactionalTypes.EnterpriseServices)]
+    [Transactional(TransactionalTypes.TransactionScope)]
     public object Update3(Root obj)
     {
       obj.TransactionalType = _transactionalType;
@@ -83,7 +86,7 @@ namespace Csla.Test.ObjectFactory
 
     public void Delete(string criteria)
     {
-      Csla.ApplicationContext.GlobalContext["ObjectFactory"] = "Delete";
+      TestResults.Add("ObjectFactory", "Delete");
     }
 
     private TransactionalTypes _transactionalType;
@@ -94,8 +97,11 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactoryC
+  public class RootFactoryC : Csla.Server.ObjectFactory
   {
+    public RootFactoryC(ApplicationContext applicationContext) 
+      : base(applicationContext) { }
+
     public object Create(int test)
     {
       // add overload to test reflection
@@ -105,9 +111,9 @@ namespace Csla.Test.ObjectFactory
     [RunLocal]
     public object Create(string criteria)
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       obj.Data = "Create " + criteria;
-      obj.Location = ApplicationContext.ExecutionLocation;
+      obj.Location = obj.ExecutionLocation;
       obj.MarkAsNew();
       return obj;
     }
@@ -120,8 +126,19 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactory1
+  public class RootFactory1 : Csla.Server.ObjectFactory
   {
+    public RootFactory1(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    public object Fetch()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
+      LoadProperty(obj, Root.DataProperty, "Fetch");
+      this.MarkOld(obj);
+      return obj;
+    }
+    
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
@@ -142,38 +159,53 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactory2
-  {
-    [Transactional(TransactionalTypes.EnterpriseServices)]
-    public object Update(Root obj)
-    {
-      obj.TransactionalType = _transactionalType;
-      obj.Data = "Update";
-      obj.MarkAsOld();
-      return obj;
-    }
-
-    private TransactionalTypes _transactionalType;
-
-    public void Invoke(Csla.DataPortalEventArgs args)
-    {
-      _transactionalType = args.DataPortalContext.TransactionalType;
-    }
-  }
+  //public class RootFactory2
+  //{
+  //  [Transactional(TransactionalTypes.EnterpriseServices)]
+  //  public object Update(Root obj)
+  //  {
+  //    obj.TransactionalType = _transactionalType;
+  //    obj.Data = "Update";
+  //    obj.MarkAsOld();
+  //    return obj;
+  //  }
+  //
+  //  private TransactionalTypes _transactionalType;
+  //
+  //  public void Invoke(Csla.DataPortalEventArgs args)
+  //  {
+  //    _transactionalType = args.DataPortalContext.TransactionalType;
+  //  }
+  //}
 
   public class RootFactory3 : Csla.Server.ObjectFactory
   {
+    public RootFactory3(ApplicationContext applicationContext) 
+      : base(applicationContext) { }
+
     public object Fetch()
     {
-      var obj = new Root();
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
       LoadProperty(obj, Root.DataProperty, "Fetch");
       this.MarkOld(obj);
       return obj;
     }
   }
 
-  public class RootFactory4
+  public class RootFactory4 : Csla.Server.ObjectFactory
   {
+    public RootFactory4(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    [RunLocal]
+    public object Create()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
+      obj.Location = obj.ExecutionLocation;
+      obj.MarkAsNew();
+      return obj;
+    }
+    
     [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, 100)]
     public object Update(Root obj)
     {
@@ -194,8 +226,20 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactory5
+  public class RootFactory5 : Csla.Server.ObjectFactory
   {
+    public RootFactory5(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    [RunLocal]
+    public object Create()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<Root>();
+      obj.Location = obj.ExecutionLocation;
+      obj.MarkAsNew();
+      return obj;
+    }
+
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
@@ -216,46 +260,46 @@ namespace Csla.Test.ObjectFactory
     }
   }
 
-  public class RootFactory6
-  {
-    [Transactional(TransactionalTypes.EnterpriseServices, TransactionIsolationLevel.ReadCommitted)]
-    public object Update(Root obj)
-    {
-
-      obj.IsolationLevel = System.EnterpriseServices.ContextUtil.SystemTransaction.IsolationLevel.ToString();
-      obj.TransactionalType = _transactionalType;
-      obj.Data = "Update";
-      obj.MarkAsOld();
-      return obj;
-    }
-
-    private TransactionalTypes _transactionalType;
-
-    public void Invoke(Csla.DataPortalEventArgs args)
-    {
-      _transactionalType = args.DataPortalContext.TransactionalType;
-    }
-  }
-
-  public class RootFactory7
-  {
-    [Transactional(TransactionalTypes.EnterpriseServices)]
-    public object Update(Root obj)
-    {
-      obj.IsolationLevel = System.EnterpriseServices.ContextUtil.SystemTransaction.IsolationLevel.ToString();
-      
-      obj.TransactionalType = _transactionalType;
-      obj.Data = "Update";
-      obj.MarkAsOld();
-      return obj;
-    }
-
-    private TransactionalTypes _transactionalType;
-
-    public void Invoke(Csla.DataPortalEventArgs args)
-    {
-      _transactionalType = args.DataPortalContext.TransactionalType;
-    }
-  }
+  //public class RootFactory6
+  //{
+  //  [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted)]
+  //  public object Update(Root obj)
+  //  {
+  //
+  //    obj.IsolationLevel = System.EnterpriseServices.ContextUtil.SystemTransaction.IsolationLevel.ToString();
+  //    obj.TransactionalType = _transactionalType;
+  //    obj.Data = "Update";
+  //    obj.MarkAsOld();
+  //    return obj;
+  //  }
+  //
+  //  private TransactionalTypes _transactionalType;
+  //
+  //  public void Invoke(Csla.DataPortalEventArgs args)
+  //  {
+  //    _transactionalType = args.DataPortalContext.TransactionalType;
+  //  }
+  //}
+  //
+  //public class RootFactory7
+  //{
+  //  [Transactional(TransactionalTypes.EnterpriseServices)]
+  //  public object Update(Root obj)
+  //  {
+  //    obj.IsolationLevel = System.EnterpriseServices.ContextUtil.SystemTransaction.IsolationLevel.ToString();
+  //
+  //    obj.TransactionalType = _transactionalType;
+  //    obj.Data = "Update";
+  //    obj.MarkAsOld();
+  //    return obj;
+  //  }
+  //
+  //  private TransactionalTypes _transactionalType;
+  //
+  //  public void Invoke(Csla.DataPortalEventArgs args)
+  //  {
+  //    _transactionalType = args.DataPortalContext.TransactionalType;
+  //  }
+  //}
 
 }

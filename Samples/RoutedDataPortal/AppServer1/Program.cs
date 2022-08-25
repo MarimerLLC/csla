@@ -1,24 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Csla.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace AppServer1
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddRazorPages();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddCsla(o => o
+  .AddAspNetCore());
+
+// If using Kestrel:
+builder.Services.Configure<KestrelServerOptions>(options =>
 {
-  public class Program
-  {
-    public static void Main(string[] args)
-    {
-      CreateWebHostBuilder(args).Build().Run();
-    }
+  options.AllowSynchronousIO = true;
+});
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>();
-  }
-}
+// If using IIS:
+builder.Services.Configure<IISServerOptions>(options =>
+{
+  options.AllowSynchronousIO = true;
+});
+
+var app = builder.Build();
+
+app.UseExceptionHandler("/Error");
+// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+app.UseHsts();
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+
+app.MapRazorPages();
+app.MapControllers();
+
+app.Run();

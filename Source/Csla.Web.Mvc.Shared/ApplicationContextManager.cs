@@ -31,6 +31,12 @@ namespace Csla.Web.Mvc
     }
 
     /// <summary>
+    /// Gets a value indicating whether the current runtime
+    /// is stateful (e.g. WPF, Blazor, etc.)
+    /// </summary>
+    public bool IsStatefulContext => false;
+
+    /// <summary>
     /// Gets the current principal.
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()

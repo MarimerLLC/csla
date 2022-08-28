@@ -188,8 +188,14 @@ namespace Csla
 
     private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync)
     {
+      if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
+      {
+        return await DoExecuteAsync(objectType, criteria, isSync);
+      }
+
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
+      Reflection.ServiceProviderMethodInfo method = null;
       try
       {
         if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
@@ -197,8 +203,8 @@ namespace Csla
             Resources.UserNotAuthorizedException,
             "get",
             objectType.Name));
+        method = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
 
-        var method = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
         var proxy = GetDataPortalProxy(method);
 
         dpContext =
@@ -212,8 +218,7 @@ namespace Csla
         {
           if (ex.InnerExceptions.Count > 0)
           {
-            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
-            if (dpe != null)
+            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleFetchDataPortalException(dpe, isSync, proxy);
           }
           throw new DataPortalException(
@@ -223,6 +228,51 @@ namespace Csla
         catch (Server.DataPortalException ex)
         {
           HandleFetchDataPortalException(ex, isSync, proxy);
+        }
+      }
+      catch
+      {
+        throw;
+      }
+      return result.ReturnObject;
+    }
+
+    private async Task<object> DoExecuteAsync(Type objectType, object criteria, bool isSync)
+    {
+      Server.DataPortalResult result = null;
+      Server.DataPortalContext dpContext = null;
+      Reflection.ServiceProviderMethodInfo method = null;
+      try
+      {
+        if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria)))
+          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+            "execute",
+            objectType.Name));
+        method = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+
+        var proxy = GetDataPortalProxy(method);
+
+        dpContext =
+          new Csla.Server.DataPortalContext(ApplicationContext, proxy.IsServerRemote);
+
+        try
+        {
+          result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
+        }
+        catch (AggregateException ex)
+        {
+          if (ex.InnerExceptions.Count > 0)
+          {
+            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
+              HandleDataPortalException("Execute", dpe, isSync, proxy);
+          }
+          throw new DataPortalException(
+            string.Format("DataPortal.Execute {0}", Resources.Failed),
+            ex, null);
+        }
+        catch (Server.DataPortalException ex)
+        {
+          HandleDataPortalException("Execute", ex, isSync, proxy);
         }
       }
       catch
@@ -602,6 +652,18 @@ namespace Csla
       return await DoUpdateAsync(command, false);
     }
 
+    /// <summary>
+    /// Execute a command on the logical server.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria provided to the command object.
+    /// </param>
+    /// <returns>The resulting command object.</returns>
+    public async Task<T> ExecuteAsync(params object[] criteria)
+    {
+      return (T)await DoFetchAsync(typeof(T), criteria, false);
+    }
+
     private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo method)
     {
       if (method != null)
@@ -788,6 +850,7 @@ namespace Csla
     async Task<object> IDataPortal.FetchAsync(params object[] criteria) => Task.FromResult(await FetchAsync(criteria));
     async Task<object> IDataPortal.UpdateAsync(object obj) => Task.FromResult(await UpdateAsync((T)obj));
     async Task<object> IDataPortal.ExecuteAsync(object command) => Task.FromResult(await ExecuteAsync((T)command));
+    async Task<object> IDataPortal.ExecuteAsync(params object[] criteria) => Task.FromResult(await ExecuteAsync(criteria));
     object IDataPortal.Create(params object[] criteria) => Create(criteria);
     object IDataPortal.Fetch(params object[] criteria) => Fetch(criteria);
     object IDataPortal.Execute(object obj) => Execute((T)obj);

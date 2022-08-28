@@ -98,9 +98,14 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw DataPortal.NewDataPortalException(
-          ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
-          ex, null);
+        if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
+          throw DataPortal.NewDataPortalException(
+            ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+            ex, null);
+        else
+          throw DataPortal.NewDataPortalException(
+            ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
+            ex, null);
       }
     }
 

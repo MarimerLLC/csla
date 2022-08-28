@@ -139,6 +139,11 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
+      {
+        return await Execute(objectType, criteria, context, isSync);
+      }
+
       try
       {
         DataPortalResult result;
@@ -153,6 +158,26 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
+          null);
+      }
+    }
+
+    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+      try
+      {
+        DataPortalResult result;
+        if (criteria is EmptyCriteria)
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Execute, context.FactoryInfo.ExecuteMethodName, objectType, context, isSync).ConfigureAwait(false);
+        else
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Execute, context.FactoryInfo.ExecuteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
+        return result;
+      }
+      catch (Exception ex)
+      {
+        throw DataPortal.NewDataPortalException(
+          ApplicationContext, context.FactoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
+          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.ExecuteMethodName, ex),
           null);
       }
     }

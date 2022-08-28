@@ -213,6 +213,11 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
+      {
+        return await Execute(objectType, criteria, context, isSync);
+      }
+
       try
       {
         SetContext(context);
@@ -288,6 +293,100 @@ namespace Csla.Server
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", ex),
             null);
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
+        throw fex;
+      }
+      finally
+      {
+        ClearContext(context);
+      }
+    }
+
+    /// <summary>
+    /// Execute a command.
+    /// </summary>
+    /// <param name="objectType">Type of command object to execute.</param>
+    /// <param name="criteria">Criteria for the command.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+      try
+      {
+        SetContext(context);
+
+        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Execute));
+
+        Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Execute, IsSync = isSync });
+
+        DataPortalResult result;
+        DataPortalMethodInfo method;
+
+        Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
+        if (criteria is EmptyCriteria)
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
+        else
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+
+        serviceProviderMethodInfo.PrepForInvocation();
+        method = serviceProviderMethodInfo.DataPortalMethodInfo;
+
+        IDataPortalServer portal;
+        switch (method.TransactionalAttribute.TransactionType)
+        {
+#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+          case TransactionalTypes.EnterpriseServices:
+            portal = GetServicedComponentPortal(method.TransactionalAttribute);
+            try
+            {
+              result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+            }
+            finally
+            {
+              ((System.EnterpriseServices.ServicedComponent)portal).Dispose();
+            }
+            break;
+#endif
+          case TransactionalTypes.TransactionScope:
+            var broker = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
+            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+            result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+            break;
+          default:
+            portal = ApplicationContext.CreateInstanceDI<DataPortalBroker>();
+            result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+            break;
+        }
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        return result;
+      }
+      catch (Csla.Server.DataPortalException ex)
+      {
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        throw;
+      }
+      catch (AggregateException ex)
+      {
+        Exception error = null;
+        if (ex.InnerExceptions.Count > 0)
+          error = ex.InnerExceptions[0].InnerException;
+        else
+          error = ex;
+        var fex = DataPortal.NewDataPortalException(
+            ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+            DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", error),
+            null);
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        throw fex;
+      }
+      catch (Exception ex)
+      {
+        var fex = DataPortal.NewDataPortalException(
+            ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+            DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", ex),
+            null);
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Execute, IsSync = isSync });
         throw fex;
       }
       finally

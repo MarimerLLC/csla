@@ -160,6 +160,10 @@ namespace Csla.Server
       await CallMethodTryAsyncDI<FetchChildAttribute>(false, parameters).ConfigureAwait(false);
     }
 
+    public async Task ExecuteAsync(object criteria, bool isSync)
+    {
+      await InvokeOperationAsync<ExecuteAttribute>(criteria, isSync).ConfigureAwait(false);
+    }
 
     public async Task UpdateAsync(bool isSync)
     {

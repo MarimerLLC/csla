@@ -102,6 +102,11 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
+      {
+        return await Execute(objectType, criteria, context, isSync);
+      }
+      
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
@@ -131,6 +136,48 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
+              outval);
+      }
+      finally
+      {
+        object reference = null;
+        if (obj != null)
+          reference = obj.Instance;
+        Activator.FinalizeInstance(reference);
+      }
+    }
+
+    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+      DataPortalTarget obj = null;
+      var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Execute);
+      try
+      {
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        Activator.InitializeInstance(obj.Instance);
+        obj.OnDataPortalInvoke(eventArgs);
+        obj.MarkOld();
+        await obj.ExecuteAsync(criteria, isSync);
+        obj.ThrowIfBusy();
+        obj.OnDataPortalInvokeComplete(eventArgs);
+        return new DataPortalResult(ApplicationContext, obj.Instance);
+      }
+      catch (Exception ex)
+      {
+        try
+        {
+          if (obj != null)
+            obj.OnDataPortalException(eventArgs, ex);
+        }
+        catch
+        {
+          // ignore exceptions from the exception handler
+        }
+        object outval = null;
+        if (obj != null) outval = obj.Instance;
+        throw DataPortal.NewDataPortalException(
+              ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+              new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Execute", ex),
               outval);
       }
       finally

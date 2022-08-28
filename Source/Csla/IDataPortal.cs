@@ -43,6 +43,14 @@ namespace Csla
     /// <param name="command">Command object to execute.</param>
     Task<object> ExecuteAsync(object command);
     /// <summary>
+    /// Execute a command on the logical server.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria provided to the command object.
+    /// </param>
+    /// <returns>The resulting command object.</returns>
+    Task<object> ExecuteAsync(params object[] criteria);
+    /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
     /// </summary>

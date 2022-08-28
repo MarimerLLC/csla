@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Extract the definitions of all properties of a type for source generation</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;

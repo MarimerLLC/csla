@@ -23,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Csla\Csla.csproj" OutputItemType="Analyzer" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="AutoSerializable\" />
   </ItemGroup>
 

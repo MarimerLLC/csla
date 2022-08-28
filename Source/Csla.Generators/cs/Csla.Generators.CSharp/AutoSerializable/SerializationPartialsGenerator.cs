@@ -31,10 +31,10 @@ namespace Csla.Generators.CSharp.AutoSerialization
     public void Initialize(GeneratorInitializationContext context)
     {
 #if (DEBUG)
-      //// Uncomment this to enable debugging of the source generator
+      // Uncomment this to enable debugging of the source generator
       //if (!Debugger.IsAttached)
       //{
-      //	Debugger.Launch();
+      //  Debugger.Launch();
       //}
 
 #endif

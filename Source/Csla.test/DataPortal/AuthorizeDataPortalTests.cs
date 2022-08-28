@@ -162,7 +162,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
+      await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
@@ -176,7 +176,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Fetch(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
+      await dp.Fetch(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
@@ -190,7 +190,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Update(new TestBO(), new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
+      await dp.Update(new TestBO(), new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
@@ -205,7 +205,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Delete(typeof(TestBO), new object(), new DataPortalContext(applicationContext, applicationContext.Principal, false), true);
+      await dp.Delete(typeof(TestBO), new object(), new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 

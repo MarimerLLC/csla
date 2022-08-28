@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Helper for definition extraction, used to optimise symbo, recognition</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -23,18 +22,16 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
   {
 
     private readonly GeneratorSyntaxContext _context;
-    private readonly INamedTypeSymbol _autoSerializableAttributeSymbol;
-    private readonly INamedTypeSymbol _autoSerializedAttributeSymbol;
-    private readonly INamedTypeSymbol _autoNonSerializedAttributeSymbol;
-    private readonly INamedTypeSymbol _mobileObjectInterfaceSymbol;
+    private const string _serializationNamespace = "Csla.Serialization";
+    private const string _autoSerializableAttributeName = "AutoSerializableAttribute";
+    private const string _autoSerializedAttributeName = "AutoSerializedAttribute";
+    private const string _autoNonSerializedAttributeName = "AutoNonSerializedAttribute";
+    private const string _iMobileObjectInterfaceNamespace = "Csla.Serialization.Mobile";
+    private const string _iMobileObjectInterfaceName = "IMobileObject";
 
     public DefinitionExtractionContext(GeneratorSyntaxContext context)
     {
       _context = context;
-      _autoSerializableAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
-      _autoSerializedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializedAttribute).FullName);
-      _autoNonSerializedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoNonSerializedAttribute).FullName);
-      _mobileObjectInterfaceSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(Csla.Serialization.Mobile.IMobileObject).FullName);
     }
 
     public GeneratorSyntaxContext Context => _context;
@@ -77,7 +74,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
       INamedTypeSymbol typeSymbol;
 
       typeSymbol = _context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-      return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
+      return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
 
     /// <summary>
@@ -91,7 +88,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
       typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       if (typeSymbol is null) return false;
-      return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
+      return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
 
     /// <summary>
@@ -109,7 +106,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
       foreach (ITypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
       {
-        if (IsMatchingTypeSymbol(interfaceSymbol as INamedTypeSymbol, _mobileObjectInterfaceSymbol))
+        if (IsMatchingTypeSymbol(interfaceSymbol as INamedTypeSymbol, _iMobileObjectInterfaceName, _iMobileObjectInterfaceNamespace))
         {
           return true;
         }
@@ -125,7 +122,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the property is decorated with the AutoSerialized attribute, otherwise false</returns>
     public bool IsPropertyDecoratedWithAutoSerialized(PropertyDeclarationSyntax propertyDeclaration)
     {
-      return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializedAttributeSymbol);
+      return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializedAttributeName, _serializationNamespace);
     }
 
     /// <summary>
@@ -135,7 +132,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
     public bool IsPropertyDecoratedWithAutoNonSerialized(PropertyDeclarationSyntax propertyDeclaration)
     {
-      return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeSymbol);
+      return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeName, _serializationNamespace);
     }
 
     /// <summary>
@@ -145,7 +142,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the field is decorated with the AutoSerialized attribute, otherwise false</returns>
     public bool IsFieldDecoratedWithAutoSerialized(FieldDeclarationSyntax fieldDeclaration)
     {
-      return IsFieldDecoratedWith(fieldDeclaration, _autoSerializedAttributeSymbol);
+      return IsFieldDecoratedWith(fieldDeclaration, _autoSerializedAttributeName, _serializationNamespace);
     }
 
     /// <summary>
@@ -155,7 +152,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the field is decorated with the AutoNonSerialized attribute, otherwise false</returns>
     public bool IsFieldDecoratedWithAutoNonSerialized(FieldDeclarationSyntax fieldDeclaration)
     {
-      return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeSymbol);
+      return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeName, _serializationNamespace);
     }
 
     #region Private Helper Methods
@@ -164,28 +161,30 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// Determine if the type symbol represents a type decorated by an attribute of interest
     /// </summary>
     /// <param name="typeSymbol">The symbol representing the type</param>
-    /// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
+    /// <param name="desiredAttributeTypeName">The name of the type of attribute of interest</param>
+    /// <param name="desiredAttributeTypeNamespace">The namespace of the type of attribute of interest</param>
     /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-    private bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, INamedTypeSymbol desiredAttributeSymbol)
+    private bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
     {
       return typeSymbol.GetAttributes().Any(
-        attr => IsMatchingTypeSymbol(attr.AttributeClass, desiredAttributeSymbol));
+        attr => IsMatchingTypeSymbol(attr.AttributeClass, desiredAttributeTypeName, desiredAttributeTypeNamespace));
     }
 
     /// <summary>
     /// Determine if a property declaration syntax is decorated with an attribute of interest
     /// </summary>
     /// <param name="propertyDeclaration">The syntax node representing the property being investigated</param>
-    /// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
+    /// <param name="desiredAttributeTypeName">The name of the type of attribute of interest</param>
+    /// <param name="desiredAttributeTypeNamespace">The namespace of the type of attribute of interest</param>
     /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-    private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, INamedTypeSymbol desiredAttributeSymbol)
+    private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
     {
       INamedTypeSymbol appliedAttributeSymbol;
 
       foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
       {
         appliedAttributeSymbol = _context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeSymbol))
+        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
         {
           return true;
         }
@@ -197,16 +196,17 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// Determine if a field declaration syntax is decorated with an attribute of interest
     /// </summary>
     /// <param name="fieldDeclaration">The syntax node representing the field being investigated</param>
-    /// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
+    /// <param name="desiredAttributeTypeName">The name of the type of attribute of interest</param>
+    /// <param name="desiredAttributeTypeNamespace">The namespace of the type of attribute of interest</param>
     /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-    private bool IsFieldDecoratedWith(FieldDeclarationSyntax fieldDeclaration, INamedTypeSymbol desiredAttributeSymbol)
+    private bool IsFieldDecoratedWith(FieldDeclarationSyntax fieldDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
     {
       INamedTypeSymbol appliedAttributeSymbol;
 
       foreach (AttributeSyntax attributeSyntax in fieldDeclaration.AttributeLists.SelectMany(al => al.Attributes))
       {
         appliedAttributeSymbol = _context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeSymbol))
+        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
         {
           return true;
         }
@@ -218,11 +218,50 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     /// Determine if two symbols represent the same attribute
     /// </summary>
     /// <param name="appliedAttributeSymbol">The attribute applied to the type we are testing</param>
-    /// <param name="desiredAttributeSymbol">The attribute whose presence we are testing for</param>
-    /// <returns>Boolean true if the two symbols represent the same types</returns>
-    private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, INamedTypeSymbol desiredAttributeSymbol)
+    /// <param name="desiredTypeName">The name of the attribute whose presence we are testing for</param>
+    /// <param name="desiredTypeNamespace">The namespace of the attribute whose presence we are testing for</param>
+    /// <returns>Boolean true if the symbol seems to represent the desired type by name and namespace</returns>
+    private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
     {
-      return SymbolEqualityComparer.Default.Equals(appliedAttributeSymbol, desiredAttributeSymbol);
+      INamespaceSymbol namespaceSymbol;
+
+      // Match on the type name
+      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
+
+      // Match on the namespace of the type
+      namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
+      if (namespaceSymbol is null) return false;
+      return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
+    }
+
+    /// <summary>
+    /// Perform a recursive match on a namespace symbol by name
+    /// </summary>
+    /// <param name="namespaceSymbol">The symbol for which a match is being tested</param>
+    /// <param name="desiredTypeNamespace">The desired namespace, including period separators if necessary</param>
+    /// <returns>Boolean true if the namespace symbol matches that desired by name</returns>
+    private bool IsMatchingNamespaceSymbol(INamespaceSymbol namespaceSymbol, string desiredTypeNamespace)
+    {
+      string endNamespace;
+      string remainingNamespace = string.Empty;
+
+      // Split off the end namespace section (the string after the last period) to test
+      endNamespace = desiredTypeNamespace;
+      int separatorPosition = desiredTypeNamespace.LastIndexOf('.');
+      if (separatorPosition > -1)
+      {
+        endNamespace = desiredTypeNamespace.Substring(separatorPosition + 1);
+        remainingNamespace = desiredTypeNamespace.Substring(0, separatorPosition);
+      }
+      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+
+      if (string.IsNullOrWhiteSpace(remainingNamespace))
+      {
+        return true;
+      }
+
+      // Recurse down remaining namespace sections until it is complete
+      return IsMatchingNamespaceSymbol(namespaceSymbol.ContainingNamespace, remainingNamespace);
     }
 
     #endregion

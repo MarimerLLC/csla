@@ -44,6 +44,12 @@ namespace Csla.Test.PropertyGetSet
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     #region Tests
 
     [TestMethod]

@@ -23,95 +23,101 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace Csla.Test.DataPortalTest
 {
-    [TestClass]
-    public class SingleTest
+  [TestClass]
+  public class SingleTest
+  {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
-      private static TestDIContext _testDIContext;
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
-        {
-            _testDIContext = TestDIContextFactory.CreateDefaultContext();
-        }
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
 
-        [TestMethod]
-        public void TestDpCreate()
-        {
-            Single test = NewSingle();
-            Assert.AreEqual("Created", TestResults.GetResult("Single"));
-        }
-        [TestMethod]
-        public void TestDpFetch()
-        {
-            Single test = GetSingle(5);
-            Assert.AreEqual("Fetched", TestResults.GetResult("Single"));
-        }
-        [TestMethod]
-        public void TestDpInsert()
-        {
-            Single test = null;
-            try
-            {
-                test = NewSingle();
-            }
-            catch { Assert.Inconclusive(); }
-            test.Save();
-            Assert.AreEqual("Inserted", TestResults.GetResult("Single"));
-        }
-        [TestMethod]
-        public void TestDpUpdate()
-        {
-            Single test = null;
-            try
-            {
-                test = NewSingle();
-                test = test.Save();
-                test.Id = 5;
-            }
-            catch { Assert.Inconclusive(); }
-            test.Save();
-            Assert.AreEqual("Updated", TestResults.GetResult("Single"));
-        }
-        [TestMethod]
-        public void TestDpDelete()
-        {
-            DeleteSingle(5);
-            Assert.AreEqual("Deleted", TestResults.GetResult("Single"));
-        }
-        [TestMethod]
-        public void TestDpDeleteSelf()
-        {
-            Single test = null;
-            try
-            {
-                test = NewSingle();
-                test = test.Save();
-                test.Delete();
-            }
-            catch { Assert.Inconclusive(); }
-            test.Save();
-            Assert.AreEqual("SelfDeleted", TestResults.GetResult("Single"));
-        }
+    [TestMethod]
+    public void TestDpCreate()
+    {
+      Single test = NewSingle();
+      Assert.AreEqual("Created", TestResults.GetResult("Single"));
+    }
+    [TestMethod]
+    public void TestDpFetch()
+    {
+      Single test = GetSingle(5);
+      Assert.AreEqual("Fetched", TestResults.GetResult("Single"));
+    }
+    [TestMethod]
+    public void TestDpInsert()
+    {
+      Single test = null;
+      try
+      {
+        test = NewSingle();
+      }
+      catch { Assert.Inconclusive(); }
+      test.Save();
+      Assert.AreEqual("Inserted", TestResults.GetResult("Single"));
+    }
+    [TestMethod]
+    public void TestDpUpdate()
+    {
+      Single test = null;
+      try
+      {
+        test = NewSingle();
+        test = test.Save();
+        test.Id = 5;
+      }
+      catch { Assert.Inconclusive(); }
+      test.Save();
+      Assert.AreEqual("Updated", TestResults.GetResult("Single"));
+    }
+    [TestMethod]
+    public void TestDpDelete()
+    {
+      DeleteSingle(5);
+      Assert.AreEqual("Deleted", TestResults.GetResult("Single"));
+    }
+    [TestMethod]
+    public void TestDpDeleteSelf()
+    {
+      Single test = null;
+      try
+      {
+        test = NewSingle();
+        test = test.Save();
+        test.Delete();
+      }
+      catch { Assert.Inconclusive(); }
+      test.Save();
+      Assert.AreEqual("SelfDeleted", TestResults.GetResult("Single"));
+    }
 
-        private Single NewSingle()
-        {
-            IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+    private Single NewSingle()
+    {
+      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
 
-            return dataPortal.Create();
-        }
+      return dataPortal.Create();
+    }
 
-        private Single GetSingle(int id)
-        {
-            IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+    private Single GetSingle(int id)
+    {
+      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
 
-            return dataPortal.Fetch(id);
-        }
+      return dataPortal.Fetch(id);
+    }
 
-        private void DeleteSingle(int id)
-        {
-            IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+    private void DeleteSingle(int id)
+    {
+      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
 
-            dataPortal.Delete(id);
-        }
+      dataPortal.Delete(id);
+    }
   }
 }

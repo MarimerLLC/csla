@@ -35,11 +35,15 @@ namespace Csla.Test.DataPortal
         )));
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void CreateWithIntercept()
     {
-      TestResults.Reinitialise();
-
       var obj = CreateInitializeRoot("abc");
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
@@ -51,8 +55,6 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchWithIntercept()
     {
-      TestResults.Reinitialise();
-
       var obj = GetInitializeRoot("abc");
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
@@ -63,8 +65,6 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchListWithIntercept()
     {
-      TestResults.Reinitialise();
-
       var obj = GetInitializeListRoot();
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeListRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeListRoot"), "Complete should have run");
@@ -78,8 +78,6 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void InterceptException()
     {
-      TestResults.Reinitialise();
-
       try
       {
         var obj = GetInitializeRoot("boom");
@@ -94,8 +92,6 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void UpdateWithIntercept()
     {
-      TestResults.Reinitialise();
-
       var obj = GetInitializeRoot("abc");
       TestResults.Reinitialise();
 
@@ -113,8 +109,6 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void UpdateListWithIntercept()
     {
-      TestResults.Reinitialise();
-
       var obj = GetInitializeListRoot();
       TestResults.Reinitialise();
 
@@ -134,8 +128,6 @@ namespace Csla.Test.DataPortal
     public void ExecuteCommandWithIntercept()
     {
       IDataPortal<InterceptorCommand> dataPortal = _testDIContext.CreateDataPortal<InterceptorCommand>();
-
-      TestResults.Reinitialise();
 
       var obj = dataPortal.Create();
       TestResults.Reinitialise();

@@ -40,6 +40,12 @@ namespace Csla.Test.ObjectFactory
         ));
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     /// <summary>
     /// Always make sure to cleanup after each test 
     /// </summary>
@@ -49,7 +55,6 @@ namespace Csla.Test.ObjectFactory
       // TODO: Is any of this cleanup still required? Probably not
       //Csla.ApplicationContext.DataPortalProxy = "Local";
       //Csla.DataPortal.ResetProxyType();
-      TestResults.Reinitialise();
     }
 
     [TestMethod]
@@ -258,8 +263,6 @@ namespace Csla.Test.ObjectFactory
     {
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 
-      TestResults.Reinitialise();
-
       dataPortal.Delete("abc");
 
       Assert.AreEqual("Delete", TestResults.GetResult("ObjectFactory"), "Data should match");
@@ -286,8 +289,6 @@ namespace Csla.Test.ObjectFactory
       TestDIContext testDIContext = TestDIContextFactory.CreateDefaultContext();
       IDataPortal<CommandObject> dataPortal = testDIContext.CreateDataPortal<CommandObject>();
 
-      TestResults.Reinitialise();
-
       var test = CommandObject.Execute(dataPortal);
       // return value is set in Execute method in CommandObjectFactory
       Assert.IsTrue(test);
@@ -302,8 +303,6 @@ namespace Csla.Test.ObjectFactory
 
       try
       {
-        TestResults.Reinitialise();
-
         var test = CommandObjectMissingFactoryMethod.Execute(dataPortal);
       }
       catch (DataPortalException ex)

@@ -36,13 +36,7 @@ namespace Csla.Test.AppContext
     }
 
     [TestInitialize]
-    public void SetScopedSp()
-    {
-      TestResults.Reinitialise();
-    }
-
-    [TestCleanup]
-    public void ClearContextsAfterEachTest()
+    public void Initialize()
     {
       TestResults.Reinitialise();
     }
@@ -55,7 +49,6 @@ namespace Csla.Test.AppContext
       IDataPortal<SimpleRoot> dataPortal = _testDIContext.CreateDataPortal<SimpleRoot>();
 
       // TODO: How do we do this test in Csla 6?
-      TestResults.Reinitialise();
       //ApplicationContext.ClientContext["v1"] = "client";
 
       SimpleRoot root = dataPortal.Fetch(new SimpleRoot.Criteria("data"));
@@ -83,8 +76,6 @@ namespace Csla.Test.AppContext
     {
       List<AppContextThread> AppContextThreadList = new List<AppContextThread>();
       List<Thread> ThreadList = new List<Thread>();
-
-      TestResults.Reinitialise();
 
       for (int x = 0; x < 10; x++)
       {
@@ -144,8 +135,6 @@ namespace Csla.Test.AppContext
       IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
-      TestResults.Reinitialise();
-
       applicationContext.ClientContext.Add("clientcontext", "client context data");
       Assert.AreEqual("client context data", applicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
 
@@ -155,7 +144,6 @@ namespace Csla.Test.AppContext
       Assert.AreEqual(true, root.IsDirty, "Object should be dirty");
       Assert.AreEqual(true, root.IsValid, "Object should be valid");
 
-      TestResults.Reinitialise();
       root = root.Save();
 
       Assert.IsNotNull(root, "Root object should not be null");
@@ -192,7 +180,6 @@ namespace Csla.Test.AppContext
     {
       IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
 
-      TestResults.Reinitialise();
       TestResults.Add("global", "global");
 
       //dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
@@ -234,8 +221,6 @@ namespace Csla.Test.AppContext
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
-      TestResults.Reinitialise();
-
       ExceptionRoot root;
       try
       {
@@ -261,7 +246,6 @@ namespace Csla.Test.AppContext
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
-      TestResults.Reinitialise();
       ExceptionRoot root = null;
       try
       {
@@ -294,8 +278,6 @@ namespace Csla.Test.AppContext
       
       try
       {
-        TestResults.Reinitialise();
-
         ExceptionRoot root;
         try
         {
@@ -339,7 +321,6 @@ namespace Csla.Test.AppContext
     public void FailDeleteContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
-      TestResults.Reinitialise();
 
       ExceptionRoot root = null;
       try

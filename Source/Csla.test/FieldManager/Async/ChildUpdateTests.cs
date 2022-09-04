@@ -32,6 +32,12 @@ namespace Csla.Test.FieldManager.Async
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public async Task CreateAndSaveChildAsync()
     {

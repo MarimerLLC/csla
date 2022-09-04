@@ -72,6 +72,12 @@ namespace Csla.Test.Serialization
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void SerializeDataPortalException()
     {
@@ -95,7 +101,6 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
 
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       nonSerializableEventHandler handler = new nonSerializableEventHandler();
@@ -122,7 +127,6 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
 
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       SerializationRoot root = dataPortal.Create();
 
@@ -140,7 +144,6 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
 
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
 
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);

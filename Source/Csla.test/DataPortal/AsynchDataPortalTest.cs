@@ -50,6 +50,7 @@ namespace Csla.Test.DataPortal
     [TestInitialize]
     public void Setup()
     {
+      TestResults.Reinitialise();
       CurrentCulture = Thread.CurrentThread.CurrentCulture;
       CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
     }
@@ -170,7 +171,7 @@ namespace Csla.Test.DataPortal
     public async Task FetchAsync_WithCriteria()
     {
       IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
-
+      
       var result = await dataPortal.FetchAsync(123);
       Assert.IsNotNull(result);
       Assert.AreEqual(123, result.Id);

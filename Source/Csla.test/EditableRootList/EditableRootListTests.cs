@@ -33,6 +33,12 @@ namespace Csla.Test.EditableRootList
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void AddItem()
     {
@@ -49,7 +55,6 @@ namespace Csla.Test.EditableRootList
     {
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
 
-      TestResults.Reinitialise();
       _isListSaved = false;
       ERlist list = dataPortal.Create();
       ERitem item = list.AddNew();
@@ -69,7 +74,6 @@ namespace Csla.Test.EditableRootList
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
       IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
 
-      TestResults.Reinitialise();
       _isListSaved = false;
 
       ERlist list = dataPortal.Create();
@@ -105,7 +109,6 @@ namespace Csla.Test.EditableRootList
     public void InsertItem()
     {
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
-      TestResults.Reinitialise();
 
       _isListSaved = false;
 
@@ -129,7 +132,6 @@ namespace Csla.Test.EditableRootList
     {
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
       IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
-      TestResults.Reinitialise();
 
       _isListSaved = false;
 

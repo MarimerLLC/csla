@@ -43,6 +43,12 @@ namespace Csla.Test.Linq
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
 #if !WINDOWS_PHONE
     [TestMethod]
     public void Blb2Loc_WhereOnly()

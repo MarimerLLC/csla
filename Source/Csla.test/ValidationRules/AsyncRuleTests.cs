@@ -40,6 +40,12 @@ namespace Csla.Test.ValidationRules
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void TestAsyncRulesValid()
     {
@@ -83,8 +89,6 @@ namespace Csla.Test.ValidationRules
     public void InvalidAsyncRule()
     {
       IDataPortal<HasInvalidAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasInvalidAsyncRule>();
-
-      TestResults.Reinitialise();
 
       UnitTestContext context = GetContext();
       var root = dataPortal.Create();

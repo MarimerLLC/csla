@@ -38,13 +38,18 @@ namespace Csla.Test.DPException
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
 #if DEBUG
     [TestMethod()]
 
     public void CheckInnerExceptionsOnSave()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
-      TestResults.Reinitialise();
 
       DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
       root.FirstName = "Billy";
@@ -95,7 +100,6 @@ namespace Csla.Test.DPException
     public void CheckInnerExceptionsOnDelete()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
-      TestResults.Reinitialise();
 
       string baseException = string.Empty;
       string baseInnerException = string.Empty;
@@ -127,7 +131,6 @@ namespace Csla.Test.DPException
     public void CheckInnerExceptionsOnFetch()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
-      TestResults.Reinitialise();
 
       string baseException = string.Empty;
       string baseInnerException = string.Empty;

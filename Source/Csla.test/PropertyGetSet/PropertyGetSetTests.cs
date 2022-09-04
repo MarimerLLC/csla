@@ -44,6 +44,7 @@ namespace Csla.Test.PropertyGetSet
     [TestInitialize]
     public void Initialize()
     {
+      TestResults.Reinitialise();
       _mode = Csla.ApplicationContext.PropertyChangedMode;
       Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
       _changedName = "";

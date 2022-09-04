@@ -31,6 +31,12 @@ namespace Csla.Test.FieldManager
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void FetchAndSaveChild()
     {

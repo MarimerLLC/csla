@@ -20,6 +20,12 @@ namespace Csla.Test.DataPortal
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void Test_DataPortal_Array()
     {
@@ -53,7 +59,6 @@ namespace Csla.Test.DataPortal
     public void Test_DataPortal_Int_Null()
     {
       IDataPortal<ArrayDataPortalClass> dataPortal = _testDIContext.CreateDataPortal<ArrayDataPortalClass>();
-      TestResults.Reinitialise();
 
       try
       {
@@ -73,7 +78,6 @@ namespace Csla.Test.DataPortal
     public void Test_DataPortal_String_Null()
     {
       IDataPortal<ArrayDataPortalClass> dataPortal = _testDIContext.CreateDataPortal<ArrayDataPortalClass>();
-      TestResults.Reinitialise();
 
       try
       {
@@ -93,7 +97,6 @@ namespace Csla.Test.DataPortal
     {
       IChildDataPortal<ArrayDataPortalClass> childDataPortal = _testDIContext.CreateChildDataPortal<ArrayDataPortalClass>();
 
-      TestResults.Reinitialise();
       _ = ArrayDataPortalClass.GetChild(childDataPortal, new int[] { 1, 2, 3 });
       Assert.AreEqual("FetchChild(int[] values)", TestResults.GetResult("Method"));
 
@@ -107,7 +110,6 @@ namespace Csla.Test.DataPortal
     {
       IChildDataPortal<ArrayDataPortalClass> childDataPortal = _testDIContext.CreateChildDataPortal<ArrayDataPortalClass>();
 
-      TestResults.Reinitialise();
       _ = ArrayDataPortalClass.GetChildParams(childDataPortal, 1, 2, 3);
       Assert.AreEqual("FetchChild(int[] values)", TestResults.GetResult("Method"));
 

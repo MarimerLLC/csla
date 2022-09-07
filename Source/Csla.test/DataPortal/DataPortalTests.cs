@@ -38,6 +38,12 @@ namespace Csla.Test.DataPortal
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
     public void ClearDataBase()
     {
@@ -146,7 +152,6 @@ namespace Csla.Test.DataPortal
       IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();
 
       //test strongly-typed DataPortal_Fetch method
-      TestResults.Reinitialise();
       Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
 
       Assert.AreEqual("Fetched", TestResults.GetResult("StronglyTypedDP"));
@@ -212,7 +217,6 @@ namespace Csla.Test.DataPortal
 
       try
       {
-        TestResults.Reinitialise();
         DpRoot root = dataPortal.Create(new DpRoot.Criteria());
 
         root.Data = "saved";
@@ -235,8 +239,6 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void DataPortalBrokerTests()
     {
-      TestResults.Reinitialise();
-
       var dps = _testDIContext.ServiceProvider.GetRequiredService<Server.DataPortalSelector>();
       var oldServer = Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
 
@@ -288,7 +290,6 @@ namespace Csla.Test.DataPortal
     {
       IDataPortal<ParentEntity> dataPortal = _testDIContext.CreateDataPortal<ParentEntity>();
 
-      TestResults.Reinitialise();
       ParentEntity parent = ParentEntity.NewParentEntity(dataPortal);
       parent.Data = "something";
 

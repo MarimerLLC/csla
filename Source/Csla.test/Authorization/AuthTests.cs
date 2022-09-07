@@ -58,13 +58,17 @@ namespace Csla.Test.Authorization
       _adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod()]
     public void TestAuthCloneRules()
     {
       IDataPortal<DataPortal.DpRoot> dataPortal = _adminDIContext.CreateDataPortal<DataPortal.DpRoot>();
       ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
-
-      TestResults.Reinitialise();
 
       DataPortal.DpRoot root = dataPortal.Fetch(new DataPortal.DpRoot.Criteria());
 
@@ -106,8 +110,6 @@ namespace Csla.Test.Authorization
       //Do they work under cloning as well?
       DataPortal.DpRoot newRoot = root.Clone();
 
-      TestResults.Reinitialise();
-
       //Is it denying read properly?
       Assert.AreEqual("[DenyReadOnProperty] Can't read property", newRoot.DenyReadOnProperty,
           "Read should have been denied 7");
@@ -146,8 +148,6 @@ namespace Csla.Test.Authorization
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<DataPortal.DpRoot> dataPortal = customDIContext.CreateDataPortal<DataPortal.DpRoot>();
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
-
-      TestResults.Reinitialise();
 
       DataPortal.DpRoot root = dataPortal.Create(new DataPortal.DpRoot.Criteria());
 
@@ -270,8 +270,6 @@ namespace Csla.Test.Authorization
       IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      TestResults.Reinitialise();
-
       PermissionsRoot pr = dataPortal.Create();
 
       pr.FirstName = "something";
@@ -292,8 +290,6 @@ namespace Csla.Test.Authorization
     public void TestUnauthorizedAccessToGet()
     {
       IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
-
-      TestResults.Reinitialise();
 
       PermissionsRoot pr = dataPortal.Create();
 
@@ -320,8 +316,6 @@ namespace Csla.Test.Authorization
       IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      TestResults.Reinitialise();
-
       PermissionsRoot pr = dataPortal.Create();
 
       //should work, because we are now logged in as an admin
@@ -343,8 +337,6 @@ namespace Csla.Test.Authorization
       IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
-      TestResults.Reinitialise();
-
       PermissionsRoot pr = dataPortal.Create();
       //should work, because we are now logged in as an admin
       pr.DoWork();
@@ -364,8 +356,6 @@ namespace Csla.Test.Authorization
       IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
       ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
 
-      TestResults.Reinitialise();
-
       Assert.AreEqual(false, applicationContext.User.IsInRole("Admin"));
 
       PermissionsRoot pr = dataPortal.Create();
@@ -379,8 +369,6 @@ namespace Csla.Test.Authorization
     {
       IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
       ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
-
-      TestResults.Reinitialise();
 
       var root = dataPortal.Create();
 
@@ -408,8 +396,6 @@ namespace Csla.Test.Authorization
     {
       IDataPortal<PermissionsRoot2> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot2>();
       ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
-
-      TestResults.Reinitialise();
 
       var root = dataPortal.Create();
 

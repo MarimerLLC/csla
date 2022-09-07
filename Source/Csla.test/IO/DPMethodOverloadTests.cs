@@ -34,13 +34,17 @@ namespace Csla.Test.IO
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CreateNoCriteria()
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
-
-      TestResults.Reinitialise();
 
       TestBizObj obj;
 
@@ -55,8 +59,6 @@ namespace Csla.Test.IO
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
 
-      TestResults.Reinitialise();
-
       TestBizObj obj;
 
       obj = TestBizObj.NewCriteria(dataPortal);
@@ -69,8 +71,6 @@ namespace Csla.Test.IO
     public void CreateWithOtherCriteria()
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
-
-      TestResults.Reinitialise();
 
       TestBizObj obj;
 
@@ -85,8 +85,6 @@ namespace Csla.Test.IO
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
 
-      TestResults.Reinitialise();
-
       TestBizObj obj;
 
       obj = TestBizObj.GetNullCriteria(dataPortal);
@@ -99,8 +97,6 @@ namespace Csla.Test.IO
     public void FetchNoCriteria()
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
-
-      TestResults.Reinitialise();
 
       TestBizObj obj;
 
@@ -115,8 +111,6 @@ namespace Csla.Test.IO
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
 
-      TestResults.Reinitialise();
-
       TestBizObj obj;
 
       obj = TestBizObj.GetCriteria(dataPortal);
@@ -129,8 +123,6 @@ namespace Csla.Test.IO
     public void FetchWithOtherCriteria()
     {
       IDataPortal<TestBizObj> dataPortal = _testDIContext.CreateDataPortal<TestBizObj>();
-
-      TestResults.Reinitialise();
 
       TestBizObj obj;
 

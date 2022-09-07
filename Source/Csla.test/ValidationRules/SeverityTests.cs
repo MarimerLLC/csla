@@ -34,6 +34,12 @@ namespace Csla.Test.ValidationRules
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void AllThree()
     {

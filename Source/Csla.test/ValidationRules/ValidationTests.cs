@@ -41,12 +41,17 @@ namespace Csla.Test.ValidationRules
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod()]
     public async Task TestValidationRulesWithPrivateMember()
     {
       //works now because we are calling ValidationRules.CheckRules() in DataPortal_Create
       UnitTestContext context = GetContext();
-      TestResults.Reinitialise();
       var root = await CreateHasRulesManagerAsync();
       context.Assert.AreEqual("<new>", root.Name);
       context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
@@ -77,7 +82,6 @@ namespace Csla.Test.ValidationRules
     public async Task TestValidationRulesWithPublicProperty()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
-      TestResults.Reinitialise();
       var root = await CreateHasRulesManager2Async("<new>");
       Assert.AreEqual("<new>", root.Name);
       Assert.AreEqual(true, root.IsValid, "should be valid on create");
@@ -107,7 +111,6 @@ namespace Csla.Test.ValidationRules
     public async Task TestValidationAfterEditCycle()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
       context.Assert.AreEqual("<new>", root.Name);
@@ -188,7 +191,6 @@ namespace Csla.Test.ValidationRules
       //this test uses HasRulesManager2, which assigns criteria._name to its public
       //property in DataPortal_Create.  If it used HasRulesManager, it would fail
       //the first assert, but pass the others
-      TestResults.Reinitialise();
       var root = await CreateHasRulesManager2Async("test");
       Assert.AreEqual(true, root.IsValid);
       root.BeginEdit();
@@ -207,7 +209,6 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakRequiredRule()
     {
-      TestResults.Reinitialise();
       var root = await CreateHasRulesManagerAsync();
       root.Name = "";
       Assert.AreEqual(false, root.IsValid, "should not be valid");
@@ -219,7 +220,6 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakLengthRule()
     {
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
       root.Name = "12345678901";
@@ -239,7 +239,6 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakLengthRuleAndClone()
     {
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
       root.Name = "12345678901";
@@ -264,7 +263,6 @@ namespace Csla.Test.ValidationRules
     [TestMethod()]
     public void RegExSSN()
     {
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
 
       HasRegEx root = CreateWithoutCriteria<HasRegEx>();
@@ -301,7 +299,6 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public async Task VerifyUndoableStateStackOnClone()
     {
-      TestResults.Reinitialise();
       using (UnitTestContext context = GetContext())
       {
         var root = await CreateHasRulesManager2Async();
@@ -323,7 +320,6 @@ namespace Csla.Test.ValidationRules
     [TestMethod()]
     public async Task ListChangedEventTrigger()
     {
-      TestResults.Reinitialise();
       UnitTestContext context = GetContext();
       var root = await CreateWithoutCriteriaAsync<HasChildren>();
       context.Assert.AreEqual(false, root.IsValid);

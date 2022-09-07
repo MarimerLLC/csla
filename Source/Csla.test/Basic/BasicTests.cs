@@ -33,12 +33,17 @@ namespace Csla.Test.Basic
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void TestNotUndoableField()
     {
       IDataPortal<DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<DataBinding.ParentEntity>();
 
-      TestResults.Reinitialise();
       Csla.Test.DataBinding.ParentEntity p = DataBinding.ParentEntity.NewParentEntity(dataPortal);
 
       p.NotUndoable = "something";
@@ -85,7 +90,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
 
-      TestResults.Reinitialise();
       CommandObject obj = dataPortal.Create();
       obj = dataPortal.Execute(obj);
       Assert.AreEqual("Executed", obj.AProperty);
@@ -94,7 +98,6 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void CreateGenRoot()
     {
-      TestResults.Reinitialise();
       GenRoot root;
       root = NewGenRoot();
       Assert.IsNotNull(root);
@@ -108,7 +111,6 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void InheritanceUndo()
     {
-      TestResults.Reinitialise();
       GenRoot root;
       root = NewGenRoot();
       root.BeginEdit();
@@ -125,7 +127,6 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void CreateRoot()
     {
-      TestResults.Reinitialise();
       Root root;
       root = NewRoot();
       Assert.IsNotNull(root);
@@ -141,7 +142,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       Assert.AreEqual(1, root.Children.Count);
@@ -153,7 +153,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       root.Children.Remove(root.Children[0]);
@@ -165,7 +164,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       root.BeginEdit();
@@ -183,7 +181,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       Child child = root.Children[0];
@@ -197,7 +194,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       Child child = root.Children[0];
@@ -236,7 +232,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "A");
       root.Children.Add(childDataPortal, "B");
@@ -251,7 +246,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.BeginEdit();
       root.Children.Add(childDataPortal, "A");
@@ -270,7 +264,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.BeginEdit();
       root.Children.Add(childDataPortal, "A");
@@ -297,7 +290,6 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void BasicEquality()
     {
-      TestResults.Reinitialise();
       Root r1 = NewRoot();
       r1.Data = "abc";
       Assert.AreEqual(true, r1.Equals(r1), "objects should be equal on instance compare");
@@ -319,7 +311,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "abc");
       root.Children.Add(childDataPortal, "xyz");
@@ -350,7 +341,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       root.Children.Add(childDataPortal, "2");
@@ -375,7 +365,6 @@ namespace Csla.Test.Basic
     {
       IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
 
-      TestResults.Reinitialise();
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
       root.Children.Add(childDataPortal, "2");
@@ -423,12 +412,6 @@ namespace Csla.Test.Basic
       Assert.IsFalse(changed, "Should not raise ListChanged event");
       Assert.IsTrue(obj.RaiseListChangedEvents);
       Assert.AreEqual(child, obj[0]);
-    }
-
-    [TestCleanup]
-    public void ClearContextsAfterEachTest()
-    {
-      TestResults.Reinitialise();
     }
 
     private Root NewRoot()

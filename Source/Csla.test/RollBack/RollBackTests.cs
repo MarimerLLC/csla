@@ -33,13 +33,18 @@ namespace Csla.Test.RollBack
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void NoFail()
     {
       IDataPortal<RollbackRoot> dataPortal = _testDIContext.CreateDataPortal<RollbackRoot>();
 
-      TestResults.Reinitialise();
       RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot(dataPortal);
 
       root.BeginEdit();
@@ -69,7 +74,6 @@ namespace Csla.Test.RollBack
     {
       IDataPortal<RollbackRoot> dataPortal = _testDIContext.CreateDataPortal<RollbackRoot>();
 
-      TestResults.Reinitialise();
       RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot(dataPortal);
 
       root.BeginEdit();
@@ -108,7 +112,6 @@ namespace Csla.Test.RollBack
     {
       IDataPortal<RollbackRoot> dataPortal = _testDIContext.CreateDataPortal<RollbackRoot>();
 
-      TestResults.Reinitialise();
       RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot(dataPortal);
       Assert.AreEqual(true, root.IsDirty, "isdirty is true");
       Assert.AreEqual("<new>", root.Data, "data is '<new>'");

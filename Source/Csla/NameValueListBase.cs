@@ -171,15 +171,11 @@ namespace Csla
       private K _key;
       private V _value;
 
-#if (ANDROID || IOS) || NETFX_CORE
       /// <summary>
-      /// Creates an instance of the type.
+      /// Creates an instance of the type (for use by MobileFormatter only).
       /// </summary>
       public NameValuePair()
       { }
-#else
-      private NameValuePair() { }
-#endif
 
       /// <summary>
       /// The Key or Name value.

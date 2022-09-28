@@ -16,6 +16,7 @@
 
 		<!-- App Identifier -->
 		<ApplicationId>llc.marimer.mauiexample</ApplicationId>
+		<ApplicationId>com.companyname.mauiexample</ApplicationId>
 		<ApplicationIdGuid>36080889-90b8-4eb2-89c2-6ee0ade523f3</ApplicationIdGuid>
 
 		<!-- Versions -->

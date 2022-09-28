@@ -19,7 +19,6 @@ namespace ProjectTracker.Ui.WPF
          .UseCsla((config) =>
          {
            config
-            .PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Windows)
             .DataPortal()
               .DefaultProxy(typeof(Csla.DataPortalClient.HttpProxy),
                             "http://localhost:8040/api/dataportal/");

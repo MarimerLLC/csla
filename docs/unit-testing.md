@@ -9,7 +9,7 @@
 
 @jasonbock has written a nice blog post on how to use some of the features of CSLA 4 that support unit testing and mocking:
 
-* http://magenic.com/Blog/Post/43/Abstractions-in-CSLA
+* http://magenic.com/Blog/Post/43/Abstractions-in-CSLA (leads to 404)
 
 ## Unit Testing User Serialization Exception
 

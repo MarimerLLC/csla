@@ -2,6 +2,29 @@
 
 CSLA 6 is a major new version of CSLA .NET, fully supporting (and requiring) dependency injection and other features of modern .NET.
 
+## CSLA .NET version 6.2.0 release
+
+CSLA .NET version 6.2.0 enhances `ExecuteAsync` to accept parameters, includes bug fixes, and numerous dependency version updates.
+
+* [#1775](https://github.com/MarimerLLC/csla/issues/1775) Enhance data portal `ExecuteAsync` to allow passing parameters
+* [#3100](https://github.com/MarimerLLC/csla/issues/3100) Linux build issue fix
+* [#2975](https://github.com/MarimerLLC/csla/issues/2975) Linux build issue fix
+* [#3083](https://github.com/MarimerLLC/csla/issues/3083) `NameValueList` serialization fix
+* [#3044](https://github.com/MarimerLLC/csla/issues/3044) Don't use `WindowsPrincipal` on unsupported platforms
+* [#3035](https://github.com/MarimerLLC/csla/issues/3035) Add `ViewModelBase` type to `Csla.Maui` namespace
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=project%3Amarimerllc%2F6+is%3Aclosed+)
+
+### Contributors
+
+@ajj7060
+@bujma
+@jasonBock
+@rockfordlhotka
+@TheCakeMonster
+
 ## CSLA .NET version 6.1.0 release
 
 CSLA .NET version 6.1.0 adds support for Maui and includes bug fixes and one breaking change.

@@ -9,7 +9,9 @@
 
 @jasonbock has written a nice blog post on how to use some of the features of CSLA 4 that support unit testing and mocking:
 
-* http://magenic.com/Blog/Post/43/Abstractions-in-CSLA
+* [Abstractions in CSLA 4](Abstractions-in-CSLA.md)
+
+Please note that CSLA 5 has support for dependency injection, and CSLA 6 and later _require_ the use of DI. This means that abstractions and unit testing in CSLA 5 and later is easier than what is described in the CSLA 4 blog post.
 
 ## Unit Testing User Serialization Exception
 

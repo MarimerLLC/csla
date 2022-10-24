@@ -40,7 +40,7 @@ namespace Csla.Channels.Http
     /// Current options for the proxy.
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
-    private static HttpClient _httpClient;
+    private HttpClient _httpClient;
 
     /// <summary>
     /// Gets an HttpClientHandler for use

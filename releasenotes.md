@@ -2,6 +2,24 @@
 
 CSLA 6 is a major new version of CSLA .NET, fully supporting (and requiring) dependency injection and other features of modern .NET.
 
+## CSLA .NET version 6.2.1 release
+
+CSLA .NET version 6.2.1 fixes a bug in `HttpProxy`.
+
+* [#3148](https://github.com/MarimerLLC/csla/issues/3148) Fix bug in `HttpProxy` that caused `ObjectDisposedException` when using `HttpClient`
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=project%3Amarimerllc%2F8+is%3Aclosed+)
+
+### Contributors
+
+Many thanks to @saulyt, who put in a lot of time and effort to find the issue and its root cause!
+
+@saulyt
+@rockfordlhotka
+@TheCakeMonster
+
 ## CSLA .NET version 6.2.0 release
 
 CSLA .NET version 6.2.0 enhances `ExecuteAsync` to accept parameters, includes bug fixes, and numerous dependency version updates.

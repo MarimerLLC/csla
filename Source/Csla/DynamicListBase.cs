@@ -321,6 +321,9 @@ namespace Csla
     protected override void InsertItem(int index, T item)
     {
       item.SetParent(this);
+      // ensure child uses same context as parent
+      if (item is IUseApplicationContext iuac)
+        iuac.ApplicationContext = ApplicationContext;
       base.InsertItem(index, item);
     }
 

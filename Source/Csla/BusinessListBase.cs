@@ -348,6 +348,9 @@ namespace Csla
       {
         // set parent reference
         item.SetParent(this);
+        // ensure child uses same context as parent
+        if (item is IUseApplicationContext iuac)
+          iuac.ApplicationContext = ApplicationContext;
         // set child edit level
         Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
         // when an object is inserted we assume it is

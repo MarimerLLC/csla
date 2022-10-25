@@ -29,7 +29,7 @@
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Csla.Blazor" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="7.0.0-rc.2.22476.2" />
-        <dependency id="System.Net.Http.Json" version="7.0.0-rc.2.22476.2" />
+        <dependency id="System.Net.Http.Json" version="7.0.0-rc.2.22472.3" />
       </group>
     </dependencies>
   </metadata>

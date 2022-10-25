@@ -18,7 +18,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0'
+        dotnet-version: '7.0'
         include-prerelease: True
 
     - name: Build

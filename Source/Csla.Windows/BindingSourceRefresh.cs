@@ -135,7 +135,7 @@ namespace Csla.Windows
     /// </summary>
     [Browsable(false)]
     [DefaultValue(null)]
-#if NETSTANDARD2_0 || NET5_0
+#if NETSTANDARD2_0 || NET6_0_OR_GREATER
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
 #endif
     public ContainerControl Host { get; set; }

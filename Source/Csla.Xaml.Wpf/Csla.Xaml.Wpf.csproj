@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net6.0-windows10.0.19041.0;net462</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net6.0-windows10.0.19041.0;net462;net7.0-windows10.0.19041.0</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <AssemblyName>Csla.Xaml</AssemblyName>
     <RootNamespace>Csla.Xaml</RootNamespace>

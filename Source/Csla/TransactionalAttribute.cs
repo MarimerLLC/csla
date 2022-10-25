@@ -58,7 +58,7 @@ namespace Csla
     public TransactionalAttribute(TransactionalTypes transactionType)
     {
       TransactionType = transactionType;
-#if NETSTANDARD2_0 || NET5_0 || NET6_0
+#if NETSTANDARD2_0 || NET6_0_OR_GREATER
       if (transactionType == TransactionalTypes.TransactionScope)
 #else
       if (transactionType == TransactionalTypes.TransactionScope || 
@@ -113,7 +113,7 @@ namespace Csla
     {
       TransactionType = transactionType;
       TransactionIsolationLevel = transactionIsolationLevel;
-#if NETSTANDARD2_0 || NET5_0 || NET6_0
+#if NETSTANDARD2_0 || NET6_0_OR_GREATER
       if (transactionType == TransactionalTypes.TransactionScope)
 #else
       if (transactionType == TransactionalTypes.TransactionScope ||
@@ -147,7 +147,7 @@ namespace Csla
     {
       TransactionType = transactionType;
       TransactionIsolationLevel = transactionIsolationLevel;
-#if NETSTANDARD2_0 || NET5_0 || NET6_0
+#if NETSTANDARD2_0 || NET6_0_OR_GREATER
       if (transactionType == TransactionalTypes.TransactionScope)
 #else
       if (transactionType == TransactionalTypes.TransactionScope ||

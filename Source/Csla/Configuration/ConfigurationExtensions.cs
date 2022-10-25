@@ -1,4 +1,4 @@
-﻿#if NET462_OR_GREATER || NETSTANDARD2_0 || NET5_0_OR_GREATER
+﻿#if NET462_OR_GREATER || NETSTANDARD2_0 || NET6_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

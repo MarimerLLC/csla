@@ -1,4 +1,6 @@
-﻿namespace MauiExample;
+﻿using Csla;
+
+namespace MauiExample;
 
 public partial class App : Application
 {
@@ -8,4 +10,6 @@ public partial class App : Application
 
 		MainPage = new AppShell();
 	}
+
+  public static ApplicationContext ApplicationContext { get; set; }
 }

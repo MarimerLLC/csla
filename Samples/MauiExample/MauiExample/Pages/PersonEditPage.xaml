@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+             x:Class="MauiExample.Pages.PersonEditPage"
+             Title="Person Edit">
+  <VerticalStackLayout>
+    <HorizontalStackLayout BackgroundColor="#141414">
+      <Label Text="Person Edit"
+           TextColor="White"
+           FontSize="26"
+             FontAttributes="Bold"
+             Margin="10,0,0,10"
+           SemanticProperties.HeadingLevel="Level1"/>
+    </HorizontalStackLayout>
+    <Grid BindingContext="{Binding Model}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="10" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Label Text="Name" Grid.Row="1" Grid.Column="0" />
+      <HorizontalStackLayout Grid.Row="1" Grid.Column="1">
+        <Entry Text="{Binding Name}" WidthRequest="200" />
+        <csla:PropertyInfo Path="Name" x:Name="NameInfo" />
+        <Label TextColor="Red" BindingContext="{x:Reference NameInfo}" Text="{Binding ErrorText}" Margin="3" />
+        <Label TextColor="Yellow" BindingContext="{x:Reference NameInfo}" Text="{Binding WarningText}" Margin="3" />
+        <Label TextColor="LightGreen" BindingContext="{x:Reference NameInfo}" Text="{Binding InformationText}" Margin="3" />
+      </HorizontalStackLayout>
+      <HorizontalStackLayout Grid.Row="2" Grid.Column="1" >
+        <Button Text="Save" IsEnabled="{Binding IsSavable}" Clicked="SavePerson" Margin="3" />
+        <Button Text="Close" Clicked="ClosePage" Margin="3" />
+      </HorizontalStackLayout>
+    </Grid>
+  </VerticalStackLayout>
+</ContentPage>

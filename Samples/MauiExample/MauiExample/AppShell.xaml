@@ -4,20 +4,19 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MauiExample"
-    xmlns:controls="clr-namespace:MauiExample.Controls"
+    xmlns:pages="clr-namespace:MauiExample.Pages"
     Shell.FlyoutBehavior="Disabled">
 
-  <ShellContent
+  <TabBar Route="MainPage">
+    <Tab Title="Home">
+      <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
-  <Shell.FlyoutHeader>
-    <controls:FlyoutHeader />
-  </Shell.FlyoutHeader>
-
-  <Shell.FlyoutFooter>
-    <controls:FlyoutFooter />
-  </Shell.FlyoutFooter>
-
+        ContentTemplate="{DataTemplate local:MainPage}" />
+    </Tab>
+    <Tab Title="List">
+      <ShellContent
+        Title="Person List"
+        ContentTemplate="{DataTemplate pages:PersonListPage}" />
+    </Tab>
+  </TabBar>
 </Shell>

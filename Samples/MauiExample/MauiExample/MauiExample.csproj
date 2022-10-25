@@ -30,6 +30,38 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-ios|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-maccatalyst|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-maccatalyst|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-windows10.0.19041.0|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-windows10.0.19041.0|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- App Icon -->
     <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -39,7 +71,6 @@
 
     <!-- Images -->
     <MauiImage Include="Resources\Images\*" />
-    <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
 
     <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" />
@@ -49,7 +80,11 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Csla.Maui" Version="7.0.0-R22102403" />
+    <None Remove="Resources\Images\csla_win8_full.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Csla.Maui" Version="7.0.0-R22102404" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -57,11 +92,11 @@
 	  <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <MauiXaml Update="Controls\FlyoutFooter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Controls\FlyoutHeader.xaml">
+	<ItemGroup>
+	  <MauiXaml Update="Pages\PersonEditPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+    <MauiXaml Update="Pages\PersonListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>

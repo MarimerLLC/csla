@@ -1,4 +1,5 @@
-﻿using Csla.Configuration;
+﻿using Csla;
+using Csla.Configuration;
 
 namespace MauiExample;
 
@@ -17,9 +18,10 @@ public static class MauiProgram
 
     builder.Services.AddTransient<DataAccess.IPersonDal, DataAccess.PersonDal>();
     builder.Services.AddCsla(options => options
-      .PropertyChangedMode(Csla.ApplicationContext.PropertyChangedModes.Xaml));
-    //builder.Services.AddCsla(options => options
-    //  .AddXaml());
+      .AddXaml());
+
+    var provider = builder.Services.BuildServiceProvider();
+    App.ApplicationContext = provider.GetRequiredService<ApplicationContext>();
 
     return builder.Build();
 	}

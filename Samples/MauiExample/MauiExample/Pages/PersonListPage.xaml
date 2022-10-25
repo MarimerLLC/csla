@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExample.Pages.PersonListPage"
+             Title="Person List">
+
+  <Grid>
+    <ListView ItemsSource="{Binding Model}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <StackLayout Orientation="Horizontal">
+              <Label Text="{Binding Name}" WidthRequest="100" Margin="5" TextColor="White" />
+              <Button Text="Edit" Clicked="EditPerson" />
+            </StackLayout>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </Grid>
+
+</ContentPage>

@@ -31,7 +31,10 @@ namespace Csla.Xaml
   /// <summary>
   /// Expose metastate information about a property.
   /// </summary>
-#if XAMARIN || MAUI
+#if MAUI
+  public class PropertyInfo : ContentView, INotifyPropertyChanged
+  {
+#elif XAMARIN
   public class PropertyInfo : View, INotifyPropertyChanged
   {
 

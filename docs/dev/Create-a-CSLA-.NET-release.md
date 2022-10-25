@@ -23,7 +23,7 @@ NuGet release
    1. Update version numbers
       1. `cd /Source`
       1. Edit `Directory.Build.props` and update the version number
-      1. `grep -rl --include=*.cs --include=*.csproj '4\.8\.1' | xargs sed -i 's/4\.8\.1/4.9.0/g'`
+      1. `grep -rl --include=*.cs --include=*.csproj --include=*.build.props '4\.8\.1' | xargs sed -i 's/4\.8\.1/4.9.0/g'`
          1. Adjust the version numbers to match current versions
    1. Build the solution in Release mode; Any CPU
 1. Do NuGet release

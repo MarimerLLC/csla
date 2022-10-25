@@ -219,7 +219,7 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     private static void EmitCastToReference(ILGenerator il, Type type)
     {
       if (type.IsValueType)

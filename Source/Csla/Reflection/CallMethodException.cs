@@ -69,7 +69,7 @@ namespace Csla.Reflection
     /// <param name="info">Serialization info.</param>
     /// <param name="context">Serialization context.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !NET5_0 && !NET6_0
+#if !NET6_0_OR_GREATER
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 #endif

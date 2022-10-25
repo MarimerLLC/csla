@@ -1,4 +1,4 @@
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConnectionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -136,7 +136,7 @@ namespace Csla.Data
       return mgr;
     }
 
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     internal static string DbProvider { get; set; } = "System.Data.SqlClient";
 #endif
 
@@ -145,7 +145,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-#if NETSTANDARD2_0 || NET5_0 || NET6_0
+#if NETSTANDARD2_0 || NET6_0_OR_GREATER
       _connection = new System.Data.SqlClient.SqlConnection(connectionString);
       _connection.Open();
 #else

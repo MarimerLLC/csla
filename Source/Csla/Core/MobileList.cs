@@ -7,13 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Serialization.Mobile;
-using serialization = System.Runtime.Serialization;
-using System.IO;
-using System.Reflection;
-using Csla.Reflection;
 
 namespace Csla.Core
 {

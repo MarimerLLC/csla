@@ -29,6 +29,11 @@
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
         <dependency id="Microsoft.AspNetCore.Components.Authorization" version="6.0.8" />
       </group>
+      <group targetFramework="net7.0">
+        <dependency id="Csla" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="7.0.0-rc.2.22472.3" />
+        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="7.0.0-rc.2.22476.2" />
+      </group>
     </dependencies>
   </metadata>
   <files>
@@ -38,6 +43,8 @@
     <file src="..\..\bin\Release\netcoreapp3.1\**\Csla.AspNetCore.*" target="lib\netcoreapp3.1" />
     <!-- Net6.0 Assembly -->
     <file src="..\..\bin\Release\net6.0\**\Csla.AspNetCore.*" target="lib\net6.0" />
+    <!-- Net7.0 Assembly -->
+    <file src="..\..\bin\Release\net7.0\**\Csla.AspNetCore.*" target="lib\net7.0" />
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
   </files>

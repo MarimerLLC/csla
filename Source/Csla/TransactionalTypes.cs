@@ -32,7 +32,7 @@ namespace Csla
     /// style transactions.
     /// </summary>
     TransactionScope
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     ,
     /// <summary>
     /// Causes the server-side DataPortal to

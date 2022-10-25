@@ -47,7 +47,7 @@ namespace Csla.Configuration
       return this;
     }
 
-#if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     /// <summary>
     /// Sets the invariant name of a provider for
     /// use by DbProviderFactories.GetFactory().

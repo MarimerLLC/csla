@@ -21,6 +21,18 @@ namespace Csla.Configuration
     public string AuthenticationType { get => ApplicationContext.AuthenticationType; set => ApplicationContext.AuthenticationType = value; }
 
     /// <summary>
+    /// Gets or sets whether the user's security principal flows from client to server.
+    /// </summary>
+    /// <remarks>
+    /// You should avoid enabling this flow wherever possible. Anything on 
+    /// the client can be manipulated, and using any data flowed from the 
+    /// client to make security decisions on the server could make your 
+    /// application vulnerable to impersonation exploits or elevation
+    /// of privilege attacks.
+    /// </remarks>
+    public bool EnableSecurityPrincipalFlowFromClient { get => ApplicationContext.FlowSecurityPrincipalFromClient; set => ApplicationContext.FlowSecurityPrincipalFromClient = value; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()method 
     /// when using a local data portal configuration.

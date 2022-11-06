@@ -138,9 +138,9 @@ namespace Csla.Server
 
     private IPrincipal GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
     {
-      if (isRemotePortal && ApplicationContext.AuthenticationType == "Windows")
+      if (isRemotePortal && !ApplicationContext.FlowSecurityPrincipalFromClient)
       {
-        // Windows integrated security
+        // Platform-supplied security (including Windows and ASP.NET)
         return null;
       }
       else

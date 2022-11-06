@@ -45,12 +45,12 @@ namespace Csla.Xaml
       if (_principal == null)
       {
 #if NET6_0_OR_GREATER
-        if (OperatingSystem.IsWindows() && ApplicationContext.AuthenticationType == "Windows")
+        if (OperatingSystem.IsWindows() && !ApplicationContext.FlowSecurityPrincipalFromClient)
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
         else
           SetUser(new System.Security.Claims.ClaimsPrincipal());
 #elif NETFRAMEWORK
-        if (ApplicationContext.AuthenticationType == "Windows")
+        if (!ApplicationContext.FlowSecurityPrincipalFromClient)
 #pragma warning disable CA1416 // Validate platform compatibility
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
 #pragma warning restore CA1416 // Validate platform compatibility

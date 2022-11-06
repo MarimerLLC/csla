@@ -680,9 +680,9 @@ namespace Csla.Server
 
     private void SetPrincipal(DataPortalContext context)
     {
-      if (context.IsRemotePortal && ApplicationContext.AuthenticationType == "Windows")
+      if (context.IsRemotePortal && !ApplicationContext.FlowSecurityPrincipalFromClient)
       {
-        // When using integrated security, Principal must be null
+        // When using platform-supplied security, Principal must be null
         if (context.Principal != null)
         {
           Csla.Security.SecurityException ex =
@@ -690,12 +690,15 @@ namespace Csla.Server
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
-        // Set .NET to use integrated security
-        AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+        if (ApplicationContext.AuthenticationType == "Windows")
+        {
+          // Set .NET to use integrated security
+          AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+        }
       }
       else
       {
-        // We expect the some Principal object
+        // We expect some Principal object to be available
         if (context.Principal == null)
         {
           Csla.Security.SecurityException ex =
@@ -724,7 +727,7 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
       ApplicationContext.Clear();
-      if (ApplicationContext.AuthenticationType != "Windows")
+      if (ApplicationContext.FlowSecurityPrincipalFromClient)
         ApplicationContext.User = null;
     }
 

@@ -181,6 +181,17 @@ namespace Csla
     public static string AuthenticationType { get; internal set; } = "Csla";
 
     /// <summary>
+    /// Get whether we are to flow User Principal to the server
+    /// </summary>
+    /// <remarks>
+    /// This should generally be left at the default of false. Values on 
+    /// the client can be manipulated, and therefore allowing the principal 
+    /// to flow from client to server could result in an exploitable security 
+    /// weakness, including impersonation or elevation of privileges.
+    /// </remarks>
+    public static bool FlowSecurityPrincipalFromClient { get; internal set; } = false;
+
+    /// <summary>
     /// Gets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.

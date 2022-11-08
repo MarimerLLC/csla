@@ -65,6 +65,23 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Enable flow of user's security principal from client to server.
+    /// </summary>
+    /// <returns>This instance, to support method chaining</returns>
+    /// <remarks>
+    /// You should avoid enabling this flow wherever possible. Anything on 
+    /// the client can be manipulated, and using any data flowed from the 
+    /// client to make security decisions on the server could make your 
+    /// application vulnerable to impersonation exploits or elevation
+    /// of privilege attacks.
+    /// </remarks>
+    public DataPortalClientOptions EnableSecurityPrincipalFlowFromClient()
+    {
+      ApplicationContext.FlowSecurityPrincipalFromClient = true;
+      return this;
+    }
+
+    /// <summary>
     /// Sets a value indicating whether the
     /// server-side business object should be returned to
     /// the client as part of the DataPortalException.

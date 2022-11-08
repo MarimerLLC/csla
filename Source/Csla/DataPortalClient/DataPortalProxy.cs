@@ -319,7 +319,7 @@ namespace Csla.DataPortalClient
       result.CriteriaData = null;
       result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
       result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
-          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User);
+          .Serialize(ApplicationContext.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
       result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
       return result;
@@ -331,7 +331,7 @@ namespace Csla.DataPortalClient
       result.ObjectData = null;
       result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
       result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
-          .Serialize(ApplicationContext.AuthenticationType == "Windows" ? null : ApplicationContext.User);
+          .Serialize(ApplicationContext.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
       return result;

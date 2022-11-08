@@ -33,7 +33,7 @@ namespace Csla.Windows
     {
       if (_principal == null)
       {
-        if (ApplicationContext.AuthenticationType != "Windows")
+        if (ApplicationContext.FlowSecurityPrincipalFromClient)
           SetUser(new System.Security.Claims.ClaimsPrincipal());
         else
 #pragma warning disable CA1416 // Validate platform compatibility

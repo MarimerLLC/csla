@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "..\BlazorExam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Mock", "..\BlazorExample\BlazorExample\DataAccess.Mock\DataAccess.Mock.csproj", "{6CD8336E-79B8-4162-A730-66349C660065}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.EF", "..\BlazorExample\BlazorExample\DataAccess.EF\DataAccess.EF.csproj", "{4BAA3D5D-9C17-4415-A584-EEAE087C40AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6CD8336E-79B8-4162-A730-66349C660065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CD8336E-79B8-4162-A730-66349C660065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CD8336E-79B8-4162-A730-66349C660065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BAA3D5D-9C17-4415-A584-EEAE087C40AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BAA3D5D-9C17-4415-A584-EEAE087C40AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BAA3D5D-9C17-4415-A584-EEAE087C40AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BAA3D5D-9C17-4415-A584-EEAE087C40AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -51,6 +51,11 @@ namespace Csla.Blazor
     /// raises its PropertyChanged event
     /// </summary>
     public event PropertyChangedEventHandler ModelPropertyChanged;
+    /// <summary>
+    /// Event raised when the Model object
+    /// raises its ChildChanged event
+    /// </summary>
+    public event Action ChildChanged;
 
     /// <summary>
     /// Raises the ModelChanging event
@@ -60,11 +65,24 @@ namespace Csla.Blazor
     protected virtual void OnModelChanging(T oldValue, T newValue)
     {
       _info.Clear();
+      if (oldValue is IBusinessBase oldBusinessBase)
+        oldBusinessBase.ChildChanged -= (s, e) => OnChildChanged();
+      if (newValue is IBusinessBase newBusinessBase)
+        newBusinessBase.ChildChanged += (s, e) => OnChildChanged();
+
       if (oldValue is INotifyPropertyChanged oldObj)
         oldObj.PropertyChanged -= (s, e) => OnModelPropertyChanged(e.PropertyName);
       if (newValue is INotifyPropertyChanged newObj)
         newObj.PropertyChanged += (s, e) => OnModelPropertyChanged(e.PropertyName);
       ModelChanging?.Invoke(oldValue, newValue);
+    }
+
+    /// <summary>
+    /// Raises the ChildChanged event
+    /// </summary>
+    protected virtual void OnChildChanged()
+    {
+      ChildChanged?.Invoke();
     }
 
     /// <summary>

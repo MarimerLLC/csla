@@ -3,10 +3,11 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Base type for creating your own viewmodel</summary>
+// <summary>Base type for creating your own view model</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ using Csla.Rules;
 namespace Csla.Blazor
 {
   /// <summary>
-  /// Base type for creating your own viewmodel.
+  /// Base type for creating your own view model.
   /// </summary>
   public class ViewModel<T>
   {
@@ -34,59 +35,116 @@ namespace Csla.Blazor
       ApplicationContext = applicationContext;
     }
 
+    #region Events
+
     /// <summary>
-    /// Event raised after Model has been saved
+    /// Event raised after Model has been saved.
     /// </summary>
     public event Action Saved;
     /// <summary>
-    /// Event raised when Model is changing
+    /// Event raised when Model is changing.
     /// </summary>
     public event Action<T, T> ModelChanging;
     /// <summary>
-    /// Event raised when Model has changed
+    /// Event raised when Model has changed.
     /// </summary>
     public event Action ModelChanged;
     /// <summary>
     /// Event raised when the Model object
-    /// raises its PropertyChanged event
+    /// raises its PropertyChanged event.
     /// </summary>
     public event PropertyChangedEventHandler ModelPropertyChanged;
     /// <summary>
     /// Event raised when the Model object
-    /// raises its ChildChanged event
+    /// raises its ModelChildChanged event.
     /// </summary>
-    public event Action ChildChanged;
+    public event Action<object, Core.ChildChangedEventArgs> ModelChildChanged;
+    /// <summary>
+    /// Event raised when the Model object
+    /// raises its ModelCollectionChanged event.
+    /// </summary>
+    public event Action<object, NotifyCollectionChangedEventArgs> ModelCollectionChanged;
 
     /// <summary>
-    /// Raises the ModelChanging event
+    /// Raises the ModelChanging event.
     /// </summary>
     /// <param name="oldValue">Old Model value</param>
     /// <param name="newValue">New Model value</param>
     protected virtual void OnModelChanging(T oldValue, T newValue)
     {
-      _info.Clear();
-      if (oldValue is IBusinessBase oldBusinessBase)
-        oldBusinessBase.ChildChanged -= (s, e) => OnChildChanged();
-      if (newValue is IBusinessBase newBusinessBase)
-        newBusinessBase.ChildChanged += (s, e) => OnChildChanged();
+      if (ReferenceEquals(oldValue, newValue)) return;
 
-      if (oldValue is INotifyPropertyChanged oldObj)
-        oldObj.PropertyChanged -= (s, e) => OnModelPropertyChanged(e.PropertyName);
-      if (newValue is INotifyPropertyChanged newObj)
-        newObj.PropertyChanged += (s, e) => OnModelPropertyChanged(e.PropertyName);
+      if (ManageObjectLifetime && newValue is Core.ISupportUndo undo)
+        undo.BeginEdit();
+
+      _propertyInfoCache.Clear();
+
+      // unhook events from old value
+      if (oldValue != null)
+      {
+        UnhookChangedEvents(oldValue);
+
+        if (oldValue is Core.INotifyBusy nb)
+          nb.BusyChanged -= OnBusyChanged;
+      }
+
+      // hook events on new value
+      if (newValue != null)
+      {
+        HookChangedEvents(newValue);
+
+        if (newValue is Core.INotifyBusy nb)
+          nb.BusyChanged += OnBusyChanged;
+      }
+
       ModelChanging?.Invoke(oldValue, newValue);
     }
 
     /// <summary>
-    /// Raises the ChildChanged event
+    /// Unhooks changed event handlers from the model.
     /// </summary>
-    protected virtual void OnChildChanged()
+    /// <param name="model"></param>
+    protected void UnhookChangedEvents(T model)
     {
-      ChildChanged?.Invoke();
+      if (model is INotifyPropertyChanged npc)
+        npc.PropertyChanged -= OnModelPropertyChanged;
+
+      if (model is IBusinessBase ncc)
+        ncc.ChildChanged -= OnModelChildChanged;
+
+      if (model is INotifyCollectionChanged cc)
+        cc.CollectionChanged -= OnModelCollectionChanged;
     }
 
     /// <summary>
-    /// Raises the ModelChanged event
+    /// Hooks changed events on the model.
+    /// </summary>
+    /// <param name="model"></param>
+    private void HookChangedEvents(T model)
+    {
+      if (model is INotifyPropertyChanged npc)
+        npc.PropertyChanged += OnModelPropertyChanged;
+
+      if (model is IBusinessBase ncc)
+        ncc.ChildChanged += OnModelChildChanged;
+
+      if (model is INotifyCollectionChanged cc)
+        cc.CollectionChanged += OnModelCollectionChanged;
+    }
+
+
+    private void OnBusyChanged(object sender, Core.BusyChangedEventArgs e)
+    {
+      // only set busy state for entire object. Ignore busy state based
+      // on async rules being active
+      if (string.IsNullOrEmpty(e.PropertyName))
+        IsBusy = e.Busy;
+      //else
+      //  OnSetProperties();
+    }
+
+    /// <summary>
+    /// Raises the ModelChanged event.
     /// </summary>
     protected virtual void OnModelChanged()
     {
@@ -94,16 +152,41 @@ namespace Csla.Blazor
     }
 
     /// <summary>
-    /// Raises the ModelPropertyChanged event
+    /// Raises the ModelPropertyChanged event.
     /// </summary>
-    /// <param name="propertyName"></param>
-    protected virtual void OnModelPropertyChanged(string propertyName)
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected virtual void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      ModelPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      ModelPropertyChanged?.Invoke(this, e);
     }
 
     /// <summary>
-    /// Refresh the Model
+    /// Raises the ModelChildChanged event.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected virtual void OnModelChildChanged(object sender, Core.ChildChangedEventArgs e)
+    {
+      ModelChildChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the ModelCollectionChanged event.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected virtual void OnModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      ModelCollectionChanged?.Invoke(this, e);
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Refresh the Model.
     /// </summary>
     /// <param name="factory">Async data portal or factory method</param>
     public async Task<T> RefreshAsync(Func<Task<T>> factory)
@@ -112,7 +195,8 @@ namespace Csla.Blazor
       ViewModelErrorText = null;
       try
       {
-        Model = await factory();
+        IsBusy = true;
+        Model = await factory();    // TODO: why not factory.Invoke() like in Xaml.Shared.ViewModelBase
       }
       catch (DataPortalException ex)
       {
@@ -126,11 +210,16 @@ namespace Csla.Blazor
         Exception = ex;
         ViewModelErrorText = ex.Message;
       }
+      finally
+      {
+        IsBusy = false;
+      }
+
       return Model;
     }
 
     /// <summary>
-    /// Saves the Model
+    /// Saves the Model.
     /// </summary>
     /// <returns></returns>
     public async Task SaveAsync()
@@ -144,6 +233,19 @@ namespace Csla.Blazor
       }
       try
       {
+        UnhookChangedEvents(Model);
+        var savable = Model as Core.ISavable;
+        if (ManageObjectLifetime)
+        {
+          // clone the object if possible
+          if (Model is ICloneable cloneable)
+            savable = (Core.ISavable)cloneable.Clone();
+
+          //apply changes
+          if (savable is Core.ISupportUndo undoable)
+            undoable.ApplyEdit();
+        }
+        IsBusy = true;
         Model = await DoSaveAsync();
         Saved?.Invoke();
       }
@@ -157,10 +259,15 @@ namespace Csla.Blazor
         Exception = ex;
         ViewModelErrorText = ex.Message;
       }
+      finally
+      {
+        HookChangedEvents(Model);
+        IsBusy = false;
+      }
     }
 
     /// <summary>
-    /// Override to provide custom Model save behavior
+    /// Override to provide custom Model save behavior.
     /// </summary>
     /// <returns></returns>
     protected virtual async Task<T> DoSaveAsync()
@@ -175,6 +282,37 @@ namespace Csla.Blazor
       }
       return Model;
     }
+
+    /// <summary>
+    /// Cancels changes made to the model 
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    protected virtual void DoCancel()
+    {
+      if (ManageObjectLifetime)
+      {
+        if (Model is Core.ISupportUndo undo)
+        {
+          UnhookChangedEvents(Model);
+          try
+          {
+            undo.CancelEdit();
+            undo.BeginEdit();
+          }
+          finally
+          {
+            HookChangedEvents(Model);
+            //OnSetProperties();
+          }
+        }
+      }
+    }
+
+    // TODO: should we implement BeginAddNew(), DoRemove(), DoDelete()
+
+    #endregion
+
+    #region Properties
 
     private T _model;
     /// <summary>
@@ -194,12 +332,31 @@ namespace Csla.Blazor
       }
     }
 
-    private readonly Dictionary<string, object> _info = new Dictionary<string, object>();
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// view model should manage the lifetime of
+    /// the business object, including using n-level
+    /// undo.
+    /// </summary>
+    //[Browsable(false)]    // TODO: ask if this is desired
+    public bool ManageObjectLifetime { get; set; } = false;
+
+    /// <summary>
+    /// Gets a value indicating whether this object is
+    /// executing an asynchronous process.
+    /// </summary>
+    public bool IsBusy { get; protected set; } = false;
+
+    // TODO: should we implement IsDirty, IsValid, CanSave, CanCancel, CanCreate, CanDelete, CanFetch, CanRemove, CanAddNew, SetProperties()
+
+    #endregion
+
+    #region GetPropertyInfo
 
     /// <summary>
     /// Get a PropertyInfo object for a property.
     /// PropertyInfo provides access
-    /// to the metastate of the property.
+    /// to the meta-state of the property.
     /// </summary>
     /// <param name="property">Property expression</param>
     /// <returns></returns>
@@ -216,7 +373,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Get a PropertyInfo object for a property.
     /// PropertyInfo provides access
-    /// to the metastate of the property.
+    /// to the meta-state of the property.
     /// </summary>
     /// <param name="property">Property expression</param>
     /// <param name="id">Unique identifier for property in list or array</param>
@@ -234,7 +391,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Get a PropertyInfo object for a property
     /// of the Model. PropertyInfo provides access
-    /// to the metastate of the property.
+    /// to the meta-state of the property.
     /// </summary>
     /// <param name="propertyName">Property name</param>
     /// <returns></returns>
@@ -247,7 +404,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Get a PropertyInfo object for a property
     /// of the Model. PropertyInfo provides access
-    /// to the metastate of the property.
+    /// to the meta-state of the property.
     /// </summary>
     /// <param name="propertyName">Property name</param>
     /// <param name="id">Unique identifier for property in list or array</param>
@@ -258,29 +415,35 @@ namespace Csla.Blazor
       return GetPropertyInfo(keyName, Model, propertyName);
     }
 
+    private readonly Dictionary<string, object> _propertyInfoCache = new Dictionary<string, object>();
+    
     private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName)
     {
       PropertyInfo result;
-      if (_info.TryGetValue(keyName, out object temp))
+      if (_propertyInfoCache.TryGetValue(keyName, out object temp))
       {
         result = (PropertyInfo)temp;
       }
       else
       {
         result = new PropertyInfo(model, propertyName);
-        _info.Add(keyName, result);
+        _propertyInfoCache.Add(keyName, result);
       }
       return result;
     }
 
+    #endregion
+
+    #region Errors and Exception
+
     /// <summary>
-    /// Gets any error text generated by refresh or save operations
+    /// Gets any error text generated by refresh or save operations.
     /// </summary>
     public string ViewModelErrorText { get; protected set; }
 
     /// <summary>
     /// Gets the first validation error 
-    /// message from the Model
+    /// message from the Model.
     /// </summary>
     protected virtual string ModelErrorText
     {
@@ -296,15 +459,21 @@ namespace Csla.Blazor
 
     /// <summary>
     /// Gets the last exception caught by
-    /// the viewmodel during refresh or save
+    /// the view model during refresh or save
     /// operations.
     /// </summary>
     public Exception Exception { get; private set; }
 
+    #endregion
+
+    #region ObjectLevelPermissions
+
+    // TODO: Should we implement SetPropertiesAtObjectLevel(); and local state caching like Xaml.Shared.ViewModelBase?
+
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to create an instance of the
-    /// business domain type
+    /// business domain type.
     /// </summary>
     /// <returns></returns>
     public bool CanCreateObject()
@@ -315,7 +484,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to retrieve an instance of the
-    /// business domain type
+    /// business domain type.
     /// </summary>
     /// <returns></returns>
     public bool CanGetObject()
@@ -326,7 +495,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to edit/save an instance of the
-    /// business domain type
+    /// business domain type.
     /// </summary>
     /// <returns></returns>
     public bool CanEditObject()
@@ -337,12 +506,14 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to delete an instance of the
-    /// business domain type
+    /// business domain type.
     /// </summary>
     /// <returns></returns>
     public bool CanDeleteObject()
     {
       return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, typeof(T));
     }
+
+    #endregion
   }
 }

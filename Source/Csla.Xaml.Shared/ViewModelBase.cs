@@ -503,7 +503,7 @@ namespace Csla.Xaml
     private bool ObjectPropertiesSet;
 
     /// <summary>
-    /// This method is only called from constuctor to set default values immediately.
+    /// This method is only called from constructor to set default values immediately.
     /// Sets the properties at object level.
     /// </summary>
     private void SetPropertiesAtObjectLevel()
@@ -557,8 +557,8 @@ namespace Csla.Xaml
         if (ManageObjectLifetime)
         {
           // clone the object if possible
-          if (Model is ICloneable clonable)
-            savable = (ISavable)clonable.Clone();
+          if (Model is ICloneable cloneable)
+            savable = (ISavable)cloneable.Clone();
 
           //apply changes
           if (savable is ISupportUndo undoable)

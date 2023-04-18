@@ -1336,7 +1336,7 @@ namespace Csla.Core
 
     IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
     {
-      return BusinessRules.GetBrokenRules().Select(r => r.Description);
+      return BusinessRules.GetBrokenRules().Where(r => r.Property == propertyName).Select(r => r.Description);
     }
 
     bool INotifyDataErrorInfo.HasErrors => !IsSelfValid;

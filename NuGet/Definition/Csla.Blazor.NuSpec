@@ -29,9 +29,9 @@
       </group>
       <group targetFramework="net7.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.AspNetCore.Components" version="7.0.0-rc.2.22476.2" />
-        <dependency id="Microsoft.AspNetCore.Components.Web" version="7.0.0-rc.2.22476.2" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="7.0.0-rc.2.22476.2" />
+        <dependency id="Microsoft.AspNetCore.Components" version="7.0.5" />
+        <dependency id="Microsoft.AspNetCore.Components.Web" version="7.0.5" />
+        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="7.0.5" />
       </group>
     </dependencies>
   </metadata>

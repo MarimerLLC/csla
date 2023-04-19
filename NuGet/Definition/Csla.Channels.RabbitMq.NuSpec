@@ -17,11 +17,11 @@
     <dependencies>
       <group targetFramework="netstandard2.1">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="RabbitMQ.Client" version="6.2.2" />
+        <dependency id="RabbitMQ.Client" version="6.5.0" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="RabbitMQ.Client" version="6.2.2" />
+        <dependency id="RabbitMQ.Client" version="6.5.0" />
       </group>
     </dependencies>
   </metadata>

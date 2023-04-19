@@ -81,13 +81,13 @@
         <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
       <group targetFramework="net7.0">
-        <dependency id="Microsoft.Extensions.Configuration" version="7.0.0-rc.2.22472.3" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="7.0.0-rc.2.22472.3" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="7.0.0-rc.2.22472.3" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="7.0.0-rc.2.22472.3" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="7.0.0-rc.2.22472.3" />
-        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="7.0.0-rc.2.22472.3" />
-        <dependency id="System.ComponentModel.Annotations" version="6.0.0-preview.4.21253.7" />
+        <dependency id="Microsoft.Extensions.Configuration" version="7.0.0" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="7.0.4" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="7.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="7.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="7.0.0" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="7.0.0" />
+        <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
         <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
     </dependencies>

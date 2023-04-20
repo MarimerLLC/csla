@@ -24,6 +24,7 @@ More information about CSLA .NET is available from the following sources:
 * Community
    * [CSLA .NET discussions](https://github.com/MarimerLLC/csla/discussions) 
    * [Discord server](https://discord.gg/9ahKjb7ccf)
+   * [Fediverse/Mastodon](https://dotnet.social/@cslanet)
 * [CSLA .NET FAQ](https://github.com/MarimerLLC/csla/blob/main/docs/readme.md)
 * [Getting started with CSLA .NET](https://github.com/MarimerLLC/csla/blob/main/docs/Getting-started.md)
 * [CSLA .NET training videos and ebooks](https://github.com/MarimerLLC/csla/blob/main/docs/Books-and-videos.md)

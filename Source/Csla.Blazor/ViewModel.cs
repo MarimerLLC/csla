@@ -232,17 +232,10 @@ namespace Csla.Blazor
       try
       {
         UnhookChangedEvents(Model);
-        var savable = Model as Core.ISavable;
-        if (ManageObjectLifetime)
-        {
-          // clone the object if possible
-          if (Model is ICloneable cloneable)
-            savable = (Core.ISavable)cloneable.Clone();
 
-          //apply changes
-          if (savable is Core.ISupportUndo undoable)
+        if (ManageObjectLifetime && Model is Core.ISupportUndo undoable)
             undoable.ApplyEdit();
-        }
+
         IsBusy = true;
         Model = await DoSaveAsync();
         Saved?.Invoke();
@@ -271,13 +264,8 @@ namespace Csla.Blazor
     protected virtual async Task<T> DoSaveAsync()
     {
       if (Model is Core.ISavable savable)
-      {
-        var result = (T)await savable.SaveAsync();
-        if (Model is Core.IEditableBusinessObject editable)
-          new Core.GraphMerger(ApplicationContext).MergeGraph(editable, (Core.IEditableBusinessObject)result);
-        else
-          Model = result;
-      }
+        await savable.SaveAndMergeAsync();
+
       return Model;
     }
 

@@ -555,6 +555,12 @@ There is an `IChildDataPortal<T>` service you can use for this purpose. The `Bus
 ```
 
 As in previous versions of CSLA, this only works if the child type's `ChildCreate` operation can run on the client device (meaning it doesn't use server-side resources such as a database).
+  
+## Getting a Database Connection
+  
+The various connection manager types from `Csla.Data` are now gone, in favor of using modern DI based techniques for managing database connection and transaction instances.
+
+This thread has some good discussion on [how to implement database connection management](https://github.com/MarimerLLC/csla/discussions/3287#discussioncomment-5638119) using DI in a way that has relatively low impact on existing code.
 
 ## Implementing Data Portal Operations
 

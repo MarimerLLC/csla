@@ -139,8 +139,6 @@ namespace Csla.Blazor
       // on async rules being active
       if (string.IsNullOrEmpty(e.PropertyName))
         IsBusy = e.Busy;
-      //else
-      //  OnSetProperties();
     }
 
     /// <summary>
@@ -196,7 +194,7 @@ namespace Csla.Blazor
       try
       {
         IsBusy = true;
-        Model = await factory();    // TODO: why not factory.Invoke() like in Xaml.Shared.ViewModelBase
+        Model = await factory();
       }
       catch (DataPortalException ex)
       {
@@ -302,13 +300,10 @@ namespace Csla.Blazor
           finally
           {
             HookChangedEvents(Model);
-            //OnSetProperties();
           }
         }
       }
     }
-
-    // TODO: should we implement BeginAddNew(), DoRemove(), DoDelete()
 
     #endregion
 
@@ -338,7 +333,6 @@ namespace Csla.Blazor
     /// the business object, including using n-level
     /// undo.
     /// </summary>
-    //[Browsable(false)]    // TODO: ask if this is desired
     public bool ManageObjectLifetime { get; set; } = false;
 
     /// <summary>
@@ -346,8 +340,6 @@ namespace Csla.Blazor
     /// executing an asynchronous process.
     /// </summary>
     public bool IsBusy { get; protected set; } = false;
-
-    // TODO: should we implement IsDirty, IsValid, CanSave, CanCancel, CanCreate, CanDelete, CanFetch, CanRemove, CanAddNew, SetProperties()
 
     #endregion
 
@@ -468,18 +460,29 @@ namespace Csla.Blazor
 
     #region ObjectLevelPermissions
 
-    // TODO: Should we implement SetPropertiesAtObjectLevel(); and local state caching like Xaml.Shared.ViewModelBase?
-
+    private bool _canCreateObject;
+    
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to create an instance of the
     /// business domain type.
     /// </summary>
     /// <returns></returns>
-    public bool CanCreateObject()
+    public bool CanCreateObject
     {
-      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, typeof(T));
+      get
+      {
+        SetPropertiesAtObjectLevel(); 
+        return _canCreateObject;
+      }
+      protected set
+      {
+        if (_canCreateObject != value)
+          _canCreateObject = value;
+      }
     }
+
+    private bool _canGetObject;
 
     /// <summary>
     /// Gets a value indicating whether the current user
@@ -487,10 +490,21 @@ namespace Csla.Blazor
     /// business domain type.
     /// </summary>
     /// <returns></returns>
-    public bool CanGetObject()
+    public bool CanGetObject
     {
-      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, typeof(T));
+      get
+      {
+        SetPropertiesAtObjectLevel();
+        return _canGetObject;
+      }
+      protected set
+      {
+        if (_canGetObject != value)
+          _canGetObject = value;
+      }
     }
+
+    private bool _canEditObject;
 
     /// <summary>
     /// Gets a value indicating whether the current user
@@ -498,20 +512,59 @@ namespace Csla.Blazor
     /// business domain type.
     /// </summary>
     /// <returns></returns>
-    public bool CanEditObject()
+    public bool CanEditObject
     {
-      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, typeof(T));
+      get
+      {
+        SetPropertiesAtObjectLevel();
+        return _canEditObject;
+      }
+      protected set
+      {
+        if (_canEditObject != value)
+          _canEditObject = value;
+      }
     }
 
+    private bool _canDeleteObject;
+    
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to delete an instance of the
     /// business domain type.
     /// </summary>
     /// <returns></returns>
-    public bool CanDeleteObject()
+    public bool CanDeleteObject
     {
-      return BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, typeof(T));
+      get
+      {
+        SetPropertiesAtObjectLevel();
+        return _canDeleteObject;
+      }
+      protected set
+      {
+        if (_canDeleteObject != value)
+          _canDeleteObject = value;
+      }
+    }
+
+    private bool ObjectPropertiesSet;
+
+    /// <summary>
+    /// Sets the properties at object level.
+    /// </summary>
+    private void SetPropertiesAtObjectLevel()
+    {
+      if (ObjectPropertiesSet)
+        return;
+      ObjectPropertiesSet = true;
+
+      Type sourceType = typeof(T);
+
+      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, sourceType);
+      CanGetObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.GetObject, sourceType);
+      CanEditObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, sourceType);
+      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, sourceType);
     }
 
     #endregion

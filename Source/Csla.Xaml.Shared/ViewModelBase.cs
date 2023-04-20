@@ -503,7 +503,6 @@ namespace Csla.Xaml
     private bool ObjectPropertiesSet;
 
     /// <summary>
-    /// This method is only called from constructor to set default values immediately.
     /// Sets the properties at object level.
     /// </summary>
     private void SetPropertiesAtObjectLevel()

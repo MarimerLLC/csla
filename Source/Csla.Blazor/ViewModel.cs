@@ -264,8 +264,13 @@ namespace Csla.Blazor
     protected virtual async Task<T> DoSaveAsync()
     {
       if (Model is Core.ISavable savable)
-        await savable.SaveAndMergeAsync();
-
+      {
+        var result = (T)await savable.SaveAsync();
+        if (Model is Core.IEditableBusinessObject editable)
+          new Core.GraphMerger(ApplicationContext).MergeGraph(editable, (Core.IEditableBusinessObject)result);
+        else
+          Model = result;
+      }
       return Model;
     }
 

@@ -98,7 +98,6 @@ namespace Csla.Xaml
     /// ViewManageObjectLifetime should automatically managed the
     /// lifetime of the ManageObjectLifetime.
     /// </summary>
-    [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
     public bool ManageObjectLifetime
@@ -574,8 +573,13 @@ namespace Csla.Xaml
     protected virtual async Task<T> DoSaveAsync()
     {
       if (Model is ISavable savable)
-        await savable.SaveAndMergeAsync();
-
+      {
+        var result = (T)await savable.SaveAsync();
+        if (Model is IEditableBusinessObject editable)
+          new GraphMerger(ApplicationContext).MergeGraph(editable, (IEditableBusinessObject)result);
+        else
+          Model = result;
+      }
       return Model;
     }
 

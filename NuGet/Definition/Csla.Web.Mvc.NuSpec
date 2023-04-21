@@ -10,6 +10,7 @@
     <repository type="git" url="https://github.com/MarimerLLC/csla" />
     <authors>Marimer LLC</authors>
     <icon>images\csla.png</icon>
+    <readme>docs\readme.md</readme>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright © Marimer LLC.</copyright>
     <description>UI helpers for using CSLA .NET business types with ASP.NET MVC.</description>
@@ -24,5 +25,6 @@
     <file src="..\..\Bin\Release\NET462\**\Csla.Web.Mvc5.*" target="lib\net462" />
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
+    <file src="..\..\Support\readme.md" target="docs\" />
   </files>
 </package>

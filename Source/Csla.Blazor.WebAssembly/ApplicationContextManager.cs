@@ -92,7 +92,7 @@ namespace Csla.Blazor.WebAssembly
     /// <summary>
     /// Sets the current principal ONLY IN APPLICATIONCONTEXT.
     /// To set the value correctly, use your specific
-    /// ApplicatonContextStateProvider implementation.
+    /// ApplicationContextStateProvider implementation.
     /// </summary>
     /// <param name="principal">Principal object.</param>
     public virtual void SetUser(IPrincipal principal)

@@ -98,7 +98,6 @@ namespace Csla.Xaml
     /// ViewManageObjectLifetime should automatically managed the
     /// lifetime of the ManageObjectLifetime.
     /// </summary>
-    [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
     public bool ManageObjectLifetime
@@ -416,7 +415,7 @@ namespace Csla.Xaml
     {
       get
       {
-        SetPropertiesAtObjectLevel(); 
+        SetPropertiesAtObjectLevel();
         return _canCreateObject;
       }
       protected set
@@ -437,10 +436,10 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanGetObject
     {
-      get 
-      { 
-        SetPropertiesAtObjectLevel(); 
-        return _canGetObject; 
+      get
+      {
+        SetPropertiesAtObjectLevel();
+        return _canGetObject;
       }
       protected set
       {
@@ -461,10 +460,10 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanEditObject
     {
-      get 
-      { 
-        SetPropertiesAtObjectLevel(); 
-        return _canEditObject; 
+      get
+      {
+        SetPropertiesAtObjectLevel();
+        return _canEditObject;
       }
       protected set
       {
@@ -485,10 +484,10 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanDeleteObject
     {
-      get 
-      { 
-        SetPropertiesAtObjectLevel(); 
-        return _canDeleteObject; 
+      get
+      {
+        SetPropertiesAtObjectLevel();
+        return _canDeleteObject;
       }
       protected set
       {
@@ -503,7 +502,6 @@ namespace Csla.Xaml
     private bool ObjectPropertiesSet;
 
     /// <summary>
-    /// This method is only called from constuctor to set default values immediately.
     /// Sets the properties at object level.
     /// </summary>
     private void SetPropertiesAtObjectLevel()
@@ -553,25 +551,34 @@ namespace Csla.Xaml
       try
       {
         UnhookChangedEvents(Model);
-        var savable = Model as ISavable;
-        if (ManageObjectLifetime)
-        {
-          // clone the object if possible
-          if (Model is ICloneable clonable)
-            savable = (ISavable)clonable.Clone();
 
-          //apply changes
-          if (savable is ISupportUndo undoable)
-            undoable.ApplyEdit();
-        }
+        if (ManageObjectLifetime && Model is ISupportUndo undoable)
+          undoable.ApplyEdit();
 
         IsBusy = true;
-        Model = (T)await savable.SaveAsync();
+        Model = await DoSaveAsync();
       }
       finally
       {
         HookChangedEvents(Model);
         IsBusy = false;
+      }
+      return Model;
+    }
+
+    /// <summary>
+    /// Override to provide custom Model save behavior.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual async Task<T> DoSaveAsync()
+    {
+      if (Model is ISavable savable)
+      {
+        var result = (T)await savable.SaveAsync();
+        if (Model is IEditableBusinessObject editable)
+          new GraphMerger(ApplicationContext).MergeGraph(editable, (IEditableBusinessObject)result);
+        else
+          Model = result;
       }
       return Model;
     }

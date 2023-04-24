@@ -22,7 +22,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
-    public static DataPortalClientOptions UseHttpProxy(
+    public static DataPortalClientOptions UseGrpcProxy(
       this DataPortalClientOptions config, Action<Csla.Channels.Grpc.GrpcProxyOptions> options)
     {
       var proxyOptions = new Csla.Channels.Grpc.GrpcProxyOptions();

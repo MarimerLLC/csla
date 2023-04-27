@@ -26,6 +26,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
   .DataPortal(dpo => dpo
+    .EnableSecurityPrincipalFlowFromClient()
     .AddServerSideDataPortal()
     .UseLocalProxy()));
 

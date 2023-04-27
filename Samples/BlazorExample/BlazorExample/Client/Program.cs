@@ -16,6 +16,7 @@ builder.Services.AddOptions();
 builder.Services.AddCsla(o => o
   .AddBlazorWebAssembly()
   .DataPortal(dpo => dpo
+    .EnableSecurityPrincipalFlowFromClient()
     .UseHttpProxy(options => options.DataPortalUrl = "/api/DataPortal")));
 
 await builder.Build().RunAsync();

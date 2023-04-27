@@ -22,12 +22,12 @@ namespace Csla.Blazor.WebAssembly
   {
     private ContextDictionary LocalContext { get; set; }
     private ContextDictionary ClientContext { get; set; }
-    private IPrincipal CurrentPrincipal { get; set; }
-    private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+    private IPrincipal _currentPrincipal;
     private bool disposedValue;
 
     /// <summary>
-    /// Gets the current HttpContext instance.
+    /// Gets the current AuthenticationStateProvider instance.
     /// </summary>
     protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
 
@@ -44,7 +44,6 @@ namespace Csla.Blazor.WebAssembly
     public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
     {
       AuthenticationStateProvider = authenticationStateProvider;
-      CurrentPrincipal = UnauthenticatedPrincipal;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
       InitializeUser();
     }
@@ -56,13 +55,8 @@ namespace Csla.Blazor.WebAssembly
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
     {
-      task.ContinueWith((t) =>
-      {
-        if (task.IsCompletedSuccessfully && task.Result != null)
-          CurrentPrincipal = task.Result.User;
-        else
-          CurrentPrincipal = UnauthenticatedPrincipal;
-      });
+      _currentPrincipal = null;
+      AuthenticationState = task;
     }
 
     /// <summary>
@@ -86,7 +80,16 @@ namespace Csla.Blazor.WebAssembly
     /// </summary>
     public IPrincipal GetUser()
     {
-      return CurrentPrincipal;
+      if (_currentPrincipal == null)
+      {
+        if (AuthenticationState.IsCompleted && AuthenticationState.Result != null)
+          _currentPrincipal = AuthenticationState.Result.User;
+        else
+          _currentPrincipal = new ClaimsPrincipal();
+      }
+      var identity = _currentPrincipal.Identity;
+      var isAdmin = _currentPrincipal.IsInRole("Admin");
+      return _currentPrincipal;
     }
 
     /// <summary>
@@ -97,7 +100,7 @@ namespace Csla.Blazor.WebAssembly
     /// <param name="principal">Principal object.</param>
     public virtual void SetUser(IPrincipal principal)
     {
-      CurrentPrincipal = principal;
+      throw new NotSupportedException(nameof(SetUser));
     }
 
     /// <summary>

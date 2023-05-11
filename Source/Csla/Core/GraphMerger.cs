@@ -90,7 +90,7 @@ namespace Csla.Core
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                 Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
-              else
+              else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
                 LoadProperty(target, item, sourceValue);
             }
           }

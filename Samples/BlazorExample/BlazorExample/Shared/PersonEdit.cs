@@ -32,8 +32,6 @@ namespace BlazorExample.Shared
       set => SetProperty(NameLengthProperty, value);
     }
 
-    #region Authorisation
-
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     [ObjectAuthorizationRules]
     public static void AddObjectAuthorizationRules()
@@ -45,8 +43,6 @@ namespace BlazorExample.Shared
       Csla.Rules.BusinessRules.AddRule(typeof(PersonEdit),
         new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "Admin"));
     }
-
-    #endregion
 
     protected override void AddBusinessRules()
     {

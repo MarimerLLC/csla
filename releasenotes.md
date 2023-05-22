@@ -19,6 +19,7 @@ CSLA .NET version 7.0.0 adds support for .NET 7 and other enhancements.
 * @bboney
 * @danielmartind
 * @ka-fim
+* @lovror
 * @rockfordlhotka
 * @russblair
 * @ryanaw83

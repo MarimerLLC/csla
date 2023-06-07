@@ -84,7 +84,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Csla.Maui" Version="7.0.0-R22102404" />
+	  <PackageReference Include="Csla.Maui" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

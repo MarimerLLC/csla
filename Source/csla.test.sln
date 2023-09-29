@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csla.netcore.test", "csla.n
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.TestHelpers", "Csla.TestHelpers\Csla.TestHelpers.csproj", "{8C08B21F-BD31-4E5C-B5C7-B3E8CE755339}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Xaml.Maui", "Csla.Xaml.Maui\Csla.Xaml.Maui.csproj", "{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -882,6 +884,46 @@ Global
 		{8C08B21F-BD31-4E5C-B5C7-B3E8CE755339}.Testing|x64.Build.0 = Debug|Any CPU
 		{8C08B21F-BD31-4E5C-B5C7-B3E8CE755339}.Testing|x86.ActiveCfg = Debug|Any CPU
 		{8C08B21F-BD31-4E5C-B5C7-B3E8CE755339}.Testing|x86.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|ARM.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|x64.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|ARM.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|x64.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|x64.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|x86.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Debug|x86.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|ARM.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|ARM.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|x64.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|x64.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|x86.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Mono Release|x86.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|ARM.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|x64.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|x64.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Release|x86.Build.0 = Release|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|Any CPU.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|ARM.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|ARM.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|x64.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|x64.Build.0 = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|x86.ActiveCfg = Debug|Any CPU
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D}.Testing|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -905,6 +947,7 @@ Global
 		{7DE2239E-8B0D-4CB0-99FE-DA80C55780D7} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{E7595821-3078-4993-A657-DD502EAD389F} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{9D8A32E2-E82E-425C-A8EA-AC2BC17CCA0D} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
+		{F487FB6B-D9F5-41A5-B663-4183A20A2E7D} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D05EF4-18C0-4E24-A0A3-A11C7FFFFBBA}
@@ -914,6 +957,7 @@ Global
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{9d8a32e2-e82e-425c-a8ea-ac2bc17cca0d}*SharedItemsImports = 5
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{bb7a0db4-f7f4-4632-b6ae-1edcdd758f16}*SharedItemsImports = 13
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{e7595821-3078-4993-a657-dd502ead389f}*SharedItemsImports = 5
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{f487fb6b-d9f5-41a5-b663-4183a20a2e7d}*SharedItemsImports = 5
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{ff492da9-7c8a-4f0c-a12f-7d346564aad4}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution

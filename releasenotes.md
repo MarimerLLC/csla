@@ -2,6 +2,22 @@
 
 CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other enhancements.
 
+## CSLA .NET version 7.0.1 release
+
+CSLA .NET version 7.0.1 fixes bugs.
+
+* [#3481](https://github.com/MarimerLLC/csla/issues/3481) Fix issue with GraphMerge losing child objects
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3Amarimerllc%2F10+)
+
+### Contributors
+
+* @russblair
+
+Thank you all so much for your support!
+
 ## CSLA .NET version 7.0.0 release
 
 CSLA .NET version 7.0.0 adds support for .NET 7 and other enhancements.

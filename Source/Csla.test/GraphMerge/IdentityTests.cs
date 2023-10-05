@@ -76,7 +76,6 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    
     public void IdentityInitializedBusinessListBase()
     {
       IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
@@ -97,7 +96,6 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    
     public void IdentityListClone()
     {
       IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
@@ -110,7 +108,6 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    
     public void IdentityPostCloneIdentityManager()
     {
       IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
@@ -127,7 +124,6 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    
     public void IdentityInitializedBusinessBindingListBase()
     {
       IDataPortal<FooBindingList> dataPortal = _testDIContext.CreateDataPortal<FooBindingList>();
@@ -137,7 +133,6 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    
     public void IdentityInitializedDynamicListBase()
     {
       IDataPortal<FooDynamicList> dataPortal = _testDIContext.CreateDataPortal<FooDynamicList>();
@@ -147,7 +142,6 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    
     public void IdentityInitializedDynamicBindingListBase()
     {
       IDataPortal<FooDynamicBindingList> dataPortal = _testDIContext.CreateDataPortal<FooDynamicBindingList>();

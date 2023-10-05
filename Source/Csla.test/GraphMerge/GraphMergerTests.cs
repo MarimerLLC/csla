@@ -342,31 +342,37 @@ namespace Csla.Test.GraphMerge
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
 
-      var obj = dataPortal.Create();
-      obj.ChildList.AddNew();
-      obj.ChildList[0].Name = "1";
-      obj.ChildList.AddNew();
-      obj.ChildList[1].Name = "12";
-      obj.MockUpdated();
-      var cloned = obj.Clone();
-      cloned.ChildList[0].Name = "2";
-      cloned.ChildList.RemoveAt(1);
-      cloned.ChildList.AddNew();
-      cloned.ChildList[1].Name = "42";
-      cloned.MockUpdated();
+      // create target childlist
+      var target = dataPortal.Create();
+      target.ChildList.AddNew();
+      target.ChildList[0].Name = "1";
+      target.ChildList.AddNew();
+      target.ChildList[1].Name = "12";
+      target.MockUpdated();
 
+      // create source childlist
+      var source = target.Clone();
+      source.ChildList[0].Name = "2";
+      source.ChildList.RemoveAt(1);
+      source.ChildList.AddNew();
+      source.ChildList[1].Name = "42";
+      source.MockUpdated();
+
+      // act
       var merger = new GraphMerger(applicationContext);
-      merger.MergeGraph(obj, cloned);
-      Assert.IsFalse(ReferenceEquals(obj.ChildList, cloned.ChildList), "ref");
-      Assert.AreEqual(2, obj.ChildList.Count, "count");
-      Assert.IsFalse(obj.ChildList[0].IsValid, "[0] isvalid");
-      Assert.IsTrue(obj.ChildList[1].IsValid, "[1] isvalid");
-      Assert.IsFalse(obj.ChildList.IsValid, "isvalid");
-      Assert.AreEqual("2", obj.ChildList[0].Name, "[0] name");
-      Assert.AreEqual("42", obj.ChildList[1].Name, "[1] name");
-      Assert.IsFalse(ReferenceEquals(obj.ChildList[0], cloned.ChildList[0]), "[0] ref");
-      Assert.IsTrue(ReferenceEquals(obj.ChildList[1], cloned.ChildList[1]), "[1] ref");
-      Assert.IsTrue(ReferenceEquals(obj.ChildList, obj.ChildList[1].Parent), "parent ref");
+      merger.MergeGraph(target, source);
+
+      // assert
+      Assert.IsFalse(ReferenceEquals(target.ChildList, source.ChildList), "ref");
+      Assert.AreEqual(2, target.ChildList.Count, "count");
+      Assert.IsFalse(target.ChildList[0].IsValid, "[0] isvalid");
+      Assert.IsTrue(target.ChildList[1].IsValid, "[1] isvalid");
+      Assert.IsFalse(target.ChildList.IsValid, "isvalid");
+      Assert.AreEqual("2", target.ChildList[0].Name, "[0] name");
+      Assert.AreEqual("42", target.ChildList[1].Name, "[1] name");
+      Assert.IsFalse(ReferenceEquals(target.ChildList[0], source.ChildList[0]), "[0] ref");
+      Assert.IsTrue(ReferenceEquals(target.ChildList[1], source.ChildList[1]), "[1] ref");
+      Assert.IsTrue(ReferenceEquals(target.ChildList, target.ChildList[1].Parent), "parent ref");
     }
 
   }

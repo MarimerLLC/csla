@@ -2,9 +2,9 @@ name: main
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, v7.x ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, v7.x ]
 
 jobs:
 

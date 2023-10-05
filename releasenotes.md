@@ -15,6 +15,7 @@ CSLA .NET version 7.0.1 fixes bugs.
 ### Contributors
 
 * @russblair
+* @wfacey
 
 Thank you all so much for your support!
 

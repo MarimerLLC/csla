@@ -26,15 +26,20 @@ namespace Csla.Core
     /// <returns>The next available identity value.</returns>
     public int GetNextIdentity(int current)
     {
-      if (current >= _nextIdentity)
+      int result;
+      if (current == -1)
       {
-        _nextIdentity = current + 1;
-        return current;
+        result = _nextIdentity++;
       }
       else
       {
-        return _nextIdentity++;
+        result = current;
+        if (current >= _nextIdentity)
+        {
+          _nextIdentity = current + 1;
+        }
       }
+      return result;
     }
   }
 }

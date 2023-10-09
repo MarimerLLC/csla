@@ -21,7 +21,7 @@ namespace Csla.Channels.Local
   /// calls to an application server hosted locally 
   /// in the client process and AppDomain.
   /// </summary>
-  public class LocalProxy : DataPortalClient.IDataPortalProxy, IDisposable
+  public class LocalProxy : DataPortalClient.IDataPortalProxy
   {
     /// <summary>
     /// Creates an instance of the type
@@ -31,11 +31,15 @@ namespace Csla.Channels.Local
     public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
     {
       OriginalApplicationContext = applicationContext;
-      var currentServiceProvider = OriginalApplicationContext.CurrentServiceProvider;
       Options = options;
+    }
 
-      if (Options.UseLocalScope 
-        && OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client 
+    private void InitializeContext()
+    {
+      var currentServiceProvider = OriginalApplicationContext.CurrentServiceProvider;
+
+      if (Options.UseLocalScope
+        && OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
         && OriginalApplicationContext.IsAStatefulContextManager)
       {
         // create new DI scope and provider
@@ -57,9 +61,8 @@ namespace Csla.Channels.Local
     private ApplicationContext CurrentApplicationContext { get; set; }
     private readonly LocalProxyOptions Options;
 
-    private readonly IServiceScope _scope;
-    private readonly Server.IDataPortalServer _portal;
-    private bool disposedValue;
+    private IServiceScope _scope;
+    private Server.IDataPortalServer _portal;
 
     private void SetApplicationContext(object obj, ApplicationContext applicationContext)
     {
@@ -148,6 +151,7 @@ namespace Csla.Channels.Local
       if (_scope is IAsyncDisposable asyncDisposable)
         await asyncDisposable.DisposeAsync();
       _scope?.Dispose();
+      _scope = null;
     }
 
     /// <summary>
@@ -166,6 +170,7 @@ namespace Csla.Channels.Local
       DataPortalResult result;
       try
       {
+        InitializeContext();
         SetApplicationContext(criteria, CurrentApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
@@ -205,6 +210,7 @@ namespace Csla.Channels.Local
       DataPortalResult result;
       try
       {
+        InitializeContext();
         SetApplicationContext(criteria, CurrentApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
@@ -243,6 +249,7 @@ namespace Csla.Channels.Local
       DataPortalResult result;
       try
       {
+        InitializeContext();
         SetApplicationContext(obj, CurrentApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
@@ -282,6 +289,7 @@ namespace Csla.Channels.Local
       DataPortalResult result;
       try
       {
+        InitializeContext();
         SetApplicationContext(criteria, CurrentApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
@@ -314,32 +322,6 @@ namespace Csla.Channels.Local
     public bool IsServerRemote
     {
       get { return false; }
-    }
-
-    /// <summary>
-    /// Dispose current object
-    /// </summary>
-    /// <param name="disposing"></param>
-    protected virtual void Dispose(bool disposing)
-    {
-      if (!disposedValue)
-      {
-        if (disposing)
-        {
-          _scope?.Dispose();
-        }
-        disposedValue = true;
-      }
-    }
-
-    /// <summary>
-    /// Dispose current object
-    /// </summary>
-    public void Dispose()
-    {
-      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-      Dispose(disposing: true);
-      GC.SuppressFinalize(this);
     }
   }
 }

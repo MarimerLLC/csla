@@ -17,7 +17,7 @@ namespace Csla.Channels.RabbitMq
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server by using RabbitMQ.
   /// </summary>
-  public class RabbitMqProxy : DataPortalProxy, IDisposable
+  public class RabbitMqProxy : DataPortalProxy
   {
     /// <summary>
     /// Creates an instance of the object, initializing
@@ -96,6 +96,16 @@ namespace Csla.Channels.RabbitMq
       }
     }
 
+    private void DisposeRabbitMq()
+    {
+      QueueListener?.Dispose();
+      Connection?.Close();
+      Channel?.Dispose();
+      Connection?.Dispose();
+      Channel = null;
+      Connection = null;
+    }
+
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
     /// new business object.
@@ -109,8 +119,15 @@ namespace Csla.Channels.RabbitMq
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
-      InitializeRabbitMQ();
-      return await base.Create(objectType, criteria, context, isSync);
+      try
+      {
+        InitializeRabbitMQ();
+        return await base.Create(objectType, criteria, context, isSync);
+      }
+      finally
+      {
+        DisposeRabbitMq();
+      }
     }
 
     /// <summary>
@@ -128,8 +145,15 @@ namespace Csla.Channels.RabbitMq
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
-      InitializeRabbitMQ();
-      return await base.Fetch(objectType, criteria, context, isSync);
+      try
+      {
+        InitializeRabbitMQ();
+        return await base.Fetch(objectType, criteria, context, isSync);
+      }
+      finally
+      {
+        DisposeRabbitMq();
+      }
     }
 
     /// <summary>
@@ -146,8 +170,15 @@ namespace Csla.Channels.RabbitMq
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
-      InitializeRabbitMQ();
-      return await base.Update(obj, context, isSync);
+      try
+      {
+        InitializeRabbitMQ();
+        return await base.Update(obj, context, isSync);
+      }
+      finally
+      {
+        DisposeRabbitMq();
+      }
     }
 
     /// <summary>
@@ -165,8 +196,15 @@ namespace Csla.Channels.RabbitMq
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
-      InitializeRabbitMQ();
-      return await base.Delete(objectType, criteria, context, isSync);
+      try
+      {
+        InitializeRabbitMQ();
+        return await base.Delete(objectType, criteria, context, isSync);
+      }
+      finally
+      {
+        DisposeRabbitMq();
+      }
     }
 
     /// <summary>
@@ -205,19 +243,6 @@ namespace Csla.Channels.RabbitMq
         routingKey: DataPortalQueueName,
         basicProperties: props,
         body: request);
-    }
-
-    /// <summary>
-    /// Dispose this object and its resources.
-    /// </summary>
-    public void Dispose()
-    {
-      QueueListener?.Dispose();
-      Connection?.Close();
-      Channel?.Dispose();
-      Connection?.Dispose();
-      Channel = null;
-      Connection = null;
     }
   }
 }

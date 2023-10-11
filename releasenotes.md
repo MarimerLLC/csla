@@ -2,6 +2,22 @@
 
 CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other enhancements.
 
+## CSLA .NET version 7.0.2 release
+
+CSLA .NET version 7.0.2 fixes bugs.
+
+* [#3491](https://github.com/MarimerLLC/csla/issues/3491) Fix memory leak with LocalProxy
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3Amarimerllc%2F11+)
+
+### Contributors
+
+* @TanguyIngels
+
+Thank you so much for your support!
+
 ## CSLA .NET version 7.0.1 release
 
 CSLA .NET version 7.0.1 fixes bugs.

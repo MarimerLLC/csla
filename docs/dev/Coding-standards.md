@@ -18,9 +18,10 @@ You will need to set up your development workstation with the following
     * Web development (for ASP.NET)
     * .NET Core and ASP.NET Core
 * Git client tooling of your choice
-  * Git for Windows
-  * TortoiseGit
-  * GitHub for Windows
+  * [Git for Windows](https://git-scm.com/download/win)
+  * [Fork](https://git-fork.com/)
+  * [TortoiseGit](https://tortoisegit.org/)
+  * [GitHub CLI](https://github.com/cli/cli)
   * etc.
 
 ## Getting the project
@@ -29,7 +30,9 @@ Once you have that all installed, and you have your GitHub credentials, you’ll
 
 * Fork the Marimer LLC csla project
 * Clone your fork to your dev workstation
+* Add an upstream remote for Marimer LLC (`git remote add marimer https://github.com/marimerllc/csla`)
 * Create a feature branch in which to do your work
+* Follow the [CSLA GitHub Flow](csla-github-flow.md) document
 
 ## Coding standards
 

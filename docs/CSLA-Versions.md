@@ -2,6 +2,51 @@
 
 This document lists the versions of CSLA .NET that are considered "primary" versions.
 
+## CSLA 8
+
+* Runtimes
+  * .NET 8
+  * .NET Standard 2.0 and 2.1
+  * .NET Framework 4.6.2 through 4.8
+  * mono
+  * UWP
+* Platform support
+  * ASP.NET Core (Blazor, MVC, Razor Pages, and other app models)
+  * Blazor (and other .NET WebAssembly targets)
+  * ASP.NET (MVC, Web Forms, and other app models)
+  * MAUI (iOS, Android, UWP, Mac, Linux)
+  * Windows Forms, WPF
+  * UWP
+* Operating systems
+  * Windows
+  * Linux (including containers)
+  * Mac
+  * WebAssembly
+  * Others (via .NET 8)
+
+## CSLA 7
+
+* Runtimes
+  * .NET 7 and 6
+  * .NET Standard 2.0 and 2.1
+  * .NET Framework 4.6.2 through 4.8
+  * mono
+  * UWP
+* Platform support
+  * ASP.NET Core (Blazor, MVC, Razor Pages, and other app models)
+  * Blazor (and other .NET WebAssembly targets)
+  * ASP.NET (MVC, Web Forms, and other app models)
+  * MAUI (iOS, Android, UWP, Mac, Linux)
+  * Xamarin (iOS, Android, UWP, Mac, Linux)
+  * Windows Forms, WPF
+  * UWP
+* Operating systems
+  * Windows
+  * Linux (including containers)
+  * Mac
+  * WebAssembly
+  * Others (via .NET 7)
+
 ## CSLA 6
 
 * Runtimes
@@ -60,6 +105,8 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
    1. From 3.8 – requires wrapping of old-style business rules into the new rules engine model
    1. From 4.0 – there’ve been some minor breaking changes that don’t affect everyone, but reviewing the release notes to see if a given codebase is affected is required
    1. From 5.0 – CSLA 6 is a major update that embraces dependency injection, so nearly all apps will be affected in their startup code, and in any interaction with the `ApplicationContext` or data portal types (all of which are now available as DI services)
+   1. From 6.0 - CSLA 7 is a relatively minor upgrade with some important bug fixes. Check the release notes for breaking changes that may affect your specific scenarios.
+   1. From 7.0 = CLSA 8 includes some important bug fixes and useful enhancements. Check the release notes for breaking changes that may affect your specific scenarios. 
 
 Some older posts with information about upgrading:
 
@@ -92,3 +139,5 @@ The roadmap is [available here](https://github.com/MarimerLLC/csla/issues?q=is%3
 * CSLA 4 version 4.9.0 is the beginning of our use of semantic versioning. It supports .NET Core configuration via a fluent API, plus major data portal enhancements for container-based server environments such as Kubernetes.
 * CSLA version 5.0.0 has a number of [breaking changes](https://github.com/MarimerLLC/csla/issues?q=is%3Aissue+project%3AMarimerLLC%2Fcsla%2F5+label%3A%22flag%2Fbreaking+change%22). The primary focus in this version is _major_ enhancements to the data portal, including support for dependency injection, flexible method names, and multiple criteria parameters. And of course, support for .NET Core 3.
 * CSLA 6 is a major update that requires the use of dependency injection, so _all_ apps must configure an `IServiceCollection` and `IServiceProvider` on startup. This is normal for ASP.NET and Blazor apps, but is not necessarily familiar to Windows Forms or WPF developers. Some important static types are now DI services, most notably `ApplicationContext` and the data portal types. The data portal types are now injected as `IDataPortal<T>`, `IChildDataPortal<T>`, `IDataPortalFactory`, and `IChildDataPortalFactory`.
+* CSLA 7 implements some important bug fixes and some breaking changes (bug fixes and enhancements) to improve the use of CSLA when building business apps. The most notable change is enhancement around authentication and tightening default security for the data portal.
+* CSLA 8 implements some important bug fixes and some breaking changes (bug fixes and enhancements) to improve the use of CSLA when building business apps. This release supports .NET 8, and also enhances behaviors around the `ObjectFactory` implmenetation in the data portal.

@@ -3,12 +3,12 @@ Prerequisites
 You must have:
 
 1. PC
- 1. Windows 10
- 1. .NET Core 3.1 SDK
+ 1. Windows 11 or 10
  2. .NET 6 SDK
+ 2. .NET 7 SDK
+ 2. .NET 8 SDK
  3. Visual Studio 2022 with the latest updates
   1. Maui
-  1. Xamarin
   1. UWP SDK
   1. Blazor templates
 
@@ -23,7 +23,7 @@ NuGet release
    1. Update version numbers
       1. `cd /Source`
       1. Edit `Directory.Build.props` and update the version number
-      1. `grep -rl --include=*.cs --include=*.csproj --include=*.Build.props '4\.8\.1' | xargs sed -i 's/4\.8\.1/4.9.0/g'`
+      1. `grep -rl --include=*.cs --include=*.csproj --include=*.Build.props '7\.0\.2' | xargs sed -i 's/7\.0\.2/8.0.0/g'`
          1. Adjust the version numbers to match current versions
    1. Build the solution in Release mode; Any CPU
 1. Do NuGet release
@@ -40,6 +40,6 @@ Finalize Release
    1. Create PR 
    1. Accept PR
 1. In the GitHub releases web page create the release
-   1. Create a new release at HEAD using the version number (such as v4.9.0)
-   1. Name the release like "Version 6.2.0 Release"
+   1. Create a new release at HEAD using the version number (such as v7.0.2)
+   1. Name the release like "Version 7.0.2 Release"
    1. Mark the release as pre-release or release

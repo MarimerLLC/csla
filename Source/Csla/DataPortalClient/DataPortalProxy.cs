@@ -100,6 +100,10 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Create);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -154,6 +158,10 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Fetch);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -202,6 +210,10 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, obj.GetType(), DataPortalOperations.Update);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -256,6 +268,10 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Delete);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -309,6 +325,16 @@ namespace Csla.DataPortalClient
       if (list.Length > 0)
         result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
       return result;
+    }
+
+    /// <summary>
+    /// Method called once only after returning to the <see cref="ApplicationContext.LogicalExecutionLocations.Client"/> after a DataPortal call.
+    /// It does not get called when subsequent chained DataPortal calls get called on the server side.
+    /// </summary>
+    /// <param name="result">The <see cref="DataPortalResult"/> based upon <see cref="DataPortalResponse"/> that came back from server</param>
+    protected virtual void ReturnedToClientSideAndPreparedResult(DataPortalResult result, Type objectType, DataPortalOperations operationType)
+    {
+
     }
 
     #region Criteria

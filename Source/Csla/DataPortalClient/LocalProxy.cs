@@ -10,6 +10,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
+using Csla.DataPortalClient;
 using Csla.Runtime;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace Csla.Channels.Local
   /// calls to an application server hosted locally 
   /// in the client process and AppDomain.
   /// </summary>
-  public class LocalProxy : DataPortalClient.IDataPortalProxy
+  public class LocalProxy : DataPortalProxy
   {
     /// <summary>
     /// Creates an instance of the type
@@ -29,6 +30,7 @@ namespace Csla.Channels.Local
     /// <param name="applicationContext">ApplicationContext</param>
     /// <param name="options">Options instance</param>
     public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
+      : base(applicationContext)
     {
       OriginalApplicationContext = applicationContext;
       Options = options;
@@ -81,14 +83,14 @@ namespace Csla.Channels.Local
       // change the object graph's ApplicationContext
       if (!Options.UseLocalScope)
         return;
-  
+
       if (useApplicationContext != null && !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
       {
         useApplicationContext.ApplicationContext = applicationContext;
 
         if (useApplicationContext is IUseFieldManager useFieldManager)
           SetApplicationContext(useFieldManager.FieldManager, applicationContext);
-        
+
         if (useApplicationContext is IUseBusinessRules useBusinessRules)
           SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
 
@@ -97,10 +99,10 @@ namespace Csla.Channels.Local
           foreach (var managedProperty in target.GetManagedProperties())
           {
             var isLazyLoadedProperty = (managedProperty.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad;
-           
+
             //only dig into property if its not a lazy loaded property 
             //  or if it is, then only if its loaded
-            if (!isLazyLoadedProperty 
+            if (!isLazyLoadedProperty
               || (isLazyLoadedProperty && target.FieldExists(managedProperty)))
             {
               if (typeof(IUseApplicationContext).IsAssignableFrom(managedProperty.Type))
@@ -142,6 +144,14 @@ namespace Csla.Channels.Local
     /// </summary>
     private void ResetApplicationContext()
     {
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
+        && CurrentApplicationContext is not null
+        && OriginalApplicationContext is not null
+        && CurrentApplicationContext != OriginalApplicationContext)
+      {
+        RestoringClientSideApplicationContext(CurrentApplicationContext, OriginalApplicationContext);
+      }
+
       if (Options.UseLocalScope)
         CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
     }
@@ -164,7 +174,7 @@ namespace Csla.Channels.Local
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Create(
+    public override async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
@@ -192,6 +202,10 @@ namespace Csla.Channels.Local
       {
         await DisposeScope();
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Create);
+
       return result;
     }
 
@@ -205,7 +219,7 @@ namespace Csla.Channels.Local
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
       try
@@ -232,6 +246,10 @@ namespace Csla.Channels.Local
       {
         await DisposeScope();
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Fetch);
+
       return result;
     }
 
@@ -244,7 +262,7 @@ namespace Csla.Channels.Local
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
       try
@@ -271,6 +289,10 @@ namespace Csla.Channels.Local
       {
         await DisposeScope();
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, obj.GetType(), DataPortalOperations.Update);
+
       return result;
     }
 
@@ -284,7 +306,7 @@ namespace Csla.Channels.Local
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
       try
@@ -311,7 +333,24 @@ namespace Csla.Channels.Local
       {
         await DisposeScope();
       }
+
+      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Delete);
+
       return result;
+    }
+
+    /// <summary>
+    /// Not needed/implemented for Local Data Portal - throws not implemented exception
+    /// </summary>
+    /// <param name="serialized">Serialised request</param>
+    /// <param name="operation">DataPortal operation</param>
+    /// <param name="routingToken">Routing Tag for server</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <returns>Serialised response from server</returns>
+    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    {
+      throw new NotImplementedException();
     }
 
     /// <summary>
@@ -322,6 +361,17 @@ namespace Csla.Channels.Local
     public bool IsServerRemote
     {
       get { return false; }
+    }
+
+    /// <summary>
+    /// Method called once when execution returns to <see cref="ApplicationContext.LogicalExecutionLocations.Client"/> after a call to 
+    /// the dataportal.  Only called when <see cref="LocalProxyOptions.UseLocalScope"/> is true.
+    /// </summary>
+    /// <param name="serverScopedApplicationContext">Context created in a new scope for use during logical server side operations</param>
+    /// <param name="clientSideApplicationContext">Original context from the client side</param>
+    protected virtual void RestoringClientSideApplicationContext(ApplicationContext serverScopedApplicationContext, ApplicationContext clientSideApplicationContext)
+    {
+
     }
   }
 }

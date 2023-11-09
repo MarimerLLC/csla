@@ -329,7 +329,7 @@ namespace Csla.DataPortalClient
 
     /// <summary>
     /// Method called once only after returning to the <see cref="ApplicationContext.LogicalExecutionLocations.Client"/> after a DataPortal call.
-    /// It does not get called when subsequent chained DataPortal calls get called on the server side.
+    /// It does not get called during chained DataPortal operations initiated on the server side.
     /// </summary>
     /// <param name="result">The <see cref="DataPortalResult"/> based upon <see cref="DataPortalResponse"/> that came back from server</param>
     protected virtual void ReturnedToClientSideAndPreparedResult(DataPortalResult result, Type objectType, DataPortalOperations operationType)

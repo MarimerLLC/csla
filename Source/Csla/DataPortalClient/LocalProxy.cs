@@ -32,7 +32,6 @@ namespace Csla.Channels.Local
     public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
       : base(applicationContext)
     {
-      OriginalApplicationContext = applicationContext;
       Options = options;
     }
 
@@ -59,12 +58,26 @@ namespace Csla.Channels.Local
       _portal = currentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
     }
 
-    private ApplicationContext OriginalApplicationContext { get; set; }
-    private ApplicationContext CurrentApplicationContext { get; set; }
-    private readonly LocalProxyOptions Options;
+    /// <summary>
+    /// Application Context supplied in CTOR.  If this LocalProxy was created on client side or 
+    /// if <see cref="LocalProxyOptions.UseLocalScope"/> is false then it is the client ApplicationContext 
+    /// </summary>
+    protected ApplicationContext OriginalApplicationContext {
+      get { return base.ApplicationContext; }
+    }
 
+    /// <summary>
+    /// ApplicationContext currently in use for this proxy.
+    /// If <see cref="LocalProxyOptions.UseLocalScope"/> is true, this is the ApplicationContext created in a new scope for 
+    /// logical server side data portal operations.
+    /// If <see cref="LocalProxyOptions.UseLocalScope"/> is false, this is same as <see cref="OriginalApplicationContext"/>
+    /// </summary>
+    protected ApplicationContext CurrentApplicationContext { get; set; }
+
+    private readonly LocalProxyOptions Options;
     private IServiceScope _scope;
     private Server.IDataPortalServer _portal;
+
 
     private void SetApplicationContext(object obj, ApplicationContext applicationContext)
     {
@@ -144,16 +157,16 @@ namespace Csla.Channels.Local
     /// </summary>
     private void ResetApplicationContext()
     {
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
-        && CurrentApplicationContext is not null
-        && OriginalApplicationContext is not null
-        && CurrentApplicationContext != OriginalApplicationContext)
-      {
-        RestoringClientSideApplicationContext(CurrentApplicationContext, OriginalApplicationContext);
-      }
-
       if (Options.UseLocalScope)
+      {
+        if (CurrentApplicationContext is not null
+          && CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        {
+          RestoringClientSideApplicationContext(CurrentApplicationContext, OriginalApplicationContext);
+        }
+
         CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
+      }
     }
 
     private async Task DisposeScope()

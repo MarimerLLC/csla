@@ -216,7 +216,7 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
         ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Create);
 
       return result;
@@ -260,7 +260,7 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
         ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Fetch);
 
       return result;
@@ -303,7 +303,7 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
         ReturnedToClientSideAndPreparedResult(result, obj.GetType(), DataPortalOperations.Update);
 
       return result;
@@ -347,7 +347,7 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
         ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Delete);
 
       return result;

@@ -101,8 +101,11 @@ namespace Csla.DataPortalClient
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Create);
+      var operation = DataPortalOperations.Create;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
 
       if (result.Error != null)
         throw result.Error;
@@ -159,8 +162,11 @@ namespace Csla.DataPortalClient
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Fetch);
+      var operation = DataPortalOperations.Fetch;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
 
       if (result.Error != null)
         throw result.Error;
@@ -211,8 +217,11 @@ namespace Csla.DataPortalClient
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, obj.GetType(), DataPortalOperations.Update);
+      var operation = DataPortalOperations.Update;
+      OnServerComplete(result, obj.GetType(), operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, obj.GetType(), operation);
 
       if (result.Error != null)
         throw result.Error;
@@ -269,8 +278,11 @@ namespace Csla.DataPortalClient
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
 
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Delete);
+      var operation = DataPortalOperations.Delete;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
 
       if (result.Error != null)
         throw result.Error;
@@ -328,13 +340,35 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
-    /// Method called once only after returning to the <see cref="ApplicationContext.LogicalExecutionLocations.Client"/> after a DataPortal call.
-    /// It does not get called during chained DataPortal operations initiated on the server side.
+    /// Called after completion of DataPortal operation regardless if operation was originated from the client or from chained calls on the server side.
     /// </summary>
-    /// <param name="result">The <see cref="DataPortalResult"/> based upon <see cref="DataPortalResponse"/> that came back from server</param>
-    protected virtual void ReturnedToClientSideAndPreparedResult(DataPortalResult result, Type objectType, DataPortalOperations operationType)
+    /// <param name="result">Result from DataPortal operation.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="operationType">The requested data portal operation type</param>
+    protected virtual void OnServerComplete(DataPortalResult result, Type objectType, DataPortalOperations operationType)
     {
 
+    }
+
+    /// <summary>
+    /// Called after completion of a DataPortal operation which was initiated from the <see cref="ApplicationContext.ExecutionLocations.Client"/> 
+    /// This is NOT called on completion of chained DataPortal operations initiated on the server side.
+    /// </summary>
+    /// <param name="result">Result from DataPortal operation.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="operationType">The requested data portal operation type</param>
+    protected virtual void OnServerCompleteClient(DataPortalResult result, Type objectType, DataPortalOperations operationType)
+    {
+
+    }
+
+    internal bool ExecutionIsNotOnLogicalOrPhysicalServer
+    {
+      get
+      {
+        return ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server
+          && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server;
+      }
     }
 
     #region Criteria

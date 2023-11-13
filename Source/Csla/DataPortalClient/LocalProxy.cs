@@ -216,8 +216,11 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Create);
+      var operation = DataPortalOperations.Create;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
 
       return result;
     }
@@ -260,8 +263,11 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Fetch);
+      var operation = DataPortalOperations.Fetch;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
 
       return result;
     }
@@ -303,8 +309,11 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, obj.GetType(), DataPortalOperations.Update);
+      var operation = DataPortalOperations.Update;
+      OnServerComplete(result, obj.GetType(), operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, obj.GetType(), operation);
 
       return result;
     }
@@ -347,8 +356,11 @@ namespace Csla.Channels.Local
         await DisposeScope();
       }
 
-      if (CurrentApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
-        ReturnedToClientSideAndPreparedResult(result, objectType, DataPortalOperations.Delete);
+      var operation = DataPortalOperations.Delete;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
 
       return result;
     }
@@ -361,7 +373,7 @@ namespace Csla.Channels.Local
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialised response from server</returns>
-    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    protected override Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
       throw new NotImplementedException();
     }
@@ -371,10 +383,7 @@ namespace Csla.Channels.Local
     /// a remote data portal server, or run the "server-side"
     /// data portal in the caller's process and AppDomain.
     /// </summary>
-    public bool IsServerRemote
-    {
-      get { return false; }
-    }
+    public override bool IsServerRemote => false;
 
     /// <summary>
     /// Method called once when execution returns to <see cref="ApplicationContext.LogicalExecutionLocations.Client"/> after a call to 

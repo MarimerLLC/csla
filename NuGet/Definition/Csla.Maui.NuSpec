@@ -16,29 +16,25 @@
     <description>UI helpers for using CSLA .NET business types with Maui.</description>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework="net8.0">
+      <group targetFramework="net8.0-android34.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net8.0-android">
+      <group targetFramework="net8.0-ios17.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net8.0-ios">
+      <group targetFramework="net8.0-maccatalyst17.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net8.0-maccatalyst">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-      </group>
-      <group targetFramework="net8.0-windows10.0.19041.0">
+      <group targetFramework="net8.0-windows10.0.19041">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <!-- Maui Csla.Xaml -->
-    <file src="..\..\Bin\Maui\Release\net8.0\**\Csla.Xaml.*" target="lib\net8.0"/>
-    <file src="..\..\Bin\Maui\Release\net8.0-android\**\Csla.Xaml.*" target="lib\net8.0-android"/>
-    <file src="..\..\Bin\Maui\Release\net8.0-ios\**\Csla.Xaml.*" target="lib\net8.0-ios"/>
-    <file src="..\..\Bin\Maui\Release\net8.0-maccatalyst\**\Csla.Xaml.*" target="lib\net8.0-maccatalyst"/>
+    <file src="..\..\Bin\Maui\Release\net8.0-android\**\Csla.Xaml.*" target="lib\net8.0-android34.0"/>
+    <file src="..\..\Bin\Maui\Release\net8.0-ios\**\Csla.Xaml.*" target="lib\net8.0-ios17.0"/>
+    <file src="..\..\Bin\Maui\Release\net8.0-maccatalyst\**\Csla.Xaml.*" target="lib\net8.0-maccatalyst17.0"/>
     <file src="..\..\Bin\Maui\Release\net8.0-windows10.0.19041.0\**\Csla.Xaml.*" target="lib\net8.0-windows10.0.19041.0"/>
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />

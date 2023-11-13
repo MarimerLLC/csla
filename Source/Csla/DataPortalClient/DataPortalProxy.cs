@@ -100,6 +100,13 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      var operation = DataPortalOperations.Create;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -154,6 +161,13 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      var operation = DataPortalOperations.Fetch;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -202,6 +216,13 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      var operation = DataPortalOperations.Update;
+      OnServerComplete(result, obj.GetType(), operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, obj.GetType(), operation);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -256,6 +277,13 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(ApplicationContext, null, ex);
       }
+
+      var operation = DataPortalOperations.Delete;
+      OnServerComplete(result, objectType, operation);
+
+      if (ExecutionIsNotOnLogicalOrPhysicalServer)
+        OnServerCompleteClient(result, objectType, operation);
+
       if (result.Error != null)
         throw result.Error;
       return result;
@@ -309,6 +337,38 @@ namespace Csla.DataPortalClient
       if (list.Length > 0)
         result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
       return result;
+    }
+
+    /// <summary>
+    /// Called after completion of DataPortal operation regardless if operation was originated from the client or from chained calls on the server side.
+    /// </summary>
+    /// <param name="result">Result from DataPortal operation.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="operationType">The requested data portal operation type</param>
+    protected virtual void OnServerComplete(DataPortalResult result, Type objectType, DataPortalOperations operationType)
+    {
+
+    }
+
+    /// <summary>
+    /// Called after completion of a DataPortal operation which was initiated from the <see cref="ApplicationContext.ExecutionLocations.Client"/> 
+    /// This is NOT called on completion of chained DataPortal operations initiated on the server side.
+    /// </summary>
+    /// <param name="result">Result from DataPortal operation.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="operationType">The requested data portal operation type</param>
+    protected virtual void OnServerCompleteClient(DataPortalResult result, Type objectType, DataPortalOperations operationType)
+    {
+
+    }
+
+    internal bool ExecutionIsNotOnLogicalOrPhysicalServer
+    {
+      get
+      {
+        return ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server
+          && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server;
+      }
     }
 
     #region Criteria

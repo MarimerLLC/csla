@@ -24,19 +24,23 @@ namespace Csla.Core
     /// </summary>
     /// <param name="current">Current identity value for object.</param>
     /// <returns>The next available identity value.</returns>
-    public int GetNextIdentity(int current)
+    public int GetNextIdentity(int? current = null)
     {
       int result;
-      if (current == -1)
+      if (current == null) 
+      { 
+        result = _nextIdentity;
+      }
+      else if (current == -1)
       {
         result = _nextIdentity++;
       }
       else
       {
-        result = current;
+        result = current.Value;
         if (current >= _nextIdentity)
         {
-          _nextIdentity = current + 1;
+          _nextIdentity = current.Value + 1;
         }
       }
       return result;

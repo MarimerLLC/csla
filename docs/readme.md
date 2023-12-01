@@ -16,7 +16,7 @@ The primary documentation for the CSLA .NET framework is through books and video
 
 * [Books and Videos](Books-and-videos.md)
 * [Reference](Reference.md)
-* [CSLA .NET FAQ](https://github.com/MarimerLLC/csla/blob/master/docs/readme.md)
+* [CSLA .NET FAQ (this page)](https://github.com/MarimerLLC/csla/blob/master/docs/readme.md)
 
 Resources
 ---------

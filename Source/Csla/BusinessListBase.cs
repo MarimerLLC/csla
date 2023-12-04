@@ -1212,9 +1212,29 @@ namespace Csla
     /// <param name="parent">A reference to the parent collection object.</param>
     protected virtual void SetParent(Core.IParent parent)
     {
-      _parent = parent;
-      _identityManager = null;
-      InitializeIdentity();
+      // ensure parent & _identity manager not null for case to check
+      if (parent != null && _identityManager != null)
+      {
+        // changed GetNextIdentity to accept optional parameter to return next identity
+        int current = _identityManager.GetNextIdentity();
+        // attempt to find case where we decrement next identity so none are skipped - not necessary
+        if (current > 0)
+          --current;
+
+        // ensure parent next identity accounts for this (child collection) next identity
+        parent.GetNextIdentity(current);
+
+        _parent = parent;
+        _identityManager = null;
+      }
+      else 
+      {
+        // case when current identity manager has next identity of > 1
+        // parent next identity incremented by 1 not accounting for this (child collection) next identity
+        _parent = parent;
+        _identityManager = null;
+        InitializeIdentity();
+      }
     }
 
     /// <summary>

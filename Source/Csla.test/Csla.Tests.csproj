@@ -31,6 +31,7 @@
     <Compile Remove="CslaDataProvider\**" />
     <Compile Remove="DataBinding\**" />
     <Compile Remove="Data\**" />
+    <Compile Remove="GraphMergerTest\**" />
     <Compile Remove="IdentityConverter\**" />
     <Compile Remove="Silverlight\**" />
     <Compile Remove="ViewModelTests\**" />
@@ -38,6 +39,7 @@
     <EmbeddedResource Remove="CslaDataProvider\**" />
     <EmbeddedResource Remove="DataBinding\**" />
     <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="GraphMergerTest\**" />
     <EmbeddedResource Remove="IdentityConverter\**" />
     <EmbeddedResource Remove="Silverlight\**" />
     <EmbeddedResource Remove="ViewModelTests\**" />
@@ -45,6 +47,7 @@
     <None Remove="CslaDataProvider\**" />
     <None Remove="DataBinding\**" />
     <None Remove="Data\**" />
+    <None Remove="GraphMergerTest\**" />
     <None Remove="IdentityConverter\**" />
     <None Remove="Silverlight\**" />
     <None Remove="ViewModelTests\**" />

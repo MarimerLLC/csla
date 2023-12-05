@@ -13,6 +13,15 @@ CSLA .NET version 7.0.3 fixes bugs and updates the MAUI build target.
 
 * [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=project%3Amarimerllc%2F12+)
 
+### Dependency Updates
+
+* Updated some .NET 7 RC references to the released versions
+* Update gRPC dependencies to current
+* Update RabbitMQ dependencies to current
+* Update `Microsoft.Data.SqlClient` to version 5.1.2
+* Update ASP.NET MVC 5 dependencies to version 5.3.0
+* Update `Xamarin.Forms` dependency version to 5.0.0.2622
+
 ### Contributors
 
 * @russblair

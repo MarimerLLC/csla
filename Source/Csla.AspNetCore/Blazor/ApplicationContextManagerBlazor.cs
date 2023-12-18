@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -16,8 +17,9 @@ using System.Threading.Tasks;
 namespace Csla.AspNetCore.Blazor
 {
   /// <summary>
-  /// Application context manager that uses HttpContextAccessor when 
-  /// resolving HttpContext to store context values.
+  /// Application context manager that adapts how to manage
+  /// per-user state and identity for server-rendered and
+  /// server-interactive Blazor modes.
   /// </summary>
   public class ApplicationContextManagerBlazor : IContextManager, IDisposable
   {
@@ -43,13 +45,20 @@ namespace Csla.AspNetCore.Blazor
     protected ActiveCircuitState ActiveCircuitState { get; private set; }
 
     /// <summary>
+    /// Gets or sets a reference to the current HttpContext.
+    /// </summary>
+    protected HttpContext HttpContext { get; set; }
+
+    /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
     /// </summary>
+    /// <param name="hca">IHttpContextAccessor service</param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
-    public ApplicationContextManagerBlazor(AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
+    public ApplicationContextManagerBlazor(IHttpContextAccessor hca, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
+      HttpContext = hca.HttpContext;
       AuthenticationStateProvider = authenticationStateProvider;
       ActiveCircuitState = activeCircuitState;
       CurrentPrincipal = UnauthenticatedPrincipal;
@@ -59,26 +68,37 @@ namespace Csla.AspNetCore.Blazor
 
     private void InitializeUser()
     {
-      Task<AuthenticationState> task = default;
-      try
+      if (ActiveCircuitState.CircuitExists)
       {
-        task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+        Task<AuthenticationState> task;
+        try
+        {
+          task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+        }
+        catch (InvalidOperationException ex)
+        {
+          task = Task.FromResult(new AuthenticationState((ClaimsPrincipal)UnauthenticatedPrincipal));
+          string message = ex.Message;
+          if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
+              && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState)))
+          {
+            SetHostPrincipal(task);
+          }
+          else
+          {
+            throw;
+          }
+        }
+        AuthenticationStateProvider_AuthenticationStateChanged(task);
       }
-      catch (InvalidOperationException ex)
+      else if (HttpContext is not null)
       {
-        task = Task.FromResult(new AuthenticationState((ClaimsPrincipal)UnauthenticatedPrincipal));
-        string message = ex.Message;
-        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
-            && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState)))
-        {
-          SetHostPrincipal(task);
-        }
-        else
-        {
-          throw;
-        }
+        CurrentPrincipal = HttpContext.User;
       }
-      AuthenticationStateProvider_AuthenticationStateChanged(task);
+      else
+      {
+        throw new InvalidOperationException("HttpContext==null, !CircuitExists");
+      }
     }
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
@@ -106,7 +126,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     public bool IsValid
     {
-      get { return ActiveCircuitState.CircuitExists; }
+      get { return HttpContext is not null || ActiveCircuitState.CircuitExists; }
     }
 
     /// <summary>
@@ -132,15 +152,26 @@ namespace Csla.AspNetCore.Blazor
     {
       if (!ReferenceEquals(CurrentPrincipal, principal))
       {
-        if (principal is ClaimsPrincipal claimsPrincipal)
+        if (ActiveCircuitState.CircuitExists)
         {
-          CurrentPrincipal = principal;
-          SetHostPrincipal(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+          if (principal is ClaimsPrincipal claimsPrincipal)
+          {
+            SetHostPrincipal(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+          }
+          else
+          {
+            throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
+          }
+        }
+        else if (HttpContext is not null)
+        {
+          HttpContext.User = (ClaimsPrincipal)principal;
         }
         else
         {
-          throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
+          throw new InvalidOperationException("HttpContext==null, !CircuitExists");
         }
+        CurrentPrincipal = principal;
       }
     }
 

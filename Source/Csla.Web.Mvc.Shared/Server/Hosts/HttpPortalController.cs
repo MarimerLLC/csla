@@ -198,11 +198,11 @@ namespace Csla.Server.Hosts
       DataPortalErrorInfo errorData = null;
       if (UseTextSerialization)
       {
-        Response.Headers.Add("Content-type", "application/base64,text/plain");
+        Response.Headers["Content-type"] = "application/base64,text/plain";
       }
       else
       {
-        Response.Headers.Add("Content-type", "application/octet-stream");
+        Response.Headers["Content-type"] = "application/octet-stream";
       }
       SetHttpResponseHeaders(Response);
       try

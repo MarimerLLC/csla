@@ -33,8 +33,8 @@
       </group>
       <group targetFramework="net8.0-windows10.0.19041">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.Extensions.Hosting" version="8.0.0-rc.1.23419.4" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="8.0.0-rc.1.23419.4" />
+        <dependency id="Microsoft.Extensions.Hosting" version="8.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="8.0.0" />
       </group>
     </dependencies>
   </metadata>

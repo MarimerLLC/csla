@@ -92,12 +92,12 @@
         <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
       <group targetFramework="net8.0">
-        <dependency id="Microsoft.Extensions.Configuration" version="8.0.0-rc.1.23419.4" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="8.0.0-rc.1.23419.4" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="8.0.0-rc.1.23419.4" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.0-rc.1.23419.4" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="8.0.0-rc.1.23419.4" />
-        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.0-rc.1.23419.4" />
+        <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="8.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="8.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.0" />
+        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="8.0.0" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.0" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
         <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>

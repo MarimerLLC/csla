@@ -83,20 +83,6 @@ namespace Csla.Core
       return base.ContainsKey(key);
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
-    /// <summary>
-    /// Creates an instance of the object for serialization.
-    /// </summary>
-    /// <param name="context">Serialization context.</param>
-    /// <param name="info">Serialization info.</param>
-    protected MobileDictionary(System.Runtime.Serialization.SerializationInfo info,
-        System.Runtime.Serialization.StreamingContext context)
-      : base(info, context)
-    {
-      DetermineTypes();
-    }
-#endif
-
     private void DetermineTypes()
     {
       _keyIsMobile = typeof(Csla.Serialization.Mobile.IMobileObject).IsAssignableFrom(typeof(K));

@@ -67,8 +67,7 @@ namespace Csla.Core
     protected virtual bool ShouldHandlerSerialize(PropertyChangedEventHandler value)
     {
       return value.Method.IsPublic &&
-             value.Method.DeclaringType != null &&
-             (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
+             value.Method.DeclaringType != null;
     }
 
     /// <summary>
@@ -264,8 +263,7 @@ namespace Csla.Core
     protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
     {
       return value.Method.IsPublic &&
-             value.Method.DeclaringType != null &&
-             (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
+             value.Method.DeclaringType != null;
     }
   }
 }

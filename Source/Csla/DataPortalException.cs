@@ -192,34 +192,5 @@ namespace Csla
     {
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
-
-    /// <summary>
-    /// Creates an instance of the object for serialization.
-    /// </summary>
-    /// <param name="info">Serialization info object.</param>
-    /// <param name="context">Serialization context object.</param>
-    protected DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-      : base(info, context)
-    {
-      _businessObject = info.GetValue("_businessObject", typeof(object));
-      _innerStackTrace = info.GetString("_innerStackTrace");
-    }
-
-    /// <summary>
-    /// Serializes the object.
-    /// </summary>
-    /// <param name="info">Serialization info object.</param>
-    /// <param name="context">Serialization context object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !NET6_0_OR_GREATER
-    [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-    [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-#endif
-    public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-    {
-      base.GetObjectData(info, context);
-      info.AddValue("_businessObject", _businessObject);
-      info.AddValue("_innerStackTrace", _innerStackTrace);
-    }
   }
 }

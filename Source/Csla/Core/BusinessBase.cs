@@ -1407,29 +1407,7 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      BusinessRules.SetTarget(this);
-      if (_fieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
-      InitializeBusinessRules();
-      FieldDataDeserialized();
-
-      OnDeserialized(context);
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    { }
 
 #endregion
 

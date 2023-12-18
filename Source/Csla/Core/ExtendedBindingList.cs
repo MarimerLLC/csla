@@ -39,9 +39,7 @@ namespace Csla.Core
     {
       add
       {
-        if (value.Method.IsPublic &&
-           (value.Method.DeclaringType.IsSerializable ||
-            value.Method.IsStatic))
+        if (value.Method.IsPublic)
           _serializableHandlers = (EventHandler<RemovingItemEventArgs>)
             System.Delegate.Combine(_serializableHandlers, value);
         else
@@ -50,9 +48,7 @@ namespace Csla.Core
       }
       remove
       {
-        if (value.Method.IsPublic &&
-           (value.Method.DeclaringType.IsSerializable ||
-            value.Method.IsStatic))
+        if (value.Method.IsPublic)
           _serializableHandlers = (EventHandler<RemovingItemEventArgs>)
             System.Delegate.Remove(_serializableHandlers, value);
         else

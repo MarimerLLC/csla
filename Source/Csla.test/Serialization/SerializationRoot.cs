@@ -22,13 +22,6 @@ namespace Csla.Test.Serialization
       set { SetProperty(DataProperty, ref _data, value); }
     }
 
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      base.OnDeserialized(context);
-      TestResults.AddOrOverwrite("Deserialized", "true");
-      Console.WriteLine("OnDeserialized");
-    }
-
     public static SerializationRoot NewSerializationRoot(IDataPortal<SerializationRoot> dataPortal)
     {
       return dataPortal.Create();

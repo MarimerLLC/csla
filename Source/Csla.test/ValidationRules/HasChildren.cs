@@ -59,13 +59,6 @@ namespace Csla.Test.ValidationRules
       this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
     }
 
-    protected override void OnDeserialized(StreamingContext context)
-    {
-      base.OnDeserialized(context);
-      ChildList.ListChanged += new System.ComponentModel.ListChangedEventHandler(ChildList_ListChanged);
-      this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
-    }
-
     void ChildList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
     {
       //ValidationRules.CheckRules(ChildListProperty);

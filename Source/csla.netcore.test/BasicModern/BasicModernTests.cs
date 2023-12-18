@@ -198,6 +198,7 @@ namespace Csla.Test.BasicModern
       graph.Name = "abc";
       var child = graph.Children.AddNew();
       child.Id = 123;
+      child.Name = "xyz";
 
       graph = graph.Save();
 

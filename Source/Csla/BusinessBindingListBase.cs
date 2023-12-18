@@ -1061,7 +1061,7 @@ namespace Csla
     {
       add
       {
-        if (value.Method.IsPublic && value.Method.IsStatic)
+        if (value.Method.IsPublic)
           _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
             System.Delegate.Combine(_serializableSavedHandlers, value);
         else
@@ -1070,7 +1070,7 @@ namespace Csla
       }
       remove
       {
-        if (value.Method.IsPublic && value.Method.IsStatic)
+        if (value.Method.IsPublic)
           _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
             System.Delegate.Remove(_serializableSavedHandlers, value);
         else

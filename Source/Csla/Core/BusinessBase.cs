@@ -1407,6 +1407,11 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
+      BusinessRules.SetTarget(this);
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
+      InitializeBusinessRules();
+      FieldDataDeserialized();
     }
 
 #endregion

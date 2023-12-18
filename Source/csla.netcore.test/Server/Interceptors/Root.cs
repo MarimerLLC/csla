@@ -97,10 +97,6 @@ namespace Csla.Test.Server.Interceptors
     {
     }
 
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-    }
-
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
     }

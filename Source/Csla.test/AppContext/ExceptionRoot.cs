@@ -5,8 +5,6 @@
 // </copyright>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Test.AppContext
 {
@@ -51,9 +49,9 @@ namespace Csla.Test.AppContext
       }
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    [Fetch]
+    protected void DataPortal_Fetch(Criteria crit)
     {
-      Criteria crit = criteria as Criteria;
       this._Data = crit.Data;
       this.MarkOld();
 
@@ -62,9 +60,9 @@ namespace Csla.Test.AppContext
       throw new ApplicationException("Fail fetch");
     }
 
-    private void DataPortal_Create(object criteria)
+    [Create]
+    private void DataPortal_Create(Criteria crit)
     {
-      Criteria crit = criteria as Criteria;
       this._Data = crit.Data;
 
       TestResults.Add("Root", "Created");
@@ -82,7 +80,7 @@ namespace Csla.Test.AppContext
     }
 
     [Update]
-	protected void DataPortal_Update()
+  	protected void DataPortal_Update()
     {
       TestResults.AddOrOverwrite("Root", "Updated");
       TestResults.AddOrOverwrite("create", "create");
@@ -90,7 +88,7 @@ namespace Csla.Test.AppContext
     }
 
     [Delete]
-	protected void DataPortal_Delete(object criteria)
+	  protected void DataPortal_Delete(object criteria)
     {
       TestResults.AddOrOverwrite("Root", "Deleted");
       TestResults.AddOrOverwrite("create", "create");

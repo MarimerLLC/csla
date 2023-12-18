@@ -100,11 +100,6 @@ namespace Csla.Test.Basic
       TestResults.Add("Root", "Deleted");
     }
 
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      TestResults.Add("Deserialized", "root Deserialized");
-    }
-
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       TestResults.Add("dpinvoke", "Invoked");

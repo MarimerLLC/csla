@@ -66,11 +66,5 @@ namespace Csla.Test.Basic
         MarkOld();
       }
     }
-
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      base.OnDeserialized(context);
-      TestResults.Add("GCDeserialized", "GC Deserialized");
-    }
   }
 }

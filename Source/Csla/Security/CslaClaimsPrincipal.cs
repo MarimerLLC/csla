@@ -82,16 +82,6 @@ namespace Csla.Security
       : base(reader)
     { }
 
-    /// <summary>
-    /// Creates an instance of the object from
-    /// BinaryFormatter or NDCS deserialization.
-    /// </summary>
-    /// <param name="context">Serialization context</param>
-    /// <param name="info">Serialization info</param>
-    protected CslaClaimsPrincipal(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-      : base(info, context)
-    { }
-
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     { }
 

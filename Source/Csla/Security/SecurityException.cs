@@ -37,33 +37,6 @@ namespace Csla.Security
     public SecurityException(string message, Exception innerException)
       : base(message, innerException)
     { }
-
-#if !(ANDROID || IOS) && !NETFX_CORE
-    /// <summary>
-    /// Creates an instance of the object for serialization.
-    /// </summary>
-    /// <param name="info">Serialiation info object.</param>
-    /// <param name="context">Serialization context object.</param>
-    protected SecurityException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-      : base(info, context)
-    {
-    }
-
-    /// <summary>
-    /// Serializes the object.
-    /// </summary>
-    /// <param name="info">Serialiation info object.</param>
-    /// <param name="context">Serialization context object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !NET6_0_OR_GREATER
-    [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-    [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-#endif
-    public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-    {
-      base.GetObjectData(info, context);
-    }
-#endif
   }
 }
 

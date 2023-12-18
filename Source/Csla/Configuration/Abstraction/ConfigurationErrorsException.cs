@@ -43,17 +43,5 @@ namespace Csla.Configuration
     {
 
     }
-
-    /// <summary>
-    /// Creates an instance of the object for serialization.
-    /// </summary>
-    /// <param name="context">Serialization context.</param>
-    /// <param name="info">Serialization info.</param>
-    protected ConfigurationErrorsException(System.Runtime.Serialization.SerializationInfo info,
-        System.Runtime.Serialization.StreamingContext context)
-      : base(info, context)
-    {
-
-    }
   }
 }

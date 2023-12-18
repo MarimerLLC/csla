@@ -145,10 +145,7 @@ namespace Csla.Serialization.Mobile
           obj = new Security.CslaClaimsPrincipal(cp);
           thisType = obj.GetType();
         }
-        if (!thisType.IsSerializable)
-          throw new InvalidOperationException(
-            string.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName));
-        if (!(obj is IMobileObject mobile))
+        if (obj is not IMobileObject mobile)
           throw new InvalidOperationException(
             string.Format(Resources.MustImplementIMobileObject,
             thisType.Name));

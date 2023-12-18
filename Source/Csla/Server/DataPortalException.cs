@@ -53,37 +53,5 @@ namespace Csla.Server
       _innerStackTrace = ex.StackTrace;
       _result = result;
     }
-
-#if !(ANDROID || IOS) && !NETFX_CORE
-    /// <summary>
-    /// Creates an instance of the object for serialization.
-    /// </summary>
-    /// <param name="info">Serialiation info object.</param>
-    /// <param name="context">Serialization context object.</param>
-    protected DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-      : base(info, context)
-    {
-      _result = (DataPortalResult)info.GetValue(
-        "_result", typeof(DataPortalResult));
-      _innerStackTrace = info.GetString("_innerStackTrace");
-    }
-
-    /// <summary>
-    /// Serializes the object.
-    /// </summary>
-    /// <param name="info">Serialiation info object.</param>
-    /// <param name="context">Serialization context object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !NET6_0_OR_GREATER
-    [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
-    [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
-#endif
-    public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-    {
-      base.GetObjectData(info, context);
-      info.AddValue("_result", _result);
-      info.AddValue("_innerStackTrace", _innerStackTrace);
-    }
-#endif
   }
 }

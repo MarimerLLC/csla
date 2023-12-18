@@ -68,11 +68,5 @@ namespace Csla.Test.Server.Interceptors
         MarkOld();
       }
     }
-
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      base.OnDeserialized(context);
-      TestResults.Add("GCDeserialized", "GC Deserialized");
-    }
   }
 }

@@ -187,28 +187,44 @@ namespace Csla.Test.BasicModern
       Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable after add");
       Assert.IsFalse(changed.Contains("IsNew"), "IsNew after add");
       Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted after add");
+    }
+
+    [TestMethod]
+    public void RootChangedMetastateEventsChildAfterSave()
+    {
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var graph = CreateRoot();
+      var changed = new List<string>();
+      graph.Name = "abc";
+      var child = graph.Children.AddNew();
+      child.Id = 123;
+      child.Name = "xyz";
 
       graph = graph.Save();
+
       changed.Clear();
       graph.PropertyChanged += (o, e) =>
       {
         changed.Add(e.PropertyName);
       };
-
-      Assert.IsFalse(graph.IsDirty, "IsDirty should be false");
+      graph.ChildChanged += (o, e) =>
+      {
+        if (e.ChildObject is not null)
+          changed.Add($"{e.ChildObject.GetType()}-{e.PropertyChangedArgs.PropertyName}");
+      };
 
       graph.Children[0].Name = "mnop";
 
       Assert.IsTrue(graph.IsDirty, "IsDirty should be true");
 
-      Assert.IsFalse(changed.Contains("Children"), "Children after add");
-      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty after add");
-      Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty after add");
-      Assert.IsTrue(changed.Contains("IsValid"), "IsValid after add");
-      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid after add");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable after add");
-      Assert.IsFalse(changed.Contains("IsNew"), "IsNew after add");
-      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted after add");
+      Assert.IsFalse(changed.Contains("Children"), "Children after edit");
+      Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty after edit");
+      Assert.IsFalse(changed.Contains("IsSelfDirty"), "IsSelfDirty after edit");
+      Assert.IsTrue(changed.Contains("IsValid"), "IsValid after edit");
+      Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid after edit");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable after edit");
+      Assert.IsFalse(changed.Contains("IsNew"), "IsNew after edit");
+      Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted after edit");
     }
 
     private Root CreateRoot()

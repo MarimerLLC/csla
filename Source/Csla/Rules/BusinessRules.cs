@@ -564,7 +564,7 @@ namespace Csla.Rules
           if (CascadeOnDirtyProperties)
             doCascade = firstResult.DirtyProperties.Any(p => p == item.Name);
           firstResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
-                                                            executionContext | RuleContextModes.AsAffectedPoperty));
+                                                            executionContext | RuleContextModes.AsAffectedProperty));
         }
       }
 
@@ -625,7 +625,7 @@ namespace Csla.Rules
 
       bool canRun = true;
 
-      if ((contextMode & RuleContextModes.AsAffectedPoperty) > 0)
+      if ((contextMode & RuleContextModes.AsAffectedProperty) > 0)
         canRun &= (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
       if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
@@ -688,7 +688,7 @@ namespace Csla.Rules
           if (CascadeOnDirtyProperties)
             doCascade = firstResult.DirtyProperties.Any(p => p == item.Name);
           firstResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
-                                                               executionContext | RuleContextModes.AsAffectedPoperty));
+                                                               executionContext | RuleContextModes.AsAffectedProperty));
         }
       }
 
@@ -757,7 +757,7 @@ namespace Csla.Rules
                     var doCascade = false;
                     if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
                       doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
-                    affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedPoperty));
+                    affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedProperty));
                   }
 
               // mark each property as not busy

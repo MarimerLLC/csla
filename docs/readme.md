@@ -25,6 +25,7 @@ You can learn how to get started using the resources listed here:
 
 * [Getting started](Getting-started.md)
 * [Discussion forum](https://github.com/MarimerLLC/csla/discussions)
+* [Discord server](https://discord.gg/9ahKjb7ccf)
 * [Code generators](https://github.com/MarimerLLC/csla/blob/master/docs/code-generators.md)
 
 Contributing
@@ -51,5 +52,6 @@ External links
 * [Wikipedia page](http://en.wikipedia.org/wiki/CSLA_.NET)
 * [Open Hub](https://www.openhub.net/p/cslanet)
 * [LinkedIn](https://www.linkedin.com/groups/99453/)
+* [Mastodon](https://dotnet.social/@cslanet)
 * Facebook [Group](https://www.facebook.com/groups/cslanet/) | [Page](https://www.facebook.com/CslaNet)
 * [StackOverflow](http://stackoverflow.com/tags/csla/info)

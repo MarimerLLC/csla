@@ -2,7 +2,7 @@ The following is a list of important books and videos for CSLA .NET:
 
 The most recent book is _free_ and is available from the online store.
 
-* [Using CSLA 2019: CSLA .NET Overview](https://store.lhotka.net/using-csla-2019-csla-net-overview)
+* [Using CSLA: Version 8 Overview](https://store.lhotka.net/using-csla-version-8-overview)
 
 Other relevant content available:
 

@@ -59,67 +59,6 @@ namespace Csla.Test.AppContext
 
     #endregion
 
-    [TestMethod()]
-    public void ApplicationContextProperties()
-    {
-      // TODO: Is there any equivalent for this test in Csla 6?
-      //ApplicationContext.DataPortalProxy = null;
-      //Assert.AreEqual("Local", ApplicationContext.DataPortalProxy);
-      //Assert.AreEqual("Client", ApplicationContext.ExecutionLocation.ToString());
-    }
-
-    #region TestAppContext across different Threads
-
-    // TODO: Is this test relevant anymore? I can't work out how to do this test
-    [TestMethod]
-    public void TestAppContextAcrossDifferentThreads()
-    {
-      List<AppContextThread> AppContextThreadList = new List<AppContextThread>();
-      List<Thread> ThreadList = new List<Thread>();
-
-      for (int x = 0; x < 10; x++)
-      {
-        AppContextThread act = new AppContextThread("Thread: " + x);
-        AppContextThreadList.Add(act);
-
-        Thread t = new Thread(new ThreadStart(act.Run));
-        t.Name = "Thread: " + x;
-        t.Start();
-        ThreadList.Add(t);
-      }
-
-      Exception ex = null;
-      try
-      {
-        foreach (AppContextThread act in AppContextThreadList)
-        {
-          //We are accessing the Client/GlobalContext via this thread, therefore
-          //it should be removed.
-          Assert.AreEqual(true, act.Removed);
-        }
-        //We are now accessing the shared value. If any other thread
-        //loses its Client/GlobalContext this will turn to true
-        //Assert.AreEqual(false, AppContextThread.StaticRemoved);
-      }
-      catch (Exception e)
-      {
-        ex = e;
-      }
-      finally
-      {
-        foreach (AppContextThread act in AppContextThreadList)
-          act.Stop();
-
-        foreach (Thread t in ThreadList)
-        {
-          t.Join();
-        }
-      }
-      if (ex != null) throw ex;
-    }
-
-    #endregion
-
     #region ClientContext
 
     /// <summary>
@@ -135,8 +74,9 @@ namespace Csla.Test.AppContext
       IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
-      applicationContext.ClientContext.Add("clientcontext", "client context data");
-      Assert.AreEqual("client context data", applicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
+      var testContext = "client context data";
+      applicationContext.ClientContext.Add("clientcontext", testContext);
+      Assert.AreEqual(testContext, applicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
 
       Basic.Root root = dataPortal.Create(new Basic.Root.Criteria());
       root.Data = "saved";
@@ -144,6 +84,7 @@ namespace Csla.Test.AppContext
       Assert.AreEqual(true, root.IsDirty, "Object should be dirty");
       Assert.AreEqual(true, root.IsValid, "Object should be valid");
 
+      TestResults.Reinitialise();
       root = root.Save();
 
       Assert.IsNotNull(root, "Root object should not be null");
@@ -157,56 +98,6 @@ namespace Csla.Test.AppContext
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Client context data lost");
       Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"), "Global context data lost");
       Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"), "New global value lost");
-    }
-
-    #endregion
-
-    #region Dataportal Events
-
-    // TODO: Is this test relevant any more? These event handlers don't seem to be exposed
-    /// <summary>
-    /// Test the dataportal events
-    /// </summary>
-    /// <remarks>
-    /// How does the GlobalContext get the keys "dpinvoke" and "dpinvokecomplete"?
-    /// 
-    /// In the vb version of this test it calls RemoveHandler in VB. Unfortunately removing handlers aren't quite
-    /// that easy in C# I had to declare EventHandlers that could be added and removed. Also I found out that the
-    /// VB library does not seem to contain the DataPortalInvokeEventHandler object so I put a conditional compile
-    /// flag around this method and set a warning message.
-    /// </remarks>
-    [TestMethod()]
-    public void DataPortalEvents()
-    {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
-
-      TestResults.Add("global", "global");
-
-      //dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-      //dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
-
-      Basic.Root root = dataPortal.Fetch(new Basic.Root.Criteria("testing"));
-
-      //dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-      //dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
-
-      //Populated in the handlers below
-      Assert.AreEqual("global", TestResults.GetResult("ClientInvoke"), "Client invoke incorrect");
-      Assert.AreEqual("global", TestResults.GetResult("ClientInvokeComplete"), "Client invoke complete");
-
-      //populated in the Root Dataportal handlers.
-      Assert.AreEqual("global", TestResults.GetResult("dpinvoke"), "Server invoke incorrect");
-      Assert.AreEqual("global", TestResults.GetResult("dpinvokecomplete"), "Server invoke compelte incorrect");
-    }
-
-    private void OnDataPortaInvoke(DataPortalEventArgs e)
-    {
-      TestResults.Add("ClientInvoke", TestResults.GetResult("global"));
-    }
-
-    private void OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-      TestResults.Add("ClientInvokeComplete", TestResults.GetResult("global"));
     }
 
     #endregion
@@ -268,8 +159,6 @@ namespace Csla.Test.AppContext
 
     #endregion
 
-    #region FailUpdateContext
-
     [TestMethod()]
     public void FailUpdateContext()
     {
@@ -312,8 +201,6 @@ namespace Csla.Test.AppContext
       {
       }
     }
-
-    #endregion
 
     #region FailDeleteContext
 

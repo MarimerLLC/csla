@@ -86,6 +86,33 @@ namespace Csla
     #region Data Access
 
     /// <summary>
+    /// Await this method to ensure business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <returns></returns>
+    public async Task WaitForIdle()
+    {
+      await WaitForIdle(TimeSpan.FromSeconds(ApplicationContext.DefaultWaitForIdleTimeoutInSeconds));
+    }
+
+    /// <summary>
+    /// Await this method to ensure business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <param name="timeout">Timeout duration</param>
+    /// <returns></returns>
+    public async Task WaitForIdle(TimeSpan timeout)
+    {
+      var endTime = DateTime.Now + timeout;
+      while (IsBusy)
+      {
+        if (DateTime.Now > endTime)
+          throw new TimeoutException($"{this.GetType().FullName}.WaitForIdle");
+        await Task.Delay(1);
+      }
+    }
+
+    /// <summary>
     /// Saves the object to the database.
     /// </summary>
     /// <remarks>

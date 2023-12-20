@@ -61,6 +61,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
+    [Obsolete("Configure from data options")]
     public TransactionIsolationLevel DefaultTransactionIsolationLevel { get => ApplicationContext.DefaultTransactionIsolationLevel; set => ApplicationContext.DefaultTransactionIsolationLevel = value; }
 
     /// <summary>
@@ -69,13 +70,23 @@ namespace Csla.Configuration
     /// <value>
     /// The default transaction timeout in seconds.
     /// </value>
+    [Obsolete("Configure from data options")]
     public int DefaultTransactionTimeoutInSeconds { get => ApplicationContext.DefaultTransactionTimeoutInSeconds; set => ApplicationContext.DefaultTransactionTimeoutInSeconds = value; }
 
     /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects. (Enabled or Suppress)
     /// </summary>
+    [Obsolete("Configure from data options")]
     public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get => ApplicationContext.DefaultTransactionAsyncFlowOption; set => ApplicationContext.DefaultTransactionAsyncFlowOption = value; }
+
+    /// <summary>
+    /// Gets or sets the default wait for idle timeout in seconds.
+    /// </summary>
+    /// <value>
+    /// The default timeout in seconds.
+    /// </value>
+    public int DefaultWaitForIdleTimeoutInSeconds { get => ApplicationContext.DefaultWaitForIdleTimeoutInSeconds; set => ApplicationContext.DefaultWaitForIdleTimeoutInSeconds = value; }
 
     /// <summary>
     /// Gets or sets the data portal configuration options

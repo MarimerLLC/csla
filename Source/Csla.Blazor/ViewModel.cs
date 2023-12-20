@@ -217,6 +217,13 @@ namespace Csla.Blazor
     }
 
     /// <summary>
+    /// Gets or sets a value specifying the timeout
+    /// when calling SaveAsync and the Model is
+    /// currently busy with async rules.
+    /// </summary>
+    public TimeSpan BusyTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
+    /// <summary>
     /// Saves the Model.
     /// </summary>
     /// <returns></returns>
@@ -224,13 +231,30 @@ namespace Csla.Blazor
     {
       Exception = null;
       ViewModelErrorText = null;
-      if (Model is Core.ITrackStatus obj && !obj.IsSavable)
-      {
-        ViewModelErrorText = ModelErrorText;
-        return;
-      }
       try
       {
+        if (Model is Core.ITrackStatus obj && !obj.IsSavable)
+        {
+          if (obj.IsBusy)
+          {
+            var stopTime = DateTime.Now + BusyTimeout;
+            while (obj.IsBusy)
+            {
+              if (DateTime.Now > stopTime)
+                throw new TimeoutException("SaveAsync");
+              await Task.Delay(1);
+            }
+          }
+          if (!obj.IsValid)
+          {
+            ViewModelErrorText = ModelErrorText;
+            return;
+          }
+          else if (!obj.IsSavable)
+            throw new InvalidOperationException(
+              $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
+        }
+
         UnhookChangedEvents(Model);
 
         if (ManageObjectLifetime && Model is Core.ISupportUndo undoable)

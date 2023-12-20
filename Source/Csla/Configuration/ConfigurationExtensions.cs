@@ -46,6 +46,7 @@ namespace Csla.Configuration
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
       RegisterContextManager(services);
+      services.TryAddScoped<IDataPortalCache, DataPortalCacheDefault>();
 
       // Runtime Info defaults
       services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));

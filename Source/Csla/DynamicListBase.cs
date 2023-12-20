@@ -436,6 +436,33 @@ namespace Csla
     #region IsBusy
 
     /// <summary>
+    /// Await this method to ensure business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <returns></returns>
+    public async Task WaitForIdle()
+    {
+      await WaitForIdle(TimeSpan.FromSeconds(ApplicationContext.DefaultWaitForIdleTimeoutInSeconds));
+    }
+
+    /// <summary>
+    /// Await this method to ensure business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <param name="timeout">Timeout duration</param>
+    /// <returns></returns>
+    public async Task WaitForIdle(TimeSpan timeout)
+    {
+      var endTime = DateTime.Now + timeout;
+      while (IsBusy)
+      {
+        if (DateTime.Now > endTime)
+          throw new TimeoutException($"{this.GetType().FullName}.WaitForIdle");
+        await Task.Delay(1);
+      }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether this object
     /// or any child object is currently executing
     /// an async operation.

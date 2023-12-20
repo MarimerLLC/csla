@@ -642,25 +642,26 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="property">The property.</param>
     /// <param name="cascade">if set to <c>true</c> [cascade].</param>
-    /// <param name="executionContext">The execute context.</param>
+    /// <param name="executionMode">The execute mode.</param>
     /// <returns></returns>
-    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionContext)
+    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionMode)
     {
-      var rules = from r in TypeRules.Rules
+      // checking rules for the primary property
+      var primaryRules = from r in TypeRules.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
-                    && CanRunRule(ApplicationContext, r, executionContext)
+                    && CanRunRule(ApplicationContext, r, executionMode)
                   orderby r.Priority
                   select r;
 
       BrokenRules.ClearRules(property);
-      var firstResult = RunRules(rules, cascade, executionContext);
+      var primaryResult = RunRules(primaryRules, cascade, executionMode);
       if (CascadeOnDirtyProperties)
-          cascade = cascade || firstResult.DirtyProperties.Any();
+          cascade = cascade || primaryResult.DirtyProperties.Any();
       if (cascade)
       {
         // get properties affected by all rules
         var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
-        foreach (var item in rules)
+        foreach (var item in primaryRules)
           if (!item.IsAsync)
           {
             foreach (var p in item.AffectedProperties)
@@ -668,13 +669,19 @@ namespace Csla.Rules
                 propertiesToRun.Add(p);
           }
 
-        // add PrimaryProperty where property is in InputProperties
+        // gets a list of "affected" properties by adding
+        // PrimaryProperty where property is in InputProperties
         var input = from r in TypeRules.Rules
                     where !ReferenceEquals(r.PrimaryProperty, property)
                           && r.PrimaryProperty != null
                           && r.InputProperties != null
                           && r.InputProperties.Contains(property)
                     select r.PrimaryProperty;
+
+        var dirtyProperties = primaryResult.DirtyProperties;
+        input = from r in input
+                where dirtyProperties.Contains(r.Name)
+                select r;
 
         foreach (var p in input)
         {
@@ -686,15 +693,15 @@ namespace Csla.Rules
         {
           var doCascade = false; 
           if (CascadeOnDirtyProperties)
-            doCascade = firstResult.DirtyProperties.Any(p => p == item.Name);
-          firstResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
-                                                               executionContext | RuleContextModes.AsAffectedPoperty));
+            doCascade = primaryResult.DirtyProperties.Any(p => p == item.Name);
+          primaryResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
+                                                               executionMode | RuleContextModes.AsAffectedPoperty));
         }
       }
 
       // always make sure to add PrimaryProperty
-      firstResult.AffectedProperties.Add(property.Name);
-      return firstResult.AffectedProperties.Distinct().ToList();
+      primaryResult.AffectedProperties.Add(property.Name);
+      return primaryResult.AffectedProperties.Distinct().ToList();
     }
 
     [NonSerialized]

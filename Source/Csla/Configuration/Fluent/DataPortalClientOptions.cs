@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Client-side data portal options.</summary>
 //-----------------------------------------------------------------------
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -90,6 +91,18 @@ namespace Csla.Configuration
     public DataPortalClientOptions DataPortalReturnObjectOnException(bool returnObjectOnException)
     {
       ApplicationContext.DataPortalReturnObjectOnException = returnObjectOnException;
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the concrete type of the client-side 
+    /// data portal cache service.
+    /// </summary>
+    /// <param name="dataPortalCache"></param>
+    /// <returns></returns>
+    public DataPortalClientOptions RegisterDataPortalCache(Type dataPortalCache)
+    {
+      Services.AddScoped(typeof(DataPortalClient.IDataPortalCache), dataPortalCache);
       return this;
     }
   }

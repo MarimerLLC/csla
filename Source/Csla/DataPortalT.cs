@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Csla.DataPortalClient;
 using Csla.Properties;
 
 namespace Csla
@@ -27,10 +28,12 @@ namespace Csla
     /// </summary>
     /// <param name="applicationContext">ApplicationContext</param>
     /// <param name="proxy"></param>
-    public DataPortal(ApplicationContext applicationContext, DataPortalClient.IDataPortalProxy proxy)
+    /// <param name="dataPortalCache">Data portal cache service</param>
+    public DataPortal(ApplicationContext applicationContext, IDataPortalProxy proxy, IDataPortalCache dataPortalCache)
     {
       ApplicationContext = applicationContext;
       DataPortalProxy = proxy;
+      Cache = dataPortalCache;
     }
 
     /// <summary>
@@ -38,6 +41,7 @@ namespace Csla
     /// </summary>
     private ApplicationContext ApplicationContext { get; set; }
     private DataPortalClient.IDataPortalProxy DataPortalProxy { get; set; }
+    private IDataPortalCache Cache { get; set; }
 
     private class DataPortalAsyncRequest
     {
@@ -111,7 +115,11 @@ namespace Csla
 
         try
         {
-          result = await proxy.Create(objectType, criteria, dpContext, isSync);
+          if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Create, out result))
+          {
+            result = await proxy.Create(objectType, criteria, dpContext, isSync);
+            await Cache.AddObject(objectType, criteria, DataPortalOperations.Create, result);
+          }
         }
         catch (AggregateException ex)
         {
@@ -212,7 +220,11 @@ namespace Csla
 
         try
         {
-          result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
+          if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Fetch, out result))
+          {
+            result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
+            await Cache.AddObject(objectType, criteria, DataPortalOperations.Fetch, result);
+          }
         }
         catch (AggregateException ex)
         {
@@ -257,7 +269,11 @@ namespace Csla
 
         try
         {
-          result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
+          if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Execute, out result))
+          {
+            result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
+            await Cache.AddObject(objectType, criteria, DataPortalOperations.Execute, result);
+          }
         }
         catch (AggregateException ex)
         {
@@ -335,6 +351,7 @@ namespace Csla
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
+      var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
       try
       {
@@ -348,6 +365,7 @@ namespace Csla
 
           if (obj is Core.ICommandObject)
           {
+            operation = DataPortalOperations.Execute;
             if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
@@ -413,6 +431,7 @@ namespace Csla
           var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
           if (obj is Core.ICommandObject)
           {
+            operation = DataPortalOperations.Execute;
             if (!Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, obj))
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
@@ -468,7 +487,11 @@ namespace Csla
             if (obj is ICloneable cloneable)
               obj = (T)cloneable.Clone();
           }
-          result = await proxy.Update(obj, dpContext, isSync);
+          if (!await Cache.TryGetObject(objectType, obj, operation, out result))
+          {
+            result = await proxy.Update(obj, dpContext, isSync);
+            await Cache.AddObject(objectType, obj, operation, result);
+          }
         }
         catch (AggregateException ex)
         {
@@ -557,7 +580,11 @@ namespace Csla
 
         try
         {
-          result = await proxy.Delete(objectType, criteria, dpContext, isSync);
+          if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Delete, out result))
+          {
+            result = await proxy.Delete(objectType, criteria, dpContext, isSync);
+            await Cache.AddObject(objectType, criteria, DataPortalOperations.Delete, result);
+          }
         }
         catch (AggregateException ex)
         {

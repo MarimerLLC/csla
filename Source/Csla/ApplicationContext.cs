@@ -312,6 +312,15 @@ namespace Csla
     public static int DefaultTransactionTimeoutInSeconds { get; internal set; } = 30;
 
     /// <summary>
+    /// Gets or sets the default timeout in seconds
+    /// for the WaitForIdle method.
+    /// </summary>
+    /// <value>
+    /// The default timeout in seconds.
+    /// </value>
+    public static int DefaultWaitForIdleTimeoutInSeconds { get; internal set; } = 90;
+
+    /// <summary>
     /// Gets or sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>

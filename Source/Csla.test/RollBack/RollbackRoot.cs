@@ -112,11 +112,5 @@ namespace Csla.Test.RollBack
       //we would delete here
       TestResults.AddOrOverwrite("Root", "Deleted");
     }
-
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      base.OnDeserialized(context);
-      TestResults.AddOrOverwrite("Deserialized", "root Deserialized");
-    }
   }
 }

@@ -40,7 +40,7 @@ namespace Csla.Rules
     /// <summary>
     /// Include cascaded calls by AffectedProperties
     /// </summary>
-    AsAffectedPoperty = 8,
+    AsAffectedProperty = 8,
   }
 
   /// <summary>
@@ -168,7 +168,7 @@ namespace Csla.Rules
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool IsCascadeContext
     {
-      get { return (ExecuteContext & RuleContextModes.AsAffectedPoperty) > 0; }
+      get { return (ExecuteContext & RuleContextModes.AsAffectedProperty) > 0; }
     }
 
     /// <summary>

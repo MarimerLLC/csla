@@ -61,6 +61,7 @@ namespace Csla.Test.Basic
       }
     }
 
+    [Create]
     private void DataPortal_Create(object criteria, [Inject] IDataPortal<Children> childrenDataPortal)
     {
       Criteria crit = (Criteria)(criteria);
@@ -74,6 +75,7 @@ namespace Csla.Test.Basic
       TestResults.Add("Root", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria, [Inject] IDataPortal<Children> childrenDataPortal)
     {
       Criteria crit = (Criteria)(criteria);
@@ -101,7 +103,7 @@ namespace Csla.Test.Basic
     }
 
     [Update]
-	protected void DataPortal_Update()
+  	protected void DataPortal_Update()
     {
       //we would update here
       TestResults.Add("Root", "Updated");
@@ -117,11 +119,6 @@ namespace Csla.Test.Basic
 		protected void DataPortal_Delete(object criteria)
     {
       TestResults.Add("Root", "Deleted");
-    }
-
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      TestResults.Add("Deserialized", "root Deserialized");
     }
 
     protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)

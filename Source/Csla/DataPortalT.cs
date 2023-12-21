@@ -42,7 +42,9 @@ namespace Csla
     /// </summary>
     private ApplicationContext ApplicationContext { get; set; }
     private DataPortalClient.IDataPortalProxy DataPortalProxy { get; set; }
+
     private IDataPortalCache Cache { get; set; }
+
 
     private class DataPortalAsyncRequest
     {
@@ -120,7 +122,7 @@ namespace Csla
           {
             try
             {
-              await Semaphore.WaitAsync();
+              await Cache.Semaphore.WaitAsync();
               if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Create, out result))
               {
                 result = await proxy.Create(objectType, criteria, dpContext, isSync);
@@ -129,7 +131,7 @@ namespace Csla
             }
             finally
             {
-              Semaphore.Release();
+              Cache.Semaphore.Release();
             }
           }
           else
@@ -210,8 +212,6 @@ namespace Csla
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    private static readonly SemaphoreSlim Semaphore = new(1);
-
     private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync)
     {
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
@@ -242,7 +242,7 @@ namespace Csla
           {
             try
             {
-              await Semaphore.WaitAsync();
+              await Cache.Semaphore.WaitAsync();
               if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Fetch, out result))
               {
                 result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
@@ -251,7 +251,7 @@ namespace Csla
             }
             finally
             {
-              Semaphore.Release();
+              Cache.Semaphore.Release();
             }
           }
           else
@@ -306,7 +306,7 @@ namespace Csla
           {
             try
             {
-              await Semaphore.WaitAsync();
+              await Cache.Semaphore.WaitAsync();
               if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Execute, out result))
               {
                 result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
@@ -315,7 +315,7 @@ namespace Csla
             }
             finally
             {
-              Semaphore.Release();
+              Cache.Semaphore.Release();
             }
           }
           else
@@ -539,7 +539,7 @@ namespace Csla
           {
             try
             {
-              await Semaphore.WaitAsync();
+              await Cache.Semaphore.WaitAsync();
               if (!await Cache.TryGetObject(objectType, obj, operation, out result))
               {
                 result = await proxy.Update(obj, dpContext, isSync);
@@ -548,7 +548,7 @@ namespace Csla
             }
             finally
             {
-              Semaphore.Release();
+              Cache.Semaphore.Release();
             }
           }
           else
@@ -647,7 +647,7 @@ namespace Csla
           {
             try
             {
-              await Semaphore.WaitAsync();
+              await Cache.Semaphore.WaitAsync();
               if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Delete, out result))
               {
                 result = await proxy.Delete(objectType, criteria, dpContext, isSync);
@@ -656,7 +656,7 @@ namespace Csla
             }
             finally
             {
-              Semaphore.Release();
+              Cache.Semaphore.Release();
             }
           }
           else

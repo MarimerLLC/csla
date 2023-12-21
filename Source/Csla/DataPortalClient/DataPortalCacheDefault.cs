@@ -6,6 +6,7 @@
 // <summary>Null implementation of a client-side cache service</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Csla.Server;
 
@@ -17,6 +18,15 @@ namespace Csla.DataPortalClient
   public class DataPortalCacheDefault : IDataPortalCache
   {
     /// <summary>
+    /// Gets a semaphore used by the data portal to only allow a single
+    /// consumer/thread to get/add an item to the cache at a time.
+    /// </summary>
+    /// <remarks>
+    /// This semaphore must be a `new SemaphoreSlim(1)`
+    /// </remarks>
+    public SemaphoreSlim Semaphore => throw new NotImplementedException();
+
+    /// <summary>
     /// Always returns success, does not cache values.
     /// </summary>
     /// <param name="objectType">Type of domain object to add</param>
@@ -24,10 +34,8 @@ namespace Csla.DataPortalClient
     /// <param name="operation">Data portal operation</param>
     /// <param name="result">Data portal result to cache</param>
     /// <returns></returns>
-    public Task AddObject(Type objectType, object criteria, DataPortalOperations operation, DataPortalResult result)
-    {
-      return Task.CompletedTask;
-    }
+    public Task AddObject(Type objectType, object criteria, DataPortalOperations operation, DataPortalResult result) 
+      => throw new NotImplementedException();
 
     /// <summary>
     /// Gets a value indicating whether the domain type 
@@ -37,7 +45,8 @@ namespace Csla.DataPortalClient
     /// <param name="criteria">Criteria for domain type being added</param>
     /// <param name="operation">Data portal operation</param>
     /// <returns></returns>
-    public bool IsCacheable(Type objectType, object criteria, DataPortalOperations operation) => false;
+    public bool IsCacheable(Type objectType, object criteria, DataPortalOperations operation) 
+      => false;
 
     /// <summary>
     /// Always returns false, does not retrieve values from cache.
@@ -48,9 +57,6 @@ namespace Csla.DataPortalClient
     /// <param name="result">Cached data portal result</param>
     /// <returns>true if success, false if object isn't returned</returns>
     public Task<bool> TryGetObject(Type objectType, object criteria, DataPortalOperations operation, out DataPortalResult result)
-    { 
-      result = null;
-      return Task.FromResult(false);
-    }
+      => throw new NotImplementedException();
   }
 }

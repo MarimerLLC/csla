@@ -6,6 +6,7 @@
 // <summary>Defines interface for a client-side cache service</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Csla.DataPortalClient
@@ -44,5 +45,13 @@ namespace Csla.DataPortalClient
     /// <param name="operation">Data portal operation</param>
     /// <returns></returns>
     bool IsCacheable(Type objectType, object criteria, DataPortalOperations operation);
+    /// <summary>
+    /// Gets a semaphore used by the data portal to only allow a single
+    /// consumer/thread to get/add an item to the cache at a time.
+    /// </summary>
+    /// <remarks>
+    /// This semaphore must be a `new SemaphoreSlim(1)`
+    /// </remarks>
+    SemaphoreSlim Semaphore { get; }
   }
 }

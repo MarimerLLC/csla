@@ -9,10 +9,21 @@ Basics
 * Get the framework binaries from [NuGet](http://nuget.org/packages?q=csla) or from the [releases page](https://github.com/MarimerLLC/csla/releases).
 * Review the [CSLA Fast Start](https://github.com/MarimerLLC/csla/tree/master/Samples/CslaFastStart) sample.
 
-CSLA 6
+CSLA 8
 ------
 
 * The latest information is available via this GitHub repo and the [Discord server](https://discord.gg/9ahKjb7ccf).
+* Read _Using CSLA: Version 8 Overview_ (see the [Books and videos](Books-and-videos.md) page)
+
+CSLA 7
+------
+
+* The latest information is available via the [v7.x branch](https://github.com/MarimerLLC/csla/tree/v7.x) in this GitHub repo and the [Discord server](https://discord.gg/9ahKjb7ccf).
+
+CSLA 6
+------
+
+* The latest information is available via the [v6.x branch](https://github.com/MarimerLLC/csla/tree/v6.x) in this GitHub repo and the [Discord server](https://discord.gg/9ahKjb7ccf).
  
 CSLA 5
 ------

@@ -159,8 +159,15 @@ namespace Csla.Channels.Http
       catch (WebException ex)
       {
         string message;
-        using (var reader = new System.IO.StreamReader(ex.Response.GetResponseStream()))
-          message = reader.ReadToEnd();
+        if (ex.Response != null)
+        {
+          using (var reader = new System.IO.StreamReader(ex.Response.GetResponseStream()))
+            message = reader.ReadToEnd();
+        }
+        else
+        {
+          message = ex.Message;
+        }
         throw new DataPortalException(message, ex);
       }
     }

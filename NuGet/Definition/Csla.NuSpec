@@ -78,6 +78,7 @@
         <dependency id="Microsoft.Extensions.Configuration.Binder" version="6.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection" version="6.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="6.0.4" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
         <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>
@@ -87,7 +88,7 @@
         <dependency id="Microsoft.Extensions.DependencyInjection" version="7.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="7.0.0" />
         <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="7.0.0" />
-        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="7.0.0" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="7.0.1" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
         <dependency id="System.Runtime.Loader" version="4.3.0" />
       </group>

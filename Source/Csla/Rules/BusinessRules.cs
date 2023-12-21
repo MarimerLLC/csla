@@ -695,7 +695,7 @@ namespace Csla.Rules
           if (CascadeOnDirtyProperties)
             doCascade = primaryResult.DirtyProperties.Any(p => p == item.Name);
           primaryResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
-                                                               executionMode | RuleContextModes.AsAffectedPoperty));
+                                                               executionMode | RuleContextModes.AsAffectedProperty));
         }
       }
 

@@ -84,27 +84,17 @@ namespace Csla.Test.BusinessListBase
     [TestMethod]
     public void AcceptChangesAndSaveAfterCloneUsingMobileFormatter()
     {
-      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
-      try
-      {
-        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+      var rootList = CreateRootList();
+      rootList.BeginEdit();
+      var child = rootList.AddNew();
 
-        var rootList = CreateRootList();
-        rootList.BeginEdit();
-        var child = rootList.AddNew();
+      rootList = rootList.Clone();
 
-        rootList = rootList.Clone();
+      rootList.ApplyEdit();
 
-        rootList.ApplyEdit();
-
-        Assert.IsTrue(rootList.IsDirty);
-        rootList = rootList.Save();
-        Assert.IsFalse(rootList.IsDirty);
-      }
-      finally
-      {
-        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
-      }
+      Assert.IsTrue(rootList.IsDirty);
+      rootList = rootList.Save();
+      Assert.IsFalse(rootList.IsDirty);
     }
 
     [TestMethod]

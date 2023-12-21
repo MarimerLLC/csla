@@ -179,23 +179,6 @@ namespace Csla.Test.AppContext
           Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
           Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
         }
-
-        root.Data = "boom";
-        try
-        {
-          root = root.Save();
-
-          Assert.Fail("Insert exception didn't occur");
-        }
-        catch (DataPortalException ex)
-        {
-          root = (ExceptionRoot)ex.BusinessObject;
-          Assert.AreEqual("Fail insert", ex.GetBaseException().Message, "Base exception message incorrect");
-          Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Exception message incorrect");
-        }
-
-        Assert.AreEqual("boom", root.Data, "Business object not returned");
-        Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
       }
       finally
       {

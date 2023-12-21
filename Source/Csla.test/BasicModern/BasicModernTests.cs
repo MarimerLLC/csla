@@ -106,6 +106,7 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MakeOldMetastateEvents()
     {
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -115,19 +116,20 @@ namespace Csla.Test.BasicModern
 
       graph.MakeOld();
 
-      // TODO: Are these assumptions about what should happen actually correct?
+      Assert.IsTrue(changed.Contains("IsNew"), "IsNew did not change as expected");
       Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty did not change as expected");
-      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirtynot as expected");
+      Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty did not change as expected");
+      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as expected");
+
       Assert.IsFalse(changed.Contains("IsValid"), "IsValid changed; that was not expected");
       Assert.IsFalse(changed.Contains("IsSelfValid"), "IsSelfValid changed; that was not expected");
-      Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable did not change as expected");
-      Assert.IsTrue(changed.Contains("IsNew"), "IsNew did not change as expected");
       Assert.IsFalse(changed.Contains("IsDeleted"), "IsDeleted changed; that was not expected");
     }
 
     [TestMethod]
     public void MarkDeletedMetastateEvents()
     {
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
       graph.Name = "abc";
       graph = graph.Save();
@@ -219,9 +221,10 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsChild()
     {
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>

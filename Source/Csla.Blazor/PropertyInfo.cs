@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Exposes metastate for a property</summary>
 //-----------------------------------------------------------------------
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Csla.Rules;
 
@@ -130,6 +132,21 @@ namespace Csla.Blazor
         var result = string.Empty;
         if (Model is Core.BusinessBase obj)
           result = obj.BrokenRulesCollection.ToString(TextSeparator, RuleSeverity.Information, PropertyName);
+        return result;
+      }
+    }
+
+    /// <summary>
+    /// Gets the list of broken rules for 
+    /// a property on the Model
+    /// </summary>
+    public List<BrokenRule> BrokenRules
+    {
+      get
+      {
+        List<BrokenRule> result = [];
+        if (Model is Core.BusinessBase obj)
+          result = [.. obj.BrokenRulesCollection];
         return result;
       }
     }

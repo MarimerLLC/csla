@@ -35,5 +35,14 @@ namespace Csla.DataPortalClient
     /// <param name="result">Data portal result to cache</param>
     /// <returns></returns>
     Task AddObject(Type objectType, object criteria, DataPortalOperations operation, Server.DataPortalResult result);
+    /// <summary>
+    /// Gets a value indicating whether the domain type 
+    /// can be cached.
+    /// </summary>
+    /// <param name="objectType">Type of domain object to add</param>
+    /// <param name="criteria">Criteria for domain type being added</param>
+    /// <param name="operation">Data portal operation</param>
+    /// <returns></returns>
+    bool IsCacheable(Type objectType, object criteria, DataPortalOperations operation);
   }
 }

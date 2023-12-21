@@ -30,6 +30,16 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
+    /// Gets a value indicating whether the domain type 
+    /// can be cached.
+    /// </summary>
+    /// <param name="objectType">Type of domain object to add</param>
+    /// <param name="criteria">Criteria for domain type being added</param>
+    /// <param name="operation">Data portal operation</param>
+    /// <returns></returns>
+    public bool IsCacheable(Type objectType, object criteria, DataPortalOperations operation) => false;
+
+    /// <summary>
     /// Always returns false, does not retrieve values from cache.
     /// </summary>
     /// <param name="objectType">Type of domain object to retrieve</param>

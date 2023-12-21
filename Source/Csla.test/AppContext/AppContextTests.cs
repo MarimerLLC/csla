@@ -71,14 +71,33 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void ClientContext()
     {
-      IDataPortal<ClientContextGetter> dataPortal = _testDIContext.CreateDataPortal<ClientContextGetter>();
+      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
 
-      applicationContext.ClientContext.Add("value", "client context data");
-      Assert.AreEqual("client context data", applicationContext.ClientContext["value"], "Matching data not retrieved");
+      var testContext = "client context data";
+      applicationContext.ClientContext.Add("clientcontext", testContext);
+      Assert.AreEqual(testContext, applicationContext.ClientContext["clientcontext"], "Matching data not retrieved");
 
-      var obj = dataPortal.Fetch();
-      Assert.AreEqual("client context data", obj.ClientContextValue, "value didn't come back from server");
+      Basic.Root root = dataPortal.Create(new Basic.Root.Criteria());
+      root.Data = "saved";
+      Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
+      Assert.AreEqual(true, root.IsDirty, "Object should be dirty");
+      Assert.AreEqual(true, root.IsValid, "Object should be valid");
+
+      TestResults.Reinitialise();
+      root = root.Save();
+
+      Assert.IsNotNull(root, "Root object should not be null");
+      Assert.AreEqual("Inserted", TestResults.GetResult("Root"), "Object not inserted");
+      Assert.AreEqual("saved", root.Data, "Root data should be 'saved'");
+      Assert.AreEqual(false, root.IsNew, "Object should not be new");
+      Assert.AreEqual(false, root.IsDeleted, "Object should not be deleted");
+      Assert.AreEqual(false, root.IsDirty, "Object should not be dirty");
+
+      //TODO: Is there a modern equivalent of this?
+      //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Client context data lost");
+      Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"), "Global context data lost");
+      Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"), "New global value lost");
     }
 
     #endregion
@@ -140,8 +159,6 @@ namespace Csla.Test.AppContext
 
     #endregion
 
-    #region FailUpdateContext
-
     [TestMethod()]
     public void FailUpdateContext()
     {
@@ -162,13 +179,28 @@ namespace Csla.Test.AppContext
           Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
           Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
         }
+
+        root.Data = "boom";
+        try
+        {
+          root = root.Save();
+
+          Assert.Fail("Insert exception didn't occur");
+        }
+        catch (DataPortalException ex)
+        {
+          root = (ExceptionRoot)ex.BusinessObject;
+          Assert.AreEqual("Fail insert", ex.GetBaseException().Message, "Base exception message incorrect");
+          Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Exception message incorrect");
+        }
+
+        Assert.AreEqual("boom", root.Data, "Business object not returned");
+        Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
       }
       finally
       {
       }
     }
-
-    #endregion
 
     #region FailDeleteContext
 
@@ -202,22 +234,5 @@ namespace Csla.Test.AppContext
       return dataPortal.Fetch(new Basic.Root.Criteria(data));
     }
 
-  }
-
-  [Serializable]
-  public class ClientContextGetter : BusinessBase<ClientContextGetter>
-  {
-    public static readonly PropertyInfo<string> ClientContextValueProperty = RegisterProperty<string>(nameof(ClientContextValue));
-    public string ClientContextValue
-    {
-      get => GetProperty(ClientContextValueProperty);
-      set => SetProperty(ClientContextValueProperty, value);
-    }
-
-    [Fetch]
-    private void Fetch()
-    {
-      ClientContextValue = ApplicationContext.ClientContext["value"].ToString();
-    }
   }
 }

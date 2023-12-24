@@ -53,8 +53,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
-        Activator.InitializeInstance(obj.Instance);
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkNew();
         await obj.CreateAsync(criteria, isSync);
@@ -111,7 +110,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
@@ -153,7 +152,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Execute);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
@@ -296,7 +295,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstance(objectType));
+        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.DeleteAsync(criteria, isSync);

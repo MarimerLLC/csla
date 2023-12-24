@@ -14,6 +14,7 @@ using Csla.Core;
 using System.Threading.Tasks;
 using Csla.Threading;
 using System.Security.Principal;
+using Csla.Server;
 
 namespace Csla.Rules
 {
@@ -328,8 +329,10 @@ namespace Csla.Rules
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, applicationContext, objectType, null, applicationContext.RuleSet);
+      return HasPermission(action, null, applicationContext, realType, null, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -343,8 +346,10 @@ namespace Csla.Rules
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
-      return HasPermission(action, null, applicationContext, objectType, criteria, applicationContext.RuleSet);
+      return HasPermission(action, null, applicationContext, realType, criteria, applicationContext.RuleSet);
     }
 
     /// <summary>
@@ -361,7 +366,9 @@ namespace Csla.Rules
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
-      return HasPermission(action, null, applicationContext, objectType, null, ruleSet);
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+      return HasPermission(action, null, applicationContext, realType, null, ruleSet);
     }
 
     /// <summary>

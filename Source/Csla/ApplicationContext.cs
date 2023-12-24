@@ -11,6 +11,7 @@ using Csla.Core;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
+using Csla.Server;
 
 namespace Csla
 {
@@ -85,7 +86,7 @@ namespace Csla
         ContextDictionary ctx = ContextManager.GetLocalContext();
         if (ctx == null)
         {
-          ctx = new ContextDictionary();
+          ctx = [];
           ContextManager.SetLocalContext(ctx);
         }
         return ctx;
@@ -122,7 +123,7 @@ namespace Csla
           ContextDictionary ctx = ContextManager.GetClientContext(ExecutionLocation);
           if (ctx == null)
           {
-            ctx = new ContextDictionary();
+            ctx = [];
             ContextManager.SetClientContext(ctx, ExecutionLocation);
           }
           return ctx;
@@ -332,8 +333,8 @@ namespace Csla
     #region Logical Execution Location
     /// <summary>
     /// Enum representing the logical execution location
-    /// The setting is set to server when server is execting
-    /// a CRUD opertion, otherwise the setting is always client
+    /// The setting is set to server when server is executing
+    /// a CRUD operation, otherwise the setting is always client
     /// </summary>
     public enum LogicalExecutionLocations
     {
@@ -387,19 +388,6 @@ namespace Csla
     internal IServiceProvider CurrentServiceProvider => ApplicationContextAccessor.ServiceProvider;
 
     /// <summary>
-    /// Creates an object using 'Activator.CreateInstance' using
-    /// service provider (if one is available) to populate any parameters 
-    /// in CTOR that are not manually passed in.
-    /// </summary>
-    /// <typeparam name="T">Type of object to create.</typeparam>
-    /// <param name="parameters">Parameters for constructor</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstanceDI<T>(params object[] parameters)
-    {
-      return (T)CreateInstanceDI(typeof(T), parameters);
-    }
-
-    /// <summary>
     /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
     /// Throws exception if service not properly registered with DI.
     /// </summary>
@@ -443,9 +431,18 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an object using 'Activator.CreateInstance' using
-    /// service provider (if one is available) to populate any parameters 
-    /// in CTOR that are not manually passed in.
+    /// Creates an object using the IDataPortalActivator.
+    /// </summary>
+    /// <typeparam name="T">Type of object to create.</typeparam>
+    /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public T CreateInstanceDI<T>(params object[] parameters)
+    {
+      return (T)CreateInstanceDI(typeof(T), parameters);
+    }
+
+    /// <summary>
+    /// Creates an object using the IDataPortalActivator.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Manually passed in parameters for constructor</param>
@@ -454,15 +451,8 @@ namespace Csla
     {
       try
       {
-        object result;
-        if (CurrentServiceProvider != null)
-          result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
-        else
-          result = Activator.CreateInstance(objectType, parameters);
-        if (result is IUseApplicationContext tmp)
-        {
-          tmp.ApplicationContext = this;
-        }
+        var activator = CurrentServiceProvider.GetRequiredService<IDataPortalActivator>();
+        var result = activator.CreateInstance(objectType, parameters);
         return result;
       }
       catch (ObjectDisposedException ex)

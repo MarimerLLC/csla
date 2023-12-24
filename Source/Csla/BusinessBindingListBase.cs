@@ -674,7 +674,7 @@ namespace Csla
 
     private static PropertyDescriptorCollection _propertyDescriptors;
 
-    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
       if (_propertyDescriptors == null)
         _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));

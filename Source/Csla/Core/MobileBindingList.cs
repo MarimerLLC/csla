@@ -223,7 +223,16 @@ namespace Csla.Core
           foreach (int reference in references)
           {
             T child = (T)formatter.GetObject(reference);
-            this.Add(child);
+            if (child is IBusinessBase bb)
+            {
+              var editLevelAdded = bb.EditLevelAdded;
+              this.Add(child);
+              bb.EditLevelAdded = editLevelAdded;
+            }
+            else
+            {
+              this.Add(child);
+            }
           }
         }
       }

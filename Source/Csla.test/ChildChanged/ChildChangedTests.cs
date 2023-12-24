@@ -164,15 +164,17 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SingleList_Serialized()
     {
-      IDataPortal<SingleList> listDataPortal = _testDIContext.CreateDataPortal<SingleList>();
-      IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
+
+      var listDataPortal = _testDIContext.CreateDataPortal<SingleList>();
+      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
 
       int lc = 0;
       int cc = 0;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = listDataPortal.Fetch(false);
-      root.Add(dataPortal.Fetch(true));
+      root.Add(dataPortal.FetchChild(true));
       root = root.Clone();
 
       System.ComponentModel.PropertyDescriptor lcp = null;
@@ -187,6 +189,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       root[0].Name = "abc";
+
       Assert.AreEqual(1, lc, "ListChanged should have fired once");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
@@ -238,44 +241,46 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ContainedList_Serialized()
     {
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+
       IDataPortal<ContainsList> listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
-      IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      IDataPortal<SingleRoot> singleRootPortal = _testDIContext.CreateDataPortal<SingleRoot>();
       
       int lc = 0;
       int rcc = 0;
       int cc = 0;
       Csla.Core.ChildChangedEventArgs cca = null;
 
-      var root = listDataPortal.Fetch();
-      root.List.Add(dataPortal.Fetch(true));
-      root = root.Clone();
+      var list = listDataPortal.Fetch();
+      list.List.Add(singleRootPortal.Fetch(true));
+      list = list.Clone();
 
-      root.PropertyChanged += (o, e) =>
+      list.PropertyChanged += (o, e) =>
       {
         Assert.IsTrue(false, "root.PropertyChanged should not fire");
       };
-      root.ChildChanged += (o, e) =>
+      list.ChildChanged += (o, e) =>
       {
         rcc++;
       };
       System.ComponentModel.PropertyDescriptor lcp = null;
-      root.List.ListChanged += (o, e) =>
+      list.List.ListChanged += (o, e) =>
       {
         lc++;
         lcp = e.PropertyDescriptor;
       };
-      root.List.ChildChanged += (o, e) =>
+      list.List.ChildChanged += (o, e) =>
       {
         cc++;
         cca = e;
       };
-      root.List[0].Name = "abc";
+      list.List[0].Name = "abc";
       Assert.AreEqual(1, lc, "ListChanged should have fired once");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
       Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
       Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
-      Assert.IsTrue(ReferenceEquals(root.List[0], cca.ChildObject), "Ref should be equal");
+      Assert.IsTrue(ReferenceEquals(list.List[0], cca.ChildObject), "Ref should be equal");
     }
 
     [TestMethod]
@@ -331,5 +336,33 @@ namespace Csla.Test.ChildChanged
       Assert.IsTrue(cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(child.List[0], cca.ChildObject), "Ref should be equal");
     }
+
+    [TestMethod]
+    public void SimpleMetaState()
+    {
+      IDataPortal<MetaState> portal = _testDIContext.CreateDataPortal<MetaState>();
+      var obj = portal.Create();
+      var propertyCount = 0;
+      var childCount = 0;
+      obj.PropertyChanged += (s, e) => propertyCount++;
+      obj.ChildChanged += (s, e) => childCount++;
+      obj.Name = "abc";
+      Assert.AreEqual(1, propertyCount, "propertyCount");
+      Assert.AreEqual(0, childCount, "childCount");
+    }
+  }
+
+  [Serializable]
+  public class MetaState : BusinessBase<MetaState>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    public string Name
+    {
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
+    }
+
+    [Create]
+    private void Create() { }
   }
 }

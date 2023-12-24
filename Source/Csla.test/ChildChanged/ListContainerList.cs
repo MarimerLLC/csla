@@ -15,7 +15,7 @@ using Csla.Serialization;
 namespace Csla.Test.ChildChanged
 {
   [Serializable]
-  public class ListContainerList : BusinessBindingListBase<ListContainerList, ContainsList>
+  public class ListContainerList : BusinessListBase<ListContainerList, ContainsList>
   {
     [Fetch]
     private void Create()

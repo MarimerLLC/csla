@@ -221,6 +221,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth0()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       result.Name = "Keith";
@@ -236,6 +237,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth1()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       result.Child.Name = "Keith";
@@ -252,6 +254,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth2()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       result.Child.Child.Name = "Keith";
@@ -269,6 +272,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth3()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       _SequenceID = 0;
@@ -290,6 +294,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_List_Name_Depth1()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       result.ChildList[0].Name = "Keith";
@@ -306,6 +311,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_List_Name_Depth2()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       result.ChildList[0].ChildList[0].Name = "Keith";
@@ -324,6 +330,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_List_Name_Depth3()
     {
+      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var result = Fetch();
 
       _SequenceID = 0;

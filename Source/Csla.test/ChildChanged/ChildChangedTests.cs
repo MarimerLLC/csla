@@ -134,19 +134,17 @@ namespace Csla.Test.ChildChanged
     public void SingleList()
     {
       IDataPortal<SingleList> listDataPortal = _testDIContext.CreateDataPortal<SingleList>();
-      IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
 
       int lc = 0;
       int cc = 0;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = listDataPortal.Fetch(false);
-      root.Add(dataPortal.Fetch(true));
-      System.ComponentModel.PropertyDescriptor lcp = null;
-      root.ListChanged += (o, e) =>
+      root.Add(dataPortal.FetchChild(true));
+      root.CollectionChanged += (o, e) =>
       {
         lc++;
-        lcp = e.PropertyDescriptor;
       };
       root.ChildChanged += (o, e) =>
       {
@@ -154,9 +152,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       root[0].Name = "abc";
-      Assert.AreEqual(1, lc, "ListChanged should have fired");
-      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
-      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+      Assert.AreEqual(0, lc, "CollectionChanged should not have fired");
       Assert.AreEqual(1, cc, "ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root[0], cca.ChildObject), "Ref should be equal");
     }
@@ -177,11 +173,9 @@ namespace Csla.Test.ChildChanged
       root.Add(dataPortal.FetchChild(true));
       root = root.Clone();
 
-      System.ComponentModel.PropertyDescriptor lcp = null;
-      root.ListChanged += (o, e) =>
+      root.CollectionChanged += (o, e) =>
       {
         lc++;
-        lcp = e.PropertyDescriptor;
       };
       root.ChildChanged += (o, e) =>
       {
@@ -190,9 +184,7 @@ namespace Csla.Test.ChildChanged
       };
       root[0].Name = "abc";
 
-      Assert.AreEqual(1, lc, "ListChanged should have fired once");
-      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
-      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+      Assert.AreEqual(0, lc, "CollectionChanged should not have fired");
       Assert.AreEqual(1, cc, "ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root[0], cca.ChildObject), "Ref should be equal");
     }
@@ -201,7 +193,7 @@ namespace Csla.Test.ChildChanged
     public void ContainedList()
     {
       IDataPortal<ContainsList> listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
-      IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
 
       int lc = 0;
       int rcc = 0;
@@ -209,7 +201,7 @@ namespace Csla.Test.ChildChanged
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = listDataPortal.Fetch();
-      root.List.Add(dataPortal.Fetch(true));
+      root.List.Add(dataPortal.FetchChild(true));
       root.PropertyChanged += (o, e) =>
       {
         Assert.IsTrue(false, "root.PropertyChanged should not fire");
@@ -218,11 +210,9 @@ namespace Csla.Test.ChildChanged
       {
         rcc++;
       };
-      System.ComponentModel.PropertyDescriptor lcp = null;
-      root.List.ListChanged += (o, e) =>
+      root.List.CollectionChanged += (o, e) =>
       {
         lc++;
-        lcp = e.PropertyDescriptor;
       };
       root.List.ChildChanged += (o, e) =>
       {
@@ -230,9 +220,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       root.List[0].Name = "abc";
-      Assert.AreEqual(1, lc, "ListChanged should have fired");
-      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
-      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+      Assert.AreEqual(0, lc, "CollectionChanged should not have fired");
       Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
       Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root.List[0], cca.ChildObject), "Ref should be equal");
@@ -241,10 +229,10 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ContainedList_Serialized()
     {
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
 
-      IDataPortal<ContainsList> listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
-      IDataPortal<SingleRoot> singleRootPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      var listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
+      var singleRootPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
       
       int lc = 0;
       int rcc = 0;
@@ -252,7 +240,7 @@ namespace Csla.Test.ChildChanged
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var list = listDataPortal.Fetch();
-      list.List.Add(singleRootPortal.Fetch(true));
+      list.List.Add(singleRootPortal.FetchChild(true));
       list = list.Clone();
 
       list.PropertyChanged += (o, e) =>
@@ -263,11 +251,9 @@ namespace Csla.Test.ChildChanged
       {
         rcc++;
       };
-      System.ComponentModel.PropertyDescriptor lcp = null;
-      list.List.ListChanged += (o, e) =>
+      list.List.CollectionChanged += (o, e) =>
       {
         lc++;
-        lcp = e.PropertyDescriptor;
       };
       list.List.ChildChanged += (o, e) =>
       {
@@ -275,9 +261,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       list.List[0].Name = "abc";
-      Assert.AreEqual(1, lc, "ListChanged should have fired once");
-      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
-      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+      Assert.AreEqual(0, lc, "CollectionChanged should not have fired");
       Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
       Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(list.List[0], cca.ChildObject), "Ref should be equal");
@@ -287,8 +271,8 @@ namespace Csla.Test.ChildChanged
     public void ListOfLists()
     {
       IDataPortal<ListContainerList> listContainerDataPortal = _testDIContext.CreateDataPortal<ListContainerList>();
-      IDataPortal<ContainsList> listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
-      IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      var listDataPortal = _testDIContext.CreateChildDataPortal<ContainsList>();
+      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
       
       bool rcc = false;
       bool ccc = false;
@@ -296,17 +280,16 @@ namespace Csla.Test.ChildChanged
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = listContainerDataPortal.Fetch();
-      var child = listDataPortal.Fetch(true);
+      var child = listDataPortal.FetchChild(true);
       root.Add(child);
-      child.List.Add(dataPortal.Fetch(true));
+      child.List.Add(dataPortal.FetchChild(true));
       root.ChildChanged += (o, e) =>
       {
         rcc = true;
       };
-      System.ComponentModel.PropertyDescriptor lcp = null;
-      root.ListChanged += (o, e) =>
+      root.CollectionChanged += (o, e) =>
         {
-          Assert.Fail("root.ListChanged should not fire");
+          Assert.Fail("root.CollectionChanged should not fire");
         };
       child.ChildChanged += (o, e) =>
       {
@@ -317,10 +300,9 @@ namespace Csla.Test.ChildChanged
         Assert.IsTrue(false, "child.PropertyChanged should not fire");
       };
       bool lc = false;
-      child.List.ListChanged += (o, e) =>
+      child.List.CollectionChanged += (o, e) =>
       {
         lc = true;
-        lcp = e.PropertyDescriptor;
       };
       child.List.ChildChanged += (o, e) =>
       {
@@ -328,9 +310,7 @@ namespace Csla.Test.ChildChanged
         cca = e;
       };
       child.List[0].Name = "abc";
-      Assert.IsTrue(lc, "ListChanged should have fired");
-      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
-      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+      Assert.IsFalse(lc, "CollectionChanged should not have fired");
 			Assert.IsTrue(rcc, "root.ChildChanged should have fired");
       Assert.IsTrue(ccc, "child.ChildChanged should have fired");
       Assert.IsTrue(cc, "list.ChildChanged should have fired");

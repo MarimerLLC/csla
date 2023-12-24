@@ -10,7 +10,7 @@ using System;
 namespace Csla.Test.ChildChanged
 {
   [Serializable]
-  public class SingleList : BusinessBindingListBase<SingleList, SingleRoot>
+  public class SingleList : BusinessListBase<SingleList, SingleRoot>
   {
     [Fetch]
     [FetchChild]

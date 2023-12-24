@@ -12,6 +12,7 @@ using Csla.Serialization.Mobile;
 using Csla.Serialization;
 using Csla.Server;
 using Csla.Server.Hosts.DataPortalChannel;
+using Csla.Configuration;
 
 namespace Csla.DataPortalClient
 {
@@ -376,10 +377,11 @@ namespace Csla.DataPortalClient
     private CriteriaRequest GetBaseCriteriaRequest()
     {
       var result = ApplicationContext.CreateInstanceDI<CriteriaRequest>();
+      var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
       result.CriteriaData = null;
       result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
       result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
-          .Serialize(ApplicationContext.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
+          .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
       result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
       return result;
@@ -388,10 +390,11 @@ namespace Csla.DataPortalClient
     private UpdateRequest GetBaseUpdateCriteriaRequest()
     {
       var result = ApplicationContext.CreateInstanceDI<UpdateRequest>();
+      var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
       result.ObjectData = null;
       result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
       result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
-          .Serialize(ApplicationContext.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
+          .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
       return result;

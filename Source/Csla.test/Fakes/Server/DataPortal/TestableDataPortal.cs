@@ -29,7 +29,8 @@ namespace Csla.Testing.Business.DataPortal
       IObjectFactoryLoader factoryLoader,
       IDataPortalActivator activator,
       IDataPortalExceptionInspector exceptionInspector,
-      DataPortalExceptionHandler exceptionHandler
+      DataPortalExceptionHandler exceptionHandler,
+      SecurityOptions securityOptions
     ) : base(
       applicationContext,
       dashboard,
@@ -39,7 +40,8 @@ namespace Csla.Testing.Business.DataPortal
       factoryLoader,
       activator,
       exceptionInspector,
-      exceptionHandler
+      exceptionHandler,
+      securityOptions
     )
     {
       _authorizer = authorizer;

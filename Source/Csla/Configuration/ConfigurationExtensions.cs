@@ -43,6 +43,7 @@ namespace Csla.Configuration
       // capture options object
       services.AddScoped((p) => cslaOptions);
       services.AddScoped((p) => cslaOptions.DataPortalOptions);
+      services.AddScoped((p) => cslaOptions.SecurityOptions);
 
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();

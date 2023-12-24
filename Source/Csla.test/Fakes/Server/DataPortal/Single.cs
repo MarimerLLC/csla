@@ -142,7 +142,7 @@ namespace Csla.Test.DataPortalTest
     public async Task<object> Create(int id)
     {
       Console.WriteLine($"Create {id},{System.Threading.Thread.GetCurrentProcessorId()}, {System.Threading.Thread.CurrentThread.ManagedThreadId}");
-      await Task.Delay(5);
+      await Task.Delay(1);
       return await Task.Run(() => new SingleWithFactory());
     }
   }

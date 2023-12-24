@@ -38,6 +38,7 @@ namespace Csla.Server
     private IDataPortalActivator Activator { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
     private DataPortalExceptionHandler DataPortalExceptionHandler { get; set; }
+    private SecurityOptions SecurityOptions { get; set; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -51,6 +52,7 @@ namespace Csla.Server
     /// <param name="factoryLoader"></param>
     /// <param name="interceptors"></param>
     /// <param name="exceptionHandler"></param>
+    /// <param name="securityOptions"></param>
     public DataPortal(
       ApplicationContext applicationContext, 
       IDashboard dashboard, 
@@ -60,7 +62,8 @@ namespace Csla.Server
       IObjectFactoryLoader factoryLoader,
       IDataPortalActivator activator,
       IDataPortalExceptionInspector exceptionInspector,
-      DataPortalExceptionHandler exceptionHandler)
+      DataPortalExceptionHandler exceptionHandler,
+      SecurityOptions securityOptions)
     {
       ApplicationContext = applicationContext;
       Dashboard = dashboard;
@@ -71,6 +74,7 @@ namespace Csla.Server
       Activator = activator;
       ExceptionInspector = exceptionInspector;
       DataPortalExceptionHandler = exceptionHandler;
+      SecurityOptions = securityOptions;
     }
 
     #region Data Access
@@ -680,7 +684,7 @@ namespace Csla.Server
 
     private void SetPrincipal(DataPortalContext context)
     {
-      if (context.IsRemotePortal && !ApplicationContext.FlowSecurityPrincipalFromClient)
+      if (context.IsRemotePortal && !SecurityOptions.FlowSecurityPrincipalFromClient)
       {
         // When using platform-supplied security, Principal must be null
         if (context.Principal != null)
@@ -727,7 +731,7 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
       ApplicationContext.Clear();
-      if (ApplicationContext.FlowSecurityPrincipalFromClient)
+      if (SecurityOptions.FlowSecurityPrincipalFromClient)
         ApplicationContext.User = null;
     }
 

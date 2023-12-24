@@ -33,12 +33,10 @@ namespace Csla.Test.DataPortal
     public void Fetch_FakeRemoteDataPortalWithFlowEnabled_FlowsPrincipal()
     {
       var principal = new CslaClaimsPrincipal(new GenericIdentity("rocky", "custom"));
-      var testDIContext = TestDIContextFactory.CreateContext(opts => opts
-        .DataPortal(dpo => dpo.ClientSideDataPortal(dp =>
-        {
-          dp.UseFakeRemoteDataPortalProxy();
-          dp.EnableSecurityPrincipalFlowFromClient();
-        })),
+      var testDIContext = TestDIContextFactory.CreateContext(opts => opts.
+        DataPortal(dpo => dpo.ClientSideDataPortal(dp => dp.
+          UseFakeRemoteDataPortalProxy())).
+        Security(so => so.FlowSecurityPrincipalFromClient = true),
         principal);
 
       var dataPortal = testDIContext.CreateDataPortal<PrincipalInfo>();

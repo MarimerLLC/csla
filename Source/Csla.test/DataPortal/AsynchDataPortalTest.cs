@@ -143,7 +143,7 @@ namespace Csla.Test.DataPortal
     {
       var dataPortal = _testDIContext.CreateDataPortal<SingleWithFactory>();
 
-      var testcount = 1;
+      var testcount = 500;
       var list = new List<int>(testcount);
       for (var i = 0; i < testcount; i++)
       {
